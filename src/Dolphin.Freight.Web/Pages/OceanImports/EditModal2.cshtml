@@ -78,11 +78,11 @@
             })
             $("#PoNoTag").tagsInit();
 
-            $(document).on('click', '[name=f0]', function() {
+            $(document).on('click', '[name=f0]', function () {
                 $('#add-ap').prop('disabled', $('[name=f0]:checked').length !== 1);
             });
 
-            $('#save-pp').click(function() {
+            $('#save-pp').click(function () {
                 $(this).prop('disabled', true);
 
                 const id = $('[name=f0]:checked').eq(0).data('id');
@@ -92,12 +92,12 @@
 
                 dolphin.freight.importExport.containers.container.switchPP(id).done(function (result) {
                     location.reload();
-                }).always(function() {
+                }).always(function () {
                     $(this).prop('disabled', false);
                 });
             });
 
-            $('#save-ctf').click(function() {
+            $('#save-ctf').click(function () {
                 $(this).prop('disabled', true);
 
                 const id = $('[name=f0]:checked').eq(0).data('id');
@@ -225,157 +225,157 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-lock"></i> @L["Btn:Lock"]
                                     </a>
-                                    <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Unpacking/Isolation Instructions"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
-                                    </a>
-                                    <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
-                                    </a>
-                                    <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Electronic Customs Declaration Status"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
-                                    </a>
-                                </div>
-                            </div>
-
-                            <!--
-                            <div class="btn-group dropdown">
-                                <button class="btn btn-secondary dropdown-toggle"  type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                    請選擇
-                                </button>
-                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                    <a class='dropdown-item' href='#'>
-                                           <li class="fa fa-lock"></li> 鎖定
-                                        </a>
+                            <li class="dropdown-divider"></li>
                             <a class='dropdown-item' href='#'>
-                                <i class="fa fa-trash"></i> 刪除
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest"]
                             </a>
-                                    <li class="dropdown-divider"></li>
                             <a class='dropdown-item' href='#'>
-                            <li class="fa fa-lock"></li> aaa
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Unpacking/Isolation Instructions"]
                             </a>
+                            <a class='dropdown-item' href='#'>
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
+                            </a>
+                            <a class='dropdown-item' href='#'>
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
+                            </a>
+                            <a class='dropdown-item' href='#'>
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
+                            </a>
+                            <li class="dropdown-divider"></li>
+                            <a class='dropdown-item' href='#'>
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
+                            </a>
+                            <a class='dropdown-item' href='#'>
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
+                            </a>
+                            <li class="dropdown-divider"></li>
+                            <a class='dropdown-item' href='#'>
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Electronic Customs Declaration Status"]
+                            </a>
+                            <a class='dropdown-item' href='#'>
+                                <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
+                            </a>
+                </div>
+</div>
 
-                                </div>
-                            </div>
-                            -->
-                            <button class="btn btn-collapse collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="false" aria-controls="mblDiv">
-                            </button>
+<!--
+<div class="btn-group dropdown">
+    <button class="btn btn-secondary dropdown-toggle"  type="button" id="ActionDrop" data-bs-toggle="dropdown">
+        請選擇
+    </button>
+    <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
+        <a class='dropdown-item' href='#'>
+               <li class="fa fa-lock"></li> 鎖定
+            </a>
+<a class='dropdown-item' href='#'>
+    <i class="fa fa-trash"></i> 刪除
+</a>
+        <li class="dropdown-divider"></li>
+<a class='dropdown-item' href='#'>
+<li class="fa fa-lock"></li> aaa
+</a>
+
+    </div>
+</div>
+-->
+<button class="btn btn-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
+</button>
 
                         </abp-card-header>
-                        <abp-card-body class="collapse show" id="mblDiv">   
+<abp-card-body class="collapse show" id="mblDiv">
 
-                            <abp-row>
+    <abp-row>
 
-                                <abp-column size-md="_12">
-                                    <div>
-                                        <abp-button class="btn btn-success me-md-2" type="button" id="addBtn">+</abp-button>
-                                        <abp-button class="btn btn-outline-success me-md-2" type="button" id="add5Btn">+5</abp-button>
-                                        <abp-button class="btn btn-outline-warning me-md-2" type="button" id="copyBtn">copy</abp-button>
-                                        <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn">delete</abp-button>
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" id="add-ap" disabled>
+        <abp-column size-md="_12">
+            <div>
+                <abp-button class="btn btn-success me-md-2" type="button" id="addBtn">+</abp-button>
+                <abp-button class="btn btn-outline-success me-md-2" type="button" id="add5Btn">+5</abp-button>
+                <abp-button class="btn btn-outline-warning me-md-2" type="button" id="copyBtn">copy</abp-button>
+                <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn">delete</abp-button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" id="add-ap" disabled>
                                                 @L["Display:AddAP"]
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#exampleModal">Pier Pass</a>
-                                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#exampleModal2">Clean Truck Fundn</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
-                                        <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
-                                            <th width="5%"></th>
-                                            <th width="5%">PP</th>
-                                            <th width="5%">CTF</th>
-                                            <th width="20%">@L["Display:PackageNo"]</th>
-                                            <th width="15%">@L["Display:PackageSize"]</th>
-                                            <th width="15%">@L["Display:SmallSeal"]</th>
-                                            <th width="15%">@L["Display:PackageType"]</th>
-                                            <th width="15%">@L["Display:Weight"]</th>
-                                            <th width="15%">@L["Display:Volume"]</th>
-                                        </tr>
-                                        <tbody id="trtbody">
-                                        </tbody>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#exampleModal">Pier Pass</a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#exampleModal2">Clean Truck Fundn</a>
+                    </div>
+                </div>
+            </div>
+            <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                    <th width="5%"></th>
+                    <th width="5%">PP</th>
+                    <th width="5%">CTF</th>
+                    <th width="20%">@L["Display:PackageNo"]</th>
+                    <th width="15%">@L["Display:PackageSize"]</th>
+                    <th width="15%">@L["Display:SmallSeal"]</th>
+                    <th width="15%">@L["Display:PackageType"]</th>
+                    <th width="15%">@L["Display:Weight"]</th>
+                    <th width="15%">@L["Display:Volume"]</th>
+                </tr>
+                <tbody id="trtbody">
+                </tbody>
 
-                                    </table>
+            </table>
 
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-column size-md="_12">
-                                    &nbsp;
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-column size-md="_6">
-                                    <label for="t1">@L["Display:Mark"]</label>
-                                    <textarea id="t1" name="OceanImportMbl.Mark" class="form-control">@Model.OceanImportMbl.Mark</textarea>
-                                </abp-column>
-                                <abp-column size-md="_6">
-                                    <label for="t2">@L["Display:DeionOfGoods"]</label>
-                                    <textarea id="t2" name="OceanImportMbl.Description" class="form-control">@Model.OceanImportMbl.Description</textarea>
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-collum>
-                                    <label for="t3">@L["Display:Ot"]</label>
-                                    <textarea id="t3" name="OceanImportMbl.DomesticInstructions" class="form-control">@Model.OceanImportMbl.DomesticInstructions</textarea>
-                                </abp-collum>
-                            </abp-row>
-                        </abp-card-body>
+        </abp-column>
+    </abp-row>
+    <abp-row>
+        <abp-column size-md="_12">
+            &nbsp;
+        </abp-column>
+    </abp-row>
+    <abp-row>
+        <abp-column size-md="_6">
+            <label for="t1">@L["Display:Mark"]</label>
+            <textarea id="t1" name="OceanImportMbl.Mark" class="form-control">@Model.OceanImportMbl.Mark</textarea>
+        </abp-column>
+        <abp-column size-md="_6">
+            <label for="t2">@L["Display:DeionOfGoods"]</label>
+            <textarea id="t2" name="OceanImportMbl.Description" class="form-control">@Model.OceanImportMbl.Description</textarea>
+        </abp-column>
+    </abp-row>
+    <abp-row>
+        <abp-collum>
+            <label for="t3">@L["Display:Ot"]</label>
+            <textarea id="t3" name="OceanImportMbl.DomesticInstructions" class="form-control">@Model.OceanImportMbl.DomesticInstructions</textarea>
+        </abp-collum>
+    </abp-row>
+</abp-card-body>
                     </abp-card>
-                    <br />
-                    <abp-card class="card board-item" id="hblCard">
-                        <abp-card-header id="hblCardHeader" class="@Model.OceanImportHbl.CardColorValue">
-                            <abp-row>
-                                <abp-column size-md="_9">
-                                    <abp-card-title>
-                                        HB/L @Model.OceanImportHbl.HblNo
-                                    </abp-card-title> 
+<br />
+<abp-card class="card board-item" id="hblCard">
+    <abp-card-header id="hblCardHeader" class="@Model.OceanImportHbl.CardColorValue">
+        <abp-row>
+            <abp-column size-md="_9">
+                <abp-card-title>
+                    HB/L @Model.OceanImportHbl.HblNo
+                </abp-card-title>
 
-                                 </abp-column>
+            </abp-column>
 
-                                <abp-column size-md="_3" class="text-end">
-                                    <!--
-                                    <div class="btn-group dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle"  type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                            請選擇
-                                        </button>
-                                        <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                            <a class='dropdown-item' href='#'>
-                                                   <li class="fa fa-lock"></li> 鎖定
-                                                </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-trash"></i> 刪除
-                                    </a>
-                                            <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
-                                    <li class="fa fa-lock"></li> aaa
-                                    </a>
+            <abp-column size-md="_3" class="text-end">
+                <!--
+                <div class="btn-group dropdown">
+                    <button class="btn btn-secondary dropdown-toggle"  type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                        請選擇
+                    </button>
+                    <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
+                        <a class='dropdown-item' href='#'>
+                               <li class="fa fa-lock"></li> 鎖定
+                            </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-trash"></i> 刪除
+                </a>
+                        <li class="dropdown-divider"></li>
+                <a class='dropdown-item' href='#'>
+                <li class="fa fa-lock"></li> aaa
+                </a>
 
-                                        </div>
-                                    </div>
-                                    -->
+                    </div>
+                </div>
+                -->
                 <div class="btn-group dropdown">
                     <button class="btn btn-secondary dropdown-toggle" style="position: relative; bottom: 7px;" type="button" id="ActionDrop" data-bs-toggle="dropdown">
                                             @L["Display:Function"]
@@ -384,7 +384,7 @@
                         <a class='dropdown-item' href='#'>
                             <i class="fa fa-lock"></i> @L["Btn:Lock"]
                         </a>
-                        <li class="dropdown-divider"></li>
+                        <p class="dropdown-divider"></p>
                         <a class='dropdown-item' href='#'>
                             <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
                         </a>
@@ -412,182 +412,182 @@
                         <a class='dropdown-item' href='#'>
                             <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
                         </a>
-                        <li class="dropdown-divider"></li>
+                        <p class="dropdown-divider"></p>
                         <a class='dropdown-item' href='#'>
                             <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                         </a>
-                        <li class="dropdown-divider"></li>
+                        <p class="dropdown-divider"></p>
                         <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
                             <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
                         </a>
                     </div>
                 </div>
 
-                                    <button type="button" class="btn btn-collapse collapsed" data-bs-toggle="collapse" style="position: relative; left: 8px; top: 0px;" data-bs-target="#hblDiv" aria-expanded="false" aria-controls="hblDiv">
-                                    </button>
-                                </abp-column>
+                <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" style="position: relative; left: 8px; top: 0px;" data-bs-target="#hblDiv" aria-expanded="true" aria-controls="hblDiv">
+                </button>
+            </abp-column>
 
-                            </abp-row>
-                        </abp-card-header>
-                        <abp-card-body class="collapse show " id="hblDiv">
+        </abp-row>
+    </abp-card-header>
+    <abp-card-body class="collapse show " id="hblDiv">
 
-                            <abp-row>
-                                <abp-column size-md="_2">
+        <abp-row>
+            <abp-column size-md="_2">
                                     @L["Title:PoNo"]
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    <span style="font-size:0.8em;">@L["Title:PoNo.Description"]</span>
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-column>
-                                    <div id="PoNoTag" tagname="PoNoTag"></div>
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
-
-                                <abp-column size-md="_12">
-                                    <div>
-                                    </div>
-                                    <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
-                                        <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
-                                            <th width="5%"></th>
-                                            <th width="20%">@L["Display:PackageNo"]</th>
-                                            <th width="15%">@L["Display:PackageType"]</th>
-                                            <th width="15%">@L["Display:Weight"]</th>
-                                            <th width="15%">@L["Display:Volume"]</th>
-                                            <th width="30%">@L["Title:PoNo"]</th>
-                                        </tr>
-                                        <tbody id="htrtbody">
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td><input type="radio" name="SurplusType" /></td>
-                                                <td>集裝箱總數</td>
-                                                <td><input type="text" class="form-control" value="" readonly /></td>
-                                                <td><input type="text" class="form-control" value="" readonly /></td>
-                                                <td><input type="text" class="form-control" value="" readonly /></td>
-                                                <td></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="align-items:center"><input type="radio" name="SurplusType" /></td>
-                                                <td>手動輸入總數</td>
-                                                <td><input type="text" class="form-control" value="" /></td>
-                                                <td><input type="text" class="form-control" value="" /></td>
-                                                <td><input type="text" class="form-control" value="" /></td>
-                                                <td></td>
-
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-column size-md="_12">
-                                    <div>
-                                        商品 / 艙單商品
-                                        <abp-button class="btn btn-success me-md-2" type="button" id="addCommodityBtn">+</abp-button>
-                                        <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteCommodityBtn">delete</abp-button>
-                                    </div>
-                                    <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
-                                        <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
-                                            <th width="5%"></th>
-                                            <th width="15%">商品描述</th>
-                                            <th width="15%">包裝種類</th>
-                                            <th width="10%">HTS代碼</th>
-                                            <th width="5%">件數</th>
-                                            <th width="5%">淨重</th>
-                                            <th width="5%">毛重</th>
-                                            <th width="10%">單價</th>
-                                            <th width="5%">金額</th>
-                                            <th width="10%">商品詳情</th>
-                                            <th width="15%">集裝箱</th>
-                                        </tr>
-                                        <tbody id="ctrtbody">
-                                        </tbody>
-
-                                    </table>
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-column size-md="_6">
-                                    <label for="t1">@L["Display:Mark"]</label>
-                                    <textarea id="t1" name="OceanImportMbl.Mark" class="form-control">@Model.OceanImportMbl.Mark</textarea>
-                                </abp-column>
-                                <abp-column size-md="_6">
-                                    <label for="t2">@L["Display:DeionOfGoods"]</label>
-                                    <textarea id="t2" name="OceanImportMbl.Description" class="form-control">@Model.OceanImportMbl.Description</textarea>
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-collum>
-                                    <label for="t3">@L["Display:Ot"]</label>
-                                    <textarea id="t3" name="OceanImportMbl.DomesticInstructions" class="form-control">@Model.OceanImportMbl.DomesticInstructions</textarea>
-                                </abp-collum>
-                            </abp-row>
-                        </abp-card-body>
-                    </abp-card>
-                    <abp-row>
-                        <abp-column>
-                            <input type="hidden" name="OceanImportHbl.PoNo" id="mPoNo" value="@Model.OceanImportHbl.PoNo" />
-                            <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
-                        </abp-column>
-                    </abp-row>
-                </div>
             </abp-column>
             <abp-column size-md="_3">
-                <div class="card-wrap">
+                <span style="font-size:0.8em;">@L["Title:PoNo.Description"]</span>
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column>
+                <div id="PoNoTag" tagname="PoNoTag"></div>
+            </abp-column>
+        </abp-row>
+        <abp-row>
 
-                    <button class="btn btn-block btn-add" type="button" id="addHBtn">
-                        <i class="fa-solid fa-plus"></i>@L["Btn:AddHbl"].Value
-                    </button>
+            <abp-column size-md="_12">
+                <div>
+                </div>
+                <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                    <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                        <th width="5%"></th>
+                        <th width="20%">@L["Display:PackageNo"]</th>
+                        <th width="15%">@L["Display:PackageType"]</th>
+                        <th width="15%">@L["Display:Weight"]</th>
+                        <th width="15%">@L["Display:Volume"]</th>
+                        <th width="30%">@L["Title:PoNo"]</th>
+                    </tr>
+                    <tbody id="htrtbody">
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><input type="radio" name="SurplusType" /></td>
+                            <td>集裝箱總數</td>
+                            <td><input type="text" class="form-control" value="" readonly /></td>
+                            <td><input type="text" class="form-control" value="" readonly /></td>
+                            <td><input type="text" class="form-control" value="" readonly /></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="align-items:center"><input type="radio" name="SurplusType" /></td>
+                            <td>手動輸入總數</td>
+                            <td><input type="text" class="form-control" value="" /></td>
+                            <td><input type="text" class="form-control" value="" /></td>
+                            <td><input type="text" class="form-control" value="" /></td>
+                            <td></td>
 
-                    <div class="function-wrap">
+                        </tr>
+                    </tfoot>
+                </table>
 
-                        <div class="form">
-                            <div class="form-group">
-                                <label for="cardOrderSet">卡片排序</label>
-                                <select class="form-control  " id="cardOrderSet">
-                                    <option selected>請選擇</option>
-                                    <option value="建立日期">建立日期</option>
-                                    <option value="HB/L 號碼">HB/L 號碼</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="sr-only" for="cardOrder">Preference</label>
-                                <select class="form-control " id="cardOrder">
-                                    <option selected>請選擇</option>
-                                    <option value="遞增">遞增</option>
-                                    <option value="遞減">遞減</option>
-                                </select>
-                            </div>
-                            <fieldset class="form-group">
-                                <legend class="col-form-label">卡片顯示</legend>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox"
-                                           id="inlineCheckbox1" value="option1">
-                                    <label class="form-check-label"
-                                           for="inlineCheckbox1">託運人與收貨人</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox"
-                                           id="inlineCheckbox2" value="option2">
-                                    <label class="form-check-label"
-                                           for="inlineCheckbox2">名稱標籤</label>
-                                </div>
-                            </fieldset>
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column size-md="_12">
+                <div>
+                    商品 / 艙單商品
+                    <abp-button class="btn btn-success me-md-2" type="button" id="addCommodityBtn">+</abp-button>
+                    <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteCommodityBtn">delete</abp-button>
+                </div>
+                <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                    <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                        <th width="5%"></th>
+                        <th width="15%">商品描述</th>
+                        <th width="15%">包裝種類</th>
+                        <th width="10%">HTS代碼</th>
+                        <th width="5%">件數</th>
+                        <th width="5%">淨重</th>
+                        <th width="5%">毛重</th>
+                        <th width="10%">單價</th>
+                        <th width="5%">金額</th>
+                        <th width="10%">商品詳情</th>
+                        <th width="15%">集裝箱</th>
+                    </tr>
+                    <tbody id="ctrtbody">
+                    </tbody>
 
-                            <button type="submit" class="btn btn-dark btn-block btn-update">
-                                <i class="fa-solid fa-arrows-rotate"></i>更新
-                            </button>
-                        </div>
+                </table>
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column size-md="_6">
+                <label for="t1">@L["Display:Mark"]</label>
+                <textarea id="t1" name="OceanImportMbl.Mark" class="form-control">@Model.OceanImportMbl.Mark</textarea>
+            </abp-column>
+            <abp-column size-md="_6">
+                <label for="t2">@L["Display:DeionOfGoods"]</label>
+                <textarea id="t2" name="OceanImportMbl.Description" class="form-control">@Model.OceanImportMbl.Description</textarea>
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-collum>
+                <label for="t3">@L["Display:Ot"]</label>
+                <textarea id="t3" name="OceanImportMbl.DomesticInstructions" class="form-control">@Model.OceanImportMbl.DomesticInstructions</textarea>
+            </abp-collum>
+        </abp-row>
+    </abp-card-body>
+</abp-card>
+<abp-row>
+    <abp-column>
+        <input type="hidden" name="OceanImportHbl.PoNo" id="mPoNo" value="@Model.OceanImportHbl.PoNo" />
+        <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
+    </abp-column>
+</abp-row>
+                </div>
+            </abp-column>
+<abp-column size-md="_3">
+    <div class="card-wrap">
 
+        <button class="btn btn-block btn-add" type="button" id="addHBtn">
+            <i class="fa-solid fa-plus"></i>@L["Btn:AddHbl"].Value
+        </button>
+
+        <div class="function-wrap">
+
+            <div class="form">
+                <div class="form-group">
+                    <label for="cardOrderSet">卡片排序</label>
+                    <select class="form-control  " id="cardOrderSet">
+                        <option selected>請選擇</option>
+                        <option value="建立日期">建立日期</option>
+                        <option value="HB/L 號碼">HB/L 號碼</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="sr-only" for="cardOrder">Preference</label>
+                    <select class="form-control " id="cardOrder">
+                        <option selected>請選擇</option>
+                        <option value="遞增">遞增</option>
+                        <option value="遞減">遞減</option>
+                    </select>
+                </div>
+                <fieldset class="form-group">
+                    <legend class="col-form-label">卡片顯示</legend>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox"
+                               id="inlineCheckbox1" value="option1">
+                        <label class="form-check-label"
+                               for="inlineCheckbox1">託運人與收貨人</label>
                     </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox"
+                               id="inlineCheckbox2" value="option2">
+                        <label class="form-check-label"
+                               for="inlineCheckbox2">名稱標籤</label>
+                    </div>
+                </fieldset>
 
-                    <!--  <div class="anchor-wrap">-->
+                <button type="submit" class="btn btn-dark btn-block btn-update">
+                    <i class="fa-solid fa-arrows-rotate"></i>更新
+                </button>
+            </div>
 
-                    <div id="hblCardDiv" class="cardAnchor">
+        </div>
+
+        <!--  <div class="anchor-wrap">-->
+
+        <div id="hblCardDiv" class="cardAnchor">
                         @if (Model.OceanImportHbls != null)
                         {
                             foreach (var hbl in Model.OceanImportHbls)
@@ -597,17 +597,17 @@
                                 {
                                     focusString = " focus ";
                                 }
-                                <div class="borad-anchor @focusString @hbl.CardColorValue">
-                                    <div class="borad-cont" onclick="changeHid('@Model.Id','@hbl.Id')">
-                                        <a class="link" href="#cardA"></a>
-                                        <span class="label label-HBL">HB/L</span>
-                                        <span class="MBLnumber">@hbl.HblNo</span>
+                    <div class="borad-anchor @focusString @hbl.CardColorValue">
+                        <div class="borad-cont" onclick="changeHid('@Model.Id','@hbl.Id')">
+                            <a class="link" href="#cardA"></a>
+                            <span class="label label-HBL">HB/L</span>
+                            <span class="MBLnumber">@hbl.HblNo</span>
                                         @hbl.SoNo
-                                        <a class="outlink" href="#" target="_blank">
-                                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                        </a>
-                                    </div>
-                                </div>
+                            <a class="outlink" href="#" target="_blank">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </div>
                             }
 
                         }
@@ -615,11 +615,11 @@
 
 
 
-                    </div>
-                </div>
-                <div>
-                </div>
-            </abp-column>
+        </div>
+    </div>
+    <div>
+    </div>
+</abp-column>
         </abp-row>
     </form>
 
@@ -634,7 +634,7 @@
             </div>
             <div class="modal-body">
                 <input name="CreateUpdateTradePartnerMemoDto.tradePartnerId" type="hidden" value="32863847-4984-cc8a-3f35-3a0ae2817f56">
-                
+
                 <label class="form-label">@L["Display:Vendor"]</label>
                 <select class="form-select"></select>
                 <label class="form-label">@L["Display:BillingCode"]</label>
@@ -664,7 +664,7 @@
             </div>
             <div class="modal-body">
                 <input name="CreateUpdateTradePartnerMemoDto.tradePartnerId" type="hidden" value="32863847-4984-cc8a-3f35-3a0ae2817f56">
-                
+
                 <label class="form-label">@L["Display:Vendor"]</label>
                 <select class="form-select"></select>
                 <label class="form-label">@L["Display:BillingCode"]</label>

@@ -206,7 +206,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
 
             return retVal;
         }
-        public async Task<OceanImportHblDto> GetHawbCardById(Guid Id)
+        public async Task<OceanImportHblDto> GetHblCardById(Guid Id)
         {
             if (await _repository.AnyAsync(f => f.Id == Id))
             {

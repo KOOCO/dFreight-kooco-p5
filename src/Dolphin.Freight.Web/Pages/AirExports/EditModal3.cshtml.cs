@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.ImportExport.AirExports;
+using static Dolphin.Freight.Permissions.OceanImportPermissions;
 
 namespace Dolphin.Freight.Web.Pages.AirExports
 {
@@ -25,7 +26,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
 
         [BindProperty]
         public AirExportMawbDto AirExportMawbDto { get; set; }
-        
+        public IList<AirExportHawbDto> AirExportHawbDtos { get; set; }
+
         [BindProperty(SupportsGet = true)]
         public IList<InvoiceDto> m0invoiceDtos { get; set; }
         
@@ -45,12 +47,17 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         private readonly IAirExportMawbAppService _airExportMawbAppService;
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
+        private readonly IAirExportHawbAppService _airExportHawbAppService;
 
-        public EditModal3(IAirExportMawbAppService airExportMawbAppService, IInvoiceAppService invoiceAppService, ISysCodeAppService sysCodeAppService)
+        public EditModal3(IAirExportMawbAppService airExportMawbAppService, 
+                          IInvoiceAppService invoiceAppService, 
+                          ISysCodeAppService sysCodeAppService,
+                          IAirExportHawbAppService airExportHawbAppService)
         {
             _airExportMawbAppService = airExportMawbAppService;
             _invoiceAppService = invoiceAppService;
             _sysCodeAppService = sysCodeAppService;
+            _airExportHawbAppService = airExportHawbAppService;
         }
 
         public async Task OnGetAsync()
@@ -80,7 +87,12 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                     }
                 }
             }
-            AirExportHawbDto = new();
+
+            AirExportHawbDto = await _airExportHawbAppService.GetHawbCardById(Hid);
+
+            AirExportHawbDtos = await _airExportHawbAppService.GetHblCardsById(Id);
+
+            IsShowHbl = (Hid != Guid.Empty);
         }
     }
 }

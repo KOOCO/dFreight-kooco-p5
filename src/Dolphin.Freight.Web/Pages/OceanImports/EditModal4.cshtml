@@ -149,7 +149,7 @@
             <li class="menu-item ">
                 <a class="nav-link  " href="EditModal3?Id=@Model.Id">@L["Tab:Accounting"]</a>
             </li>
-            <li class="menu-item ">
+            <li class="menu-item active">
                 <a class="nav-link  " href="javascript:void(0)">@L["Tab:Doc"]</a>
             </li>
         </ol>
@@ -161,69 +161,40 @@
             <div class="board-wrap">
                 <abp-card border="Dark">
                     <abp-card-header style="background:#555555;color:#FFFFFF;">
-                        <abp-row>
-                            <abp-column size-md="_9">
-                                <abp-card-title>
-                                    MB/L
-                                    <span id="title0">@Model.OceanImportMbl.MblNo </span>
-                                    @if (@Model.OceanImportMbl.PolName != null)
-                                    {
-                                        <span id="title1" style="font-size:0.8em;">@Model.OceanImportMbl.PolName</span>
-                                    }
-                                    @if (@Model.OceanImportMbl.PolEtd != null)
-                                    {
-                                        <span id="title2" style="font-size:0.8em;">@Html.DisplayFor( Model => @Model.OceanImportMbl.PolEtd ) </span>
-                                    }
-                                    @if (@Model.OceanImportMbl.PodName != null)
-                                    {
-                                        <span id="title3" style="font-size:0.8em;">@Model.OceanImportMbl.PodName</span>
-                                    }
+                        <abp-card-title>
+                            MB/L
+                            <span id="title0">@Model.OceanImportMbl.MblNo </span>
+                            @if (@Model.OceanImportMbl.PolName != null)
+                            {
+                                <span id="title1" style="font-size:0.8em;">@Model.OceanImportMbl.PolName</span>
+                            }
+                            @if (@Model.OceanImportMbl.PolEtd != null)
+                            {
+                                <span id="title2" style="font-size:0.8em;">@Html.DisplayFor( Model => @Model.OceanImportMbl.PolEtd ) </span>
+                            }
+                            @if (@Model.OceanImportMbl.PodName != null)
+                            {
+                                <span id="title3" style="font-size:0.8em;">@Model.OceanImportMbl.PodName</span>
+                            }
 
-                                    @if (Model.OceanImportMbl.PodEta != null)
-                                    {
-                                        <span id="title4" style="font-size:0.8em;">@Html.DisplayFor( Model =>  Model.OceanImportMbl.PodEta ) </span>
-                                    }
-                                    @if (@Model.OceanImportMbl.VesselName != null && @Model.OceanImportMbl.VesselName != "")
-                                    {
-                                        <span id="title5" style="font-size:0.8em;"><i class="fa fa-anchor"></i> @Model.OceanImportMbl.VesselName </span>
+                            @if (Model.OceanImportMbl.PodEta != null)
+                            {
+                                <span id="title4" style="font-size:0.8em;">@Html.DisplayFor( Model =>  Model.OceanImportMbl.PodEta ) </span>
+                            }
+                            @if (@Model.OceanImportMbl.VesselName != null && @Model.OceanImportMbl.VesselName != "")
+                            {
+                                <span id="title5" style="font-size:0.8em;"><i class="fa fa-anchor"></i> @Model.OceanImportMbl.VesselName </span>
 
-                                    }
-                                    @if (Model.OceanImportMbl.MblCarrierId != null)
-                                    {
-                                        <span class="mbl_note _max-w12per">
-                                            <i class="fa fa-ship"></i> @Model.OceanImportMbl.MblCarrierName
-                                        </span>
-                                    }
-                                </abp-card-title>
-
-                            </abp-column>
-                            <abp-column size-md="_3" class="text-end">
-                                <!--
-                                <div class="btn-group dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle"  type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                        請選擇
-                                    </button>
-                                    <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                        <a class='dropdown-item' href='#'>
-                                               <li class="fa fa-lock"></li> 鎖定
-                                            </a>
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-trash"></i> 刪除
-                                </a>
-                                        <li class="dropdown-divider"></li>
-                                <a class='dropdown-item' href='#'>
-                                <li class="fa fa-lock"></li> aaa
-                                </a>
-
-                                    </div>
-                                </div>
-                                -->
-                                <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="false" aria-controls="mblDiv">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                            </abp-column>
-
-                        </abp-row>
+                            }
+                            @if (Model.OceanImportMbl.MblCarrierId != null)
+                            {
+                                <span class="mbl_note _max-w12per">
+                                    <i class="fa fa-ship"></i> @Model.OceanImportMbl.MblCarrierName
+                                </span>
+                            }
+                        </abp-card-title>
+                        <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
+                        </button>
                     </abp-card-header>
                     <abp-card-body class="collapse show" id="mblDiv">
 
@@ -248,40 +219,11 @@
                 <br />
                 <abp-card border="Dark" id="hblCard">
                     <abp-card-header id="hblCardHeader" class="@Model.OceanImportHbl.CardColorValue">
-                        <abp-row>
-                            <abp-column size-md="_9">
-                                <abp-card-title>
-                                    HB/L @Model.OceanImportHbl.HblNo
-                                </abp-card-title>
-
-                            </abp-column>
-                            <abp-column size-md="_3" class="text-end">
-                                <!--
-                                <div class="btn-group dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle"  type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                        請選擇
-                                    </button>
-                                    <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                        <a class='dropdown-item' href='#'>
-                                               <li class="fa fa-lock"></li> 鎖定
-                                            </a>
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-trash"></i> 刪除
-                                </a>
-                                        <li class="dropdown-divider"></li>
-                                <a class='dropdown-item' href='#'>
-                                <li class="fa fa-lock"></li> aaa
-                                </a>
-
-                                    </div>
-                                </div>
-                                -->
-                                <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="false" aria-controls="hblDiv">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                            </abp-column>
-
-                        </abp-row>
+                        <abp-card-title>
+                            HB/L @Model.OceanImportHbl.HblNo
+                        </abp-card-title>
+                        <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="true" aria-controls="hblDiv">
+                        </button>
                     </abp-card-header>
                     <abp-card-body class="collapse show" id="hblDiv">
                         <abp-row>

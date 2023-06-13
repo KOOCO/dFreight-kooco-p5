@@ -108,7 +108,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 3, ParentId = Id };
             var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
-            model.m0invoiceDtos =  new List<InvoiceDto>();
+            model.m0invoiceDtos = new List<InvoiceDto>();
             model.m1invoiceDtos = new List<InvoiceDto>();
             model.m2invoiceDtos = new List<InvoiceDto>();
             if (invoiceDtos != null && invoiceDtos.Count > 0)
@@ -130,7 +130,7 @@ namespace Dolphin.Freight.Web.Controllers
                 }
             }
             qidto.ParentId = Id;
-            
+
 
             return PartialView("~/Pages/AirImports/_AirImportAccountHawb.cshtml", model);
 
@@ -180,16 +180,18 @@ namespace Dolphin.Freight.Web.Controllers
             model.WtValOtherList = WtValOtherList;
 
             model.AirExportHawbDto = await _airExportHawbAppService.GetHawbCardById(Id);
-            
+
 
             return PartialView("~/Pages/AirExports/_AirExportBasicHawb.cshtml", model);
         }
 
         #endregion
 
+        #region Ocean Imports
 
-        [Route("OceanHBL")]
-        public async Task<PartialViewResult> GetOceanExportHBL(Guid Id)
+
+        [Route("OceanImportBasicHbl")]
+        public async Task<PartialViewResult> GetOceanImportBasicHbl(Guid Id)
         {
             HawbHblViewModel model = new();
 
@@ -198,14 +200,34 @@ namespace Dolphin.Freight.Web.Controllers
             model.TradePartnerLookupList = TradePartnerLookupList;
             model.PackageUnitLookupList = PackageUnitLookupList;
 
-            model.OceanExportHblDto = await _oceanExportHblAppService.GetHblCardById(Id);
+            model.OceanImportHbl = await _oceanImportHblAppService.GetHblCardById(Id);
 
-            return PartialView("~/Pages/OceanExports/_OceanExportAccountingHawb.cshtml", model);
+            return PartialView("~/Pages/OceanImports/_OceanImportBasicHbl.cshtml", model);
         }
 
-        
+        #endregion
 
-        
+        #region Ocean Exports
+
+        [HttpGet]
+        [Route("OceanExportBasicHawb")]
+        public async Task<PartialViewResult> GetOceanExportHawbHBL(Guid Id)
+        {
+            HawbHblViewModel model = new();
+
+            model.SubstationLookupList = SubstationLookupList;
+            model.AirportLookupList = AirportLookupList;
+            model.TradePartnerLookupList = TradePartnerLookupList;
+            model.PackageUnitLookupList = PackageUnitLookupList;
+
+            model.OceanExportHbl = await _oceanExportHblAppService.GetHblCardById(Id);
+
+            return PartialView("~/Pages/OceanExports/_OceanExportBasicHawb.cshtml", model);
+        }
+
+        #endregion
+
+
 
         [HttpGet]
         [Route("AirDocCenterHBL")]
@@ -226,22 +248,9 @@ namespace Dolphin.Freight.Web.Controllers
 
             return PartialView("~/Pages/AirExports/_AirExportHawbHBL.cshtml", model);
         }
-        
 
-        [HttpGet]
-        [Route("OceanExportHawb")]
-        public async Task<PartialViewResult> GetOceanExportHawbHBL(Guid Id)
-        {
-            HawbHblViewModel model = new();
 
-            model.SubstationLookupList = SubstationLookupList;
-            model.AirportLookupList = AirportLookupList;
-            model.TradePartnerLookupList = TradePartnerLookupList;
-            model.PackageUnitLookupList = PackageUnitLookupList;
 
-            model.OceanExportHbl = await _oceanExportHblAppService.GetHblCardById(Id);
-            return PartialView("~/Pages/OceanExports/_OceanExportHawb.cshtml", model);
-        }
 
         [HttpGet]
         [Route("OceanImportHawb")]
@@ -254,35 +263,10 @@ namespace Dolphin.Freight.Web.Controllers
             model.TradePartnerLookupList = TradePartnerLookupList;
             model.PackageUnitLookupList = PackageUnitLookupList;
 
-            model.OceanImportHbl = await _oceanImportHblAppService.GetHawbCardById(Id);
+            model.OceanImportHbl = await _oceanImportHblAppService.GetHblCardById(Id);
 
             return PartialView("~/Pages/OceanImports/_OceanImportHawb.cshtml", model);
 
-        }
-
-        [HttpGet]
-        [Route("AirExportDocCenterHawb")]
-        public async Task<PartialViewResult> GetAirExportDocCenterHawb(Guid Id)
-        {
-            HawbHblViewModel model = new();
-
-            model.SubstationLookupList = SubstationLookupList;
-            model.AirportLookupList = AirportLookupList;
-            model.TradePartnerLookupList = TradePartnerLookupList;
-            model.PackageUnitLookupList = PackageUnitLookupList;
-
-
-            model.AirExportHawbDto = await _airExportHawbAppService.GetDocCenterCardById(Id);
-
-            QueryAttachmentDto dto = new()
-            {
-                QueryId = Id,
-                QueryType = fileType,
-            };
-
-            model.FileList = await _attachmentAppService.QueryListAsync(dto);
-
-            return PartialView("~/Pages/AirExports/DocCenter/_AirEportDocCenterHawb.cshtml", model);
         }
 
         #region FillTradePartnerAsync()
