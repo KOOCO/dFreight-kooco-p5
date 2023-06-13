@@ -15,6 +15,9 @@
         var CurrencyItems = [];
         var InvoiceBills = [];
         $(document).ready(function () {
+
+            initializeDropdownSearch('InvoiceDto_IncotermsId');
+
             dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'PPOrCC' }).done(function (result) {
                 if (result != null && result.length > 0) {
                     PPOrCCItems = result;
@@ -678,8 +681,8 @@
                                 <abp-input asp-for="InvoiceDto.ProfitShare" />
                             </abp-column>
                             <abp-column size-md="_3">
-                                @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "IncotermsId", FieldName = "IncotermsId",DefaultValue="" , IsShowLabel = true , IsRequired = false })*@
-                                <abp-select asp-for="InvoiceDto.IncotermsId" asp-items="@Model.SysCodeLookupList" />
+                                @await Component.InvokeAsync(typeof(DropdownComponent),new ComponentData { Name = "InvoiceDto.IncotermsId", AspItems = @Model.SysCodeLookupList, IsShowLabel = true, FieldName = "IncotermsId" })
+                                @*<abp-select asp-for="InvoiceDto.IncotermsId" asp-items="@Model.SysCodeLookupList" />*@
                             </abp-column>
                         </abp-row>
                         <abp-row>
