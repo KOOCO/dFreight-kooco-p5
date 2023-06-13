@@ -219,7 +219,7 @@
                     })
 
                     abp.ajax($.extend(true, {
-                        url: abp.appPath + 'api/ImportExport/OceanExportHawb?Id=' + hawbId,
+                        url: abp.appPath + 'api/ImportExport/OceanExportBasicHbl?Id=' + hawbId,
                         type: 'GET',
                         dataType: "html",
                     }, ajaxParams)).done(function (partial) {
@@ -240,15 +240,6 @@
                             $('#hawbCard_' + i).removeClass('show');
                         }
                     })
-
-                    //let isExpanded = $('.btnHawbCardCollapse').filter(function(f, e){ return $(e).attr('aria-expanded') == 'true' }).length;
-
-                    //if (isExpanded) {
-                    //    $('.btnHawbCardCollapse').click();
-                    //}
-                    //else{
-                    //    $('#btnHawbCardCollapse_'+hawbNo).click();
-                    //}
                 }
             }
         }

@@ -210,8 +210,8 @@ namespace Dolphin.Freight.Web.Controllers
         #region Ocean Exports
 
         [HttpGet]
-        [Route("OceanExportBasicHawb")]
-        public async Task<PartialViewResult> GetOceanExportHawbHBL(Guid Id)
+        [Route("OceanExportBasicHbl")]
+        public async Task<PartialViewResult> GetOceanExportBasicHbl(Guid Id)
         {
             HawbHblViewModel model = new();
 
@@ -222,7 +222,23 @@ namespace Dolphin.Freight.Web.Controllers
 
             model.OceanExportHbl = await _oceanExportHblAppService.GetHblCardById(Id);
 
-            return PartialView("~/Pages/OceanExports/_OceanExportBasicHawb.cshtml", model);
+            return PartialView("~/Pages/OceanExports/_OceanExportBasicHbl.cshtml", model);
+        }
+
+        [HttpGet]
+        [Route("OceanExportAccountingHbl")]
+        public async Task<PartialViewResult> GetOceanExportAccountingHbl(Guid Id)
+        {
+            HawbHblViewModel model = new();
+
+            model.SubstationLookupList = SubstationLookupList;
+            model.AirportLookupList = AirportLookupList;
+            model.TradePartnerLookupList = TradePartnerLookupList;
+            model.PackageUnitLookupList = PackageUnitLookupList;
+
+            model.OceanExportHbl = await _oceanExportHblAppService.GetHblCardById(Id);
+
+            return PartialView("~/Pages/OceanExports/_OceanExportAccountingHbl.cshtml", model);
         }
 
         #endregion

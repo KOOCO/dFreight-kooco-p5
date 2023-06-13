@@ -10,90 +10,89 @@
 
 <abp-card class="card board-item" id="hblCard">
     <abp-card-header id="hblCardHeader" style="background:#555555;color:#FFFFFF;">
-                <abp-card-title>
+        <abp-card-title>
             HB/L  @Model.OceanExportHblDto.HblNo
-                </abp-card-title>
+        </abp-card-title>
 
-                  <div class="btn-group dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                                @L["Display:Function"]
-                            </button>
-                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop" style="max-height:300px !important;overflow:auto">
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                                    </a>
-                                    <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-files-o"></i> @L[" File Package"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" Print car documents"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" Print HB/L"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" Print OB/L"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" Bill of lading terms"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" commercial invoice"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" Certificate of Origin"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" Dock Receipt"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" dispatch list"]
-                                    </a>
-                                     <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" S/O Confirmation"]
-                                    </a>
-                                     <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" bank draft"]
-                                    </a>
-                                     <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" packaging label"]
-                                    </a>
-       
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Pre-Alert"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" USDA Heat Treatment"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" Forwarder cargo receipt"]
-                                    </a>                                  
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" Dangerous Goods Declaration"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" Preliminary Claim"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" EXAM HOLD NOTICE"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" Shipping Advice"]
-                                    </a>
-                                    <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L[" Profit Report"]
-                                    </a>
-                                    <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
-                                        <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
-                                    </a>
-                            </div>
-                    </div>
+        <div class="btn-group dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                @L["Display:Function"]
+            </button>
+            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop" style="max-height:300px !important;overflow:auto">
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                </a>
+                <i class="dropdown-divider"></i>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-files-o"></i> @L[" File Package"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" Print car documents"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" Print HB/L"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" Print OB/L"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" Bill of lading terms"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" commercial invoice"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" Certificate of Origin"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" Dock Receipt"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" dispatch list"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" S/O Confirmation"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" bank draft"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" packaging label"]
+                </a>
+
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Pre-Alert"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" USDA Heat Treatment"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" Forwarder cargo receipt"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" Dangerous Goods Declaration"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" Preliminary Claim"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" EXAM HOLD NOTICE"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" Shipping Advice"]
+                </a>
+                <i class="dropdown-divider"></i>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L[" Profit Report"]
+                </a>
+                <i class="dropdown-divider"></i>
+                <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
+                    <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
+                </a>
+            </div>
+        </div>
         <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="true" aria-controls="hblDiv">
-                   
-                </button>
+        </button>
 
     </abp-card-header>
     <abp-card-body class="collapse show " id="hblDiv">
