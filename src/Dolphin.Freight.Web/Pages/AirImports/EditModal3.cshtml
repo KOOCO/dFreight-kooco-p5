@@ -8,7 +8,7 @@
 @section scripts
     {
     <script src="https://cdn.jsdelivr.net/npm/jquery-templates@1.0.0/jquery.tmpl.min.js"></script>
-    <abp-script src="/Pages/AirImports/EditModel3.js" />
+    <abp-script src="/Pages/AirImports/EditMawb.js" />
     <script type="text/javascript">
         var cardIndex = 0;
 
@@ -76,13 +76,13 @@
                     })
 
                     abp.ajax($.extend(true, {
-                        url: abp.appPath + 'api/ImportExport/AirHBL?Id=' + hawbId,
+                        url: abp.appPath + 'api/ImportExport/AirImportAccountHawb?Id=' + hawbId,
                         type: 'GET',
                         dataType: "html",
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
-                        //$('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
+                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
                     })
 
@@ -159,10 +159,10 @@
             $('#saveBtn').click();
         }
 
-        function gotoInvoice(MawbId, InvoiceType) {
+        function gotoInvoice(MawbId, HawbId, InvoiceType) {
             var url = new URL(window.location.href);
             MawbId = url.searchParams.get('Id');
-            location.href = '/Accounting/Invoice?MethodType=2&MawbId=' + MawbId + "&InvoiceType=" + InvoiceType;
+            location.href = '/Accounting/Invoice?MethodType=2&MawbId=' + MawbId + '&HawbId=' + HawbId + "&InvoiceType=" + InvoiceType;
         }
     </script>
 }
@@ -190,230 +190,226 @@
 </div>
 <div class="page-content-area">
     <div class="board-wrap">
-    <form submit-button="true" data-ajaxForm="true" id="editForm">
-    <abp-row>
-            <abp-column size-md="_9" id="parentCard">
+        <form submit-button="true" data-ajaxForm="true" id="editForm">
+            <abp-row>
+                <abp-column size-md="_9" id="parentCard">
                     <abp-card class="card board-item" id="mawbCard">
-                    <abp-card-header style="background:#555555;color:#FFFFFF;">
+                        <abp-card-header style="background:#555555;color:#FFFFFF;">
                             <abp-card-title>
                                 MAWB
                                 <span id="title0">@Model.AirImportMawbDto.MawbNo </span>
                             </abp-card-title>
 
-                                    <div class="btn-group dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                            @L["Display:Function"]
-                                        </button>
-                                        <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                            <a class='dropdown-item' href='#'>
-                                                <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                                            </a>
-                                    <li class="dropdown-divider"></li>
+                            <div class="btn-group dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                                    @L["Display:Function"]
+                                </button>
+                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                    </a>
+                                    <p class="dropdown-divider"></p>
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest"]
                                     </a>
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
                                     </a>
-                                    <li class="dropdown-divider"></li>
+                                    <p class="dropdown-divider"></p>
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
                                     </a>
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                                     </a>
-                                    <li class="dropdown-divider"></li>
+                                    <p class="dropdown-divider"></p>
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Electronic Customs Declaration Status"]
                                     </a>
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
                                     </a>
-    </div>
-</div>
-                    
-                        <button type="button" class="btn btn-collapse collapsed" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="false" aria-controls="mblDiv">
-                        </button>
-                    </abp-card-header>
-                    <abp-card-body class="collapse show" id="mawbDiv">
-
-                        <abp-row>
-
-                            <abp-column size-md="_12">
-                                <div>
-                                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id',0)">@L["Btn:AddAR"]</abp-button>
-                                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id',1)">@L["Btn:AddDC"]</abp-button>
-                                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id',2)">@L["Btn:AddAP"]</abp-button>
                                 </div>
-                                <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:0.5em;">
-                                    <tr border="1">
-                                        <th width="15%"></th>
-                                        <th width=" 10%">@L["Display:InvoiceNo"]</th>
-                                        <th width=" 15%">@L["Display:To"]</th>
-                                        <th width="10%">@L["RevenueName"]</th>
-                                        <th width="10%">@L["CostId"]</th>
-                                        <th width="10%">@L["Display:Balance"]</th>
-                                        <th width="5%">@L["Display:Status"]</th>
-                                        <th width="10%">@L["PostDate"]</th>
-                                        <th width="10%">@L["Display:InvoiceDate"]</th>
-                                        <th width="5%">@L["Display:Function"]</th>
-                                    </tr>
-                                    @if (Model.m0invoiceDtos != null && Model.m0invoiceDtos.Count > 0)
-                                    {
-                                        var i = 0;
-                                        foreach (var dto in Model.m0invoiceDtos)
+                            </div>
+
+                            <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#mawbDiv" aria-expanded="true" aria-controls="mawbDiv">
+                            </button>
+                        </abp-card-header>
+                        <abp-card-body class="collapse show" id="mawbDiv">
+                            <abp-row>
+                                <abp-column size-md="_12">
+                                    <div>
+                                        <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id',0)">@L["Btn:AddAR"]</abp-button>
+                                        <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id',1)">@L["Btn:AddDC"]</abp-button>
+                                        <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id',2)">@L["Btn:AddAP"]</abp-button>
+                                    </div>
+                                    <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:0.5em;">
+                                        <tr border="1">
+                                            <th width="15%"></th>
+                                            <th width=" 10%">@L["Display:InvoiceNo"]</th>
+                                            <th width=" 15%">@L["Display:To"]</th>
+                                            <th width="10%">@L["RevenueName"]</th>
+                                            <th width="10%">@L["CostId"]</th>
+                                            <th width="10%">@L["Display:Balance"]</th>
+                                            <th width="5%">@L["Display:Status"]</th>
+                                            <th width="10%">@L["PostDate"]</th>
+                                            <th width="10%">@L["Display:InvoiceDate"]</th>
+                                            <th width="5%">@L["Display:Function"]</th>
+                                        </tr>
+                                        @if (Model.m0invoiceDtos != null && Model.m0invoiceDtos.Count > 0)
                                         {
-                                            if (i == 0)
+                                            var i = 0;
+                                            foreach (var dto in Model.m0invoiceDtos)
                                             {
-                                                i++;
-                                                <tr>
-                                                    <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m0invoiceDtos.Count">@L["Menu:AccountingAR"]</td>
-                                                    <td><a href="/Accounting/Invoice?MethodType=2&Mid=@Model.Id&Hid=&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
-                                                    <td>@dto.InvoiceCompanyName</td>
-                                                    <td>@dto.OutstandingAmount</td>
-                                                    <td>0.00</td>
-                                                    <td>@dto.OutstandingAmount</td>
-                                                    <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
-                                                    <td></td>
-                                                </tr>
-                                            }
-                                            else
-                                            {
-                                                <tr>
-                                                    <td><a href="/Accounting/Invoice?MethodType=2&Mid=@Model.Id&Hid=&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
-                                                    <td>@dto.InvoiceCompanyName</td>
-                                                    <td>@dto.OutstandingAmount</td>
-                                                    <td>0.00</td>
-                                                    <td>@dto.OutstandingAmount</td>
-                                                    <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
-                                                    <td></td>
-                                                </tr>
-                                            }
+                                                if (i == 0)
+                                                {
+                                                    i++;
+                                                    <tr>
+                                                        <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m0invoiceDtos.Count">@L["Menu:AccountingAR"]</td>
+                                                        <td><a href="/Accounting/Invoice?MethodType=2&Mid=@Model.Id&Hid=&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                                        <td>@dto.InvoiceCompanyName</td>
+                                                        <td>@dto.OutstandingAmount</td>
+                                                        <td>0.00</td>
+                                                        <td>@dto.OutstandingAmount</td>
+                                                        <td></td>
+                                                        <td>@dto.PostDate</td>
+                                                        <td>@dto.InvoiceDate</td>
+                                                        <td></td>
+                                                    </tr>
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td><a href="/Accounting/Invoice?MethodType=2&Mid=@Model.Id&Hid=&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                                        <td>@dto.InvoiceCompanyName</td>
+                                                        <td>@dto.OutstandingAmount</td>
+                                                        <td>0.00</td>
+                                                        <td>@dto.OutstandingAmount</td>
+                                                        <td></td>
+                                                        <td>@dto.PostDate</td>
+                                                        <td>@dto.InvoiceDate</td>
+                                                        <td></td>
+                                                    </tr>
+                                                }
 
+                                            }
                                         }
-                                    }
-                                    @if (Model.m1invoiceDtos != null && Model.m1invoiceDtos.Count > 0)
-                                    {
-                                        var i = 0;
-                                        foreach (var dto in Model.m1invoiceDtos)
+                                        @if (Model.m1invoiceDtos != null && Model.m1invoiceDtos.Count > 0)
                                         {
-                                            if (i == 0)
+                                            var i = 0;
+                                            foreach (var dto in Model.m1invoiceDtos)
                                             {
-                                                i++;
-                                                <tr>
-                                                    <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m1invoiceDtos.Count">@L["Menu:AccountingDC"]</td>
-                                                    <td><a href="/Accounting/Invoice?MethodType=2&Mid=@Model.Id&Hid=&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
-                                                    <td>@dto.InvoiceCompanyName</td>
-                                                    <td>@dto.OutstandingAmount</td>
-                                                    <td>0.00</td>
-                                                    <td>@dto.OutstandingAmount</td>
-                                                    <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
-                                                    <td></td>
-                                                </tr>
-                                            }
-                                            else
-                                            {
-                                                <tr>
-                                                    <td><a href="/Accounting/Invoice?MethodType=2&Mid=@Model.Id&Hid=&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
-                                                    <td>@dto.InvoiceCompanyName</td>
-                                                    <td>@dto.OutstandingAmount</td>
-                                                    <td>0.00</td>
-                                                    <td>@dto.OutstandingAmount</td>
-                                                    <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
-                                                    <td></td>
-                                                </tr>
-                                            }
+                                                if (i == 0)
+                                                {
+                                                    i++;
+                                                    <tr>
+                                                        <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m1invoiceDtos.Count">@L["Menu:AccountingDC"]</td>
+                                                        <td><a href="/Accounting/Invoice?MethodType=2&Mid=@Model.Id&Hid=&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                                        <td>@dto.InvoiceCompanyName</td>
+                                                        <td>@dto.OutstandingAmount</td>
+                                                        <td>0.00</td>
+                                                        <td>@dto.OutstandingAmount</td>
+                                                        <td></td>
+                                                        <td>@dto.PostDate</td>
+                                                        <td>@dto.InvoiceDate</td>
+                                                        <td></td>
+                                                    </tr>
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td><a href="/Accounting/Invoice?MethodType=2&Mid=@Model.Id&Hid=&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                                        <td>@dto.InvoiceCompanyName</td>
+                                                        <td>@dto.OutstandingAmount</td>
+                                                        <td>0.00</td>
+                                                        <td>@dto.OutstandingAmount</td>
+                                                        <td></td>
+                                                        <td>@dto.PostDate</td>
+                                                        <td>@dto.InvoiceDate</td>
+                                                        <td></td>
+                                                    </tr>
+                                                }
 
+                                            }
                                         }
-                                    }
-                                    @if (Model.m2invoiceDtos != null && Model.m2invoiceDtos.Count > 0)
-                                    {
-                                        var i = 0;
-                                        foreach (var dto in Model.m2invoiceDtos)
+                                        @if (Model.m2invoiceDtos != null && Model.m2invoiceDtos.Count > 0)
                                         {
-                                            if (i == 0)
+                                            var i = 0;
+                                            foreach (var dto in Model.m2invoiceDtos)
                                             {
-                                                i++;
-                                                <tr>
-                                                    <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m2invoiceDtos.Count">@L["Menu:AccountingAP"]</td>
-                                                    <td><a href="/Accounting/Invoice?MethodType=2&Mid=@Model.Id&Hid=&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
-                                                    <td>@dto.InvoiceCompanyName</td>
-                                                    <td>@dto.OutstandingAmount</td>
-                                                    <td>0.00</td>
-                                                    <td>@dto.OutstandingAmount</td>
-                                                    <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
-                                                    <td></td>
-                                                </tr>
-                                            }
-                                            else
-                                            {
-                                                <tr>
-                                                    <td><a href="/Accounting/Invoice?MethodType=2&Mid=@Model.Id&Hid=&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
-                                                    <td>@dto.InvoiceCompanyName</td>
-                                                    <td>@dto.OutstandingAmount</td>
-                                                    <td>0.00</td>
-                                                    <td>@dto.OutstandingAmount</td>
-                                                    <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
-                                                    <td></td>
-                                                </tr>
-                                            }
+                                                if (i == 0)
+                                                {
+                                                    i++;
+                                                    <tr>
+                                                        <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m2invoiceDtos.Count">@L["Menu:AccountingAP"]</td>
+                                                        <td><a href="/Accounting/Invoice?MethodType=2&Mid=@Model.Id&Hid=&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                                        <td>@dto.InvoiceCompanyName</td>
+                                                        <td>@dto.OutstandingAmount</td>
+                                                        <td>0.00</td>
+                                                        <td>@dto.OutstandingAmount</td>
+                                                        <td></td>
+                                                        <td>@dto.PostDate</td>
+                                                        <td>@dto.InvoiceDate</td>
+                                                        <td></td>
+                                                    </tr>
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td><a href="/Accounting/Invoice?MethodType=2&Mid=@Model.Id&Hid=&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                                        <td>@dto.InvoiceCompanyName</td>
+                                                        <td>@dto.OutstandingAmount</td>
+                                                        <td>0.00</td>
+                                                        <td>@dto.OutstandingAmount</td>
+                                                        <td></td>
+                                                        <td>@dto.PostDate</td>
+                                                        <td>@dto.InvoiceDate</td>
+                                                        <td></td>
+                                                    </tr>
+                                                }
 
+                                            }
                                         }
-                                    }
 
-                                </table>
+                                    </table>
 
-                            </abp-column>
-                        </abp-row>
-                        <abp-row>
-                            <abp-column size-md="_12">
-                                &nbsp;
-                            </abp-column>
-                        </abp-row>
-                        <abp-row>
-                            <abp-column>
-                                <abp-card-header style="background:#cccccc;color:#FFFFFF;">
-                                    @L["Title:Memo"]
-                                </abp-card-header>
-                                <abp-card>
-                                    <abp-card-body>
-                                        <partial name="Memos/_Memo" model="new _MemoModel(Model.AirImportMawbDto.Id, Dolphin.Freight.Common.FreightPageType.AIMBL)" />
-                                    </abp-card-body>
-                                </abp-card>
-                            </abp-column>
-                        </abp-row>
-                    </abp-card-body>
-                </abp-card>
+                                </abp-column>
+                            </abp-row>
+                            <abp-row>
+                                <abp-column size-md="_12">
+                                    &nbsp;
+                                </abp-column>
+                            </abp-row>
+                            <abp-row>
+                                <abp-column>
+                                    <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                                        @L["Title:Memo"]
+                                    </abp-card-header>
+                                    <abp-card>
+                                        <abp-card-body>
+                                            <partial name="Memos/_Memo" model="new _MemoModel(Model.AirImportMawbDto.Id, Dolphin.Freight.Common.FreightPageType.AIMBL)" />
+                                        </abp-card-body>
+                                    </abp-card>
+                                </abp-column>
+                            </abp-row>
+                        </abp-card-body>
+                    </abp-card>
 
-                <div id="partialContainer">
-                    
-                </div>
-        </abp-column>
-        <abp-column size-md="_3">
-            <div class="card-wrap">
+                    <div id="partialContainer">
+                    </div>
+                </abp-column>
+                <abp-column size-md="_3">
+                    <div class="card-wrap">
 
-                <button class="btn btn-block btn-add" type="button" id="addHBtn">
+                        <button class="btn btn-block btn-add" type="button" id="addHBtn">
                             <i class="fa-solid fa-plus"></i>Add HAWB
-                </button>
+                        </button>
 
-                <div id="hblCards" class="hbl_sm_area">
-
-                </div>
-            </div>
-        </abp-column>
-    </abp-row>
-    </form>
-</div>
+                        <div id="hblCards" class="hbl_sm_area">
+                        </div>
+                    </div>
+                </abp-column>
+            </abp-row>
+        </form>
+    </div>
 </div>

@@ -1,8 +1,11 @@
 ﻿@using Dolphin.Freight.AirExports;
+@using Dolphin.Freight.Localization;
 @using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.Extensions.Localization;
 @using Volo.Abp.Account.Localization
 @model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
-@inject IHtmlLocalizer<AccountResource> L
+
+@inject IStringLocalizer<FreightResource> L
 <!-- HABL Card -->
 <abp-card class="card board-item" id="hblCard">
     <!-- 標題區域 -->
@@ -10,8 +13,71 @@
         <abp-card-title>
             HAWB Information - @Model.AirExportHawbDto.HawbNo
         </abp-card-title>
+        <div class="btn-group dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                @L["Display:Function"]
+            </button>
+            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-files-o"></i> @L["Btn:Copy"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["GoFreight EDI"]
+                </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-files-o"></i> @L["Btn:File Package"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Print MAWB"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest (Comprehensive)"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest (by agent)"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:S/O Confirmation"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:MAWB Packaging Label"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:All HAWB Packaging Labels"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Package Label List"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Dispatch List"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Security Endorsement"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:On Hand Report"]
+                </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
+                </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
+                </a>
+            </div>
+        </div>
         <button type="button" id="btnHawbCollapse" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#hawbDiv" aria-expanded="true" aria-controls="hawbDiv">
-            <i class="fa fa-caret-down" style="color:#FFFFFF;"></i>
         </button>
     </abp-card-header>
     <!-- Mawb資訊欄 -->

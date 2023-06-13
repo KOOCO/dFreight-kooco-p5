@@ -75,7 +75,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             ViewData["HAVEHBL"] = "N";
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
             QueryHblDto query = new QueryHblDto() { MblId = Id };
-            OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
+            //OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
             //if (Hid == null)
             //{
             //    if (NewHbl == 1)
@@ -114,7 +114,6 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             //}
             //else {
                 //queryHbl.Id = Hid;
-                OceanExportHbl = new();
                 //IsShowHbl = true;
                 //
                 //ViewData["HAVEHBL"] = "Y";

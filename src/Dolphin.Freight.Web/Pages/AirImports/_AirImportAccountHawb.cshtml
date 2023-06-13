@@ -8,65 +8,65 @@
 @inject IStringLocalizer<FreightResource> L
 @section scripts
     {
-        <script type="text/javascript">
-        function gotoInvoice(MawbId, InvoiceType) {
-            
-            location.href = '/Accounting/Invoice?MethodType=2&MawbId=' + MawbId + "&InvoiceType=" + InvoiceType;
+    <script type="text/javascript">
+        function gotoInvoice(MawbId, HawbId, InvoiceType) {
+
+            location.href = '/Accounting/Invoice?MethodType=2&MawbId=' + MawbId + '&HawbId=' + HawbId + "&InvoiceType=" + InvoiceType;
         }
-        </script>
+    </script>
     }
 <abp-card class="card board-item" id="hblCard">
     <abp-card-header id="hblCardHeader" style="background:#555555;color:white;">
-        
-                <abp-card-title>
-                    HAWB
+
+        <abp-card-title>
+            HAWB
             <span id="title0">@Model.AirImportHawbDto.HawbNo </span>
-                </abp-card-title>
+        </abp-card-title>
 
         <div class="btn-group dropdown">
             <button class="btn btn-secondary dropdown-toggle" style="position: relative;" type="button" id="ActionDrop" data-bs-toggle="dropdown">
                 @L["Display:Function"]
-            </button> 
+            </button>
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
                 <a class='dropdown-item' href='#'>
                     <i class="fa fa-lock"></i> @L["Btn:Lock"]
                 </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Authority (ATME)"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["I.T/T.E"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
-        </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
-        </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
-            <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
-        </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Authority (ATME)"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["I.T/T.E"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
+                </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
+                </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
+                    <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
+                </a>
+            </div>
         </div>
-        </div>
-            
-                <button type="button" class="btn btn-collapse collasped" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="false" aria-controls="hblDiv">
-                </button>
-            
+
+        <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="true" aria-controls="hblDiv">
+        </button>
+
     </abp-card-header>
     <abp-card-body class="collapse show" id="hblDiv">
 
@@ -74,9 +74,9 @@
 
             <abp-column size-md="_12">
                 <div>
-                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id',0)">@L["Add AR"]</abp-button>
-                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id',1)">@L["Add DC"]</abp-button>
-                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id',2)">@L["Add AP"]</abp-button>
+                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.AirImportHawbDto.MawbId','@Model.AirImportHawbDto.Id',0)">@L["Add AR"]</abp-button>
+                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.AirImportHawbDto.MawbId','@Model.AirImportHawbDto.Id,1)">@L["Add DC"]</abp-button>
+                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.AirImportHawbDto.MawbId','@Model.AirImportHawbDto.Id,2)">@L["Add AP"]</abp-button>
                 </div>
                 <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:0.5em;">
                     <tr border="1">

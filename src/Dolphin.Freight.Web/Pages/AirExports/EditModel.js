@@ -15,7 +15,13 @@
 
                 })
                 setTimeout(() => {
-                    $('.hblCardTitle')[0].click();
+                    var from = url.searchParams.get('from');
+                    if (from == 'accounting') {
+                        $('#addHBtn').click();
+                    }
+                    else {
+                        $('.hblCardTitle')[0].click();
+                    }
                 }, 500);
             }
         })

@@ -8,7 +8,7 @@
 @model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
 @inject IStringLocalizer<FreightResource> L
 
-<abp-card>
+<abp-card class="card board-item" id="hblCard">
     <abp-card-header style="background:#555555;color:#FFFFFF;">
         <abp-card-title>
             HAWB - @Model.AirImportHawbDto.HawbNo
@@ -22,37 +22,37 @@
                 <a class='dropdown-item' href='#'>
                     <i class="fa fa-lock"></i> @L["Btn:Lock"]
                 </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Authority (ATME)"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["I.T/T.E"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
-        </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
-        </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
-            <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
-        </a>
-        </div>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Authority (ATME)"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["I.T/T.E"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
+                </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
+                </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
+                    <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
+                </a>
+            </div>
         </div>
 
         <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="true" aria-controls="hblDiv">
@@ -62,6 +62,7 @@
         <abp-row>
             <abp-column>
                 <abp-button id="add-hawb-file_@Model.AirImportHawbDto.HawbNo"
+                            onclick="onHawbFileClick()"
                             text=@L["Display:Button:New"]
                             icon="plus"
                             button-type="Outline_Secondary" />
@@ -105,7 +106,7 @@
                     </tbody>
                 </table>
                 <div style="display:none">
-                    <form submit-button="true" enctype="multipart/form-data" id="form-hawb-uploader_@Model.AirImportHawbDto.HawbNo">
+                    <form submit-button="true" enctype="multipart/form-data" id="form-hawb-uploader">
                         <input type="text" name="id" id="hawbId" value="@Model.AirImportHawbDto.Id" />
                         <input type="file" name="formFile" id="hawbFileUpload" />
                         <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Display:Button:Submit"]</abp-button>
@@ -122,18 +123,15 @@
                         <button>Send</button>
                     </form>
                 </div>
-               
+
             </abp-column>
         </abp-row>
     </abp-card-body>
 </abp-card>
 <script>
-    $(document).ready(function(){
-        $(document).on('click', '#add-hawb-file_@Model.AirImportHawbDto.HawbNo', function () {
-            $('#form-hawb-uploader_@Model.AirImportHawbDto.HawbNo [type = "file"]').click();
-        });
-        $(document).on('change', '#form-hawb-uploader_@Model.AirImportHawbDto.HawbNo [type = "file"]', function (e) {
-            debugger;
+    $(document).ready(function () {
+        
+        $(document).on('change', '#form-hawb-uploader [type = "file"]', function (e) {
             console.log(e);
             e.preventDefault();
 
@@ -165,7 +163,7 @@
         });
     })
 
-    function fileDownload(fileName){
+    function fileDownload(fileName) {
         var hawbId = $('#hawbId').val();
         var url = '/AirImports/DocCenter/' + $('#hawbId').val() + '/download?id=' + hawbId + '&filename=' + fileName;
 
@@ -208,8 +206,8 @@
         }
         return 'file';
     }
-    
-    function fileDelete(fileName, fileId){
+
+    function fileDelete(fileName, fileId) {
         debugger;
         var hawbId = $('#hawbId').val();
         var urlPath = window.location.href;

@@ -9,9 +9,10 @@
 }
 @section styles {
     <style>
-        .hideForm{
+        .hideForm {
             display: none
         }
+
         .file-list {
             margin-top: 15px;
         }
@@ -84,7 +85,6 @@
         $('#hblMainCard').append('#mawbCard');
 
         function onHawbCardClick(e, hawbId) {
-            debugger;
             var element = e.currentTarget || e.target || e.srcElement;
             var hblNo = element.id.split('_')[1];
 
@@ -112,13 +112,13 @@
                     })
 
                     abp.ajax($.extend(true, {
-                        url: abp.appPath + 'api/ImportExport/AirDocCenterHBL?Id=' + hawbId,
+                        url: abp.appPath + 'api/ImportExport/AirImportDocCenterHawb?Id=' + hawbId,
                         type: 'GET',
                         dataType: "html",
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
-                        //$('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
+                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
                     })
 
@@ -147,7 +147,7 @@
         }
 
         function createHawbCard() {
-            
+
             let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
                 ' onclick="onHawbCardClick(event,{{hblCardId}})">{{hblNo}}</h5>' +
                 ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
@@ -195,6 +195,9 @@
             $('#saveBtn').click();
         }
 
+        function onHawbFileClick() {
+            $('#form-hawb-uploader [type = "file"]').click();
+        }
     </script>
 }
 
@@ -222,7 +225,7 @@
 </div>
 <div class="page-content-area">
     <div class="board-wrap">
-            <abp-row>
+   <abp-row>
                 <abp-column size-md="_9" id="parentCard">
                     <abp-card class="card board-item" id="mawbCard">
                         <abp-card-header style="background:#555555;color:#FFFFFF;">
@@ -323,22 +326,22 @@
 </abp-card-body>
                 </abp-card>
 
-<div id="partialContainer">
-</div>
-        </abp-column>
-<abp-column size-md="_3">
-    <div class="card-wrap">
+                <div id="partialContainer">
+                </div>
+            </abp-column>
+            <abp-column size-md="_3">
+                <div class="card-wrap">
 
-        <button class="btn btn-block btn-add" type="button" id="addHBtn">
-            <i class="fa-solid fa-plus"></i>Add HAWB
-        </button>
+                    <button class="btn btn-block btn-add" type="button" id="addHBtn">
+                        <i class="fa-solid fa-plus"></i>Add HAWB
+                    </button>
 
-        <div id="hblCards" class="hbl_sm_area">
-        </div>
+                    <div id="hblCards" class="hbl_sm_area">
+                    </div>
+                </div>
+            </abp-column>
+        </abp-row>
     </div>
-</abp-column>
-    </abp-row>
-</div>
 </div>
 
 <form method="get" asp-page-handler="download" class="hideForm" id="form-download" target="_blank">

@@ -1,8 +1,12 @@
 ﻿@using Dolphin.Freight.AirExports;
 @using Microsoft.AspNetCore.Mvc.Localization;
-@using Volo.Abp.Account.Localization
+@using Microsoft.Extensions.Localization;
+@using Dolphin.Freight.Localization
+
+@inject IStringLocalizer<FreightResource> L
+
 @model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
-@inject IHtmlLocalizer<AccountResource> L
+
 <!-- HABL Card -->
 <abp-card class="card board-item" id="hblCard">
     <!-- 標題區域 -->
@@ -10,8 +14,61 @@
         <abp-card-title>
             HAWB Information - @Model.HawbModel.HawbNo
         </abp-card-title>
+
+        <div class="btn-group dropdown">
+            <button class="btn btn-secondary dropdown-toggle" style="position: relative;" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                @L["Display:Function"]
+            </button>
+            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-copy"></i> @L["Btn:Copy"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-trash"></i> @L["Btn:Delete"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-copy"></i> @L["Btn:CopyTo"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-share"></i> @L["Btn:Move"]
+                </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Authority (ATME)"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["I.T/T.E"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
+                </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
+                </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
+                    <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
+                </a>
+            </div>
+        </div>
+
         <button type="button" id="btnHawbCollapse" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#hawbDiv" aria-expanded="true" aria-controls="hawbDiv">
-            <i class="fa fa-caret-down" style="color:#FFFFFF;"></i>
         </button>
     </abp-card-header>
     <!-- Mawb資訊欄 -->
@@ -56,10 +113,10 @@
                 <abp-input asp-for="@Model.HawbModel.FreightLocation" />
             </abp-column>
         </abp-row>
-      
+
         <!--第四列-->
         <abp-row>
-            
+
             <abp-column size-md="_3">
                 <abp-input asp-for="@Model.HawbModel.FinalDestination" />
             </abp-column>
@@ -75,7 +132,7 @@
         </abp-row>
         <!--第五列-->
         <abp-row>
-           
+
             <abp-column size-md="_3">
                 <abp-input asp-for="@Model.HawbModel.LastFreeDay" />
             </abp-column>
@@ -89,7 +146,7 @@
                 <abp-input asp-for="@Model.HawbModel.SalesType" />
             </abp-column>
         </abp-row>
-     
+
         <!--第六列-->
         <abp-row>
             <abp-column size-md="_3">
@@ -271,7 +328,7 @@
                         </tbody>
                     </abp-table>
                 </div>
-                
+
             </abp-column>
         </abp-row>
         <abp-row class="mt-4">

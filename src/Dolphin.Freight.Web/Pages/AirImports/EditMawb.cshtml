@@ -18,7 +18,7 @@
 @section scripts
     {
     <script src="https://cdn.jsdelivr.net/npm/jquery-templates@1.0.0/jquery.tmpl.min.js"></script>
-   <abp-script src="/Pages/AirImports/EditMawb.js" />
+    <abp-script src="/Pages/AirImports/EditMawb.js" />
     <script type="text/javascript">
         $(document).ready(function () {
             var l = abp.localization.getResource('Freight');
@@ -83,8 +83,8 @@
                 if ($('#btnHawbCardCollapse_0').length) {
                     showAlert(alertConfirmation2, 'Store');
                 }
-                else{
-                    
+                else {
+
                     let hawbcard = createHawbCard();
 
                     let index = $('.hbl_sm_area').find('.card').length;
@@ -173,8 +173,8 @@
                 HAWBNO = hawbNo;
                 showAlert(alertConfirmation, 'Continue');
             }
-            else{
-                
+            else {
+
                 var color = getComputedStyle(element.parentElement.parentElement).backgroundColor;
 
                 if (!$('#btnHawbCardCollapse_' + hawbNo).attr('class').includes('collapsed')) {
@@ -193,7 +193,7 @@
                     })
 
                     abp.ajax($.extend(true, {
-                        url: abp.appPath + 'api/ImportExport/hawbhblpartial?Id=' + hawbId,
+                        url: abp.appPath + 'api/ImportExport/AirImportBasicHawb?Id=' + hawbId,
                         type: 'GET',
                         dataType: "html",
                     }, ajaxParams)).done(function (partial) {
@@ -227,16 +227,15 @@
             }
         }
 
-        function createHawbCard(){
+        function createHawbCard() {
             let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title text-light hblCardTitle" id="title_{{hawbNo}}"' +
-                            ' onclick="onHawbCardClick(event,{{hblCardId}})">{{hawbNo}}</h5>'+
-                            ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hawbNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">'+
-                            ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+                ' onclick="onHawbCardClick(event,{{hblCardId}})">{{hawbNo}}</h5>' +
+                ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hawbNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
             return abpCard;
         }
 
-        function setHawbCardValues(abpcard, cardId, hawbNo, index)
-        {
+        function setHawbCardValues(abpcard, cardId, hawbNo, index) {
             let apbCardClass = 'card board-item hbl-sm-' + index;
             let cardBodyId = 'hawbCard_' + index;
             cardId = "'" + cardId + "'";
@@ -246,38 +245,38 @@
             abpcard = abpcard.replaceAll("{{hblCardId}}", cardId);
             abpcard = abpcard.replaceAll("{{index}}", index);
             abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
-            
+
             return abpcard;
         }
 
-        function showAlert(funName, buttonName){
-          Swal.fire({
-                    icon: 'error',
-                    text: 'The data has not been saved, are you sure you want to ' + buttonName.toLowerCase() + '?',
-                    showCancelButton: true,
-                    confirmButtonText: buttonName,
-                }).then(funName)
+        function showAlert(funName, buttonName) {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, are you sure you want to ' + buttonName.toLowerCase() + '?',
+                showCancelButton: true,
+                confirmButtonText: buttonName,
+            }).then(funName)
         }
 
-        function alertConfirmation(result){
+        function alertConfirmation(result) {
             if (result.isConfirmed) {
                 let indx = $('.hbl_sm_area').find('.card').length;
                 $('#btnHawbCardCollapse_0').parent().parent().remove();
                 if (HAWBNO) {
                     $('#title_' + HAWBNO).click()
                 }
-                else{
+                else {
                     $('#hawbCard_' + (indx - 2)).parent().find('.card-title').click();
                 }
             }
         }
 
-        function alertConfirmation2(){
+        function alertConfirmation2() {
             $('#saveBtn').click();
         }
     </script>
 
-   
+
 }
 
 <div class="page-header">
@@ -332,29 +331,29 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Batch Printing"]
                                     </a>
-                            <li class="dropdown-divider"></li>
-                            <a class='dropdown-item' href='#'>
-                                <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest"]
-                            </a>
-                            <a class='dropdown-item' href='#'>
-                                <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
-                            </a>
-                            <li class="dropdown-divider"></li>
-                            <a class='dropdown-item' href='#'>
-                                <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
-                            </a>
-                            <a class='dropdown-item' href='#'>
-                                <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
-                            </a>
-                            <li class="dropdown-divider"></li>
-                            <a class='dropdown-item' href='#'>
-                                <i class="fa fa-file-text-o"></i> @L["Btn:Electronic Customs Declaration Status"]
-                            </a>
-                            <a class='dropdown-item' href='#'>
-                                <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
-                            </a>
-    </div>
-</div>
+                                    <p class="dropdown-divider"></p>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
+                                    </a>
+                                    <p class="dropdown-divider"></p>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
+                                    </a>
+                                    <p class="dropdown-divider"></p>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Electronic Customs Declaration Status"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
+                                    </a>
+                                </div>
+                            </div>
 
                             <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" id="btnMawbCollapse" data-bs-target="#mawbDiv" aria-expanded="true" aria-controls="mawbDiv">
                             </button>
@@ -742,7 +741,6 @@
 
                     <!-- HBL Card-->
                     <div id="partialContainer">
-                        @*@await Html.PartialAsync("_HawbHBL", Model)*@
                     </div>
                 </abp-column>
                 <abp-column size-md="_3">
@@ -751,7 +749,6 @@
                             <i class="fa-solid fa-plus"></i>Add HAWB
                         </button>
                         <div id="hblCards" class="hbl_sm_area">
-                            
                         </div>
                     </div>
                 </abp-column>
