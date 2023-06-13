@@ -17,7 +17,7 @@
     {
     <script src="https://cdn.jsdelivr.net/npm/jquery-templates@1.0.0/jquery.tmpl.min.js"></script>
     <abp-script src="/Pages/OceanExports/CreateMbl.js" />
-    @*<abp-script src="/Pages/OceanExports/EditModel.js" />*@
+    <abp-script src="/Pages/OceanExports/EditModel.js" />
     <script type="text/javascript">
         var cardIndex = 0;
         $(document).ready(function () {
@@ -157,7 +157,7 @@
         }
 
         $('#addHBtn').on('click', function () {
-            if ($('#mawbDiv')[0].classList.contains('show')) {
+            if ($('#mblDiv')[0].classList.contains('show')) {
                 $('#btnMawbCollapse').click();
             }
 
@@ -362,7 +362,7 @@
                             </abp-card-title>
                             <div class="btn-group dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                    Display:Function
+                                    @L["Btn:Function"]
                                 </button>
                                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop_div">
                                     <a class='dropdown-item' href='#'>
@@ -418,13 +418,11 @@
                                     </a>
                                 </div>
                             </div>
-                            <button class="btn btn-collapse " type="button" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="false" aria-controls="mblDiv">
+                            <button class="btn btn-collapse " type="button" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
                             </button>
 
-                            <button class="btn btn-collapse " type="button" data-bs-toggle="collapse" data-bs-target="#mawbDiv" aria-expanded="false" aria-controls="mawbDiv">
-                            </button>
                         </abp-card-header>
-                        <abp-card-body class="collapse show customForm" id="mawbDiv">
+                        <abp-card-body class="collapse show customForm" id="mblDiv">
                             <abp-row>
                                 <abp-column size-md="_3">
                                     <input type="hidden" name="ShipmentNo" id="ShipmentNo">
@@ -745,7 +743,7 @@
                 <abp-column size-md="_3">
                     <div class="card-wrap">
                         <button class="btn btn-block btn-add" type="button" id="addHBtn">
-                            <i class="fa-solid fa-plus"></i>Add HAWB
+                            <i class="fa-solid fa-plus"></i>Add HB/L
                         </button>
                         <div id="hblCards" class="hbl_sm_area">
                         </div>

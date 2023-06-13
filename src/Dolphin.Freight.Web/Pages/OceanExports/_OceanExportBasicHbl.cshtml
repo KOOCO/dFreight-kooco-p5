@@ -1,10 +1,12 @@
 ﻿@using Dolphin.Freight.ImportExport.OceanExports;
+@using Dolphin.Freight.Localization;
 @using Dolphin.Freight.Web.Pages.Components;
 @using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.Extensions.Localization;
 @using Volo.Abp.Account.Localization
 @model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
-@inject IHtmlLocalizer<AccountResource> L
+@inject IStringLocalizer<FreightResource> L
 
 <abp-card class="card board-item" id="hblCard">
 
@@ -20,7 +22,7 @@
 
                 <div class="btn-group dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                        @L["Display:Function"]
+                        @L["Btn:Function"]
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1" id="ActionDrop">
                         <a class='dropdown-item' href='#'>

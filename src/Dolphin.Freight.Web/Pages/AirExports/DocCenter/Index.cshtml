@@ -117,7 +117,7 @@
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
-                        //$('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
+                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
                     })
 
@@ -222,7 +222,7 @@
     <div class="board-wrap">
             <abp-row>
                 <abp-column size-md="_9" id="parentCard">
-                    <abp-card class="card board-item" id="mawbCard">
+                    <abp-card class="card board-item">
                         <abp-card-header style="background:#555555;color:#FFFFFF;">
                             <abp-card-title>
                                 MAWB
