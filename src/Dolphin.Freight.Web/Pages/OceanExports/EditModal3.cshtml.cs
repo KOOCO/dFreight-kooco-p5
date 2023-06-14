@@ -7,6 +7,8 @@ using Dolphin.Freight.Accounting.Invoices;
 using System.Collections.Generic;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Settinngs.SysCodes;
+using Dolphin.Freight.ImportExport.AirImports;
+using Dolphin.Freight.ImportExport.OceanImports;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
 {
@@ -17,6 +19,10 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public Guid Hid { get; set; }
+        [BindProperty]
+        public OceanExportHblDto OceanExportHblDto { get; set; }
+        [BindProperty]
+        public OceanExportMblDto OceanExportMblDto { get; set; }
         [BindProperty]
         public CreateUpdateOceanExportMblDto OceanExportMbl { get; set; }
         [BindProperty]
@@ -52,84 +58,28 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         public async Task OnGetAsync()
         {
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
-            OceanExportMbl.Mid = Id;
-            QueryHblDto query = new QueryHblDto() { MblId = OceanExportMbl.Id };
-            OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
-            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 0, ParentId = Id };
-            var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
-            m0invoiceDtos = new List<InvoiceDto>();
-            m1invoiceDtos = new List<InvoiceDto>();
-            m2invoiceDtos = new List<InvoiceDto>();
-            if (invoiceDtos != null && invoiceDtos.Count > 0) 
-            {
-                foreach (var dto in invoiceDtos) 
-                {
-                    switch (dto.InvoiceType) 
-                    { 
-                        default:
-                            m0invoiceDtos.Add(dto);
-                            break;
-                        case 1:
-                            m1invoiceDtos.Add(dto);
-                            break;
-                        case 2:
-                            m2invoiceDtos.Add(dto);
-                            break;
-
-
-                    }
-                }
-            }
-            
-            QueryHblDto queryHbl = new QueryHblDto();
-            if (Hid == Guid.Empty)
-            {
-                if (NewHbl == 1)
-                {
-                    OceanExportHbl = new CreateUpdateOceanExportHblDto();
-                    QueryDto cquery = new QueryDto();
-                    cquery.QueryType = "CardColorId";
-                    var syscodes = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(cquery);
-                    if (OceanExportHbls != null && OceanExportHbls.Count > 0)
-                    {
-                        int index = OceanExportHbls.Count % syscodes.Count;
-                        OceanExportHbl.CardColorId = syscodes[index].Id;
-                        OceanExportHbl.CardColorValue = syscodes[index].CodeValue;
-                        CardClass = syscodes[index].CodeValue;
-                    }
-                    else
-                    {
-                        OceanExportHbl.CardColorId = syscodes[0].Id;
-                        OceanExportHbl.CardColorValue = syscodes[0].CodeValue;
-                        CardClass = syscodes[0].CodeValue;
-                    }
-
-                }
-                else
-                {
-                    OceanExportHbl = new CreateUpdateOceanExportHblDto();
-                    if (OceanExportHbls != null && OceanExportHbls.Count > 0)
-                    {
-                        OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(OceanExportHbls[0]);
-                        IsShowHbl = true;
-                    }
-                }
-
-            }
-            else
-            {
-                queryHbl.Id = Hid;
-                OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
-                IsShowHbl = true;
-
-
-            }
+            ImportExport.OceanExports.QueryHblDto query = new ImportExport.OceanExports.QueryHblDto() { MblId = Id };
+            query.Id = Hid;
+            OceanExportHbl = new();
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMbl);
-            await _oceanExportHblAppService.UpdateAsync(Hid, OceanExportHbl);
-            return NoContent();
+            var updateItem = ObjectMapper.Map<OceanExportMblDto, CreateUpdateOceanExportMblDto>(OceanExportMblDto);
+            await _oceanExportMblAppService.UpdateAsync(OceanExportMblDto.Id, updateItem);
+
+            if (OceanExportHblDto is not null)
+            {
+                OceanExportHbl.MblId = OceanExportMblDto.Id;
+                if (OceanExportHbl.Id != Guid.Empty)
+                {
+                    await _oceanExportHblAppService.UpdateAsync(OceanExportHbl.Id, OceanExportHbl);
+                }
+                else
+                {
+                    await _oceanExportHblAppService.CreateAsync(OceanExportHbl);
+                }
+            }
+            return new ObjectResult(new { id = OceanExportMblDto.Id });
         }
     }
 }

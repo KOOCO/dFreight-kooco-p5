@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Users;
 
 namespace Dolphin.Freight.ImportExport.AirImports
 {
-    public class CreateUpdateAirImportHawbDto
+    public class CreateUpdateAirImportHawbDto : AuditedEntityDto<Guid>
     {
         public Guid? MawbId { get; set; }
                                     
@@ -64,6 +65,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string VolumeWeightCBM { get; set; }
         public string ITNo { get; set; }
         public string ClassOfEntry { get; set; }
+        public string CardColorValue { get; set; }
         public DateTime ITDate { get; set; }
         public string ITIssuedLocation { get; set; }
         public DateTime FrtRelease { get; set; }

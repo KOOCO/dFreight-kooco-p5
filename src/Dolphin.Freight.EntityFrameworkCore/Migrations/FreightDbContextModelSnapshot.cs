@@ -2226,6 +2226,26 @@ namespace Dolphin.Freight.Migrations
                     b.ToTable("AppWarehouseReceipts", (string)null);
                 });
 
+                  modelBuilder.Entity("Dolphin.Freight.ImportExport.Configuration.GridPreference", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Preference")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PreferenceSrc")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppGridPreference", (string)null);
+                });
+
+
             modelBuilder.Entity("Dolphin.Freight.ImportExport.Containers.Container", b =>
                 {
                     b.Property<Guid>("Id")

@@ -22,6 +22,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// <summary>
         /// Hawb 號碼
         /// </summary>
+        [Required]
         public string HawbNo { get; set; }
         /// <summary>
         /// 

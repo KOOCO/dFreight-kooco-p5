@@ -21,13 +21,21 @@
 <div class="page-content-area">
     <abp-card>
         <abp-card-header>
-            <div class="title">
-                @L["Menu:OceanExports.IndexList"]
-            </div>
-            <abp-button id="NewMblButton"
-                        text="@L["Create"].Value"
-                        icon="plus"
-                        class="btn btn-add" />
+            <abp-row class="w-100">
+                <abp-column size-md="_6">
+                    <abp-card-title>@L["Menu:AirImport.List"]</abp-card-title>
+                </abp-column>
+                <abp-column size-md="_6" class="text-end p-0">
+                    <abp-button id="btnConfiguration"
+                                text="@L["Configuration"].Value"
+                                icon="gear"
+                                button-type="Primary" />
+                    <abp-button id="NewMblButton"
+                                text="@L["Create"].Value"
+                                icon="plus"
+                                button-type="Primary" />
+                </abp-column>
+            </abp-row>
         </abp-card-header>
         <abp-card-body>
             <abp-table striped-rows="true" id="MblListTable"></abp-table>

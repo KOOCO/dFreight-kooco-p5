@@ -18,10 +18,10 @@
     "Dolphin.Freight.Web": {
       "commandName": "Project",
       "launchBrowser": true,
+      "applicationUrl": "https://localhost:44334/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "https://localhost:44334/"
+      }
     }
   }
 }

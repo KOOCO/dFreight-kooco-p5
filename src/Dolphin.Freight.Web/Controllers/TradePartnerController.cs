@@ -1,8 +1,13 @@
-﻿using Dolphin.Freight.TradePartners;
+﻿using Dolphin.Freight.ImportExport.AirExports;
+using Dolphin.Freight.ImportExport.AirImports;
+using Dolphin.Freight.TradePartners;
 using Dolphin.Freight.Web.Pages.Sales.TradePartner;
+using Dolphin.Freight.Web.ViewModels.ImportExport;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,6 +20,8 @@ namespace Dolphin.Freight.Web.Controllers
     public class TradePartnerController : AbpController
     {
         private readonly ITradePartnerAppService _tradePartnerAppService;
+        private readonly IAirImportHawbAppService _airImportHawbAppService;
+        private readonly IAirExportHawbAppService _airExportHawbAppService;
         public new ILogger<TradePartnerController> Logger { get; set; }
 
         private readonly List<UserInfo> _data = new List<UserInfo>
@@ -24,9 +31,12 @@ namespace Dolphin.Freight.Web.Controllers
         new UserInfo{ Id = 3, Name = "bar2"}
     };
 
-        public TradePartnerController(ITradePartnerAppService tradePartnerAppService)
+        public TradePartnerController(ITradePartnerAppService tradePartnerAppService, 
+                                    IAirImportHawbAppService airImportHawbAppService,                                     IAirExportHawbAppService airExportHawbAppService)
         {
             _tradePartnerAppService = tradePartnerAppService;
+            _airImportHawbAppService = airImportHawbAppService;
+            _airExportHawbAppService = airExportHawbAppService;
             Logger = NullLogger<TradePartnerController>.Instance;
         }
 
@@ -48,6 +58,5 @@ namespace Dolphin.Freight.Web.Controllers
         {
             return new JsonResult(_data);
         }
-
     }
 }
