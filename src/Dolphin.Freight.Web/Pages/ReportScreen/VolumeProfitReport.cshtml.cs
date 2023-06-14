@@ -69,10 +69,10 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             _substationAppService = substationAppService;
             _airportAppService = airportAppService;
             _packageUnitAppService = packageUnitAppService;
-            _airExportMawbAppService = airExportMawbAppService;            
+            _airExportMawbAppService = airExportMawbAppService;
         }
 
-   
+
 
         public async Task OnGetAsync()
         {
@@ -319,16 +319,16 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             [DisplayName("Output Type")]
             public string OutputType { get; set; }
             [DisplayName("Service Term Start")]
-            public string ServiceTermStart { get; set; }
+            public string ServiceTermTypeFrom { get; set; }
             [DisplayName("Service Term End")]
-            public string ServiceTermEnd { get; set; }
+            public string ServiceTermTypeTo { get; set; }
             public string Status { get; set; }
             [DisplayName("Sales Type")]
-            public string SalesType { get; set; }
+            public string SalesTypeId { get; set; }
             [DisplayName("Invoice Type")]
             public string InvoiceType { get; set; }
             [DisplayName("E-Commerce")]
-            public string ECommerce { get; set; }
+            public string IsEcommerce { get; set; }
             [DisplayName("Output By")]
             public string OutputBy { get; set; }
 
@@ -336,50 +336,50 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             /// <summary>
             /// OUTPUT Options
             /// </summary>
-            public bool Shipper { get; set; }
-            public bool OverseaAgent { get; set; }
-            public bool Consignee { get; set; }
-            public bool Customer { get; set; }
-            public bool Carrier { get; set; }
-            public bool CustomsBroker { get; set; }
-            public bool Trucker { get; set; }
-            public bool AccountGroup { get; set; }
-            public bool BillTo { get; set; }
-            public bool ReferredBy { get; set; }
-            public bool OutputOffice { get; set; }
-            public bool ETD { get; set; }
-            public bool ETA { get; set; }
-            public bool OutputFreightTerm { get; set; }
-            public bool Incoterms { get; set; }
-            public bool ServiceTerm { get; set; }
-            public bool MBLOP { get; set; }
-            public bool Operation { get; set; }
-            public bool OPCOOPOP { get; set; }
-            public bool ShipLine { get; set; }
-            public bool POL { get; set; }
-            public bool POD { get; set; }
-            public bool CountryOfPOL { get; set; }
-            public bool CountryOfPOD { get; set; }
-            public bool DEL { get; set; }
-            public bool FinalDestination { get; set; }
-            public bool VesselFlight { get; set; }
-            public bool MblMawbWarehouse { get; set; }
-            public bool HblHawb { get; set; }
-            public bool OutputFile { get; set; }
-            public bool DoorMove { get; set; }
-            public bool Clearance { get; set; }
-            public bool ISF { get; set; }
-            public bool FBAFC { get; set; }
-            public bool OutputSalesType { get; set; }
-            public bool HblNominatedAgent { get; set; }
-            public bool OutputECommerce { get; set; }
-            public bool ForwardingAgent { get; set; }
-            public bool CarrierContractNo { get; set; }
-            public bool MblColorRemark { get; set; }
-            public bool HblColorRemark { get; set; }
-            public bool CoLoader { get; set; }
-            public bool BlType { get; set; }
-            public bool LatestGateIn { get; set; }
+            public bool IsShipper { get; set; }
+            public bool IsOverseaAgent { get; set; }
+            public bool IsConsignee { get; set; }
+            public bool IsCustomer { get; set; }
+            public bool IsCarrier { get; set; }
+            public bool IsCustomsBroker { get; set; }
+            public bool IsTrucker { get; set; }
+            public bool IsAccountGroup { get; set; }
+            public bool IsBillTo { get; set; }
+            public bool IsReferredBy { get; set; }
+            public bool IsOutputOffice { get; set; }
+            public bool IsETD { get; set; }
+            public bool IsETA { get; set; }
+            public bool IsOutputFreightTerm { get; set; }
+            public bool IsIncoterms { get; set; }
+            public bool IsServiceTerm { get; set; }
+            public bool IsMBLOP { get; set; }
+            public bool IsOperation { get; set; }
+            public bool IsOPCOOPOP { get; set; }
+            public bool IsShipLine { get; set; }
+            public bool IsPOL { get; set; }
+            public bool IsPOD { get; set; }
+            public bool IsCountryOfPOL { get; set; }
+            public bool IsCountryOfPOD { get; set; }
+            public bool IsDEL { get; set; }
+            public bool IsFinalDestination { get; set; }
+            public bool IsVesselFlight { get; set; }
+            public bool IsMblMawbWarehouse { get; set; }
+            public bool IsHblHawb { get; set; }
+            public bool IsOutputFile { get; set; }
+            public bool IsDoorMove { get; set; }
+            public bool IsClearance { get; set; }
+            public bool IsISF { get; set; }
+            public bool IsFBAFC { get; set; }
+            public bool IsOutputSalesType { get; set; }
+            public bool IsHblNominatedAgent { get; set; }
+            public bool IsOutputECommerce { get; set; }
+            public bool IsForwardingAgent { get; set; }
+            public bool IsCarrierContractNo { get; set; }
+            public bool IsMblColorRemark { get; set; }
+            public bool IsHblColorRemark { get; set; }
+            public bool IsCoLoader { get; set; }
+            public bool IsBlType { get; set; }
+            public bool IsLatestGateIn { get; set; }
 
 
 
@@ -407,7 +407,7 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
         };
         public List<SelectListItem> Office { get; set; } = new List<SelectListItem>
         {
-            new SelectListItem { Value = "taipei", Text = "Taipei"}
+            new SelectListItem { Value = "D7972F83-91D9-9F5D-D038-3A0ADA6A3515", Text = "Sub 1"}
 
         };
 
@@ -481,28 +481,29 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
 
         public List<SelectListItem> ServiceTermStart { get; set; } = new List<SelectListItem>
         {
-            new SelectListItem { Value = "all", Text = "AIRPORT"},
-             new SelectListItem { Value = "bt", Text = "BT"},
-              new SelectListItem { Value = "CFS", Text = "CFS"},
-              new SelectListItem { Value = "cy", Text = "CY"},
-              new SelectListItem { Value = "door", Text = "DOOR"},
-              new SelectListItem { Value = "fi", Text = "FI"},
-              new SelectListItem { Value = "fo", Text = "FO"},
-              new SelectListItem { Value = "fot", Text = "FOT"},
-              new SelectListItem { Value = "tackle", Text = "TACKLE"}
+            new SelectListItem {Value = "0", Text = "Select"},
+            new SelectListItem { Value = "1", Text = "AIRPORT"},
+             new SelectListItem { Value = "2", Text = "BT"},
+              new SelectListItem { Value = "3", Text = "CFS"},
+              new SelectListItem { Value = "4", Text = "CY"},
+              new SelectListItem { Value = "5", Text = "DOOR"},
+              new SelectListItem { Value = "6", Text = "FI"},
+              new SelectListItem { Value = "7", Text = "FO"},
+              new SelectListItem { Value = "8", Text = "FOT"},
+              new SelectListItem { Value = "9", Text = "TACKLE"}
         };
 
         public List<SelectListItem> ServiceTermEnd { get; set; } = new List<SelectListItem>
         {
-           new SelectListItem { Value = "all", Text = "AIRPORT"},
-             new SelectListItem { Value = "bt", Text = "BT"},
-              new SelectListItem { Value = "CFS", Text = "CFS"},
-              new SelectListItem { Value = "cy", Text = "CY"},
-              new SelectListItem { Value = "door", Text = "DOOR"},
-              new SelectListItem { Value = "fi", Text = "FI"},
-              new SelectListItem { Value = "fo", Text = "FO"},
-              new SelectListItem { Value = "fot", Text = "FOT"},
-              new SelectListItem { Value = "tackle", Text = "TACKLE"}
+           new SelectListItem { Value = "1", Text = "AIRPORT"},
+             new SelectListItem { Value = "2", Text = "BT"},
+              new SelectListItem { Value = "3", Text = "CFS"},
+              new SelectListItem { Value = "4", Text = "CY"},
+              new SelectListItem { Value = "5", Text = "DOOR"},
+              new SelectListItem { Value = "6", Text = "FI"},
+              new SelectListItem { Value = "7", Text = "FO"},
+              new SelectListItem { Value = "8", Text = "FOT"},
+              new SelectListItem { Value = "9", Text = "TACKLE"}
         };
 
         public List<SelectListItem> Status { get; set; } = new List<SelectListItem>
@@ -529,10 +530,10 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
         public List<SelectListItem> ECommerce { get; set; } = new List<SelectListItem>
         {
             new SelectListItem { Value = "yes", Text = "YES"},
-             new SelectListItem { Value = "no", Text = "NO"}
+             new SelectListItem { Value = "no", Text = "NO", Selected = true}
         };
 
-     
+
 
 
     }

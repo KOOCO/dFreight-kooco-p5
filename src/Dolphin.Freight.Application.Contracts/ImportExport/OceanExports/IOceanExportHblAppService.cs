@@ -19,5 +19,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         Task<PagedResultDto<OceanExportHblDto>> QueryListAsync(QueryHblDto query);
         Task<IList<OceanExportHblDto>> QueryListByMidAsync(QueryHblDto query);
         Task<CreateUpdateOceanExportHblDto> GetHblById(QueryHblDto query);
+        Task<OceanExportHblDto> GetHblCardById(Guid Id);
+        Task<List<OceanExportHblDto>> GetHblCardsById(Guid Id);
     }
 }

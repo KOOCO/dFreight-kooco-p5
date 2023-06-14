@@ -111,6 +111,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
                     if (OceanImportHbls != null && OceanImportHbls.Count > 0)
                     {
                         OceanImportHbl = ObjectMapper.Map<OceanImportHblDto, CreateUpdateOceanImportHblDto>(OceanImportHbls[0]);
+                        Hid = OceanImportHbl.Id;
                         IsShowHbl = true;
                     }
                 }
@@ -119,7 +120,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             else
             {
                 queryHbl.Id = Hid;
-                OceanImportHbl = await _oceanImportHblAppService.GetHblById(queryHbl);
+                OceanImportHbl = new();
                 IsShowHbl = true;
 
 

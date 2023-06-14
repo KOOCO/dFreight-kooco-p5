@@ -28,7 +28,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         private readonly IAirImportMawbAppService _airImportMawbAppService;
         private readonly IAirImportHawbAppService _airImportHawbAppService;
 
-        // 用來接受CreateMawb redirect過來的資訊
+        // 嚙諄來梧蕭嚙踝蕭CreateMawb redirect嚙盤嚙諉迎蕭嚙踝蕭T
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
@@ -72,7 +72,9 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             }
             AirImportMawbDto airImportDto = await _airImportMawbAppService.GetAsync(Id);
 
-            HawbModel = await _airImportHawbAppService.GetHblById(Id);
+            HawbModel = new AirImportHawbDto();
+
+            //HawbModel = await _airImportHawbAppService.GetHblById(Id);
 
             if (airImportDto == null)
             {
@@ -102,28 +104,31 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         #region OnPostAsync()
         public async Task<IActionResult> OnPostAsync()
         {
-            await _airImportMawbAppService.UpdateAsync(MawbModel.Id,
+            if (ModelState.IsValid)
+            {
+                await _airImportMawbAppService.UpdateAsync(MawbModel.Id,
                 ObjectMapper.Map<CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>(MawbModel)
                 );
 
-            if(HawbModel is not null)
-            {
-                HawbModel.MawbId = MawbModel.Id;
-                if(HawbModel.Id != Guid.Empty)
+                if (HawbModel is not null)
                 {
-                    await _airImportHawbAppService.UpdateAsync(HawbModel.Id,
-                        ObjectMapper.Map<AirImportHawbDto, CreateUpdateAirImportHawbDto>(HawbModel)
-                        );
-                }
-                else
-                {
-                    await _airImportHawbAppService.CreateAsync(
-                        ObjectMapper.Map<AirImportHawbDto, CreateUpdateAirImportHawbDto>(HawbModel)
-                        );
+                    HawbModel.MawbId = MawbModel.Id;
+                    if (HawbModel.Id != Guid.Empty)
+                    {
+                        await _airImportHawbAppService.UpdateAsync(HawbModel.Id,
+                            ObjectMapper.Map<AirImportHawbDto, CreateUpdateAirImportHawbDto>(HawbModel)
+                            );
+                    }
+                    else
+                    {
+                        await _airImportHawbAppService.CreateAsync(
+                            ObjectMapper.Map<AirImportHawbDto, CreateUpdateAirImportHawbDto>(HawbModel)
+                            );
+                    }
                 }
             }
+            return new ObjectResult(new { id = MawbModel.Id });
 
-            return new ObjectResult(new { id = MawbModel.Id  });
         }
         #endregion
 
@@ -171,7 +176,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
 
         #region SetAirImportFileNo() 
         /// <summary>
-        /// 設定Air Import的File No
+        /// 嚙稽嚙緩Air Import嚙踝蕭File No
         /// </summary>
         private string SetAirImportFileNo()
         {

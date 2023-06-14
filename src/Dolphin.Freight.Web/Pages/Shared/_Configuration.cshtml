@@ -1,0 +1,88 @@
+﻿@using Dolphin.Freight.Localization;
+@using Microsoft.Extensions.Localization;
+@model Dolphin.Freight.Web.ViewModels.Configuration.ConfigurationViewModel
+@inject IStringLocalizer<FreightResource> L
+<style>
+    .sortable-list__item {
+        padding: 5px 22px 5px 7px;
+        color: #fff;
+        margin-bottom: 5px;
+        background: #AAAAAA url(data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjEwIiB2aWV3Qm94PSIwIDAgNyAxMCIgd2lkdGg9IjciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0ibTggMTdjLjU1MjI4NDc1IDAgMSAuNDQ3NzE1MyAxIDFzLS40NDc3MTUyNSAxLTEgMS0xLS40NDc3MTUzLTEtMSAuNDQ3NzE1MjUtMSAxLTF6bTUgMGMuNTUyMjg0NyAwIDEgLjQ0NzcxNTMgMSAxcy0uNDQ3NzE1MyAxLTEgMS0xLS40NDc3MTUzLTEtMSAuNDQ3NzE1My0xIDEtMXptLTUtNGMuNTUyMjg0NzUgMCAxIC40NDc3MTUzIDEgMXMtLjQ0NzcxNTI1IDEtMSAxLTEtLjQ0NzcxNTMtMS0xIC40NDc3MTUyNS0xIDEtMXptNSAwYy41NTIyODQ3IDAgMSAuNDQ3NzE1MyAxIDFzLS40NDc3MTUzIDEtMSAxLTEtLjQ0NzcxNTMtMS0xIC40NDc3MTUzLTEgMS0xem0tNS00Yy41NTIyODQ3NSAwIDEgLjQ0NzcxNTI1IDEgMSAwIC41NTIyODQ3LS40NDc3MTUyNSAxLTEgMXMtMS0uNDQ3NzE1My0xLTFjMC0uNTUyMjg0NzUuNDQ3NzE1MjUtMSAxLTF6bTUgMGMuNTUyMjg0NyAwIDEgLjQ0NzcxNTI1IDEgMSAwIC41NTIyODQ3LS40NDc3MTUzIDEtMSAxcy0xLS40NDc3MTUzLTEtMWMwLS41NTIyODQ3NS40NDc3MTUzLTEgMS0xeiIgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBvcGFjaXR5PSIuNTAzOTMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC03IC05KSIvPjwvc3ZnPg==) calc(100% - 8px) 10px no-repeat;
+    }
+</style>
+<form id="frmGridPreference" data-check-form-on-close="false">
+    <abp-modal>
+        <abp-modal-header title="Configuration"></abp-modal-header>
+        <abp-modal-body class="overflow-auto" style="height:500px;">
+            <div class="row">
+                <div class="col-xs-12">
+                    <ul class="sortable-list ui-sortable">
+                        @if (Model is not null && Model.Preference != null)
+                        {
+                            @Html.HiddenFor(m => m.Id)
+                            @Html.HiddenFor(m => m.PreferenceSrc)
+                            @Html.HiddenFor(m => m.UserId)
+
+                            @for (int i = 0; i < Model.Preference.Count; i++)
+                            {
+                                <li class="sortable-list__item" data-name="@Model.Preference[i].Name">
+                                    <label class="">
+                                        <div class="checker">
+                                            <span class="checked">
+                                                @Html.Hidden($"Preference[{i}].Name", Model.Preference[i].Name)
+                                                @Html.Hidden($"Preference[{i}].Show", Model.Preference[i].Show)
+                                                @Html.Hidden($"Preference[{i}].Lock", Model.Preference[i].Lock)
+                                                @Html.Hidden($"Preference[{i}].Text", Model.Preference[i].Text)
+                                                @Html.Hidden($"Preference[{i}].Width", Model.Preference[i].Width)
+                                                @Html.Hidden($"Preference[{i}].Freeze", Model.Preference[i].Freeze)
+                                                @Html.Hidden($"Preference[{i}].Configurable", Model.Preference[i].Configurable)
+
+                                                @if (!Model.Preference[i].Lock)
+                                                {
+                                                    @Html.CheckBox($"Preference[{i}].Checkable", Model.Preference[i].Checkable)
+                                                }
+                                                else
+                                                {
+                                                    @Html.Hidden($"Preference[{i}].Checkable", Model.Preference[i].Checkable)
+                                                }
+
+                                            </span>
+                                        </div>
+                                        <font style="vertical-align: inherit;">
+                                            @L[@Model.Preference[i].Text]
+                                        </font>
+                                    </label>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </abp-modal-body>
+        <abp-modal-footer>
+            <abp-button id="btnConfigurationCancel"
+                        text="Cancel"
+                        button-type="Default" />
+            <abp-button id="btnConfigurationSave"
+                        text="Save"
+                        button-type="Primary" />
+        </abp-modal-footer>
+    </abp-modal>
+</form>
+
+
+<script>$(document).ready(function () {
+        $('#btnConfigurationCancel').on('click', function () {
+            $('.btn-close').click()
+        })
+        $('#btnConfigurationSave').on('click', function () {
+            var form = $('#frmGridPreference');
+            var data = form.serializeFormToObject();
+
+            dolphin.freight.web.controllers.configuration.postConfig(data).done(function () {
+                abp.message.success('Saved successfully').then(() => {
+                    location.reload();
+                })
+            });
+        })
+    })</script>

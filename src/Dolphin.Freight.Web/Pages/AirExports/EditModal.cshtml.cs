@@ -58,7 +58,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public async Task OnGetAsync(Guid Id)
         {
             AirExportMawbDto = await _airExportMawbAppService.GetAsync(Id);
-            AirExportHawbDto = await _airExportHawbAppService.GetHblById(Id); //new AirExportHawbDto(); 
+            AirExportHawbDto = new AirExportHawbDto();
+            /*AirExportHawbDto = await _airExportHawbAppService.GetHblCardsById(Id);*/
 
             await FillTradePartnerAsync();
             await FillSubstationAsync();
@@ -71,12 +72,12 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         {
             var updateItem = ObjectMapper.Map<AirExportMawbDto, CreateUpdateAirExportMawbDto>(AirExportMawbDto);
 
-            await _airExportMawbAppService.UpdateAsync(Id, updateItem);
+            await _airExportMawbAppService.UpdateAsync(AirExportMawbDto.Id, updateItem);
 
             if(AirExportHawbDto is not null)
             {
                 var updateHawb = ObjectMapper.Map<AirExportHawbDto, CreateUpdateAirExportHawbDto>(AirExportHawbDto);
-                updateHawb.MawbId = Id;
+                updateHawb.MawbId = AirExportMawbDto.Id;
 
                 if (AirExportHawbDto.Id != Guid.Empty)
                 {
@@ -88,7 +89,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                 }
             }
 
-            return new ObjectResult(new { status = "success", Id = Id });
+            return new ObjectResult(new { id = AirExportMawbDto.Id });
         }
       
         public List<SelectListItem> TradePartnerLookupList { get; set; }
@@ -156,7 +157,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
 
         #region SetAirExportFileNo() 
         /// <summary>
-        /// ³]©wAir ExportªºFile No
+        /// ï¿½]ï¿½wAir Exportï¿½ï¿½File No
         /// </summary>
         private string SetAirExportFileNo()
         {

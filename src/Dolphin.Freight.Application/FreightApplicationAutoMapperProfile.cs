@@ -46,6 +46,8 @@ using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Common.Memos;
 using Dolphin.Freight.Settings.CurrencySetting;
 using Dolphin.Freight.TradePartners.DefaultFreight;
+using Dolphin.Freight.ImportExport.Configuration;
+
 
 namespace Dolphin.Freight;
 
@@ -264,5 +266,10 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<CreateUpdateDefaultFreightDCDto, DefaultFreightDC>();
 
         CreateMap<MawbReport, MawbReportDto>();
+
+        // Configuration - Grid preference
+        CreateMap<GridPreference, GridPreferenceDto>();
+        CreateMap<CreateUpdateGridPreferenceDto, GridPreference>();
+        CreateMap<GridPreferenceDto, CreateUpdateGridPreferenceDto>();
     }
 }

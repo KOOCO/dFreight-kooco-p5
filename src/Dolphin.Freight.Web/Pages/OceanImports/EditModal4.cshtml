@@ -149,7 +149,7 @@
             <li class="menu-item ">
                 <a class="nav-link  " href="EditModal3?Id=@Model.Id">@L["Tab:Accounting"]</a>
             </li>
-            <li class="menu-item ">
+            <li class="menu-item active">
                 <a class="nav-link  " href="javascript:void(0)">@L["Tab:Doc"]</a>
             </li>
         </ol>
@@ -161,69 +161,82 @@
             <div class="board-wrap">
                 <abp-card border="Dark">
                     <abp-card-header style="background:#555555;color:#FFFFFF;">
-                        <abp-row>
-                            <abp-column size-md="_9">
-                                <abp-card-title>
-                                    MB/L
-                                    <span id="title0">@Model.OceanImportMbl.MblNo </span>
-                                    @if (@Model.OceanImportMbl.PolName != null)
-                                    {
-                                        <span id="title1" style="font-size:0.8em;">@Model.OceanImportMbl.PolName</span>
-                                    }
-                                    @if (@Model.OceanImportMbl.PolEtd != null)
-                                    {
-                                        <span id="title2" style="font-size:0.8em;">@Html.DisplayFor( Model => @Model.OceanImportMbl.PolEtd ) </span>
-                                    }
-                                    @if (@Model.OceanImportMbl.PodName != null)
-                                    {
-                                        <span id="title3" style="font-size:0.8em;">@Model.OceanImportMbl.PodName</span>
-                                    }
+                        <abp-card-title>
+                            MB/L
+                            <span id="title0">@Model.OceanImportMbl.MblNo </span>
+                            @if (@Model.OceanImportMbl.PolName != null)
+                            {
+                                <span id="title1" style="font-size:0.8em;">@Model.OceanImportMbl.PolName</span>
+                            }
+                            @if (@Model.OceanImportMbl.PolEtd != null)
+                            {
+                                <span id="title2" style="font-size:0.8em;">@Html.DisplayFor( Model => @Model.OceanImportMbl.PolEtd ) </span>
+                            }
+                            @if (@Model.OceanImportMbl.PodName != null)
+                            {
+                                <span id="title3" style="font-size:0.8em;">@Model.OceanImportMbl.PodName</span>
+                            }
 
-                                    @if (Model.OceanImportMbl.PodEta != null)
-                                    {
-                                        <span id="title4" style="font-size:0.8em;">@Html.DisplayFor( Model =>  Model.OceanImportMbl.PodEta ) </span>
-                                    }
-                                    @if (@Model.OceanImportMbl.VesselName != null && @Model.OceanImportMbl.VesselName != "")
-                                    {
-                                        <span id="title5" style="font-size:0.8em;"><i class="fa fa-anchor"></i> @Model.OceanImportMbl.VesselName </span>
+                            @if (Model.OceanImportMbl.PodEta != null)
+                            {
+                                <span id="title4" style="font-size:0.8em;">@Html.DisplayFor( Model =>  Model.OceanImportMbl.PodEta ) </span>
+                            }
+                            @if (@Model.OceanImportMbl.VesselName != null && @Model.OceanImportMbl.VesselName != "")
+                            {
+                                <span id="title5" style="font-size:0.8em;"><i class="fa fa-anchor"></i> @Model.OceanImportMbl.VesselName </span>
 
-                                    }
-                                    @if (Model.OceanImportMbl.MblCarrierId != null)
-                                    {
-                                        <span class="mbl_note _max-w12per">
-                                            <i class="fa fa-ship"></i> @Model.OceanImportMbl.MblCarrierName
-                                        </span>
-                                    }
-                                </abp-card-title>
+                            }
+                            @if (Model.OceanImportMbl.MblCarrierId != null)
+                            {
+                                <span class="mbl_note _max-w12per">
+                                    <i class="fa fa-ship"></i> @Model.OceanImportMbl.MblCarrierName
+                                </span>
+                            }
+                        </abp-card-title>
 
-                            </abp-column>
-                            <abp-column size-md="_3" class="text-end">
-                                <!--
-                                <div class="btn-group dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle"  type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                        請選擇
-                                    </button>
-                                    <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                        <a class='dropdown-item' href='#'>
-                                               <li class="fa fa-lock"></li> 鎖定
-                                            </a>
+                        <div class="btn-group dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                                @L["Display:Function"]
+                            </button>
+                            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
                                 <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-trash"></i> 刪除
+                                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
                                 </a>
-                                        <li class="dropdown-divider"></li>
+                                <div class="dropdown-divider"></div>
                                 <a class='dropdown-item' href='#'>
-                                <li class="fa fa-lock"></li> aaa
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest"]
                                 </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Unpacking/Isolation Instructions"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Electronic Customs Declaration Status"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
+                                </a>
+                            </div>
+                        </div>
 
-                                    </div>
-                                </div>
-                                -->
-                                <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="false" aria-controls="mblDiv">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                            </abp-column>
-
-                        </abp-row>
+                        <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
+                        </button>
                     </abp-card-header>
                     <abp-card-body class="collapse show" id="mblDiv">
 
@@ -248,40 +261,59 @@
                 <br />
                 <abp-card border="Dark" id="hblCard">
                     <abp-card-header id="hblCardHeader" class="@Model.OceanImportHbl.CardColorValue">
-                        <abp-row>
-                            <abp-column size-md="_9">
-                                <abp-card-title>
-                                    HB/L @Model.OceanImportHbl.HblNo
-                                </abp-card-title>
+                        <abp-card-title>
+                            HB/L @Model.OceanImportHbl.HblNo
+                        </abp-card-title>
 
-                            </abp-column>
-                            <abp-column size-md="_3" class="text-end">
-                                <!--
-                                <div class="btn-group dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle"  type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                        請選擇
-                                    </button>
-                                    <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                        <a class='dropdown-item' href='#'>
-                                               <li class="fa fa-lock"></li> 鎖定
-                                            </a>
+                        <div class="btn-group dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" style="position: relative;" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                                @L["Display:Function"]
+                            </button>
+                            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
                                 <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-trash"></i> 刪除
+                                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
                                 </a>
-                                        <li class="dropdown-divider"></li>
+                                <div class="dropdown-divider"></div>
                                 <a class='dropdown-item' href='#'>
-                                <li class="fa fa-lock"></li> aaa
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
                                 </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Proof of Delivery"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Pickup Delivery Instruction"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
+                                    <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
+                                </a>
+                            </div>
+                        </div>
 
-                                    </div>
-                                </div>
-                                -->
-                                <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="false" aria-controls="hblDiv">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                            </abp-column>
-
-                        </abp-row>
+                        <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="true" aria-controls="hblDiv">
+                        </button>
                     </abp-card-header>
                     <abp-card-body class="collapse show" id="hblDiv">
                         <abp-row>

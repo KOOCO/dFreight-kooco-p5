@@ -46,6 +46,8 @@ using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.CurrencySetting;
 using Dolphin.Freight.Common.Memos;
 using Dolphin.Freight.TradePartners.DefaultFreight;
+using Dolphin.Freight.ImportExport.Configuration;
+
 
 namespace Dolphin.Freight.EntityFrameworkCore;
 
@@ -73,6 +75,7 @@ public class FreightDbContext :
     public DbSet<AirImportMawb> AirImportMawbs { get; set; }
     public DbSet<AirImportHawb> AirImportHawbs { get; set; }
     public DbSet<AirExportHawb> AirExportHawbs { get; set; }
+    public DbSet<GridPreference> GridPreference { get; set; }
 
 
     #region Entities from the modules
@@ -746,6 +749,14 @@ public class FreightDbContext :
             b.Property(x => x.GroupComm).HasMaxLength(128);
             b.Property(x => x.LineCode).HasMaxLength(128);
         });
+        builder.Entity<GridPreference>(b =>
+        {
+            b.ToTable(FreightConsts.DbTablePrefix + "GridPreference",
+                FreightConsts.DbSchema);
+            b.ConfigureByConvention();
+
+        });
+
         builder.Entity<Airport>(b =>
         {
             b.ToTable(FreightConsts.DbTablePrefix + "Airports",

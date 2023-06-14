@@ -1,4 +1,5 @@
-﻿using Dolphin.Freight.ImportExport.OceanExports;
+﻿using Dolphin.Freight.ImportExport.AirImports;
+using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
@@ -195,13 +196,39 @@ namespace Dolphin.Freight.ImportExport.AirExports
             );
         }
 
-        public async Task<AirExportHawbDto> GetHblById(Guid Id)
+        public async Task<AirExportHawbDto> GetDocCenterCardById(Guid Id)
         {
-            if (await _repository.FindAsync(x => x.MawbId == Id) is not null) 
+            if (await _repository.AnyAsync(f => f.Id == Id))
             {
-                var data = await _repository.GetAsync(f => f.MawbId == Id);
+                var data = await _repository.GetAsync(f => f.Id == Id);
                 var retVal = ObjectMapper.Map<AirExportHawb, AirExportHawbDto>(data);
+                return retVal;
+            }
+            return new AirExportHawbDto();
+        }
 
+        public async Task<List<AirExportHawbDto>> GetDocCenterCardsById(Guid Id)
+        {
+            var data = await _repository.GetListAsync(f => f.MawbId == Id);
+            var retVal = ObjectMapper.Map<List<AirExportHawb>, List<AirExportHawbDto>>(data);
+
+            return retVal;
+        }
+
+        public async Task<List<AirExportHawbDto>> GetHblCardsById(Guid Id)
+        {
+            var data = await _repository.GetListAsync(f => f.MawbId == Id);
+            var retVal = ObjectMapper.Map<List<AirExportHawb>, List<AirExportHawbDto>>(data);
+
+            return retVal;
+        }
+
+        public async Task<AirExportHawbDto> GetHawbCardById(Guid Id)
+        {
+            if (await _repository.AnyAsync(f => f.Id == Id))
+            {
+                var data = await _repository.GetAsync(f => f.Id == Id);
+                var retVal = ObjectMapper.Map<AirExportHawb, AirExportHawbDto>(data);
                 return retVal;
             }
 

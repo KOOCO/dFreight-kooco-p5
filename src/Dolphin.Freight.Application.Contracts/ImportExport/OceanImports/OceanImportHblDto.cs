@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Volo.Abp.Application.Dtos;
@@ -40,6 +41,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// HB/L號碼
         /// </summary>
+        [Required]
         public string HblNo { get; set; }
         /// <summary>
         /// S/O號碼
