@@ -75,7 +75,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             ViewData["HAVEHBL"] = "N";
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
             QueryHblDto query = new QueryHblDto() { MblId = Id };
-            //OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
+           OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
+            QueryHblDto queryHbl = new QueryHblDto();
             //if (Hid == null)
             //{
             //    if (NewHbl == 1)
@@ -97,7 +98,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             //            OceanExportHbl.CardColorValue = syscodes[0].CodeValue;
             //            CardClass = syscodes[0].CodeValue;
             //        }
-                    
+
             //    }
             //    else 
             //    {
@@ -108,17 +109,18 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             //            IsShowHbl = true;
             //            ViewData["HAVEHBL"] = "Y";
             //        }
-                    
+           //        
             //    }
- 
+            //
             //}
             //else {
-                //queryHbl.Id = Hid;
-                //IsShowHbl = true;
-                //
-                //ViewData["HAVEHBL"] = "Y";
+                queryHbl.Id = Hid;
+                OceanExportHbl = new();
+                IsShowHbl = true;
+
+                ViewData["HAVEHBL"] = "Y";
             //}
-            //TempData["PrintData"] = JsonConvert.SerializeObject(OceanExportMbl);
+            TempData["PrintData"] = JsonConvert.SerializeObject(OceanExportMbl);
         }
         public async Task<IActionResult> OnPostAsync()
         {
