@@ -95,7 +95,7 @@
                     })
 
                     abp.ajax($.extend(true, {
-                        url: abp.appPath + 'api/ImportExport/OceanHBL?Id=' + hawbId,
+                        url: abp.appPath + 'api/ImportExport/OceanExportAccountingHbl?Id=' + hawbId,
                         type: 'GET',
                         dataType: "html",
                     }, ajaxParams)).done(function (partial) {

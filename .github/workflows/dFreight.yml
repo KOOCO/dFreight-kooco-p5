@@ -2,7 +2,7 @@ name: 建置 .NET Core 應用程式並部署到 Web 應用程式 dFreight
 on:
   push:
     branches:
-    - DFreight-186
+    - main
 env:
   AZURE_WEBAPP_NAME: dFreight
   AZURE_WEBAPP_PACKAGE_PATH: src\Dolphin.Freight.Web\published
