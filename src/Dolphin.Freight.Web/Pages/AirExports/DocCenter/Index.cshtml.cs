@@ -1,12 +1,12 @@
+using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.Attachments;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using System;
 using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
 
 namespace Dolphin.Freight.Web.Pages.AirExports.DocCenter
@@ -15,17 +15,24 @@ namespace Dolphin.Freight.Web.Pages.AirExports.DocCenter
     {
         public Guid Id { get; set; }
         public List<AttachmentDto> FileList { get; set; }
+        public AirExportMawbDto AirExportMawbDto { get; set; }
+        public AirExportHawbDto AirExportHawbDto { get; set; }
 
         private readonly int fileType = 10;
         private readonly string url = "/AirExports/DocCenter/";
 
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IAttachmentAppService _attachmentAppService;
+        private readonly IAirExportHawbAppService _airExportHawbAppService;
+        private readonly IAirExportMawbAppService _airExportMawbAppService;
 
-        public IndexModel(IWebHostEnvironment webHostEnvironment, IAttachmentAppService attachmentAppService)
+        public IndexModel(IWebHostEnvironment webHostEnvironment, IAttachmentAppService attachmentAppService, 
+                        IAirExportHawbAppService airExportHawbAppService, IAirExportMawbAppService airExportMawbAppService)
         {
             _webHostEnvironment = webHostEnvironment;
             _attachmentAppService = attachmentAppService;
+            _airExportHawbAppService = airExportHawbAppService;
+            _airExportMawbAppService = airExportMawbAppService;
         }
 
         public virtual string GetFileSize(string filename)
@@ -57,42 +64,83 @@ namespace Dolphin.Freight.Web.Pages.AirExports.DocCenter
                 QueryType = fileType,
             };
 
+            AirExportMawbDto = await _airExportMawbAppService.GetAsync(Id);
             FileList = await _attachmentAppService.QueryListAsync(dto);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostUploader(IFormFile formFile, Guid id)
+        public async Task<IActionResult> OnPostUploader(IFormFile formFile, Guid id, Guid mawbId)
         {
-            if (formFile == null)
+            if (mawbId == Guid.Empty)
             {
+                if (formFile == null)
+                {
+                    return Redirect(url + id);
+                }
+
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload", "AirExports", "DocCenter", id.ToString());
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    DirectoryInfo folder = Directory.CreateDirectory(uploadsFolder);
+                }
+
+                string filePath = Path.Combine(uploadsFolder, formFile.FileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    formFile.CopyTo(fileStream);
+                }
+
+                string filename = formFile.FileName;
+                CreateUpdateAttachmentDto dto = new CreateUpdateAttachmentDto()
+                {
+                    FileName = filename,
+                    ShowName = filename,
+                    Ftype = fileType,
+                    Fid = id,
+                    Size = formFile.Length / 1024,
+                };
+
+                await _attachmentAppService.CreateAsync(dto);
                 return Redirect(url + id);
             }
-
-            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload", "AirExports", "DocCenter", id.ToString());
-            if (!Directory.Exists(uploadsFolder))
+            else
             {
-                DirectoryInfo folder = Directory.CreateDirectory(uploadsFolder);
+                if (mawbId == Guid.Empty)
+                {
+                    mawbId = Id;
+                }
+
+                if (formFile == null)
+                {
+                    return Redirect(url + mawbId);
+                }
+
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload", "AirExports", "DocCenter", mawbId.ToString());
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    DirectoryInfo folder = Directory.CreateDirectory(uploadsFolder);
+                }
+
+                string filePath = Path.Combine(uploadsFolder, formFile.FileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    formFile.CopyTo(fileStream);
+                }
+
+                string filename = formFile.FileName;
+                CreateUpdateAttachmentDto dto = new CreateUpdateAttachmentDto()
+                {
+                    FileName = filename,
+                    ShowName = filename,
+                    Ftype = fileType,
+                    Fid = id,
+                    Size = formFile.Length / 1024,
+                };
+
+                await _attachmentAppService.CreateAsync(dto);
+                return Redirect(url + mawbId);
             }
-
-            string filePath = Path.Combine(uploadsFolder, formFile.FileName);
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                formFile.CopyTo(fileStream);
-            }
-
-            string filename = formFile.FileName;
-            CreateUpdateAttachmentDto dto = new CreateUpdateAttachmentDto()
-            {
-                FileName = filename,
-                ShowName = filename,
-                Ftype = fileType,
-                Fid = id,
-                Size = formFile.Length / 1024,
-            };
-
-            await _attachmentAppService.CreateAsync(dto);
-            return Redirect(url + id);
         }
 
         public async Task<IActionResult> OnGetDownload(Guid id, string filename)
@@ -122,26 +170,49 @@ namespace Dolphin.Freight.Web.Pages.AirExports.DocCenter
             }
         }
 
-        public async Task<IActionResult> OnPostDeleteAsync(Guid id, Guid fileId, string filename)
+        public async Task<IActionResult> OnPostDeleteAsync(Guid id, Guid fileId, Guid mawbId, string filename)
         {
-            if (filename == null)
+            if(mawbId == Guid.Empty)
             {
+                if (filename == null)
+                {
+                    return Redirect(url + id);
+                }
+
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload", "AirExports", "DocCenter", id.ToString());
+
+                try
+                {
+                    System.IO.File.Delete(Path.Combine(uploadsFolder, filename));
+                }
+                catch (IOException)
+                {
+
+                }
+                await _attachmentAppService.DeleteAsync(fileId);
                 return Redirect(url + id);
             }
-
-            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload", "AirExports", "DocCenter", id.ToString());
-
-            try
+            else
             {
+                if (filename == null)
+                {
+                    return Redirect(url + mawbId);
+                }
+
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload", "AirExports", "DocCenter", mawbId.ToString());
+
+                try
+                {
+                    System.IO.File.Delete(Path.Combine(uploadsFolder, filename));
+
+                }
+                catch (IOException)
+                {
+
+                }
                 await _attachmentAppService.DeleteAsync(fileId);
-                System.IO.File.Delete(Path.Combine(uploadsFolder, filename));
+                return Redirect(url + mawbId);
             }
-            catch (IOException)
-            {
-
-            }
-
-            return Redirect(url + id);
         }
 
         // Get content type
@@ -166,7 +237,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports.DocCenter
                     {".jpg", "image/jpeg"},
                     {".jpeg", "image/jpeg"},
                     {".gif", "image/gif"},
-                    {".csv", "text/csv"}
+                    {".csv", "text/csv"},
+                    {".html", "text/html" }
                 };
         }
     }

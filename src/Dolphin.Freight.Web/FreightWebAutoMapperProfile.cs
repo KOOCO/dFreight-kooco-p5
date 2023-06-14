@@ -28,6 +28,8 @@ using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.CurrencySetting;
 //using Dolphin.Freight.Accounting.Payment;
 using Volo.Abp.AutoMapper;
+using static Dolphin.Freight.Web.Pages.ReportScreen.VolumeProfileReportModel;
+using Dolphin.Freight.ReportLog;
 
 namespace Dolphin.Freight.Web;
 

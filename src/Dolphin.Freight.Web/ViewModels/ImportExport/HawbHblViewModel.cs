@@ -1,14 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Dolphin.Freight.ImportExport.AirImports;
+﻿using Dolphin.Freight.ImportExport.AirImports;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
+using Dolphin.Freight.ImportExport.AirExports;
+using Dolphin.Freight.ImportExport.OceanExports;
+using Dolphin.Freight.ImportExport.OceanImports;
+using Dolphin.Freight.ImportExport.Attachments;
+using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Web.Pages.AirImports;
 using Dolphin.Freight.ImportExport.Attachments;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
-using Dolphin.Freight.ImportExport.OceanExports;
-using Dolphin.Freight.ImportExport.AirImports;
 
 namespace Dolphin.Freight.Web.ViewModels.ImportExport
 {
@@ -18,15 +23,19 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
+        public string ShowMsg { get; set; }
+        [BindProperty]
+        public AirImportHawbDto HawbModel { get; set; }
+        public OceanExportHblDto OceanExportHbl { get; set; }
+        public OceanImportHblDto OceanImportHbl { get; set; }
+        public AirExportHawbDto AirExportHawbDto { get; set; }
         public Guid Hid { get; set; }
         [BindProperty(SupportsGet = true)]
-        public string ShowMsg { get; set; }
         public List<AttachmentDto> FileList { get; set; }
 
-        [BindProperty]
-        public OceanExportHblDto HawbModel { get; set; }
-
         public OceanExportHblDto OceanExportHblDto { get; set; }
+        public AirImportHawbDto AirImportHawbDto { get; set; }
+
         [BindProperty(SupportsGet = true)]
         public IList<InvoiceDto> m0invoiceDtos { get; set; }
 
@@ -39,6 +48,7 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> AirportLookupList { get; set; }
         public List<SelectListItem> PackageUnitLookupList { get; set; }
+        public List<SelectListItem> WtValOtherList { get; set; }
         public virtual string GetFileSize(string filename)
         {
             string uploadsFolder = Path.Combine("mediaUpload", "AirImports", "DocCenter", Id.ToString());

@@ -1,0 +1,245 @@
+﻿@using Dolphin.Freight.AirExports;
+@using Dolphin.Freight.Localization;
+@using Dolphin.Freight.Web.Pages.Shared.Memos;
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Dolphin.Freight.ImportExport.Attachments
+@using Microsoft.Extensions.Localization;
+@using Volo.Abp.Account.Localization
+@model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
+@inject IStringLocalizer<FreightResource> L
+
+<abp-card id="hblCard">
+    <abp-card-header style="background:#555555;color:#FFFFFF;">
+        <abp-card-title>
+            HAWB - @Model.AirExportHawbDto.HawbNo
+        </abp-card-title>
+
+        <div class="btn-group dropdown">
+            <button class="btn btn-secondary dropdown-toggle" style="position: relative;" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                @L["Display:Function"]
+            </button>
+            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-lock"></i> @L["Btn:Block"]
+                </a>
+        <li class="dropdown-divider"></li>
+        <a class='dropdown-item' href='#'>
+            <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
+        </a>
+        <a class='dropdown-item' href='#'>
+            <i class="fa fa-file-text-o"></i> @L["Btn:Print HAWB"]
+        </a>
+        <a class='dropdown-item' href='#'>
+            <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
+        </a>
+        <a class='dropdown-item' href='#'>
+            <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
+        </a>
+        <a class='dropdown-item' href='#'>
+            <i class="fa fa-file-text-o"></i> @L["Btn:Certificate of Origin"]
+        </a>
+        <a class='dropdown-item' href='#'>
+            <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
+        </a>
+        <a class='dropdown-item' href='#'>
+            <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
+        </a>
+        <a class='dropdown-item' href='#'>
+            <i class="fa fa-file-text-o"></i> @L["Btn:Package Label"]
+        </a>
+        <a class='dropdown-item' href='#'>
+            <i class="fa fa-file-text-o"></i> @L["Btn:Package Label List"]
+        </a>
+        <a class='dropdown-item' href='#'>
+            <i class="fa fa-file-text-o"></i> @L["Btn:Pre-Alert"]
+        </a>
+        <a class='dropdown-item' href='#'>
+            <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
+        </a>
+        <a class='dropdown-item' href='#'>
+            <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
+        </a>
+        <li class="dropdown-divider"></li>
+        <a class='dropdown-item' href='#'>
+            <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
+        </a>
+        <li class="dropdown-divider"></li>
+        <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
+            <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
+        </a>
+        </div>
+        </div>
+
+        <button type="button" class="btn btn-collapse collapsed" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="true" aria-controls="hblDiv">
+        </button>
+    </abp-card-header>
+    <abp-card-body class="collapse show" id="hblDiv">
+        <abp-row>
+            <abp-column>
+                <abp-button id="add-hawb-file_@Model.AirExportHawbDto.HawbNo"
+                            text=@L["Display:Button:New"]
+                            icon="plus"
+                            button-type="Outline_Secondary" />
+            </abp-column>
+        </abp-row>
+        <abp-row class="default-freight-block">
+            <abp-column>
+                <table class="table file-list">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="Column">@L["Actions"]</th>
+                            <th scope="Column">@L["Display:TradePartner:Document:THead:AttachmentName"]</th>
+                            <th scope="Column">@L["Display:TradePartner:Document:THead:AttachmentUploadDate"]</th>
+                            <th scope="Column">@L["Display:TradePartner:Document:THead:AttachmentSize"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (AttachmentDto dto in Model.FileList)
+                        {
+                            <tr>
+                                <th scope="Row">
+                                    <div class="btn-group dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop_0" data-bs-toggle="dropdown">
+                                            @L["Actions"]
+                                        </button>
+                                        <div class="dropdown-menu" id="ActionDrop_hawb_div_0">
+                                            <a class="dropdown-item button-hawb-download" href="javascript:void(0)" onclick="fileDownload('@dto.FileName')">
+                                                <i class="fa fa-file"></i>下載
+                                            </a>
+                                            <a class="dropdown-item button-hawb-delete" href="javascript:void(0)" onclick="fileDelete('@dto.FileName', '@dto.Id')" data-id="@dto.Id">
+                                                <i class="fa fa-trash"></i> 刪除
+                                            </a>
+                                        </div>
+                                    </div>
+                                </th>
+                                <td>@dto.FileName</td>
+                                <td>@dto.CreationTime</td>
+                                <td>@Model.GetFileSize(dto.FileName)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div style="display:none">
+                    <form submit-button="true" enctype="multipart/form-data" id="form-hawb-uploader_@Model.AirExportHawbDto.HawbNo">
+                        <input type="text" name="id" id="hawbId" value="@Model.AirExportHawbDto.Id" />
+                        <input type="file" name="formFile" id="hawbFileUpload" />
+                        <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Display:Button:Submit"]</abp-button>
+                    </form>
+                    <form method="get" asp-page-handler="download" id="form-download_@Model.AirExportHawbDto.HawbNo" target="_blank">
+                        <input type="text" name="id" value="@Model.AirExportHawbDto.Id" />
+                        <input type="text" name="filename" id="hawbFileName" />
+                        <button>Send</button>
+                    </form>
+                    <form method="post" asp-page-handler="delete" id="form-delete_@Model.AirExportHawbDto.HawbNo">
+                        <input type="text" name="id" value="@Model.AirExportHawbDto.Id" />
+                        <input type="text" name="fileId" value="" />
+                        <input type="text" name="filename" id="hawbFileDelete" />
+                        <button>Send</button>
+                    </form>
+                </div>
+
+            </abp-column>
+        </abp-row>
+    </abp-card-body>
+</abp-card>
+<script>
+    $(document).ready(function () {
+        $(document).on('click', '#add-hawb-file_@Model.AirExportHawbDto.HawbNo', function () {
+            $('#form-hawb-uploader_@Model.AirExportHawbDto.HawbNo [type = "file"]').click();
+        });
+        $(document).on('change', '#form-hawb-uploader_@Model.AirExportHawbDto.HawbNo [type = "file"]', function (e) {
+            debugger;
+            console.log(e);
+            e.preventDefault();
+
+            var urlPath = window.location.href;
+            var mawbId = urlPath.substr(urlPath.lastIndexOf("/") + 1, urlPath.length);
+            sessionStorage.setItem("HawbNo", '@Model.AirExportHawbDto.HawbNo');
+
+            var formData = new FormData();
+            formData.append("formFile", $('#hawbFileUpload')[0].files[0]);
+            formData.append("id", $('#hawbId').val());
+            formData.append("mawbId", mawbId);
+
+            // Send the AJAX request
+            $.ajax({
+                url: '/AirExports/DocCenter/' + $('#hawbId').val() + '/uploader',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    window.location.reload();
+                },
+                error: function (xhr, status, error) {
+                    window.location.reload();
+                }
+            });
+
+            //$('#form-hawb-uploader').submit();
+        });
+    })
+
+    function fileDownload(fileName) {
+        var hawbId = $('#hawbId').val();
+        var url = '/AirExports/DocCenter/' + $('#hawbId').val() + '/download?id=' + hawbId + '&filename=' + fileName;
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            processData: false,
+            contentType: false,
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (data) {
+                var blob = new Blob([data]);
+
+                var link = $('<a />', {
+                    href: window.URL.createObjectURL(blob),
+                    download: fileName
+                });
+
+                // Trigger the download by simulating a click
+                link[0].click();
+
+                // Clean up resources
+                window.URL.revokeObjectURL(link[0].href);
+            },
+            error: function (xhr, status, error) {
+                window.location.reload();
+            }
+        });
+    }
+    function getFilenameFromResponse(xhr) {
+        var disposition = xhr.getResponseHeader('Content-Disposition');
+        if (disposition && disposition.indexOf('attachment') !== -1) {
+            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+            var matches = filenameRegex.exec(disposition);
+            if (matches != null && matches[1]) {
+                return matches[1].replace(/['"]/g, '');
+            }
+        }
+        return 'file';
+    }
+
+    function fileDelete(fileName, fileId) {
+        debugger;
+        var hawbId = $('#hawbId').val();
+        var urlPath = window.location.href;
+        var mawbId = urlPath.substr(urlPath.lastIndexOf("/") + 1, urlPath.length);
+
+        $.ajax({
+            url: '/AirExports/DocCenter/' + $('#hawbId').val() + '/delete',
+            type: 'POST',
+            data: { id: hawbId, filename: fileName, fileId: fileId, mawbId: mawbId },
+            success: function (response) {
+                window.location.reload();
+            },
+            error: function (xhr, status, error) {
+                // File deletion error
+                console.error('File deletion failed.');
+            }
+        });
+    }
+</script>

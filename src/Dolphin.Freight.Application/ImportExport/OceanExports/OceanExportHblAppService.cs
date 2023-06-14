@@ -1,5 +1,4 @@
 ﻿using AutoMapper.Internal.Mappers;
-using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.Permissions;
 using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.Substations;
@@ -234,6 +233,18 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             var Hbl = await _repository.GetAsync(query.HblId.Value);
             Hbl.IsLocked = !Hbl.IsLocked;
             await _repository.UpdateAsync(Hbl);
+        }
+
+        public async Task<OceanExportHblDto> GetHawbCardById(Guid Id)
+        {
+            if (await _repository.AnyAsync(f => f.Id == Id))
+            {
+                var data = await _repository.GetAsync(f => f.Id == Id);
+                var retVal = ObjectMapper.Map<OceanExportHbl, OceanExportHblDto>(data);
+                return retVal;
+            }
+
+            return new OceanExportHblDto();
         }
     }
 }

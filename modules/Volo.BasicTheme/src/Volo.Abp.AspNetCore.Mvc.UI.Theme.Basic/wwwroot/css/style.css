@@ -3937,8 +3937,8 @@ aside ul li > ul {
                 right: 50%;
             }
 
-            .submenu > ol > li:first-child > a {
-                opacity: 1;
+            .submenu > ol > li.active > a {
+                opacity: 1 !important;
             }
 
             .submenu > ol > li > a {

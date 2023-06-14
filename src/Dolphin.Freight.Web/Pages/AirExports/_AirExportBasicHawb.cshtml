@@ -1,0 +1,516 @@
+﻿@using Dolphin.Freight.AirExports;
+@using Dolphin.Freight.Localization;
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.Extensions.Localization;
+@using Volo.Abp.Account.Localization
+@model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
+
+@inject IStringLocalizer<FreightResource> L
+<!-- HABL Card -->
+<abp-card class="card board-item" id="hblCard">
+    <!-- 標題區域 -->
+    <abp-card-header style="background:#555555;color:#FFFFFF;">
+        <abp-card-title>
+            HAWB Information - @Model.AirExportHawbDto.HawbNo
+        </abp-card-title>
+        <div class="btn-group dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                @L["Display:Function"]
+            </button>
+            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-files-o"></i> @L["Btn:Copy"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["GoFreight EDI"]
+                </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-files-o"></i> @L["Btn:File Package"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Print MAWB"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest (Comprehensive)"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest (by agent)"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:S/O Confirmation"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:MAWB Packaging Label"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:All HAWB Packaging Labels"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Package Label List"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Dispatch List"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Security Endorsement"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:On Hand Report"]
+                </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
+                </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
+                </a>
+            </div>
+        </div>
+        <button type="button" id="btnHawbCollapse" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#hawbDiv" aria-expanded="true" aria-controls="hawbDiv">
+        </button>
+    </abp-card-header>
+    <!-- Mawb資訊欄 -->
+    <abp-card-body id="hawbDiv" class="card-body collapse show">
+        <!--第一列-->
+        <abp-row>
+            <abp-input asp-for="@Model.Id" type="hidden" />
+            <abp-input asp-for="@Model.AirExportHawbDto.Id" type="hidden" />
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.HawbNo" required size="Small" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-select asp-for="@Model.AirExportHawbDto.BookingNo" asp-items="@Model.TradePartnerLookupList" size="Small">
+                </abp-select>
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.BookingDate" size="Small" type="text" abp-data-datepicker="false" readonly="true" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.ITNNo" size="Small" type="text" abp-data-datepicker="false" />
+            </abp-column>
+        </abp-row>
+        <!--第二列-->
+        <abp-row>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.QuotationId" size="Small" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-select asp-for="@Model.AirExportHawbDto.ActualShippedr" asp-items="@Model.TradePartnerLookupList" size="Small">
+                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                </abp-select>
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.Customer" size="Small" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.BillTo" size="Small" />
+            </abp-column>
+        </abp-row>
+        <!--第三列-->
+        <abp-row>
+            <abp-column size-md="_3">
+                <abp-select asp-for="@Model.AirExportHawbDto.ConsigneeId" asp-items="@Model.TradePartnerLookupList" size="Small">
+                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                </abp-select>
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-select asp-for="@Model.AirExportHawbDto.Notify" asp-items="@Model.TradePartnerLookupList" size="Small">
+                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                </abp-select>
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-select asp-for="@Model.AirExportHawbDto.OverseaAgent" asp-items="@Model.TradePartnerLookupList" size="Small">
+                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                </abp-select>
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.IssuingCarrier" size="Small" />
+            </abp-column>
+        </abp-row>
+        <!--第四列-->
+        <abp-row>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.Trucker" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.Sales" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.OP" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.SubAgentAwb" />
+            </abp-column>
+        </abp-row>
+        <!--第五列-->
+        <abp-row>
+            <abp-column size-md="_3">
+                <abp-select asp-for="@Model.AirExportHawbDto.Departure" asp-items="@Model.AirportLookupList" size="Small">
+                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                </abp-select>
+            </abp-column>
+            <abp-column size-md="_3">
+                <label>Destination</label>
+                <input asp-for="@Model.AirExportHawbDto.Destination" class="form-control" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.CargoPickup" size="Small" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-select asp-for="@Model.AirExportHawbDto.DeliveryTo" asp-items="@Model.TradePartnerLookupList" size="Small">
+                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                </abp-select>
+            </abp-column>
+        </abp-row>
+        <!--第六列-->
+        <abp-row>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.CargoType" size="Small" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.SalesType" size="Small" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.ShipType" size="Small" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.FinalEta" size="Small" />
+            </abp-column>
+        </abp-row>
+        <!--第七列-->
+        <abp-row>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.DVCarriage" size="Small" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.DVCustoms" size="Small" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-row>
+                    <abp-column size-md="_3">
+                        WT/VAL
+                    </abp-column>
+                    <abp-column>
+                        <abp-radio asp-for="@Model.AirExportHawbDto.WTVAL" asp-items="@Model.WtValOtherList" inline="true" />
+                    </abp-column>
+                </abp-row>
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-row>
+                    <abp-column size-md="_3">
+                        Other
+                    </abp-column>
+                    <abp-column>
+                        <abp-radio asp-for="@Model.AirExportHawbDto.Other" asp-items="@Model.WtValOtherList" inline="true" />
+                    </abp-column>
+                </abp-row>
+            </abp-column>
+        </abp-row>
+        <!--第八列-->
+        @*<abp-row>
+        <abp-column size-md="_3">
+        <abp-input asp-for="@Model.AirExportHawbDto.Insure" size="Small" />
+        </abp-column>
+        </abp-row>*@
+        <!--Route區塊-->
+        <!--第九列 Package, Weight Settings Area-->
+        <abp-row>
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Package</th>
+                                    <td><input asp-for="@Model.AirExportHawbDto.Package" class="form-control" /></td>
+                                    <td colspan="3">
+                                        <select asp-for="@Model.AirExportHawbDto.PackageUnit" class="form-select">
+                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                                            @foreach (var packageUnit in Model.PackageUnitLookupList)
+                                            {
+                                                <option value=@packageUnit.Value>@packageUnit.Text</option>
+                                            }
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Buying Rate</th>
+                                    <td><input asp-for="@Model.AirExportHawbDto.BuyingRate" class="form-control" /></td>
+                                    <td>per</td>
+                                    <td>
+                                        <select asp-for="@Model.AirExportHawbDto.BuyingRateUnit" asp-items="Html.GetEnumSelectList(typeof(RateUnitType))" class="form-select form-control">
+                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                                        </select>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Selling Rate</th>
+                                    <td><input asp-for="@Model.AirExportHawbDto.SellingRate" class="form-control" /></td>
+                                    <td>per</td>
+                                    <td>
+                                        <select asp-for="@Model.AirExportHawbDto.SellingRateUnit" asp-items="Html.GetEnumSelectList(typeof(RateUnitType))" class="form-select form-control">
+                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                                        </select>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Volume Weight</th>
+                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeKG" class="form-control" /></td>
+                                    <td>KG</td>
+                                    <td>
+                                        <input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeLB" class="form-control" />
+                                    </td>
+                                    <td>CBM</td>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <td colspan="4"><abp-button size="Small" button-type="Primary" text="Set Dimensions" disabled="true" icon="pencil-square" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>KG</th>
+                                    <th>LB</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Gross Weight</th>
+                                    <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprKG" class="form-control" id="GrossWeightKg" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprLB" class="form-control" id="GrossWeightLb" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprAmount" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <th>Chargeable Weight</th>
+                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprKG" class="form-control" id="ChargeableWeightKg" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprLB" class="form-control" id="ChargeableWeightLb" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprAmount" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <th>AWB Chargeable Weight</th>
+                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeKG" class="form-control" id="AwbChargeableWeightKg" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeLB" class="form-control" id="AwbChargeableWeightLb" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeAmount" class="form-control" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </abp-row>
+        <!--第10列-->
+        <abp-row>
+            <abp-column size-md="_3">
+                <abp-select asp-for="@Model.AirExportHawbDto.Incoterms" asp-items="Html.GetEnumSelectList(typeof(IncotermsType))" class="form-select-sm form-control">
+                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                </abp-select>
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-select asp-for="@Model.AirExportHawbDto.ServiceTermStart" asp-items="Html.GetEnumSelectList(typeof(ServiceTermType))" class="form-select-sm form-control">
+                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                </abp-select>
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-select asp-for="@Model.AirExportHawbDto.ServiceTermEnd" asp-items="Html.GetEnumSelectList(typeof(ServiceTermType))" class="form-select-sm form-control">
+                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                </abp-select>
+            </abp-column>
+        </abp-row>
+        <!--第11列 Awb取消Checkbox, IsEcom-->
+        <abp-row>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.AWBCancelled" id="checkboxAwbCancelled" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.CanceledBy" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.AirExportHawbDto.ReasonForCancel" class="form-select-sm form-control" id="AwbCancelledDate" />
+            </abp-column>
+        </abp-row>
+
+
+        <!--第12列 Awb取消Area-->
+        <abp-row>
+            <abp-column size-md="_12">
+                <abp-input asp-for="@Model.AirExportHawbDto.PONo" id="AwbCancelledOpId" />
+            </abp-column>
+        </abp-row>
+        <abp-row class="mt-4">
+            <abp-column size-md="_2">
+                <h3>Commodity</h3>
+            </abp-column>
+            <abp-column size-md="_1">
+                <button class="btn btn-success me-md-2" type="button" id="addCommodityBtn" data-busy-text="Processing...">+</button>
+            </abp-column>
+            <abp-column size-md="_1">
+                <button class="btn btn-danger me-md-2" type="button" id="deleteBtn">-</button>
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column size-md="_12">
+                <div class="table-responsive">
+                    <abp-table border="1" class="w-100">
+                        <thead border="1">
+                        <th></th>
+                        <th>Commodity Description</th>
+                        <th>HTS Code</th>
+                        <th>P.O. No.</th>
+                        </thead>
+                        <tbody id="commodityBody">
+                        </tbody>
+                    </abp-table>
+                </div>
+            </abp-column>
+        </abp-row>
+        <abp-row class="mt-4">
+            <abp-column size-md="_12">
+                <h3>Warhouse receipt list</h3>
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column size-md="_12">
+                <div class="table-responsive">
+                    <abp-table border="1" class="w-100">
+                    <thead border="1">
+                    <th><input type="checkbox" /></th>
+                    <th>Receipt No</th>
+                    <th>Length</th>
+                    <th>Width</th>
+                    <th>Height</th>
+                    <th>Dimention</th>
+                    <th>TOTAL PCS</th>
+                    <th>Available PCS
+                    <th>Allocated PCS</th>
+                    <th>Unit</th>
+                    <th>Gross Weight</th>
+                    <th>Volume</th>
+                    <th>Measurement</th>
+                    </th>
+                    </thead>
+                    <tbody id="warhouseBody">
+                        <tr>
+                            <td>Load from warhouse</td>
+                            <td><input type="checkbox" />Auto-sync package, weight and measuremennts</td>
+                            <td><input type="checkbox" />Auto-sync dimentions</td>
+                        </tr>
+                    </tbody>
+                </abp-table>
+                </div>
+            </abp-column>
+        </abp-row>
+        <abp-row class="mt-4">
+            <abp-column size-md="_6">
+                <h3>Mark</h3>
+                <abp-input asp-for="@Model.AirExportHawbDto.Mark" />
+            </abp-column>
+            <abp-column size-md="_6">
+                <h3>Nature and Quantity Of Goods</h3>
+                <abp-input asp-for="@Model.AirExportHawbDto.NatureAndQuantityOfGoods" />
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column size-md="_12">
+                <h3>Handling Information</h3>
+                <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation" />
+            </abp-column>
+        </abp-row>
+        <abp-row class="mt-4">
+            <abp-column size-md="_3">
+                <h3>Other Charges</h3>
+            </abp-column>
+            <abp-column size-md="_1">
+                <button class="btn btn-success me-md-2" type="button" id="addOtherChargesBodyBtn" data-busy-text="Processing...">+</button>
+            </abp-column>
+            <abp-column size-md="_1">
+                <button class="btn btn-danger me-md-2" type="button" id="deleteOtherChargesBtn">-</button>
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column size-md="_12">
+                <div class="table-responsive">
+                    <abp-table border="1" class="w-100">
+                        <thead border="1">
+                        <th><input type="checkbox" /></th>
+                        <th>Carrier Agent</th>
+                        <th>Collect/Prepaid</th>
+                        <th>Charge Item</th>
+                        <th>Description</th>
+                        <th>Charge Amount</th>
+                        </thead>
+                        <tbody id="otherChargesBody">
+                        </tbody>
+                    </abp-table>
+                </div>
+            </abp-column>
+        </abp-row>
+        <abp-row class="mt-4">
+            <abp-column>
+                <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                    More
+                </abp-card-header>
+                <abp-card>
+                    <abp-card-body>
+                        <div class="table-responsive">
+                            <abp-table>
+                            <thead>
+                            <th></th>
+                            <th>Valuation</th>
+                            <th>Tax</th>
+                            <th>Currency Conversion Rate</th>
+                            <th>CC Charges in Dest. Currency</th>
+                            <th>Charges at Destination</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Prepaid</td>
+                                    <td><input type="text" /></td>
+                                    <td><input type="text" /></td>
+                                    <td><input type="text" /></td>
+                                    <td><input type="text" /></td>
+                                    <td><input type="text" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Collect</td>
+                                    <td><input type="text" /></td>
+                                    <td><input type="text" /></td>
+                                    <td><input type="text" /></td>
+                                    <td><input type="text" /></td>
+                                    <td><input type="text" /></td>
+                                </tr>
+                            </tbody>
+                        </abp-table>
+                        </div>
+                    </abp-card-body>
+                </abp-card>
+            </abp-column>
+        </abp-row>
+    </abp-card-body>
+</abp-card>

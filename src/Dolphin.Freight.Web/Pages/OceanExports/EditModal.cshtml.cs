@@ -25,6 +25,10 @@ using static Dolphin.Freight.Permissions.SettingsPermissions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Dolphin.Freight.Web.ViewModels.Reports;
 using Dolphin.Freight.Web.ViewModels.Hbl;
+using Volo.Abp.ObjectMapping;
+using Dolphin.Freight.ImportExport.OceanImports;
+using static Dolphin.Freight.Permissions.OceanExportPermissions;
+using QueryHblDto = Dolphin.Freight.ImportExport.OceanExports.QueryHblDto;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
 {
@@ -48,6 +52,10 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         [BindProperty]
         public CreateUpdateOceanExportMblDto OceanExportMbl { get; set; }
         [BindProperty]
+        public OceanExportMblDto OceanExportMblDto { get; set; }
+        [BindProperty]
+        public OceanExportHblDto OceanExportHblDto { get; set; }
+        [BindProperty]
         public CreateUpdateOceanExportHblDto OceanExportHbl { get; set; }
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
         private readonly IOceanExportHblAppService _oceanExportHblAppService;
@@ -61,13 +69,13 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             _sysCodeAppService = sysCodeAppService;
             _generatePdf = generatePdf;
         }
+
         public async Task OnGetAsync()
         {
             ViewData["HAVEHBL"] = "N";
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
             QueryHblDto query = new QueryHblDto() { MblId = Id };
-            OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
-            QueryHblDto queryHbl = new QueryHblDto();
+            //OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
             //if (Hid == null)
             //{
             //    if (NewHbl == 1)
@@ -105,8 +113,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
  
             //}
             //else {
-                queryHbl.Id = Hid;
-                OceanExportHbl = new();
+                //queryHbl.Id = Hid;
                 //IsShowHbl = true;
                 //
                 //ViewData["HAVEHBL"] = "Y";
@@ -115,37 +122,24 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            if (Hid != null && Hid != Guid.Empty) await _oceanExportHblAppService.UpdateAsync(Hid.Value, OceanExportHbl);
-            else 
+            var updateItem = ObjectMapper.Map<OceanExportMblDto, CreateUpdateOceanExportMblDto>(OceanExportMblDto);
+            await _oceanExportMblAppService.UpdateAsync(OceanExportMblDto.Id, updateItem);
+
+            if (OceanExportHblDto is not null)
             {
-                if (NewHbl == 1) {
-                    OceanExportHbl.MblId = Id;
-                    if (OceanExportHbl.HblNo == null || OceanExportHbl.HblNo.Equals(""))
-                    {
-                        OceanExportHbl.HblNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "OceanExportHbl_HblNo" });
-                    }
-                    /*
-                    QueryDto query = new QueryDto();
-                    query.QueryType = "CardColorId";
-                    var syscodes = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(query);
-                    if (syscodes != null && syscodes.Count > 0)
-                    {
-                        var syscode = syscodes[0];
-                        OceanExportHbl.CardColorId = syscode.Id;
-                    }*/
-                    var hbl = await _oceanExportHblAppService.CreateAsync(OceanExportHbl);
-                    Hid = hbl.Id;
-                } 
-            } 
-            var boceanExportMbl = await _oceanExportMblAppService.GetAsync(Id);
-            if (boceanExportMbl != null) 
-            {
-                OceanExportMbl.PostDate = boceanExportMbl.PostDate;
-                OceanExportMbl.FilingNo = boceanExportMbl.FilingNo;
-                await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMbl);
+                OceanExportHbl.MblId = OceanExportMblDto.Id;
+
+                if (OceanExportHbl.Id != Guid.Empty)
+                {
+                    await _oceanExportHblAppService.UpdateAsync(OceanExportHbl.Id, OceanExportHbl);
+                }
+                else
+                {
+                    await _oceanExportHblAppService.CreateAsync(OceanExportHbl);
+                }
             }
 
-            return new ObjectResult(new { status = "success",Hid = Hid,Id=Id });
+            return new ObjectResult(new { id = OceanExportMblDto.Id });
         }
     }
 }
