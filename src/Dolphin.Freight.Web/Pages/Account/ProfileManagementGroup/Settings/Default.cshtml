@@ -1,23 +1,22 @@
-﻿@using Volo.Abp.Account.Localization
+﻿@using Dolphin.Freight.Localization;
+@using Microsoft.Extensions.Localization;
+@using Volo.Abp.Account.Localization
 @using Volo.Abp.Users
 @using Microsoft.AspNetCore.Mvc.Localization
-@inject IHtmlLocalizer<AccountResource> L
+@inject IStringLocalizer<FreightResource> L
 @inject ICurrentUser CurrentUser
 @model Volo.Abp.Account.Web.Pages.Account.Components.ProfileManagementGroup.Settings.AccountProfileSettingsManagementGroupViewComponentCustom.SettingsInfoModel
 
-<h4>Settings</h4>
+@section scripts{
+    <abp-script src="/client-proxies/identity-proxy.js" />
+}
+
+<h4>@L["Setup"]</h4>
 <hr />
 <form id="SettingsForm">
-    <div class="mb-3">
-        <label asp-for="Language" class="form-label"></label>
-        <div class="input-group">
-            <select class="form-control" style="cursor:pointer; appearance:auto">
-                <option>English</option>
-                <option>繁體中文</option>
-                <option>简体中文</option>
-            </select>
-        </div>
-    </div>
+    <abp-select asp-for="@Model.Language" asp-items="@Model.LanguageLookupList" style="cursor:pointer"></abp-select>
+    <input type="hidden" value="@CurrentUser.Id" id="userId" />
+
     <abp-button type="button" class="btn btn-cancel" text="Cancel" />
-    <abp-button type="submit" button-type="Primary" text="Save Changes" />
+    <abp-button type="submit" button-type="Primary" text="Save Changes" disabled="true" id="btnSave" />
 </form>

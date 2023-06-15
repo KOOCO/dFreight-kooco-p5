@@ -47,7 +47,7 @@ using Dolphin.Freight.Common.Memos;
 using Dolphin.Freight.Settings.CurrencySetting;
 using Dolphin.Freight.TradePartners.DefaultFreight;
 using Dolphin.Freight.ImportExport.Configuration;
-
+using Dolphin.Freight.Account.Languages;
 
 namespace Dolphin.Freight;
 
@@ -271,5 +271,10 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<GridPreference, GridPreferenceDto>();
         CreateMap<CreateUpdateGridPreferenceDto, GridPreference>();
         CreateMap<GridPreferenceDto, CreateUpdateGridPreferenceDto>();
+
+        // Account - Languages
+        CreateMap<Language, LanguagesDto>();
+        CreateMap<CreateUpdateLanguageDto, Language>();
+        CreateMap<LanguagesDto, CreateUpdateLanguageDto>();
     }
 }

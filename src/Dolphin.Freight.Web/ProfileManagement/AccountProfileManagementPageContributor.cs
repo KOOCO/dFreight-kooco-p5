@@ -27,7 +27,7 @@ public class AccountProfileManagementPageContributorCustom : IProfileManagementP
         context.Groups.Add(
            new ProfileManagementPageGroupCustom(
                "Volo.Abp.Account.Settings",
-               "Settings",
+               "Set up",
                typeof(AccountProfileSettingsManagementGroupViewComponentCustom)
            )
        );
