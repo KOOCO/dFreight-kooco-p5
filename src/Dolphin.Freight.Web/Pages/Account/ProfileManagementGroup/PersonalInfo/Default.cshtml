@@ -48,7 +48,7 @@
 
     <abp-input asp-for="Email" label="@L["Email"]" readonly="!isEmailUpdateEnabled" />
 
-    <abp-input asp-for="PhoneNumber" label="@L["phonenumber"]" />
+    <abp-input asp-for="PhoneNumber" label="@L["PhoneNumber"]" />
 
     @foreach (var propertyInfo in ObjectExtensionManager.Instance.GetProperties<AccountProfilePersonalInfoManagementGroupViewComponentCustom.PersonalInfoModel>())
     {
