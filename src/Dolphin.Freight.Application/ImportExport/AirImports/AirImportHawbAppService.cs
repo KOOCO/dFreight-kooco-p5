@@ -62,10 +62,14 @@ namespace Dolphin.Freight.ImportExport.AirImports
 
         public async Task<AirImportHawbDto> GetHawbCardById(Guid Id)
         {
-            var data = await _repository.GetAsync(f => f.Id == Id);
-            var retVal = ObjectMapper.Map<AirImportHawb, AirImportHawbDto>(data);
+            if (await _repository.AnyAsync(f => f.Id == Id))
+            {
+                var data = await _repository.GetAsync(f => f.Id == Id);
+                var retVal = ObjectMapper.Map<AirImportHawb, AirImportHawbDto>(data);
 
-            return retVal;
+                return retVal;
+            }
+            return new AirImportHawbDto();
         }
 
         public async Task<List<AirImportHawbDto>> GetDocCenterCardsById(Guid Id)
