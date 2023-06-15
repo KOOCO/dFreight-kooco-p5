@@ -1,10 +1,10 @@
-﻿$(function () {
+﻿
+$(function () {
     var l = abp.localization.getResource('Freight');
 
 });
 
 function getFormat() {
-
     const optionFormat = (item) => {
         if (!item.id) {
             return item.text;
@@ -29,12 +29,10 @@ function getFormat() {
 }
 
 function initializeDropdownSearch(id) {
+    var l = abp.localization.getResource('Freight');
     $('#' + id).select2({
-        placeholder: "Select an option",
+        placeholder: '- Select -',
         templateSelection: getFormat(),
         templateResult: getFormat()
     });
 }
-
-
-

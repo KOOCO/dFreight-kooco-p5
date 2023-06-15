@@ -14,6 +14,12 @@
         var UnitItems = [];
         var CurrencyItems = [];
         var InvoiceBills = [];
+
+        var currencyCodeToName={
+            18: "INR",
+            19: "USD"
+        }
+
         $(document).ready(function () {
 
             initializeDropdownSearch('InvoiceDto_IncotermsId');
@@ -67,6 +73,7 @@
             });
             var formControl = 0;
             $("#saveBtn").click(function () {
+                debugger;
                 formControl = 0;
                 $("#createForm").submit();
             });
@@ -114,6 +121,7 @@
                 })
             })
             $('#createForm').on('abp-ajax-success', function (result) {
+                debugger;
                 event.preventDefault();
 
                 switch (formControl) {
@@ -121,7 +129,7 @@
                         abp.message.success('儲存成功', '系統訊息');
                         if (@Model.MethodType == 0) location.href = '/OceanImports/EditModal3?Id=@Model.Mid';
                         if (@Model.MethodType == 1) location.href = '/OceanExports/EditModal3?Id=@Model.Mid';
-                        if (@Model.MethodType == 2) location.href = '/AirImports/EditModal3?Id=@Model.MawbId';
+                        if (@Model.MethodType == 2) location.href = '/AirImports/EditModal3?Id=@Model.Mid';
                         if (@Model.MethodType == 3) location.href = '/AirExports/EditModal3?Id=@Model.MawbId';
                         if (@Model.MethodType == 4) location.href = '/OceanExports/ExportBookings/Edit2?Id=@Model.Bid';
                         break;
@@ -129,7 +137,7 @@
                         abp.message.success('以草稿儲存成功', '系統訊息');
                         if (@Model.MethodType == 0) location.href = '/OceanImports/EditModal3?Id=@Model.Mid';
                         if (@Model.MethodType == 1) location.href = '/OceanExports/EditModal3?Id=@Model.Mid';
-                        if (@Model.MethodType == 2) location.href = '/AirImports/EditModal3?Id=@Model.MawbId';
+                        if (@Model.MethodType == 2) location.href = '/AirImports/EditModal3?Id=@Model.Mid';
                         if (@Model.MethodType == 3) location.href = '/AirExports/EditModal3?Id=@Model.MawbId';
                         if (@Model.MethodType == 4) location.href = '/OceanExports/ExportBookings/Edit2?Id=@Model.Bid';
                         break;
@@ -155,6 +163,23 @@
             let rate = parseInt($(target).val() || 0);
             let quantity = parseInt($(target).parent().prev().children().val() || 0);
             $(target).parent().next().children().text(quantity * rate);
+        }
+
+        let currencyConvertor = '@Model.CurrencyConversionJson'.replaceAll('&quot;', '"');
+
+        function onCurrencyChange(e){
+            let target = e.currentTarget || e.srcElement || e.target;
+            let val = currencyCodeToName[$(target).val()];
+            let TWDkey = ''+val+'-TWD';
+            let USDkey = ''+val+'-USD';
+            let RMBkey = ''+val+'-RMB';
+            let HKDkey = ''+val+'-HKD';
+            let conversion = JSON.parse(currencyConvertor);
+            let convertedTWD = conversion[TWDkey] || 1;
+            let convertedUSD = conversion[USDkey] || 1;
+            let convertedRMB = conversion[RMBkey] || 1;
+            let convertedHKD = conversion[HKDkey] || 1;
+            debugger;
         }
 
         function getInvoiceBills()
@@ -259,7 +284,7 @@
             return selectHtml;
         }
         function getCurrencySelect(id, currency, value) {
-            var selectHtml = "<select name='InvoiceBillDtos[" + index + "].Currency' id='Currency_" + id + "'>";
+            var selectHtml = "<select name='InvoiceBillDtos[" + index + "].Currency' onchange='onCurrencyChange(event)' id='Currency_" + id + "'>";
             currency = currency || value;
             for (var i = 0; i < CurrencyItems.length; i++) {
                 selectHtml = selectHtml + "<option value='" + CurrencyItems[i].codeValue + "'";
@@ -321,7 +346,6 @@
 
     </abp-breadcrumb>
 </div>
-
 <div class="page-content-area">
     <div class="board-wrap">
         <form submit-button="true" data-ajaxForm="true" id="createForm">

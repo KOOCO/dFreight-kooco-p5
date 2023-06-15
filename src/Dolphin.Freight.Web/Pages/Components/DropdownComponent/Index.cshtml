@@ -4,21 +4,54 @@
 @model ComponentData
 @inject IStringLocalizer<FreightResource> L
 @if (Model.IsShowLabel) 
+<<<<<<< HEAD
 { 
-    <label for="@Model.FieldName" class="form-label">
+<label for="@Model.FieldName" class="form-label">
 
     @L[Model.FieldName]
-        @if (Model.IsRequired)
-        {
-            <span class="text-danger">*</span>
-        }
+    @if (Model.IsRequired)
+    {
+        <span class="text-danger">*</span>
+    }
 </label>
 }
 
-<select name="@Model.Name" id="@Model.Id" class="form-control form-control-lg form-select form-control-solid cursor-pointer">
+<select name="@Model.Name" id="@Model.Id" class="form-select form-control form-select-sm cursor-pointer">
     <option></option>
     @foreach (SelectListItem item in Model.AspItems)
     {
-        <option value="@item.Value">@item.Text</option>
+        @if (item.Value == Model.Selected)
+        {
+            <option value="@item.Value" selected>@item.Text</option>
+        }
+        else
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+=======
+{
+<label for="@Model.FieldName" class="form-label">
+
+    @L[Model.FieldName]
+    @if (Model.IsRequired)
+    {
+        <span class="text-danger">*</span>
+    }
+</label>
+}
+
+<select name="@Model.Name" id="@Model.Id" class="form-select form-control form-select-sm cursor-pointer">
+    <option></option>
+    @foreach (SelectListItem item in Model.AspItems)
+    {
+        @if (item.Value == Model.Selected)
+        {
+            <option value="@item.Value" selected>@item.Text</option>
+        }
+        else
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+>>>>>>> origin/DFreight-189
     }
 </select>

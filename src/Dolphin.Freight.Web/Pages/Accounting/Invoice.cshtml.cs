@@ -4,6 +4,7 @@ using Dolphin.Freight.AccountingSettings.BillingCodes;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ImportExport.OceanImports;
+using Dolphin.Freight.Settings.CurrencySetting;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settinngs.Ports;
 using Dolphin.Freight.Settinngs.Substations;
@@ -11,6 +12,8 @@ using Dolphin.Freight.TradePartners;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +65,9 @@ namespace Dolphin.Freight.Web.Pages.Accounting
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SysCodeLookupList { get; set; }
 
+        public Dictionary<string, float> DictCurrencyConversion { get; set; }
+        public string CurrencyConversionJson { get; set; }
+
         public string backUrl { get; set; }
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly IOceanExportHblAppService _oceanExportHblAppService;
@@ -73,6 +79,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
         private readonly ITradePartnerAppService _tradePartnerAppService;
         private readonly IPortAppService _portAppService;
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
+        private readonly ICurrencySettingAppService _currencySettingAppService;
         public InvoiceModel(ITradePartnerAppService tradePartnerAppService,
                             ISubstationAppService substationAppService,
                             IInvoiceAppService invoiceAppService, 
@@ -82,7 +89,8 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                             IPortAppService portAppService, 
                             OceanImportHblAppService oceanImportHblAppService,
                             OceanImportMblAppService oceanImportMblAppService,
-                            IAjaxDropdownAppService ajaxDropdownAppService
+                            IAjaxDropdownAppService ajaxDropdownAppService,
+                            ICurrencySettingAppService currencySettingAppService
                             )
         {
             _invoiceAppService = invoiceAppService;
@@ -95,6 +103,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
             _tradePartnerAppService = tradePartnerAppService;
             _portAppService = portAppService;
             _ajaxDropdownAppService = ajaxDropdownAppService;
+            _currencySettingAppService = currencySettingAppService;
         }
         public async Task OnGetAsync()
         {
@@ -159,7 +168,22 @@ namespace Dolphin.Freight.Web.Pages.Accounting
 
             await FillTradePartnerAsync();
             await FillSysCodeAsync();
+            await FillCurrencySettingsDictionary();
+
         }
+
+        public async Task FillCurrencySettingsDictionary()
+        {
+            var currencySettings = await _currencySettingAppService.GetListAsync(new Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto());
+            DictCurrencyConversion = new ();
+            foreach (var currencySetting in currencySettings.Items)
+            {
+                DictCurrencyConversion.Add($"{currencySetting.StartingCurrency}-{currencySetting.EndCurrency}", currencySetting.ExChangeRate);
+            }
+
+            CurrencyConversionJson = JsonConvert.SerializeObject(DictCurrencyConversion);
+        }
+
         private async Task InitOceanExport() 
         {
             QueryInvoiceDto query = new QueryInvoiceDto() { QueryInvoiceType = InvoiceType };

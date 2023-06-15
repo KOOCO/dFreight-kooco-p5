@@ -1,10 +1,13 @@
 ﻿@page
+@using Volo.Abp.Users
 @using Dolphin.Freight.AirExports
 @using Dolphin.Freight.AirImports
 @using Dolphin.Freight.Localization
+@using Dolphin.Freight.Web.Pages.Components
 @using Microsoft.Extensions.Localization
 @model Dolphin.Freight.Web.Pages.AirImports.EditMawbModel
 @inject IStringLocalizer<FreightResource> L
+@inject ICurrentUser CurrentUser
 @section styles
     {
     @*<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" rel="stylesheet">*@
@@ -21,6 +24,17 @@
     <abp-script src="/Pages/AirImports/EditMawb.js" />
     <script type="text/javascript">
         $(document).ready(function () {
+
+            initializeDropdownSearch('MawbModel_DestinationId');
+            initializeDropdownSearch('MawbModel_RouteTrans1CarrierId');
+            initializeDropdownSearch('MawbModel_RouteTrans2CarrierId');
+            initializeDropdownSearch('MawbModel_RouteTrans3CarrierId');
+            initializeDropdownSearch('MawbModel_AwbAcctCarrierId');
+            initializeDropdownSearch('MawbModel_CarrierId');
+            initializeDropdownSearch('MawbModel_ShipperId');
+            initializeDropdownSearch('MawbModel_ConsigneeId');
+            initializeDropdownSearch('MawbModel_NotifyId');
+
             var l = abp.localization.getResource('Freight');
             var showMsg = '@Model.ShowMsg';
             var HAWBNO = 0;
@@ -76,6 +90,7 @@
             });
 
             $('#addHBtn').on('click', function () {
+                debugger;
                 if ($('#mawbDiv')[0].classList.contains('show')) {
                     $('#btnMawbCollapse').click();
                 }
@@ -359,7 +374,7 @@
                             </button>
                         </abp-card-header>
                         <!-- Mawb資訊欄 -->
-                        <abp-card-body class="collapse show" id="mawbDiv">
+                        <abp-card-body class="Mawb collapse show" id="mawbDiv">
                             <!--第1列-->
                             <abp-row>
                                 <abp-input asp-for="MawbModel.Id" type="hidden" />
@@ -397,14 +412,10 @@
                                     </abp-select>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.CarrierId" size="Small">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                    </abp-select>
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.CarrierId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.CarrierId, IsShowLabel = true, FieldName = @L["Carrier"] })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.AwbAcctCarrierId" size="Small">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                    </abp-select>
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.AwbAcctCarrierId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.AwbAcctCarrierId, IsShowLabel = true, FieldName = @L["AwbAcctCarrierId"] })
                                 </abp-column>
                             </abp-row>
                             <!--第3列-->
@@ -416,12 +427,14 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-select asp-for="MawbModel.OPId" size="Small" disabled="true">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                                        <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
                                     </abp-select>
                                 </abp-column>
                                 <abp-column size-md="_3">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ShipperId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.ShipperId, IsShowLabel = true, FieldName = @L["CoShipper"] })
                                 </abp-column>
                                 <abp-column size-md="_3">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ConsigneeId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.ConsigneeId, IsShowLabel = true, FieldName = @L["ConsigneeId"] })
                                 </abp-column>
                             </abp-row>
                             <!--第4列-->
@@ -429,21 +442,7 @@
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="MawbModel.IsDirectMaster" id="isDirectMaster" />
                                 </abp-column>
-                                <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.ShipperId" size="Small" disabled="true" id="shipperId">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                    </abp-select>
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.ConsigneeId" size="Small" disabled="true" id="consigneeId">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                    </abp-select>
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.NotifyId" size="Small" disabled="true" id="notifyId">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                    </abp-select>
-                                </abp-column>
+                                
                             </abp-row>
                             <!--第5列-->
                             <abp-row>
@@ -463,6 +462,7 @@
                                     </abp-select>
                                 </abp-column>
                                 <abp-column size-md="_3">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.NotifyId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.NotifyId, IsShowLabel = true, FieldName = @L["NotifyId"] })
                                 </abp-column>
                             </abp-row>
                             <br />
@@ -488,10 +488,8 @@
                             </abp-row>
                             <!--第7列-->
                             <abp-row>
-                                <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.DestinationId" size="Small">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                    </abp-select>
+                                <abp-column size-md="_3" class="destination">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DestinationId", AspItems = Model.AirportLookupList, Selected = Model.MawbModel.DestinationId, IsShowLabel = true, FieldName = "Destination" })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label asp-for="MawbModel.ArrivalDate" class="redStar form-label">@L["Display:Air:ArrivalDate"]</label>
@@ -513,7 +511,7 @@
                                 <div class="collapse" id="collapseRoute">
                                     <div class="card card-body">
                                         <h3>Route</h3>
-                                        <table class="table table-bordered">
+                                        <table class="table table-bordered table-responsive">
                                             <thead>
                                                 <tr>
                                                     <th></th>
@@ -545,14 +543,8 @@
                                                     <td>
                                                         <input asp-for="MawbModel.RouteTrans1FlightNo" size="Small" />
                                                     </td>
-                                                    <td>
-                                                        <select asp-for="MawbModel.RouteTrans1CarrierId" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var tradePartner in Model.TradePartnerLookupList)
-                                                            {
-                                                                <option value=@tradePartner.Value>@tradePartner.Text</option>
-                                                            }
-                                                        </select>
+                                                    <td class="carrierTrans1">
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans1CarrierId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.RouteTrans1CarrierId })
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -576,13 +568,7 @@
                                                         <input asp-for="MawbModel.RouteTrans2FlightNo" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <select asp-for="MawbModel.RouteTrans2CarrierId" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var tradePartner in Model.TradePartnerLookupList)
-                                                            {
-                                                                <option value=@tradePartner.Value>@tradePartner.Text</option>
-                                                            }
-                                                        </select>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans2CarrierId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.RouteTrans2CarrierId })
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -606,13 +592,7 @@
                                                         <input asp-for="MawbModel.RouteTrans3FlightNo" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <select asp-for="MawbModel.RouteTrans3CarrierId" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var tradePartner in Model.TradePartnerLookupList)
-                                                            {
-                                                                <option value=@tradePartner.Value>@tradePartner.Text</option>
-                                                            }
-                                                        </select>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans3CarrierId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.RouteTrans3CarrierId })
                                                     </td>
                                                 </tr>
                                             </tbody>
