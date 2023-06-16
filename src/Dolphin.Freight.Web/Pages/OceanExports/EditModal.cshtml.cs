@@ -29,11 +29,17 @@ using Volo.Abp.ObjectMapping;
 using Dolphin.Freight.ImportExport.OceanImports;
 using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using QueryHblDto = Dolphin.Freight.ImportExport.OceanExports.QueryHblDto;
+using Dolphin.Freight.TradePartners;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
 {
     public class EditModalModel : FreightPageModel
     {
+
+        public List<SelectListItem> TradePartnerLookupList { get; set; }
+
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
@@ -62,12 +68,14 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         private readonly IOceanExportMblAppService _oceanExportMblAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
         private readonly IGeneratePdf _generatePdf;
-        public EditModalModel(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf)
+        private readonly ITradePartnerAppService _tradePartnerAppService;
+        public EditModalModel(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, ITradePartnerAppService tradePartnerAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
             _sysCodeAppService = sysCodeAppService;
             _generatePdf = generatePdf;
+            _tradePartnerAppService = tradePartnerAppService;
         }
 
         public async Task OnGetAsync()
@@ -75,6 +83,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             ViewData["HAVEHBL"] = "N";
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
             QueryHblDto query = new QueryHblDto() { MblId = Id };
+
+
+            await FillTradePartnerAsync();
             //OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
             //if (Hid == null)
             //{
@@ -97,7 +108,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             //            OceanExportHbl.CardColorValue = syscodes[0].CodeValue;
             //            CardClass = syscodes[0].CodeValue;
             //        }
-                    
+
             //    }
             //    else 
             //    {
@@ -108,15 +119,15 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             //            IsShowHbl = true;
             //            ViewData["HAVEHBL"] = "Y";
             //        }
-                    
+
             //    }
- 
+
             //}
             //else {
-                //queryHbl.Id = Hid;
-                //IsShowHbl = true;
-                //
-                //ViewData["HAVEHBL"] = "Y";
+            //queryHbl.Id = Hid;
+            //IsShowHbl = true;
+            //
+            //ViewData["HAVEHBL"] = "Y";
             //}
             //TempData["PrintData"] = JsonConvert.SerializeObject(OceanExportMbl);
         }
@@ -141,5 +152,16 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
 
             return new ObjectResult(new { id = OceanExportMblDto.Id });
         }
+
+        #region FillTradePartnerAsync()
+        private async Task FillTradePartnerAsync()
+        {
+            var tradePartnerLookup = await _tradePartnerAppService.GetTradePartnersLookupAsync();
+            TradePartnerLookupList = tradePartnerLookup.Items
+                                                .Select(x => new SelectListItem(x.TPName + " / " + x.TPCode, x.Id.ToString(), false))
+                                                .ToList();
+        }
+        #endregion
+
     }
 }

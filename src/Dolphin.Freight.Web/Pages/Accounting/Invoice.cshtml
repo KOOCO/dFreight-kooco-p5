@@ -21,8 +21,8 @@
         }
 
         $(document).ready(function () {
-
-            initializeDropdownSearch('InvoiceDto_IncotermsId');
+            debugger;
+            //initializeDropdownSearch('InvoiceDto_IncotermsId');
 
             dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'PPOrCC' }).done(function (result) {
                 if (result != null && result.length > 0) {
@@ -64,6 +64,7 @@
                 });
 
             $("#addBtn").click(function () {
+                debugger;
                 addItems();
             });
             $("#add5Btn").click(function () {
@@ -196,6 +197,7 @@
 
         var index = 0;
         function addItems(bill) {
+            debugger;
             bill = bill || {};
             let amount = parseInt(bill.quantity || 0) * parseInt(bill.rate || 0);
             var trhtml = "<tr id='_" + index + "'><td style='text-align:center'><input class='checkItem' value='"+(bill.id || '')+"' type = 'checkbox' name = 'InvoiceBillDtos[" + index + "].BillId' id = 'InvoiceBillDtosId_" + index + "' data-val= 'new_" + index + "' /> </td>";
