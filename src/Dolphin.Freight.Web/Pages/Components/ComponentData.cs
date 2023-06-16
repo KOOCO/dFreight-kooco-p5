@@ -2,8 +2,6 @@
 using Dolphin.Freight.TradePartners;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Collections;
 using System.Collections.Generic;
 
