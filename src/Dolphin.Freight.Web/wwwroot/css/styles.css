@@ -11916,4 +11916,90 @@ body {
     background-color: #e8e5e5 !important;
     border-radius: 0 !important;
     box-shadow:none;
-}    
+}
+
+.Mawb .select2-container--default .select2-selection--single {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.575rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+
+    .Mawb .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #495057;
+        position: relative;
+        bottom: 6px;
+        right: 8px;
+    }
+    .Mawb .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-width: 0;
+        margin-top: -8px;
+        margin-left: -15px;
+    }
+.Mawb .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+    border-width: 0;
+}
+.Mawb .select2-container--default .select2-selection--single .select2-selection__arrow b:before {
+    content: "\f078";
+    font-size: 0.775em;
+    font-family: "FontAwesome";
+    color: #000;
+}
+.Mawb .select2-container {
+    height: 9px;
+}
+.Mawb .select2-container--open .select2-dropdown {
+    left: 0;
+    top: 28px;
+}
+.Mawb .select2-dropdown {
+    border-color: #ced4da;
+}
+
+
+
+.table-responsive .select2-container--default .select2-selection--single {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    padding-left: 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.2rem;
+    padding: 1px 2px;
+    width: 100%;
+    border: 1px solid #000;
+}
+
+    .table-responsive .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-width: 0;
+        margin-top: -11px;
+        margin-left: -8px;
+    }
+
+.table-responsive .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+    border-width: 0;
+}
+
+.table-responsive .select2-container--default .select2-selection--single .select2-selection__arrow b:before {
+    content: "\f078";
+    font-size: 0.775em;
+    font-family: "FontAwesome";
+    color: #000;
+}
+
+.table-responsive .select2-container {
+    width: 217px !important;
+    height: 28px;
+    border-color: #000;
+}
+.table-responsive .select2-dropdown {
+    border-color: #ced4da;
+}
+

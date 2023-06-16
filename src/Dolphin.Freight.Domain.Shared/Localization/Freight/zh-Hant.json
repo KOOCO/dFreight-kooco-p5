@@ -1072,6 +1072,7 @@
     "ConsigneeId": "收貨人(海外代理)",
     "NotifyId": "通知方",
     "Office": "分站",
+    "CoShipper": "聯合托運人",
     "IsDirectMaster": "直單",
     "AwbAcctCarrierId": "航空公司 (財務窗口)",
     "MawbOperatorId": "操作員",
@@ -1203,6 +1204,17 @@
     "Manifest:CARRIER": "船公司",
     "Manifest:ReportType": "報表類別",
     "Manifest:BY_CONTAINER": "依集裝箱顯示",
-    "Manifest:BY_MBL": "依MBL顯示"
+    "Manifest:BY_MBL": "依MBL顯示",
+    "PersonalSettings": "我的檔案",
+    "UserName": "帳戶名稱",
+    "Name": "名",
+    "Surname": "姓",
+    "Email": "電子郵件",
+    "PhoneNumber": "電話號碼",
+    "Setup": "設定",
+    "Language": "語言",
+    "CurrentPassword": "現有密碼",
+    "NewPassword": "輸入新密碼",
+    "NewPasswordConfirm": "再次輸入密碼"
   }
 }
