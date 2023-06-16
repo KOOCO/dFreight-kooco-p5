@@ -13,8 +13,8 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Dolphin.Freight.Migrations
 {
     [DbContext(typeof(FreightDbContext))]
-    [Migration("20230615083501_AppLanguages")]
-    partial class AppLanguages
+    [Migration("20230616073028_Language")]
+    partial class Language
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
