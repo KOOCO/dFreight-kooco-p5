@@ -51,10 +51,10 @@ namespace Dolphin.Freight.Accounting.Invoices
             List<InvoiceDto> list = new List<InvoiceDto>();
             if (query != null && query.ParentId != null)
             {
-                if(query.QueryType == 0) rs = rs.Where(x => x.MblId.Equals(query.ParentId.Value)).ToList();
+                if(query.QueryType == 0) rs = rs.Where(x => x.MawbId.Equals(query.ParentId.Value)).ToList();
                 if(query.QueryType == 1) rs = rs.Where(x => x.HblId.Equals(query.ParentId.Value)).ToList();
                 if(query.QueryType == 2) rs = rs.Where(x => x.BookingId.Equals(query.ParentId.Value)).ToList();
-                if(query.QueryType == 3) rs = rs.Where(x => x.MawbId.Equals(query.ParentId.Value)).ToList();
+                if(query.QueryType == 3) rs = rs.Where(x => x.MblId.Equals(query.ParentId.Value)).ToList();
                 if(query.QueryType == 4) rs = rs.Where(x => x.HawbId.Equals(query.ParentId.Value)).ToList();
             }
             if (query != null && query.QueryInvoiceType == 1) {
@@ -101,7 +101,7 @@ namespace Dolphin.Freight.Accounting.Invoices
                 switch (query.QueryType) 
                 { 
                     default:
-                        rs = rs.Where(x => x.MblId.Equals(query.ParentId.Value)).ToList();
+                        rs = rs.Where(x => x.MawbId.Equals(query.ParentId.Value)).ToList();
                         break;
                     case 1:
                         rs = rs.Where(x => x.HblId.Equals(query.ParentId.Value)).ToList();
@@ -110,7 +110,7 @@ namespace Dolphin.Freight.Accounting.Invoices
                         rs = rs.Where(x => x.BookingId.Equals(query.ParentId.Value)).ToList();
                         break;
                     case 3:
-                        rs = rs.Where(x => x.MawbId.Equals(query.ParentId.Value)).ToList();
+                        rs = rs.Where(x => x.MblId.Equals(query.ParentId.Value)).ToList();
                         break;
                     case 4:
                         rs = rs.Where(x => x.HawbId.Equals(query.ParentId.Value)).ToList();
