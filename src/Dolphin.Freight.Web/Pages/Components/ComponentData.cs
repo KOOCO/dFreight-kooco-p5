@@ -1,5 +1,7 @@
 ﻿using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -42,6 +44,9 @@ namespace Dolphin.Freight.Web.Pages.Components
         /// </summary>
         public int SelectType { get; set; }
         public string Disabled { get; set; }
-
+        public string Name { get; set; }
+        public string Id { get { if (Name != null) return Name.Replace(".", "_"); return ""; } }
+        public List<SelectListItem> AspItems { get; set; }
+        public string Selected { get; set; }
     }
 }
