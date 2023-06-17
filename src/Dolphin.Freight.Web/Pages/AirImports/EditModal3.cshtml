@@ -162,7 +162,7 @@
         function gotoInvoice(MawbId, HawbId, InvoiceType) {
             var url = new URL(window.location.href);
             MawbId = url.searchParams.get('Id');
-            location.href = '/Accounting/Invoice?MethodType=2&MawbId=' + MawbId + '&HawbId=' + HawbId + "&InvoiceType=" + InvoiceType;
+            location.href = '/Accounting/Invoice?MethodType=2&Mid=' + MawbId + '&Hid=' + HawbId + "&InvoiceType=" + InvoiceType;
         }
     </script>
 }
