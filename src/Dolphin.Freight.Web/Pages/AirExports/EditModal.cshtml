@@ -25,11 +25,14 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
+            initializeDropdownSearch('AirExportMawbDto_MawbCarrierId');
             initializeDropdownSearch('AirExportMawbDto_IssuingCarrierId');
             initializeDropdownSearch('AirExportMawbDto_ShipperId');
             initializeDropdownSearch('AirExportMawbDto_ConsigneeId');
             initializeDropdownSearch('AirExportMawbDto_NotifyId');
             initializeDropdownSearch('AirExportMawbDto_DestinationId');
+            initializeDropdownSearch('AirExportMawbDto_CoLoaderId');
+            initializeDropdownSearch('AirExportMawbDto_DeliveryId');
 
             // Awb Cancel Area
             $("#checkboxAwbCancelled").change(function () {
@@ -462,8 +465,7 @@
             <abp-input asp-for="@Model.AirExportMawbDto.FilingNo" readonly="true" size="Small" />
         </abp-column>
         <abp-column size-md="_3">
-            <abp-select asp-for="@Model.AirExportMawbDto.MawbCarrierId" asp-items="@Model.TradePartnerLookupList" size="Small">
-            </abp-select>
+            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.MawbCarrierId", AspItems = Model.TradePartnerLookupList, Selected = @Model.AirExportMawbDto.MawbCarrierId.ToString(), IsShowLabel = true, FieldName = @L["MawbCarrierId"] })
         </abp-column>
         <abp-column size-md="_3">
             @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.IssuingCarrierId", AspItems = Model.TradePartnerLookupList, Selected = @Model.AirExportMawbDto.IssuingCarrierId.ToString(), IsShowLabel = true, FieldName = "Carrier/Agent" })
@@ -521,9 +523,7 @@
             </abp-select>
         </abp-column>
         <abp-column size-md="_3">
-            <abp-select asp-for="@Model.AirExportMawbDto.CoLoaderId" asp-items="@Model.TradePartnerLookupList" size="Small">
-                <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-            </abp-select>
+            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.CoLoaderId", AspItems = Model.TradePartnerLookupList, Selected = @Model.AirExportMawbDto.CoLoaderId.ToString(), IsShowLabel = true, FieldName = @L["CoLoaderId"] })
         </abp-column>
         <abp-column size-md="_3">
             <abp-select asp-for="@Model.AirExportMawbDto.MawbOperatorId" asp-items="@Model.TradePartnerLookupList" size="Small" disabled="true">
@@ -556,7 +556,7 @@
     <!--第六列-->
     <abp-row>
         <abp-column size-md="_3">
-            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DestinationId", AspItems = Model.AirportLookupList, Selected = @Model.AirExportMawbDto.DestinationId.ToString(), IsShowLabel = true, FieldName = "Destination" })
+            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DestinationId", AspItems = Model.CountryName, Selected = @Model.AirExportMawbDto.DestinationId.ToString(), IsShowLabel = true, FieldName = "Destination" })
         </abp-column>
         <abp-column size-md="_3">
             <abp-input asp-for="@Model.AirExportMawbDto.DVCarriage" size="Small" />
@@ -597,9 +597,7 @@
     <!--第八列-->
     <abp-row>
         <abp-column size-md="_3">
-            <abp-select asp-for="@Model.AirExportMawbDto.DeliveryId" asp-items="@Model.TradePartnerLookupList" size=" Small">
-                <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-            </abp-select>
+            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DeliveryId", AspItems = Model.TradePartnerLookupList, Selected = @Model.AirExportMawbDto.DeliveryId.ToString(), IsShowLabel = true, FieldName = @L["DeliveryId"] })
         </abp-column>
         <abp-column size-md="_3">
             <abp-input asp-for="@Model.AirExportMawbDto.ShippingInfo" size="Small" />
