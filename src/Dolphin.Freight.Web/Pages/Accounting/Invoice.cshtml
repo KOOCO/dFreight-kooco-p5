@@ -72,7 +72,6 @@
             });
             var formControl = 0;
             $("#saveBtn").click(function () {
-                debugger;
                 formControl = 0;
                 $("#createForm").submit();
             });
@@ -120,7 +119,6 @@
                 })
             })
             $('#createForm').on('abp-ajax-success', function (result) {
-                debugger;
                 event.preventDefault();
 
                 switch (formControl) {
@@ -171,7 +169,6 @@
         let currencyConvertor = '@Model.CurrencyConversionJson'.replaceAll('&quot;', '"');
 
         function onCurrencyChange(e) {
-            debugger;
             let target = e.currentTarget || e.srcElement || e.target;
             var index = target.id.split('_')[1];
 
@@ -188,18 +185,20 @@
             var quantity = $('#Quantity_' + index).val();
 
             $('#Amount_' + index).text(parseFloat(quantity * rate).toFixed(3));
+            if(document.getElementById('Amount_'+index+'').innerHTML == 'NaN'){
+                document.getElementById('Amount_'+index+'').innerHTML = 0;
+            }
             getTotalAmount();
         }
 
         function setCurrencyRate1(value, e) {
-            debugger;
             let target = e.currentTarget || e.srcElement || e.target;
             var index = target.id.split('_')[1];
             let val = currencyCodeToName[value];
             let conversion = JSON.parse(currencyConvertor);
             let rate = conversion["" + val + "-TWD"];
             
-            let quantity = $('#Quantity_' + index+ '').val();
+            let quantity = $('#Quantity_' + index + '').val();
             if ($('#Currency_0').val() == 0) {
                 amount = 0;
             }
@@ -212,7 +211,6 @@
         }
 
         function setCurrencyRate(value) {
-            debugger;
             let val = currencyCodeToName[value];
             let conversion = JSON.parse(currencyConvertor);
             let rate = conversion["" + val + "-TWD"];
@@ -241,7 +239,7 @@
               total += amount;
             }
             var totalAmountElement = document.getElementById("totalAmount");
-            totalAmountElement.innerHTML = total.toString();
+            totalAmountElement.innerHTML = total.toFixed(3);
         }
 
         function getInvoiceBills() {
@@ -281,7 +279,6 @@
             let val = currencyCodeToName[bill.currency || $('#Currency_0').val()];
             let conversion = JSON.parse(currencyConvertor);
             let rate = conversion["" + val + "-TWD"];
-            debugger;
             getRate(urlParams.get("Mid"), $("#Rate_" + index + "").val(rate));
             var amount = bill.quantity * $("#Rate_" + index + "").val();
             $('#Amount_' + index + '').text(amount);
