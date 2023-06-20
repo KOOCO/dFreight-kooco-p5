@@ -24,7 +24,7 @@
 
 @if (Model.IsShowLabel) 
 {
-<label for="@Model.FieldName" class="form-label">
+<label for="@Model.FieldName">
 
     @L[Model.FieldName]
     @if (Model.IsRequired)
@@ -79,7 +79,6 @@
 
 <ul class="dropdown-menu " aria-labelledby="@Model.TagName" id="dropdownMenuButton_@Model.TagName">
 </ul>
-<input type="hidden" name="@Model.FieldName" id="@Model.FieldName" value="@Model.DefaultValue" />
 @if (Model.IsRequired)
 {
     <span id="err_@Model.FieldName" class="text-danger" style="display:none;">@L["Message:SelectRequired"]</span>
