@@ -22,55 +22,99 @@
 
                 <div class="btn-group dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                        @L["Btn:Function"]
+                        @L["Display:Function"]
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1" id="ActionDrop">
+                    <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
                         <a class='dropdown-item' href='#'>
-                            <i class="fa fa-lock"></i> 鎖定
+                            <i class="fa fa-lock"></i> @L["Btn:Lock"]
                         </a>
                         <a class='dropdown-item' href='#'>
-                            <i class="fa fa-trash"></i> 刪除
+                            <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                         </a>
-                        <p class="dropdown-divider"></p>
+                        <a class='dropdown-item' href='#'>
+                            <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
+                        </a>
+                        <a class='dropdown-item' href='#'>
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Copy to"]
+                        </a>
+                        <a class='dropdown-item' href='#'>
+                            <i class="fa fa-share"></i> @L["Btn:Move"]
+                        </a>
+                        <a class='dropdown-item' href='#'>
+                            <i class="fa fa-unlink"></i> @L["Btn:Remove"]
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class='dropdown-item' href='javascript:void(0)'>
+                            <i class="fa fa-files-o"></i> @L["Btn:File Package"]
+                        </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(6)">
-                            <i class="fa fa-file-text"></i> 列印汽車文件
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Print Car Documents"]
                         </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="getHbl()">
-                            <i class="fa fa-file-text"></i> 列印HB/L
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Print HB/L"]
                         </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(7)">
-                            <i class="fa fa-file-text"></i> 列印OBL
-                        </a>
-                        <a class='dropdown-item' href='javascript:void(0)' onclick="getReportHblPackageLabel()">
-                            <i class="fa fa-file-text"></i> 包裝標籤
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Print OB/L"]
                         </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="getReportHblClauses()">
-                            <i class="fa fa-file-text"></i> 提單條款
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Bill of Lading Terms"]
+                        </a>
+                        <a class='dropdown-item' href='javascript:void(0)'>
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
+                        </a>
+                        <a class='dropdown-item' href='javascript:void(0)'>
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
                         </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="getCertificateOfOrigin()">
-                            <i class="fa fa-file-text"></i> 產地證明書
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Certificate of Origin"]
                         </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="getDockRecepit()">
-                            <i class="fa fa-file-text"></i> Doc Receipt
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Dock Receipt"]
+                        </a>
+                        <a class='dropdown-item' href='javascript:void(0)'>
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Dispatch List"]
                         </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="getReportBookingConfirmation()">
-                            <i class="fa fa-file-text"></i> S/O確認書
+                            <i class="fa fa-file-text-o"></i> @L["Btn:S/O Confirmation"]
                         </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="getReportBankDraft()">
-                            <i class="fa fa-file-text"></i> 銀行匯票
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
                         </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="getPreAlert()">
-                            <i class="fa fa-file-text"></i> Pre-Alert
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Pre-Alert"]
                         </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="getUsdaHeatTreatment()">
-                            <i class="fa fa-file-text"></i> USDA Heat Treatment
+                            <i class="fa fa-file-text-o"></i> @L["Btn:USDA Heat Treatment"]
                         </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="getForwarderCargoReceipt()">
-                            <i class="fa fa-file-text"></i> Forwarder Cargo Receipt
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
+                        </a>
+                        <a class='dropdown-item' href='javascript:void(0)'>
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods Declaration"]
+                        </a>
+                        <a class='dropdown-item' href='javascript:void(0)'>
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+                        </a>
+                        <a class='dropdown-item' href='javascript:void(0)'>
+                            <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
+                        </a>
+                        <a class='dropdown-item' href='javascript:void(0)'>
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Shipping Advice"]
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class='dropdown-item' href='javascript:void(0)'>
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class='dropdown-item' href='javascript:void(0)' style="color: #4B77BE; font-weight: 500;">
+                            <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
                         </a>
                     </div>
                 </div>
-                <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#hawbDiv" aria-expanded="false" aria-controls="hawbDiv">
+
+
+
+                <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#hawbDiv" aria-expanded="true" aria-controls="hawbDiv">
                 </button>
             </abp-column>
 

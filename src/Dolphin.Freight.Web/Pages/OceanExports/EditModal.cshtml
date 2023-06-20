@@ -17,10 +17,12 @@
 @section scripts
     {
     <abp-script src="/Pages/OceanExports/CreateMbl.js" />
+    <abp-script src="/Pages/OceanExports/EditModel.js" />
     <script type="text/javascript">
         var cardIndex = 0;
         $(document).ready(function () {
 
+            initializeDropdownSearch("OceanExportMbl_OfficeId");
             initializeDropdownSearch("OceanExportMbl_MblCarrierId");
             initializeDropdownSearch("OceanExportMbl_BlAcctCarrierId");
             initializeDropdownSearch("OceanExportMbl_ShippingAgentId");
@@ -53,40 +55,6 @@
             });
             //InitMemoTable('MblMemo');
             //InitMemoTable('HblMemo');
-
-            var isCancel = '@Model.OceanExportMbl.IsCanceled';
-            if (isCancel == "True") {
-                $("#OceanExportMbl_IsCanceled").prop("checked", true);
-
-                initReasonStatus()
-            }
-            var HIsCanceled = '@Model.OceanExportHbl.IsCanceled';
-            if (HIsCanceled == "True") {
-                $("#OceanExportHbl_IsCanceled").prop("checked", true);
-
-                initHReasonStatus()
-            }
-            var IsReleased = '@Model.OceanExportMbl.IsReleased';
-            if (IsReleased == 'True') $("#OceanExportMbl_IsReleased").prop("checked", true);
-            var HIsReleased = '@Model.OceanExportHbl.IsReleased';
-            if (HIsReleased == 'True') $("#OceanExportHbl_IsReleased").prop("checked", true);
-            var IsHold = '@Model.OceanExportHbl.IsHold'
-            if (IsHold == 'True') $("#OceanExportHbl_IsHold").prop("checked", true);
-            var NewHbl = @Model.NewHbl;
-            var IsShowHbl = '@Model.IsShowHbl';
-            if (IsShowHbl == 'True') $("#hblCard").show();
-            else $("#hblCard").hide();
-            if (NewHbl == 1) {
-
-                var divHtml = addCardRight('new_' + cardIndex, 'new HB/L', '@Model.CardClass');
-                $("#hblCard").show();
-                $("#hblCardDiv").append(divHtml);
-                $("#AddHbl").val("1");
-                $("#hblCardHeader").addClass('hblCrad0');
-            }
-
-            var IsUsedCareOf = '@Model.OceanExportMbl.IsUsedCareOf';
-            if (IsUsedCareOf == 'True') $("#OceanExportMbl_IsUsedCareOf").prop("checked", true);
             $('#editForm').on('abp-ajax-success', function (result, rs) {
                 event.preventDefault();
                 var l = abp.localization.getResource('Freight');
@@ -531,9 +499,10 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportMbl.MblNo" />
+                                    <input type="hidden" name="OceanExportMbl.Id" id="OceanExportMbl_Id" value="@Model.Id" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent), new { TagName = "OfficeId", FieldName = "OfficeId", DefaultValue = "", IsShowLabel = true, IsRequired = true })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.OfficeId", AspItems = Model.SubstationLookupList, IsShowLabel = true, FieldName = "OfficeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.OfficeId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(SelectComponent), new { TagName = "BlTypeId", FieldName = "BlTypeId", DefaultValue = "", IsShowLabel = true, IsRequired = false })
@@ -550,8 +519,7 @@
                                     <abp-input asp-for="OceanExportMbl.ItnNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "MblCarrierId", FieldName = "MblCarrierId",DefaultValue="" , IsShowLabel = true , IsRequired = false ,SelectType=1 ,ShowFiledContentValue = Model.OceanExportMbl.MblCarrierContent})*@
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.MblCarrierId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "Shipping Company", SelectType = 1, ShowFiledContentValue = Model.OceanExportMbl.MblCarrierContent })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.MblCarrierId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "Shipping Company", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.MblCarrierId) })
                                     <input type="hidden" name="OceanExportMbl.MblCarrierId" id="mMblCarrierId" value="@Model.OceanExportMbl.MblCarrierId" />
                                     <input type="hidden" name="OceanExportMbl.MblCarrierContent" id="mMblCarrierContent" value="@Model.OceanExportMbl.MblCarrierContent" />
                                 </abp-column>
