@@ -92,12 +92,12 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                         OceanExportHbl.CardColorValue = syscodes[index].CodeValue;
                         CardClass = syscodes[index].CodeValue;
                     }
-                    else
-                    {
-                        OceanExportHbl.CardColorId = syscodes[0].Id;
-                        OceanExportHbl.CardColorValue = syscodes[0].CodeValue;
-                        CardClass = syscodes[0].CodeValue;
-                    }
+                    //else
+                    //{
+                    //    OceanExportHbl.CardColorId = syscodes[0].Id;
+                    //    OceanExportHbl.CardColorValue = syscodes[0].CodeValue;
+                    //    CardClass = syscodes[0].CodeValue;
+                    //}
 
                 }
                 else
