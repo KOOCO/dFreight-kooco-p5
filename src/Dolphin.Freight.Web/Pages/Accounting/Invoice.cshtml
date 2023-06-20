@@ -15,9 +15,11 @@
         var CurrencyItems = [];
         var InvoiceBills = [];
 
-        var currencyCodeToName={
-            18: "INR",
-            19: "USD"
+        var currencyCodeToName = {
+            INR: "INR",
+            USD: "USD",
+            RMB: "RMB",
+            HKD: "HKD"
         }
 
         $(document).ready(function () {
@@ -39,10 +41,8 @@
                     UnitItems = result;
                 }
             });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'Currency' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    CurrencyItems = result;
-                }
+            dolphin.freight.settings.currencySetting.currencySetting.getList({}).done(function(result){
+                CurrencyItems = result.items.map(m => m.startingCurrency);
             });
             dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'IncotermsId' }).done(function (result) {
                 if (result != null && result.length > 0) {
@@ -58,7 +58,7 @@
 
             dolphin.freight.accountingSettings.billingCodes.billingCode.queryListForTag({
                 IsUsed: true, BillType: @Model.InvoiceType, MethodType: @Model.MethodType
-                                }).done(function (result) {
+                                        }).done(function (result) {
                     BillCodeItems = result;
                     getInvoiceBills();
                 });
@@ -74,7 +74,6 @@
             });
             var formControl = 0;
             $("#saveBtn").click(function () {
-                debugger;
                 formControl = 0;
                 $("#createForm").submit();
             });
@@ -96,20 +95,20 @@
             $("#deleteBtn").click(function () {
                 $(".checkItem").each(function () {
                     if ($(this).prop("checked")) {
-                        let parent =  $(this).parent().parent();
+                        let parent = $(this).parent().parent();
                         let id = parent.attr('id');
                         let index = id.substr(id.lastIndexOf('_') + 1);
                         let invoiceBillId = parent.find('[name="InvoiceBillDtos[' + index + '].Id"]').attr('value')
 
-                        if(invoiceBillId){
+                        if (invoiceBillId) {
                             dolphin.freight.accounting.invoiceBills.invoiceBill.delete(invoiceBillId).done(function (result) {
                                 parent.remove();
                             });
                         }
-                        else{
+                        else {
                             parent.remove();
                         }
-                        
+
                     }
                 })
             })
@@ -122,7 +121,6 @@
                 })
             })
             $('#createForm').on('abp-ajax-success', function (result) {
-                debugger;
                 event.preventDefault();
 
                 switch (formControl) {
@@ -152,14 +150,17 @@
             });
         });
 
-        function onQuantityChange(e){
+        function onQuantityChange(e) {
             let target = e.currentTarget || e.srcElement || e.target;
+            var index = target.id.split('_')[1];
             let quantity = parseInt($(target).val() || 0);
             let rate = parseInt($(target).parent().next().children().val() || 0);
             $(target).parent().next().next().children().text(quantity * rate);
+            setCurrencyRate1($('#Currency_'+index+'').val());
         }
 
-        function onRateChange(e){
+        function onRateChange(e) {
+            
             let target = e.currentTarget || e.srcElement || e.target;
             let rate = parseInt($(target).val() || 0);
             let quantity = parseInt($(target).parent().prev().children().val() || 0);
@@ -168,23 +169,62 @@
 
         let currencyConvertor = '@Model.CurrencyConversionJson'.replaceAll('&quot;', '"');
 
-        function onCurrencyChange(e){
+        function onCurrencyChange(e) {
             let target = e.currentTarget || e.srcElement || e.target;
+            var index = target.id.split('_')[1];
+
+            var url = window.location.href;
+            var urlParams = new URLSearchParams(new URL(url).search);
+
             let val = currencyCodeToName[$(target).val()];
-            let TWDkey = ''+val+'-TWD';
-            let USDkey = ''+val+'-USD';
-            let RMBkey = ''+val+'-RMB';
-            let HKDkey = ''+val+'-HKD';
             let conversion = JSON.parse(currencyConvertor);
-            let convertedTWD = conversion[TWDkey] || 1;
-            let convertedUSD = conversion[USDkey] || 1;
-            let convertedRMB = conversion[RMBkey] || 1;
-            let convertedHKD = conversion[HKDkey] || 1;
-            debugger;
+            let rate = conversion["" + val + "-TWD"];
+            $('#Rate_'+ index).val(rate);
+
+            setCurrencyRate1($(target).val());
+
+            var quantity = $('#Quantity_'+index).val();
+
+            $('#Amount_'+index).text(parseFloat(quantity * rate).toFixed(3));
+
         }
 
-        function getInvoiceBills()
-        {
+        const currencies = ['TWD', 'USD', 'RMB', 'HKD']
+
+        function setCurrencyRate1(value) {
+            let val = currencyCodeToName[value];
+            let conversion = JSON.parse(currencyConvertor);
+            let rate = conversion["" + val + "-TWD"];
+            
+            let amount = $('#Quantity_'+(index - 1)+'').val() * rate;
+            if($('#Currency_0').val() == 0){
+                amount = 0;
+            }
+            currencies.forEach(function (currency) {
+                let key = '' + val + '-' + currency + '';
+                let convertedRate = conversion[key] || 1;
+
+                document.getElementById("converted" + currency).innerHTML = convertedRate * amount;
+            })
+        }
+        function setCurrencyRate(value) {
+            let val = currencyCodeToName[value];
+            let conversion = JSON.parse(currencyConvertor);
+            let rate = conversion["" + val + "-TWD"];
+            
+            let amount = $('#Quantity_'+index+'').val() * rate;
+            if($('#Currency_0').val() == 0){
+                amount = 0;
+            }
+            currencies.forEach(function (currency) {
+                let key = '' + val + '-' + currency + '';
+                let convertedRate = conversion[key] || 1;
+
+                document.getElementById("converted" + currency).innerHTML = convertedRate * amount;
+            })
+        }
+
+        function getInvoiceBills() {
             dolphin.freight.accounting.invoiceBills.invoiceBill.queryInvoiceBills({
                 InvoiceNo: '@Model.InvoiceId'
             }).done(function (result) {
@@ -199,23 +239,35 @@
         function addItems(bill) {
             debugger;
             bill = bill || {};
-            let amount = parseInt(bill.quantity || 0) * parseInt(bill.rate || 0);
-            var trhtml = "<tr id='_" + index + "'><td style='text-align:center'><input class='checkItem' value='"+(bill.id || '')+"' type = 'checkbox' name = 'InvoiceBillDtos[" + index + "].BillId' id = 'InvoiceBillDtosId_" + index + "' data-val= 'new_" + index + "' /> </td>";
+            
+            var url = window.location.href;
+            var urlParams = new URLSearchParams(new URL(url).search);
+            var id = urlParams.get("Mid");
+            var amount = '';
+            var trhtml = "<tr id='_" + index + "'><td style='text-align:center'><input class='checkItem' value='" + (bill.id || '') + "' type = 'checkbox' name = 'InvoiceBillDtos[" + index + "].BillId' id = 'InvoiceBillDtosId_" + index + "' data-val= 'new_" + index + "' /> </td>";
             trhtml = trhtml + "<td>" + getBillCodeSelect(index, '', (bill.code || '')) + "</td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Description' value='"+(bill.description || '')+"' id='Description_" + index + "' /></td>";
+            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Description' value='" + (bill.description || '') + "' id='Description_" + index + "' /></td>";
             trhtml = trhtml + "<td>" + getPPOrCCSelect(index, '', (bill.ppOrCC || '')) + "</td>";
             trhtml = trhtml + "<td>" + getBillTypeSelect(index, '', (bill.billType || '')) + "</td>";
             trhtml = trhtml + "<td>" + getUnitSelect(index, '', (bill.unit || '')) + "</td>";
             trhtml = trhtml + "<td>" + getCurrencySelect(index, '', (bill.currency || '')) + "</td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' onchange='onQuantityChange(event)' value='" + (bill.quantity || '')+ "' id='Quantity_" + index + "' /></td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Rate' onchange='onRateChange(event)' value='" + (bill.rate || '')+ "' id='Rate_" + index + "' /><input type='hidden' name='InvoiceBillDtos[" + index + "].Amount' id='Amount_" + index + "' /></td>";
-            trhtml = trhtml + "<td id='td_Amount_" + index + "' value='" + (bill.amount || '') + "'><label name='InvoiceBillDtos[" + index + "].AmountLabel'>" + amount + "</label></td>";
+            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' onchange='onQuantityChange(event)' value='" + (bill.quantity || '') + "' id='Quantity_" + index + "' /></td>";
+            trhtml = trhtml + "<td>" + getRate(id, $("#Rate_" + index + "").val()) + "</td>";
+            trhtml = trhtml + "<td id='td_Amount_" + index + "' value='" + (bill.amount || '') + "'><label name='InvoiceBillDtos[" + index + "].AmountLabel' id='Amount_" + index + "'>" + amount + "</label></td>";
             trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].AmountToAgent' id='AmountToAgent_" + index + "' value='" + (bill.amountToAgent || '') + "' /></td>";
-            trhtml = trhtml + "<td  style='text-align:center'><input type='checkbox' name='InvoiceBillDtos[" + index + "].IsNonProfit' id='IsNonProfit_" + index + "'" + (bill.isNonProfit? "checked" : "")+" disabled /></td>";
+            trhtml = trhtml + "<td  style='text-align:center'><input type='checkbox' name='InvoiceBillDtos[" + index + "].IsNonProfit' id='IsNonProfit_" + index + "'" + (bill.isNonProfit ? "checked" : "") + " disabled /></td>";
             trhtml = trhtml + "<td><input type='hidden' name='InvoiceBillDtos[" + index + "].Id' value='" + (bill.id || '') + "'></td>";
             trhtml = trhtml + "<td></td></tr>";
             $("#trtbody").append(trhtml);
+            let val = currencyCodeToName[bill.currency || $('#Currency_0').val()];
+            let conversion = JSON.parse(currencyConvertor);
+            let rate = conversion["" + val + "-TWD"];
+            getRate(urlParams.get("Mid"), $("#Rate_" + index + "").val(rate));
+            var amount = bill.quantity * $("#Rate_" + index + "").val();
+            $('#Amount_'+index+'').text(amount);
+            setCurrencyRate($('#Currency_0').val());
             index++;
+            
         }
 
         function copyItems(id) {
@@ -286,14 +338,18 @@
             return selectHtml;
         }
         function getCurrencySelect(id, currency, value) {
-            var selectHtml = "<select name='InvoiceBillDtos[" + index + "].Currency' onchange='onCurrencyChange(event)' id='Currency_" + id + "'>";
+            var selectHtml = "<select name='InvoiceBillDtos[" + index + "].Currency' onchange='onCurrencyChange(event)' id='Currency_" + id + "'><option value='0'>Select Currency</option>";
             currency = currency || value;
             for (var i = 0; i < CurrencyItems.length; i++) {
-                selectHtml = selectHtml + "<option value='" + CurrencyItems[i].codeValue + "'";
-                if (CurrencyItems[i].codeValue == currency) selectHtml = selectHtml + " selected ";
-                selectHtml = selectHtml + " > " + CurrencyItems[i].showName + "</option>"
+                selectHtml = selectHtml + "<option value='" + CurrencyItems[i] + "'";
+                if (CurrencyItems[i] == currency) selectHtml = selectHtml + " selected ";
+                selectHtml = selectHtml + " > " + CurrencyItems[i] + "</option>"
             }
             selectHtml = selectHtml + "</select>";
+            return selectHtml;
+        }
+        function getRate(id, rate){
+            var selectHtml = "<input type='text' name='InvoiceBillDtos[" + id + "].Rate' onchange='onRateChange(event)' value='" + rate + "' id='Rate_" + index + "' disabled/><input type='hidden' name='InvoiceBillDtos[" + id + "].Amount' id='Amount_[" + id + "]' /></td>"
             return selectHtml;
         }
         function goBlank() {
@@ -311,7 +367,7 @@
                     break;
                 case 2:
                     url = '/AirImports/EditModal3?Id=' + mid;
-                break;
+                    break;
                 case 4:
                     url = '/OceanExports/ExportBookings/Edit?Id=' + bid;
                     break;
@@ -361,8 +417,10 @@
 
 
 
+
                                     @if (Model.InvoiceType == 0 && Model.InvoiceId != null)
                                     @L["Title:AccountingAR_Edit"]
+
 
 
 
@@ -371,8 +429,10 @@
 
 
 
+
                                     @if (Model.InvoiceType == 1 && Model.InvoiceId != null)
                                     @L["Title:AccountingDC_Edit"]
+
 
 
 
@@ -381,8 +441,10 @@
 
 
 
+
                                     @if (Model.InvoiceType == 2 && Model.InvoiceId != null)
                                     @L["Title:AccountingAP_Edit"]
+
 
 
 
@@ -401,7 +463,7 @@
                             <abp-column size-md="_12">
                                 <h4>@L["Title:Basic"]</h4>
                             </abp-column>
-                            
+
                         </abp-row>
                         <abp-row>
 
@@ -416,7 +478,8 @@
                                     </abp-column>
                                     <abp-column size-md="_2">
                                         <abp-button title="" class="btn btn-outline-info" type="button" id="exportBtn" data-busy-text="Processing..." data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top" onclick="goBlank()">
-                                        <i class="fa fa-file-export"></i></abp-button >
+                                            <i class="fa fa-file-export"></i>
+                                        </abp-button>
                                     </abp-column>
                                 </abp-row>
 
@@ -589,7 +652,7 @@
                             </abp-column>
                         </abp-row>
 
-                    @if (Model.InvoiceType == 0)
+                        @if (Model.InvoiceType == 0)
                     {
                         <abp-row>
                             <abp-column size-md="_3">
@@ -660,9 +723,9 @@
                         <abp-row>
                             <abp-column size-md="_3">
                                 @*<label for="InvoiceNo" class="form-label">
-                                    @L["Display:DCNo"]
-                                </label>
-                                <input type="text" name="InvoiceDto.InvoiceNo" id="InvoiceNo" value="@Model.InvoiceDto.InvoiceNo" />*@
+                            @L["Display:DCNo"]
+                            </label>
+                            <input type="text" name="InvoiceDto.InvoiceNo" id="InvoiceNo" value="@Model.InvoiceDto.InvoiceNo" />*@
                                 <abp-input asp-for="InvoiceDto.InvoiceNo" />
                             </abp-column>
                             <abp-column size-md="_3">
@@ -678,8 +741,8 @@
                         <abp-row>
                             <abp-column size-md="_3">
                                 @*<label for="InvoiceNo" class="form-label">
-                                    @L["Display:InvoiceCompanyIdDC"]
-                                </label>*@
+                            @L["Display:InvoiceCompanyIdDC"]
+                            </label>*@
                                 <abp-select asp-for="InvoiceDto.InvoiceCompanyId" asp-items="@Model.TradePartnerLookupList" />
                             </abp-column>
                             <abp-column size-md="_3">
@@ -690,9 +753,9 @@
                             </abp-column>
                             <abp-column size-md="_3">
                                 @*<label for="InvoiceNo" class="form-label">
-                                    @L["Display:LastDate"]
-                                </label>
-                                <input type="text" name="InvoiceDto.LastDate" id="LastDate" value="@Model.InvoiceDto.InvoiceNo" readonly />*@
+                            @L["Display:LastDate"]
+                            </label>
+                            <input type="text" name="InvoiceDto.LastDate" id="LastDate" value="@Model.InvoiceDto.InvoiceNo" readonly />*@
                                 <abp-input asp-for="InvoiceDto.LastDate" />
                             </abp-column>
                         </abp-row>
@@ -765,11 +828,11 @@
                                 <abp-input asp-for="InvoiceDto.DueDate" />
                             </abp-column>
                             <abp-column size-md="_3">
-                                 <abp-select asp-for="InvoiceDto.IncotermsId" asp-items="@Model.SysCodeLookupList" />
+                                <abp-select asp-for="InvoiceDto.IncotermsId" asp-items="@Model.SysCodeLookupList" />
                             </abp-column>
                             @*<abp-column size-md="_6">
 
-                            </abp-column>*@
+                        </abp-column>*@
                         </abp-row>
                         <abp-row>
                             <abp-column size-md="_6">
@@ -819,13 +882,13 @@
                                     <tr border="1">
                                         <th colspan="5" style="text-align:right;border-block-color:#333333;" border="1">小計</th>
                                         <th>TWD</th>
-                                        <th>0</th>
+                                        <th id="convertedTWD">0</th>
                                         <th>USD</th>
-                                        <th>0</th>
+                                        <th id="convertedUSD">0</th>
                                         <th>RMB</th>
-                                        <th>0</th>
+                                        <th id="convertedRMB">0</th>
                                         <th>HKD</th>
-                                        <th>0</th>
+                                        <th id="convertedHKD">0</th>
                                     </tr>
                                     <tr border="1">
                                         <th colspan="12" style="text-align:right;border-block-color:#333333;" border="1">總計</th>
