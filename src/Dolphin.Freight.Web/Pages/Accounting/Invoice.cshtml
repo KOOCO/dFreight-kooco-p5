@@ -16,8 +16,10 @@
         var InvoiceBills = [];
 
         var currencyCodeToName = {
-            18: "INR",
-            19: "USD"
+            INR: "INR",
+            USD: "USD",
+            RMB: "RMB",
+            HKD: "HKD"
         }
 
         $(document).ready(function () {
@@ -36,10 +38,8 @@
                     UnitItems = result;
                 }
             });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'Currency' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    CurrencyItems = result;
-                }
+            dolphin.freight.settings.currencySetting.currencySetting.getList({}).done(function(result){
+                CurrencyItems = result.items.map(m => m.startingCurrency);
             });
             dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'IncotermsId' }).done(function (result) {
                 if (result != null && result.length > 0) {
@@ -70,7 +70,6 @@
             });
             var formControl = 0;
             $("#saveBtn").click(function () {
-                debugger;
                 formControl = 0;
                 $("#createForm").submit();
             });
@@ -118,7 +117,6 @@
                 })
             })
             $('#createForm').on('abp-ajax-success', function (result) {
-                debugger;
                 event.preventDefault();
 
                 switch (formControl) {
@@ -150,12 +148,15 @@
 
         function onQuantityChange(e) {
             let target = e.currentTarget || e.srcElement || e.target;
+            var index = target.id.split('_')[1];
             let quantity = parseInt($(target).val() || 0);
             let rate = parseInt($(target).parent().next().children().val() || 0);
             $(target).parent().next().next().children().text(quantity * rate);
+            setCurrencyRate1($('#Currency_'+index+'').val());
         }
 
         function onRateChange(e) {
+            
             let target = e.currentTarget || e.srcElement || e.target;
             let rate = parseInt($(target).val() || 0);
             let quantity = parseInt($(target).parent().prev().children().val() || 0);
@@ -165,19 +166,52 @@
         let currencyConvertor = '@Model.CurrencyConversionJson'.replaceAll('&quot;', '"');
 
         function onCurrencyChange(e) {
-            debugger;
             let target = e.currentTarget || e.srcElement || e.target;
+            var index = target.id.split('_')[1];
 
-            setCurrencyRate($(target).val());
+            var url = window.location.href;
+            var urlParams = new URLSearchParams(new URL(url).search);
+
+            let val = currencyCodeToName[$(target).val()];
+            let conversion = JSON.parse(currencyConvertor);
+            let rate = conversion["" + val + "-TWD"];
+            $('#Rate_'+ index).val(rate);
+
+            setCurrencyRate1($(target).val());
+
+            var quantity = $('#Quantity_'+index).val();
+
+            $('#Amount_'+index).text(parseFloat(quantity * rate).toFixed(3));
+
         }
 
         const currencies = ['TWD', 'USD', 'RMB', 'HKD']
 
+        function setCurrencyRate1(value) {
+            let val = currencyCodeToName[value];
+            let conversion = JSON.parse(currencyConvertor);
+            let rate = conversion["" + val + "-TWD"];
+            
+            let amount = $('#Quantity_'+(index - 1)+'').val() * rate;
+            if($('#Currency_0').val() == 0){
+                amount = 0;
+            }
+            currencies.forEach(function (currency) {
+                let key = '' + val + '-' + currency + '';
+                let convertedRate = conversion[key] || 1;
+
+                document.getElementById("converted" + currency).innerHTML = convertedRate * amount;
+            })
+        }
         function setCurrencyRate(value) {
             let val = currencyCodeToName[value];
             let conversion = JSON.parse(currencyConvertor);
-            let amount = $('#td_Amount_0')[0].innerText;
-
+            let rate = conversion["" + val + "-TWD"];
+            
+            let amount = $('#Quantity_'+index+'').val() * rate;
+            if($('#Currency_0').val() == 0){
+                amount = 0;
+            }
             currencies.forEach(function (currency) {
                 let key = '' + val + '-' + currency + '';
                 let convertedRate = conversion[key] || 1;
@@ -200,7 +234,11 @@
         var index = 0;
         function addItems(bill) {
             bill = bill || {};
-            let amount = parseInt(bill.quantity || 0) * parseInt(bill.rate || 0);
+            
+            var url = window.location.href;
+            var urlParams = new URLSearchParams(new URL(url).search);
+            var id = urlParams.get("Mid");
+            var amount = '';
             var trhtml = "<tr id='_" + index + "'><td style='text-align:center'><input class='checkItem' value='" + (bill.id || '') + "' type = 'checkbox' name = 'InvoiceBillDtos[" + index + "].BillId' id = 'InvoiceBillDtosId_" + index + "' data-val= 'new_" + index + "' /> </td>";
             trhtml = trhtml + "<td>" + getBillCodeSelect(index, '', (bill.code || '')) + "</td>";
             trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Description' value='" + (bill.description || '') + "' id='Description_" + index + "' /></td>";
@@ -209,16 +247,22 @@
             trhtml = trhtml + "<td>" + getUnitSelect(index, '', (bill.unit || '')) + "</td>";
             trhtml = trhtml + "<td>" + getCurrencySelect(index, '', (bill.currency || '')) + "</td>";
             trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' onchange='onQuantityChange(event)' value='" + (bill.quantity || '') + "' id='Quantity_" + index + "' /></td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Rate' onchange='onRateChange(event)' value='" + (bill.rate || '') + "' id='Rate_" + index + "' /><input type='hidden' name='InvoiceBillDtos[" + index + "].Amount' id='Amount_" + index + "' /></td>";
-            trhtml = trhtml + "<td id='td_Amount_" + index + "' value='" + (bill.amount || '') + "'><label name='InvoiceBillDtos[" + index + "].AmountLabel'>" + amount + "</label></td>";
+            trhtml = trhtml + "<td>" + getRate(id, $("#Rate_" + index + "").val()) + "</td>";
+            trhtml = trhtml + "<td id='td_Amount_" + index + "' value='" + (bill.amount || '') + "'><label name='InvoiceBillDtos[" + index + "].AmountLabel' id='Amount_" + index + "'>" + amount + "</label></td>";
             trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].AmountToAgent' id='AmountToAgent_" + index + "' value='" + (bill.amountToAgent || '') + "' /></td>";
             trhtml = trhtml + "<td  style='text-align:center'><input type='checkbox' name='InvoiceBillDtos[" + index + "].IsNonProfit' id='IsNonProfit_" + index + "'" + (bill.isNonProfit ? "checked" : "") + " disabled /></td>";
             trhtml = trhtml + "<td><input type='hidden' name='InvoiceBillDtos[" + index + "].Id' value='" + (bill.id || '') + "'></td>";
             trhtml = trhtml + "<td></td></tr>";
             $("#trtbody").append(trhtml);
-            index++;
-
+            let val = currencyCodeToName[bill.currency || $('#Currency_0').val()];
+            let conversion = JSON.parse(currencyConvertor);
+            let rate = conversion["" + val + "-TWD"];
+            getRate(urlParams.get("Mid"), $("#Rate_" + index + "").val(rate));
+            var amount = bill.quantity * $("#Rate_" + index + "").val();
+            $('#Amount_'+index+'').text(amount);
             setCurrencyRate($('#Currency_0').val());
+            index++;
+            
         }
 
         function copyItems(id) {
@@ -292,11 +336,15 @@
             var selectHtml = "<select name='InvoiceBillDtos[" + index + "].Currency' onchange='onCurrencyChange(event)' id='Currency_" + id + "'><option value='0'>Select Currency</option>";
             currency = currency || value;
             for (var i = 0; i < CurrencyItems.length; i++) {
-                selectHtml = selectHtml + "<option value='" + CurrencyItems[i].codeValue + "'";
-                if (CurrencyItems[i].codeValue == currency) selectHtml = selectHtml + " selected ";
-                selectHtml = selectHtml + " > " + CurrencyItems[i].showName + "</option>"
+                selectHtml = selectHtml + "<option value='" + CurrencyItems[i] + "'";
+                if (CurrencyItems[i] == currency) selectHtml = selectHtml + " selected ";
+                selectHtml = selectHtml + " > " + CurrencyItems[i] + "</option>"
             }
             selectHtml = selectHtml + "</select>";
+            return selectHtml;
+        }
+        function getRate(id, rate){
+            var selectHtml = "<input type='text' name='InvoiceBillDtos[" + id + "].Rate' onchange='onRateChange(event)' value='" + rate + "' id='Rate_" + index + "' disabled/><input type='hidden' name='InvoiceBillDtos[" + id + "].Amount' id='Amount_[" + id + "]' /></td>"
             return selectHtml;
         }
         function goBlank() {
