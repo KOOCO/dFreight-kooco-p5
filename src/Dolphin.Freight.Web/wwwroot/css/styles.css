@@ -12019,40 +12019,40 @@ body {
     border-radius: 0.25rem;
 }
 
-#mawbCard .select2-container--default .select2-selection--single .select2-selection__placeholder {
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
     color: #495057;
     position: relative;
     bottom: 6px;
     right: 8px;
 }
 
-    #mawbCard .select2-container--default .select2-selection--single .select2-selection__arrow b {
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
         border-width: 0;
         margin-top: -8px;
         margin-left: -15px;
     }
 
-#mawbCard .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+.select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
     border-width: 0;
 }
 
-#mawbCard .select2-container--default .select2-selection--single .select2-selection__arrow b:before {
+.select2-container--default .select2-selection--single .select2-selection__arrow b:before {
     content: "\f078";
     font-size: 0.775em;
     font-family: "FontAwesome";
     color: #000;
 }
 
-#mawbCard .select2-container {
+.select2-container {
     height: 9px;
 }
 
-#mawbCard .select2-container--open .select2-dropdown {
+.select2-container--open .select2-dropdown {
     left: 0;
     top: 28px;
 }
 
-#mawbCard .select2-dropdown {
+.select2-dropdown {
     border-color: #ced4da;
 }
 

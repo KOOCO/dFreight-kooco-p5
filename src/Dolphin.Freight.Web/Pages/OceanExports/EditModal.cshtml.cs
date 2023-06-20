@@ -136,7 +136,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             var updateItem = ObjectMapper.Map<OceanExportMblDto, CreateUpdateOceanExportMblDto>(OceanExportMblDto);
             await _oceanExportMblAppService.UpdateAsync(OceanExportMblDto.Id, updateItem);
 
-            if (OceanExportHblDto is not null)
+            if (OceanExportHbl is not null)
             {
                 OceanExportHbl.MblId = OceanExportMblDto.Id;
 

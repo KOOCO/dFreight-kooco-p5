@@ -3,6 +3,25 @@
 @using Microsoft.Extensions.Localization
 @model ComponentData
 @inject IStringLocalizer<FreightResource> L
+
+    <style>
+    .select2-dropdown.select2-dropdown--above{
+        width: auto !important;
+    }
+
+    .select2-dropdown.select2-dropdown--below {
+        width: auto !important;
+    }
+
+    .select2-results__options{
+        width: max-content !important;
+    }
+
+    .select2-container .select2-selection--single .select2-selection__rendered{
+        padding: 0
+    }
+    </style>
+
 @if (Model.IsShowLabel) 
 {
 <label for="@Model.FieldName" class="form-label">
@@ -15,11 +34,13 @@
 </label>
 }
 
+<div class="d-flex">
+    
 <select name="@Model.Name" id="@Model.Id" class="form-select form-control form-select-sm cursor-pointer">
     <option></option>
     @foreach (SelectListItem item in Model.AspItems)
     {
-        @if (item.Value == Model.Selected)
+        @if (item.Value == Model.ShowFiledContentValue)
         {
             <option value="@item.Value" selected>@item.Text</option>
         }
@@ -33,7 +54,7 @@
 @if (Model.SelectType == 1)
 {
 
-    <button title="" class="btn btn-info " style="color:#ffffff; " type="button" id="btn_@Model.GetFiledContentName().Replace(" ", string.Empty)" data-busy-text="Processing..." data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top" data-bs-content="@Model.GetShowFiledContent()" data-bs-original-title="@L["Title:ReportFormTitle"]" onclick="editTitle('@Model.GetFiledContentName().Replace(" ", string.Empty)','@Model.GetShowFiledContent()')">
+    <button title="" class="btn btn-info " style="color:#ffffff; " type="button" id="btn_@Model.GetFiledContentName().Replace(" ", string.Empty)" data-busy-text="Processing..." data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top" data-bs-content="@Model.GetShowFiledContent()" data-bs-original-title="@L["Title:ReportFormTitle"]" onclick="editTitle('@Model.GetFiledContentName().Replace(" ", string.Empty)','@Model.GetShowFiledContent()')" disabled>
         <i class="fas fa-edit"></i>
     </button>
     <div class="modal" tabindex="-1" id="modal_@Model.GetFiledContentName().Replace(" ", string.Empty)">
@@ -53,6 +74,8 @@
     </div>
 
 }
+
+</div>
 
 <ul class="dropdown-menu " aria-labelledby="@Model.TagName" id="dropdownMenuButton_@Model.TagName">
 </ul>
