@@ -12003,3 +12003,57 @@ body {
     border-color: #ced4da;
 }
 
+
+#mawbCard .select2-container--default .select2-selection--single {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.575rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #495057;
+    position: relative;
+    bottom: 6px;
+    right: 8px;
+}
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-width: 0;
+        margin-top: -8px;
+        margin-left: -15px;
+    }
+
+.select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+    border-width: 0;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b:before {
+    content: "\f078";
+    font-size: 0.775em;
+    font-family: "FontAwesome";
+    color: #000;
+}
+
+.select2-container {
+    height: 9px;
+}
+
+.select2-container--open .select2-dropdown {
+    left: 0;
+    top: 28px;
+}
+
+.select2-dropdown {
+    border-color: #ced4da;
+}
+
+
