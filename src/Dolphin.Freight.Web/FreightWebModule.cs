@@ -201,6 +201,8 @@ public class FreightWebModule : AbpModule
                         configuration.AddFiles("/client-proxies/account-proxy.js");
                         configuration.AddFiles("/Pages/Account/Components/ProfileManagementGroup/Password/Default.js");
                         configuration.AddFiles("/Pages/Account/Components/ProfileManagementGroup/PersonalInfo/Default.js");
+                        configuration.AddFiles("/Pages/Account/ProfileManagementGroup/Settings/Default.js");
+                        configuration.AddFiles("/Pages/Account/ProfileManagementGroup/ProfileHeader/Default.js");
                     });
         });
 

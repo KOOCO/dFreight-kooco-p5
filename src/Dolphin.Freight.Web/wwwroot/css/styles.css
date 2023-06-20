@@ -11821,9 +11821,9 @@ body {
 }
 
 .profile-management-wrapper .tab-content .btn-primary {
-    background-color: #8CD0CA;
+    background-color: #44b6ae;
     border-color: #8CD0CA;
-    border-radius:0;
+    border-radius: 0;
 }
 .profile-management-wrapper .btn-primary:not(:disabled):not(.disabled).active, .profile-management-wrapper .btn-primary:not(:disabled):not(.disabled):active, .profile-management-wrapper .show > .btn-primary.dropdown-toggle {
     background-color: #8CD0CA;
