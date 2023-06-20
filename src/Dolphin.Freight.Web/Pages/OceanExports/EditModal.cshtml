@@ -491,7 +491,7 @@
                             </button>
 
                         </abp-card-header>
-                        <abp-card-body class="collapse show customForm" id="mblDiv">
+                        <abp-card-body class="collapse show" id="mblDiv">
                             <abp-row>
                                 <abp-column size-md="_3">
                                     <input type="hidden" name="ShipmentNo" id="ShipmentNo">
@@ -569,7 +569,7 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
 
-                                    <label for="CareOfId" class="form-label">C/O <input type="checkbox" name="OceanExportMbl.IsUsedCareOf" id="OceanExportMbl_IsUsedCareOf" value="true" /></label>
+                                    <label for="CareOfId" class="">C/O <input type="checkbox" name="OceanExportMbl.IsUsedCareOf" id="OceanExportMbl_IsUsedCareOf" value="true" /></label>
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.CareOfId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "", SelectType = 1, ShowFiledContentValue = Model.OceanExportMbl.CareOfId.ToString() })
 
                                     @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CareOfId", FieldName = "CareOfId",DefaultValue="" , IsShowLabel = false , IsRequired = false,SelectType=1 ,ShowFiledContentValue = Model.OceanExportMbl.CareOfContent })*@
@@ -577,7 +577,7 @@
                                     <input type="hidden" name="OceanExportMbl.CareOfContent" id="mCareOfContent" value="@Model.OceanExportMbl.CareOfContent" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="form-label">Operator</label>
+                                    <label class="">Operator</label>
                                     <select class="form-control ml-15" asp-for="OceanExportMbl.MblOperatorId" disabled="true">
                                         <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
                                     </select>
@@ -588,7 +588,7 @@
                                     <abp-input asp-for="OceanExportMbl.CarrierContractNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanExportMbl_IsDirect" class="form-label">@L["IsDirect"]<input type="checkbox" name="OceanExportMbl.IsDirect" id="OceanExportMbl.IsDirect" value="true" checked="@Model.OceanExportMbl.IsDirect" /></label>
+                                    <label for="OceanExportMbl_IsDirect" class="">@L["IsDirect"]<input type="checkbox" name="OceanExportMbl.IsDirect" id="OceanExportMbl.IsDirect" value="true" checked="@Model.OceanExportMbl.IsDirect" /></label>
                                 </abp-column>
                                 <abp-column size-md="_6">
 
@@ -689,7 +689,7 @@
                                     @await Component.InvokeAsync(typeof(SelectComponent), new { TagName = "SvcTermFromId", FieldName = "SvcTermFromId", DefaultValue = "", IsShowLabel = true, IsRequired = false })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="SvcTermToId" class="form-label">&nbsp;&nbsp;</label>
+                                    <label for="SvcTermToId" class="">&nbsp;&nbsp;</label>
                                     @await Component.InvokeAsync(typeof(SelectComponent), new { TagName = "SvcTermToId", FieldName = "SvcTermToId", DefaultValue = "", IsShowLabel = false, IsRequired = false })
                                 </abp-column>
                             </abp-row>
@@ -726,7 +726,7 @@
                                 <abp-column size-md="_3">
                                     <abp-row>
                                         <abp-column>
-                                            <label for="OceanExportMbl_IsCanceled" class="form-label">@L["IsCanceled"] <input type="checkbox" name="OceanExportMbl.IsCanceled" id="OceanExportMbl_IsCanceled" value="true" /></label>
+                                            <label for="OceanExportMbl_IsCanceled" class="">@L["IsCanceled"] <input type="checkbox" name="OceanExportMbl.IsCanceled" id="OceanExportMbl_IsCanceled" value="true" /></label>
 
                                             <input type="text" id="OceanExportMbl_CanceledDate" name="OceanExportMbl.CanceledDate" value="" class="form-control " readonly>
 
@@ -753,10 +753,10 @@
                                     </div>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanExportMbl_IsBookingAgent" class="form-label">@L["IsBookingAgent"]<input type="checkbox" name="OceanExportMbl.IsBookingAgent" id="OceanExportMbl_IsBookingAgent" value="true" checked="" /></label>
+                                    <label for="OceanExportMbl_IsBookingAgent" class="">@L["IsBookingAgent"]<input type="checkbox" name="OceanExportMbl.IsBookingAgent" id="OceanExportMbl_IsBookingAgent" value="true" checked="" /></label>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="CareOfId" class="form-label">@L["IsReleased"]<input type="checkbox" name="OceanExportMbl.IsReleased" id="OceanExportMbl_IsReleased" value="true" /></label>
+                                    <label for="CareOfId" class="">@L["IsReleased"]<input type="checkbox" name="OceanExportMbl.IsReleased" id="OceanExportMbl_IsReleased" value="true" /></label>
                                     <abp-input asp-for="OceanExportMbl.MblReleaseDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
