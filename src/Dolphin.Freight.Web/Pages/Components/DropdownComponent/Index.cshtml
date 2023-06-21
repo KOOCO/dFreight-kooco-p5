@@ -4,24 +4,6 @@
 @model ComponentData
 @inject IStringLocalizer<FreightResource> L
 
-    <style>
-    .select2-dropdown.select2-dropdown--above{
-        width: auto !important;
-    }
-
-    .select2-dropdown.select2-dropdown--below {
-        width: auto !important;
-    }
-
-    .select2-results__options{
-        width: max-content !important;
-    }
-
-    .select2-container .select2-selection--single .select2-selection__rendered{
-        padding: 0
-    }
-    </style>
-
 @if (Model.IsShowLabel) 
 {
 <label for="@Model.FieldName">
