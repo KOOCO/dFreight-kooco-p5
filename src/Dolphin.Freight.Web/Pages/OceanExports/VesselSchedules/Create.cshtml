@@ -361,17 +361,8 @@
                                 </abp-column>
 
                             </abp-row>
-                            <abp-row>
-                                <abp-column>
-                                    &nbsp;
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-column>
-                                    &nbsp;
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
+                            
+                            <abp-row class="mt-5">
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OblTypeId", AspItems = Model.OblTypeList, IsShowLabel = true, FieldName = "OblTypeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.OblTypeId.ToString() })
                                 </abp-column>

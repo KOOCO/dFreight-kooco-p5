@@ -28,10 +28,10 @@ function getFormat() {
 }
 
 function initializeDropdownSearch(id) {
-    debugger;
     var l = abp.localization.getResource('Freight');
     $('#' + id).select2({
-        placeholder: '- Select -',
+        placeholder: l("Dropdown:Empty"),
+        allowClear: true,
         templateSelection: getFormat(),
         templateResult: getFormat()
     });
