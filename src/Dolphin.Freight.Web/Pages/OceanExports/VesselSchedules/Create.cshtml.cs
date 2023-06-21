@@ -32,6 +32,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
 
         public List<SelectListItem> TransPortList { get; set; }
         public List<SelectListItem> MblCarrierList { get; set; }
+        public List<SelectListItem> SvcTermList { get; set; }
 
 
         [BindProperty]
@@ -63,6 +64,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
             await FillOBlType();
             await FillMblCarrierType();
             await FillTransPortType();
+            await FillSvcTermType();
 
             FillWtValOther();
         }
@@ -160,6 +162,15 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
             var blTypeLookup = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "MblCarrierId" });
 
             MblCarrierList = blTypeLookup.Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
+                                     .ToList();
+
+        }
+
+        public async Task FillSvcTermType()
+        {
+            var svcTermLookup = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "SvcTermFromId" });
+
+            SvcTermList = svcTermLookup.Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
                                      .ToList();
 
         }
