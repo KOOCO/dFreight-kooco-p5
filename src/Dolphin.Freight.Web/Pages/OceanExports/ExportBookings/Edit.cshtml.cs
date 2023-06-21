@@ -2,11 +2,14 @@ using Dolphin.Freight.Accounting;
 using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
+using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
@@ -14,6 +17,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
 {
     public class EditModel : FreightPageModel
     {
+        public List<SelectListItem> ReferenceNumberLookupList { get; set; }
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
@@ -37,11 +41,13 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         private readonly IExportBookingAppService _exportBookingAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
         private readonly IInvoiceAppService _invoiceAppService;
-        public EditModel(IExportBookingAppService exportBookingAppService,  ISysCodeAppService sysCodeAppService, IInvoiceAppService invoiceAppService)
+        private readonly IVesselScheduleAppService _vesselScheduleAppService;
+        public EditModel(IExportBookingAppService exportBookingAppService,  ISysCodeAppService sysCodeAppService, IInvoiceAppService invoiceAppService, IVesselScheduleAppService vesselScheduleAppService)
         {
             _exportBookingAppService = exportBookingAppService;
             _sysCodeAppService = sysCodeAppService;
             _invoiceAppService = invoiceAppService;
+            _vesselScheduleAppService = vesselScheduleAppService;
         }
         public async Task OnGetAsync()
         {
@@ -73,11 +79,24 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
                 ShowCopyMsg = true;
             }
 
+            await FillReferenceNumberAsync();
+
         }
         public async Task<IActionResult> OnPostAsync()
         {
             await _exportBookingAppService.UpdateAsync(Id, ExportBooking);
             return NoContent();
         }
+
+        #region FillReferenceNumberAsync()
+        private async Task FillReferenceNumberAsync()
+        {
+            var vesselSchedulesLookup = await _vesselScheduleAppService.GetListAsync(new QueryVesselScheduleDto() { });
+
+            ReferenceNumberLookupList = vesselSchedulesLookup
+                                                            .Select(x => new SelectListItem(x.ReferenceNo, x.Id.ToString(), false))
+                                                            .ToList();
+        }
+        #endregion
     }
 }

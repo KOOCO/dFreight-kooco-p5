@@ -341,7 +341,7 @@
                                         <abp-card-body style="background:#eeeeee;">
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "ReferenceId", FieldName = "ReferenceId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.ReferenceId", AspItems = Model.ReferenceNumberLookupList, IsShowLabel = true, FieldName = "", SelectType = 0, ShowFiledContentValue = Model.ExportBooking.ReferenceNo })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
