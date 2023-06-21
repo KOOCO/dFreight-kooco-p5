@@ -87,6 +87,7 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<CreateUpdateInvoiceBillDto, InvoiceBill>();
         CreateMap<InvoiceBill, InvoiceBillDto>();
         CreateMap<InvoiceBillDto, InvoiceBill>();
+        CreateMap<InvoiceBill, CreateUpdateInvoiceBillDto>();
 
 
         CreateMap<CustomerPayment, CustomerPaymentDto>();
