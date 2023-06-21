@@ -66,6 +66,7 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<CreateUpdatePortsManagementDto, PortsManagement>();
         CreateMap<CurrencySetting, CurrencySettingDTO>();
         CreateMap<CreateUpdateCurrencySettingDTO, CurrencySetting>();
+        CreateMap<CurrencySetting, CreateUpdateCurrencySettingDTO>();
         CreateMap<CreateUpdateItNoRangeDto, ItNoRange>();
         CreateMap<AwbNoRange, AwbNoRangeDto>();
         CreateMap<CreateUpdateAwbNoRangeDto, AwbNoRange>();

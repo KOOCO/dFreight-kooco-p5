@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 
@@ -19,5 +20,6 @@ namespace Dolphin.Freight.Settings.CurrencySetting
         CreateUpdateCurrencySettingDTO //新增修改IT號碼管理用
         >
     {
+        Task<List<CreateUpdateCurrencySettingDTO>> GetCurrenciesAsync();
     }
 }
