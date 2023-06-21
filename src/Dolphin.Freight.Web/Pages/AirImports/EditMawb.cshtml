@@ -34,6 +34,7 @@
             initializeDropdownSearch('MawbModel_ShipperId');
             initializeDropdownSearch('MawbModel_ConsigneeId');
             initializeDropdownSearch('MawbModel_NotifyId');
+            initializeDropdownSearch('MawbModel_CoLoaderId');
 
             var l = abp.localization.getResource('Freight');
             var showMsg = '@Model.ShowMsg';
@@ -421,9 +422,7 @@
                             <!--第3列-->
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.CoLoaderId" size="Small">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                    </abp-select>
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.CoLoaderId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.CoLoaderId, IsShowLabel = true, FieldName = @L["CoLoaderId"] })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-select asp-for="MawbModel.OPId" size="Small" disabled="true">

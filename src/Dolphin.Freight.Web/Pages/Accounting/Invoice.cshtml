@@ -153,10 +153,11 @@
         function onQuantityChange(e) {
             let target = e.currentTarget || e.srcElement || e.target;
             var index = target.id.split('_')[1];
-            let quantity = parseInt($(target).val() || 0);
-            let rate = parseInt($(target).parent().next().children().val() || 0);
+            let quantity = parseFloat($(target).val() || 0);
+            let rate = parseFloat($(target).parent().next().children().val() || 0);
             $(target).parent().next().next().children().text(quantity * rate);
-            setCurrencyRate1($('#Currency_'+index+'').val());
+            setCurrencyRate1($('#Currency_'+index+'').val(), event);
+            getTotalAmount();
         }
 
         function onRateChange(e) {
@@ -181,22 +182,27 @@
             let rate = conversion["" + val + "-TWD"];
             $('#Rate_'+ index).val(rate);
 
-            setCurrencyRate1($(target).val());
+            setCurrencyRate1($(target).val(), event);
 
             var quantity = $('#Quantity_'+index).val();
 
-            $('#Amount_'+index).text(parseFloat(quantity * rate).toFixed(3));
-
+            $('#Amount_'+index).text(parseFloat(quantity * rate).toFixed(4));
+            if(document.getElementById('Amount_'+index+'').innerHTML == 'NaN'){
+                document.getElementById('Amount_'+index+'').innerHTML = 0;
+            }
+            getTotalAmount();
         }
 
         const currencies = ['TWD', 'USD', 'RMB', 'HKD']
 
-        function setCurrencyRate1(value) {
+        function setCurrencyRate1(value, e) {
+            let target = e.currentTarget || e.srcElement || e.target;
+            var index = target.id.split('_')[1];
             let val = currencyCodeToName[value];
             let conversion = JSON.parse(currencyConvertor);
             let rate = conversion["" + val + "-TWD"];
             
-            let amount = $('#Quantity_'+(index - 1)+'').val() * rate;
+            let quantity = $('#Quantity_'+ index +'').val();
             if($('#Currency_0').val() == 0){
                 amount = 0;
             }
@@ -204,7 +210,7 @@
                 let key = '' + val + '-' + currency + '';
                 let convertedRate = conversion[key] || 1;
 
-                document.getElementById("converted" + currency).innerHTML = convertedRate * amount;
+                document.getElementById("converted" + currency).innerHTML = convertedRate * quantity;
             })
         }
         function setCurrencyRate(value) {
@@ -212,7 +218,7 @@
             let conversion = JSON.parse(currencyConvertor);
             let rate = conversion["" + val + "-TWD"];
             
-            let amount = $('#Quantity_'+index+'').val() * rate;
+            let amount = $('#Quantity_'+index+'').val();
             if($('#Currency_0').val() == 0){
                 amount = 0;
             }
@@ -230,9 +236,25 @@
             }).done(function (result) {
                 InvoiceBills = result;
                 result.forEach(function (bill) {
-                    addItems(bill);
+                    addItems(bill); 
                 })
             });
+        }
+
+        function getTotalAmount(){
+            debugger;
+            var table = $('#trtbody');
+            var total = 0;
+
+            for (var i = 0; i < table[0].rows.length; i++) {
+              var amountCell = document.getElementById("Amount_" + i);
+              
+              var amount = parseFloat(amountCell.innerHTML);
+              
+              total += amount;
+            }
+            var totalAmountElement = document.getElementById("totalAmount");
+            totalAmountElement.innerHTML = total.toFixed(3);
         }
 
         var index = 0;
@@ -266,6 +288,7 @@
             var amount = bill.quantity * $("#Rate_" + index + "").val();
             $('#Amount_'+index+'').text(amount);
             setCurrencyRate($('#Currency_0').val());
+            getTotalAmount();
             index++;
             
         }
@@ -860,7 +883,7 @@
                     </abp-row>
                     <abp-row>
                         <abp-column style="overflow-x:scroll">
-                            <abp-table border="1" style="width:2600px;border-block-color:#333333;padding-left:10px;margin:4px;  table-layout: fixed; ">
+                            <abp-table border="1" id="table" style="width:2600px;border-block-color:#333333;padding-left:10px;margin:4px;  table-layout: fixed; ">
                                 <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
                                     <th width="6%" style="text-align:center"><input type="checkbox" id="checkAll" /></th>
                                     <th width="8%">@L["Display:BillCode"]</th>
@@ -892,7 +915,7 @@
                                     </tr>
                                     <tr border="1">
                                         <th colspan="12" style="text-align:right;border-block-color:#333333;" border="1">總計</th>
-                                        <th>0</th>
+                                        <th id="totalAmount">0</th>
                                     </tr>
                                 </tfoot>
                             </abp-table>
