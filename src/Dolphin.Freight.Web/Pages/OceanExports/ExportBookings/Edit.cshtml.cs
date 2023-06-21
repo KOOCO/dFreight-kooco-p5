@@ -1,5 +1,6 @@
 using Dolphin.Freight.Accounting;
 using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
@@ -17,7 +18,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
 {
     public class EditModel : FreightPageModel
     {
-        public List<SelectListItem> ReferenceNumberLookupList { get; set; }
+        
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
@@ -38,16 +39,28 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         public bool ShowCopyMsg { get; set; } = false;
         [BindProperty]
         public CreateUpdateExportBookingDto ExportBooking { get; set; }
+
+        public List<SelectListItem> ReferenceLookupList { get; set; }
+        public List<SelectListItem> CancelReasonLookupList { get; set; }
+        public List<SelectListItem> ShipModeLookupList { get; set; }
+        public List<SelectListItem> FreightTermLookupList { get; set; }
+        public List<SelectListItem> SvgTermLookupList { get; set; }
+        public List<SelectListItem> IncotermsLookupList { get; set; }
+        public List<SelectListItem> CargoTypeLookupList { get; set; }
+    
+
         private readonly IExportBookingAppService _exportBookingAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly IVesselScheduleAppService _vesselScheduleAppService;
-        public EditModel(IExportBookingAppService exportBookingAppService,  ISysCodeAppService sysCodeAppService, IInvoiceAppService invoiceAppService, IVesselScheduleAppService vesselScheduleAppService)
+        private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
+        public EditModel(IExportBookingAppService exportBookingAppService,  ISysCodeAppService sysCodeAppService, IInvoiceAppService invoiceAppService, IVesselScheduleAppService vesselScheduleAppService, IAjaxDropdownAppService ajaxDropdownAppService)
         {
             _exportBookingAppService = exportBookingAppService;
             _sysCodeAppService = sysCodeAppService;
             _invoiceAppService = invoiceAppService;
             _vesselScheduleAppService = vesselScheduleAppService;
+            _ajaxDropdownAppService = ajaxDropdownAppService;
         }
         public async Task OnGetAsync()
         {
@@ -80,7 +93,12 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
             }
 
             await FillReferenceNumberAsync();
-
+            await FillCancelReasonAsync();
+            await FillShipModeAsync();
+            await FillFreightTermAsync();
+            await FillSvgTermAsync();
+            await FillIncotermsIdAsync();
+            await FillCategoryTypeAsync();
         }
         public async Task<IActionResult> OnPostAsync()
         {
@@ -91,11 +109,77 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         #region FillReferenceNumberAsync()
         private async Task FillReferenceNumberAsync()
         {
-            var vesselSchedulesLookup = await _vesselScheduleAppService.GetListAsync(new QueryVesselScheduleDto() { });
+            var referenceLookup = await _ajaxDropdownAppService.GetReferenceItemsByTypeAsync(new QueryDto());
 
-            ReferenceNumberLookupList = vesselSchedulesLookup
-                                                            .Select(x => new SelectListItem(x.ReferenceNo, x.Id.ToString(), false))
-                                                            .ToList();
+            ReferenceLookupList = referenceLookup
+                                                .Select(x => new SelectListItem(x.ReferenceNo, x.Id.ToString(), false))
+                                                .ToList();
+        }
+        #endregion
+
+        #region FillCancelReasonAsync()
+        private async Task FillCancelReasonAsync()
+        {
+            var lookUp = await _ajaxDropdownAppService.GetSysCodeDtosByTypeAsync(new QueryDto() { QueryType= "CancelReason" });
+
+            CancelReasonLookupList = lookUp
+                                        .Select(x => new SelectListItem(x.CodeValue, x.Id.ToString(), false))
+                                        .ToList();
+        }
+        #endregion
+
+        #region FillShipModeAsync()
+        private async Task FillShipModeAsync()
+        {
+            var lookUp = await _ajaxDropdownAppService.GetSysCodeDtosByTypeAsync(new QueryDto() { QueryType = "ShipModeId" });
+
+            ShipModeLookupList = lookUp
+                                        .Select(x => new SelectListItem(x.CodeValue, x.Id.ToString(), false))
+                                        .ToList();
+        }
+        #endregion
+
+        #region FillFreightTermAsync()
+        private async Task FillFreightTermAsync()
+        {
+            var lookUp = await _ajaxDropdownAppService.GetSysCodeDtosByTypeAsync(new QueryDto() { QueryType = "FreightTermId" });
+
+            FreightTermLookupList = lookUp
+                                        .Select(x => new SelectListItem(x.CodeValue, x.Id.ToString(), false))
+                                        .ToList();
+        }
+        #endregion
+
+        #region FillSvgTermAsync()
+        private async Task FillSvgTermAsync()
+        {
+            var lookUp = await _ajaxDropdownAppService.GetSysCodeDtosByTypeAsync(new QueryDto() { QueryType = "SvcTermFromId" });
+
+            SvgTermLookupList = lookUp
+                                        .Select(x => new SelectListItem(x.CodeValue, x.Id.ToString(), false))
+                                        .ToList();
+        }
+        #endregion
+
+        #region FillIncotermsIdAsync()
+        private async Task FillIncotermsIdAsync()
+        {
+            var lookUp = await _ajaxDropdownAppService.GetSysCodeDtosByTypeAsync(new QueryDto() { QueryType = "IncotermsId" });
+
+            IncotermsLookupList = lookUp
+                                        .Select(x => new SelectListItem(x.CodeValue, x.Id.ToString(), false))
+                                        .ToList();
+        }
+        #endregion
+
+        #region FillCategoryTypeAsync()
+        private async Task FillCategoryTypeAsync()
+        {
+            var lookUp = await _ajaxDropdownAppService.GetSysCodeDtosByTypeAsync(new QueryDto() { QueryType = "CargoTypeId" });
+
+            CargoTypeLookupList = lookUp
+                                        .Select(x => new SelectListItem(x.CodeValue, x.Id.ToString(), false))
+                                        .ToList();
         }
         #endregion
     }
