@@ -174,9 +174,9 @@ namespace Dolphin.Freight.Web.Pages.Accounting
 
         public async Task FillCurrencySettingsDictionary()
         {
-            var currencySettings = await _currencySettingAppService.GetListAsync(new Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto());
+            var currencySettings = await _currencySettingAppService.GetCurrenciesAsync();
             DictCurrencyConversion = new ();
-            foreach (var currencySetting in currencySettings.Items)
+            foreach (var currencySetting in currencySettings)
             {
                 DictCurrencyConversion.Add($"{currencySetting.StartingCurrency}-{currencySetting.EndCurrency}", currencySetting.ExChangeRate);
             }
