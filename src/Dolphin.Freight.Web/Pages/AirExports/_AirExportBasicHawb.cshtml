@@ -161,14 +161,13 @@
                 </abp-select>
             </abp-column>
             <abp-column size-md="_3">
-                <label>Destination</label>
-                <input asp-for="@Model.AirExportHawbDto.Destination" class="form-control" />
+                <abp-input asp-for="@Model.AirExportHawbDto.Destination" class="form-control" label="@L["Destination"].Value" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.CargoPickup" size="Small" />
+                <abp-input asp-for="@Model.AirExportHawbDto.CargoPickup" size="Small" label="@L["CargoPickup"].Value" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-select asp-for="@Model.AirExportHawbDto.DeliveryTo" asp-items="@Model.TradePartnerLookupList" size="Small">
+                <abp-select asp-for="@Model.AirExportHawbDto.DeliveryTo" asp-items="@Model.TradePartnerLookupList" size="Small" label="@L["DeliveryTo"].Value">
                     <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                 </abp-select>
             </abp-column>
@@ -176,42 +175,40 @@
         <!--第六列-->
         <abp-row>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.CargoType" size="Small" />
+                <abp-input asp-for="@Model.AirExportHawbDto.CargoType" size="Small" label="@L["CargoType"].Value" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.SalesType" size="Small" />
+                <abp-input asp-for="@Model.AirExportHawbDto.SalesType" size="Small" label="@L["SalesType"].Value" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.ShipType" size="Small" />
+                <abp-input asp-for="@Model.AirExportHawbDto.ShipType" size="Small" label="@L["ShipType"].Value" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.FinalEta" size="Small" />
+                <abp-input asp-for="@Model.AirExportHawbDto.FinalEta" size="Small" label="@L["FinalEta"].Value" />
             </abp-column>
         </abp-row>
         <!--第七列-->
         <abp-row>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.DVCarriage" size="Small" />
+                <abp-input asp-for="@Model.AirExportHawbDto.DVCarriage" size="Small"/>
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.DVCustoms" size="Small" />
+                <abp-input asp-for="@Model.AirExportHawbDto.DVCustoms" size="Small" label="@L["DVCustoms"].Value" />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-row>
-                    <abp-column size-md="_3">
-                        WT/VAL
-                    </abp-column>
-                    <abp-column>
+
+                    <abp-column >
+                        @L["WT/VAL"]
                         <abp-radio asp-for="@Model.AirExportHawbDto.WTVAL" asp-items="@Model.WtValOtherList" inline="true" />
                     </abp-column>
                 </abp-row>
             </abp-column>
             <abp-column size-md="_3">
                 <abp-row>
-                    <abp-column size-md="_3">
-                        Other
-                    </abp-column>
+
                     <abp-column>
+                        @L["Other"]
                         <abp-radio asp-for="@Model.AirExportHawbDto.Other" asp-items="@Model.WtValOtherList" inline="true" />
                     </abp-column>
                 </abp-row>
@@ -240,8 +237,8 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <th>Package</th>
-                                    <td><input asp-for="@Model.AirExportHawbDto.Package" class="form-control" /></td>
+                                    <th>@L["Package"]</th>
+                                    <td><input asp-for="@Model.AirExportHawbDto.Package" class="form-control"/></td>
                                     <td colspan="3">
                                         <select asp-for="@Model.AirExportHawbDto.PackageUnit" class="form-select">
                                             <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
@@ -253,9 +250,9 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Buying Rate</th>
+                                    <th>@L["BuyingRate"]</th>
                                     <td><input asp-for="@Model.AirExportHawbDto.BuyingRate" class="form-control" /></td>
-                                    <td>per</td>
+                                    <td>@L["per"]</td>
                                     <td>
                                         <select asp-for="@Model.AirExportHawbDto.BuyingRateUnit" asp-items="Html.GetEnumSelectList(typeof(RateUnitType))" class="form-select form-control">
                                             <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
@@ -264,9 +261,9 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <th>Selling Rate</th>
+                                    <th>@L["SellingRate"]</th>
                                     <td><input asp-for="@Model.AirExportHawbDto.SellingRate" class="form-control" /></td>
-                                    <td>per</td>
+                                    <td>@L["per"]</td>
                                     <td>
                                         <select asp-for="@Model.AirExportHawbDto.SellingRateUnit" asp-items="Html.GetEnumSelectList(typeof(RateUnitType))" class="form-select form-control">
                                             <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
@@ -275,13 +272,13 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <th>Volume Weight</th>
+                                    <th>@L["VolumeWeight"]</th>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeKG" class="form-control" /></td>
-                                    <td>KG</td>
+                                    <td>@L["KG"]</td>
                                     <td>
                                         <input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeLB" class="form-control" />
                                     </td>
-                                    <td>CBM</td>
+                                    <td>@L["CBM"]</td>
                                 </tr>
                                 <tr>
                                     <th></th>
@@ -295,26 +292,26 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>KG</th>
-                                    <th>LB</th>
-                                    <th>Amount</th>
+                                    <th>@L["KG"]</th>
+                                    <th>@L["LB"]</th>
+                                    <th>@L["Amount"]</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <th>Gross Weight</th>
+                                    <th>@L["GrossWeight"]</th>
                                     <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprKG" class="form-control" id="GrossWeightKg" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprLB" class="form-control" id="GrossWeightLb" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprAmount" class="form-control" /></td>
                                 </tr>
                                 <tr>
-                                    <th>Chargeable Weight</th>
+                                    <th>@L["ChargeableWeight"]</th>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprKG" class="form-control" id="ChargeableWeightKg" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprLB" class="form-control" id="ChargeableWeightLb" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprAmount" class="form-control" /></td>
                                 </tr>
                                 <tr>
-                                    <th>AWB Chargeable Weight</th>
+                                    <th>@L["AWBChargeableWeight"]</th>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeKG" class="form-control" id="AwbChargeableWeightKg" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeLB" class="form-control" id="AwbChargeableWeightLb" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeAmount" class="form-control" /></td>
@@ -328,17 +325,17 @@
         <!--第10列-->
         <abp-row>
             <abp-column size-md="_3">
-                <abp-select asp-for="@Model.AirExportHawbDto.Incoterms" asp-items="Html.GetEnumSelectList(typeof(IncotermsType))" class="form-select-sm form-control">
+                <abp-select asp-for="@Model.AirExportHawbDto.Incoterms" asp-items="Html.GetEnumSelectList(typeof(IncotermsType))" class="form-select-sm form-control" label="@L["Incoterms"].Value">
                     <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                 </abp-select>
             </abp-column>
             <abp-column size-md="_3">
-                <abp-select asp-for="@Model.AirExportHawbDto.ServiceTermStart" asp-items="Html.GetEnumSelectList(typeof(ServiceTermType))" class="form-select-sm form-control">
+                <abp-select asp-for="@Model.AirExportHawbDto.ServiceTermStart" asp-items="Html.GetEnumSelectList(typeof(ServiceTermType))" class="form-select-sm form-control" label="@L["ServiceTermStart"].Value">
                     <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                 </abp-select>
             </abp-column>
             <abp-column size-md="_3">
-                <abp-select asp-for="@Model.AirExportHawbDto.ServiceTermEnd" asp-items="Html.GetEnumSelectList(typeof(ServiceTermType))" class="form-select-sm form-control">
+                <abp-select asp-for="@Model.AirExportHawbDto.ServiceTermEnd" asp-items="Html.GetEnumSelectList(typeof(ServiceTermType))" class="form-select-sm form-control" label="@L["ServiceTermEnd"].Value">
                     <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                 </abp-select>
             </abp-column>
@@ -346,10 +343,10 @@
         <!--第11列 Awb取消Checkbox, IsEcom-->
         <abp-row>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.AWBCancelled" id="checkboxAwbCancelled" />
+                <abp-input asp-for="@Model.AirExportHawbDto.AWBCancelled" id="checkboxAwbCancelled" label="@L["ServiceTermEnd"].Value" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.CanceledBy" />
+                <abp-input asp-for="@Model.AirExportHawbDto.CanceledBy" label="@L["CanceledBy"].Value" />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="@Model.AirExportHawbDto.ReasonForCancel" class="form-select-sm form-control" id="AwbCancelledDate" />
@@ -360,12 +357,12 @@
         <!--第12列 Awb取消Area-->
         <abp-row>
             <abp-column size-md="_12">
-                <abp-input asp-for="@Model.AirExportHawbDto.PONo" id="AwbCancelledOpId" />
+                <abp-input asp-for="@Model.AirExportHawbDto.PONo" id="AwbCancelledOpId" label="@L["PONo"].Value" />
             </abp-column>
         </abp-row>
         <abp-row class="mt-4">
             <abp-column size-md="_2">
-                <h3>Commodity</h3>
+                <h3>@L["Commodity"]</h3>
             </abp-column>
             <abp-column size-md="_1">
                 <button class="btn btn-success me-md-2" type="button" id="addCommodityBtn" data-busy-text="Processing...">+</button>
@@ -380,9 +377,9 @@
                     <abp-table border="1" class="w-100">
                         <thead border="1">
                         <th></th>
-                        <th>Commodity Description</th>
-                        <th>HTS Code</th>
-                        <th>P.O. No.</th>
+                        <th>@L["CommodityDescription"]</th>
+                        <th>@L["HTSCode"]</th>
+                        <th>@L["PONo"]</th>
                         </thead>
                         <tbody id="commodityBody">
                         </tbody>
@@ -392,7 +389,7 @@
         </abp-row>
         <abp-row class="mt-4">
             <abp-column size-md="_12">
-                <h3>Warhouse receipt list</h3>
+                <h3>@L["WarhouseReceiptList"]</h3>
             </abp-column>
         </abp-row>
         <abp-row>
@@ -400,19 +397,19 @@
                 <div class="table-responsive">
                     <abp-table border="1" class="w-100">
                     <thead border="1">
-                    <th><input type="checkbox" /></th>
-                    <th>Receipt No</th>
-                    <th>Length</th>
-                    <th>Width</th>
-                    <th>Height</th>
-                    <th>Dimention</th>
-                    <th>TOTAL PCS</th>
-                    <th>Available PCS
-                    <th>Allocated PCS</th>
-                    <th>Unit</th>
-                    <th>Gross Weight</th>
-                    <th>Volume</th>
-                    <th>Measurement</th>
+                    <th><input type="checkbox" />
+                        <th>@L["ReceiptNo"]</th>
+                        <th>@L["Length"]</th>
+                        <th>@L["Width "]</th>
+                        <th>@L["Height "]</th>
+                        <th>@L["Dimention"]</th>
+                        <th>@L["TOTALPCS"]</th>
+                        <th>@L["AvailablePCS"]</th>
+                        <th>@L["AllocatedPCS"]</th>
+                        <th>@L["Unit"]</th>
+                        <th>@L["GrossWeight"]</th>
+                        <th>@L["Volume"]</th>
+                        <th>@L["Measurement"]</th>
                     </th>
                     </thead>
                     <tbody id="warhouseBody">
@@ -428,23 +425,23 @@
         </abp-row>
         <abp-row class="mt-4">
             <abp-column size-md="_6">
-                <h3>Mark</h3>
+                <h3>@L["Mark"]</h3>
                 <abp-input asp-for="@Model.AirExportHawbDto.Mark" />
             </abp-column>
             <abp-column size-md="_6">
-                <h3>Nature and Quantity Of Goods</h3>
+                <h3>@L["NatureAndQuantityOfGoods"]</h3>
                 <abp-input asp-for="@Model.AirExportHawbDto.NatureAndQuantityOfGoods" />
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_12">
-                <h3>Handling Information</h3>
-                <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation" />
+                <h3>@L["HandlingInformation"]</h3>
+                <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation"  />
             </abp-column>
         </abp-row>
         <abp-row class="mt-4">
             <abp-column size-md="_3">
-                <h3>Other Charges</h3>
+                <h3> @L["OtherCharges"]</h3>
             </abp-column>
             <abp-column size-md="_1">
                 <button class="btn btn-success me-md-2" type="button" id="addOtherChargesBodyBtn" data-busy-text="Processing...">+</button>
@@ -459,11 +456,11 @@
                     <abp-table border="1" class="w-100">
                         <thead border="1">
                         <th><input type="checkbox" /></th>
-                        <th>Carrier Agent</th>
-                        <th>Collect/Prepaid</th>
-                        <th>Charge Item</th>
-                        <th>Description</th>
-                        <th>Charge Amount</th>
+                        <th>@L["CarrierAgent"]</th>
+                        <th>@L["Collect/Prepaid"]</th>
+                        <th>@L["ChargeItem"]</th>
+                        <th>@L["Description"]</th>
+                        <th>@L["ChargeAmount"]</th>
                         </thead>
                         <tbody id="otherChargesBody">
                         </tbody>
@@ -474,7 +471,7 @@
         <abp-row class="mt-4">
             <abp-column>
                 <abp-card-header style="background:#cccccc;color:#FFFFFF;">
-                    More
+                    @L["More"]
                 </abp-card-header>
                 <abp-card>
                     <abp-card-body>
@@ -482,15 +479,15 @@
                             <abp-table>
                             <thead>
                             <th></th>
-                            <th>Valuation</th>
-                            <th>Tax</th>
-                            <th>Currency Conversion Rate</th>
-                            <th>CC Charges in Dest. Currency</th>
-                            <th>Charges at Destination</th>
+                                <th>@L["Valuation"]</th>
+                                <th>  @L["Tax"]</th>
+                                <th> @L["CurrencyConversionRate"]</th>
+                                <th>@L["CCChargesinDestCurrency"]</th>
+                                <th>@L["ChargesatDestination"]</th>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Prepaid</td>
+                                        <td> @L["Prepaid"]</td>
                                     <td><input type="text" /></td>
                                     <td><input type="text" /></td>
                                     <td><input type="text" /></td>
@@ -498,7 +495,7 @@
                                     <td><input type="text" /></td>
                                 </tr>
                                 <tr>
-                                    <td>Collect</td>
+                                        <td> @L["Collect"]</td>
                                     <td><input type="text" /></td>
                                     <td><input type="text" /></td>
                                     <td><input type="text" /></td>
