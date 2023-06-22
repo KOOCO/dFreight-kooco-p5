@@ -114,7 +114,8 @@
                 </abp-select>
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.Customer" size="Small" />
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Customer", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Customer"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Customer) })
+                @*<abp-input asp-for="@Model.AirExportHawbDto.Customer" size="Small" />*@
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="@Model.AirExportHawbDto.BillTo" size="Small" />
@@ -129,10 +130,10 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Notify", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Notify"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Notify) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.IssuingCarrier" size="Small" />
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.IssuingCarrier", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["IssuingCarrier"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.IssuingCarrier) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.Trucker" label="@L["tracker"].Value" />
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Trucker", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Trucker"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Trucker) })
             </abp-column>
         </abp-row>
         <!--第四列-->
