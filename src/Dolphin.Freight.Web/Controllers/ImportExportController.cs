@@ -355,8 +355,8 @@ namespace Dolphin.Freight.Web.Controllers
         {
             WtValOtherList = new List<SelectListItem>
             {
-                new SelectListItem { Value = "PPD", Text = "PPD"},
-                new SelectListItem { Value = "COLL", Text = "COLL"}
+                new SelectListItem { Value = "PPD", Text = L["PPD"]},
+                new SelectListItem { Value = "COLL", Text = L["COLL"]}
             };
         }
         #endregion
