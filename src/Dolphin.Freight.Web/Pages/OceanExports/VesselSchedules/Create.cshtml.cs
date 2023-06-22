@@ -13,6 +13,8 @@ using Dolphin.Freight.TradePartners;
 using System.Linq;
 using Dolphin.Freight.Settinngs.SysCodes;
 using NUglify.JavaScript.Visitors;
+using Dolphin.Freight.Common;
+using Dolphin.Freight.Settinngs.Ports;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
 {
@@ -33,6 +35,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
         public List<SelectListItem> TransPortList { get; set; }
         public List<SelectListItem> MblCarrierList { get; set; }
         public List<SelectListItem> SvcTermList { get; set; }
+        public List<SelectListItem> PortLookupList { get; set; }
+        public List<SelectListItem> ShipModeLookupList { get; set; }
+        public List<SelectListItem> FreightTermLookupList { get; set; }
 
 
         [BindProperty]
@@ -43,8 +48,10 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
         private readonly IAirportAppService _airportAppService;
         private readonly IPackageUnitAppService _packageUnitAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
+        private readonly IPortAppService _portAppService;
+        private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         public CreateModel(VesselScheduleAppService vesselScheduleAppService, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService,
-            IAirportAppService airportAppService, IPackageUnitAppService packageUnitAppService, ISysCodeAppService sysCodeAppService) 
+            IAirportAppService airportAppService, IPackageUnitAppService packageUnitAppService, ISysCodeAppService sysCodeAppService, IPortAppService portAppService, IAjaxDropdownAppService ajaxDropdownAppService) 
         {
             _vesselScheduleAppService = vesselScheduleAppService;
             _tradePartnerAppService = tradePartnerAppService;
@@ -52,6 +59,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
             _airportAppService = airportAppService;
             _packageUnitAppService = packageUnitAppService;
             _sysCodeAppService = sysCodeAppService;
+            _portAppService = portAppService;
+            _ajaxDropdownAppService = ajaxDropdownAppService;
         }
         public async Task OnGetAsync()
         {
@@ -64,7 +73,10 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
             await FillOBlType();
             await FillMblCarrierType();
             await FillTransPortType();
+            await FillPortAsync();
             await FillSvcTermType();
+            await FillShipModeAsync();
+            await FillFreightTermAsync();
 
             FillWtValOther();
         }
@@ -176,6 +188,39 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
         }
 
         #endregion
+
+        #region FillShipModeAsync()
+        private async Task FillShipModeAsync()
+        {
+            var lookUp = await _ajaxDropdownAppService.GetSysCodeDtosByTypeAsync(new QueryDto() { QueryType = "ShipModeId" });
+
+            ShipModeLookupList = lookUp
+                                        .Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
+                                        .ToList();
+        }
+        #endregion
+
+        #region FillFreightTermAsync()
+        private async Task FillFreightTermAsync()
+        {
+            var lookUp = await _ajaxDropdownAppService.GetSysCodeDtosByTypeAsync(new QueryDto() { QueryType = "FreightTermId" });
+
+            FreightTermLookupList = lookUp
+                                        .Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
+                                        .ToList();
+        }
+        #endregion
+
+        #region FillPortAsync()
+        private async Task FillPortAsync()
+        {
+            var portLookup = await _portAppService.GetListAsync(new Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto());
+            PortLookupList = portLookup.Items
+                                            .Select(x => new SelectListItem(x.PortName, x.Id.ToString(), false))
+                                            .ToList();
+        }
+        #endregion
+
 
         #region SetAirImportFileNo() 
         /// <summary>
