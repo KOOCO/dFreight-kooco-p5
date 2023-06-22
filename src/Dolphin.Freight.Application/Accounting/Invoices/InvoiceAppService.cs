@@ -94,7 +94,7 @@ namespace Dolphin.Freight.Accounting.Invoices
                     tDictionary.Add(tradePartner.Id, tradePartner.TPName);
                 }
             }
-            var rs = await _repository.GetListAsync();
+            var rs = await _repository.GetListAsync(true);
             List<InvoiceDto> list = new List<InvoiceDto>();
             if (query != null && query.ParentId != null)
             {
@@ -121,11 +121,18 @@ namespace Dolphin.Freight.Accounting.Invoices
 
             if (rs != null && rs.Count > 0)
             {
+                var invoiceBillQueryable = await _billRepository.GetQueryableAsync();
 
                 foreach (var r in rs)
                 {
                     var bill = ObjectMapper.Map<Invoice, InvoiceDto>(r);
+
                     if (r.InvoiceCompanyId != null) bill.InvoiceCompanyName = tDictionary[r.InvoiceCompanyId.Value];
+
+                    var invoiceBills = invoiceBillQueryable.Where(w => w.InvoiceId.Value == r.Id).ToList();
+
+                    bill.InvoiceBillDtos = ObjectMapper.Map<List<InvoiceBill>, List<CreateUpdateInvoiceBillDto>>(invoiceBills);
+                    
                     list.Add(bill);
                 }
             }

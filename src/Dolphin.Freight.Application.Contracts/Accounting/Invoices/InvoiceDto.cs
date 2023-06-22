@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dolphin.Freight.Accounting.InvoiceBills;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -242,6 +243,7 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public List<CreateUpdateInvoiceBillDto> InvoiceBillDtos { get; set; }
     }
 }
 

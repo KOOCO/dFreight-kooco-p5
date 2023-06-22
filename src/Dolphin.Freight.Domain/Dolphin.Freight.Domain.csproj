@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Dolphin.Freight.Application.Contracts\Dolphin.Freight.Application.Contracts.csproj" />
     <ProjectReference Include="..\Dolphin.Freight.Domain.Shared\Dolphin.Freight.Domain.Shared.csproj" />
   </ItemGroup>
 
