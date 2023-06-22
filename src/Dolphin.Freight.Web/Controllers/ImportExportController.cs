@@ -41,6 +41,7 @@ namespace Dolphin.Freight.Web.Controllers
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> AirportLookupList { get; set; }
         public List<SelectListItem> PackageUnitLookupList { get; set; }
+        public List<SelectListItem> CountryName { get; set; }
         public List<SelectListItem> WtValOtherList { get; set; }
 
         private readonly int fileType = 10;
@@ -66,7 +67,8 @@ namespace Dolphin.Freight.Web.Controllers
             _oceanImportHblAppService = oceanImportHblAppService;
             _attachmentAppService = attachmentAppService;
             _invoiceAppService = invoiceAppService;
-
+            
+            FillCountryNameAsync().Wait();
             FillTradePartnerAsync().Wait();
             FillSubstationAsync().Wait();
             FillAirportAsync().Wait();
@@ -178,6 +180,7 @@ namespace Dolphin.Freight.Web.Controllers
             model.TradePartnerLookupList = TradePartnerLookupList;
             model.PackageUnitLookupList = PackageUnitLookupList;
             model.WtValOtherList = WtValOtherList;
+            model.CountryName = CountryName;
 
             model.AirExportHawbDto = await _airExportHawbAppService.GetHawbCardById(Id);
 
@@ -309,6 +312,16 @@ namespace Dolphin.Freight.Web.Controllers
             return PartialView("~/Pages/OceanImports/_OceanImportHawb.cshtml", model);
 
         }
+
+        #region FillCountryNameAsync()
+        private async Task FillCountryNameAsync()
+        {
+            var countryName = await _tradePartnerAppService.GetCountriesLookupAsync();
+            CountryName = countryName.Items
+                                     .Select(x => new SelectListItem(x.CountryName, x.Id.ToString(), false))
+                                     .ToList();
+        }
+        #endregion
 
         #region FillTradePartnerAsync()
         private async Task FillTradePartnerAsync()
