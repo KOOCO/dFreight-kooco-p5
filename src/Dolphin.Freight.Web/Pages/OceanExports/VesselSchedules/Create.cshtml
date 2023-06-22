@@ -8,93 +8,33 @@
     {
     <script type="text/javascript">
         $(document).ready(function () {
+
+            initializeDropdownSearch("VesselSchedule_OfficeId");
+            initializeDropdownSearch("VesselSchedule_BlTypeId");
+            initializeDropdownSearch("VesselSchedule_MblCarrierId");
+            initializeDropdownSearch("VesselSchedule_BlAcctCarrierId");
+            initializeDropdownSearch("VesselSchedule_ShippingAgentId");
+            initializeDropdownSearch("VesselSchedule_MblOverseaAgentId");
+            initializeDropdownSearch("VesselSchedule_MblNotifyId");
+            initializeDropdownSearch("VesselSchedule_ForwardingAgentId");
+            initializeDropdownSearch("VesselSchedule_CoLoaderId");
+            initializeDropdownSearch("VesselSchedule_DeliveryToId");
+            initializeDropdownSearch("VesselSchedule_EmptyPickupId");
+            initializeDropdownSearch("VesselSchedule_PolId");
+            initializeDropdownSearch("VesselSchedule_PorId");
+            initializeDropdownSearch("VesselSchedule_PodId");
+            initializeDropdownSearch("VesselSchedule_DelId");
+            initializeDropdownSearch("VesselSchedule_FdestId");
+            initializeDropdownSearch("VesselSchedule_FreightTermId");
+            initializeDropdownSearch("VesselSchedule_ShipModeId");
+            initializeDropdownSearch("VesselSchedule_SvcTermFromId");
+            initializeDropdownSearch("VesselSchedule_SvcTermToId");
+            initializeDropdownSearch("VesselSchedule_OblTypeId");
+            initializeDropdownSearch("VesselSchedule_TransPort1Id");
+
             var l = abp.localization.getResource('Freight');
-            //系統參數
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'BlTypeId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "BlTypeId", $("#mBlTypeId").val())
 
-                }
-            });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'OblTypeId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "OblTypeId", $("#mOblTypeId").val())
-
-                }
-            });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'FreightTermId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "FreightTermId", $("#mFreightTermId").val())
-                }
-            });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'ShipModeId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "ShipModeId", $("#mShipModeId").val())
-                }
-            });
-
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'SvcTermFromId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "SvcTermFromId", $("#mSvcTermFromId").val())
-                    initSysCodeTag(result, "SvcTermToId", $("#mSvcTermToId").val())
-                }
-            });
-            //分站
-            dolphin.freight.settings.substations.substation.getSubstations({}).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSubstationsTag(result, "OfficeId", $("#mOfficeId").val())
-                }
-            });
-            //貿易夥伴
-            dolphin.freight.tradePartners.tradePartner.getList({}).done(function (result) {
-                var selectItems = result.items;
-                initTradePartnerSelect(selectItems, "MblCarrierId", $("#mMblCarrierId").val());
-                initTradePartnerSelect(selectItems, "BlAcctCarrierId", $("#mBlAcctCarrierId").val());
-                initTradePartnerSelect(selectItems, "ShippingAgentId", $("#mShippingAgentId").val());
-                initTradePartnerSelect(selectItems, "MblOverseaAgentId", $("#mMblOverseaAgentId").val());
-                initTradePartnerSelect(selectItems, "MblNotifyId", $("#mMblNotifyId").val());
-                initTradePartnerSelect(selectItems, "ForwardingAgentId", $("#mForwardingAgentId").val());
-                initTradePartnerSelect(selectItems, "CoLoaderId", $("#mCoLoaderId").val());
-                initTradePartnerSelect(selectItems, "DeliveryToId", $("#mDeliveryToId").val());
-                initTradePartnerSelect(selectItems, "EmptyPickupId", $("#mEmptyPickupId").val());
-
-            });
-            //港口
-            dolphin.freight.settings.ports.port.getList({}).done(function (result) {
-                console.log(result.items);
-                if (result != null && result.items != null && result.items.length > 0) {
-                    initPortsTag(result.items, "PorId", $("#mPorId").val())
-                    initPortsTag(result.items, "PolId", $("#mPolId").val())
-                    initPortsTag(result.items, "PodId", $("#mPodId").val())
-                    initPortsTag(result.items, "DelId", $("#mDelId").val())
-                    initPortsTag(result.items, "FdestId", $("#mFdestId").val())
-
-                }
-            });
             $("#saveBtn").click(function () {
-                $("#mOfficeId").val($("#OfficeId").val());
-                $("#mMblSalesTypeId").val($("#MblSalesTypeId").val());
-                $("#mSvcTermFromId").val($("#SvcTermFromId").val());
-                $("#mSvcTermToId").val($("#SvcTermToId").val());
-                $("#mShipModeId").val($("#ShipModeId").val());
-                $("#mFreightTermId").val($("#FreightTermId").val());
-                $("#mBlTypeId").val($("#BlTypeId").val());
-                $("#mMblCarrierId").val($("#MblCarrierId").val());
-                $("#mBlAcctCarrierId").val($("#BlAcctCarrierId").val());
-                $("#mShippingAgentId").val($("#ShippingAgentId").val());
-                $("#mMblOverseaAgentId").val($("#MblOverseaAgentId").val());
-                $("#mMblNotifyId").val($("#MblNotifyId").val());
-                $("#mMblReferralById").val($("#MblReferralById").val());
-                $("#mEmptyPickupId").val($("#EmptyPickupId").val());
-                $("#mDeliveryToId").val($("#DeliveryToId").val());
-                $("#mCoLoaderId").val($("#CoLoaderId").val());
-                $("#mForwardingAgentId").val($("#ForwardingAgentId").val());
-                $("#mCareOfId").val($("#CareOfId").val());
-                $("#mPorId").val($("#PorId").val());
-                $("#mPolId").val($("#PolId").val());
-                $("#mPodId").val($("#PodId").val());
-                $("#mDelId").val($("#DelId").val());
-                $("#mFdestId").val($("#FdestId").val());
                 $('#createForm').submit();
             });
             $('#createForm').on('abp-ajax-success', function (result, rs) {
@@ -178,29 +118,7 @@
                                 <span id="title5" style="font-size:0.8em;"> </span>
                             </abp-card-title>
 
-
-                            <!--
-                            <div class="btn-group dropdown">
-                                <button class="btn btn-secondary dropdown-toggle"  type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                    請選擇
-                                </button>
-                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                    <a class='dropdown-item' href='#'>
-                                           <li class="fa fa-lock"></li> 鎖定
-                                        </a>
-                            <a class='dropdown-item' href='#'>
-                                <i class="fa fa-trash"></i> 刪除
-                            </a>
-                                    <li class="dropdown-divider"></li>
-                            <a class='dropdown-item' href='#'>
-                            <li class="fa fa-lock"></li> aaa
-                            </a>
-
-                                </div>
-                            </div>
-                            -->
-
-                            <button class="btn btn-collapse " type="button" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="false" aria-controls="mblDiv">
+                            <button class="btn btn-collapse " type="button" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
                             </button>
                         </abp-card-header>
                         <abp-card-body class="collapse show" id="mblDiv">
@@ -209,10 +127,11 @@
                                     <abp-input asp-for="VesselSchedule.ReferenceNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "OfficeId", FieldName = "OfficeId",DefaultValue="" , IsShowLabel = true , IsRequired = true })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OfficeId", AspItems = Model.SubstationLookupList, IsShowLabel = true, FieldName = "OfficeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.OfficeId.ToString() })
+
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "BlTypeId", FieldName = "BlTypeId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.BlTypeId", AspItems = Model.BlTypeList, IsShowLabel = true, FieldName = "BlTypeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.BlTypeId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PostDate" disabled=true />
@@ -227,46 +146,27 @@
                                     <abp-input asp-for="VesselSchedule.ItnNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "MblCarrierId", FieldName = "MblCarrierId",DefaultValue="" , IsShowLabel = true , IsRequired = false  })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.MblCarrierId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblCarrierId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.MblCarrierId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "BlAcctCarrierId", FieldName = "BlAcctCarrierId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.BlAcctCarrierId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "BlAcctCarrierId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.BlAcctCarrierId.ToString() })
                                 </abp-column>
                             </abp-row>
                             <abp-row>
-
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "ShippingAgentId", FieldName = "ShippingAgentId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ShippingAgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "ShippingAgentId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.ShippingAgentId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "MblOverseaAgentId", FieldName = "MblOverseaAgentId",DefaultValue="" , IsShowLabel = true , IsRequired = false  })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.MblOverseaAgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblOverseaAgentId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.MblOverseaAgentId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "MblNotifyId", FieldName = "MblNotifyId",DefaultValue="" , IsShowLabel = true , IsRequired = false  })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.MblNotifyId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblNotifyId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.MblNotifyId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "ForwardingAgentId", FieldName = "ForwardingAgentId" , DefaultValue="" , IsShowLabel = true , IsRequired = false  })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ForwardingAgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "ForwardingAgentId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.ForwardingAgentId.ToString() })
                                 </abp-column>
                             </abp-row>
-                            <abp-row>
-
-                                <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CoLoaderId", FieldName = "CoLoaderId",DefaultValue="" , IsShowLabel = true , IsRequired = false  })
-                                </abp-column>
-                                <abp-column size-md="_3">
-
-                                </abp-column>
-                                <abp-column size-md="_6">
-
-                                </abp-column>
-                            </abp-row>
-
-                            <abp-row>
-                                <abp-column>
-                                    &nbsp;
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
+                            <abp-row class="mt-5">
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.VesselName" />
                                 </abp-column>
@@ -274,24 +174,24 @@
                                     <abp-input asp-for="VesselSchedule.Voyage" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "DeliveryToId", FieldName = "DeliveryToId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DeliveryToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "DeliveryToId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.DeliveryToId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "EmptyPickupId", FieldName = "EmptyPickupId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.EmptyPickupId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "EmptyPickupId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.EmptyPickupId.ToString() })
                                 </abp-column>
 
 
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "PolId", FieldName = "PolId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PolId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "PolId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PolId.ToString() })                                  
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PolEtd" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "PorId", FieldName = "PorId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
-                                </abp-column>
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PorId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "PorId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PorId.ToString() })
+                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PorEtd" />
                                 </abp-column>
@@ -300,14 +200,14 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "PodId", FieldName = "PodId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
-                                </abp-column>
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PodId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PodId.ToString() })
+                                   </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PodEta" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "DelId", FieldName = "DelId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
-                                </abp-column>
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DelId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.DelId.ToString() })
+                                    </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.DelEta" />
                                 </abp-column>
@@ -315,7 +215,7 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "FdestId", FieldName = "FdestId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FdestId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FdestId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.FdestEta" />
@@ -331,23 +231,24 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "FreightTermId", FieldName = "FreightTermId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FreightTermId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "FreightTermId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FreightTermId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "ShipModeId", FieldName = "ShipModeId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ShipModeId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "ShipModeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.ShipModeId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "SvcTermFromId", FieldName = "SvcTermFromId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.SvcTermFromId", AspItems = Model.SvcTermList, IsShowLabel = true, FieldName = "SvcTermFromId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.SvcTermFromId.ToString() })
 
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "SvcTermToId", FieldName = "SvcTermToId",DefaultValue="" , IsShowLabel = false , IsRequired = false })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.SvcTermToId", AspItems = Model.SvcTermList, IsShowLabel = true, FieldName = "SvcTermToId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.SvcTermToId.ToString() })
                                 </abp-column>
 
                             </abp-row>
-                            <abp-row>
+                            
+                            <abp-row class="mt-5">
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "OblTypeId", FieldName = "OblTypeId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OblTypeId", AspItems = Model.OblTypeList, IsShowLabel = true, FieldName = "OblTypeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.OblTypeId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.RailCutOffTime" />
@@ -378,7 +279,7 @@
                                     <abp-input asp-for="VesselSchedule.ForwardRefNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "TransPort1Id", FieldName = "TransPort1Id",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.TransPort1Id", AspItems = Model.TransPortList, IsShowLabel = true, FieldName = "TransPort1Id", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.TransPort1Id.ToString() })
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -400,8 +301,8 @@
                                         <abp-button class="btn btn-success me-md-2" type="button" id="addBtn">+</abp-button>
                                         <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn">-</abp-button>
                                     </div>
-                                    <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
-                                        <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                    <table width="100%" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                                        <tr style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
                                             <th width="5%"><input type="checkbox" id="checkAll" /></th>
                                             <th width="12%">@L["Display:PackageNo"]</th>
                                             <th width="12%">@L["Display:PackageSize"]</th>
@@ -483,30 +384,6 @@
         </abp-row>
         <abp-row class="mt-3">
             <abp-column>
-                <input type="hidden" name="VesselSchedule.OfficeId" id="mOfficeId" value="@Model.VesselSchedule.OfficeId" />
-                <input type="hidden" name="VesselSchedule.SvcTermFromId" id="mSvcTermFromId" value="@Model.VesselSchedule.SvcTermFromId" />
-                <input type="hidden" name="VesselSchedule.SvcTermToId" id="mSvcTermToId" value="@Model.VesselSchedule.SvcTermToId" />
-                <input type="hidden" name="VesselSchedule.ShipModeId" id="mShipModeId" value="@Model.VesselSchedule.ShipModeId" />
-                <input type="hidden" name="VesselSchedule.FreightTermId" id="mFreightTermId" value="@Model.VesselSchedule.FreightTermId" />
-                <input type="hidden" name="VesselSchedule.BlTypeId" id="mBlTypeId" value="@Model.VesselSchedule.BlTypeId" />
-                <input type="hidden" name="VesselSchedule.OblTypeId" id="mOblTypeId" value="@Model.VesselSchedule.OblTypeId" />
-
-                <input type="hidden" name="VesselSchedule.MblCarrierId" id="mMblCarrierId" value="@Model.VesselSchedule.MblCarrierId" />
-                <input type="hidden" name="VesselSchedule.BlAcctCarrierId" id="mBlAcctCarrierId" value="@Model.VesselSchedule.BlAcctCarrierId" />
-                <input type="hidden" name="VesselSchedule.ShippingAgentId" id="mShippingAgentId" value="@Model.VesselSchedule.ShippingAgentId" />
-                <input type="hidden" name="VesselSchedule.MblOverseaAgentId" id="mMblOverseaAgentId" value="@Model.VesselSchedule.MblOverseaAgentId" />
-                <input type="hidden" name="VesselSchedule.MblNotifyId" id="mMblNotifyId" value="@Model.VesselSchedule.MblNotifyId" />
-                <input type="hidden" name="VesselSchedule.EmptyPickupId" id="mEmptyPickupId" value="@Model.VesselSchedule.EmptyPickupId" />
-                <input type="hidden" name="VesselSchedule.DeliveryToId" id="mDeliveryToId" value="@Model.VesselSchedule.DeliveryToId" />
-                <input type="hidden" name="VesselSchedule.CoLoaderId" id="mCoLoaderId" value="@Model.VesselSchedule.CoLoaderId" />
-                <input type="hidden" name="VesselSchedule.ForwardingAgentId" id="mForwardingAgentId" value="@Model.VesselSchedule.ForwardingAgentId" />
-                <input type="hidden" name="VesselSchedule.PorId" id="mPorId" value="@Model.VesselSchedule.PorId" />
-                <input type="hidden" name="VesselSchedule.PolId" id="mPolId" value="@Model.VesselSchedule.PolId" />
-                <input type="hidden" name="VesselSchedule.PodId" id="mPodId" value="@Model.VesselSchedule.PodId" />
-                <input type="hidden" name="VesselSchedule.DelId" id="mDelId" value="@Model.VesselSchedule.DelId" />
-                <input type="hidden" name="VesselSchedule.FdestId" id="mFdestId" value="@Model.VesselSchedule.FdestId" />
-                <input type="hidden" name="VesselSchedule.TransPort1Id" id="mTransPort1Id" value="@Model.VesselSchedule.TransPort1Id" />
-
                 <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
             </abp-column>
         </abp-row>

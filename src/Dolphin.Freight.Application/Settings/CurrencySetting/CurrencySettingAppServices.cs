@@ -3,6 +3,8 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Dolphin.Freight.Permissions;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Dolphin.Freight.Settings.CurrencySetting
 {
@@ -21,6 +23,16 @@ namespace Dolphin.Freight.Settings.CurrencySetting
             CreatePolicyName = SettingsPermissions.CurrencySetting.Create;
             UpdatePolicyName = SettingsPermissions.CurrencySetting.Edit;
             DeletePolicyName = SettingsPermissions.CurrencySetting.Delete;
+
+        }
+
+        public async Task<List<CreateUpdateCurrencySettingDTO>> GetCurrenciesAsync()
+        {
+            var list = await  Repository.GetListAsync();
+
+            var retVal = ObjectMapper.Map<List<CurrencySetting>, List<CreateUpdateCurrencySettingDTO>>(list);
+
+            return retVal;
         }
     }
 }

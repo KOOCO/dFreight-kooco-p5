@@ -51,10 +51,10 @@ namespace Dolphin.Freight.Accounting.Invoices
             List<InvoiceDto> list = new List<InvoiceDto>();
             if (query != null && query.ParentId != null)
             {
-                if(query.QueryType == 0) rs = rs.Where(x => x.MblId.Equals(query.ParentId.Value)).ToList();
+                if(query.QueryType == 0) rs = rs.Where(x => x.MawbId.Equals(query.ParentId.Value)).ToList();
                 if(query.QueryType == 1) rs = rs.Where(x => x.HblId.Equals(query.ParentId.Value)).ToList();
                 if(query.QueryType == 2) rs = rs.Where(x => x.BookingId.Equals(query.ParentId.Value)).ToList();
-                if(query.QueryType == 3) rs = rs.Where(x => x.MawbId.Equals(query.ParentId.Value)).ToList();
+                if(query.QueryType == 3) rs = rs.Where(x => x.MblId.Equals(query.ParentId.Value)).ToList();
                 if(query.QueryType == 4) rs = rs.Where(x => x.HawbId.Equals(query.ParentId.Value)).ToList();
             }
             if (query != null && query.QueryInvoiceType == 1) {
@@ -94,14 +94,14 @@ namespace Dolphin.Freight.Accounting.Invoices
                     tDictionary.Add(tradePartner.Id, tradePartner.TPName);
                 }
             }
-            var rs = await _repository.GetListAsync();
+            var rs = await _repository.GetListAsync(true);
             List<InvoiceDto> list = new List<InvoiceDto>();
             if (query != null && query.ParentId != null)
             {
                 switch (query.QueryType) 
                 { 
                     default:
-                        rs = rs.Where(x => x.MblId.Equals(query.ParentId.Value)).ToList();
+                        rs = rs.Where(x => x.MawbId.Equals(query.ParentId.Value)).ToList();
                         break;
                     case 1:
                         rs = rs.Where(x => x.HblId.Equals(query.ParentId.Value)).ToList();
@@ -110,7 +110,7 @@ namespace Dolphin.Freight.Accounting.Invoices
                         rs = rs.Where(x => x.BookingId.Equals(query.ParentId.Value)).ToList();
                         break;
                     case 3:
-                        rs = rs.Where(x => x.MawbId.Equals(query.ParentId.Value)).ToList();
+                        rs = rs.Where(x => x.MblId.Equals(query.ParentId.Value)).ToList();
                         break;
                     case 4:
                         rs = rs.Where(x => x.HawbId.Equals(query.ParentId.Value)).ToList();
@@ -121,11 +121,18 @@ namespace Dolphin.Freight.Accounting.Invoices
 
             if (rs != null && rs.Count > 0)
             {
+                var invoiceBillQueryable = await _billRepository.GetQueryableAsync();
 
                 foreach (var r in rs)
                 {
                     var bill = ObjectMapper.Map<Invoice, InvoiceDto>(r);
+
                     if (r.InvoiceCompanyId != null) bill.InvoiceCompanyName = tDictionary[r.InvoiceCompanyId.Value];
+
+                    var invoiceBills = invoiceBillQueryable.Where(w => w.InvoiceId.Value == r.Id).ToList();
+
+                    bill.InvoiceBillDtos = ObjectMapper.Map<List<InvoiceBill>, List<CreateUpdateInvoiceBillDto>>(invoiceBills);
+                    
                     list.Add(bill);
                 }
             }

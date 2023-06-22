@@ -133,6 +133,7 @@ function changeTradePartnerDropdownValue(tagName, tagValue, tpName, tpCode, tpAl
 }
 
 function editTitle(tagId, tagValue) {
+    debugger;
     var exampleEl = $("#btn_" + tagId);
     $("#btn_" + tagId).popover('hide');
 

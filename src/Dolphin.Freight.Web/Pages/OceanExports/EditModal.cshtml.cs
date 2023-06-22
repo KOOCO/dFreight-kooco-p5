@@ -29,11 +29,23 @@ using Volo.Abp.ObjectMapping;
 using Dolphin.Freight.ImportExport.OceanImports;
 using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using QueryHblDto = Dolphin.Freight.ImportExport.OceanExports.QueryHblDto;
+using Dolphin.Freight.TradePartners;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq;
+using Dolphin.Freight.Settinngs.Substations;
+using Dolphin.Freight.ImportExport.AirExports;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
 {
     public class EditModalModel : FreightPageModel
     {
+
+        public List<SelectListItem> TradePartnerLookupList { get; set; }
+        public List<SelectListItem> SubstationLookupList { get; set; }
+        public List<SelectListItem> AirportLookupList { get; set; }
+        public List<SelectListItem> PackageUnitLookupList { get; set; }
+        public List<SelectListItem> WtValOtherList { get; set; }
+
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
@@ -62,12 +74,21 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         private readonly IOceanExportMblAppService _oceanExportMblAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
         private readonly IGeneratePdf _generatePdf;
-        public EditModalModel(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf)
+        private readonly ITradePartnerAppService _tradePartnerAppService;
+        private readonly ISubstationAppService _substationAppService;
+        private readonly IAirportAppService _airportAppService;
+        private readonly IPackageUnitAppService _packageUnitAppService;
+        public EditModalModel(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService,
+            IAirportAppService airportAppService, IPackageUnitAppService packageUnitAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
             _sysCodeAppService = sysCodeAppService;
             _generatePdf = generatePdf;
+            _tradePartnerAppService = tradePartnerAppService;
+            _substationAppService = substationAppService;
+            _airportAppService = airportAppService;
+            _packageUnitAppService = packageUnitAppService;
         }
 
         public async Task OnGetAsync()
@@ -75,59 +96,18 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             ViewData["HAVEHBL"] = "N";
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
             QueryHblDto query = new QueryHblDto() { MblId = Id };
-           OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
-            QueryHblDto queryHbl = new QueryHblDto();
-            if (Hid == null)
-            {
-                if (NewHbl == 1)
-                {
-                    OceanExportHbl = new CreateUpdateOceanExportHblDto();
-                    QueryDto cquery = new QueryDto();
-                    cquery.QueryType = "CardColorId";
-                    var syscodes = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(cquery);
-                    if (OceanExportHbls != null && OceanExportHbls.Count > 0)
-                    {
-                        int index = OceanExportHbls.Count % syscodes.Count;
-                        OceanExportHbl.CardColorId = syscodes[index].Id;
-                        OceanExportHbl.CardColorValue = syscodes[index].CodeValue;
-                        CardClass = syscodes[index].CodeValue;
-                    }
-                    else
-                    {
-                        OceanExportHbl.CardColorId = syscodes[0].Id;
-                        OceanExportHbl.CardColorValue = syscodes[0].CodeValue;
-                        CardClass = syscodes[0].CodeValue;
-                    }
 
-                }
-                else
-                {
-                    OceanExportHbl = new CreateUpdateOceanExportHblDto();
-                    if (OceanExportHbls != null && OceanExportHbls.Count > 0)
-                    {
-                        OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(OceanExportHbls[0]);
-                        IsShowHbl = true;
-                        Hid = OceanExportHbl.Id;
-                        ViewData["HAVEHBL"] = "Y";
-                    }
-
-                }
-
-            }
-            else
-            {
-                queryHbl.Id = Hid;
-                OceanExportHbl = new();
-                ViewData["HAVEHBL"] = "Y";
-            }
-            TempData["PrintData"] = JsonConvert.SerializeObject(OceanExportMbl);
+            await FillTradePartnerAsync();
+            await FillAirportAsync();
+            await FillPackageUnitAsync();
+            await FillSubstationAsync();
+            FillWtValOther();
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            var updateItem = ObjectMapper.Map<OceanExportMblDto, CreateUpdateOceanExportMblDto>(OceanExportMblDto);
-            await _oceanExportMblAppService.UpdateAsync(OceanExportMblDto.Id, updateItem);
+            await _oceanExportMblAppService.UpdateAsync(OceanExportMbl.Id, OceanExportMbl);
 
-            if (OceanExportHblDto is not null)
+            if (OceanExportHbl is not null)
             {
                 OceanExportHbl.MblId = OceanExportMblDto.Id;
 
@@ -143,5 +123,69 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
 
             return new ObjectResult(new { id = OceanExportMblDto.Id });
         }
+
+        #region FillTradePartnerAsync()
+        private async Task FillTradePartnerAsync()
+        {
+            var tradePartnerLookup = await _tradePartnerAppService.GetTradePartnersLookupAsync();
+            TradePartnerLookupList = tradePartnerLookup.Items
+                                                .Select(x => new SelectListItem(x.TPName + " / " + x.TPCode, x.Id.ToString(), false))
+                                                .ToList();
+        }
+        #endregion
+
+        #region FillSubstationAsync()
+        private async Task FillSubstationAsync()
+        {
+            var substationLookup = await _substationAppService.GetSubstationsLookupAsync();
+            SubstationLookupList = substationLookup.Items
+                                                .Select(x => new SelectListItem(x.SubstationName + "  (" + x.AbbreviationName + ")", x.Id.ToString(), false))
+                                                .ToList();
+        }
+        #endregion
+
+        #region FillAirportAsync()
+        private async Task FillAirportAsync()
+        {
+            var airportLookup = await _airportAppService.GetAirportLookupAsync();
+            AirportLookupList = airportLookup.Items
+                                                .Select(x => new SelectListItem(x.AirportIataCode + " " + x.AirportName, x.Id.ToString(), false))
+                                                .ToList();
+        }
+        #endregion
+
+        #region FillPackageUnitAsync()
+        private async Task FillPackageUnitAsync()
+        {
+            var packageUnitLookup = await _packageUnitAppService.GetPackageUnitsLookupAsync();
+            PackageUnitLookupList = packageUnitLookup.Items
+                                                .Select(x => new SelectListItem(x.PackageName, x.Id.ToString(), false))
+                                                .ToList();
+        }
+        #endregion
+
+        #region FillWtVal()
+        private void FillWtValOther()
+        {
+            WtValOtherList = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "PPD", Text = "PPD"},
+                new SelectListItem { Value = "COLL", Text = "COLL"}
+            };
+        }
+        #endregion
+
+        #region SetAirImportFileNo() 
+        /// <summary>
+        /// ³]©wAir ImportªºFile No
+        /// </summary>
+        private string SetAirImportFileNo()
+        {
+            string today = DateTime.Now.ToString("yyyyMMddhhmmss");
+            string AIFileNo = "AIM-" + today;
+            return AIFileNo;
+        }
+        #endregion
+
     }
 }

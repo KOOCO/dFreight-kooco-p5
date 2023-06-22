@@ -9,6 +9,7 @@ using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.ImportExport.AirImports;
 using Volo.Abp.ObjectMapping;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Dolphin.Freight.Accounting.InvoiceBills;
 
 namespace Dolphin.Freight.Web.Pages.AirImports
 {
@@ -33,7 +34,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         public List<SelectListItem> PackageUnitLookupList { get; set; }
         [BindProperty(SupportsGet = true)]
         public IList<InvoiceDto> m0invoiceDtos { get; set; }
-        
+
         [BindProperty(SupportsGet = true)]
         public IList<InvoiceDto> m1invoiceDtos { get; set; }
         

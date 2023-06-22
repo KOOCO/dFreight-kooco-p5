@@ -328,7 +328,7 @@
     "Etb": "ETB",
     "IsOblReceived": "OB/L已接收",
     "OblReceivedDate": "",
-    "BusinessReferrerId": "業務推薦人",
+    "BusinessReferrerId": "業務員",
     "LatestContainerEntryDate": "最遲貨櫃進場日期",
     "ReturnLocationId": "返還地點",
     "ItNo": "IT號碼",
@@ -493,7 +493,7 @@
     "GAT": "無後法趕上截關日",
     "CAR": "船公司/航空公司原因",
     "OT": "其他",
-    "ReferenceId": "參考編號",
+    "ReferenceId": "船期編號",
     "VesselSchedule": "船期",
     "CancelName": "取消者",
     "CarrierBkgNo": "船公司S/O號碼",
@@ -951,7 +951,7 @@
     "DepartmentCode": "部門代碼",
     "SalesDepartmentId": "業屬部門",
     "JobNo": "工作單號",
-    "Carrier": "船/航空 公司",
+    "Carrier": "航空公司",
     "FreightRemarks": "運價備註",
     "ContractNo": "合約號",
     // "CustomerId": "客戶Id",
@@ -1215,6 +1215,9 @@
     "Language": "語言",
     "CurrentPassword": "現有密碼",
     "NewPassword": "輸入新密碼",
-    "NewPasswordConfirm": "再次輸入密碼"
+    "NewPasswordConfirm": "再次輸入密碼",
+    "ActualShippedr": "實際託運人",
+    "OP": "操作員",
+    "sales": "業務員"
   }
 }

@@ -7,6 +7,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 using Volo.Abp;
 using System.ComponentModel.DataAnnotations.Schema;
 using Dolphin.Freight.Settings.SysCodes;
+using Dolphin.Freight.Accounting.InvoiceBills;
 
 namespace Dolphin.Freight.Accounting.Invoices
 {
@@ -119,6 +120,8 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// <summary>
         /// 參考編號/P.O.號碼
         /// </summary>
+        /// 
+
         public string PoNo { get; set; }
         /// <summary>
         /// 代理參考編號
