@@ -276,6 +276,64 @@
         initializeDropdownSearch("ExportBooking_TransPort1Id");
         initializeDropdownSearch("ExportBooking_OfficeId");
 
+        function onBtnContainerQtyClick(){
+
+            $('#modal_ExportBooking_ContainerQtyInputText').modal('show');
+        }
+
+        function onBtnAddMoreClick(e){
+
+            if($('#containerInputs').is(":hidden")|| $('#containerInputs-0').is(":hidden")){
+                $('#containerInputs').show();
+                $('#containerInputs-0').show();
+            }
+            else{
+                var cloneCount = 2;
+                var containerInputs = $('#containerInputs').length? $('#containerInputs'): $('#containerInputs-0');
+                containerInputs
+                    .clone()
+                    .attr('id', 'containerInputs-' + cloneCount++)
+                    .attr('name', 'containerInputs')
+                    .insertAfter($('[id^=containerInputs]:last'))
+                }
+        }
+
+        function onRemoveContainerRow(e){
+            var target = e.currentTarget || e.srcElement || e.target;
+
+            if ($(target).closest('.row').attr('id') ==  'containerInputs' || 
+            $(target).closest('.row').attr('id') ==  'containerInputs-0'){
+                $(target).closest('.row').hide();
+                $('#ddlContainer option:selected').removeAttr('selected');
+                $('#numQuantity').val('');
+            }
+            else{
+                $(target).closest('.row').remove();
+            }
+        }
+
+        function onBtnContainerCancel(){
+            $('#modal_ExportBooking_ContainerQtyInputText').find('.btn-close').click();
+        }
+
+        function onBtnContainerSave(event){
+            var containers = [];
+            let size, quantity, val;
+
+            $('[name="containerInputs"]').each(function(i,e){ 
+
+                if($(e).is(':visible')){
+                     size =  $(e).find('#ddlContainer option:selected').text();
+                    quantity = $(e).find('#numQuantity').val();
+                    val = size + '*' + quantity;
+                    containers.push(val);
+                } 
+            })
+
+            $('#ExportBooking_ContainerQtyInputText').val(containers.join());
+            onBtnContainerCancel();
+        }
+
     </script>
 }
 <div class="page-header">
@@ -475,8 +533,90 @@
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
-                                                <abp-column>
+                                                <abp-column size-md="_9" class="pr-0">
                                                     <abp-input asp-for="ExportBooking.ContainerQtyInputText" readonly="true" />
+                                                </abp-column>
+                                                <abp-column size-md="_3" class="pl-1">
+                                                    
+                                                    <button title="" class="btn btn-info align-self-end" style="color:#ffffff;margin-top:29px" onclick="onBtnContainerQtyClick(event)" type="button" data-target="#modal_ExportBooking_ContainerQtyInputText">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                    <div class="modal" tabindex="-1" id="modal_ExportBooking_ContainerQtyInputText">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">@L["Title:AddCabinateTitle"]</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+
+                                                                    @if(!string.IsNullOrEmpty(Model.ExportBooking.ContainerQtyInputText))
+                                                                    {
+                                                                        foreach (string container in Model.ExportBooking.ContainerQtyInputText.Split(","))
+                                                                        {
+                                                                            { string[] containerArr = container.Split("*"); Model.CabinateSize=containerArr[0]; Model.Quantity= Convert.ToInt32(containerArr[1]);  }
+                                                                            <abp-row  id="containerInputs-@Model.Index" name="containerInputs" class="mt-1">
+                                                                            <abp-column size-md="_1"></abp-column>
+                                                                            <abp-column size-md="_5">
+                                                                                <label class="d-block">Cabinate type/size</label>
+                                                                                <select id="ddlContainer">
+                                                                                    @foreach (var item in Model.ContainerLookupList)
+                                                                                    {
+                                                                                            if(item.Text == Model.CabinateSize)
+                                                                                            {
+                                                                                                <option value="@item.Value" selected>@item.Text</option>       
+                                                                                            }
+                                                                                            else{
+                                                                                                <option value="@item.Value">@item.Text</option>        
+                                                                                            }
+                                                                                    }    
+                                                                                </select>
+                                                                            </abp-column>
+                                                                            <abp-column size-md="_3">
+                                                                                <label>Quantity</label>
+                                                                                    <input id="numQuantity" type="number" min="0" value="@Model.Quantity" style="width:inherit" />
+                                                                            </abp-column>
+                                                                            <abp-column size-md="_3" class="align-self-end">
+                                                                                <abp-button icon="trash" button-type="Danger" size="Small" onclick="onRemoveContainerRow(event)" />
+                                                                            </abp-column>
+                                                                            </abp-row>
+
+                                                                            { Model.Index++; }
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <abp-row id="containerInputs" name="containerInputs" class="mt-1">
+                                                                        <abp-column size-md="_1"></abp-column>
+                                                                        <abp-column size-md="_5">
+                                                                            <label class="d-block">Cabinate type/size</label>
+                                                                            <select id="ddlContainer" asp-items="@Model.ContainerLookupList"></select>
+                                                                        </abp-column>
+                                                                        <abp-column size-md="_3">
+                                                                            <label>Quantity</label>
+                                                                            <input id="numQuantity" type="number" min="0" style="width:inherit" />
+                                                                        </abp-column>
+                                                                        <abp-column size-md="_3" class="align-self-end">
+                                                                            <abp-button icon="trash" button-type="Danger" size="Small" onclick="onRemoveContainerRow(event)" />
+                                                                        </abp-column>
+                                                                        </abp-row>
+                                                                    }
+                                                                    
+                                                                    <abp-button id="btnAddMore"
+                                                                                text="@L["AddMore"].Value"
+                                                                                icon="plus"
+                                                                                button-type="Primary"
+                                                                                size="Small"
+                                                                                class="mt-2 offset-sm-1"
+                                                                                onclick="onBtnAddMoreClick(event)" />
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary btn-sm" onclick="onBtnContainerCancel()">Cancel</button>
+                                                                    <button type="button" class="btn btn-primary btn-sm" onclick="onBtnContainerSave()">Save</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -779,7 +919,7 @@
         </abp-row>
         <abp-row>
             <abp-column>
-                &nbsp;
+                
             </abp-column>
         </abp-row>
     </form>

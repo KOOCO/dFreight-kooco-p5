@@ -1,9 +1,11 @@
 using Dolphin.Freight.Accounting;
 using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Common;
+using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
+using Dolphin.Freight.Settinngs.ContainerSizes;
 using Dolphin.Freight.Settinngs.Ports;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
@@ -54,6 +56,12 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> PortLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
+        public List<SelectListItem> ContainerLookupList { get; set; }
+
+        public string CabinateSize { get; set; }
+        public int Quantity { get; set; }
+        public int Index { get; set; }
+
 
         private readonly IExportBookingAppService _exportBookingAppService;
         private readonly ITradePartnerAppService _tradePartnerAppService;
@@ -62,14 +70,15 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly IPortAppService _portAppService;
         private readonly ISubstationAppService _substationAppService;
+        private readonly IContainerSizeAppService _containerAppService;  
         public EditModel(IExportBookingAppService exportBookingAppService,  
                         ISysCodeAppService sysCodeAppService, 
                         IInvoiceAppService invoiceAppService, 
-                        IVesselScheduleAppService vesselScheduleAppService, 
                         IAjaxDropdownAppService ajaxDropdownAppService, 
                         ITradePartnerAppService tradePartnerAppService,
                         IPortAppService portAppService,
-                        ISubstationAppService substationAppService)
+                        ISubstationAppService substationAppService,
+                        IContainerSizeAppService containerAppService)
         {
             _exportBookingAppService = exportBookingAppService;
             _sysCodeAppService = sysCodeAppService;
@@ -78,6 +87,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
             _tradePartnerAppService = tradePartnerAppService;
             _portAppService = portAppService;
             _substationAppService = substationAppService;
+            _containerAppService = containerAppService;
         }
         public async Task OnGetAsync()
         {
@@ -119,6 +129,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
             await FillTradePartnerAsync();
             await FillPortAsync();
             await FillSubstationAsync();
+            await FillContainerAsync(); 
         }
         public async Task<IActionResult> OnPostAsync()
         {
@@ -231,6 +242,17 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
             SubstationLookupList = substatiosLookup
                                                 .Select(x => new SelectListItem(x.SubstationName, x.Id.ToString(), false))
                                                 .ToList();
+        }
+        #endregion
+
+        #region FillContainerAsync()
+        private async Task FillContainerAsync()
+        {
+            var containerLookup = await _containerAppService.QueryListAsync(new QueryDto());
+
+            ContainerLookupList = containerLookup.Items
+                                                 .Select(x => new SelectListItem(x.ContainerCode, x.Id.ToString(), false))
+                                                 .ToList();
         }
         #endregion
     }
