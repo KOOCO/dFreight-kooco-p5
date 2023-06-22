@@ -19,8 +19,11 @@
             INR: "INR",
             USD: "USD",
             RMB: "RMB",
-            HKD: "HKD"
+            HKD: "HKD",
+            TWD: "TWD"
         }
+
+        const currencies = ['TWD', 'USD', 'RMB', 'HKD'];
 
         $(document).ready(function () {
             debugger;
@@ -74,6 +77,7 @@
             });
             var formControl = 0;
             $("#saveBtn").click(function () {
+                debugger;
                 formControl = 0;
                 $("#createForm").submit();
             });
@@ -121,6 +125,7 @@
                 })
             })
             $('#createForm').on('abp-ajax-success', function (result) {
+                debugger;
                 event.preventDefault();
 
                 switch (formControl) {
@@ -155,10 +160,13 @@
             var index = target.id.split('_')[1];
             let quantity = parseFloat($(target).val() || 0);
             let rate = parseFloat($(target).parent().next().children().val() || 0);
-            $(target).parent().next().next().children().text(quantity * rate);
+            $(target).parent().next().next().children().text(parseFloat(quantity * rate).toFixed(2));
             setCurrencyRate1($('#Currency_'+index+'').val(), event);
+            getTotalSubAmount();
             getTotalAmount();
         }
+
+
 
         function onRateChange(e) {
             
@@ -179,21 +187,28 @@
 
             let val = currencyCodeToName[$(target).val()];
             let conversion = JSON.parse(currencyConvertor);
-            let rate = conversion["" + val + "-TWD"];
-            $('#Rate_'+ index).val(rate);
+            let rate = conversion["" + val + "-TWD"] || 1;
+            if(val == undefined)
+            {
+                $('#Rate_'+ index).val(0);
+                $('#Quantity_'+ index).val(0);
+            }
+            else{
+                $('#Rate_'+ index).val(parseFloat(rate).toFixed(2));
+            }
 
             setCurrencyRate1($(target).val(), event);
 
             var quantity = $('#Quantity_'+index).val();
 
-            $('#Amount_'+index).text(parseFloat(quantity * rate).toFixed(4));
+            $('#Amount_'+index).text(parseFloat(quantity * rate).toFixed(2));
             if(document.getElementById('Amount_'+index+'').innerHTML == 'NaN'){
                 document.getElementById('Amount_'+index+'').innerHTML = 0;
             }
+            getTotalSubAmount();
             getTotalAmount();
         }
 
-        const currencies = ['TWD', 'USD', 'RMB', 'HKD']
 
         function setCurrencyRate1(value, e) {
             let target = e.currentTarget || e.srcElement || e.target;
@@ -210,9 +225,10 @@
                 let key = '' + val + '-' + currency + '';
                 let convertedRate = conversion[key] || 1;
 
-                document.getElementById("converted" + currency).innerHTML = convertedRate * quantity;
+                document.getElementById("converted" + currency).innerHTML = (convertedRate * quantity).toFixed(2);
             })
         }
+
         function setCurrencyRate(value) {
             let val = currencyCodeToName[value];
             let conversion = JSON.parse(currencyConvertor);
@@ -226,7 +242,7 @@
                 let key = '' + val + '-' + currency + '';
                 let convertedRate = conversion[key] || 1;
 
-                document.getElementById("converted" + currency).innerHTML = convertedRate * amount;
+                document.getElementById("converted" + currency).innerHTML = parseFloat(convertedRate * amount).toFixed(2);
             })
         }
 
@@ -242,7 +258,6 @@
         }
 
         function getTotalAmount(){
-            debugger;
             var table = $('#trtbody');
             var total = 0;
 
@@ -254,7 +269,30 @@
               total += amount;
             }
             var totalAmountElement = document.getElementById("totalAmount");
-            totalAmountElement.innerHTML = total.toFixed(3);
+            totalAmountElement.innerHTML = total.toFixed(2);
+        }
+
+
+        function getTotalSubAmount(){
+            var table = $('#trtbody');
+            var total = 0;
+
+            for (var i = 0; i < table[0].rows.length; i++) {
+              var amountCell = document.getElementById("Amount_" + i);
+              
+              var amount = parseFloat(amountCell.innerHTML);
+              
+              total += amount;
+            }
+            var totalAmountElement = document.getElementById("convertedTWD");
+            totalAmountElement.innerHTML = total.toFixed(2);
+            let conversion = JSON.parse(currencyConvertor);
+            currencies.forEach(function (currency) {
+                let key = 'TWD-' + currency + '';
+                let convertedRate = conversion[key] || 1;
+
+                document.getElementById("converted" + currency).innerHTML = (convertedRate * total).toFixed(2);
+            })
         }
 
         var index = 0;
@@ -281,13 +319,25 @@
             trhtml = trhtml + "<td><input type='hidden' name='InvoiceBillDtos[" + index + "].Id' value='" + (bill.id || '') + "'></td>";
             trhtml = trhtml + "<td></td></tr>";
             $("#trtbody").append(trhtml);
-            let val = currencyCodeToName[bill.currency || $('#Currency_0').val()];
+            let val = currencyCodeToName[bill.currency || $('#Currency_'+index).val()];
             let conversion = JSON.parse(currencyConvertor);
             let rate = conversion["" + val + "-TWD"];
-            getRate(urlParams.get("Mid"), $("#Rate_" + index + "").val(rate));
+            if(val == undefined)
+            {
+                $('#Quantity_'+ index).val(0);
+                $('#Rate_'+ index).val(0);
+            }
+            else{
+                getRate(urlParams.get("Mid"), $("#Rate_" + index + "").val(parseFloat(rate).toFixed(2)));
+            }
             var amount = bill.quantity * $("#Rate_" + index + "").val();
-            $('#Amount_'+index+'').text(amount);
+            if(val == undefined || amount == NaN){
+                $('#Amount_'+index+'').text(0);
+            }else {
+                $('#Amount_'+index+'').text(parseFloat(amount).toFixed(2));
+            }
             setCurrencyRate($('#Currency_0').val());
+            getTotalSubAmount();
             getTotalAmount();
             index++;
             
@@ -362,11 +412,14 @@
         }
         function getCurrencySelect(id, currency, value) {
             var selectHtml = "<select name='InvoiceBillDtos[" + index + "].Currency' onchange='onCurrencyChange(event)' id='Currency_" + id + "'><option value='0'>Select Currency</option>";
+            debugger;
             currency = currency || value;
-            for (var i = 0; i < CurrencyItems.length; i++) {
-                selectHtml = selectHtml + "<option value='" + CurrencyItems[i] + "'";
-                if (CurrencyItems[i] == currency) selectHtml = selectHtml + " selected ";
-                selectHtml = selectHtml + " > " + CurrencyItems[i] + "</option>"
+            const set = new Set(CurrencyItems.map(item => JSON.stringify(item)));
+            const test = [...set].map(item => JSON.parse(item));
+            for (var i = 0; i < test.length; i++) {
+                selectHtml = selectHtml + "<option value='" + test[i] + "'";
+                if (test[i] == currency) selectHtml = selectHtml + " selected ";
+                selectHtml = selectHtml + " > " + test[i] + "</option>"
             }
             selectHtml = selectHtml + "</select>";
             return selectHtml;
@@ -915,7 +968,8 @@
                                     </tr>
                                     <tr border="1">
                                         <th colspan="12" style="text-align:right;border-block-color:#333333;" border="1">總計</th>
-                                        <th id="totalAmount">0 <input type="hidden" name="" /></th>
+                                        <th id="totalAmount">0</th>
+                                        @*<th id="totalAmount">0 <input type="hidden" name="" /></th>*@
                                     </tr>
                                 </tfoot>
                             </abp-table>

@@ -115,6 +115,9 @@ namespace Dolphin.Freight.Accounting.Invoices
                     case 4:
                         rs = rs.Where(x => x.HawbId.Equals(query.ParentId.Value)).ToList();
                         break;
+                    case 5:
+                        rs = rs.Where(x => x.MawbId.Equals(query.ParentId.Value)).ToList();
+                        break;
                 }
             }
 

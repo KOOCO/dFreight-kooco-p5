@@ -1,10 +1,13 @@
 ﻿@page
+@using Volo.Abp.Users
 @using Dolphin.Freight.AirExports
 @using Dolphin.Freight.Localization
+@using Dolphin.Freight.Web.Pages.Components;
 @using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Microsoft.Extensions.Localization
 @model Dolphin.Freight.Web.Pages.AirExports.EditModalModel
 @inject IStringLocalizer<FreightResource> L
+@inject ICurrentUser CurrentUser
 @section styles
     {
     <style>
@@ -21,6 +24,19 @@
     <abp-script src="/Pages/AirExports/EditModel.js" />
     <script type="text/javascript">
         $(document).ready(function () {
+
+            initializeDropdownSearch('AirExportMawbDto_MawbCarrierId');
+            initializeDropdownSearch('AirExportMawbDto_IssuingCarrierId');
+            initializeDropdownSearch('AirExportMawbDto_ShipperId');
+            initializeDropdownSearch('AirExportMawbDto_ConsigneeId');
+            initializeDropdownSearch('AirExportMawbDto_NotifyId');
+            initializeDropdownSearch('AirExportMawbDto_DestinationId');
+            initializeDropdownSearch('AirExportMawbDto_CoLoaderId');
+            initializeDropdownSearch('AirExportMawbDto_DeliveryId');
+            initializeDropdownSearch('AirExportMawbDto_RouteTrans1CarrierId');
+            initializeDropdownSearch('AirExportMawbDto_RouteTrans2CarrierId');
+            initializeDropdownSearch('AirExportMawbDto_RouteTrans3CarrierId');
+            initializeDropdownSearch('AirExportMawbDto_DepatureId');
 
             // Awb Cancel Area
             $("#checkboxAwbCancelled").change(function () {
@@ -453,12 +469,10 @@
             <abp-input asp-for="@Model.AirExportMawbDto.FilingNo" readonly="true" size="Small" />
         </abp-column>
         <abp-column size-md="_3">
-            <abp-select asp-for="@Model.AirExportMawbDto.MawbCarrierId" asp-items="@Model.TradePartnerLookupList" size="Small">
-            </abp-select>
+            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.MawbCarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.MawbCarrierId.ToString(), IsShowLabel = true, FieldName = @L["MawbCarrierId"] })
         </abp-column>
         <abp-column size-md="_3">
-            <abp-select asp-for="@Model.AirExportMawbDto.IssuingCarrierId" asp-items="@Model.TradePartnerLookupList" size="Small">
-            </abp-select>
+            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.IssuingCarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.IssuingCarrierId.ToString(), IsShowLabel = true, FieldName = "Carrier/Agent" })
         </abp-column>
         <abp-column size-md="_3">
             <abp-select asp-for="@Model.AirExportMawbDto.AwbType" size="Small" />
@@ -476,22 +490,16 @@
             <abp-input asp-for="@Model.AirExportMawbDto.ItnNo" size="Small" />
         </abp-column>
         <abp-column size-md="_3">
-            <abp-select asp-for="@Model.AirExportMawbDto.ShipperId" asp-items="@Model.TradePartnerLookupList" size="Small">
-                <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-            </abp-select>
+            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.ShipperId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.ShipperId.ToString(), IsShowLabel = true, FieldName = "Actual Shipper" })
         </abp-column>
     </abp-row>
     <!--第三列-->
     <abp-row>
         <abp-column size-md="_3">
-            <abp-select asp-for="@Model.AirExportMawbDto.ConsigneeId" asp-items="@Model.TradePartnerLookupList" size="Small">
-                <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-            </abp-select>
+            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.ConsigneeId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.ConsigneeId.ToString(), IsShowLabel = true, FieldName = "Consignee(Oversea Agent)" })
         </abp-column>
         <abp-column size-md="_3">
-            <abp-select asp-for="@Model.AirExportMawbDto.NotifyId" asp-items="@Model.TradePartnerLookupList" size="Small">
-                <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-            </abp-select>
+            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.NotifyId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.NotifyId.ToString(), IsShowLabel = true, FieldName = "Notify" })
         </abp-column>
         <abp-column size-md="_3">
             <abp-input asp-for="@Model.AirExportMawbDto.PostDate" size="Small" type="text" abp-data-datepicker="false" />
@@ -519,22 +527,18 @@
             </abp-select>
         </abp-column>
         <abp-column size-md="_3">
-            <abp-select asp-for="@Model.AirExportMawbDto.CoLoaderId" asp-items="@Model.TradePartnerLookupList" size="Small">
-                <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-            </abp-select>
+            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.CoLoaderId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.CoLoaderId.ToString(), IsShowLabel = true, FieldName = @L["CoLoaderId"] })
         </abp-column>
         <abp-column size-md="_3">
-            <abp-select asp-for="@Model.AirExportMawbDto.MawbOperatorId" asp-items="@Model.TradePartnerLookupList" size="Small" readonly="true">
-                <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+            <abp-select asp-for="@Model.AirExportMawbDto.MawbOperatorId" asp-items="@Model.TradePartnerLookupList" size="Small" disabled>
+                <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
             </abp-select>
         </abp-column>
     </abp-row>
     <!--第五列-->
     <abp-row>
         <abp-column size-md="_3">
-            <abp-select asp-for="@Model.AirExportMawbDto.DepatureId" asp-items="@Model.AirportLookupList" size="Small">
-                <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-            </abp-select>
+            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DepatureId", AspItems = Model.AirportLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.DepatureId.ToString(), IsShowLabel = true, FieldName = @L["DepatureId"] })
         </abp-column>
         <abp-column size-md="_3">
             <label asp-for="@Model.AirExportMawbDto.DepatureDate" class="redStar form-label">Depature Date</label>
@@ -554,12 +558,7 @@
     <!--第六列-->
     <abp-row>
         <abp-column size-md="_3">
-            <abp-select asp-for="@Model.AirExportMawbDto.DestinationId" asp-items="@Model.AirportLookupList" size="Small">
-                <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-            </abp-select>
-        </abp-column>
-        <abp-column size-md="_3">
-            <abp-input asp-for="@Model.AirExportMawbDto.DestinationId" size="Small" />
+            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DestinationId", AspItems = Model.CountryName, ShowFiledContentValue = @Model.AirExportMawbDto.DestinationId.ToString(), IsShowLabel = true, FieldName = @L["Destination"] })
         </abp-column>
         <abp-column size-md="_3">
             <abp-input asp-for="@Model.AirExportMawbDto.DVCarriage" size="Small" />
@@ -600,9 +599,7 @@
     <!--第八列-->
     <abp-row>
         <abp-column size-md="_3">
-            <abp-select asp-for="@Model.AirExportMawbDto.DeliveryId" asp-items="@Model.TradePartnerLookupList" size=" Small">
-                <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-            </abp-select>
+            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DeliveryId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.DeliveryId.ToString(), IsShowLabel = true, FieldName = @L["DeliveryId"] })
         </abp-column>
         <abp-column size-md="_3">
             <abp-input asp-for="@Model.AirExportMawbDto.ShippingInfo" size="Small" />
@@ -619,7 +616,7 @@
         <div class="collapse" id="collapseRoute">
             <div class="card card-body">
                 <h3>Route</h3>
-                <abp-table class="table table-bordered">
+                    <abp-table class="table table-bordered table-responsive">
                     <thead>
                         <tr>
                             <th></th>
@@ -652,13 +649,7 @@
                                 <input asp-for="@Model.AirExportMawbDto.RouteTrans1FlightNo" size="Small" />
                             </td>
                             <td>
-                                <select asp-for="@Model.AirExportMawbDto.RouteTrans1CarrierId" class="form-select-sm">
-                                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var tradePartner in Model.TradePartnerLookupList)
-                                                            {
-                                        <option value=@tradePartner.Value>@tradePartner.Text</option>
-                                                            }
-                                </select>
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans1CarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteTrans1CarrierId.ToString() })
                             </td>
                         </tr>
                         <tr>
@@ -682,13 +673,7 @@
                                 <input asp-for="@Model.AirExportMawbDto.RouteTrans2FlightNo" size="Small" />
                             </td>
                             <td>
-                                <select asp-for="@Model.AirExportMawbDto.RouteTrans2CarrierId" class="form-select-sm">
-                                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var tradePartner in Model.TradePartnerLookupList)
-                                                            {
-                                        <option value=@tradePartner.Value>@tradePartner.Text</option>
-                                                            }
-                                </select>
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans2CarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteTrans2CarrierId.ToString() })
                             </td>
                         </tr>
                         <tr>
@@ -712,13 +697,7 @@
                                 <input asp-for="@Model.AirExportMawbDto.RouteTrans3FlightNo" size="Small" />
                             </td>
                             <td>
-                                <select asp-for="@Model.AirExportMawbDto.RouteTrans3CarrierId" class="form-select-sm">
-                                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var tradePartner in Model.TradePartnerLookupList)
-                                                            {
-                                        <option value=@tradePartner.Value>@tradePartner.Text</option>
-                                                            }
-                                </select>
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans3CarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteTrans3CarrierId.ToString() })
                             </td>
                         </tr>
                     </tbody>

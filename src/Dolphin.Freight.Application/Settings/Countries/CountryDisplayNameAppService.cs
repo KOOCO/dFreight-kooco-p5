@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.ObjectMapping;
 
 namespace Dolphin.Freight.Settings.Countries
 {
@@ -190,5 +191,16 @@ namespace Dolphin.Freight.Settings.Countries
 
             return result;
         }
+
+        //public async Task<ListResultDto<CountryDisplayNameDto>> GetCountryNameAsync()
+        //{
+        //    var countryNameQueryable = await _countryRepository.GetQueryableAsync();
+        //    var query = from country in countryNameQueryable
+        //                orderby country.CountryName
+        //                select country;
+        //    var countries = await AsyncExecuter.ToListAsync(query);
+
+        //    return new ListResultDto<CountryDisplayNameListDto>(ObjectMapper.Map<List<Country>, List<CountryLookupDto>>(countries));
+        //}
     }
 }

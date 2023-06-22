@@ -21,6 +21,8 @@ using System.Xml.Linq;
 using System.Security.Cryptography;
 using Volo.Abp.ObjectMapping;
 using System.Security.Cryptography.Xml;
+using Dolphin.Freight.Settings.Countries;
+using Volo.Abp.Uow;
 
 namespace Dolphin.Freight.Web.Pages.AirExports
 {
@@ -33,13 +35,15 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         private readonly IPackageUnitAppService _packageUnitAppService;
         private readonly IAirExportMawbAppService _airExportMawbAppService;
         private readonly IAirExportHawbAppService _airExportHawbAppService;
+        private readonly ICountryDisplayNameAppService _countryDisplayNameAppService;
 
         public EditModalModel(ITradePartnerAppService tradePartnerAppService,
             ISubstationAppService substationAppService,
             IAirportAppService airportAppService,
             IPackageUnitAppService packageUnitAppService,
             IAirExportMawbAppService airExportMawbAppService,
-            IAirExportHawbAppService airExportHawbAppService
+            IAirExportHawbAppService airExportHawbAppService,
+            ICountryDisplayNameAppService countryDisplayNameAppService
             )
         {
             Logger = NullLogger<CreateMawbModel>.Instance;
@@ -49,6 +53,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             _packageUnitAppService = packageUnitAppService;
             _airExportMawbAppService = airExportMawbAppService;
             _airExportHawbAppService = airExportHawbAppService;
+            _countryDisplayNameAppService = countryDisplayNameAppService;
         }
 
         [HiddenInput]
@@ -66,6 +71,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             await FillAirportAsync();
             FillWtValOther();
             await FillPackageUnitAsync();
+            await FillCountryNameAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -97,12 +103,23 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public List<SelectListItem> AirportLookupList { get; set; }
         public List<SelectListItem> WtValOtherList { get; set; }
         public List<SelectListItem> PackageUnitLookupList { get; set; }
+        public List<SelectListItem> CountryName { get; set; }
 
         [BindProperty]
         public AirExportMawbDto AirExportMawbDto { get; set; }
 
         [BindProperty]
         public AirExportHawbDto AirExportHawbDto { get; set; }
+
+        #region FillCountryNameAsync()
+        private async Task FillCountryNameAsync()
+        {
+            var countryName = await _tradePartnerAppService.GetCountriesLookupAsync();
+            CountryName = countryName.Items
+                                     .Select(x => new SelectListItem(x.CountryName, x.Id.ToString(), false))
+                                     .ToList();
+        }
+        #endregion
 
         #region FillTradePartnerAsync()
         private async Task FillTradePartnerAsync()

@@ -229,3 +229,6 @@
     background-color: #fff;
     padding-left: 4px;
 }
+.select2 .select2-container .select2-container--default .select2-container--below .select2-container--focus{
+    width: 100%;
+}
