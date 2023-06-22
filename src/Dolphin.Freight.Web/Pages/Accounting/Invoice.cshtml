@@ -156,7 +156,7 @@
             var index = target.id.split('_')[1];
             let quantity = parseFloat($(target).val() || 0);
             let rate = parseFloat($(target).parent().next().children().val() || 0);
-            $(target).parent().next().next().children().text(quantity * rate);
+            $(target).parent().next().next().children().text(parseFloat(quantity * rate).toFixed(2));
             setCurrencyRate1($('#Currency_'+index+'').val(), event);
             getTotalSubAmount();
             getTotalAmount();
@@ -190,14 +190,14 @@
                 $('#Quantity_'+ index).val(0);
             }
             else{
-                $('#Rate_'+ index).val(rate);
+                $('#Rate_'+ index).val(parseFloat(rate).toFixed(2));
             }
 
             setCurrencyRate1($(target).val(), event);
 
             var quantity = $('#Quantity_'+index).val();
 
-            $('#Amount_'+index).text(parseFloat(quantity * rate).toFixed(4));
+            $('#Amount_'+index).text(parseFloat(quantity * rate).toFixed(2));
             if(document.getElementById('Amount_'+index+'').innerHTML == 'NaN'){
                 document.getElementById('Amount_'+index+'').innerHTML = 0;
             }
@@ -222,7 +222,7 @@
                 let key = '' + val + '-' + currency + '';
                 let convertedRate = conversion[key] || 1;
 
-                document.getElementById("converted" + currency).innerHTML = (convertedRate * quantity).toFixed(3);
+                document.getElementById("converted" + currency).innerHTML = (convertedRate * quantity).toFixed(2);
             })
         }
 
@@ -239,7 +239,7 @@
                 let key = '' + val + '-' + currency + '';
                 let convertedRate = conversion[key] || 1;
 
-                document.getElementById("converted" + currency).innerHTML = parseFloat(convertedRate * amount);
+                document.getElementById("converted" + currency).innerHTML = parseFloat(convertedRate * amount).toFixed(2);
             })
         }
 
@@ -266,7 +266,7 @@
               total += amount;
             }
             var totalAmountElement = document.getElementById("totalAmount");
-            totalAmountElement.innerHTML = total.toFixed(3);
+            totalAmountElement.innerHTML = total.toFixed(2);
         }
 
 
@@ -282,13 +282,13 @@
               total += amount;
             }
             var totalAmountElement = document.getElementById("convertedTWD");
-            totalAmountElement.innerHTML = total.toFixed(3);
+            totalAmountElement.innerHTML = total.toFixed(2);
             let conversion = JSON.parse(currencyConvertor);
             currencies.forEach(function (currency) {
                 let key = 'TWD-' + currency + '';
                 let convertedRate = conversion[key] || 1;
 
-                document.getElementById("converted" + currency).innerHTML = (convertedRate * total).toFixed(3);
+                document.getElementById("converted" + currency).innerHTML = (convertedRate * total).toFixed(2);
             })
         }
 
@@ -319,9 +319,9 @@
             let val = currencyCodeToName[bill.currency || $('#Currency_0').val()];
             let conversion = JSON.parse(currencyConvertor);
             let rate = conversion["" + val + "-TWD"];
-            getRate(urlParams.get("Mid"), $("#Rate_" + index + "").val(rate));
+            getRate(urlParams.get("Mid"), $("#Rate_" + index + "").val(parseFloat(rate).toFixed(2)));
             var amount = bill.quantity * $("#Rate_" + index + "").val();
-            $('#Amount_'+index+'').text(amount);
+            $('#Amount_'+index+'').text(parseFloat(amount).toFixed(2));
             setCurrencyRate($('#Currency_0').val());
             getTotalSubAmount();
             getTotalAmount();
