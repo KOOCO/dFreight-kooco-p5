@@ -58,6 +58,30 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         public async Task OnGetAsync()
         {
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
+
+            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 3, ParentId = Id };
+            var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
+            m0invoiceDtos = new List<InvoiceDto>();
+            m1invoiceDtos = new List<InvoiceDto>();
+            m2invoiceDtos = new List<InvoiceDto>();
+            if (invoiceDtos != null && invoiceDtos.Count > 0)
+            {
+                foreach (var dto in invoiceDtos)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            m0invoiceDtos.Add(dto);
+                            break;
+                        case 1:
+                            m1invoiceDtos.Add(dto);
+                            break;
+                        case 2:
+                            m2invoiceDtos.Add(dto);
+                            break;
+                    }
+                }
+            }
             ImportExport.OceanExports.QueryHblDto query = new ImportExport.OceanExports.QueryHblDto() { MblId = Id };
             query.Id = Hid;
             OceanExportHbl = new();
