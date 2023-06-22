@@ -48,7 +48,7 @@ $(function () {
                                             abp.message.confirm(l('DeletionConfirmationMessage'))
                                                 .then(function (confirmed) {
                                                     if (confirmed) {
-                                                        dolphin.freight.importExport.oceanExports.oceanExportMbl
+                                                        dolphin.freight.importExport.oceanExports.oceanExportHbl
                                                             .delete(data.record.id)
                                                             .then(function () {
                                                                 abp.message.success(l('SuccessfullyDeleted'));
