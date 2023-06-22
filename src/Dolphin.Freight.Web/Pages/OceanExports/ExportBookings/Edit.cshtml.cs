@@ -4,13 +4,17 @@ using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
+using Dolphin.Freight.Settinngs.Ports;
+using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
+using Dolphin.Freight.TradePartners;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
@@ -47,20 +51,33 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         public List<SelectListItem> SvgTermLookupList { get; set; }
         public List<SelectListItem> IncotermsLookupList { get; set; }
         public List<SelectListItem> CargoTypeLookupList { get; set; }
-    
+        public List<SelectListItem> TradePartnerLookupList { get; set; }
+        public List<SelectListItem> PortLookupList { get; set; }
+        public List<SelectListItem> SubstationLookupList { get; set; }
 
         private readonly IExportBookingAppService _exportBookingAppService;
+        private readonly ITradePartnerAppService _tradePartnerAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
         private readonly IInvoiceAppService _invoiceAppService;
-        private readonly IVesselScheduleAppService _vesselScheduleAppService;
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
-        public EditModel(IExportBookingAppService exportBookingAppService,  ISysCodeAppService sysCodeAppService, IInvoiceAppService invoiceAppService, IVesselScheduleAppService vesselScheduleAppService, IAjaxDropdownAppService ajaxDropdownAppService)
+        private readonly IPortAppService _portAppService;
+        private readonly ISubstationAppService _substationAppService;
+        public EditModel(IExportBookingAppService exportBookingAppService,  
+                        ISysCodeAppService sysCodeAppService, 
+                        IInvoiceAppService invoiceAppService, 
+                        IVesselScheduleAppService vesselScheduleAppService, 
+                        IAjaxDropdownAppService ajaxDropdownAppService, 
+                        ITradePartnerAppService tradePartnerAppService,
+                        IPortAppService portAppService,
+                        ISubstationAppService substationAppService)
         {
             _exportBookingAppService = exportBookingAppService;
             _sysCodeAppService = sysCodeAppService;
             _invoiceAppService = invoiceAppService;
-            _vesselScheduleAppService = vesselScheduleAppService;
             _ajaxDropdownAppService = ajaxDropdownAppService;
+            _tradePartnerAppService = tradePartnerAppService;
+            _portAppService = portAppService;
+            _substationAppService = substationAppService;
         }
         public async Task OnGetAsync()
         {
@@ -99,6 +116,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
             await FillSvgTermAsync();
             await FillIncotermsIdAsync();
             await FillCategoryTypeAsync();
+            await FillTradePartnerAsync();
+            await FillPortAsync();
+            await FillSubstationAsync();
         }
         public async Task<IActionResult> OnPostAsync()
         {
@@ -180,6 +200,37 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
             CargoTypeLookupList = lookUp
                                         .Select(x => new SelectListItem(x.CodeValue, x.Id.ToString(), false))
                                         .ToList();
+        }
+        #endregion
+
+        #region FillTradePartnerAsync()
+        private async Task FillTradePartnerAsync()
+        {
+            var tradePartnerLookup = await _tradePartnerAppService.GetTradePartnersLookupAsync();
+            TradePartnerLookupList = tradePartnerLookup.Items
+                                                .Select(x => new SelectListItem(x.TPName + " / " + x.TPCode, x.Id.ToString(), false))
+                                                .ToList();
+        }
+        #endregion
+
+        #region FillPortAsync()
+        private async Task FillPortAsync()
+        {
+            var portLookup = await _portAppService.GetListAsync(new Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto());
+            PortLookupList = portLookup.Items
+                                            .Select(x => new SelectListItem(x.PortName, x.Id.ToString(), false))
+                                            .ToList();
+        }
+        #endregion
+
+        #region FillSubstationAsync()
+        private async Task FillSubstationAsync()
+        {
+            var substatiosLookup = await _substationAppService.GetSubstationsAsync(new QueryDto());
+
+            SubstationLookupList = substatiosLookup
+                                                .Select(x => new SelectListItem(x.SubstationName, x.Id.ToString(), false))
+                                                .ToList();
         }
         #endregion
     }

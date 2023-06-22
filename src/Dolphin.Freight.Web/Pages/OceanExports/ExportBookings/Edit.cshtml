@@ -16,84 +16,84 @@
             if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
             var l = abp.localization.getResource('Freight');
             $("#ExportBooking_CanceledDate").datepicker({});
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'CancelReason' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeI18nTag(result, "CancelReason", $("#mCancelReason").val())
-                }
-            });
-            dolphin.freight.common.ajaxDropdown.getReferenceItemsByType({}).done(function (result) {
-                console.log(result)
-                if (result != null && result.length > 0) {
-                    initReferenceTag(result, "ReferenceId", $("#mReferenceId").val())
-                }
-            });
+            //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'CancelReason' }).done(function (result) {
+            //    if (result != null && result.length > 0) {
+            //        initSysCodeI18nTag(result, "CancelReason", $("#mCancelReason").val())
+            //    }
+            //});
+            //dolphin.freight.common.ajaxDropdown.getReferenceItemsByType({}).done(function (result) {
+            //    console.log(result)
+            //    if (result != null && result.length > 0) {
+            //        initReferenceTag(result, "ReferenceId", $("#mReferenceId").val())
+            //    }
+            //});
 
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'ShipModeId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "ShipModeId", $("#mShipModeId").val())
-                }
-            });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'FreightTermId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "FreightTermForBuyerId", $("#mFreightTermForBuyerId").val())
-                    initSysCodeTag(result, "FreightTermForSalerId", $("#mFreightTermForSalerId").val())
+            //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'ShipModeId' }).done(function (result) {
+            //    if (result != null && result.length > 0) {
+            //        initSysCodeTag(result, "ShipModeId", $("#mShipModeId").val())
+            //    }
+            //});
+            //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'FreightTermId' }).done(function (result) {
+            //    if (result != null && result.length > 0) {
+            //        initSysCodeTag(result, "FreightTermForBuyerId", $("#mFreightTermForBuyerId").val())
+            //        initSysCodeTag(result, "FreightTermForSalerId", $("#mFreightTermForSalerId").val())
 
-                }
-            });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'SvcTermFromId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "SvcTermFromId", $("#mSvcTermFromId").val())
-                    initSysCodeTag(result, "SvcTermToId", $("#mSvcTermToId").val())
+            //    }
+            //});
+            //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'SvcTermFromId' }).done(function (result) {
+            //    if (result != null && result.length > 0) {
+            //        initSysCodeTag(result, "SvcTermFromId", $("#mSvcTermFromId").val())
+            //        initSysCodeTag(result, "SvcTermToId", $("#mSvcTermToId").val())
 
-                }
-            });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'IncotermsId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "IncotermsId", $("#mIncotermsId").val())
-                }
-            });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'CargoTypeId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "CargoTypeId", $("#mCargoTypeId").val())
-                }
-            });
-            //貿易夥伴
-            dolphin.freight.tradePartners.tradePartner.getList({}).done(function (result) {
-                var selectItems = result.items;
-                initTradePartnerSelect(selectItems, "CarrierId", $("#mCarrierId").val());
-                initTradePartnerSelect(selectItems, "ShipperId", $("#mShipperId").val());
-                initTradePartnerSelect(selectItems, "CustomerId", $("#mCustomerId").val());
-                initTradePartnerSelect(selectItems, "BillToId", $("#mBillToId").val());
-                initTradePartnerSelect(selectItems, "ConsigneeId", $("#mConsigneeId").val());
-                initTradePartnerSelect(selectItems, "NotifyId", $("#mNotifyId").val());
-                initTradePartnerSelect(selectItems, "ShippingAgentId", $("#mShippingAgentId").val());
-                initTradePartnerSelect(selectItems, "CoLoaderId", $("#mCoLoaderId").val());
-                initTradePartnerSelect(selectItems, "FbaId", $("#mFbaId").val());
-                initTradePartnerSelect(selectItems, "CargoPickupId", $("#mCargoPickupId").val());
-                initTradePartnerSelect(selectItems, "TruckerId", $("#mTruckerId").val());
-                initTradePartnerSelect(selectItems, "DeliveryToId", $("#mDeliveryToId").val());
+            //    }
+            //});
+            //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'IncotermsId' }).done(function (result) {
+            //    if (result != null && result.length > 0) {
+            //        initSysCodeTag(result, "IncotermsId", $("#mIncotermsId").val())
+            //    }
+            //});
+            //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'CargoTypeId' }).done(function (result) {
+            //    if (result != null && result.length > 0) {
+            //        initSysCodeTag(result, "CargoTypeId", $("#mCargoTypeId").val())
+            //    }
+            //});
+            ////貿易夥伴
+            //dolphin.freight.tradePartners.tradePartner.getList({}).done(function (result) {
+            //    var selectItems = result.items;
+            //    initTradePartnerSelect(selectItems, "CarrierId", $("#mCarrierId").val());
+            //    initTradePartnerSelect(selectItems, "ShipperId", $("#mShipperId").val());
+            //    initTradePartnerSelect(selectItems, "CustomerId", $("#mCustomerId").val());
+            //    initTradePartnerSelect(selectItems, "BillToId", $("#mBillToId").val());
+            //    initTradePartnerSelect(selectItems, "ConsigneeId", $("#mConsigneeId").val());
+            //    initTradePartnerSelect(selectItems, "NotifyId", $("#mNotifyId").val());
+            //    initTradePartnerSelect(selectItems, "ShippingAgentId", $("#mShippingAgentId").val());
+            //    initTradePartnerSelect(selectItems, "CoLoaderId", $("#mCoLoaderId").val());
+            //    initTradePartnerSelect(selectItems, "FbaId", $("#mFbaId").val());
+            //    initTradePartnerSelect(selectItems, "CargoPickupId", $("#mCargoPickupId").val());
+            //    initTradePartnerSelect(selectItems, "TruckerId", $("#mTruckerId").val());
+            //    initTradePartnerSelect(selectItems, "DeliveryToId", $("#mDeliveryToId").val());
 
 
-            });
-            //港口
-            dolphin.freight.settings.ports.port.getList({}).done(function (result) {
-                console.log(result.items);
-                if (result != null && result.items != null && result.items.length > 0) {
-                    initPortsTag(result.items, "PorId", $("#mPorId").val())
-                    initPortsTag(result.items, "PolId", $("#mPolId").val())
-                    initPortsTag(result.items, "PodId", $("#mPodId").val())
-                    initPortsTag(result.items, "DelId", $("#mDelId").val())
-                    initPortsTag(result.items, "FdestId", $("#mFdestId").val())
-                    initPortsTag(result.items, "TransPort1Id", $("#mTransPort1Id").val())
+            //});
+            ////港口
+            //dolphin.freight.settings.ports.port.getList({}).done(function (result) {
+            //    console.log(result.items);
+            //    if (result != null && result.items != null && result.items.length > 0) {
+            //        initPortsTag(result.items, "PorId", $("#mPorId").val())
+            //        initPortsTag(result.items, "PolId", $("#mPolId").val())
+            //        initPortsTag(result.items, "PodId", $("#mPodId").val())
+            //        initPortsTag(result.items, "DelId", $("#mDelId").val())
+            //        initPortsTag(result.items, "FdestId", $("#mFdestId").val())
+            //        initPortsTag(result.items, "TransPort1Id", $("#mTransPort1Id").val())
 
-                }
-            });
-            //分站
-            dolphin.freight.settings.substations.substation.getSubstations({}).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSubstationsTag(result, "OfficeId", $("#mOfficeId").val())
-                }
-            });
+            //    }
+            //});
+            ////分站
+            //dolphin.freight.settings.substations.substation.getSubstations({}).done(function (result) {
+            //    if (result != null && result.length > 0) {
+            //        initSubstationsTag(result, "OfficeId", $("#mOfficeId").val())
+            //    }
+            //});
             initReasonStatus();
             initHideBtn();
             initRemark(0);
@@ -242,6 +242,8 @@
 
         });
 
+        initializeDropdownSearch("ExportBooking_CancelReason");
+
         initializeDropdownSearch("ExportBooking_ReferenceId");
         initializeDropdownSearch("ExportBooking_CarrierId");
         initializeDropdownSearch("ExportBooking_ShipModeId");
@@ -250,9 +252,29 @@
         initializeDropdownSearch("ExportBooking_SvcTermFromId");
         initializeDropdownSearch("ExportBooking_SvcTermToId");
         initializeDropdownSearch("ExportBooking_IncotermsId");
+        initializeDropdownSearch("ExportBooking_CargoTypeId"); 
+
         initializeDropdownSearch("ExportBooking_ShipperId");
-        initializeDropdownSearch("ExportBooking_ReferenceId");
-        initializeDropdownSearch("ExportBooking_ReferenceId");
+        initializeDropdownSearch("ExportBooking_CustomerId");
+        initializeDropdownSearch("ExportBooking_BillToId");
+        initializeDropdownSearch("ExportBooking_ConsigneeId");
+        initializeDropdownSearch("ExportBooking_NotifyId");
+        initializeDropdownSearch("ExportBooking_ShippingAgentId");
+        initializeDropdownSearch("ExportBooking_HblAgentId");
+        initializeDropdownSearch("ExportBooking_CoLoaderId");
+        initializeDropdownSearch("ExportBooking_FbaId");
+        initializeDropdownSearch("ExportBooking_CargoPickupId");
+        initializeDropdownSearch("ExportBooking_TruckerId");
+        initializeDropdownSearch("ExportBooking_DeliveryToId");
+        initializeDropdownSearch("ExportBooking_DelId");
+        initializeDropdownSearch("ExportBooking_SalespersonId");
+
+        initializeDropdownSearch("ExportBooking_PorId");
+        initializeDropdownSearch("ExportBooking_PolId");
+        initializeDropdownSearch("ExportBooking_PodId");
+        initializeDropdownSearch("ExportBooking_FdestId");
+        initializeDropdownSearch("ExportBooking_TransPort1Id");
+        initializeDropdownSearch("ExportBooking_OfficeId");
 
     </script>
 }
@@ -321,7 +343,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "SalespersonId", FieldName = "SalespersonId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.SalespersonId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["SalespersonId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.SalespersonId) })
                                                 </abp-column>
                                             </abp-row>
 
@@ -343,7 +365,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CancelReason", FieldName = "CancelReason",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.CancelReason", AspItems = Model.CancelReasonLookupList, IsShowLabel = true, FieldName = @L["CancelReason"], SelectType = 0, ShowFiledContentValue = Model.ExportBooking.CancelReason })
                                                 </abp-column>
                                             </abp-row>
                                         </abp-card-body>
@@ -364,84 +386,75 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CarrierId", FieldName = "CarrierId",DefaultValue="" , IsShowLabel = true , IsRequired = false })*@
-                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.CarrierId", AspItems = Model.ReferenceLookupList, IsShowLabel = true, FieldName = @L["CarrierId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.CarrierId) })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.CarrierId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["CarrierId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.CarrierId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "ShipModeId", FieldName = "ShipModeId",DefaultValue="" , IsShowLabel = true , IsRequired = false })*@
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ShipModeId", AspItems = Model.ShipModeLookupList, IsShowLabel = true, FieldName = @L["ShipModeId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ShipModeId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "FreightTermForBuyerId", FieldName = "FreightTermForBuyerId",DefaultValue="" , IsShowLabel = true , IsRequired = false })*@
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.FreightTermForBuyerId", AspItems = Model.FreightTermLookupList, IsShowLabel = true, FieldName =  @L["FreightTermForBuyerId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.FreightTermForBuyerId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                   @* @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "FreightTermForSalerId", FieldName = "FreightTermForSalerId",DefaultValue="" , IsShowLabel = true , IsRequired = false })*@
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.FreightTermForSalerId", AspItems = Model.FreightTermLookupList, IsShowLabel = true, FieldName = @L["FreightTermForSalerId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.FreightTermForSalerId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
-                                                <abp-column size-md="_6">
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "SvcTermFromId", FieldName = "SvcTermFromId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                <abp-column>
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.SvcTermFromId", AspItems = Model.SvgTermLookupList, IsShowLabel = true, FieldName = @L["SvcTermFromId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.SvcTermFromId) })
                                                 </abp-column>
-                                                <abp-column size-md="_6">
-                                                    <label for="SvcTermToId" class="form-label">&nbsp;&nbsp;</label>
-                                                    @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "SvcTermToId", FieldName = "SvcTermToId",DefaultValue="" , IsShowLabel = false , IsRequired = false })*@
+                                                <abp-column>
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.SvcTermToId", AspItems = Model.SvgTermLookupList, IsShowLabel = true, FieldName = @L["SvcTermToId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.SvcTermToId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "IncotermsId", FieldName = "IncotermsId",DefaultValue="" , IsShowLabel = true , IsRequired = false })*@
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.IncotermsId", AspItems = Model.IncotermsLookupList, IsShowLabel = true, FieldName = @L["IncotermsId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.IncotermsId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "ShipperId", FieldName = "ShipperId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
-                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ShipperId", AspItems = Model.ShipModeLookupList, IsShowLabel = true, FieldName = @L["ShipperId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ShipperId) })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ShipperId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ShipperId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ShipperId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CustomerId", FieldName = "CustomerId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.CustomerId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["CustomerId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.CustomerId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "BillToId", FieldName = "BillToId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.BillToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["BillToId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.CustomerId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "ConsigneeId", FieldName = "ConsigneeId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ConsigneeId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ConsigneeId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ConsigneeId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "NotifyId", FieldName = "NotifyId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.NotifyId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["NotifyId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.NotifyId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "ShippingAgentId", FieldName = "ShippingAgentId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ShippingAgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ShippingAgentId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ShippingAgentId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HblAgentId", FieldName = "HblAgentId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.HblAgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["HblAgentId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.HblAgentId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CoLoaderId", FieldName = "CoLoaderId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.CoLoaderId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["CustomerId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.CoLoaderId) })
                                                 </abp-column>
                                             </abp-row>
 
@@ -468,12 +481,12 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "PolId", FieldName = "PolId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.PolId", AspItems = Model.PortLookupList, IsShowLabel = true, FieldName = @L["PolId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.PolId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "PorId", FieldName = "PorId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.PorId", AspItems = Model.PortLookupList, IsShowLabel = true, FieldName = @L["PorId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.PorId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -483,7 +496,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "PodId", FieldName = "PodId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.PodId", AspItems = Model.PortLookupList, IsShowLabel = true, FieldName = @L["PodId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.PodId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -493,7 +506,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "DelId", FieldName = "DelId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.DelId", AspItems = Model.PortLookupList, IsShowLabel = true, FieldName = @L["DelId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.DelId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -503,7 +516,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "FdestId", FieldName = "FdestId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.FdestId", AspItems = Model.PortLookupList, IsShowLabel = true, FieldName = @L["FdestId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.FdestId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -513,7 +526,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "FbaId", FieldName = "FbaId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.FbaId", AspItems = Model.PortLookupList, IsShowLabel = true, FieldName = @L["FbaId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.FbaId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row class="mt-3">
@@ -527,7 +540,7 @@
                                             </abp-row>
                                             <abp-row class="hideArea">
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "TransPort1Id", FieldName = "TransPort1Id",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.TransPort1Id", AspItems = Model.PortLookupList, IsShowLabel = true, FieldName = @L["TransPort1Id"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.TransPort1Id) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row class="hideArea">
@@ -553,12 +566,13 @@
                                         <abp-card-body style="background:#eeeeee;">
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CargoTypeId", FieldName = "CargoTypeId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.CargoTypeId", AspItems = Model.CargoTypeLookupList, IsShowLabel = true, FieldName = @L["CargoTypeId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.CargoTypeId) })
+
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "ReferralById", FieldName = "ReferralById",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    <abp-input  asp-for="ExportBooking.ReferralById"></abp-input>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -568,17 +582,17 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CargoPickupId", FieldName = "CargoPickupId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.CargoPickupId", AspItems = Model.CargoTypeLookupList, IsShowLabel = true, FieldName = @L["CargoPickupId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.CargoPickupId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "TruckerId", FieldName = "TruckerId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.TruckerId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["TruckerId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.TruckerId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "DeliveryToId", FieldName = "DeliveryToId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.DeliveryToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["DeliveryToId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.DeliveryToId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -628,7 +642,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "OfficeId", FieldName = "OfficeId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.OfficeId", AspItems = Model.SubstationLookupList, IsShowLabel = true, FieldName = @L["OfficeId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.OfficeId) })
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
