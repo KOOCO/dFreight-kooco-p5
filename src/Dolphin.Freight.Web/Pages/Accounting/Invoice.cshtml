@@ -77,6 +77,7 @@
             });
             var formControl = 0;
             $("#saveBtn").click(function () {
+                debugger;
                 formControl = 0;
                 $("#createForm").submit();
             });
@@ -124,6 +125,7 @@
                 })
             })
             $('#createForm').on('abp-ajax-success', function (result) {
+                debugger;
                 event.preventDefault();
 
                 switch (formControl) {
@@ -207,7 +209,6 @@
             getTotalAmount();
         }
 
-        const currencies = ['TWD', 'USD', 'RMB', 'HKD']
 
         function setCurrencyRate1(value, e) {
             let target = e.currentTarget || e.srcElement || e.target;
@@ -318,12 +319,23 @@
             trhtml = trhtml + "<td><input type='hidden' name='InvoiceBillDtos[" + index + "].Id' value='" + (bill.id || '') + "'></td>";
             trhtml = trhtml + "<td></td></tr>";
             $("#trtbody").append(trhtml);
-            let val = currencyCodeToName[bill.currency || $('#Currency_0').val()];
+            let val = currencyCodeToName[bill.currency || $('#Currency_'+index).val()];
             let conversion = JSON.parse(currencyConvertor);
             let rate = conversion["" + val + "-TWD"];
-            getRate(urlParams.get("Mid"), $("#Rate_" + index + "").val(parseFloat(rate).toFixed(2)));
+            if(val == undefined)
+            {
+                $('#Quantity_'+ index).val(0);
+                $('#Rate_'+ index).val(0);
+            }
+            else{
+                getRate(urlParams.get("Mid"), $("#Rate_" + index + "").val(parseFloat(rate).toFixed(2)));
+            }
             var amount = bill.quantity * $("#Rate_" + index + "").val();
-            $('#Amount_'+index+'').text(parseFloat(amount).toFixed(2));
+            if(val == undefined || amount == NaN){
+                $('#Amount_'+index+'').text(0);
+            }else {
+                $('#Amount_'+index+'').text(parseFloat(amount).toFixed(2));
+            }
             setCurrencyRate($('#Currency_0').val());
             getTotalSubAmount();
             getTotalAmount();
@@ -956,11 +968,8 @@
                                     </tr>
                                     <tr border="1">
                                         <th colspan="12" style="text-align:right;border-block-color:#333333;" border="1">總計</th>
-<<<<<<< HEAD
                                         <th id="totalAmount">0</th>
-=======
-                                        <th id="totalAmount">0 <input type="hidden" name="" /></th>
->>>>>>> main
+                                        @*<th id="totalAmount">0 <input type="hidden" name="" /></th>*@
                                     </tr>
                                 </tfoot>
                             </abp-table>
