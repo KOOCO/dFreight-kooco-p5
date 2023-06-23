@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.Settings.Ports;
+using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using System;
@@ -21,15 +22,17 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
     {
         private IRepository<ExportBooking, Guid> _repository;
         private IRepository<SysCode, Guid> _sysCodeRepository;
-        private IRepository<Port, Guid> _portRepository;
+        private IRepository<PortsManagement, Guid> _portsManagementRepository;
         private IRepository<Substation, Guid> _substationRepository;
         private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
-        public ExportBookingAppService(IRepository<ExportBooking, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Port, Guid> portRepository, IRepository<Substation, Guid> substationRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository)
+        public ExportBookingAppService(IRepository<ExportBooking, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<PortsManagement, 
+                                       Guid> portsManagementRepository, IRepository<Substation, Guid> substationRepository, IRepository<TradePartners.TradePartner, 
+                                       Guid> tradePartnerRepository)
             : base(repository)
         {
             _repository = repository;
             _sysCodeRepository = sysCodeRepository;
-            _portRepository = portRepository;
+            _portsManagementRepository = portsManagementRepository;
             _substationRepository = substationRepository;
             _tradePartnerRepository = tradePartnerRepository;
             /*
@@ -41,7 +44,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         }
         public async Task<PagedResultDto<ExportBookingDto>> QueryListAsync(QueryExportBookingDto query)
         {
-            var Ports = await _portRepository.GetListAsync();
+            var Ports = await _portsManagementRepository.GetListAsync();
             Dictionary<Guid, string> pdictionary = new();
             if (Ports != null)
             {

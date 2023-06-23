@@ -34,6 +34,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.ImportExport.AirExports;
+using Dolphin.Freight.Settings.PortsManagement;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
 {
@@ -45,6 +46,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         public List<SelectListItem> AirportLookupList { get; set; }
         public List<SelectListItem> PackageUnitLookupList { get; set; }
         public List<SelectListItem> WtValOtherList { get; set; }
+        public List<SelectListItem> PortsManagementLookupList { get; set; }
 
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
@@ -78,8 +80,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         private readonly ISubstationAppService _substationAppService;
         private readonly IAirportAppService _airportAppService;
         private readonly IPackageUnitAppService _packageUnitAppService;
+        private readonly IPortsManagementAppService _portsManagementAppService;
         public EditModalModel(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService,
-            IAirportAppService airportAppService, IPackageUnitAppService packageUnitAppService)
+            IAirportAppService airportAppService, IPortsManagementAppService portsManagementAppService, IPackageUnitAppService packageUnitAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -89,6 +92,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             _substationAppService = substationAppService;
             _airportAppService = airportAppService;
             _packageUnitAppService = packageUnitAppService;
+            _portsManagementAppService = portsManagementAppService;
         }
 
         public async Task OnGetAsync()
@@ -102,6 +106,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             await FillPackageUnitAsync();
             await FillSubstationAsync();
             FillWtValOther();
+            await FillPortAsync();
         }
         public async Task<IActionResult> OnPostAsync()
         {
@@ -184,6 +189,16 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             string today = DateTime.Now.ToString("yyyyMMddhhmmss");
             string AIFileNo = "AIM-" + today;
             return AIFileNo;
+        }
+        #endregion
+
+        #region FillPortAsync()
+        private async Task FillPortAsync()
+        {
+            var lookup = await _portsManagementAppService.QueryListAsync();
+
+            PortsManagementLookupList = lookup.Select(x => new SelectListItem(x.PortName, x.Id.ToString(), false))
+                                   .ToList();
         }
         #endregion
 

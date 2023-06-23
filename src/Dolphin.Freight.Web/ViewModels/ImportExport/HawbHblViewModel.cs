@@ -45,6 +45,7 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
         [BindProperty(SupportsGet = true)]
         public IList<InvoiceDto> m2invoiceDtos { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
+        public List<SelectListItem> PortsManagementLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> AirportLookupList { get; set; }
         public List<SelectListItem> PackageUnitLookupList { get; set; }
