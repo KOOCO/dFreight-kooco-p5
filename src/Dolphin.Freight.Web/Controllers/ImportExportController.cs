@@ -183,6 +183,11 @@ namespace Dolphin.Freight.Web.Controllers
             model.CountryName = CountryName;
 
             model.AirExportHawbDto = await _airExportHawbAppService.GetHawbCardById(Id);
+            if (model.AirExportHawbDto.Id == Guid.Empty)
+            {
+                model.AirExportHawbDto.BookingNo = Guid.NewGuid();
+            }
+            
 
 
             return PartialView("~/Pages/AirExports/_AirExportBasicHawb.cshtml", model);
@@ -383,6 +388,15 @@ namespace Dolphin.Freight.Web.Controllers
             string today = DateTime.Now.ToString("yyyyMMddhhmmss");
             string AIFileNo = "AIM-" + today;
             return AIFileNo;
+        }
+        #endregion
+
+        #region GenerateSerialNumber()
+        public string GenerateSerialNumber()
+        {
+            DateTime now = DateTime.Now;
+            string serialNumber = now.ToString("yyyyMMddHHmmss");
+            return serialNumber;
         }
         #endregion
     }
