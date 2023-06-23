@@ -128,6 +128,135 @@
         function changeHid(id, hid) {
             location.href = '/OceanExports/EditModal4?Id=' + id + "&Hid=" + hid
         }
+
+        function getReportTelexrelease() {
+            myWindow = window.open("@Url.Action("Telexrelease", "Docs")", 'Telexrelease', 'width=1200,height=800');
+            myWindow.focus()
+        }
+        function gotoReport(rindex) {
+            var url = "";
+            var pname = "";
+            switch (rindex) {
+                default:
+                    url = '@Url.Action("Car", "Docs")';
+                    pname = "Car";
+                    break;
+                case 2:
+                    url = '@Url.Action("Cargo", "Docs")';
+                    pname = "Cargo";
+                    break;
+                case 3:
+                    url = '@Url.Action("Box", "Docs")';
+                    pname = "Box";
+                    break;
+                case 4:
+                    url = '@Url.Action("ProfitSummary", "Docs")';
+                    pname = "ProfitSummary";
+                    break;
+                case 5:
+                    url = '@Url.Action("ProfitDetail", "Docs")';
+                    pname = "ProfitDetail";
+                    break;
+                case 6:
+                    var idNo = $('#OceanExportHbl_Id').val();
+                    url = '@Url.Action("Shipment", "Docs")' + "?id=" + idNo;
+                    pname = "Shipment";
+                    break;
+                case 7:
+                    var idNo = $('#OceanExportHbl_Id').val();
+                    url = '@Url.Action("OBL", "Docs")' + "?id=" + idNo;
+                    pname = "OBL";
+                    break;
+            }
+            myWindow = window.open(url, pname, 'width=1200,height=800')
+            myWindow.focus()
+        }
+        function getReportPackageLabel() {
+            myWindow = window.open("@Url.Action("PackageLabel", "Docs")", 'PackageLabel', 'width=1200,height=800');
+            myWindow.focus()
+        }
+
+        function getReportPackage() {
+            myWindow = window.open("@Url.Action("Package", "Docs")", 'Package', 'width=1200,height=800');
+            myWindow.focus()
+        }
+
+        function getReportHblPackageLabel() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("HblPackageLabel", "Docs")" + "?id=" + idNo, 'HblPackageLabel', 'width=1200,height=800');
+            myWindow.focus()
+        }
+
+        function getReportBookingConfirmation() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("BookingConfirmation", "Docs")" + "?id=" + idNo, 'BookingConfirmation', 'width=1200,height=800');
+            myWindow.focus()
+        }
+
+        function getReportBankDraft() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("BankDraft", "Docs")" + "?id=" + idNo, 'BankDraft', 'width=1500,height=800');
+            myWindow.focus()
+        }
+
+        function getReportHblClauses() {
+            myWindow = window.open("@Url.Action("HblClauses", "Docs")", 'HblClauses', 'width=1500,height=800');
+            myWindow.focus()
+        }
+
+        function getPreAlert() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("PreAlert", "Docs")" + "?id=" + idNo, 'PreAlert', 'width=1200,height=800');
+            myWindow.focus()
+        }
+        function getCertificateOfOrigin() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("CertificateOfOrigin", "Docs")" + "?id=" + idNo, 'CertificateOfOrigin', 'width=1200,height=800');
+            myWindow.focus()
+        }
+        function getDockRecepit() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("DockRecepit", "Docs")" + "?id=" + idNo, 'DockRecepit', 'width=1200,height=800');
+            myWindow.focus()
+        }
+        function getUsdaHeatTreatment() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("UsdaHeatTreatment", "Docs")" + "?id=" + idNo, 'UsdaHeatTreatment', 'width=1200,height=800');
+            myWindow.focus()
+        }
+        function getForwarderCargoReceipt() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("ForwarderCargoReceipt", "Docs")" + "?id=" + idNo, 'ForwarderCargoReceipt', 'width=1200,height=800');
+            myWindow.focus()
+        }
+        function getHbl() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("Hbl", "Docs")" + "?id=" + idNo, 'Hbl', 'width=1200,height=800');
+            myWindow.focus()
+        }
+        function getCommercialInvoice() {
+            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")", 'CommercialInvoice', 'width=1200,height=800');
+            myWindow.focus()
+        }
+        function getPickupDeliveryOrder() {
+            //var idNo = $('#OceanExportHbl_Id').val();
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")" + "?id=" + idNo, 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow.focus()
+        }
+        function getBookingPackingList() {
+            //var idNo = $('#OceanExportHbl_Id').val();
+            //myWindow = window.open("@Url.Action("BookingPackingList", "Docs")" + "?id=" + idNo, 'BookingPackingList', 'width=1200,height=800');
+            myWindow = window.open("@Url.Action("BookingPackingList", "Docs")", 'BookingPackingList', 'width=1200,height=800');
+            myWindow.focus()
+        }
+        function getManifest() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            var report = $('input[name=report]:checked').val()
+            var reportType = $('input[name=report-type]:checked').val()
+            myWindow = window.open("@Url.Action("Manifest", "Docs")" + "?id=" + idNo + "&report=" + report + "&reportType=" + reportType, 'Manifest', 'width=1200,height=800');
+            myWindow.focus()
+        }
     </script>
 }
 <div class="page-header">
@@ -216,27 +345,27 @@
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getBookingPackingList(3)">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
                                 </a>
                                 <a class='dropdown-item' href='#'>
-                            <i class="fa fa-file-text-o"></i> @L["Btn:Telex Release"]
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Telex Release"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getReportPackageLabel()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:MBL Package Label"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
-                            <i class="fa fa-file-text-o"></i> @L["Btn:All HBL Package Labels"]
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getReportPackage()">
+                                <i class="fa fa-file-text-o"></i> @L["Btn:All HBL Package Labels"]
                                 </a>
                                 <li class="dropdown-divider"></li>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(4)">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - summary"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(5)">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                                 </a>
                                 <li class="dropdown-divider"></li>
-                                <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
+                                <a class='dropdown-item' href='javascript:void(0)'  style="color: #4B77BE; font-weight: 500;">
                             <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
                                 </a>
                             </div>

@@ -542,9 +542,8 @@
             @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.CoLoaderId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.CoLoaderId.ToString(), IsShowLabel = true, FieldName = @L["CoLoaderId"] })
         </abp-column>
         <abp-column size-md="_3">
-            <abp-select asp-for="@Model.AirExportMawbDto.MawbOperatorId" asp-items="@Model.TradePartnerLookupList" size="Small" disabled>
-                <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
-            </abp-select>
+            <label asp-for="@Model.AirExportMawbDto.MawbOperatorId" class="form-label">OP</label>
+            <input class="form-control form-control-sm" type="text" value="@(CurrentUser.Name + " " + CurrentUser.SurName)" disabled />
         </abp-column>
     </abp-row>
     <!--第五列-->
@@ -553,7 +552,7 @@
             @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DepatureId", AspItems = Model.AirportLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.DepatureId.ToString(), IsShowLabel = true, FieldName = @L["DepatureId"] })
         </abp-column>
         <abp-column size-md="_3">
-            <label asp-for="@Model.AirExportMawbDto.DepatureDate" class="redStar form-label">Depature Date</label>
+            <label asp-for="@Model.AirExportMawbDto.DepatureDate" class="form-label">Depature Date</label>
             <span asp-validation-for="@Model.AirExportMawbDto.DepatureDate" class="text-danger"></span>
             <input asp-for="@Model.AirExportMawbDto.DepatureDate" class="form-control" />
         </abp-column>

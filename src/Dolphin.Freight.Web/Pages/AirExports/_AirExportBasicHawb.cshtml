@@ -1,9 +1,12 @@
-﻿@using Dolphin.Freight.AirExports;
+﻿@using Volo.Abp.Users
+@using Dolphin.Freight.AirExports;
 @using Dolphin.Freight.Localization;
+@using Dolphin.Freight.Web.Pages.Components;
 @using Microsoft.AspNetCore.Mvc.Localization;
 @using Dolphin.Freight.Web.Pages.Components;
 @using Microsoft.Extensions.Localization;
 @using Volo.Abp.Account.Localization
+@inject ICurrentUser CurrentUser
 @model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
 
 @inject IStringLocalizer<FreightResource> L
@@ -110,7 +113,8 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ActualShippedr", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ActualShippedr"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ActualShippedr) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.Customer" size="Small" />
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Customer", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Customer"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Customer) })
+                @*<abp-input asp-for="@Model.AirExportHawbDto.Customer" size="Small" />*@
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="@Model.AirExportHawbDto.BillTo" size="Small" />
@@ -119,56 +123,46 @@
         <!--第三列-->
         <abp-row>
             <abp-column size-md="_3">
-                <abp-select asp-for="@Model.AirExportHawbDto.ConsigneeId" asp-items="@Model.TradePartnerLookupList" size="Small">
-                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                </abp-select>
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ConsigneeId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ConsigneeId"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ConsigneeId) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-select asp-for="@Model.AirExportHawbDto.Notify" asp-items="@Model.TradePartnerLookupList" size="Small">
-                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                </abp-select>
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Notify", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Notify"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Notify) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-select asp-for="@Model.AirExportHawbDto.OverseaAgent" asp-items="@Model.TradePartnerLookupList" size="Small">
-                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                </abp-select>
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.IssuingCarrier", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["IssuingCarrier"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.IssuingCarrier) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.IssuingCarrier" size="Small" />
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Trucker", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Trucker"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Trucker) })
             </abp-column>
         </abp-row>
         <!--第四列-->
         <abp-row>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.Trucker" label="@L["tracker"].Value" />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="@Model.AirExportHawbDto.Sales" label="@L["sales"].Value"  />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.OP" label="@L["op"].Value" />
+                <label asp-for="@Model.AirExportHawbDto.OPId" class="form-label">OP</label>
+            <input class="form-control form-control-sm" type="text" value="@(CurrentUser.Name + " " + CurrentUser.SurName)" disabled />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="@Model.AirExportHawbDto.SubAgentAwb" label="@L["subAgentawb"].Value" />
             </abp-column>
         </abp-row>
         <!--第五列-->
-        <abp-row>
+        <abp-row class="pb-5">
             <abp-column size-md="_3">
-                <abp-select asp-for="@Model.AirExportHawbDto.Departure" asp-items="@Model.AirportLookupList" size="Small">
-                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                </abp-select>
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Departure", AspItems = Model.AirportLookupList, IsShowLabel = true, FieldName = @L["Departure"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Departure) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.Destination" class="form-control" label="@L["Destination"].Value" />
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Destination", AspItems = Model.CountryName, IsShowLabel = true, FieldName = @L["Destination"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Destination) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.CargoPickup" size="Small" label="@L["CargoPickup"].Value" />
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.CargoPickup", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "Truck Receipt", ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.CargoPickup) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-select asp-for="@Model.AirExportHawbDto.DeliveryTo" asp-items="@Model.TradePartnerLookupList" size="Small" label="@L["DeliveryTo"].Value">
-                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                </abp-select>
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.DeliveryTo", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "Truck Delivery Place", ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.DeliveryTo) })
             </abp-column>
         </abp-row>
         <!--第六列-->
