@@ -6,8 +6,12 @@
 @inject IStringLocalizer<FreightResource> L
 @section scripts
     {
-    <abp-script src="/Pages/OceanExports/CreateMbl.js" />
-    <script type="text/javascript">
+    @*<abp-script src="/Pages/OceanExports/CreateMbl.js" />*@
+    <script>
+        function changeHid(id, hid) {
+            location.href = '/OceanExports/EditModal4?Id=' + id + "&Hid=" + hid
+        }
+        
         $(document).ready(function () {
             var isLocked = '@Model.OceanExportMbl.IsLocked';
             if (isLocked == 'True') abp.message.warn("此項已經被鎖定，若需修改請小心！\n您作的變更可能導致會計報表不一致！");
@@ -78,6 +82,16 @@
                 });
             });
 
+            var url = new URL(window.location.href);
+
+            if(!url.searchParams.get('Hid')){
+                $('.borad-cont').each(function(i, e)
+                {
+                    if($(e).parent().hasClass('focus')){
+                        $(e).click();
+                    }
+                });
+            }
         })
         function initAttments(tindex, qid) {
             dolphin.freight.importExport.attachments.attachment.queryList({ queryType: 2, queryId: qid }).done(function (result) {
@@ -125,9 +139,7 @@
 
                 });
         }
-        function changeHid(id, hid) {
-            location.href = '/OceanExports/EditModal4?Id=' + id + "&Hid=" + hid
-        }
+        
 
         function getReportTelexrelease() {
             myWindow = window.open("@Url.Action("Telexrelease", "Docs")", 'Telexrelease', 'width=1200,height=800');
@@ -251,10 +263,11 @@
             myWindow.focus()
         }
         function getManifest() {
-            var idNo = $('#OceanExportHbl_Id').val();
-            var report = $('input[name=report]:checked').val()
-            var reportType = $('input[name=report-type]:checked').val()
-            myWindow = window.open("@Url.Action("Manifest", "Docs")" + "?id=" + idNo + "&report=" + report + "&reportType=" + reportType, 'Manifest', 'width=1200,height=800');
+            //var idNo = $('#OceanExportHbl_Id').val();
+            //var report = $('input[name=report]:checked').val()
+            //var reportType = $('input[name=report-type]:checked').val()
+            //myWindow = window.open("@Url.Action("Manifest", "Docs")" + "?id=" + idNo + "&report=" + report + "&reportType=" + reportType, 'Manifest', 'width=1200,height=800');
+            myWindow = window.open("@Url.Action("Manifest", "Docs")", 'Manifest', 'width=1200,height=800');
             myWindow.focus()
         }
     </script>
@@ -339,16 +352,16 @@
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Print MB/L | B/L Instruction"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrder()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getManifest()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
                                 </a>
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getBookingPackingList(3)">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="getReportTelexrelease()">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:Telex Release"]
                                 </a>
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getReportPackageLabel()">
@@ -412,52 +425,52 @@
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Print Automobile Documents"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getHbl()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Print HB/L"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(7)">
                                <i class="fa fa-file-text-o"></i> @L["Btn:Print OB/L"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:B/L Clauses"]
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getReportHblClauses()">
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:B/L Clauses"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getCommercialInvoice()">
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getBookingPackingList()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getCertificateOfOrigin()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Certificate of Origin"]
                                 </a>
-                                 <a class='dropdown-item' href='#'>
+                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getDockRecepit()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Dock Receipt"]
                                 </a>
-                                 <a class='dropdown-item' href='#'>
+                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrder()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
                                 </a>
-                                 <a class='dropdown-item' href='#'>
+                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getReportBookingConfirmation()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
                                 </a>
-                                 <a class='dropdown-item' href='#'>
+                                 <a class='dropdown-item' href='javascript:void(0)' onclck="getReportBankDraft()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
                                 </a>
-                                 <a class='dropdown-item' href='#'>
+                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getReportPackageLabel()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Package Label"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Pre-Alert"]
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getPreAlert()">
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Pre-Alert"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getUsdaHeatTreatment()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:USDA Heat Treatment"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getForwarderCargoReceipt()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder cargo receipt"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
                                 </a>
                                 <a class='dropdown-item' href='#'>
@@ -470,8 +483,8 @@
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Shipping Advice"]
                                 </a>
                                 <li class="dropdown-divider"></li>
-                                <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(5)">
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                                 </a>
 
                                 <li class="dropdown-divider"></li>
@@ -497,7 +510,7 @@
                                     </tbody>
 
                                 </table>
-
+                                <input type="hidden" id="OceanExportHbl_Id" value="@Model.Hid"/>
                             </abp-column>
                         </abp-row>
                     </abp-card-body>
@@ -565,7 +578,7 @@
                                 focusString = " focus ";
                             }
                             <div class="borad-anchor @focusString @hbl.CardColorValue">
-                                <div class="borad-cont" onclick="changeHid('@Model.Id','@hbl.Id')">
+                                <div class="borad-cont" id="Card_@Model.Id" onclick="changeHid('@Model.Id','@hbl.Id')">
                                     <a class="link" href="#cardA"></a>
                                     <span class="label label-HBL">HB/L</span>
                                     <span class="MBLnumber">@hbl.HblNo</span>
