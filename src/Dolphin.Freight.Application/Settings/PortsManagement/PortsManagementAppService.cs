@@ -1,5 +1,7 @@
 ﻿using Dolphin.Freight.Permissions;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
@@ -23,6 +25,14 @@ namespace Dolphin.Freight.Settings.PortsManagement
             CreatePolicyName = SettingsPermissions.PortsManagement.Create;
             UpdatePolicyName = SettingsPermissions.PortsManagement.Edit;
             DeletePolicyName = SettingsPermissions.PortsManagement.Delete;
+        }
+
+        public async Task<List<PortsManagementDTO>> QueryListAsync()
+        {
+            var ports = await Repository.GetListAsync();
+            var list = ObjectMapper.Map<List<PortsManagement>, List< PortsManagementDTO >> (ports);
+
+            return list;
         }
     }
 }

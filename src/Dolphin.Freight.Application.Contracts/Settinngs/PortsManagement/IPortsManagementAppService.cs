@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Threading;
 
 namespace Dolphin.Freight.Settings.PortsManagement
 {
@@ -14,5 +17,6 @@ namespace Dolphin.Freight.Settings.PortsManagement
             PagedAndSortedResultRequestDto, //Used for paging/sorting
             CreateUpdatePortsManagementDto> //新增修改IT號碼管理用
     {
+        Task<List<PortsManagementDTO>> QueryListAsync();
     }
 }
