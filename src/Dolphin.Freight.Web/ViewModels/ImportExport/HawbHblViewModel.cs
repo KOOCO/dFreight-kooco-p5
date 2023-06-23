@@ -47,6 +47,7 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> AirportLookupList { get; set; }
+        public List<SelectListItem> CountryName { get; set; }
         public List<SelectListItem> PackageUnitLookupList { get; set; }
         public List<SelectListItem> WtValOtherList { get; set; }
         public virtual string GetFileSize(string filename)
