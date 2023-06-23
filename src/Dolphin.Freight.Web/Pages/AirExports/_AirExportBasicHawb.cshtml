@@ -90,8 +90,8 @@
                 <abp-input asp-for="@Model.AirExportHawbDto.HawbNo" required size="Small" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-select asp-for="@Model.AirExportHawbDto.BookingNo" asp-items="@Model.TradePartnerLookupList" size="Small">
-                </abp-select>
+                <abp-input asp-for="@Model.AirExportHawbDto.BookingNo" readonly="true">
+                </abp-input>
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="@Model.AirExportHawbDto.BookingDate" size="Small" type="text" abp-data-datepicker="false" readonly="true" />
@@ -106,9 +106,7 @@
                 <abp-input asp-for="@Model.AirExportHawbDto.QuotationId" size="Small" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-select asp-for="@Model.AirExportHawbDto.ActualShippedr" asp-items="@Model.TradePartnerLookupList" size="Small">
-                    <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                </abp-select>
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ActualShippedr", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ActualShippedr"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ActualShippedr) })
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="@Model.AirExportHawbDto.Customer" size="Small" />
