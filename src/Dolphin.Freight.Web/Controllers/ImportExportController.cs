@@ -7,6 +7,7 @@ using Dolphin.Freight.Settinngs.PackageUnits;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.TradePartners;
 using Dolphin.Freight.Web.Pages.AirImports;
+using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Web.Pages.Sales.TradePartner;
 using Dolphin.Freight.Web.ViewModels.ImportExport;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +37,7 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IOceanImportHblAppService _oceanImportHblAppService;
         private readonly IAttachmentAppService _attachmentAppService;
         private readonly IInvoiceAppService _invoiceAppService;
+        private readonly IPortsManagementAppService _portsManagementAppService;
 
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
@@ -43,6 +45,7 @@ namespace Dolphin.Freight.Web.Controllers
         public List<SelectListItem> PackageUnitLookupList { get; set; }
         public List<SelectListItem> CountryName { get; set; }
         public List<SelectListItem> WtValOtherList { get; set; }
+        public List<SelectListItem> PortsManagementLookupList { get; set; }
 
         private readonly int fileType = 10;
         public ImportExportController(ITradePartnerAppService tradePartnerAppService,
@@ -54,7 +57,8 @@ namespace Dolphin.Freight.Web.Controllers
             IOceanExportHblAppService oceanExportHblAppService,
             IOceanImportHblAppService oceanImportHblAppService,
             IAttachmentAppService attachmentAppService,
-            IInvoiceAppService invoiceAppService
+            IInvoiceAppService invoiceAppService,
+            IPortsManagementAppService portsManagementAppService
             )
         {
             _tradePartnerAppService = tradePartnerAppService;
@@ -67,12 +71,15 @@ namespace Dolphin.Freight.Web.Controllers
             _oceanImportHblAppService = oceanImportHblAppService;
             _attachmentAppService = attachmentAppService;
             _invoiceAppService = invoiceAppService;
-            
+            _portsManagementAppService = portsManagementAppService;
+
+
             FillCountryNameAsync().Wait();
             FillTradePartnerAsync().Wait();
             FillSubstationAsync().Wait();
             FillAirportAsync().Wait();
             FillPackageUnitAsync().Wait();
+            FillPortAsync().Wait();
         }
 
 
@@ -252,6 +259,7 @@ namespace Dolphin.Freight.Web.Controllers
             model.AirportLookupList = AirportLookupList;
             model.TradePartnerLookupList = TradePartnerLookupList;
             model.PackageUnitLookupList = PackageUnitLookupList;
+            model.PortsManagementLookupList = PortsManagementLookupList;
 
             model.OceanExportHbl = await _oceanExportHblAppService.GetHblCardById(Id);
 
@@ -397,6 +405,16 @@ namespace Dolphin.Freight.Web.Controllers
             DateTime now = DateTime.Now;
             string serialNumber = now.ToString("yyyyMMddHHmmss");
             return serialNumber;
+        }
+        #endregion
+
+        #region FillPortAsync()
+        private async Task FillPortAsync()
+        {
+            var lookup = await _portsManagementAppService.QueryListAsync();
+
+            PortsManagementLookupList = lookup.Select(x => new SelectListItem(x.PortName, x.Id.ToString(), false))
+                                   .ToList();
         }
         #endregion
     }

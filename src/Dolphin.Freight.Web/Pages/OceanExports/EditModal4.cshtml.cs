@@ -80,6 +80,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                     if (OceanExportHbls != null && OceanExportHbls.Count > 0)
                     {
                         OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(OceanExportHbls[0]);
+                        Hid = OceanExportHbl.Id;
                         IsShowHbl = true;
                     }
                 }
