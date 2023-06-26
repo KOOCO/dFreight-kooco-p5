@@ -251,9 +251,9 @@ namespace Dolphin.Freight.Web.Controllers
         public async Task<IActionResult> PackageLabel(string datasource,string reportid)
         {
             PackageLabelIndexViewModel InfoViewModel = new PackageLabelIndexViewModel();
-
-            var OceanExportMbl = new CreateUpdateOceanExportMblDto();
-            OceanExportMbl = JsonConvert.DeserializeObject<CreateUpdateOceanExportMblDto>(TempData["PrintData"].ToString());
+            QueryMblDto queryMbl = new QueryMblDto();
+            queryMbl.MbId = Guid.Parse(reportid);
+            var OceanExportMbl = await _oceanExportMblAppService.GetMblById(queryMbl);
 
             if (datasource == null || datasource == "shipment")
             {

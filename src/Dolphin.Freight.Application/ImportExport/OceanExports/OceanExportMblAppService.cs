@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.ObjectMapping;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -128,6 +129,23 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 if(dto.MblOverseaAgentId != null)dto.MblOverseaAgentName = tdictionary[dto.MblOverseaAgentId.Value];
             }
             return dto;
+        }
+
+        public async Task<CreateUpdateOceanExportMblDto> GetMblById(QueryMblDto query)
+        {
+            var SysCodes = await _sysCodeRepository.GetListAsync();
+            Dictionary<Guid, string> dictionary = new Dictionary<Guid, string>();
+            if (SysCodes != null)
+            {
+                foreach (var syscode in SysCodes)
+                {
+                    dictionary.Add(syscode.Id, syscode.CodeValue);
+                }
+            }
+            var oceanExportMbl = await _repository.GetAsync(query.MbId.Value);
+            var rs = ObjectMapper.Map<OceanExportMbl, CreateUpdateOceanExportMblDto>(oceanExportMbl);
+            
+            return rs;
         }
     }
 }
