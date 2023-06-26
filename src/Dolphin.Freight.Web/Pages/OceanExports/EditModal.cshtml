@@ -83,7 +83,7 @@
         }
 
         function getReportTelexrelease(){
-            myWindow = window.open("@Url.Action("Telexrelease", "Docs")", 'Telexrelease', 'width=1200,height=800');
+            myWindow = window.open("@Url.Action("Telexrelease", "Docs", new { oceanExportMblId = Model.Id })", 'Telexrelease', 'width=1200,height=800');
             myWindow.focus()
         }
         function gotoReport(rindex){
