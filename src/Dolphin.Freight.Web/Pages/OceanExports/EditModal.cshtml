@@ -125,7 +125,8 @@
             myWindow.focus()
         }
         function getReportPackageLabel(){
-            myWindow = window.open("@Url.Action("PackageLabel", "Docs")", 'PackageLabel', 'width=1200,height=800');
+            var reportid = $('#OceanExportMbl_Id').val();
+            myWindow = window.open("@Url.Action("PackageLabel", "Docs")" + "?reportid=" + reportid, 'PackageLabel', 'width=1200,height=800');
             myWindow.focus()
         }
 
