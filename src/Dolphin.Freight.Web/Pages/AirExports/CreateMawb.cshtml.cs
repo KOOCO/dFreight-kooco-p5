@@ -1,4 +1,5 @@
 using Dolphin.Freight.AirExports;
+using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.Settinngs.PackageUnits;
 using Dolphin.Freight.Settinngs.Substations;
@@ -29,6 +30,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         private readonly IAirportAppService _airportAppService;
         private readonly IPackageUnitAppService _packageUnitAppService;
         private readonly IAirExportMawbAppService _airExportMawbAppService;
+        private readonly IAjaxDropdownAppService ajaxDropdownAppService;
 
         [BindProperty]
         public CreateMawbViewModel MawbModel { get; set; }
