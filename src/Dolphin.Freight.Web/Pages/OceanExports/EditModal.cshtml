@@ -103,7 +103,7 @@
                     pname="Box";
                     break;
                 case 4:
-                    url = '@Url.Action("ProfitSummary", "Docs")';
+                    url = '@Url.Action("ProfitSummary", "Docs", new { oceanExportMblId = Model.Id })';
                     pname = "ProfitSummary";
                     break;
                 case 5:
