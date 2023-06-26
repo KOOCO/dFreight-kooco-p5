@@ -1335,40 +1335,45 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult ProfitDetail()
+        public async Task<IActionResult> ProfitDetailAsync(Guid oceanExportMblId)
         {
             ProfitDetailViewModel InfoViewModel = new ProfitDetailViewModel();
 
-            var OceanExportMbl = new CreateUpdateOceanExportMblDto();
-            OceanExportMbl = JsonConvert.DeserializeObject<CreateUpdateOceanExportMblDto>(TempData["PrintData"].ToString());
+            OceanExportMblDto oceanExportMbl = TempData["PrintData"] is not null ? JsonConvert.DeserializeObject<OceanExportMblDto>(TempData["PrintData"].ToString())
+                                                                                 : await _oceanExportMblAppService.GetAsync(oceanExportMblId);
+
+            if (oceanExportMbl.Id != oceanExportMblId)
+            {
+                oceanExportMbl = await _oceanExportMblAppService.GetAsync(oceanExportMblId);
+            }
 
             #region
             InfoViewModel.Office = "Dolphin Logistics Taipei Office";
             InfoViewModel.Address = "";
             InfoViewModel.Tel = "+886-2-2545-9900#8671";
             InfoViewModel.Fax = "";
-            InfoViewModel.Email = "it@dolphin-gp.com";
-            InfoViewModel.FirstName = "萬泰";
-            InfoViewModel.LastName = "資訊部";
+            InfoViewModel.Email = _currentUser.Email;
+            InfoViewModel.FirstName = _currentUser.Name;
+            InfoViewModel.LastName = _currentUser.SurName;
             InfoViewModel.DateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
 
             InfoViewModel.TO = "AER LINGUS";
             InfoViewModel.JOBNO = "OE-23020004";
             InfoViewModel.ATTN = "";
-            InfoViewModel.MBL = "TEST00000002";
+            InfoViewModel.MBL = oceanExportMbl.MblNo;
             InfoViewModel.HBL = "OH-23020009";
-            InfoViewModel.SHPR = "123552133441";
+            InfoViewModel.SHPR = oceanExportMbl.ShipmentNo;
             InfoViewModel.CNEE = "3891 DELTA PORT 809";
-            InfoViewModel.CARR = "A CUSTOMS BROKERAGE, INC.";
+            InfoViewModel.CARR = oceanExportMbl.MblCarrierName;
             InfoViewModel.VSLVOV = ". ABHIJEET / CCC";
-            InfoViewModel.POR = "HERMITAGE, AR (UNITED STATES)";
-            InfoViewModel.POL = "BURLINGTON, KY (UNITED STATES)";
-            InfoViewModel.ETD = "02-16-2023";
+            InfoViewModel.POR = oceanExportMbl.PorName;
+            InfoViewModel.POL = oceanExportMbl.PolName;
+            InfoViewModel.ETD = Convert.ToString(oceanExportMbl.PolEtd);
             InfoViewModel._2NDVV = "";
             InfoViewModel.ETDKAO = "";
-            InfoViewModel.POD = "SOUTH OGDEN, UT (UNITED STATES)";
-            InfoViewModel.ETA = "03-02-2023";
+            InfoViewModel.POD = oceanExportMbl.PodName;
+            InfoViewModel.ETA = Convert.ToString(oceanExportMbl.PodEta);
             InfoViewModel.DEST = "AMBIA, IN (UNITED STATES)";
             InfoViewModel.DESTETA = "03-04-2023";
             InfoViewModel.VOL = "40 X 1, 40FR X 1, 20TK X 1, 48HC X 1, 20 X 1";
@@ -1380,11 +1385,11 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.MSRMT = "7 CBM / 247.2 CFT";
             InfoViewModel.RMK = "";
 
-            InfoViewModel.ReportId = OceanExportMbl.Id;
+            InfoViewModel.ReportId = oceanExportMbl.Id;
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
-            TempData["PrintData"] = JsonConvert.SerializeObject(OceanExportMbl);
+            TempData["PrintData"] = JsonConvert.SerializeObject(oceanExportMbl);
 
             return View(InfoViewModel);
         }

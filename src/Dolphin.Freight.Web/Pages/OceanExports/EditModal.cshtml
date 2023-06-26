@@ -107,7 +107,7 @@
                     pname = "ProfitSummary";
                     break;
                 case 5:
-                    url = '@Url.Action("ProfitDetail", "Docs")';
+                    url = '@Url.Action("ProfitDetail", "Docs", new { oceanExportMblId = Model.Id })';
                     pname = "ProfitDetail";
                     break;
                 case 6:
