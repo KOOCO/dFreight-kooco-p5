@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.Common;
+using Volo.Abp.Users;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ReportLog;
 using Dolphin.Freight.Settings.SysCodes;
@@ -57,10 +58,11 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IGeneratePdf _generatePdf;
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly IReportLogAppService _reportLogAppService;
+        private readonly ICurrentUser _currentUser;
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
-        public DocsController(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, IAjaxDropdownAppService ajaxDropdownAppService, IReportLogAppService reportLogAppService)
+        public DocsController(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, IAjaxDropdownAppService ajaxDropdownAppService, IReportLogAppService reportLogAppService, ICurrentUser currentUser)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -70,6 +72,7 @@ namespace Dolphin.Freight.Web.Controllers
             _reportLogAppService = reportLogAppService;
 
             ReportLog = new ReportLog.ReportLogDto();
+            _currentUser = currentUser;
         }
 
         [HttpGet]
@@ -248,38 +251,43 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> PackageLabel(string datasource,string reportid)
+        public async Task<IActionResult> PackageLabel(string datasource, Guid oceanExportMblId)
         {
             PackageLabelIndexViewModel InfoViewModel = new PackageLabelIndexViewModel();
-            QueryMblDto queryMbl = new QueryMblDto();
-            queryMbl.MbId = Guid.Parse(reportid);
-            var OceanExportMbl = await _oceanExportMblAppService.GetMblById(queryMbl);
+
+            OceanExportMblDto oceanExportMbl = TempData["PrintData"] is not null ? JsonConvert.DeserializeObject<OceanExportMblDto>(TempData["PrintData"].ToString())
+                                                                                 : await _oceanExportMblAppService.GetAsync(oceanExportMblId);
+
+            if (oceanExportMbl.Mid != oceanExportMblId)
+            {
+                oceanExportMbl = await _oceanExportMblAppService.GetAsync(oceanExportMblId);
+            }
 
             if (datasource == null || datasource == "shipment")
             {
-                InfoViewModel.Office = "分站名稱";//待改
+                InfoViewModel.Office = oceanExportMbl.OfficeName;//待改
                 InfoViewModel.To = "AER LINGUS\r\n6555 W. IMPERIAL HWY\r\nLOS ANGELES, CA 90045, UNITED STATES";//待改
-                InfoViewModel.MblNo = OceanExportMbl.MblNo;
-                InfoViewModel.CarrierBookingNo = OceanExportMbl.SoNo;
+                InfoViewModel.MblNo = oceanExportMbl.MblNo;
+                InfoViewModel.CarrierBookingNo = oceanExportMbl.SoNo;
                 InfoViewModel.Pieces = "1";//待改
-                InfoViewModel.Destination = OceanExportMbl.PodName;//待改
+                InfoViewModel.Destination = oceanExportMbl.PodName;//待改
                 InfoViewModel.TotalPieces = "1";    //待改         
             }
             else if (datasource == "lastmodified")
             {
                 ReportLog = new ReportLogDto();
-                ReportLog.ReportId = Guid.Parse(reportid);
+                ReportLog.ReportId = oceanExportMblId;
                 ReportLog.ReportName = "PackageLabel";
                 var lastmodified = await _reportLogAppService.QueryReportLog(ReportLog);
 
                 if (lastmodified == null)
                 {
-                    InfoViewModel.Office = "分站名稱";//待改
+                    InfoViewModel.Office = oceanExportMbl.OfficeName;//待改
                     InfoViewModel.To = "AER LINGUS\r\n6555 W. IMPERIAL HWY\r\nLOS ANGELES, CA 90045, UNITED STATES";//待改
-                    InfoViewModel.MblNo = OceanExportMbl.MblNo;
-                    InfoViewModel.CarrierBookingNo = OceanExportMbl.SoNo;
+                    InfoViewModel.MblNo = oceanExportMbl.MblNo;
+                    InfoViewModel.CarrierBookingNo = oceanExportMbl.SoNo;
                     InfoViewModel.Pieces = "1";//待改
-                    InfoViewModel.Destination = OceanExportMbl.PodName;//待改
+                    InfoViewModel.Destination = oceanExportMbl.PodName;//待改
                     InfoViewModel.TotalPieces = "1";//待改
                 }
                 else 
@@ -298,18 +306,18 @@ namespace Dolphin.Freight.Web.Controllers
             else if (datasource == "loademptyfieldsfromlastmodified")
             {
                 ReportLog = new ReportLogDto();
-                ReportLog.ReportId = Guid.Parse(reportid);
+                ReportLog.ReportId = oceanExportMblId;
                 ReportLog.ReportName = "PackageLabel";
                 var lastmodified = await _reportLogAppService.QueryReportLog(ReportLog);
 
                 if (lastmodified == null)
                 {
-                    InfoViewModel.Office = "分站名稱";//待改
+                    InfoViewModel.Office = oceanExportMbl.OfficeName;//待改
                     InfoViewModel.To = "AER LINGUS\r\n6555 W. IMPERIAL HWY\r\nLOS ANGELES, CA 90045, UNITED STATES";//待改
-                    InfoViewModel.MblNo = OceanExportMbl.MblNo;
-                    InfoViewModel.CarrierBookingNo = OceanExportMbl.SoNo;
+                    InfoViewModel.MblNo = oceanExportMbl.MblNo;
+                    InfoViewModel.CarrierBookingNo = oceanExportMbl.SoNo;
                     InfoViewModel.Pieces = "1";//待改
-                    InfoViewModel.Destination = OceanExportMbl.PodName;//待改
+                    InfoViewModel.Destination = oceanExportMbl.PodName;//待改
                     InfoViewModel.TotalPieces = "1";//待改
                 }
                 else
@@ -318,18 +326,18 @@ namespace Dolphin.Freight.Web.Controllers
 
                     InfoViewModel.Office = last.Office;//待改
                     InfoViewModel.To = last.To;//待改
-                    InfoViewModel.MblNo = OceanExportMbl.MblNo == null ? last.MblNo : OceanExportMbl.MblNo;
-                    InfoViewModel.CarrierBookingNo = OceanExportMbl.SoNo == null ? last.CarrierBookingNo : OceanExportMbl.SoNo;
+                    InfoViewModel.MblNo = oceanExportMbl.MblNo == null ? last.MblNo : oceanExportMbl.MblNo;
+                    InfoViewModel.CarrierBookingNo = oceanExportMbl.SoNo == null ? last.CarrierBookingNo : oceanExportMbl.SoNo;
                     InfoViewModel.Pieces = last.Pieces;//待改
-                    InfoViewModel.Destination = OceanExportMbl.PodName == null ? last.Destination : OceanExportMbl.PodName;//待改
+                    InfoViewModel.Destination = oceanExportMbl.PodName == null ? last.Destination : oceanExportMbl.PodName;//待改
                     InfoViewModel.TotalPieces = last.TotalPieces;//待改
                 }
             }
 
-            InfoViewModel.ReportId = OceanExportMbl.Id;
+            InfoViewModel.ReportId = oceanExportMbl.Id;
             InfoViewModel.DataSource = datasource;
 
-            TempData["PrintData"] = JsonConvert.SerializeObject(OceanExportMbl);
+            TempData["PrintData"] = JsonConvert.SerializeObject(oceanExportMbl);
 
             return View(InfoViewModel);
         }
