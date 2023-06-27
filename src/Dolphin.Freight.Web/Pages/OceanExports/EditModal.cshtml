@@ -103,11 +103,11 @@
                     pname="Box";
                     break;
                 case 4:
-                    url = '@Url.Action("ProfitSummary", "Docs")';
+                    url = '@Url.Action("ProfitSummary", "Docs", new { oceanExportMblId = Model.Id })';
                     pname = "ProfitSummary";
                     break;
                 case 5:
-                    url = '@Url.Action("ProfitDetail", "Docs")';
+                    url = '@Url.Action("ProfitDetail", "Docs", new { oceanExportMblId = Model.Id })';
                     pname = "ProfitDetail";
                     break;
                 case 6:
@@ -125,7 +125,7 @@
             myWindow.focus()
         }
         function getReportPackageLabel(){
-            myWindow = window.open("@Url.Action("PackageLabel", "Docs")", 'PackageLabel', 'width=1200,height=800');
+            myWindow = window.open("@Url.Action("PackageLabel", "Docs", new { oceanExportMblId = Model.Id })", 'PackageLabel', 'width=1200,height=800');
             myWindow.focus()
         }
 

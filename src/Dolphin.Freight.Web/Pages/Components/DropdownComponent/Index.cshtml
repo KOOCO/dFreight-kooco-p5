@@ -18,7 +18,7 @@
 
 <div class="d-flex mb-5">
     
-<select name="@Model.Name" id="@Model.Id" class="form-select form-control form-select-sm cursor-pointer">
+<select name="@Model.Name" id="@Model.Id" class="form-select form-control form-select-sm cursor-pointer" @Model.Disabled @(Model.IsRequired? "required": "")>
     <option></option>
     @foreach (SelectListItem item in Model.AspItems)
     {
@@ -35,7 +35,6 @@
 
 @if (Model.SelectType == 1)
 {
-
     <button title="" class="btn btn-info " style="color:#ffffff; " type="button" id="btn_@Model.GetFiledContentName().Replace(" ", string.Empty)" data-busy-text="Processing..." data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top" data-bs-content="@Model.GetShowFiledContent()" data-bs-original-title="@L["Title:ReportFormTitle"]" onclick="editTitle('@Model.GetFiledContentName().Replace(" ", string.Empty)','@Model.GetShowFiledContent()')" disabled>
         <i class="fas fa-edit"></i>
     </button>
@@ -64,5 +63,9 @@
 @if (Model.IsRequired)
 {
     <span id="err_@Model.FieldName" class="text-danger" style="display:none;">@L["Message:SelectRequired"]</span>
-
 }
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        initializeDropdownSearch('@Model.Id')
+    })
+</script>

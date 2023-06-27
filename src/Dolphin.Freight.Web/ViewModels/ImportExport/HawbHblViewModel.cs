@@ -66,5 +66,6 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
                 return "";
             }
         }
+        public string Title { get; set; }
     }
 }
