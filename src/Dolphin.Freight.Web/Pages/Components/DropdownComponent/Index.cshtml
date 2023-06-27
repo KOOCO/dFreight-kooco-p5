@@ -18,7 +18,7 @@
 
 <div class="d-flex mb-5">
     
-<select name="@Model.Name" id="@Model.Id" class="form-select form-control form-select-sm cursor-pointer" @Model.Disabled>
+<select name="@Model.Name" id="@Model.Id" class="form-select form-control form-select-sm cursor-pointer" @Model.Disabled @(Model.IsRequired? "required": "")>
     <option></option>
     @foreach (SelectListItem item in Model.AspItems)
     {

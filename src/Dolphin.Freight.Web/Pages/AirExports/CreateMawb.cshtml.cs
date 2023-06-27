@@ -31,6 +31,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         private readonly IPackageUnitAppService _packageUnitAppService;
         private readonly IAirExportMawbAppService _airExportMawbAppService;
         private readonly IAjaxDropdownAppService ajaxDropdownAppService;
+        private readonly IAirExportHawbAppService _airExportHawbAppService;
 
         [BindProperty]
         public CreateMawbViewModel MawbModel { get; set; }
@@ -41,12 +42,16 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public List<SelectListItem> WtValOtherList { get; set; }
         public List<SelectListItem> PackageUnitLookupList { get; set; }
 
+        [BindProperty]
+        public AirExportHawbDto AirExportHawbDto { get; set; }
+
 
         public CreateMawbModel(ITradePartnerAppService tradePartnerAppService,
             ISubstationAppService substationAppService,
             IAirportAppService airportAppService,
             IPackageUnitAppService packageUnitAppService,
-            IAirExportMawbAppService airExportMawbAppService
+            IAirExportMawbAppService airExportMawbAppService,
+            IAirExportHawbAppService airExportHawbAppService
             )
         {
             Logger = NullLogger<CreateMawbModel>.Instance;
@@ -55,6 +60,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             _airportAppService = airportAppService;
             _packageUnitAppService = packageUnitAppService;
             _airExportMawbAppService = airExportMawbAppService;
+            _airExportHawbAppService = airExportHawbAppService;
         }
 
         public async Task OnGetAsync()
@@ -71,6 +77,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                 WtVal = "PPD",
                 Other = "PPD"
             };
+
+            AirExportHawbDto = new AirExportHawbDto();
 
             await FillTradePartnerAsync();
             await FillSubstationAsync();
@@ -95,6 +103,15 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                    ObjectMapper.Map<CreateMawbViewModel, CreateUpdateAirExportMawbDto>(MawbModel)
                 );
             MawbId = inputDto.Id;
+
+            if (AirExportHawbDto is not null && !string.IsNullOrEmpty(AirExportHawbDto.HawbNo))
+            {
+                var addHawb = ObjectMapper.Map<AirExportHawbDto, CreateUpdateAirExportHawbDto>(AirExportHawbDto);
+                addHawb.MawbId = MawbId;
+
+                await _airExportHawbAppService.CreateAsync(addHawb);
+            }
+
             Dictionary<string, Guid> rs = new()
             {
                 { "id", MawbId.Value }
