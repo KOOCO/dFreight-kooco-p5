@@ -54,17 +54,15 @@ namespace Dolphin.Freight.Web.CommonService
 
         public List<SelectItems> PackageUnitLookupList => FillPackageUnitAsync().Result;
 
-        public List<SelectItems> WtValOtherList => FillWtValOther();
+        public List<SelectItems> WtValOtherLookupList => FillWtValOther();
 
-        public List<SelectItems> BlTypeList => FillBlType().Result;
+        public List<SelectItems> BlTypeLookupList => FillBlType().Result;
 
-        public List<SelectItems> OblTypeList => FillOBlType().Result;
+        public List<SelectItems> OblTypeLookupList => FillOBlType().Result;
 
-        public List<SelectItems> TransPortList => FillTransPortType().Result;
+        public List<SelectItems> TransPortLookupList => FillTransPortType().Result;
 
-        public List<SelectItems> SvcTermList => FillSvcTermType().Result;
-
-        public List<SelectItems> PortLookupList => FillPortAsync().Result;
+        public List<SelectItems> PortLookupLookupList => FillPortAsync().Result;
 
         public List<SelectItems> ShipModeLookupList => FillShipModeAsync().Result;
 

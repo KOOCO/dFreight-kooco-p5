@@ -10,12 +10,11 @@ namespace Dolphin.Freight.Web.CommonService
         List<SelectItems> SubstationLookupList { get; }
         List<SelectItems> AirportLookupList { get; }
         List<SelectItems> PackageUnitLookupList { get; }
-        List<SelectItems> WtValOtherList { get; }
-        List<SelectItems> BlTypeList { get; }
-        List<SelectItems> OblTypeList { get; }
-        List<SelectItems> TransPortList { get; }
-        List<SelectItems> SvcTermList { get; }
-        List<SelectItems> PortLookupList { get; }   
+        List<SelectItems> WtValOtherLookupList { get; }
+        List<SelectItems> BlTypeLookupList { get; }
+        List<SelectItems> OblTypeLookupList { get; }
+        List<SelectItems> TransPortLookupList { get; }
+        List<SelectItems> PortLookupLookupList { get; }   
         List<SelectItems> ShipModeLookupList { get; }
         List<SelectItems> FreightTermLookupList { get; }
         List<SelectItems> ReferenceLookupList { get; }
