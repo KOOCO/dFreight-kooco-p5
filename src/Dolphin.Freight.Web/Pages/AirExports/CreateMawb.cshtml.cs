@@ -75,7 +75,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             await FillTradePartnerAsync();
             await FillSubstationAsync();
             await FillAirportAsync();
-            FillWtValOther();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+            FillWtValOther();                                                                                                                                                                                                                                    
             await FillPackageUnitAsync();
 
         }
@@ -171,9 +171,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         {
             public Guid Id { get; set; }
             public string FilingNo { get; set; }
-            [SelectItems(nameof(TradePartnerLookupList))]
             public String MawbCarrierId { get; set; }
-            [SelectItems(nameof(TradePartnerLookupList))]
             public String IssuingCarrierId { get; set; }
             public AWBType AwbType { get; set; }
 
@@ -181,35 +179,25 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             [DataType(DataType.Date)]
             public DateTime AwbDate { get; set; }
             public string ItnNo { get; set; }
-            [SelectItems(nameof(TradePartnerLookupList))]
             public String ShipperId { get; set; }
-            [SelectItems(nameof(TradePartnerLookupList))]
-
             public String ConsigneeId { get; set; }
-            [SelectItems(nameof(TradePartnerLookupList))]
             public String NotifyId { get; set; }
             [DataType(DataType.DateTime)]
             public DateTime? PostDate { get; set; }
             [Required]
-            [SelectItems(nameof(SubstationLookupList))]
             public String OfficeId { get; set; }
 
             public bool IsDirectMaster { get; set; }
-            [SelectItems(nameof(TradePartnerLookupList))]
             public String AwbAcctCarrierId { get; set; }
-            [SelectItems(nameof(TradePartnerLookupList))]
             public String CoLoaderId { get; set; }
-            [SelectItems(nameof(TradePartnerLookupList))]
             public String MawbOperatorId { get; set; }
 
-            [SelectItems(nameof(AirportLookupList))]
             public String DepatureId { get; set; }
             [Required]
             [DataType(DataType.DateTime)]
             public DateTime? DepatureDate { get; set; }
             public string FlightNo { get; set; }
 
-            [SelectItems(nameof(AirportLookupList))]
             public string DestinationId { get; set; }
             public DateTime ArrivalDate { get; set; }
             public string DVCarriage { get; set; }
@@ -217,50 +205,40 @@ namespace Dolphin.Freight.Web.Pages.AirExports
 
             public string Insurance { get; set; }
             public string CarrierSpotNo { get; set; }
-            [SelectItems(nameof(WtValOtherList))]
             public string WtVal { get; set; }
             [Display(Name = "Other")]
-            [SelectItems(nameof(WtValOtherList))]
             public string Other { get; set; }
 
-            [SelectItems(nameof(TradePartnerLookupList))]
             public String DeliveryId { get; set; }
             public string ShippingInfo { get; set; }
             public string ShipperLoad { get; set; }
             public string Sci { get; set; }
 
-            [SelectItems(nameof(AirportLookupList))]
             public String RouteTrans1Id { get; set; }
             [DataType(DataType.DateTime)]
             public DateTime? RouteTrans1ArrivalDate { get; set; }
             [DataType(DataType.DateTime)]
             public DateTime? RouteTrans1DepatureDate { get; set; }
             public string RouteTrans1FlightNo { get; set; }
-            [SelectItems(nameof(TradePartnerLookupList))]
             public String RouteTrans1CarrierId { get; set; }
 
-            [SelectItems(nameof(AirportLookupList))]
             public String RouteTrans2Id { get; set; }
             [DataType(DataType.DateTime)]
             public DateTime? RouteTrans2ArrivalDate { get; set; }
             [DataType(DataType.DateTime)]
             public DateTime? RouteTrans2DepatureDate { get; set; }
             public string RouteTrans2FlightNo { get; set; }
-            [SelectItems(nameof(TradePartnerLookupList))]
             public String RouteTrans2CarrierId { get; set; }
 
-            [SelectItems(nameof(AirportLookupList))]
             public String RouteTrans3Id { get; set; }
             [DataType(DataType.DateTime)]
             public DateTime? RouteTrans3ArrivalDate { get; set; }
             [DataType(DataType.DateTime)]
             public DateTime? RouteTrans3DepatureDate { get; set; }
             public string RouteTrans3FlightNo { get; set; }
-            [SelectItems(nameof(TradePartnerLookupList))]
             public String RouteTrans3CarrierId { get; set; }
 
             public double Package { get; set; }
-            [SelectItems(nameof(PackageUnitLookupList))]
             public String MawbPackageUnitId { get; set; }
             public double BuyingRate { get; set; }
             public RateUnitType? BuyingRateUnitType { get; set; }

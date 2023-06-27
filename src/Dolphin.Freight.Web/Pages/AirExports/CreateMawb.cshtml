@@ -4,9 +4,11 @@
 @using Dolphin.Freight.Web.CommonService;
 @using Dolphin.Freight.Web.Pages.Components;
 @using Microsoft.Extensions.Localization
+@using Volo.Abp.Users;
 @model Dolphin.Freight.Web.Pages.AirExports.CreateMawbModel
 @inject IStringLocalizer<FreightResource> L
 @inject IDropdownService _dropdown;
+@inject ICurrentUser _currentUser;
 @section styles
 {
     <style>
@@ -22,37 +24,6 @@
 
      <script type="text/javascript">
          $(document).ready(function () {
-
-            initializeDropdownSearch("MawbModel_MawbCarrierId");
-            initializeDropdownSearch("MawbModel_IssuingCarrierId");
-            initializeDropdownSearch("MawbModel_ShipperId");
-            initializeDropdownSearch("MawbModel_ConsigneeId");
-
-            initializeDropdownSearch("MawbModel_NotifyId");
-            initializeDropdownSearch("MawbModel_OfficeId");
-            initializeDropdownSearch("MawbModel_AwbAcctCarrierId");
-            initializeDropdownSearch("MawbModel_CoLoaderId");
-            initializeDropdownSearch("MawbModel_MawbOperatorId");
-            initializeDropdownSearch("MawbModel_DepatureId");
-            initializeDropdownSearch("MawbModel_DestinationId");
-            initializeDropdownSearch("MawbModel_DeliveryId");
-            initializeDropdownSearch("MawbModel_RouteTrans1Id");
-            initializeDropdownSearch("MawbModel_RouteTrans1CarrierId");
-            initializeDropdownSearch("MawbModel_RouteTrans2Id");
-
-            initializeDropdownSearch("MawbModel_RouteTrans2Id");
-            initializeDropdownSearch("MawbModel_RouteTrans2CarrierId");
-            initializeDropdownSearch("MawbModel_RouteTrans3Id");
-            initializeDropdownSearch("MawbModel_RouteTrans3CarrierId");
-            initializeDropdownSearch("MawbModel_PackageUnitLookupList");
-            initializeDropdownSearch("MawbModel_BuyingRateUnitType");
-            initializeDropdownSearch("MawbModel_SellingRateUnitType");
-            initializeDropdownSearch("MawbModel_IncotermsType");
-            initializeDropdownSearch("MawbModel_ServiceTermTypeFrom");
-            initializeDropdownSearch("MawbModel_ServiceTermTypeTo");
-            initializeDropdownSearch("MawbModel_DisplayUnit");
-            initializeDropdownSearch("MawbModel_ReasonForCancel");
-            initializeDropdownSearch("MawbModel_BusinessReferredId");
 
             // Awb Cancel Area
             $("#checkboxAwbCancelled").change(function () {
@@ -175,7 +146,7 @@
                             @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.IssuingCarrierId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "IssuingCarrierId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.IssuingCarrierId) })
                         </abp-column>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="MawbModel.AwbType" size="Small"/>
+                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.AwbType", AspItems = Html.GetEnumSelectList(typeof(AWBType)).ToList(), IsRequired = true, IsShowLabel = true, FieldName = "AwbType", ShowFiledContentValue = Convert.ToString(Model.MawbModel.AwbType) })
                         </abp-column>
                     </abp-row>
                     <!--第二列-->
@@ -205,7 +176,7 @@
                             <abp-input asp-for="MawbModel.PostDate" size="Small" type="text" abp-data-datepicker="false" readonly="true" />
                         </abp-column>
                         <abp-column size-md="_3">
-                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.OfficeId", AspItems = _dropdown.SubstationLookupList, IsShowLabel = true, FieldName = "OfficeId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.OfficeId) })
+                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.OfficeId", AspItems = _dropdown.SubstationLookupList, IsRequired = true, IsShowLabel = true, FieldName = "OfficeId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.OfficeId) })
                             <span asp-validation-for="MawbModel.OfficeId" class="text-danger"></span>
                         </abp-column>
                     </abp-row>
@@ -221,7 +192,8 @@
                             @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.CoLoaderId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "CoLoaderId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.CoLoaderId) })
                         </abp-column>
                         <abp-column size-md="_3">
-                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.MawbOperatorId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MawbOperatorId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.MawbOperatorId) })
+                            <label asp-for="@Model.MawbModel.MawbOperatorId" class="form-label">OP</label>
+                            <input class="form-control form-control-sm" type="text" value="@(_currentUser.Name + " " + _currentUser.SurName)" disabled />
                         </abp-column>
                     </abp-row>
                     <!--第五列-->
@@ -270,7 +242,7 @@
                                     Wtval
                                 </abp-column>
                                 <abp-column>
-                                    <abp-radio asp-for="MawbModel.WtVal" inline="true" />
+                                    <abp-radio asp-for="MawbModel.WtVal" asp-items="_dropdown.WtValOtherLookupList" inline="true" />
                                 </abp-column>
                             </abp-row>
                         </abp-column>
@@ -280,7 +252,7 @@
                                     Other
                                 </abp-column>
                                 <abp-column>
-                                    <abp-radio asp-for="MawbModel.Other" inline="true" />
+                                    <abp-radio asp-for="MawbModel.Other" asp-items="_dropdown.WtValOtherLookupList" inline="true" />
                                 </abp-column>
                             </abp-row>
                         </abp-column>
@@ -395,7 +367,7 @@
                                                 <th>Package</th>
                                                 <td><input asp-for="MawbModel.Package" class="form-control" /></td>
                                                 <td colspan="3">
-                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.PackageUnitLookupList", AspItems = _dropdown.PackageUnitLookupList, IsShowLabel = false, FieldName = "MawbPackageUnitId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.MawbPackageUnitId) })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.PackageUnitLookupList", AspItems = _dropdown.PackageUnitLookupList, FieldName = "MawbPackageUnitId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.MawbPackageUnitId) })
                                                 </td>
                                             </tr>
                                             <tr>
@@ -403,10 +375,7 @@
                                                 <td><input asp-for="MawbModel.BuyingRate" class="form-control" /></td>
                                                 <td>per</td>
                                                 <td>
-                                                    <select asp-for="MawbModel.BuyingRateUnitType" asp-items="Html.GetEnumSelectList(typeof(RateUnitType))" class="form-select form-control">
-                                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                    </select>
-                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BuyingRateUnitType", AspItems = Html.GetEnumSelectList(typeof(RateUnitType)).ToList(), IsShowLabel = true, FieldName = "MawbCarrierId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.BuyingRateUnitType) })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BuyingRateUnitType", AspItems = Html.GetEnumSelectList(typeof(RateUnitType)).ToList(), FieldName = "MawbCarrierId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.BuyingRateUnitType) })
                                                 </td>
                                                 <td></td>
                                             </tr>
@@ -415,7 +384,7 @@
                                                 <td><input asp-for="MawbModel.SellingRate" class="form-control" /></td>
                                                 <td>per</td>
                                                 <td>
-                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.SellingRateUnitType", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "SellingRateUnitType", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.SellingRateUnitType) })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.SellingRateUnitType", AspItems = Html.GetEnumSelectList(typeof(RateUnitType)).ToList(), FieldName = "SellingRateUnitType", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.SellingRateUnitType) })
                                                 </td>
                                                 <td></td>
                                             </tr>
@@ -483,16 +452,16 @@
                     <!--第10列-->
                     <abp-row>
                         <abp-column size-md="_3">
-                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.IncotermsType", AspItems = Html.GetEnumSelectList(typeof(IncotermsType)).ToList(), IsShowLabel = true, FieldName = "IncotermsType", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.IncotermsType) })
+                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.IncotermsType", AspItems = Html.GetEnumSelectList(typeof(IncotermsType)).ToList(), IsRequired = true, IsShowLabel = true, FieldName = "IncotermsType", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.IncotermsType) })
                         </abp-column>
                         <abp-column size-md="_3">
-                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeFrom", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, FieldName = "ServiceTermTypeFrom", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.ServiceTermTypeFrom) })
+                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeFrom", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsRequired = true, IsShowLabel = true, FieldName = "ServiceTermTypeFrom", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.ServiceTermTypeFrom) })
                         </abp-column>
                         <abp-column size-md="_3">
-                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeTo", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, FieldName = "ServiceTermTypeTo", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.ServiceTermTypeTo) })
+                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeTo", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsRequired = true, IsShowLabel = true, FieldName = "~", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.ServiceTermTypeTo) })
                         </abp-column>
                         <abp-column size-md="_3">
-                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DisplayUnit", AspItems = Html.GetEnumSelectList(typeof(DisplayUnitType)).ToList(), IsShowLabel = true, FieldName = "DisplayUnit", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.DisplayUnit) })
+                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DisplayUnit", AspItems = Html.GetEnumSelectList(typeof(DisplayUnitType)).ToList(), IsRequired = true, IsShowLabel = true, FieldName = "DisplayUnit", ShowFiledContentValue = Convert.ToString(Model.MawbModel.DisplayUnit) })
                         </abp-column>
                     </abp-row>
                     <!--第11列 Awb取消Checkbox, IsEcom-->
@@ -513,10 +482,10 @@
                             <abp-input asp-for="MawbModel.AwbCancelledOpId" readonly="true" id="AwbCancelledOpId" />
                         </abp-column>
                         <abp-column size-md="_3">
-                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ReasonForCancel", AspItems = Html.GetEnumSelectList(typeof(ReasonForCancelType)).ToList(), IsShowLabel = true, FieldName = "ReasonForCancel", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.ReasonForCancel) })
+                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ReasonForCancel", AspItems = _dropdown.CancelReasonLookupList, IsShowLabel = true, Disabled= "disabled", FieldName = "ReasonForCancel", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.ReasonForCancel) })
                         </abp-column>
                         <abp-column size-md="_3">
-                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BusinessReferredId", AspItems = Html.GetEnumSelectList(typeof(ReasonForCancelType)).ToList(), IsShowLabel = true, FieldName = "BusinessReferredId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.BusinessReferredId) })
+                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BusinessReferredId", AspItems = _dropdown.CancelReasonLookupList, IsShowLabel = true, FieldName = "BusinessReferredId", ShowFiledContentValue = Convert.ToString(Model.MawbModel.BusinessReferredId) })
                         </abp-column>
                     </abp-row>
                 </abp-card-body>
