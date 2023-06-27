@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
 using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
+using Volo.Abp.ObjectMapping;
 
 namespace Dolphin.Freight.Web.Pages.AirImports
 {
@@ -25,9 +26,12 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         private readonly IAirportAppService _airportAppService;
         private readonly IPackageUnitAppService _packageUnitAppService;
         private readonly IAirImportMawbAppService _airImportMawbAppService;
+        private readonly IAirImportHawbAppService _airImportHawbAppService;
 
         [BindProperty]
         public CreateAIMMawbViewModel MawbModel { get; set; }
+        [BindProperty]
+        public AirImportHawbDto HawbModel { get; set; }
 
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
@@ -38,7 +42,8 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             ISubstationAppService substationAppService,
             IAirportAppService airportAppService,
             IPackageUnitAppService packageUnitAppService,
-            IAirImportMawbAppService airImportMawbAppService
+            IAirImportMawbAppService airImportMawbAppService,
+            IAirImportHawbAppService airImportHawbAppService
             )
         {
             _tradePartnerAppService = tradePartnerAppService;
@@ -46,6 +51,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             _airportAppService = airportAppService;
             _packageUnitAppService = packageUnitAppService;
             _airImportMawbAppService = airImportMawbAppService;
+            _airImportHawbAppService = airImportHawbAppService;
         }
 
 
@@ -76,12 +82,17 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             var inputDto = await _airImportMawbAppService.CreateAsync(
                    ObjectMapper.Map<CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>(MawbModel)
                 );
-            // 會看到呼叫URL Request但畫面不會轉過去
-            //return RedirectToPage("/AirImports/EditMawb", new { Id = inputDto.Id });
-
-            //return new ObjectResult(new { id = inputDto.Id });
-
+            
             MawbId = inputDto.Id;
+
+            if (HawbModel is not null && !string.IsNullOrEmpty(HawbModel.HawbNo))
+            {
+                var addHawb = ObjectMapper.Map<AirImportHawbDto, CreateUpdateAirImportHawbDto>(HawbModel);
+                addHawb.MawbId = MawbId;
+
+                await _airImportHawbAppService.CreateAsync(addHawb);
+            }
+
             Dictionary<string, Guid> rs = new()
             {
                 { "id", MawbId.Value }
