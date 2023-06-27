@@ -51,6 +51,9 @@ namespace Dolphin.Freight.Web.Pages.Accounting
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid? MawbId { get; set; }
+        [HiddenInput]
+        [BindProperty(SupportsGet = true)]
+        public Guid? VesselId { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public IList<OceanExportHblDto> OceanExportHblDtos { get; set; }
@@ -127,9 +130,9 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                 case 4:
                     await InitExportBooking();
                     break;
-                //case 5:
-                //    await InitVesselSchedule();
-                //    break;
+                case 5:
+                    await InitVesselSchedule();
+                    break;
                 default:
                     await InitOceanExport();
                     break;
@@ -258,14 +261,14 @@ namespace Dolphin.Freight.Web.Pages.Accounting
 
             backUrl = "/OceanExports/ExportBookings/Edit2?Id=" + Bid;
         }
-        //private async Task InitVesselSchedule() 
-        //{
-        //    QueryInvoiceDto query = new QueryInvoiceDto() { QueryInvoiceType = InvoiceType };
-        //    var oceanExportMbl = new OceanExportMblDto();
-        //    InvoiceMblDto = ObjectMapper.Map<OceanExportMblDto, InvoiceMblDto>(oceanExportMbl);
+        private async Task InitVesselSchedule()
+        {
+            QueryInvoiceDto query = new QueryInvoiceDto() { QueryInvoiceType = InvoiceType };
+            var oceanExportMbl = new OceanExportMblDto();
+            InvoiceMblDto = ObjectMapper.Map<OceanExportMblDto, InvoiceMblDto>(oceanExportMbl);
 
-        //    backUrl = "/OceanExports/VesselSchedules/Edit2?Id=" + VesselScheduleId;
-        //}
+           backUrl = "/OceanExports/VesselSchedules/Edit2?Id=" + VesselId;
+        }
         public async Task<JsonResult> OnPostAsync()
         {
 
