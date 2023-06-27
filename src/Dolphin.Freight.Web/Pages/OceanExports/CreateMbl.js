@@ -218,12 +218,12 @@
     });
 
     $("#saveBtn").click(function () {
-
+        debugger;
         $("#mOfficeId").val($("#OfficeId").val());
-            var OfficeId = $("#mOfficeId").val();
-            if (OfficeId == "" || OfficeId == "00000000-0000-0000-0000-000000000000" ) {
-                $("#err_OfficeId").show();
-            } else {
+            //var OfficeId = $("#mOfficeId").val();
+            //if (OfficeId == "" || OfficeId == "00000000-0000-0000-0000-000000000000" ) {
+            //    $("#err_OfficeId").show();
+            //} else {
                 $("#mMblSalesTypeId").val($("#MblSalesTypeId").val());
                 $("#mPreCarriageVesselNameId").val($("#PreCarriageVesselNameId").val());
                 $("#mSvcTermFromId").val($("#SvcTermFromId").val());
@@ -288,7 +288,7 @@
                 $("#mCancelReason").val($("#CancelReason").val());
 
                 $("#createForm").submit();
-            }
+            /*}*/
         
     });
     $("#saveEditBtn").click(function () {
@@ -376,6 +376,7 @@
         $("#title5").text('<i class="fa fa-anchor"></i>'+$(this).val());
     });
     $('#createForm').on('abp-ajax-success', function (result, rs) {
+        debugger;
         event.preventDefault();
         location.href = 'EditModal?ShowMsg=true&Id=' + rs.responseText.id 
         

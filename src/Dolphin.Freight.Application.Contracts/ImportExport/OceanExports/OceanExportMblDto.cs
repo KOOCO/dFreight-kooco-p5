@@ -33,7 +33,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 發布日期
         /// </summary>
-        public DateTime PostDate { get; set; }
+        public DateTime? PostDate { get; set; }
         /// <summary>
         /// 船公司S/O號碼
         /// </summary>
@@ -277,7 +277,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 放貨日期
         /// </summary>
-        public DateTime MblReleaseDate { get; set; }
+        public DateTime? MblReleaseDate { get; set; }
         /// <summary>
         /// 放貨人ID
         /// </summary>
@@ -290,7 +290,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 裝船日期
         /// </summary>
-        public DateTime OnBoardDate { get; set; }
+        public DateTime? OnBoardDate { get; set; }
         /// <summary>
         /// 子提單號碼
         /// </summary>
@@ -310,7 +310,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 中轉港ETA
         /// </summary>
-        public DateTime Trans1Eta { get; set; }
+        public DateTime? Trans1Eta { get; set; }
         /// <summary>
         /// ECTN號碼 
         /// </summary>
