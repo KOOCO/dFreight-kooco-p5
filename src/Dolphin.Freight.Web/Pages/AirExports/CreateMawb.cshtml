@@ -161,7 +161,9 @@
                             initializeDropdownSearch('AirExportHawbDto_Incoterms');
                             initializeDropdownSearch('AirExportHawbDto_ServiceTermStart');
                             initializeDropdownSearch('AirExportHawbDto_ServiceTermEnd');
-                            initializeDropdownSearch('AirExportHawbDto_Customer');
+                            initializeDropdownSearch('AirExportHawbDto_Customer'); 
+                            initializeDropdownSearch('AirExportHawbDto_DepartureId');
+                            initializeDropdownSearch('AirExportHawbDto_DestinationId');
                         },500)
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
@@ -338,7 +340,7 @@
                             <!--第五列-->
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DepatureId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "DepatureId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.DepatureId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DepatureId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DepatureId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.DepatureId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label asp-for="MawbModel.DepatureDate" class="redStar form-label">Depature Date</label>
@@ -358,7 +360,7 @@
                             <!--第六列-->
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DestinationId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "DestinationId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.DestinationId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DestinationId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DestinationId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.DestinationId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="MawbModel.DVCarriage" size="Small" />

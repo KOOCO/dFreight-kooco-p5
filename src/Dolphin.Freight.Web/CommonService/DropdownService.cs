@@ -2,6 +2,7 @@
 using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
+using Dolphin.Freight.Settings.Countries;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settinngs.ContainerSizes;
 using Dolphin.Freight.Settinngs.PackageUnits;
@@ -28,6 +29,7 @@ namespace Dolphin.Freight.Web.CommonService
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly IPortsManagementAppService _portsManagementAppService;
         private readonly IContainerSizeAppService _containerAppService;
+        private readonly ICountryAppService _countryAppService;
         public DropdownService(ITradePartnerAppService tradePartnerAppService, 
                                ISubstationAppService substationAppService,
                                IAirportAppService airportAppService, 
@@ -35,7 +37,8 @@ namespace Dolphin.Freight.Web.CommonService
                                ISysCodeAppService sysCodeAppService, 
                                IAjaxDropdownAppService ajaxDropdownAppService, 
                                IPortsManagementAppService portsManagementAppService,
-                               IContainerSizeAppService containerAppService)
+                               IContainerSizeAppService containerAppService,
+                               ICountryAppService countryAppService)
         {
             _tradePartnerAppService = tradePartnerAppService;
             _substationAppService = substationAppService;
@@ -45,6 +48,7 @@ namespace Dolphin.Freight.Web.CommonService
             _portsManagementAppService = portsManagementAppService;
             _ajaxDropdownAppService = ajaxDropdownAppService;
             _containerAppService = containerAppService;
+            _countryAppService = countryAppService;
         }
         public List<SelectItems> TradePartnerLookupList => FillTradePartnerAsync().Result;
 
@@ -61,8 +65,6 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> OblTypeLookupList => FillOBlType().Result;
 
         public List<SelectItems> TransPortLookupList => FillTransPortType().Result;
-
-        public List<SelectItems> PortLookupLookupList => FillPortAsync().Result;
 
         public List<SelectItems> ShipModeLookupList => FillShipModeAsync().Result;
 
@@ -81,6 +83,8 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> PortsManagementLookupList => FillPortAsync().Result;
 
         public List<SelectItems> ContainerLookupList => FillContainerAsync().Result;
+
+        public List<SelectItems> CountryLookupList => FillCountryAsync().Result;
 
         public List<SelectItems> PreCarriageVesselLookupList => FillPreCarriageVesselTypeAsync().Result;
 
@@ -286,6 +290,17 @@ namespace Dolphin.Freight.Web.CommonService
                                      .Select(x => new SelectListItem(x.ContainerCode, x.Id.ToString(), false))
                                      .ToList();
         }
+        #endregion
+
+        #region FillCountryAsync()
+
+        private async Task<List<SelectItems>> FillCountryAsync()
+        {
+            var lookup = await _countryAppService.GetListAsync();
+
+            return lookup.Select(x => new SelectListItem(x.CountryName, x.Id.ToString(), false)).ToList();
+        }
+
         #endregion
     }
 }

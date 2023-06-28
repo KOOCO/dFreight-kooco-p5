@@ -71,8 +71,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public virtual UserData OP { get; set; }
 
         public bool SubAgentAwb { get; set; }
-        public string Departure { get; set; }
-        public string Destination { get; set; }
+        public Guid? DepartureId { get; set; }
+        public Guid? DestinationId { get; set; }
         public string CargoPickup { get; set; }
         public string DeliveryTo { get; set; }
         public string CargoType { get; set; }
