@@ -14,7 +14,7 @@ namespace Dolphin.Freight.Web.Pages.Components
     [ViewComponent(Name = "DropdownComponent")]
     public class DropdownComponent : AbpViewComponent
     {
-        public IViewComponentResult Invoke(string Name, List<SelectListItem> AspItems, string Selected, bool IsShowLabel, string fieldName, bool IsRequired, string Disabled, int SelectType, string ShowFiledContentValue)
+        public IViewComponentResult Invoke(string Name, List<SelectListItem> AspItems, string Selected = "", bool IsShowLabel = true, string fieldName = "", bool IsRequired = false, string Disabled= "", int SelectType = 0, string ShowFiledContentValue = "")
         {
             ComponentData componentData = new ComponentData() { IsRequired = IsRequired, IsShowLabel = IsShowLabel, Disabled = Disabled, Name = Name, AspItems = AspItems, Selected = Selected, FieldName = fieldName, SelectType = SelectType, ShowFiledContentValue = ShowFiledContentValue == null ? "" : ShowFiledContentValue };
 

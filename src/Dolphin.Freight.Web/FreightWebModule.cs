@@ -44,6 +44,7 @@ using Wkhtmltopdf.NetCore;
 using AutoMapper;
 using Volo.Abp.Account.Web.ProfileManagement;
 using Volo.Abp.Account.Web.Pages.Account.Custom;
+using Dolphin.Freight.Web.CommonService;
 
 namespace Dolphin.Freight.Web;
 
@@ -95,6 +96,8 @@ public class FreightWebModule : AbpModule
         context.Services.AddWkhtmltopdf();
         ConfigureProfileManagementPage();
         context.Services.AddSameSiteCookiePolicy(); // cookie policy to deal with temporary browser incompatibilities
+
+        context.Services.AddSingleton<IDropdownService, DropdownService>();
         //頁面權限設定
         Configure<RazorPagesOptions>(options =>
         {
