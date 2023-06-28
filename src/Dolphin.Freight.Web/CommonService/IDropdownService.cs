@@ -24,5 +24,6 @@ namespace Dolphin.Freight.Web.CommonService
         List<SelectItems> CargoTypeLookupList { get; }
         List<SelectItems> PortsManagementLookupList { get; }
         List<SelectItems> ContainerLookupList { get; }
+        List<SelectItems> PreCarriageVesselLookupList { get; }
     }
 }

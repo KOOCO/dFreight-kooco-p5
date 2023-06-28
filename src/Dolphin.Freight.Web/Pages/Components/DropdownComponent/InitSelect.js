@@ -27,7 +27,8 @@ function getFormat() {
     return optionFormat;
 }
 
-function initializeDropdownSearch(id) {
+function initializeDropdownSearch(id, selectType) {
+
     var l = abp.localization.getResource('Freight');
     $('#' + id).select2({
         placeholder: l("Dropdown:Empty"),
@@ -35,21 +36,12 @@ function initializeDropdownSearch(id) {
         templateSelection: getFormat(),
         templateResult: getFormat()
     });
+
+    setWidth(id, selectType);
 }
 
-function editTitle(tagId, tagValue) {
-    debugger;
-    var exampleEl = $("#btn_" + tagId);
-    $("#btn_" + tagId).popover('hide');
-
-
-    $("#modal_" + tagId).modal('show');
-}
-function changeTextarea(tagId) {
-
-    var exampleEl = $("#btn_" + tagId);
-    var popover = new bootstrap.Popover(exampleEl, {
-        html: true, // 
-        content: $("#" + tagId).val(),
-    })
+function setWidth(id, selectType) {
+    if (selectType == 1) {
+        $('#' + id).parent().find('.select2-container').attr('style', 'width:calc(100% - 50px) !important')
+    }
 }

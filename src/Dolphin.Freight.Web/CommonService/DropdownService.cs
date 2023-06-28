@@ -82,6 +82,8 @@ namespace Dolphin.Freight.Web.CommonService
 
         public List<SelectItems> ContainerLookupList => FillContainerAsync().Result;
 
+        public List<SelectItems> PreCarriageVesselLookupList => FillPreCarriageVesselTypeAsync().Result;
+
         #region FillTradePartnerAsync()
         private async Task<List<SelectItems>> FillTradePartnerAsync()
         {
@@ -173,6 +175,15 @@ namespace Dolphin.Freight.Web.CommonService
         public async Task<List<SelectItems>> FillSvcTermType()
         {
             var svcTermLookup = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "SvcTermFromId" });
+
+            return svcTermLookup.Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
+                                     .ToList();
+
+        }
+
+        public async Task<List<SelectItems>> FillPreCarriageVesselTypeAsync()
+        {
+            var svcTermLookup = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new QueryDto() { QueryType = "PreCarriageVesselNameId" });
 
             return svcTermLookup.Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
                                      .ToList();
