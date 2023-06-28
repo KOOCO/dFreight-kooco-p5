@@ -215,6 +215,21 @@
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
+                        setTimeout(() => {
+                            initializeDropdownSearch('HawbModel_QuotationId');
+                            initializeDropdownSearch('HawbModel_ShipperId');
+                            initializeDropdownSearch('HawbModel_ConsigneeId');
+                            initializeDropdownSearch('HawbModel_Incoterms');
+                            initializeDropdownSearch('HawbModel_ServiceTermStart');
+                            initializeDropdownSearch('HawbModel_ServiceTermTo');
+                            initializeDropdownSearch('HawbModel_Trucker');
+                            initializeDropdownSearch('HawbModel_Freight');
+                            initializeDropdownSearch('HawbModel_FreightLocation');
+                            initializeDropdownSearch('HawbModel_FinalDestination');
+                            initializeDropdownSearch('HawbModel_DeliveryLocation');
+                            initializeDropdownSearch('HawbModel_SalesType');
+                            initializeDropdownSearch('HawbModel_PackageUnit');
+                        }, 1000)
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
                     })
