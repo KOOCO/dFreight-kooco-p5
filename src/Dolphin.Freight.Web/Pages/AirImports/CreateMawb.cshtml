@@ -357,7 +357,7 @@
                                     <span asp-validation-for="MawbModel.ArrivalDate" class="text-danger"></span>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.FreightLocationId", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = "FreightLocationId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.FreightLocationId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.FreightLocationId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "FreightLocationId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.FreightLocationId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="MawbModel.StorageStartDate" size="Small" />
@@ -521,13 +521,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeFrom", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsRequired = true, IsShowLabel = true, FieldName = "ServiceTermTypeFrom", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.ServiceTermTypeFrom) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeTo", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsRequired = true, IsShowLabel = true, FieldName = "~", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.ServiceTermTypeTo) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeTo", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsRequired = true, IsShowLabel = true, FieldName = "ServiceTermTypeTo", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.ServiceTermTypeTo) })
                                 </abp-column>
                             </abp-row>
                             <!--第10列 Awb取消Checkbox, IsEcom-->
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BusinessReferredId", AspItems = _dropdown.CancelReasonLookupList, IsShowLabel = true, FieldName = "BusinessReferredId", ShowFiledContentValue = Convert.ToString(Model.MawbModel.BusinessReferredId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BusinessReferredId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "BusinessReferredId", ShowFiledContentValue = Convert.ToString(Model.MawbModel.BusinessReferredId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DisplayUnit", AspItems = Html.GetEnumSelectList(typeof(DisplayUnitType)).ToList(), IsRequired = true, IsShowLabel = true, FieldName = "DisplayUnit", ShowFiledContentValue = Convert.ToString(Model.MawbModel.DisplayUnit) })
