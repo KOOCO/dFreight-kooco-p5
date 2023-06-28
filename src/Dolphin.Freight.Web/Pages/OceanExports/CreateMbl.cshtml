@@ -344,7 +344,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.FreightTermId", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = "FreightTermId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.FreightTermId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.ShipModeId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "ShipModeId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.ShipModeId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.ShipModeId", AspItems = _dropdown.ShipModeLookupList, IsShowLabel = true, FieldName = "ShipModeId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.ShipModeId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.SvcTermFromId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "SvcTermFromId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.SvcTermFromId) })
