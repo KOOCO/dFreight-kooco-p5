@@ -157,7 +157,7 @@ namespace Dolphin.Freight.Web.Controllers
                                                                                 ? JsonConvert.DeserializeObject<OceanExportMblDto>(TempData["PrintData"].ToString())
                                                                                 : await _oceanExportMblAppService.GetAsync(oceanExportMblId);
 
-            if(oceanExportMbl.Id != oceanExportMblId)
+            if(oceanExportMbl.Id != oceanExportMblId && oceanExportMblId != Guid.Empty)
             {
                 oceanExportMbl = await _oceanExportMblAppService.GetAsync(oceanExportMblId);
             }
