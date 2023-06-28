@@ -1,4 +1,5 @@
 ﻿@page
+@using Dolphin.Freight.Web.CommonService;
 @using Volo.Abp.Users
 @using Dolphin.Freight.AirExports
 @using Dolphin.Freight.Localization
@@ -8,6 +9,7 @@
 @model Dolphin.Freight.Web.Pages.AirExports.EditModalModel
 @inject IStringLocalizer<FreightResource> L
 @inject ICurrentUser CurrentUser
+@inject IDropdownService _dropdown;
 @section styles
     {
     <style>
@@ -24,19 +26,6 @@
     <abp-script src="/Pages/AirExports/EditModel.js" />
     <script type="text/javascript">
         $(document).ready(function () {
-
-            initializeDropdownSearch('AirExportMawbDto_MawbCarrierId');
-            initializeDropdownSearch('AirExportMawbDto_IssuingCarrierId');
-            initializeDropdownSearch('AirExportMawbDto_ShipperId');
-            initializeDropdownSearch('AirExportMawbDto_ConsigneeId');
-            initializeDropdownSearch('AirExportMawbDto_NotifyId');
-            initializeDropdownSearch('AirExportMawbDto_DestinationId');
-            initializeDropdownSearch('AirExportMawbDto_CoLoaderId');
-            initializeDropdownSearch('AirExportMawbDto_DeliveryId');
-            initializeDropdownSearch('AirExportMawbDto_RouteTrans1CarrierId');
-            initializeDropdownSearch('AirExportMawbDto_RouteTrans2CarrierId');
-            initializeDropdownSearch('AirExportMawbDto_RouteTrans3CarrierId');
-            initializeDropdownSearch('AirExportMawbDto_DepatureId');
 
             // Awb Cancel Area
             $("#checkboxAwbCancelled").change(function () {
@@ -549,7 +538,7 @@
                             <!--第五列-->
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DepatureId", AspItems = Model.AirportLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.DepatureId.ToString(), IsShowLabel = true, FieldName = @L["DepatureId"] })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DepatureId", AspItems = _dropdown.PortsManagementLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.DepatureId.ToString(), IsShowLabel = true, FieldName = @L["DepatureId"] })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label asp-for="@Model.AirExportMawbDto.DepatureDate" class="form-label">Depature Date</label>
@@ -569,7 +558,7 @@
                             <!--第六列-->
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DestinationId", AspItems = Model.CountryName, ShowFiledContentValue = @Model.AirExportMawbDto.DestinationId.ToString(), IsShowLabel = true, FieldName = @L["Destination"] })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DestinationId", AspItems = _dropdown.PortsManagementLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.DestinationId.ToString(), IsShowLabel = true, FieldName = @L["Destination"] })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="@Model.AirExportMawbDto.DVCarriage" size="Small" />
