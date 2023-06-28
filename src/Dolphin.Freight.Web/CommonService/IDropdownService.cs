@@ -14,7 +14,6 @@ namespace Dolphin.Freight.Web.CommonService
         List<SelectItems> BlTypeLookupList { get; }
         List<SelectItems> OblTypeLookupList { get; }
         List<SelectItems> TransPortLookupList { get; }
-        List<SelectItems> PortLookupLookupList { get; }   
         List<SelectItems> ShipModeLookupList { get; }
         List<SelectItems> FreightTermLookupList { get; }
         List<SelectItems> ReferenceLookupList { get; }
@@ -24,5 +23,6 @@ namespace Dolphin.Freight.Web.CommonService
         List<SelectItems> CargoTypeLookupList { get; }
         List<SelectItems> PortsManagementLookupList { get; }
         List<SelectItems> ContainerLookupList { get; }
+        List<SelectItems> CountryLookupList { get; }    
     }
 }
