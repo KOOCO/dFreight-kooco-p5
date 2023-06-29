@@ -149,6 +149,8 @@
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblShipperId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["HblShipperId"], SelectType = 1, ShowFiledContentValue = Model.OceanExportHbl.HblShipperId.ToString() })
+                <input type="hidden" name="OceanExportHbl.HblShipperId" id="OceanExportHbl_ShipperId" value="@Model.OceanExportHbl.HblShipperId" />
+                <input type="hidden" name="OceanExportHbl.HblShipperName" id="OceanExportHbl_ShipperName" value="@Model.OceanExportHbl.HblShipperName" />
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblCustomerId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblCustomerId", SelectType = 0, ShowFiledContentValue = Model.OceanExportHbl.HblCustomerId.ToString() })

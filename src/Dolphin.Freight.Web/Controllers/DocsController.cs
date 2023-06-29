@@ -48,6 +48,7 @@ using Volo.Abp.Users;
 using Wkhtmltopdf.NetCore;
 using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Dolphin.Freight.Web.CommonService;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -60,11 +61,13 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly IReportLogAppService _reportLogAppService;
         private readonly ICurrentUser _currentUser;
+        private readonly IDropdownService _dropdownService;
+
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
         public DocsController(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, IAjaxDropdownAppService ajaxDropdownAppService, IReportLogAppService reportLogAppService,
-          ICurrentUser currentUser)
+          ICurrentUser currentUser, IDropdownService dropdownService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -73,6 +76,7 @@ namespace Dolphin.Freight.Web.Controllers
             _ajaxDropdownAppService = ajaxDropdownAppService;
             _reportLogAppService = reportLogAppService;
             _currentUser = currentUser;
+            _dropdownService = dropdownService;
 
             ReportLog = new ReportLog.ReportLogDto();
         }
@@ -1557,25 +1561,30 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/Pdf/OBL/Default.cshtml", InfoModel);
         }
 
-        public IActionResult Hbl()
+        public async Task<IActionResult> Hbl(Guid id)
         {
             HblIndexViewModel InfoViewModel = new HblIndexViewModel();
 
-            var OceanExportMbl = new CreateUpdateOceanExportMblDto();
+            var Ocean = await _oceanExportHblAppService.GetHblCardById(id);
+
+            //var OceanExportMbl = new CreateUpdateOceanExportMblDto();
 
             #region
             //https://eval-asia.gofreight.co/ocean/export/shipment/OEX-23030002/?hbl=47120&hide_mbl=false
 
-            InfoViewModel.Header_Consignee = "CHIYODA";
-            InfoViewModel.Header_Notify = "231423485U239";
-            InfoViewModel.Header_Shipper = "123";
-            InfoViewModel.Office = "Dolphin Logistics Taipei Office";
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
+
+            InfoViewModel.Header_Consignee = tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblConsigneeId)).Select(s => s.Text).ToArray()[0];
+            InfoViewModel.Header_Notify = tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblNotifyId)).Select(s => s.Text).ToArray()[0];
+            InfoViewModel.Header_Shipper = tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblShipperId)).Select(s => s.Text).ToArray()[0];
+            InfoViewModel.Office = Ocean.OfficeName;
             InfoViewModel.Address = "77792 COBB CAPE" + Environment.NewLine + "TRISTANCHESTER, NE 47478";
             InfoViewModel.Tel = "08417606080";
             InfoViewModel.Fax = "08417606080";
             InfoViewModel.OTI_No = "123456N";
             InfoViewModel.SHIPPER_EXPORTER = "123" + Environment.NewLine + "3 FL., NO. 215, SEC. 1, FU XING S. RD., TAIPEI, TAIWAN" + Environment.NewLine + "TEL : 02-87721111" + Environment.NewLine + "FAX : 02-87732222" + Environment.NewLine + "TAIWAN";
-            InfoViewModel.CONSIGNEE = "CHIYODA";
+            InfoViewModel.CONSIGNEE = tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblConsigneeId)).Select(s => s.Text).ToArray()[0];
             InfoViewModel.NOTIFY_PARTY = "1231231" + Environment.NewLine + "ATTN: SDSDSD";
             InfoViewModel.DOCUMENT_NO = "CMS/E/HPG118814";
             InfoViewModel.BL_NO = "SINHPH23030002";
@@ -1583,8 +1592,8 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.FORWARDING_AGENT_REFERENCES = "EVA AIRWAYS CORPORATION (BR)" + Environment.NewLine + "200 NORTH SEPULVEDA BLVD., SUITE 1600" + Environment.NewLine + "UNITED STATES";
             InfoViewModel.domestic_instructions = "CARGO AIR SERVICES (DD)";
             InfoViewModel.EXPORTING_CARRIER = "XIN WEN ZHOU 149E";
-            InfoViewModel.PORT_OF_LOADING = "SINGAPORE (SINGAPORE)";
-            InfoViewModel.PORT_OF_DISCHARGE = "HAIPHONG (VIETNAM)";
+            InfoViewModel.PORT_OF_LOADING = portManagement.Where(w => w.Value == Convert.ToString(Ocean.PolId)).Select(s => s.Text).ToArray()[0];
+            InfoViewModel.PORT_OF_DISCHARGE = portManagement.Where(w => w.Value == Convert.ToString(Ocean.PodId)).Select(s => s.Text).ToArray()[0]; ;
             InfoViewModel.CARGO_INSURANCE_THRU_CARRIER = "True";
 
             InfoViewModel.MARKS_AND_NUMBERS = " /  / " + Environment.NewLine + Environment.NewLine + Environment.NewLine + "SHIEHN HAIPHONG PTE";

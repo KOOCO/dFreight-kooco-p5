@@ -222,7 +222,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         {
             if (await _repository.AnyAsync(f => f.Id == Id))
             {
-                var data = await _repository.GetAsync(f => f.Id == Id);
+                var data = await _repository.GetAsync(f => f.Id == Id, true);
                 var retVal = ObjectMapper.Map<OceanExportHbl, OceanExportHblDto>(data);
                 return retVal;
             }
