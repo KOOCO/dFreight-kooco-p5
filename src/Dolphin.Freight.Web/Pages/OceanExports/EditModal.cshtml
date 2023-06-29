@@ -31,9 +31,9 @@
             if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
             var isLocked = '@Model.OceanExportMbl.IsLocked';
             if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
-            $("#addHBtn").click(function () {
-                addHBtn();
-            });
+            //$("#addHBtn").click(function () {
+            //    addHBtn();
+            //});
             //InitMemoTable('MblMemo');
             //InitMemoTable('HblMemo');
             $('#editForm').on('abp-ajax-success', function (result, rs) {
