@@ -46,6 +46,8 @@
                 }
             });
 
+
+
             // Calculate Weight Kg to Lb
             $("#GrossWeightKg").on('keyup', function () {
                 $("#GrossWeightLb").val(Math.round($("#GrossWeightKg").val() * 2.2046226218 * 100) / 100);
@@ -98,6 +100,9 @@
             //$('#hblCard').removeClass('d-none');
             //$(this).addClass('disabled');
         })
+
+        
+
 
         $('#addCommodityBtn').on('click', function () {
             addCommodityTr();
@@ -278,6 +283,12 @@
                             initializeDropdownSearch('AirExportHawbDto_Trucker');
                             initializeDropdownSearch('AirExportHawbDto_Customer');
                             initializeDropdownSearch('AirExportHawbDto_ActualShippedr');
+                            initializeDropdownSearch('AirExportHawbDto_DepartureId');
+                            initializeDropdownSearch('AirExportHawbDto_DestinationId');
+                            initializeDropdownSearch('AirExportHawbDto_CargoType');
+                            initializeDropdownSearch('AirExportHawbDto_SalesType');
+                            initializeDropdownSearch('AirExportHawbDto_ShipType');
+                            initializeDropdownSearch('AirExportHawbDto_ReasonForCancel');
                         }, 1000);
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
@@ -357,6 +368,8 @@
         function alertConfirmation2() {
             $('#saveBtn').click();
         }
+
+        
 
     </script>
 }
@@ -506,14 +519,15 @@
                                     <abp-input asp-for="@Model.AirExportMawbDto.PostDate" size="Small" type="text" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label asp-for="@Model.AirExportMawbDto.OfficeId" class="redStar form-label">Office</label>
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.OfficeId", AspItems = Model.SubstationLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.OfficeId.ToString(), IsShowLabel = true, FieldName = "Office" })
+                                   @* <label asp-for="@Model.AirExportMawbDto.OfficeId" class="redStar form-label">Office</label>
                                     <select asp-for="@Model.AirExportMawbDto.OfficeId" asp-items="@Model.SubstationLookupList" class="form-select-sm form-control">
                                         <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                                         @foreach (var substation in Model.SubstationLookupList)
                                         {
                                             <option value=@substation.Value>@substation.Text</option>
                                         }
-                                    </select>
+                                    </select>*@
                                     <span asp-validation-for="@Model.AirExportMawbDto.OfficeId" class="text-danger"></span>
                                 </abp-column>
                             </abp-row>
@@ -523,9 +537,10 @@
                                     <abp-input asp-for="@Model.AirExportMawbDto.IsDirectMaster" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-select asp-for="@Model.AirExportMawbDto.AwbAcctCarrierId" asp-items="@Model.TradePartnerLookupList" size="Small">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.AwbAcctCarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.AwbAcctCarrierId.ToString(), IsShowLabel = true, FieldName = "AwbAcctCarrierId" })
+                                   @* <abp-select asp-for="@Model.AirExportMawbDto.AwbAcctCarrierId" asp-items="@Model.TradePartnerLookupList" size="Small">
                                         <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                    </abp-select>
+                                    </abp-select>*@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.CoLoaderId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.CoLoaderId.ToString(), IsShowLabel = true, FieldName = @L["CoLoaderId"] })
@@ -858,9 +873,10 @@
                                     </abp-select>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-select asp-for="@Model.AirExportMawbDto.BusinessReferredId" asp-items="@Model.TradePartnerLookupList" size="Small">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.BusinessReferredId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.BusinessReferredId.ToString(), IsShowLabel = true, FieldName = "BusinessReferredId" })
+                                   @* <abp-select asp-for="@Model.AirExportMawbDto.BusinessReferredId" asp-items="@Model.TradePartnerLookupList" size="Small">
                                         <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                    </abp-select>
+                                    </abp-select>*@
                                 </abp-column>
                             </abp-row>
                             <abp-row class="mt-4">
