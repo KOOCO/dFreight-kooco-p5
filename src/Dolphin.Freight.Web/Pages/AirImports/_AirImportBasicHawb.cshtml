@@ -207,7 +207,8 @@
                 <abp-input asp-for="@Model.HawbModel.FrtRelease" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.ReleasedBy" />
+                <label asp-for="@Model.HawbModel.ReleasedBy" class="form-label">Released By</label>
+                <input class="form-control form-control-sm" name="HawbModel.ReleasedBy" type="text" value="@(_currentUser.Name + " " + _currentUser.SurName)" disabled />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="@Model.HawbModel.CargoReleasedto" />
