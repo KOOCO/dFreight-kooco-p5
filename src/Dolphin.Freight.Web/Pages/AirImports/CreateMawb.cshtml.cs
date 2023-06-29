@@ -212,7 +212,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             [SelectItems(nameof(TradePartnerLookupList))]
             public String SalesId { get; set; }
 
-            [SelectItems(nameof(AirportLookupList))]
+            [SelectItems(nameof(TradePartnerLookupList))]
             public String DepatureId { get; set; }
 
             [DataType(DataType.DateTime)]
@@ -272,7 +272,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             
             public string FPOEDestination { get; set; }
 
-            [SelectItems(nameof(AirportLookupList))]
+            [SelectItems(nameof(TradePartnerLookupList))]
             public String DestinationId { get; set; }
 
             [Required]

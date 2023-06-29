@@ -99,6 +99,13 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 收貨地(POR)ID
         /// </summary>
+        public Guid? PolId { get; set; }
+        /// <summary>
+        /// 收貨地(POR) ETD
+        /// </summary>
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        public DateTime? PolEtd { get; set; }
         public Guid? PorId { get; set; }
         /// <summary>
         /// 收貨地(POR) ETD

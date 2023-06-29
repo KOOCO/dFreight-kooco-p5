@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.ImportExport.AirExports;
+using Dolphin.Freight.Settings.PortsManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,29 +22,32 @@ namespace Dolphin.Freight.ImportExport.AirImports
     {
         private IRepository<AirImportMawb, Guid> _repository;
         private IRepository<Airport, Guid> _airportRepository;
+        private IRepository<PortsManagement, Guid> _portsManagementAppService;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
 
         public AirImportMawbAppService(
             IRepository<AirImportMawb, Guid> repository,
             IRepository<Airport, Guid> airportRepository,
-            IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository
+            IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
+            IRepository<PortsManagement, Guid> portsManagementAppService
             ) : base(repository)
         {
             _repository = repository;
             _airportRepository = airportRepository;
             _tradePartnerRepository = tradePartnerRepository;
+            _portsManagementAppService = portsManagementAppService;
         }
 
         public override async Task<PagedResultDto<AirImportMawbDto>> GetListAsync(PagedAndSortedResultRequestDto input)
         {
-            // airport
-            Dictionary<Guid, string> airportDictionary = new Dictionary<Guid, string>();
-            var airportList = await _airportRepository.GetListAsync();
-            if (null != airportList) 
+            // port management
+            Dictionary<Guid, string> portManagementDictionary = new Dictionary<Guid, string>();
+            var portManagementList = await _portsManagementAppService.GetListAsync();
+            if (null != portManagementList) 
             {
-                foreach (var airport in airportList)
+                foreach (var portsManagement in portManagementList)
                 {
-                    airportDictionary.Add(airport.Id, airport.AirportName);
+                    portManagementDictionary.Add(portsManagement.Id, portsManagement.PortName);
                 }
             }
 
@@ -72,7 +76,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     var airImportMawbDto = ObjectMapper.Map<AirImportMawb, AirImportMawbDto>(airImportMawb);
                     if (airImportMawb.DepatureId != null)
                     {
-                        airImportMawbDto.DepatureAirportName = airportDictionary[airImportMawb.DepatureId.Value];
+                        airImportMawbDto.DepatureAirportName = portManagementDictionary[airImportMawb.DepatureId.Value];
                     }
                     else
                     {
@@ -80,7 +84,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     }
                     if (airImportMawb.DestinationId != null)
                     {
-                        airImportMawbDto.DestinationAirportName = airportDictionary[airImportMawb.DestinationId.Value];
+                        airImportMawbDto.DestinationAirportName = portManagementDictionary[airImportMawb.DestinationId.Value];
                     }
                     else
                     {

@@ -2,6 +2,7 @@
 using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
+using Dolphin.Freight.Settings.Countries;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settinngs.ContainerSizes;
 using Dolphin.Freight.Settinngs.PackageUnits;
@@ -28,6 +29,7 @@ namespace Dolphin.Freight.Web.CommonService
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly IPortsManagementAppService _portsManagementAppService;
         private readonly IContainerSizeAppService _containerAppService;
+        private readonly ICountryAppService _countryAppService;
         public DropdownService(ITradePartnerAppService tradePartnerAppService, 
                                ISubstationAppService substationAppService,
                                IAirportAppService airportAppService, 
@@ -35,7 +37,8 @@ namespace Dolphin.Freight.Web.CommonService
                                ISysCodeAppService sysCodeAppService, 
                                IAjaxDropdownAppService ajaxDropdownAppService, 
                                IPortsManagementAppService portsManagementAppService,
-                               IContainerSizeAppService containerAppService)
+                               IContainerSizeAppService containerAppService,
+                               ICountryAppService countryAppService)
         {
             _tradePartnerAppService = tradePartnerAppService;
             _substationAppService = substationAppService;
@@ -45,6 +48,7 @@ namespace Dolphin.Freight.Web.CommonService
             _portsManagementAppService = portsManagementAppService;
             _ajaxDropdownAppService = ajaxDropdownAppService;
             _containerAppService = containerAppService;
+            _countryAppService = countryAppService;
         }
         public List<SelectItems> TradePartnerLookupList => FillTradePartnerAsync().Result;
 
@@ -58,11 +62,11 @@ namespace Dolphin.Freight.Web.CommonService
 
         public List<SelectItems> BlTypeLookupList => FillBlType().Result;
 
+        public List<SelectItems> SalesTypeLookupList => FillMblSalesType().Result;
+
         public List<SelectItems> OblTypeLookupList => FillOBlType().Result;
 
         public List<SelectItems> TransPortLookupList => FillTransPortType().Result;
-
-        public List<SelectItems> PortLookupLookupList => FillPortAsync().Result;
 
         public List<SelectItems> ShipModeLookupList => FillShipModeAsync().Result;
 
@@ -81,6 +85,10 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> PortsManagementLookupList => FillPortAsync().Result;
 
         public List<SelectItems> ContainerLookupList => FillContainerAsync().Result;
+
+        public List<SelectItems> CountryLookupList => FillCountryAsync().Result;
+
+        public List<SelectItems> PreCarriageVesselLookupList => FillPreCarriageVesselTypeAsync().Result;
 
         #region FillTradePartnerAsync()
         private async Task<List<SelectItems>> FillTradePartnerAsync()
@@ -170,9 +178,27 @@ namespace Dolphin.Freight.Web.CommonService
 
         }
 
+        public async Task<List<SelectItems>> FillMblSalesType()
+        {
+            var salesTypeLookup = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "MblSalesTypeId" });
+
+            return salesTypeLookup.Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
+                                     .ToList();
+
+        }
+
         public async Task<List<SelectItems>> FillSvcTermType()
         {
             var svcTermLookup = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "SvcTermFromId" });
+
+            return svcTermLookup.Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
+                                     .ToList();
+
+        }
+
+        public async Task<List<SelectItems>> FillPreCarriageVesselTypeAsync()
+        {
+            var svcTermLookup = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new QueryDto() { QueryType = "PreCarriageVesselNameId" });
 
             return svcTermLookup.Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
                                      .ToList();
@@ -251,7 +277,7 @@ namespace Dolphin.Freight.Web.CommonService
             var lookUp = await _ajaxDropdownAppService.GetSysCodeDtosByTypeAsync(new QueryDto() { QueryType = "CargoTypeId" });
 
             return lookUp
-                        .Select(x => new SelectListItem(x.CodeValue, x.Id.ToString(), false))
+                        .Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
                         .ToList();
         }
         #endregion
@@ -275,6 +301,17 @@ namespace Dolphin.Freight.Web.CommonService
                                      .Select(x => new SelectListItem(x.ContainerCode, x.Id.ToString(), false))
                                      .ToList();
         }
+        #endregion
+
+        #region FillCountryAsync()
+
+        private async Task<List<SelectItems>> FillCountryAsync()
+        {
+            var lookup = await _countryAppService.GetListAsync();
+
+            return lookup.Select(x => new SelectListItem(x.CountryName, x.Id.ToString(), false)).ToList();
+        }
+
         #endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿@using Dolphin.Freight.AirExports;
+@using Dolphin.Freight.AirImports;
 @using Dolphin.Freight.Web.Pages.Components;
 @using Microsoft.AspNetCore.Mvc.Localization;
 @using Microsoft.Extensions.Localization;
@@ -110,7 +111,8 @@
                 <input class="form-control form-control-sm" name="HawbModel.OPId" type="text" value="@(_currentUser.Name + " " + _currentUser.SurName)" disabled />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.FreightLocation" />
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.FreightLocation", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["FreightLocation"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.FreightLocation) })
+                @*<abp-input asp-for="@Model.HawbModel.FreightLocation" />*@
             </abp-column>
         </abp-row>
 
@@ -118,13 +120,15 @@
         <abp-row>
 
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.FinalDestination" />
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.FinalDestination", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["FinalDestination"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.FinalDestination) })
+                @*<abp-input asp-for="@Model.HawbModel.FinalDestination" />*@
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="@Model.HawbModel.FinalETA" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.DeliveryLocation" />
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.DeliveryLocation", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["DeliveryLocation"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.DeliveryLocation) })
+                @*<abp-input asp-for="@Model.HawbModel.DeliveryLocation" />*@
             </abp-column>
             <abp-column size-md="_3">
                 
@@ -141,9 +145,10 @@
                 <abp-input asp-for="@Model.HawbModel.StorageStartDate" />
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.Freight", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = "Freight", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.HawbModel.Freight) })
-                 </abp-column>
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.Freight", AspItems = Html.GetEnumSelectList(typeof(FreightType)).ToList(), IsShowLabel = true, FieldName = "Freight", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.HawbModel.Freight) })
+            </abp-column>
             <abp-column size-md="_3">
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.SalesType", AspItems = Html.GetEnumSelectList(typeof(SalesType)).ToList(), IsShowLabel = true, FieldName = "SalesType", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.HawbModel.SalesType) })
                 <abp-input asp-for="@Model.HawbModel.SalesType" />
             </abp-column>
         </abp-row>
@@ -202,7 +207,8 @@
                 <abp-input asp-for="@Model.HawbModel.FrtRelease" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.ReleasedBy" />
+                <label asp-for="@Model.HawbModel.ReleasedBy" class="form-label">Released By</label>
+                <input class="form-control form-control-sm" name="HawbModel.ReleasedBy" type="text" value="@(_currentUser.Name + " " + _currentUser.SurName)" disabled />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="@Model.HawbModel.CargoReleasedto" />

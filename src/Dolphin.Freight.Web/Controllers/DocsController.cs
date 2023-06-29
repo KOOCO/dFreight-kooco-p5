@@ -44,9 +44,11 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc;
+using Volo.Abp.Users;
 using Wkhtmltopdf.NetCore;
 using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Dolphin.Freight.Web.CommonService;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -59,10 +61,13 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly IReportLogAppService _reportLogAppService;
         private readonly ICurrentUser _currentUser;
+        private readonly IDropdownService _dropdownService;
+
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
-        public DocsController(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, IAjaxDropdownAppService ajaxDropdownAppService, IReportLogAppService reportLogAppService, ICurrentUser currentUser)
+        public DocsController(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, IAjaxDropdownAppService ajaxDropdownAppService, IReportLogAppService reportLogAppService,
+          ICurrentUser currentUser, IDropdownService dropdownService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -70,9 +75,10 @@ namespace Dolphin.Freight.Web.Controllers
             _generatePdf = generatePdf;
             _ajaxDropdownAppService = ajaxDropdownAppService;
             _reportLogAppService = reportLogAppService;
+            _currentUser = currentUser;
+            _dropdownService = dropdownService;
 
             ReportLog = new ReportLog.ReportLogDto();
-            _currentUser = currentUser;
         }
 
         [HttpGet]
@@ -147,43 +153,46 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Telexrelease()
+        public async Task<IActionResult> Telexrelease(Guid oceanExportMblId)
         {
             TelexreleaseIndexViewModel InfoViewModel = new TelexreleaseIndexViewModel();
 
-            var OceanExportMbl = new CreateUpdateOceanExportMblDto();
-            OceanExportMbl = JsonConvert.DeserializeObject<CreateUpdateOceanExportMblDto>(TempData["PrintData"].ToString());
+            OceanExportMblDto oceanExportMbl = TempData["PrintData"] is not null
+                                                                                ? JsonConvert.DeserializeObject<OceanExportMblDto>(TempData["PrintData"].ToString())
+                                                                                : await _oceanExportMblAppService.GetAsync(oceanExportMblId);
 
-            #region
-            InfoViewModel.Office = "分站名稱";
+            if(oceanExportMbl.Id != oceanExportMblId && oceanExportMblId != Guid.Empty)
+            {
+                oceanExportMbl = await _oceanExportMblAppService.GetAsync(oceanExportMblId);
+            }
+
+            InfoViewModel.Office = oceanExportMbl.OfficeName;
             InfoViewModel.Address = "地址";
             InfoViewModel.Tel = "電話";
             InfoViewModel.Fax = "傳真";
-            InfoViewModel.Email = "it@dolphin-gp.com";
-            InfoViewModel.Email_U = InfoViewModel.Email.ToUpper();
-            InfoViewModel.FirstName = "萬泰";
-            InfoViewModel.LastName = "資訊部";
+            InfoViewModel.Email = _currentUser.Email;
+            InfoViewModel.Email_U = _currentUser.Email.ToUpper();
+            InfoViewModel.FirstName = _currentUser.Name;
+            InfoViewModel.LastName = _currentUser.SurName;
             InfoViewModel.DateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
             InfoViewModel.Date_M = DateTime.Now.ToString("MMMM dd, yyyy", new CultureInfo("en-US"));
-            InfoViewModel.To = OceanExportMbl.MblCarrierName == null ? "" : OceanExportMbl.MblCarrierName;
+            InfoViewModel.To = Convert.ToString(oceanExportMbl.OfficeName);
             InfoViewModel.Attn = "EXPORT FREIGHT CASHER";
             InfoViewModel.From = "分站名稱";
-            InfoViewModel.Vessel = OceanExportMbl.VesselName == null ? "" : OceanExportMbl.VesselName;
-            InfoViewModel.Voyage = OceanExportMbl.Voyage == null ? "" : OceanExportMbl.Voyage;
-            InfoViewModel.Mbl = OceanExportMbl.FilingNo == null ? "" : OceanExportMbl.FilingNo;
-            InfoViewModel.Pol = "裝貨港";
-            InfoViewModel.Pod = "卸貨港";
-            InfoViewModel.Cnee = "收貨人";
-            InfoViewModel.Consignee = "海外代理";
+            InfoViewModel.Vessel = Convert.ToString(oceanExportMbl.OfficeName);
+            InfoViewModel.Voyage = Convert.ToString(oceanExportMbl.OfficeName);
+            InfoViewModel.Mbl = Convert.ToString(oceanExportMbl.OfficeName);
+            InfoViewModel.Pol = oceanExportMbl.PolName;
+            InfoViewModel.Pod = oceanExportMbl.PodName;
+            InfoViewModel.Cnee = oceanExportMbl.MblCarrierName;
+            InfoViewModel.Consignee = Convert.ToString(oceanExportMbl.MblConsigneeId);
 
             InfoViewModel.TextArea = InfoViewModel.LastName;
 
-            InfoViewModel.ReportId = OceanExportMbl.Id;
+            InfoViewModel.ReportId = oceanExportMbl.Id;
 
-            //string Input = JsonConvert.SerializeObject(InfoViewModel);
-            #endregion
-            TempData["PrintData"] = JsonConvert.SerializeObject(OceanExportMbl);
+            TempData["PrintData"] = JsonConvert.SerializeObject(oceanExportMbl);
 
             return View(InfoViewModel);
         }
@@ -290,8 +299,8 @@ namespace Dolphin.Freight.Web.Controllers
                     InfoViewModel.Destination = oceanExportMbl.PodName;//待改
                     InfoViewModel.TotalPieces = "1";//待改
                 }
-                else 
-                {                 
+                else
+                {
                     var last = JsonConvert.DeserializeObject<PackageLabelIndexViewModel>(lastmodified.ReportData.ToString());
 
                     InfoViewModel.Office = last.Office;
@@ -363,9 +372,9 @@ namespace Dolphin.Freight.Web.Controllers
 
             if (TempData["PrintDataHBL"] != null && target != null)
             {
-                HblList = JsonConvert.DeserializeObject<List<PackageIndexViewModel>>(TempData["PrintDataHBL"].ToString());                
+                HblList = JsonConvert.DeserializeObject<List<PackageIndexViewModel>>(TempData["PrintDataHBL"].ToString());
             }
-            else 
+            else
             {
                 var OceanExportMbl = new CreateUpdateOceanExportMblDto();
                 OceanExportMbl = JsonConvert.DeserializeObject<CreateUpdateOceanExportMblDto>(TempData["PrintData"].ToString());
@@ -406,14 +415,14 @@ namespace Dolphin.Freight.Web.Controllers
                 TempData["PrintData"] = JsonConvert.SerializeObject(OceanExportMbl);
             }
 
-            if (oldto != null )
+            if (oldto != null)
             {
                 oldto = oldto.Replace("%0D%0A", "\r\n");
             }
 
             HblList.Where(x => x.HblNo == oldhblno && (x.To != oldto || x.Pieces != oldpieces || x.Destination != olddestination)).ToList()
-            .ForEach(x => 
-            { 
+            .ForEach(x =>
+            {
                 x.To = oldto;
                 x.Pieces = oldpieces;
                 x.Destination = olddestination;
@@ -422,14 +431,14 @@ namespace Dolphin.Freight.Web.Controllers
 
             ViewBag.HblList = HblList.Select(x => x.HblNo).Select(x => new SelectListItem() { Text = x, Value = x, Selected = x == target }).ToList();
 
-            var hbl = string.IsNullOrEmpty(target) ? HblList[0] : (HblList.Any(x=>x.HblNo == target) ? HblList.First(x => x.HblNo == target) : HblList[0]);
+            var hbl = string.IsNullOrEmpty(target) ? HblList[0] : (HblList.Any(x => x.HblNo == target) ? HblList.First(x => x.HblNo == target) : HblList[0]);
             hbl.HblList = JsonConvert.SerializeObject(HblList);
             TempData["PrintDataHBL"] = JsonConvert.SerializeObject(HblList);
             return View(hbl);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Package(string hbllist,string hblno,string to,string pieces,string destination,string totalpieces)
+        public async Task<IActionResult> Package(string hbllist, string hblno, string to, string pieces, string destination, string totalpieces)
         {
 
             var HblList = new List<PackageIndexViewModel>();
@@ -1026,7 +1035,7 @@ namespace Dolphin.Freight.Web.Controllers
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
 
-            return  View(InfoViewModel);
+            return View(InfoViewModel);
         }
 
         [HttpPost]
@@ -1552,25 +1561,30 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/Pdf/OBL/Default.cshtml", InfoModel);
         }
 
-        public IActionResult Hbl()
+        public async Task<IActionResult> Hbl(Guid id)
         {
             HblIndexViewModel InfoViewModel = new HblIndexViewModel();
 
-            var OceanExportMbl = new CreateUpdateOceanExportMblDto();
+            var Ocean = await _oceanExportHblAppService.GetHblCardById(id);
+
+            //var OceanExportMbl = new CreateUpdateOceanExportMblDto();
 
             #region
             //https://eval-asia.gofreight.co/ocean/export/shipment/OEX-23030002/?hbl=47120&hide_mbl=false
 
-            InfoViewModel.Header_Consignee = "CHIYODA";
-            InfoViewModel.Header_Notify = "231423485U239";
-            InfoViewModel.Header_Shipper = "123";
-            InfoViewModel.Office = "Dolphin Logistics Taipei Office";
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
+
+            InfoViewModel.Header_Consignee = tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblConsigneeId)).Select(s => s.Text).ToArray()[0];
+            InfoViewModel.Header_Notify = tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblNotifyId)).Select(s => s.Text).ToArray()[0];
+            InfoViewModel.Header_Shipper = tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblShipperId)).Select(s => s.Text).ToArray()[0];
+            InfoViewModel.Office = Ocean.OfficeName;
             InfoViewModel.Address = "77792 COBB CAPE" + Environment.NewLine + "TRISTANCHESTER, NE 47478";
             InfoViewModel.Tel = "08417606080";
             InfoViewModel.Fax = "08417606080";
             InfoViewModel.OTI_No = "123456N";
             InfoViewModel.SHIPPER_EXPORTER = "123" + Environment.NewLine + "3 FL., NO. 215, SEC. 1, FU XING S. RD., TAIPEI, TAIWAN" + Environment.NewLine + "TEL : 02-87721111" + Environment.NewLine + "FAX : 02-87732222" + Environment.NewLine + "TAIWAN";
-            InfoViewModel.CONSIGNEE = "CHIYODA";
+            InfoViewModel.CONSIGNEE = tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblConsigneeId)).Select(s => s.Text).ToArray()[0];
             InfoViewModel.NOTIFY_PARTY = "1231231" + Environment.NewLine + "ATTN: SDSDSD";
             InfoViewModel.DOCUMENT_NO = "CMS/E/HPG118814";
             InfoViewModel.BL_NO = "SINHPH23030002";
@@ -1578,8 +1592,8 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.FORWARDING_AGENT_REFERENCES = "EVA AIRWAYS CORPORATION (BR)" + Environment.NewLine + "200 NORTH SEPULVEDA BLVD., SUITE 1600" + Environment.NewLine + "UNITED STATES";
             InfoViewModel.domestic_instructions = "CARGO AIR SERVICES (DD)";
             InfoViewModel.EXPORTING_CARRIER = "XIN WEN ZHOU 149E";
-            InfoViewModel.PORT_OF_LOADING = "SINGAPORE (SINGAPORE)";
-            InfoViewModel.PORT_OF_DISCHARGE = "HAIPHONG (VIETNAM)";
+            InfoViewModel.PORT_OF_LOADING = portManagement.Where(w => w.Value == Convert.ToString(Ocean.PolId)).Select(s => s.Text).ToArray()[0];
+            InfoViewModel.PORT_OF_DISCHARGE = portManagement.Where(w => w.Value == Convert.ToString(Ocean.PodId)).Select(s => s.Text).ToArray()[0]; ;
             InfoViewModel.CARGO_INSURANCE_THRU_CARRIER = "True";
 
             InfoViewModel.MARKS_AND_NUMBERS = " /  / " + Environment.NewLine + Environment.NewLine + Environment.NewLine + "SHIEHN HAIPHONG PTE";
@@ -1733,7 +1747,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.COMMODITY = "ELECTRONIC COMPONENT";
             InfoViewModel.billing_to_area = "HARD CORE TECHNOLOGY\r\n198 PEARSON GATEWAY APT. 555\r\nNORTH JAMES, KY 98809-9933\r\nWALNUT, CA 91789, UNITED STATES\r\nATTN: JENNIFER JIMENEZ TEL: 585.592.4848 FAX: 649-277-5122";
             InfoViewModel.ContainerList = new List<PickupDeliveryOrderContainerList>()
-            { 
+            {
                 new
                 PickupDeliveryOrderContainerList
                 {
