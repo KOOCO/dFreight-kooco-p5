@@ -2,6 +2,7 @@
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Permissions;
 using Dolphin.Freight.Settings.Ports;
+using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using System;
@@ -28,9 +29,9 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         private readonly IRepository<OceanExportMbl, Guid> _repository;
         private readonly IRepository<SysCode, Guid> _sysCodeRepository;
         private readonly IRepository<Substation, Guid> _substationRepository;
-        private readonly IRepository<Port, Guid> _portRepository;
+        private readonly PortsManagementAppService _portRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
-        public OceanExportMblAppService(IRepository<OceanExportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository)
+        public OceanExportMblAppService(IRepository<OceanExportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository, PortsManagementAppService portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository)
             : base(repository)
         {
             _repository = repository;
@@ -100,7 +101,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public async Task<CreateUpdateOceanExportMblDto> GetCreateUpdateOceanExportMblDtoById(Guid Id) {
             var oceanExportMbl = await _repository.GetAsync(Id,true);
             var dto = ObjectMapper.Map<OceanExportMbl, CreateUpdateOceanExportMblDto>(oceanExportMbl);
-            var ports = await _portRepository.GetListAsync();
+            var ports = await _portRepository.QueryListAsync();
             Dictionary<Guid, string> pdictionary = new();
             if (ports != null && ports.Count > 0)
             {
