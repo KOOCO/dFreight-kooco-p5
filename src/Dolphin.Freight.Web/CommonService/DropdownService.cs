@@ -277,7 +277,7 @@ namespace Dolphin.Freight.Web.CommonService
             var lookUp = await _ajaxDropdownAppService.GetSysCodeDtosByTypeAsync(new QueryDto() { QueryType = "CargoTypeId" });
 
             return lookUp
-                        .Select(x => new SelectListItem(x.CodeValue, x.Id.ToString(), false))
+                        .Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
                         .ToList();
         }
         #endregion
