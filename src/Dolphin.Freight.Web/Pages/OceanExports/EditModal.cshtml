@@ -1,4 +1,5 @@
 ﻿@page
+@using Dolphin.Freight.AirExports
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Web.CommonService;
 @using Dolphin.Freight.Web.Pages.Components
@@ -551,7 +552,7 @@
                                     <input type="hidden" name="OceanExportMbl.ForwardingAgentContent" id="mForwardingAgentContent" value="@Model.OceanExportMbl.ForwardingAgentContent" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CoLoaderId", FieldName = "CoLoaderId",DefaultValue="" , IsShowLabel = true , IsRequired = false,SelectType=1 ,ShowFiledContentValue = Model.OceanExportMbl.CoLoaderContent })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.CoLoaderId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["CoLoaderId"], SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.CoLoaderId) })
                                     <input type="hidden" name="OceanExportMbl.CoLoaderId" id="mCoLoaderId" value="@Model.OceanExportMbl.CoLoaderId" />
                                     <input type="hidden" name="OceanExportMbl.CoLoaderContent" id="mCoLoaderContent" value="@Model.OceanExportMbl.CoLoaderContent" />
                                 </abp-column>
@@ -718,7 +719,8 @@
                                     <input type="hidden" name="OceanExportMbl.CancelById" class="form-control" id="OceanExportMbl_CancelById" value="@Model.OceanExportMbl.CancelById" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.CancelReason", AspItems = _dropdown.CancelReasonLookupList, IsShowLabel = true, FieldName = "CancelReason", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.CancelReason) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.CancelReason", AspItems = Html.GetEnumSelectList(typeof(ReasonForCancelType)).ToList(), IsShowLabel = true, FieldName = "CancelReason", ShowFiledContentValue = Model.OceanExportMbl.CancelReason })
+                                    <input type="hidden" name="OceanExportMbl.CancelReason" id="mMblCancelReason" value="@Model.OceanExportMbl.CancelReason" />
                                 </abp-column>
                                 <abp-column size-md="_3"></abp-column>
                             </abp-row>
