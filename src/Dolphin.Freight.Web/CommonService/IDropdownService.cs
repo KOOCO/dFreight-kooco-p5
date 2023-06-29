@@ -11,6 +11,7 @@ namespace Dolphin.Freight.Web.CommonService
         List<SelectItems> AirportLookupList { get; }
         List<SelectItems> PackageUnitLookupList { get; }
         List<SelectItems> WtValOtherLookupList { get; }
+        List<SelectItems> SalesTypeLookupList { get; }
         List<SelectItems> BlTypeLookupList { get; }
         List<SelectItems> OblTypeLookupList { get; }
         List<SelectItems> TransPortLookupList { get; }

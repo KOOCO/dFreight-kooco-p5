@@ -62,6 +62,8 @@ namespace Dolphin.Freight.Web.CommonService
 
         public List<SelectItems> BlTypeLookupList => FillBlType().Result;
 
+        public List<SelectItems> SalesTypeLookupList => FillMblSalesType().Result;
+
         public List<SelectItems> OblTypeLookupList => FillOBlType().Result;
 
         public List<SelectItems> TransPortLookupList => FillTransPortType().Result;
@@ -172,6 +174,15 @@ namespace Dolphin.Freight.Web.CommonService
             var blTypeLookup = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "MblCarrierId" });
 
             return blTypeLookup.Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
+                                     .ToList();
+
+        }
+
+        public async Task<List<SelectItems>> FillMblSalesType()
+        {
+            var salesTypeLookup = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "MblSalesTypeId" });
+
+            return salesTypeLookup.Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
                                      .ToList();
 
         }
