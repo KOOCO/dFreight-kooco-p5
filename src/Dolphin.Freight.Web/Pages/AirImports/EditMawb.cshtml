@@ -715,7 +715,9 @@
                             <!--第10列 Awb取消Checkbox, IsEcom-->
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="MawbModel.BusinessReferredId" class="form-control" size="Small" label="@L["BusinessReferredId"]" />
+                                    <abp-select asp-for="MawbModel.BusinessReferredId" size="Small">
+                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                                    </abp-select>
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-select asp-for="MawbModel.DisplayUnit" asp-items="Html.GetEnumSelectList(typeof(DisplayUnitType))" class="form-select-sm form-control">
