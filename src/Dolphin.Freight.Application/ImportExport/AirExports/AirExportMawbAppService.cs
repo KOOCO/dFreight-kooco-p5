@@ -26,20 +26,22 @@ namespace Dolphin.Freight.ImportExport.AirExports
     {
         private IRepository<AirExportMawb, Guid> _repository;
         private IRepository<Airport, Guid> _airportRepository;
-         private readonly IRepository<AirExportMawb, Guid> _mblRepository;
+        private readonly IRepository<AirExportMawb, Guid> _mblRepository;
         private readonly IRepository<SysCode, Guid> _sysCodeRepository;
         private readonly IRepository<Substation, Guid> _substationRepository;
         private readonly IRepository<Port, Guid> _portRepository;
         private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
+        private readonly IRepository<AirExportHawb, Guid> _airExportHawbRepository;
 
         public AirExportMawbAppService(
             IRepository<AirExportMawb, Guid> repository,
-            IRepository<SysCode, Guid> sysCodeRepository, 
-            IRepository<AirExportMawb, Guid> mblRepository, 
-            IRepository<Substation, Guid> substationRepository, 
-            IRepository<Port, Guid> portRepository, 
+            IRepository<SysCode, Guid> sysCodeRepository,
+            IRepository<AirExportMawb, Guid> mblRepository,
+            IRepository<Substation, Guid> substationRepository,
+            IRepository<Port, Guid> portRepository,
             IRepository<Airport, Guid> airportRepository,
-            IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository
+            IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
+            IRepository<AirExportHawb, Guid> airExportHawbRepository
         ) : base(repository)
         {
             _repository = repository;
@@ -49,9 +51,10 @@ namespace Dolphin.Freight.ImportExport.AirExports
             _portRepository = portRepository;
             _airportRepository = airportRepository;
             _tradePartnerRepository = tradePartnerRepository;
+            _airExportHawbRepository = airExportHawbRepository; 
         }
 
-    public async Task<PagedResultDto<AirExportMawbDto>> QueryListAsync(QueryHblDto query)
+        public async Task<PagedResultDto<AirExportMawbDto>> QueryListAsync(QueryHblDto query)
         {
             var SysCodes = await _sysCodeRepository.GetListAsync();
             Dictionary<Guid, string> dictionary = new();
@@ -211,6 +214,16 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 totalCount,
                 airExportMawbDtoList
             );
+        }
+
+        public override async Task DeleteAsync(Guid Id)
+        {
+            var hawbs = await _airExportHawbRepository.GetListAsync();
+            var ids = hawbs.Where(w => w.MawbId == Id).Select(s => s.Id);
+
+            await Repository.DeleteAsync(Id);
+
+            await _airExportHawbRepository.DeleteManyAsync(ids);
         }
     }
 }

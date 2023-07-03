@@ -1,5 +1,6 @@
 ﻿$(function () {
     var url = new URL(window.location.href);
+    var selectedHblNo;
 
     dolphin.freight.importExport.airExports.airExportHawb.getHblCardsById(url.searchParams.get('Id'))
         .done(function (hblCards) {
@@ -13,11 +14,18 @@
 
                     $('#hblCards').append(abpcard);
 
+                    if (hblCard.id == url.searchParams.get('Hid')) {
+                        selectedHblNo = hblCard.hawbNo;
+                    }
+
                 })
                 setTimeout(() => {
                     var from = url.searchParams.get('from');
                     if (from == 'accounting') {
                         $('#addHBtn').click();
+                    }
+                    else if (selectedHblNo) {
+                        $('#title_' + selectedHblNo).click();
                     }
                     else {
                         $('.hblCardTitle')[0].click();
