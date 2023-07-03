@@ -2,6 +2,8 @@
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -113,6 +115,13 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
             listDto.Items = list;
             listDto.TotalCount = list.Count;
             return listDto;
+        }
+
+        public async Task<List<ExportBookingDto>> GetSONo()
+        {
+            var exportBooking = await _repository.GetListAsync();
+            var list = ObjectMapper.Map<List<ExportBooking>, List<ExportBookingDto>>(exportBooking);
+            return list;
         }
     }
 }
