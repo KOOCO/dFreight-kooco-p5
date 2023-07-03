@@ -23,8 +23,18 @@
             //})
         });
         function gotoInvoice(Mid, Hid, InvoiceType) {
-
-            location.href = '/Accounting/Invoice?MethodType=1&Mid=' + Mid + "&Hid=" + Hid + "&InvoiceType=" + InvoiceType;
+            debugger;
+            if (Hid != '00000000-0000-0000-0000-000000000000') {
+                location.href = '/Accounting/Invoice?MethodType=1&Mid=' + Mid + "&Hid=" + Hid + "&InvoiceType=" + InvoiceType;
+            }
+            else{
+                Swal.fire({
+                    icon: 'error',
+                    text: 'The data has not been saved, Please save the data!',
+                    showCancelButton: true,
+                    confirmButtonText: "Continue",
+                });
+            }
         }
         function changeHid(id, hid) {
             location.href = '/OceanExports/EditModal3?Id=' + id + "&Hid=" + hid
