@@ -1,6 +1,7 @@
 ﻿
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Settings.Ports;
+using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
@@ -17,14 +18,14 @@ namespace Dolphin.Freight.Common
     {
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IRepository<SysCode, Guid> _sysCideRepository;
-        private readonly IRepository<Port, Guid> _portRepository;
+        private readonly IPortsManagementAppService _portsManagementsRepository;
         private readonly IRepository<OceanExportMbl, Guid> _oceanExportMblRepository;
         private readonly IRepository<VesselSchedule, Guid> _vesselScheduleRepository;
-        public AjaxDropdownAppService(IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<SysCode, Guid> sysCideRepository, IRepository<Port, Guid> portRepository, IRepository<OceanExportMbl, Guid> oceanExportMblRepository, IRepository<VesselSchedule, Guid> vesselScheduleRepository)
+        public AjaxDropdownAppService(IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<SysCode, Guid> sysCideRepository, IPortsManagementAppService portsManagementsRepository, IRepository<OceanExportMbl, Guid> oceanExportMblRepository, IRepository<VesselSchedule, Guid> vesselScheduleRepository)
         {
             _tradePartnerRepository = tradePartnerRepository;
             _sysCideRepository = sysCideRepository;
-            _portRepository = portRepository;
+            _portsManagementsRepository = portsManagementsRepository;
             _oceanExportMblRepository = oceanExportMblRepository;
             _vesselScheduleRepository = vesselScheduleRepository;
         }
@@ -49,11 +50,11 @@ namespace Dolphin.Freight.Common
         public async Task<List<ReferenceItemDto>> GetReferenceItemsByTypeAsync(QueryDto query) {
             List<ReferenceItemDto> list = new();
             ReferenceItemDto dto;
-            var ports = await _portRepository.GetListAsync();
+            var portsManagements = await _portsManagementsRepository.QueryListAsync();
             Dictionary<Guid, string> pdictionary = new();
-            if (ports != null && ports.Count > 0) 
+            if (portsManagements != null && portsManagements.Count > 0) 
             {
-                foreach (var port in ports) 
+                foreach (var port in portsManagements) 
                 {
                     pdictionary.Add(port.Id, port.SubDiv+" "+port.PortName+" ( "+port.Locode+" ) ");
                 }
