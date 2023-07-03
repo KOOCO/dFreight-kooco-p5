@@ -32,7 +32,7 @@ $(function () {
                                         if (data.record.isLocked) {
 
                                         }
-                                        location.href = 'EditHawb?Id=' + data.record.mawbId + '&mawbid=' + data.record.id;
+                                        location.href = 'EditMawb?Id=' + data.record.mawbId + '&hid=' + data.record.id;
 
                                     }
                                 },
@@ -92,58 +92,69 @@ $(function () {
                 {
                     //Hawb號碼
                     title: l('HawbNo'),
-                    data: "hawbNo"
+                    data: "hawbNo",
+                    defaultContent: ''
                 },
                 {
                     //Mawb號碼
                     title: l('MawbId'),
-                    data: "mawbId"
+                    data: "mawbId",
+                    defaultContent: ''
                 },
                 {
                     //Departure
                     title: l('QuotationId'),
-                    data: "quotationId"
+                    data: "quotationId",
+                    defaultContent: ''
                 },
                 {
                     //Destination
                     title: l('Hsn'),
-                    data: "hsn"
+                    data: "hsn",
+                    defaultContent: ''
                 },
                 {
                     //ActualShippedr
                     title: l('ShipperId'),
-                    data: "shipperId"
+                    data: "shipperId",
+                    defaultContent: ''
                 },
                 {
                     //Consignee
                     title: l('ConsigneeId'),
-                    data: "consigneeId"
+                    data: "consigneeId",
+                    defaultContent: ''
                 },
                 {
                     //OverseaAgent
                     title: l('SalesId'),
-                    data: "salesId"
+                    data: "salesId",
+                    defaultContent: ''
                 },
      
                 {
                     //A/P Balance
                     title: l('Incoterms'),
-                    data: "incoterms"
+                    data: "incoterms",
+                    defaultContent: ''
                 },
                 {
                     //Booking No.
                     title: l('Mark'),
-                    data: "mark"
+                    data: "mark",
+                    defaultContent: ''
                 },
                 {
                     //OP
                     title: l('Description'),
-                    data: "description"
+                    data: "description",
+                    defaultContent: ''
                 },
                 {
                     //Status
                     title: l('Remark'),
-                    data: "remark"
+                    data: "remark",
+                    defaultContent: ''
                 },
 
 

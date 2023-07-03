@@ -1,5 +1,6 @@
 ﻿$(function () {
     var url = new URL(window.location.href);
+    var selectedHblNo;
 
     dolphin.freight.importExport.airImports.airImportHawb.getHblCardsById(url.searchParams.get('Id'))
         .done(function (hblCards) {
@@ -13,9 +14,17 @@
 
                     $('#hblCards').append(abpcard);
 
+                    if (hblCard.id == url.searchParams.get('Hid')) {
+                        selectedHblNo = hblCard.hawbNo;
+                    }
+
                 })
                 setTimeout(() => {
-                    $('.hblCardTitle')[0].click();
+                    if (selectedHblNo) {
+                        $('#title_' + selectedHblNo).click();
+                    } else {
+                        $('.hblCardTitle')[0].click();
+                    }
                 }, 500);
             }
         })
