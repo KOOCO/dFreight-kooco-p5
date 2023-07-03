@@ -130,8 +130,14 @@ namespace Dolphin.Freight.Accounting.Invoices
                 {
                     var bill = ObjectMapper.Map<Invoice, InvoiceDto>(r);
 
-                    if (r.InvoiceCompanyId != null) bill.InvoiceCompanyName = tDictionary[r.InvoiceCompanyId.Value];
-
+                    if (r.InvoiceCompanyId != null)
+                    {
+                        bill.InvoiceCompanyName = tDictionary[r.InvoiceCompanyId.Value];
+                    }
+                    else
+                    {
+                        bill.ShipTo = tDictionary[r.ShipToId.Value];
+                    }
                     var invoiceBills = invoiceBillQueryable.Where(w => w.InvoiceId.Value == r.Id).ToList();
 
                     bill.InvoiceBillDtos = ObjectMapper.Map<List<InvoiceBill>, List<CreateUpdateInvoiceBillDto>>(invoiceBills);
