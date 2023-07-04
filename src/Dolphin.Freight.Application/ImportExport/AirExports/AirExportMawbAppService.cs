@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Dolphin.Freight.Settings.PortsManagement;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -29,7 +30,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         private readonly IRepository<AirExportMawb, Guid> _mblRepository;
         private readonly IRepository<SysCode, Guid> _sysCodeRepository;
         private readonly IRepository<Substation, Guid> _substationRepository;
-        private readonly IRepository<Port, Guid> _portRepository;
+        private readonly IPortsManagementAppService _portRepository;
         private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IRepository<AirExportHawb, Guid> _airExportHawbRepository;
 
@@ -38,7 +39,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
             IRepository<SysCode, Guid> sysCodeRepository,
             IRepository<AirExportMawb, Guid> mblRepository,
             IRepository<Substation, Guid> substationRepository,
-            IRepository<Port, Guid> portRepository,
+            IPortsManagementAppService portRepository,
             IRepository<Airport, Guid> airportRepository,
             IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
             IRepository<AirExportHawb, Guid> airExportHawbRepository
@@ -95,7 +96,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 }
             }
             //港口
-            var ports = await _portRepository.GetListAsync();
+            var ports = await _portRepository.QueryListAsync();
             Dictionary<Guid, string> pdictionary = new();
             if (ports != null && ports.Count > 0)
             {
@@ -152,14 +153,14 @@ namespace Dolphin.Freight.ImportExport.AirExports
 
         public override async Task<PagedResultDto<AirExportMawbDto>> GetListAsync(PagedAndSortedResultRequestDto input)
         {
-            // airport
-            Dictionary<Guid, string> airportDictionary = new Dictionary<Guid, string>();
-            var airportList = await _airportRepository.GetListAsync();
-            if (null != airportList)
+            // ports management
+            var ports = await _portRepository.QueryListAsync();
+            Dictionary<Guid, string> pdictionary = new();
+            if (ports != null && ports.Count > 0)
             {
-                foreach (var airport in airportList)
+                foreach (var port in ports)
                 {
-                    airportDictionary.Add(airport.Id, airport.AirportName);
+                    pdictionary.Add(port.Id, port.SubDiv + " " + port.PortName + " ( " + port.Locode + " ) ");
                 }
             }
 
@@ -182,29 +183,20 @@ namespace Dolphin.Freight.ImportExport.AirExports
             Volo.Abp.Linq.IAsyncQueryableExecuter asyncExecuter = AsyncExecuter;
             var airExportMawbList = await asyncExecuter.ToListAsync(query);
             List<AirExportMawbDto> airExportMawbDtoList = new List<AirExportMawbDto>();
+
+            string departureName, destinationName;
+
             if (null != airExportMawbList && airExportMawbList.Count > 0)
             {
                 foreach (var airExportMawb in airExportMawbList)
                 {
                     var airExportMawbDto = ObjectMapper.Map<AirExportMawb, AirExportMawbDto>(airExportMawb);
-                    if (airExportMawb.DepatureId != null)
-                    {
-                        //airExportMawbDto.DepatureAirportName = airportDictionary[key: airExportMawb.DepatureId.Value];
-                        airExportMawbDto.DepatureAirportName = null;
-                    }
-                    else
-                    {
-                        airExportMawbDto.DepatureAirportName = null;
-                    }
-                    if (airExportMawb.DestinationId != null)
-                    {
-                        //airExportMawbDto.DestinationAirportName = airportDictionary[airExportMawb.DestinationId.Value];
-                        airExportMawbDto.DestinationAirportName = null;
-                    }
-                    else
-                    {
-                        airExportMawbDto.DestinationAirportName = null;
-                    }
+
+                    pdictionary.TryGetValue(airExportMawb.DepatureId.GetValueOrDefault(), out departureName);
+                    airExportMawbDto.DepatureAirportName = departureName;
+
+                    pdictionary.TryGetValue(airExportMawb.DestinationId.GetValueOrDefault(), out destinationName);
+                    airExportMawbDto.DestinationAirportName = destinationName;
 
                     airExportMawbDtoList.Add(airExportMawbDto);
                 }
