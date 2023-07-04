@@ -23,11 +23,11 @@
     <abp-script src="/Pages/OceanExports/EditModel.js" />
     <script type="text/javascript">
         var cardIndex = 0;
+        var l = abp.localization.getResource('Freight');
         $(document).ready(function () {
 
             //HB/l dropdown
 
-            var l = abp.localization.getResource('Freight');
             var showMsg = '@Model.ShowMsg';
             if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
             var isLocked = '@Model.OceanExportMbl.IsLocked';
@@ -58,6 +58,21 @@
         }
         function changeHid(Mid, Hid) {
             location.href = '/OceanExports/EditModal?Id=' + Mid + "&Hid=" + Hid
+        }
+
+        function deleteHbl(){
+            abp.message.confirm(l('DeletionConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.oceanExports.oceanExportHbl
+                            .delete($('#OceanExportHbl_Id').val())
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyDeleted'));
+                                $('#hblCard').remove();
+                                $('#hblCards').find('.card-body.show').closest('.card.board-item').remove()
+                            });
+                    }
+                });
         }
 
         function getReportTelexrelease() {
