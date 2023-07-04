@@ -74,25 +74,10 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
         private readonly IOceanExportHblAppService _oceanExportHblAppService;
         private readonly IOceanExportMblAppService _oceanExportMblAppService;
-        private readonly ISysCodeAppService _sysCodeAppService;
-        private readonly IGeneratePdf _generatePdf;
-        private readonly ITradePartnerAppService _tradePartnerAppService;
-        private readonly ISubstationAppService _substationAppService;
-        private readonly IAirportAppService _airportAppService;
-        private readonly IPackageUnitAppService _packageUnitAppService;
-        private readonly IPortsManagementAppService _portsManagementAppService;
-        public EditModalModel(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService,
-            IAirportAppService airportAppService, IPortsManagementAppService portsManagementAppService, IPackageUnitAppService packageUnitAppService)
+        public EditModalModel(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
-            _sysCodeAppService = sysCodeAppService;
-            _generatePdf = generatePdf;
-            _tradePartnerAppService = tradePartnerAppService;
-            _substationAppService = substationAppService;
-            _airportAppService = airportAppService;
-            _packageUnitAppService = packageUnitAppService;
-            _portsManagementAppService = portsManagementAppService;
         }
 
         public async Task OnGetAsync()
@@ -100,13 +85,6 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             ViewData["HAVEHBL"] = "N";
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
             QueryHblDto query = new QueryHblDto() { MblId = Id };
-
-            await FillTradePartnerAsync();
-            await FillAirportAsync();
-            await FillPackageUnitAsync();
-            await FillSubstationAsync();
-            FillWtValOther();
-            await FillPortAsync();
         }
         public async Task<IActionResult> OnPostAsync()
         {
@@ -128,79 +106,6 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
 
             return new ObjectResult(new { id = OceanExportMblDto.Id });
         }
-
-        #region FillTradePartnerAsync()
-        private async Task FillTradePartnerAsync()
-        {
-            var tradePartnerLookup = await _tradePartnerAppService.GetTradePartnersLookupAsync();
-            TradePartnerLookupList = tradePartnerLookup.Items
-                                                .Select(x => new SelectListItem(x.TPName + " / " + x.TPCode, x.Id.ToString(), false))
-                                                .ToList();
-        }
-        #endregion
-
-        #region FillSubstationAsync()
-        private async Task FillSubstationAsync()
-        {
-            var substationLookup = await _substationAppService.GetSubstationsLookupAsync();
-            SubstationLookupList = substationLookup.Items
-                                                .Select(x => new SelectListItem(x.SubstationName + "  (" + x.AbbreviationName + ")", x.Id.ToString(), false))
-                                                .ToList();
-        }
-        #endregion
-
-        #region FillAirportAsync()
-        private async Task FillAirportAsync()
-        {
-            var airportLookup = await _airportAppService.GetAirportLookupAsync();
-            AirportLookupList = airportLookup.Items
-                                                .Select(x => new SelectListItem(x.AirportIataCode + " " + x.AirportName, x.Id.ToString(), false))
-                                                .ToList();
-        }
-        #endregion
-
-        #region FillPackageUnitAsync()
-        private async Task FillPackageUnitAsync()
-        {
-            var packageUnitLookup = await _packageUnitAppService.GetPackageUnitsLookupAsync();
-            PackageUnitLookupList = packageUnitLookup.Items
-                                                .Select(x => new SelectListItem(x.PackageName, x.Id.ToString(), false))
-                                                .ToList();
-        }
-        #endregion
-
-        #region FillWtVal()
-        private void FillWtValOther()
-        {
-            WtValOtherList = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "PPD", Text = "PPD"},
-                new SelectListItem { Value = "COLL", Text = "COLL"}
-            };
-        }
-        #endregion
-
-        #region SetAirImportFileNo() 
-        /// <summary>
-        /// ³]©wAir ImportªºFile No
-        /// </summary>
-        private string SetAirImportFileNo()
-        {
-            string today = DateTime.Now.ToString("yyyyMMddhhmmss");
-            string AIFileNo = "AIM-" + today;
-            return AIFileNo;
-        }
-        #endregion
-
-        #region FillPortAsync()
-        private async Task FillPortAsync()
-        {
-            var lookup = await _portsManagementAppService.QueryListAsync();
-
-            PortsManagementLookupList = lookup.Select(x => new SelectListItem(x.PortName, x.Id.ToString(), false))
-                                   .ToList();
-        }
-        #endregion
 
     }
 }

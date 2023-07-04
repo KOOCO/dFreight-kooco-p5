@@ -1,6 +1,7 @@
 ﻿using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Settings.Ports;
+using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using System;
@@ -29,13 +30,13 @@ namespace Dolphin.Freight.ImportExport.AirExports
         private readonly IRepository<AirExportHawb, Guid> _mblRepository;
         private readonly IRepository<SysCode, Guid> _sysCodeRepository;
         private readonly IRepository<Substation, Guid> _substationRepository;
-        private readonly IRepository<Port, Guid> _portRepository;
+        private readonly IPortsManagementAppService _portRepository;
         private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         public AirExportHawbAppService(IRepository<AirExportHawb, Guid> repository,
             IRepository<SysCode, Guid> sysCodeRepository,
             IRepository<AirExportHawb, Guid> mblRepository,
             IRepository<Substation, Guid> substationRepository,
-            IRepository<Port, Guid> portRepository,
+            IPortsManagementAppService portRepository,
             IRepository<Airport, Guid> airportRepository,
             IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository) : base(repository)
         {
@@ -89,7 +90,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 }
             }
             //港口
-            var ports = await _portRepository.GetListAsync();
+            var ports = await _portRepository.QueryListAsync();
             Dictionary<Guid, string> pdictionary = new();
             if (ports != null && ports.Count > 0)
             {
@@ -98,7 +99,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
                     pdictionary.Add(port.Id, port.SubDiv + " " + port.PortName + " ( " + port.Locode + " ) ");
                 }
             }
-            var airExportHawbs = await _repository.GetListAsync();
+            var airExportHawbs = await _repository.GetListAsync(true);
             List<AirExportHawb> rs;
             List<AirExportHawbDto> list = new List<AirExportHawbDto>();
             if (query != null && query.MblId != null)

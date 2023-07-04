@@ -49,6 +49,7 @@ using Wkhtmltopdf.NetCore;
 using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Dolphin.Freight.Web.CommonService;
+using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -62,12 +63,12 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IReportLogAppService _reportLogAppService;
         private readonly ICurrentUser _currentUser;
         private readonly IDropdownService _dropdownService;
-
+        private readonly IExportBookingAppService _exportBookingAppService;
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
         public DocsController(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, IAjaxDropdownAppService ajaxDropdownAppService, IReportLogAppService reportLogAppService,
-          ICurrentUser currentUser, IDropdownService dropdownService)
+          ICurrentUser currentUser, IDropdownService dropdownService, IExportBookingAppService exportBookingAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -77,6 +78,7 @@ namespace Dolphin.Freight.Web.Controllers
             _reportLogAppService = reportLogAppService;
             _currentUser = currentUser;
             _dropdownService = dropdownService;
+            _exportBookingAppService = exportBookingAppService;
 
             ReportLog = new ReportLog.ReportLogDto();
         }
@@ -1574,26 +1576,29 @@ namespace Dolphin.Freight.Web.Controllers
 
             var tradePartner = _dropdownService.TradePartnerLookupList;
             var portManagement = _dropdownService.PortsManagementLookupList;
-
-            InfoViewModel.Header_Consignee = tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblConsigneeId)).Select(s => s.Text).ToArray()[0];
-            InfoViewModel.Header_Notify = tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblNotifyId)).Select(s => s.Text).ToArray()[0];
-            InfoViewModel.Header_Shipper = tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblShipperId)).Select(s => s.Text).ToArray()[0];
+            var exportBooking = await _exportBookingAppService.GetSONo();
+            
+            InfoViewModel.Header_Consignee = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblConsigneeId)).Select(s => s.Text));
+            InfoViewModel.Header_Notify = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblNotifyId)).Select(s => s.Text));
+            InfoViewModel.Header_Shipper = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblShipperId)).Select(s => s.Text));
             InfoViewModel.Office = Ocean.OfficeName;
             InfoViewModel.Address = "77792 COBB CAPE" + Environment.NewLine + "TRISTANCHESTER, NE 47478";
             InfoViewModel.Tel = "08417606080";
             InfoViewModel.Fax = "08417606080";
             InfoViewModel.OTI_No = "123456N";
-            InfoViewModel.SHIPPER_EXPORTER = "123" + Environment.NewLine + "3 FL., NO. 215, SEC. 1, FU XING S. RD., TAIPEI, TAIWAN" + Environment.NewLine + "TEL : 02-87721111" + Environment.NewLine + "FAX : 02-87732222" + Environment.NewLine + "TAIWAN";
-            InfoViewModel.CONSIGNEE = tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblConsigneeId)).Select(s => s.Text).ToArray()[0];
-            InfoViewModel.NOTIFY_PARTY = "1231231" + Environment.NewLine + "ATTN: SDSDSD";
-            InfoViewModel.DOCUMENT_NO = "CMS/E/HPG118814";
-            InfoViewModel.BL_NO = "SINHPH23030002";
-            InfoViewModel.EXPORT_REFERENCES = "BOOKING # SINHPH23030002";
-            InfoViewModel.FORWARDING_AGENT_REFERENCES = "EVA AIRWAYS CORPORATION (BR)" + Environment.NewLine + "200 NORTH SEPULVEDA BLVD., SUITE 1600" + Environment.NewLine + "UNITED STATES";
-            InfoViewModel.domestic_instructions = "CARGO AIR SERVICES (DD)";
-            InfoViewModel.EXPORTING_CARRIER = "XIN WEN ZHOU 149E";
-            InfoViewModel.PORT_OF_LOADING = portManagement.Where(w => w.Value == Convert.ToString(Ocean.PolId)).Select(s => s.Text).ToArray()[0];
-            InfoViewModel.PORT_OF_DISCHARGE = portManagement.Where(w => w.Value == Convert.ToString(Ocean.PodId)).Select(s => s.Text).ToArray()[0]; ;
+            InfoViewModel.SHIPPER_EXPORTER = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblShipperId)).Select(s => s.Text));
+            InfoViewModel.CONSIGNEE = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblConsigneeId)).Select(s => s.Text));
+            InfoViewModel.NOTIFY_PARTY = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblNotifyId)).Select(s => s.Text));
+            InfoViewModel.DOCUMENT_NO = Ocean.DocNo;
+            InfoViewModel.BL_NO = Ocean.HblNo;
+            InfoViewModel.EXPORT_REFERENCES = "S/O # " + Ocean.SoNo + Environment.NewLine + Ocean.CustomerRefNo;
+            InfoViewModel.FORWARDING_AGENT_REFERENCES = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(Ocean.ForwardingAgentId)).Select(s => s.Text));
+            InfoViewModel.domestic_instructions = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(Ocean.AgentId)).Select(s => s.Text));
+            InfoViewModel.EXPORTING_CARRIER = string.Concat(exportBooking.Where(w => w.SoNo == Ocean.SoNo).Select(s => s.VesselName)) + " " + string.Concat(exportBooking.Where(w => w.SoNo == Ocean.SoNo).Select(s => s.Voyage));
+            InfoViewModel.PLACE_OF_RECEIPT = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(Ocean.PorId)).Select(s => s.Text));
+            InfoViewModel.PORT_OF_LOADING = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(Ocean.PolId)).Select(s => s.Text));
+            InfoViewModel.PORT_OF_DISCHARGE = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(Ocean.PodId)).Select(s => s.Text));
+            InfoViewModel.PLACE_OF_DELIVERY = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(Ocean.DelId)).Select(s => s.Text));
             InfoViewModel.CARGO_INSURANCE_THRU_CARRIER = "True";
 
             InfoViewModel.MARKS_AND_NUMBERS = " /  / " + Environment.NewLine + Environment.NewLine + Environment.NewLine + "SHIEHN HAIPHONG PTE";

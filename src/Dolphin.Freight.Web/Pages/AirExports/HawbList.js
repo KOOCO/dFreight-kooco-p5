@@ -32,7 +32,7 @@ $(function () {
                                         if (data.record.isLocked) {
 
                                         }
-                                        location.href = 'EditModal?Id=' + data.record.mawbId + '&mawbid=' + data.record.id;
+                                        location.href = 'EditModal?Id=' + data.record.mawbId + '&Hid=' + data.record.id;
 
                                     }
                                 },
@@ -60,19 +60,6 @@ $(function () {
                                         } else {
                                             abp.message.warn("鎖定不能刪除")
                                         }
-
-                                        /*
-                                        if (!data.record.isLocked) {
-                                            dolphin.freight.importExport.oceanExports.oceanExportMbl
-                                                .delete(data.record.id)
-                                                .then(function () {
-                                                    abp.message.success(l('SuccessfullyDeleted'));
-                                                    dataTable.ajax.reload();
-                                                });
-                                        } else {
-                                            abp.message.warn("鎖定不能刪除")
-                                        }*/
-
                                     }
                                 }
                             ]
@@ -102,60 +89,69 @@ $(function () {
                 {
                     //Departure
                     title: l('Departure'),
-                    data: "departure"
+                    data: "departure",
+                    defaultContent: ''
                 },
                 {
                     //Destination
                     title: l('Destination'),
-                    data: "destination"
+                    data: "destination",
+                    defaultContent: ''
                 }, 
                 {
                     //ActualShippedr
                     title: l('ActualShippedr'),
-                    data: "actualShippedr"
+                    data: "actualShippedr",
+                    defaultContent: ''
                 },
                 {
                     //Consignee
                     title: l('Consignee'),
-                    data: "consignee"
+                    data: "consignee",
+                    defaultContent: ''
                 },
                 {
                     //OverseaAgent
                     title: l('OverseaAgent'),
-                    data: "overseaAgent"
+                    data: "overseaAgent",
+                    defaultContent: ''
                 },
                 {
                     //AR Balance
                     title: l('AR Balance'),
-                    data: "overseaAgent"
+                    data: "overseaAgent",
+                    defaultContent: ''
                 },
                 {
                     //A/P Balance
                     title: l('A/P Balance'),
-                    data: "overseaAgent"
+                    data: "overseaAgent",
+                    defaultContent: ''
                 },
                 {
                     //D/C Balance
                     title: l('D/C Balance'),
-                    data: "overseaAgent"
+                    data: "overseaAgent",
+                    defaultContent: ''
                 },
                 {
                     //Booking No.
                     title: l('Booking No.'),
-                    data: "overseaAgent"
+                    data: "overseaAgent",
+                    defaultContent: ''
                 },
                 {
                     //OP
                     title: l('OP'),
-                    data: "overseaAgent"
+                    data: "overseaAgent",
+                    defaultContent: ''
                 },
                 {
                     //Status
                     title: l('Status'),
-                    data: "overseaAgent"
-                },
-            
-
+                    data: "overseaAgent",
+                    defaultContent: ''
+                }
             ]
         })
     );

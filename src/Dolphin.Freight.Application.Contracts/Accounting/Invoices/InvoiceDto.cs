@@ -38,6 +38,10 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// <summary>
         /// 發布日期
         /// </summary>
+        public string ShipTo { get; set; }
+        /// <summary>
+        /// 發布日期
+        /// </summary>
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? PostDate { get; set; }
