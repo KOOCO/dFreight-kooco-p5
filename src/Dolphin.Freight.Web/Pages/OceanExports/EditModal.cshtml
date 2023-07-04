@@ -26,13 +26,13 @@
         $(document).ready(function () {
 
             //HB/l dropdown
-         
+
             var l = abp.localization.getResource('Freight');
             var showMsg = '@Model.ShowMsg';
             if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
             var isLocked = '@Model.OceanExportMbl.IsLocked';
             if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
-           
+
             $('#editForm').on('abp-ajax-success', function (result, rs) {
                 event.preventDefault();
                 var l = abp.localization.getResource('Freight');
@@ -60,25 +60,25 @@
             location.href = '/OceanExports/EditModal?Id=' + Mid + "&Hid=" + Hid
         }
 
-        function getReportTelexrelease(){
+        function getReportTelexrelease() {
             myWindow = window.open("@Url.Action("Telexrelease", "Docs", new { oceanExportMblId = Model.Id })", 'Telexrelease', 'width=1200,height=800');
             myWindow.focus()
         }
-        function gotoReport(rindex){
+        function gotoReport(rindex) {
             var url = "";
             var pname = "";
-            switch(rindex){
-                default :
+            switch (rindex) {
+                default:
                     url = '@Url.Action("Car", "Docs")';
-                    pname="Car";
+                    pname = "Car";
                     break;
                 case 2:
                     url = '@Url.Action("Cargo", "Docs")';
-                    pname="Cargo";
+                    pname = "Cargo";
                     break;
                 case 3:
                     url = '@Url.Action("Box", "Docs")';
-                    pname="Box";
+                    pname = "Box";
                     break;
                 case 4:
                     url = '@Url.Action("ProfitSummary", "Docs", new { oceanExportMblId = Model.Id })';
@@ -99,20 +99,20 @@
                     pname = "OBL";
                     break;
             }
-            myWindow =  window.open(url, pname, 'width=1200,height=800')
+            myWindow = window.open(url, pname, 'width=1200,height=800')
             myWindow.focus()
         }
-        function getReportPackageLabel(){
+        function getReportPackageLabel() {
             myWindow = window.open("@Url.Action("PackageLabel", "Docs", new { oceanExportMblId = Model.Id })", 'PackageLabel', 'width=1200,height=800');
             myWindow.focus()
         }
 
-        function getReportPackage(){
+        function getReportPackage() {
             myWindow = window.open("@Url.Action("Package", "Docs")", 'Package', 'width=1200,height=800');
             myWindow.focus()
         }
 
-        function getReportHblPackageLabel(){
+        function getReportHblPackageLabel() {
             var idNo = $('#OceanExportHbl_Id').val();
             myWindow = window.open("@Url.Action("HblPackageLabel", "Docs")" + "?id=" + idNo, 'HblPackageLabel', 'width=1200,height=800');
             myWindow.focus()
@@ -261,25 +261,25 @@
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
 
-                        setTimeout(()=>{
-                            initializeDropdownSearch("OceanExportHbl_HblShipperId");
+                        setTimeout(() => {
+                            initializeDropdownSearch("OceanExportHbl_HblShipperId", 1);
                             initializeDropdownSearch("OceanExportHbl_HblCustomerId");
                             initializeDropdownSearch("OceanExportHbl_HblBillToId");
                             initializeDropdownSearch("OceanExportHbl_HblConsigneeId");
-                            initializeDropdownSearch("OceanExportHbl_HblNotifyId");
-                            initializeDropdownSearch("OceanExportHbl_AgentId");
-                            initializeDropdownSearch("OceanExportHbl_ForwardingAgentId");
-                            initializeDropdownSearch("OceanExportHbl_ReceivingAgentId");
-                            initializeDropdownSearch("OceanExportHbl_PorId");
-                            initializeDropdownSearch("OceanExportHbl_PolId");
-                            initializeDropdownSearch("OceanExportHbl_PodId");
-                            initializeDropdownSearch("OceanExportHbl_DelId");
-                            initializeDropdownSearch("OceanExportHbl_FdestId");
+                            initializeDropdownSearch("OceanExportHbl_HblNotifyId", 1);
+                            initializeDropdownSearch("OceanExportHbl_AgentId",1);
+                            initializeDropdownSearch("OceanExportHbl_ForwardingAgentId",1);
+                            initializeDropdownSearch("OceanExportHbl_ReceivingAgentId",1);
+                            initializeDropdownSearch("OceanExportHbl_PorId",1);
+                            initializeDropdownSearch("OceanExportHbl_PolId",1);
+                            initializeDropdownSearch("OceanExportHbl_PodId",1);
+                            initializeDropdownSearch("OceanExportHbl_DelId",1);
+                            initializeDropdownSearch("OceanExportHbl_FdestId",1);
                             initializeDropdownSearch("OceanExportHbl_EmptyPickupId");
-                            initializeDropdownSearch("OceanExportHbl_TruckerId");
-                            initializeDropdownSearch("OceanExportHbl_CustomsBrokerId");
+                            initializeDropdownSearch("OceanExportHbl_TruckerId",1);
+                            initializeDropdownSearch("OceanExportHbl_CustomsBrokerId",1);
                             initializeDropdownSearch("OceanExportHbl_FbaFcId");
-                            initializeDropdownSearch("OceanExportHbl_DeliveryToId");
+                            initializeDropdownSearch("OceanExportHbl_DeliveryToId",1);
                             initializeDropdownSearch("OceanExportHbl_CargoPickupId");
                             initializeDropdownSearch("OceanExportHbl_FreightTermForBuyerId");
                             initializeDropdownSearch("OceanExportHbl_FreightTermForSalerId");
@@ -290,7 +290,8 @@
                             initializeDropdownSearch("OceanExportHbl_CancelReason");
                             initializeDropdownSearch("OceanExportHbl_MblReferralById");
                             initializeDropdownSearch("OceanExportHbl_CargoTypeId");
-                        },500);
+                            initializeDropdownSearch("OceanExportHbl_HblSaleId");
+                        }, 500);
                     })
 
                     $('.btnHawbCardCollapse').each(function (i, e) {
@@ -802,7 +803,7 @@
                     </div>
                 </abp-column>
 
-                            <abp-column size-md="_3">
+                <abp-column size-md="_3">
                     <div class="card-wrap">
                         <button class="btn btn-block btn-add" type="button" id="addHBtn">
                             <i class="fa-solid fa-plus"></i>Add HB/L

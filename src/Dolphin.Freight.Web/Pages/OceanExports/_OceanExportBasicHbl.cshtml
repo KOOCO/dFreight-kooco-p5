@@ -148,9 +148,7 @@
                 <abp-input asp-for="OceanExportHbl.QuotationNo" />
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblShipperId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["HblShipperId"], SelectType = 1, ShowFiledContentValue = Model.OceanExportHbl.HblShipperId.ToString() })
-                <input type="hidden" name="OceanExportHbl.HblShipperId" id="OceanExportHbl_ShipperId" value="@Model.OceanExportHbl.HblShipperId" />
-                <input type="hidden" name="OceanExportHbl.HblShipperName" id="OceanExportHbl_ShipperName" value="@Model.OceanExportHbl.HblShipperName" />
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblShipperId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblShipperId", SelectType = 1, ShowFiledContentValue = Model.OceanExportHbl.HblShipperId.ToString() })
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblCustomerId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblCustomerId", SelectType = 0, ShowFiledContentValue = Model.OceanExportHbl.HblCustomerId.ToString() })
@@ -181,7 +179,7 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.AgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "AgentId", SelectType = 1, ShowFiledContentValue = Model.OceanExportHbl.AgentId.ToString()})
             </abp-column>
             <abp-column size-md="_3">
-
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblSaleId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblSaleId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.HblSaleId) })
             </abp-column>
             <abp-column size-md="_3">
 
@@ -354,7 +352,6 @@
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.MblReferralById", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "Business Referred By", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.MblReferralById) })
-                <input type="hidden" name="OceanExportHbl.HMblReferralById" id="HMblReferralById" value="@Model.OceanExportHbl.MblReferralById" />
             </abp-column>
         </abp-row>
         <abp-row></abp-row>
