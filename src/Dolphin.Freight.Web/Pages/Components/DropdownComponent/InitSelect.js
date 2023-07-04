@@ -31,10 +31,8 @@ function initializeDropdownSearch(id, selectType) {
 
     var l = abp.localization.getResource('Freight');
     $('#' + id).select2({
-        placeholder: l("Dropdown:Empty"),
-        allowClear: true,
-        templateSelection: getFormat(),
-        templateResult: getFormat()
+        placeholder: l("Dropdown:Select"),
+        allowClear: true
     });
 
     setWidth(id, selectType);
