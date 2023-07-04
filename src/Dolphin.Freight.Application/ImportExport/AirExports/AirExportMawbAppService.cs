@@ -179,7 +179,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 .OrderBy(x => x.CreationTime)
                 .Skip(input.SkipCount)
                 .Take(input.MaxResultCount);
-            var airExportMawbList = await AsyncExecuter.ToListAsync(query);
+            Volo.Abp.Linq.IAsyncQueryableExecuter asyncExecuter = AsyncExecuter;
+            var airExportMawbList = await asyncExecuter.ToListAsync(query);
             List<AirExportMawbDto> airExportMawbDtoList = new List<AirExportMawbDto>();
             if (null != airExportMawbList && airExportMawbList.Count > 0)
             {
@@ -188,7 +189,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
                     var airExportMawbDto = ObjectMapper.Map<AirExportMawb, AirExportMawbDto>(airExportMawb);
                     if (airExportMawb.DepatureId != null)
                     {
-                        airExportMawbDto.DepatureAirportName = airportDictionary[airExportMawb.DepatureId.Value];
+                        //airExportMawbDto.DepatureAirportName = airportDictionary[key: airExportMawb.DepatureId.Value];
+                        airExportMawbDto.DepatureAirportName = null;
                     }
                     else
                     {
@@ -196,7 +198,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
                     }
                     if (airExportMawb.DestinationId != null)
                     {
-                        airExportMawbDto.DestinationAirportName = airportDictionary[airExportMawb.DestinationId.Value];
+                        //airExportMawbDto.DestinationAirportName = airportDictionary[airExportMawb.DestinationId.Value];
+                        airExportMawbDto.DestinationAirportName = null;
                     }
                     else
                     {
