@@ -105,6 +105,10 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string Mark { get; set; }
         public string Description { get; set; }
         public string Remark { get; set; }
+        public string Notify { get; set; }
+        public string Customer { get; set; }
+        public string BillToId { get; set; }
+        public string CustomsBroker { get; set; }
 
 
 
