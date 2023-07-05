@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Users;
+using System.ComponentModel;
 
 namespace Dolphin.Freight.ImportExport.AirImports
 {
@@ -31,6 +32,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// <summary>
         /// 
         /// </summary>
+        [DisplayName("HSN")]
         public string Hsn { get; set; }
         /// <summary>
         /// 
@@ -48,6 +50,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// <summary>
         /// 操作員Id
         /// </summary>
+        /// SalesId
+       
         public Guid? OPId { get; set; }
         /// <summary>
         /// 操作員
