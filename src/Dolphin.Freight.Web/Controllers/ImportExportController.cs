@@ -20,6 +20,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc;
 using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
+using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -38,6 +40,7 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IAttachmentAppService _attachmentAppService;
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly IPortsManagementAppService _portsManagementAppService;
+        private readonly IVesselScheduleAppService _vesselScheduleAppService;
 
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
@@ -58,7 +61,8 @@ namespace Dolphin.Freight.Web.Controllers
             IOceanImportHblAppService oceanImportHblAppService,
             IAttachmentAppService attachmentAppService,
             IInvoiceAppService invoiceAppService,
-            IPortsManagementAppService portsManagementAppService
+            IPortsManagementAppService portsManagementAppService,
+            IVesselScheduleAppService vesselScheduleAppService
             )
         {
             _tradePartnerAppService = tradePartnerAppService;
@@ -72,6 +76,7 @@ namespace Dolphin.Freight.Web.Controllers
             _attachmentAppService = attachmentAppService;
             _invoiceAppService = invoiceAppService;
             _portsManagementAppService = portsManagementAppService;
+            _vesselScheduleAppService = vesselScheduleAppService;
 
 
             FillCountryNameAsync().Wait();
@@ -417,5 +422,36 @@ namespace Dolphin.Freight.Web.Controllers
                                    .ToList();
         }
         #endregion
+
+        [HttpGet]
+        [Route("GetBookingByReference")]
+        public async Task<IActionResult> GetBookingByReference(string refNo)
+        {
+            CreateUpdateExportBookingDto info = new CreateUpdateExportBookingDto();
+
+            var Vessels = await _vesselScheduleAppService.GetListAsync(new QueryVesselScheduleDto());
+
+            info.HblAgentId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.MblOverseaAgentId).FirstOrDefault();
+            info.FreightTermForBuyerId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.FreightTermId).FirstOrDefault();
+            info.FreightTermForSalerId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.FreightTermId).FirstOrDefault();
+            info.ShippingAgentId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.ShippingAgentId).FirstOrDefault();
+            info.ShipModeId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.ShipModeId).FirstOrDefault();
+            info.VesselName = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.VesselName).FirstOrDefault();
+            info.Voyage = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.Voyage).FirstOrDefault();
+            info.PorId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.PorId).FirstOrDefault();
+            info.PorEtd = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.PorEtd).FirstOrDefault();
+            info.PolId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.PolId).FirstOrDefault();
+            info.PolEtd = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.PolEtd).FirstOrDefault();
+            info.PodId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.PodId).FirstOrDefault();
+            info.PodEta = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.PodEta).FirstOrDefault();
+            info.DelId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.DelId).FirstOrDefault();
+            info.DelEta = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.DelEta).FirstOrDefault();
+            info.FdestId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.FdestId).FirstOrDefault();
+            info.FdestEta = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.FdestEta).FirstOrDefault();
+            info.OfficeId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.OfficeId).FirstOrDefault();
+            info.EmptyPickupId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.EmptyPickupId).FirstOrDefault();
+
+            return Json(new JsonResult(info));
+        }
     }
 }
