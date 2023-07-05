@@ -140,10 +140,12 @@
                             $.ajax({
                                 url: '/api/ImportExport/OceanExportAccountingHbl',
                                 type: 'GET',
-                                data: { Id: '@Model.Hid' }
+                                data: { Id: '@Model.Hid' },
+                                success: function(response) {
+                                    window.history.back();
+                                }
                             });
                         }
-                        //if (@Model.MethodType == 5) location.href = '/api/ImportExport/OceanExportAccountingHbl?Id=@Model.Hid';
                         break;
                     case 1:
                         abp.message.success('以草稿儲存成功', '系統訊息');
@@ -992,7 +994,77 @@
                             </abp-column>
                         </abp-row>
                     }
-
+                    @if (Model.InvoiceType == 4)
+                    {
+                        <abp-row>
+                            <abp-column size-md="_3">
+                                @*<label for="InvoiceNo" class="form-label">
+                            @L["Display:DCNo"]
+                            </label>
+                            <input type="text" name="InvoiceDto.InvoiceNo" id="InvoiceNo" value="@Model.InvoiceDto.InvoiceNo" />*@
+                                <abp-input asp-for="InvoiceDto.InvoiceNo" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.PostDate" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.OutstandingAmount" readonly="true" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.LastNo" readonly="true" />
+                            </abp-column>
+                        </abp-row>
+                        <abp-row>
+                            <abp-column size-md="_3">
+                                @*<label for="InvoiceNo" class="form-label">
+                            @L["Display:InvoiceCompanyIdDC"]
+                            </label>*@
+                                <abp-select asp-for="InvoiceDto.InvoiceCompanyId" asp-items="@Model.TradePartnerLookupList" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.InvoiceDate" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.PaidAmount" readonly="true" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                @*<label for="InvoiceNo" class="form-label">
+                            @L["Display:LastDate"]
+                            </label>
+                            <input type="text" name="InvoiceDto.LastDate" id="LastDate" value="@Model.InvoiceDto.InvoiceNo" readonly />*@
+                                <abp-input asp-for="InvoiceDto.LastDate" />
+                            </abp-column>
+                        </abp-row>
+                        <abp-row>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.CustomerRefNo" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.DueDate" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.ProfitShare" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                @await Component.InvokeAsync(typeof(DropdownComponent),new ComponentData { Name = "InvoiceDto.IncotermsId", AspItems = @Model.SysCodeLookupList, IsShowLabel = true, FieldName = "IncotermsId" })
+                                @*<abp-select asp-for="InvoiceDto.IncotermsId" asp-items="@Model.SysCodeLookupList" />*@
+                            </abp-column>
+                        </abp-row>
+                        <abp-row>
+                            <abp-column size-md="_6">
+                                <label for="Memorandum" class="form-label">@L["Memorandum"]</label>
+                                <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="Btn:CopyFromSpecification()">@L["Btn:CopyFromSpecification"]</abp-button>
+                                <textarea name="InvoiceDto.Memorandum" id="Memorandum" class="form-control"></textarea>
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.IsAmountConfirmed" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CcyRateSourceId", FieldName = "CcyRateSourceId",DefaultValue="" , IsShowLabel = true , IsRequired = false })*@
+                                <abp-select asp-for="InvoiceDto.CcyRateSourceId" asp-items="@Model.SysCodeLookupList" style="width:230px" />
+                            </abp-column>
+                        </abp-row>
+                    }
                     <abp-row><abp-column>&nbsp;</abp-column></abp-row>
                     <abp-row>
                         <abp-column>

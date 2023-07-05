@@ -293,12 +293,12 @@ namespace Dolphin.Freight.Web.Controllers
             {
                 foreach (var dto in invoiceDtos)
                 {
-                    switch (dto.InvoiceType)
+                     switch (dto.InvoiceType)
                     {
                         default:
                             model.h0invoiceDtos.Add(dto);
                             break;
-                        case 1:
+                        case 4:
                             model.h1invoiceDtos.Add(dto);
                             break;
                         case 3:
