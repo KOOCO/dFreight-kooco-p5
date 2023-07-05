@@ -431,6 +431,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             var Vessels = await _vesselScheduleAppService.GetListAsync(new QueryVesselScheduleDto());
 
+            info.CarrierId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.MblCarrierId).FirstOrDefault();
             info.HblAgentId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.MblOverseaAgentId).FirstOrDefault();
             info.FreightTermForBuyerId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.FreightTermId).FirstOrDefault();
             info.FreightTermForSalerId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.FreightTermId).FirstOrDefault();
