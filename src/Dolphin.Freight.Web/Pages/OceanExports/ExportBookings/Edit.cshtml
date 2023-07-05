@@ -434,7 +434,7 @@
                                         <abp-card-body style="background:#eeeeee;">
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ReferenceId", AspItems = Model.ReferenceLookupList, IsShowLabel = true, FieldName = @L["ReferenceId"], SelectType = 0, ShowFiledContentValue = Model.ExportBooking.ReferenceNo })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ReferenceId", AspItems = Model.ReferenceLookupList, IsShowLabel = true, FieldName = @L["ReferenceId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ReferenceId)})
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
