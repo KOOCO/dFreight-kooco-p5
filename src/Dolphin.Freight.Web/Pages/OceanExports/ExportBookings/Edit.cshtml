@@ -1,10 +1,12 @@
 ﻿@page
 @using Dolphin.Freight.Localization
+@using Dolphin.Freight.Web.CommonService
 @using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Dolphin.Freight.Web.Pages.Components
 @using Microsoft.Extensions.Localization
 @model Dolphin.Freight.Web.Pages.OceanExports.ExportBookings.EditModel
 @inject IStringLocalizer<FreightResource> L
+@inject IDropdownService _dropdown;
 @section scripts
     {
     <script type="text/javascript">
@@ -423,7 +425,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.CancelReason", AspItems = Model.CancelReasonLookupList, IsShowLabel = true, FieldName = @L["CancelReason"], SelectType = 0, ShowFiledContentValue = Model.ExportBooking.CancelReason })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.CancelReason", AspItems = _dropdown.CancelReasonLookupList, IsShowLabel = true, FieldName = @L["CancelReason"], SelectType = 0, ShowFiledContentValue = Model.ExportBooking.CancelReason })
                                                 </abp-column>
                                             </abp-row>
                                         </abp-card-body>
