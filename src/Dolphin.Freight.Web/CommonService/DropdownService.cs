@@ -247,7 +247,7 @@ namespace Dolphin.Freight.Web.CommonService
         {
             var lookUp = await _ajaxDropdownAppService.GetSysCodeDtosByTypeAsync(new QueryDto() { QueryType = "CancelReason" });
 
-            return lookUp.Select(x => new SelectListItem(x.CodeValue, x.Id.ToString(), false)).ToList();
+            return lookUp.Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false)).ToList();
         }
         #endregion
 

@@ -104,7 +104,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<List<VesselScheduleDto>> GetListAsync(QueryVesselScheduleDto query)
         {
-            var Ports = await _portRepository.GetListAsync();
+            var Ports = await _portsManagementAppService.QueryListAsync();
             Dictionary<Guid, string> pdictionary = new Dictionary<Guid, string>();
             if (Ports != null)
             {
