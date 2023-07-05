@@ -163,9 +163,11 @@
                             initializeDropdownSearch('AirExportHawbDto_ServiceTermEnd');
                             initializeDropdownSearch('AirExportHawbDto_Customer'); 
                             initializeDropdownSearch('AirExportHawbDto_DepartureId');
-                            initializeDropdownSearch('AirExportHawbDto_DestinationId');
+                            initializeDropdownSearch('AirExportHawbDto_DestinationId'); //AirExportHawbDto_OverseaAgent
+                            initializeDropdownSearch('AirExportHawbDto_OverseaAgent');
                         },500)
-                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
+                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white');
+                        window.location.href.toLowerCase().includes('createmawb') && $('#hblCard').find('#ActionDrop').hide();
                         Swal.clickCancel();
                     })
 
@@ -211,7 +213,6 @@
         }
 
         $('#addHBtn').on('click', function () {
-            debugger;
             if ($('#mawbDiv')[0].classList.contains('show')) {
                 $('#btnMawbCollapse').click();
             }
@@ -379,7 +380,7 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-row>
-                                        <abp-column size-md="_3">
+                                        <abp-column size-md="_3" class="d-flex">
                                             Wtval
                                         </abp-column>
                                         <abp-column>
