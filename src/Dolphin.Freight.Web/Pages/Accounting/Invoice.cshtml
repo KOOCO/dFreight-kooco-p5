@@ -142,7 +142,9 @@
                                 type: 'GET',
                                 data: { Id: '@Model.Hid' },
                                 success: function(response) {
-                                    window.history.back();
+                                    dolphin.freight.importExport.oceanExports.oceanExportHbl.get('@Model.Hid').done(function (res) { 
+                                        location.href = '/OceanExports/EditModal3?Id='+res.mblId+'';
+                                    });
                                 }
                             });
                         }
