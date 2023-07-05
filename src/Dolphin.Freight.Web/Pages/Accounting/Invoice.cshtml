@@ -136,6 +136,14 @@
                         if (@Model.MethodType == 2) location.href = '/AirImports/EditModal3?Id=@Model.Mid';
                         if (@Model.MethodType == 3) location.href = '/AirExports/EditModal3?Id=@Model.MawbId';
                         if (@Model.MethodType == 4) location.href = '/OceanExports/ExportBookings/Edit2?Id=@Model.Bid';
+                        if (@Model.MethodType == 5) {
+                            $.ajax({
+                                url: '/api/ImportExport/OceanExportAccountingHbl',
+                                type: 'GET',
+                                data: { Id: '@Model.Hid' }
+                            });
+                        }
+                        //if (@Model.MethodType == 5) location.href = '/api/ImportExport/OceanExportAccountingHbl?Id=@Model.Hid';
                         break;
                     case 1:
                         abp.message.success('以草稿儲存成功', '系統訊息');
@@ -866,6 +874,66 @@
                         </abp-row>
                     }
                     @if (Model.InvoiceType == 2)
+                    {
+                        <abp-row>
+                            <abp-column size-md="_3">
+                                <abp-select asp-for="InvoiceDto.ShipToId" asp-items="@Model.TradePartnerLookupList" />
+                                <abp-input type="hidden" asp-for="InvoiceDto.InvoiceCompanyId" id="mInvoiceCompanyId" value="@Model.InvoiceDto.InvoiceCompanyId" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.PostDate" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.OutstandingAmount" readonly="true" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.LastNo" readonly="true" />
+                            </abp-column>
+                        </abp-row>
+                        <abp-row>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.InvoiceNo" readonly="true" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.InvoiceDate" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.PaidAmount" readonly="true" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.LastDate" abp-data-datepicker="false" readonly="true" />
+                            </abp-column>
+                        </abp-row>
+                        <abp-row>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.SystemNo" readonly="true" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.DueDate" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-select asp-for="InvoiceDto.IncotermsId" asp-items="@Model.SysCodeLookupList" />
+                            </abp-column>
+                            @*<abp-column size-md="_6">
+
+                        </abp-column>*@
+                        </abp-row>
+                        <abp-row>
+                            <abp-column size-md="_6">
+                                <label for="Memorandum" class="form-label">@L["Memorandum"]</label>
+                                <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="Btn:CopyFromSpecification()">@L["Btn:CopyFromSpecification"]</abp-button>
+                                <textarea name="InvoiceDto.Memorandum" id="Memorandum" class="form-control"></textarea>
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceDto.IsAmountConfirmed" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-select asp-for="InvoiceDto.CcyRateSourceId" asp-items="@Model.SysCodeLookupList" style="width:230px" />
+                            </abp-column>
+                        </abp-row>
+                    }
+
+                    @if (Model.InvoiceType == 3)
                     {
                         <abp-row>
                             <abp-column size-md="_3">
