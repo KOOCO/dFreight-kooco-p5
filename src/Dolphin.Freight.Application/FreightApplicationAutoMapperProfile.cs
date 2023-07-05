@@ -48,6 +48,8 @@ using Dolphin.Freight.Settings.CurrencySetting;
 using Dolphin.Freight.TradePartners.DefaultFreight;
 using Dolphin.Freight.ImportExport.Configuration;
 using Dolphin.Freight.Account.Languages;
+using Volo.Abp.Users;
+using Volo.Abp.Identity;
 
 namespace Dolphin.Freight;
 
@@ -278,5 +280,8 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<Language, LanguagesDto>();
         CreateMap<CreateUpdateLanguageDto, Language>();
         CreateMap<LanguagesDto, CreateUpdateLanguageDto>();
+
+        CreateMap<IdentityUserDto, UserData>();
+        CreateMap<UserData, IdentityUserDto>();
     }
 }
