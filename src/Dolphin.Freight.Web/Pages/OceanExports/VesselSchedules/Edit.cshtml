@@ -1,11 +1,12 @@
 ﻿@page
-
+@using Dolphin.Freight.Web.CommonService
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Web.Pages.Components
 @using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Microsoft.Extensions.Localization
 @model Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules.EditModel
 @inject IStringLocalizer<FreightResource> L
+@inject IDropdownService _dropdown;
 @section scripts
     {
     <script type="text/javascript">
@@ -321,13 +322,13 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PolId", AspItems = Model.PortLookupList, IsShowLabel = true, FieldName = "PolId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.PolId.ToString() })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.PolId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PolEtd" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PorId", AspItems = Model.PortLookupList, IsShowLabel = true, FieldName = "PorId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PorId.ToString() })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PorId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PorEtd" />
@@ -337,13 +338,13 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PodId", AspItems = Model.PortLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PodId.ToString() })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PodId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PodEta" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DelId", AspItems = Model.PortLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.DelId.ToString() })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.DelId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.DelEta" />
@@ -352,7 +353,7 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FdestId", AspItems = Model.PortLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FdestId.ToString() })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FdestId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.FdestEta" />
