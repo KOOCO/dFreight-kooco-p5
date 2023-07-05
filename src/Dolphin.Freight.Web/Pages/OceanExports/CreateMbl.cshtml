@@ -60,6 +60,21 @@
                 }
             });
 
+            $('#OceanExportMbl_IsReleased').on('change', function (e, val) { 
+                if (this.checked) { 
+                    $('#OceanExportMbl_MblReleaseDate').removeAttr('disabled');
+                    $('#OceanExportMbl_ReleaseById').removeAttr('disabled');
+                    $("#OceanExportMbl_MblReleaseDate").datepicker("setDate", new Date());
+                    $('#releasedBy').val('@(CurrentUser.Name + " " + CurrentUser.SurName)');
+                } 
+                else{
+                    $('#OceanExportMbl_MblReleaseDate').attr('disabled', 'disabled');
+                    $("#OceanExportMbl_MblReleaseDate").datepicker("setDate", null);
+                    $('#OceanExportMbl_ReleaseById').val(null);
+                    $('#releasedBy').val(null);
+                }
+            })
+
         });
         var cardIndex = 0;
         function addHBtn() {
@@ -391,10 +406,12 @@
                                 </abp-column>
                                 <abp-column size-md="_3" class="customForm">
                                     <label for="CareOfId" class="form-label">@L["IsReleased"]<input type="checkbox" name="OceanExportMbl.IsReleased" id="OceanExportMbl_IsReleased" value="true" /></label>
-                                    <abp-input asp-for="OceanExportMbl.MblReleaseDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <input asp-for="OceanExportMbl.MblReleaseDate" class="form-control form-label" type="date" disabled />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.ReleaseById" value="@string.Concat(CurrentUser.Name, " ", CurrentUser.SurName)" readonly="true"></abp-input>
+                                    <label asp-for="OceanExportMbl.ReleaseById"></label>
+                                    <input id="releasedBy" class="form-control" readonly />
+                                    <input type="hidden" asp-for="OceanExportMbl.ReleaseById" value="@CurrentUser.Id" disabled />
                                 </abp-column>
                             </abp-row>
                             <abp-row>

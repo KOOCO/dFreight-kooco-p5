@@ -28,6 +28,8 @@
 
             //HB/l dropdown
 
+            var isPageLoad = true;
+
             var showMsg = '@Model.ShowMsg';
             if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
             var isLocked = '@Model.OceanExportMbl.IsLocked';
@@ -44,6 +46,11 @@
             if ('@ViewData["HAVEHBL"]' !== "Y") {
                 $("#RP").hide();
             }
+          
+            $("#OceanExportMbl_MblReleaseDate").datepicker("setDate", new Date('@Model.OceanExportMbl.MblReleaseDate').toLocaleDateString());
+
+            console.log('released by ' + '@Model.OceanExportMbl.ReleaseBy')
+
         });
         function addHBtn() {
             var url = "/OceanExports/EditModal?Id=@Model.Id&NewHbl=1";
@@ -740,14 +747,14 @@
                                     <label for="OceanExportMbl_IsBookingAgent" class="">@L["IsBookingAgent"]<input type="checkbox" name="OceanExportMbl.IsBookingAgent" id="OceanExportMbl_IsBookingAgent" value="true" checked="" /></label>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="CareOfId" class="">@L["IsReleased"]<input type="checkbox" name="OceanExportMbl.IsReleased" id="OceanExportMbl_IsReleased" value="true" /></label>
-                                    <abp-input asp-for="OceanExportMbl.MblReleaseDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <label for="CareOfId" class="">@L["IsReleased"]<input type="checkbox" name="OceanExportMbl.IsReleased" id="OceanExportMbl_IsReleased" value="@(Model.OceanExportMbl.IsReleased? "true": "false")" @(Model.OceanExportMbl.IsReleased ? "checked" : "") disabled /></label>
+                                    <input asp-for="OceanExportMbl.MblReleaseDate" class="form-control form-label" type="date" readonly />
+                                    <input type="hidden" asp-for="OceanExportMbl.IsReleased" value="@Model.OceanExportMbl.ReleaseById" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">Release</label>
-                                    <select class="form-control ml-15" asp-for="OceanExportMbl.ReleaseById" disabled="true">
-                                        <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
-                                    </select>
+                                    <label asp-for="OceanExportMbl.ReleaseById"></label>
+                                    <input id="releasedBy" value="@(Model.OceanExportMbl.ReleaseBy?.Name + " " + Model.OceanExportMbl.ReleaseBy?.Surname)" class="form-control" readonly />
+                                    <input type="hidden" asp-for="OceanExportMbl.ReleaseById" value="@Model.OceanExportMbl.ReleaseById" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
