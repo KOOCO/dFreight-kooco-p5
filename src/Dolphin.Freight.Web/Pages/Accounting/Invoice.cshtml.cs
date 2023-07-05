@@ -292,7 +292,9 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                     case 2:
                         InvoiceDto.InvoiceNo = "AP" + s;
                         break;
-
+                    case 3:
+                        InvoiceDto.InvoiceNo = "AP" + s;
+                        break;
                 }
             }
 
