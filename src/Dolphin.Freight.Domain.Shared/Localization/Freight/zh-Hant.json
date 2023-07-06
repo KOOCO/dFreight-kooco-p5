@@ -1125,7 +1125,7 @@
     "ArrivalDate": "抵達日期",
     "Depature": "出發地",
     "Destination": "目的地",
-    "OverseaAgent": "收貨人(海外代理)",
+    "OverseaAgent": "海外代理",
 
 
     "Display:TradePartner:DefaultFreight:NavTab:OI": "海運進口",
@@ -1325,7 +1325,15 @@
     "TruckDeliveryPlace": "卡車交貨地",
     "AWBCancelledDate": "提單取消日期",
     "CacelledBy": "取消者",
-    "AddHAWB": "新增HAWB"
+    "AddHAWB": "新增HAWB",
+    "Consignee": "收貨人",
+    "ARBalance": "AR結餘",
+    "APBalance": "AP結餘",
+    "DCBalance": "DC結餘",
+    "Status": "狀態",
+    "Menu:AirExports.HawbList": "HAWB清單",
+    "Menu:AirExports": "空運出口"
+
 
 
 

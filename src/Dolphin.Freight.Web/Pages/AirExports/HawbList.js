@@ -118,25 +118,25 @@ $(function () {
                 },
                 {
                     //AR Balance
-                    title: l('AR Balance'),
+                    title: l('ARBalance'),
                     data: "overseaAgent",
                     defaultContent: ''
                 },
                 {
                     //A/P Balance
-                    title: l('A/P Balance'),
+                    title: l('APBalance'),
                     data: "overseaAgent",
                     defaultContent: ''
                 },
                 {
                     //D/C Balance
-                    title: l('D/C Balance'),
+                    title: l('DCBalance'),
                     data: "overseaAgent",
                     defaultContent: ''
                 },
                 {
                     //Booking No.
-                    title: l('Booking No.'),
+                    title: l('BookingNo'),
                     data: "overseaAgent",
                     defaultContent: ''
                 },
