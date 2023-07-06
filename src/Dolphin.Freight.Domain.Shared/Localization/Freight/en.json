@@ -254,6 +254,7 @@
         "Title:Basic": "Basic",
         "Title:Invoice": "Invoice",
 
+
         "Title:AccountingAR_Add": "A/R -Add",
         "Title:AccountingDC_Add": "D/C Note -Add",
         "Title:AccountingAP_Add": "A/P -Add",
@@ -343,6 +344,7 @@
         "Menu:AccountingAP": "A/P",
         "Menu:AccountingDC": "D/C",
         "Menu:BackToMbl": "Back to Mbl",
+
 
 
         //海運進口
@@ -1060,9 +1062,7 @@
         "NotifyId": "Notify",
         "Office": "Office",
         "CoShipper": "CoShipper",
-
-
-        "IsDirectMaster": "Direct Master",
+   "IsDirectMaster": "Direct Master",
         "AwbAcctCarrierId": "AWB Acct. Carrier ",
         "MawbOperatorId": "OP",
         "DepatureId": "Departure",
