@@ -48,6 +48,10 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// </summary>
         public string SoNo { get; set; }
         /// <summary>
+        /// ITN號碼
+        /// </summary>
+        public string ItnNo { get; set; }
+        /// <summary>
         /// 客戶參考編號
         /// </summary>
         public string CustomerRefNo { get; set; }
