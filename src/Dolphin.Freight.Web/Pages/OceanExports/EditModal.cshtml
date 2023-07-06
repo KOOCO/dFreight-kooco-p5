@@ -82,6 +82,23 @@
                 });
         }
 
+        function deleteMbl(){
+            var url = new URL(window.location.href);
+            var mblId = url.searchParams.get('Id');
+            abp.message.confirm(l('DeletionConfirmationMessage'))
+                .then(function (confirmed) {
+                    if(confirmed) {
+                        dolphin.freight.importExport.oceanExports.oceanExportMbl
+                            .delete(mblId)
+                            .then(function(){
+                                abp.message.success(l('SuccessfullyDeleted')).done(function () {
+                                    location.href = '/OceanExports/Index';
+                                });
+                            });
+                    }
+                })
+        }
+
         function getReportTelexrelease() {
             myWindow = window.open("@Url.Action("Telexrelease", "Docs", new { oceanExportMblId = Model.Id })", 'Telexrelease', 'width=1200,height=800');
             myWindow.focus()
@@ -457,7 +474,7 @@
                                     <a class='dropdown-item' href='javascript:void(0)'>
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                                     </a>
-                                    <a class='dropdown-item' href='javascript:void(0)'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="deleteMbl()">
                                         <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)'>
