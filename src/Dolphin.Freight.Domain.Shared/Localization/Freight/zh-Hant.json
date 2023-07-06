@@ -1112,7 +1112,7 @@
     "AwbCancelledDate": "取消日期",
     "AwbCancelledOpId": "取消者",
     "ReasonForCancel": "取消原因",
-    "BusinessReferredId": "業務推薦人",
+    "BusinessReferredId": "業務員",
     "OverseaAgentId": "海外代理",
     "OPId": "操作員",
     "BillToId": "收票人",
@@ -1305,7 +1305,28 @@
     "destinationAirportName": "目的地",
     "shipper": "託運人",
     "MawbId": "MAWB號碼",
-    "BuyingRateUnitType":""
+    "carrierTPName": "航空公司",
+    "ActualShipper": "託運人",
+    "CollectPrepaid": "運費到付/預付",
+    "Charge Amount": "計費金額",
+    "AccountingInformation": "會計資訊",
+    "Information": "資訊",
+    "WarehouseReceiptList": "倉儲收據清單",
+    "LoadFromWarehouse": "從倉庫載入",
+    "AutoSyncDimentions": "自動同步尺寸",
+    "HawbNo": "HAWB號碼",
+    "BookingNo": "S/O號碼",
+    "BookingDate": "S/O日期",
+    "ITNNo": "ITN號碼",
+    "BillTo": "收票人",
+    "IssuingCarrier": "海外代理",
+    "Departure": "出發地",
+    "TruckReceipt": "卡車收貨地",
+    "TruckDeliveryPlace": "卡車交貨地",
+    "AWBCancelledDate": "提單取消日期",
+    "CacelledBy": "取消者",
+    "AddHAWB": "新增HAWB"
+
 
 
 

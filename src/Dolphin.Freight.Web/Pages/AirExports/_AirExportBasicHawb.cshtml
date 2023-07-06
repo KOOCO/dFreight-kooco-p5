@@ -165,7 +165,7 @@
                 <abp-input asp-for="@Model.AirExportHawbDto.Sales" label="@L["sales"].Value"  />
             </abp-column>
             <abp-column size-md="_3">
-                <label asp-for="@Model.AirExportHawbDto.OPId" class="form-label">OP</label>
+                <label asp-for="@Model.AirExportHawbDto.OPId" class="form-label">@L["OP"]</label>
                 <input class="form-control form-control-sm" id="operator" type="text" value="@(_currentUser.Name + " " + _currentUser.SurName)" disabled />
             </abp-column>
             <abp-column size-md="_3">
@@ -181,10 +181,10 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.DestinationId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = @L["Destination"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.DestinationId) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.CargoPickup", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "Truck Receipt", ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.CargoPickup) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.CargoPickup", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "TruckReceipt", ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.CargoPickup) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.DeliveryTo", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "Truck Delivery Place", ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.DeliveryTo) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.DeliveryTo", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "TruckDeliveryPlace", ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.DeliveryTo) })
             </abp-column>
         </abp-row>
         <!--第六列-->
@@ -408,8 +408,8 @@
                     <th><input type="checkbox" />
                         <th>@L["ReceiptNo"]</th>
                         <th>@L["Length"]</th>
-                        <th>@L["Width "]</th>
-                        <th>@L["Height "]</th>
+                        <th>@L["Width"]</th>
+                        <th>@L["Height"]</th>
                         <th>@L["Dimention"]</th>
                         <th>@L["TOTALPCS"]</th>
                         <th>@L["AvailablePCS"]</th>
@@ -422,9 +422,9 @@
                     </thead>
                     <tbody id="warhouseBody">
                         <tr>
-                            <td>Load from warhouse</td>
-                            <td><input type="checkbox" />Auto-sync package, weight and measuremennts</td>
-                            <td><input type="checkbox" />Auto-sync dimentions</td>
+                                <td>@L["LoadFromWarehouse"]</td>
+                                <td><input type="checkbox" />@L["ASPWM"]</td>
+                                <td><input type="checkbox" />@L["AutoSyncDimentions"]</td>
                         </tr>
                     </tbody>
                 </abp-table>
