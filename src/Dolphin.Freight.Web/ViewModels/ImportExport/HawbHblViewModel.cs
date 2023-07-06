@@ -1,5 +1,4 @@
 using Dolphin.Freight.ImportExport.AirImports;
-﻿using Dolphin.Freight.ImportExport.AirImports;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -9,9 +8,7 @@ using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ImportExport.OceanImports;
 using Dolphin.Freight.ImportExport.Attachments;
 using Dolphin.Freight.Accounting.Invoices;
-using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Web.Pages.AirImports;
-using Dolphin.Freight.ImportExport.Attachments;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 
