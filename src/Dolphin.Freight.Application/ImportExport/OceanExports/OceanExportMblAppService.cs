@@ -35,8 +35,9 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         private readonly PortsManagementAppService _portRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IIdentityUserAppService _identityUserAppService;
+        private readonly IRepository<OceanExportHbl, Guid> _oceanExportHblRepository;
         public OceanExportMblAppService(IRepository<OceanExportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository, PortsManagementAppService portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
-            IIdentityUserAppService identityUserAppService)
+            IIdentityUserAppService identityUserAppService, IRepository<OceanExportHbl, Guid> oceanExportHblRepository)
             : base(repository)
         {
             _repository = repository;
@@ -45,6 +46,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             _portRepository = portRepository;
             _tradePartnerRepository = tradePartnerRepository;
             _identityUserAppService = identityUserAppService;
+            _oceanExportHblRepository = oceanExportHblRepository;
             /*
             GetPolicyName = OceanExportPermissions.OceanExportMbls.Default;
             GetListPolicyName = OceanExportPermissions.OceanExportMbls.Default;
@@ -155,6 +157,15 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             var rs = ObjectMapper.Map<OceanExportMbl, CreateUpdateOceanExportMblDto>(oceanExportMbl);
             
             return rs;
+        }
+
+        public override async Task DeleteAsync(Guid Id)
+        {
+            var hbls = await _oceanExportHblRepository.GetListAsync();
+            var ids = hbls.Where(w => w.MblId == Id).Select(s => s.Id);
+
+            await Repository.DeleteAsync(Id);
+            await _oceanExportHblRepository.DeleteManyAsync(ids);
         }
     }
 }
