@@ -660,10 +660,15 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.DeliveryToId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "Delivery", SelectType = 1, ShowFiledContentValue = Model.OceanExportMbl.DeliveryToId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PreCarriageVesselNameId", AspItems = _dropdown.PreCarriageVesselLookupList, IsShowLabel = true, FieldName = "PreCarriageVesselNameId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PreCarriageVesselNameId) })
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.PrepreCarriageVoyage" />
+                                    <abp-row>
+                                        <label asp-for="OceanExportMbl.PreCarriageVesselNameId"></label>
+                                        <abp-column size-md="_7">
+                                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PreCarriageVesselNameId", AspItems = _dropdown.PreCarriageVesselLookupList, IsShowLabel = false, FieldName = "PreCarriageVesselNameId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PreCarriageVesselNameId) })
+                                        </abp-column>
+                                        <abp-column size-md="_5" class="pl-0">
+                                            <input class="form-control form-control-sm" type="text" value="@Model.OceanExportMbl.PrepreCarriageVoyage" name="OceanExportMbl.PrepreCarriageVoyage" />
+                                        </abp-column>
+                                    </abp-row>
                                 </abp-column>
                             </abp-row>
                             <abp-row>
