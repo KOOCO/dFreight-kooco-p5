@@ -746,10 +746,9 @@
                                 <abp-column size-md="_3">
                                     <label for="OceanExportMbl_IsBookingAgent" class="">@L["IsBookingAgent"]<input type="checkbox" name="OceanExportMbl.IsBookingAgent" id="OceanExportMbl_IsBookingAgent" value="true" checked="" /></label>
                                 </abp-column>
-                                <abp-column size-md="_3">
-                                    <label for="CareOfId" class="">@L["IsReleased"]<input type="checkbox" name="OceanExportMbl.IsReleased" id="OceanExportMbl_IsReleased" value="@(Model.OceanExportMbl.IsReleased? "true": "false")" @(Model.OceanExportMbl.IsReleased ? "checked" : "") disabled /></label>
+                                <abp-column size-md="_3" style="pointer-events: none;">
+                                    <label for="CareOfId" class="">@L["IsReleased"]<input type="checkbox" name="OceanExportMbl.IsReleased" id="OceanExportMbl_IsReleased" value="true" @(Model.OceanExportMbl.IsReleased ? "checked" : "") /></label>
                                     <input asp-for="OceanExportMbl.MblReleaseDate" class="form-control form-label" type="date" readonly />
-                                    <input type="hidden" asp-for="OceanExportMbl.IsReleased" value="@Model.OceanExportMbl.ReleaseById" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label asp-for="OceanExportMbl.ReleaseById"></label>
