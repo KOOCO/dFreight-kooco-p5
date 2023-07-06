@@ -258,6 +258,7 @@
 </div>
 <div class="page-content-area">
     <div class="board-wrap">
+    <div class="board-wrap">
         <form abp-model="MawbModel" submit-button="true" data-ajaxForm="true" id="createForm">
             <abp-row>
                 <abp-column size-md="_9" id="parentCard">
@@ -266,7 +267,7 @@
                         <!-- 標題區域 -->
                         <abp-card-header style="background:#555555;color:#FFFFFF;">
                             <abp-card-title>
-                                MAWB Information
+                                @L["MAWBInformation"]
                             </abp-card-title>
 
                             <button type="button" id="btnMawbCollapse" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#mawbDiv" aria-expanded="true" aria-controls="mawbDiv">
@@ -333,7 +334,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.CoLoaderId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "CoLoaderId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.CoLoaderId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label asp-for="@Model.MawbModel.MawbOperatorId" class="form-label">OP</label>
+                                    <label asp-for="@Model.MawbModel.MawbOperatorId" class="form-label">@L["OP"]</label>
                                     <input class="form-control form-control-sm" type="text" value="@(_currentUser.Name + " " + _currentUser.SurName)" disabled />
                                 </abp-column>
                             </abp-row>
@@ -343,7 +344,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DepatureId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DepatureId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.DepatureId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label asp-for="MawbModel.DepatureDate" class="redStar form-label">Depature Date</label>
+                                    <label asp-for="MawbModel.DepatureDate" class="redStar form-label">@L["Depature Date"]</label>
                                     <span asp-validation-for="MawbModel.DepatureDate" class="text-danger"></span>
                                     <input asp-for="MawbModel.DepatureDate" class="form-control" />
                                 </abp-column>
@@ -353,7 +354,7 @@
                                 <abp-column size-md="_3">
                                     <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapseRoute" role="button" aria-expanded="false" aria-controls="collapseRoute">
                                         <i class="fa fa-plane" aria-hidden="true"></i>
-                                        Add Connecting Flight
+                                       @L["AddConnectingFlight"] 
                                     </a>
                                 </abp-column>
                             </abp-row>
@@ -505,42 +506,42 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <th>Package</th>
+                                                        <th>@L["Package"]</th>
                                                         <td><input asp-for="MawbModel.Package" class="form-control" /></td>
                                                         <td colspan="3">
                                                             @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.PackageUnitLookupList", AspItems = _dropdown.PackageUnitLookupList, FieldName = "MawbPackageUnitId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.MawbPackageUnitId) })
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th>Buying Rate</th>
+                                                        <th>@L["BuyingRate"]</th>
                                                         <td><input asp-for="MawbModel.BuyingRate" class="form-control" /></td>
-                                                        <td>per</td>
+                                                        <td>@L["per"]</td>
                                                         <td>
                                                             @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BuyingRateUnitType", AspItems = Html.GetEnumSelectList(typeof(RateUnitType)).ToList(), FieldName = "MawbCarrierId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.BuyingRateUnitType) })
                                                         </td>
                                                         <td></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>Selling Rate</th>
+                                                        <th>@L["SellingRate"]</th>
                                                         <td><input asp-for="MawbModel.SellingRate" class="form-control" /></td>
-                                                        <td>per</td>
+                                                        <td>@L["per"]</td>
                                                         <td>
                                                             @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.SellingRateUnitType", AspItems = Html.GetEnumSelectList(typeof(RateUnitType)).ToList(), FieldName = "SellingRateUnitType", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.SellingRateUnitType) })
                                                         </td>
                                                         <td></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>Volume Weight</th>
+                                                        <th>@L["VolumeWeight"]</th>
                                                         <td><input asp-for="MawbModel.VolumeWeightKg" class="form-control" /></td>
-                                                        <td>KG</td>
+                                                        <td>@L["KG"]</td>
                                                         <td>
                                                             <input asp-for="MawbModel.VolumeWeightCbm" class="form-control" />
                                                         </td>
-                                                        <td>CBM</td>
+                                                        <td>@L["CBM"]</td>
                                                     </tr>
                                                     <tr>
                                                         <th></th>
-                                                        <td colspan="4"><abp-button size="Small" button-type="Primary" text="Set Dimensions" disabled="true" icon="pencil-square" /></td>
+                                                        <td colspan="4"><abp-button size="Small" button-type="Primary" text="@L["SetDimensions"]" disabled="true" icon="pencil-square" /></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -550,39 +551,39 @@
                                                 <thead>
                                                     <tr>
                                                         <th></th>
-                                                        <th>KG</th>
-                                                        <th>LB</th>
-                                                        <th>Amount</th>
+                                                        <th>@L["KG"]</th>
+                                                        <th>@L["LB"]</th>
+                                                        <th>@L["Amount"]</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <th>Gross Weight</th>
+                                                        <th>@L["GrossWeight"]</th>
                                                         <td><input asp-for="MawbModel.GrossWeightKg" class="form-control" id="GrossWeightKg" /></td>
                                                         <td><input asp-for="MawbModel.GrossWeightLb" class="form-control" id="GrossWeightLb" /></td>
                                                         <td><input asp-for="MawbModel.GrossWeightAmount" class="form-control" /></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>AWB Gross Weight</th>
+                                                        <th>@L["AwbGrossWeight"]</th>
                                                         <td><input asp-for="MawbModel.AwbGrossWeightKg" class="form-control" id="AwbGrossWeightKg" /></td>
                                                         <td><input asp-for="MawbModel.AwbGrossWeightLb" class="form-control" id="AwbGrossWeightLb" /></td>
                                                         <td><input asp-for="MawbModel.AwbGrossWeightAmount" class="form-control" /></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>Chargeable Weight</th>
+                                                        <th>@L["ChargeableWeight"]</th>
                                                         <td><input asp-for="MawbModel.ChargeableWeightKg" class="form-control" id="ChargeableWeightKg" /></td>
                                                         <td><input asp-for="MawbModel.ChargeableWeightLb" class="form-control" id="ChargeableWeightLb" /></td>
                                                         <td><input asp-for="MawbModel.ChargeableWeightAmount" class="form-control" /></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>AWB Chargeable Weight</th>
+                                                        <th>@L["AwbChargeableWeight"]</th>
                                                         <td><input asp-for="MawbModel.AwbChargeableWeightKg" class="form-control" id="AwbChargeableWeightKg" /></td>
                                                         <td><input asp-for="MawbModel.AwbChargeableWeightLb" class="form-control" id="AwbChargeableWeightLb" /></td>
                                                         <td><input asp-for="MawbModel.AwbChargeableWeightAmount" class="form-control" /></td>
                                                     </tr>
                                                     <tr>
                                                         <th></th>
-                                                        <td colspan="3"><abp-button size="Small" button-type="Primary" text="Sun Package & Weight" disabled="true" icon="pencil-square" /></td>
+                                                        <td colspan="3"><abp-button size="Small" button-type="Primary" text="@L["SunPackageWeight"]" disabled="true" icon="pencil-square" /></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -599,7 +600,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeFrom", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsRequired = true, IsShowLabel = true, FieldName = "ServiceTermTypeFrom", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.ServiceTermTypeFrom) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeTo", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsRequired = true, IsShowLabel = true, FieldName = "~", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.ServiceTermTypeTo) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeTo", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsRequired = true, IsShowLabel = true, FieldName = "ServiceTermTypeTo", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.ServiceTermTypeTo) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DisplayUnit", AspItems = Html.GetEnumSelectList(typeof(DisplayUnitType)).ToList(), IsRequired = true, IsShowLabel = true, FieldName = "DisplayUnit", ShowFiledContentValue = Convert.ToString(Model.MawbModel.DisplayUnit) })
@@ -638,7 +639,7 @@
                 <abp-column size-md="_3">
                     <div class="card-wrap">
                         <button class="btn btn-block btn-add" type="button" id="addHBtn">
-                            <i class="fa-solid fa-plus"></i>Add HAWB
+                                <i class="fa-solid fa-plus"></i>@L["AddHAWB"]
                         </button>
                         <div id="hblCards" class="hbl_sm_area">
                         </div>
