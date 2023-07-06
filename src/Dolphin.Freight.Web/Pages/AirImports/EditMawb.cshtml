@@ -94,7 +94,6 @@
             });
 
             $('#addHBtn').on('click', function () {
-                debugger;
                 if ($('#mawbDiv')[0].classList.contains('show')) {
                     $('#btnMawbCollapse').click();
                 }
@@ -184,7 +183,6 @@
         $('#hblMainCard').append('#mawbCard');
 
         function onHawbCardClick(e, hawbId) {
-            debugger;
             var element = e.currentTarget || e.target || e.srcElement;
             var hawbNo = element.id.split('_')[1];
 
@@ -225,6 +223,10 @@
                             initializeDropdownSearch('HawbModel_Incoterms');
                             initializeDropdownSearch('HawbModel_ServiceTermStart');
                             initializeDropdownSearch('HawbModel_ServiceTermTo');
+                            initializeDropdownSearch('HawbModel_Notify');
+                            initializeDropdownSearch('HawbModel_Customer');
+                            initializeDropdownSearch('HawbModel_BillToId');
+                            initializeDropdownSearch('HawbModel_CustomsBroker');
                             initializeDropdownSearch('HawbModel_Trucker');
                             initializeDropdownSearch('HawbModel_Freight');
                             initializeDropdownSearch('HawbModel_FreightLocation');
