@@ -30,19 +30,14 @@
             // Awb Cancel Area
             $("#checkboxAwbCancelled").change(function () {
                 if (this.checked) {
-                    console.log("here");
-                    $("#AwbCancelledDate").removeAttr("disabled");
-                    $("#AwbCancelledOpId").removeAttr("disabled");
+                    $("#AwbCancelledDate").removeAttr("disabled").val(getDate());
+                    $("#AwbCancelledOpId").attr("disabled", "disabled").val('@(CurrentUser.Name + " " + CurrentUser.SurName)');
                     $("#ReasonForCancel").removeAttr("disabled");
-                    $("#AwbCancelledDate").val(getDate());
                 } else {
-                    $("#AwbCancelledDate").attr("disabled", "disabled");
-                    $("#AwbCancelledOpId").attr("disabled", "disabled");
+                    $("#AwbCancelledDate").attr("disabled", "disabled").val('');
+                    $("#AwbCancelledOpId").attr("disabled", "disabled").val('');
+                    $('#ReasonForCancel option:selected').removeAttr('selected');
                     $("#ReasonForCancel").attr("disabled", "disabled");
-                    $("#AwbCancelledDate").val('');
-                    $("#AwbCancelledOpId").val('');
-                    $("#ReasonForCancel").val('');
-
                 }
             });
 
@@ -860,22 +855,39 @@
                             </abp-row>
                             <!--第12列 Awb取消Area-->
                             <abp-row>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledDate" class="form-select-sm form-control" disabled id="AwbCancelledDate" />
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledOpId" disabled id="AwbCancelledOpId" />
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    <abp-select asp-for="@Model.AirExportMawbDto.ReasonForCancel" asp-items="Html.GetEnumSelectList(typeof(ReasonForCancelType))" class="form-select-sm form-control" disabled="true" id="ReasonForCancel">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                    </abp-select>
-                                </abp-column>
+                                @if (Model.AirExportMawbDto.IsAwbCancelled == true)
+                                {
+                                    <abp-column size-md="_3">
+                                        <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledDate" class="form-select-sm form-control" id="AwbCancelledDate" />
+                                    </abp-column>
+                                    <abp-column size-md="_3">
+                                        <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledOpId" value="@(CurrentUser.Name + " " + CurrentUser.SurName)" disabled id="AwbCancelledOpId" />
+                                    </abp-column>
+                                    <abp-column size-md="_3">
+                                        <abp-select asp-for="@Model.AirExportMawbDto.ReasonForCancel" asp-items="Html.GetEnumSelectList(typeof(ReasonForCancelType))" class="form-select-sm form-control" disabled="false" id="ReasonForCancel">
+                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                                        </abp-select>
+                                    </abp-column>
+                                }
+                                else
+                                {
+                                    <abp-column size-md="_3">
+                                        <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledDate" class="form-select-sm form-control" disabled id="AwbCancelledDate" />
+                                    </abp-column>
+                                    <abp-column size-md="_3">
+                                        <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledOpId" disabled id="AwbCancelledOpId" />
+                                    </abp-column>
+                                    <abp-column size-md="_3">
+                                        <abp-select asp-for="@Model.AirExportMawbDto.ReasonForCancel" asp-items="Html.GetEnumSelectList(typeof(ReasonForCancelType))" class="form-select-sm form-control" disabled="true" id="ReasonForCancel">
+                                            <option value="" selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                                        </abp-select>
+                                    </abp-column>
+                                }
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.BusinessReferredId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.BusinessReferredId.ToString(), IsShowLabel = true, FieldName = "BusinessReferredId" })
-                                   @* <abp-select asp-for="@Model.AirExportMawbDto.BusinessReferredId" asp-items="@Model.TradePartnerLookupList" size="Small">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                    </abp-select>*@
+                                    @* <abp-select asp-for="@Model.AirExportMawbDto.BusinessReferredId" asp-items="@Model.TradePartnerLookupList" size="Small">
+                                <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                                </abp-select>*@
                                 </abp-column>
                             </abp-row>
                             <abp-row class="mt-4">
