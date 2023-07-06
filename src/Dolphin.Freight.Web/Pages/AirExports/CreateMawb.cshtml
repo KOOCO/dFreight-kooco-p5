@@ -344,7 +344,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DepatureId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DepatureId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.DepatureId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label asp-for="MawbModel.DepatureDate" class="redStar form-label">@L["Depature Date"]</label>
+                                    <label asp-for="MawbModel.DepatureDate" class="redStar form-label">@L["DepatureDate"]</label>
                                     <span asp-validation-for="MawbModel.DepatureDate" class="text-danger"></span>
                                     <input asp-for="MawbModel.DepatureDate" class="form-control" />
                                 </abp-column>
