@@ -346,6 +346,7 @@
                 data: { refNo: refNo },
                 success: function (result) {
                     debugger;
+                    $('#ExportBooking_CarrierId').val(result.value.carrierId).trigger('change');
                     $('#ExportBooking_ShippingAgentId').val(result.value.shippingAgentId).trigger('change');
                     $('#ExportBooking_ShipModeId').val(result.value.shipModeId).trigger('change');
                     $('#ExportBooking_VesselName').val(result.value.vesselName);
@@ -364,7 +365,7 @@
                     $('#ExportBooking_FreightTermForSalerId').val(result.value.freightTermForSalerId).trigger('change');
                     $('#ExportBooking_HblAgentId').val(result.value.hblAgentId).trigger('change');
                     $('#ExportBooking_DelId').val(result.value.delId).trigger('change');
-                    $('#ExportBooking_delEta').val(result.value.delEta);
+                    $('#ExportBooking_DelEta').val(result.value.delEta);
                 }
             });
         });
@@ -436,7 +437,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.SalespersonId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["SalespersonId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.SalespersonId) })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.SalespersonId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "Sales", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.SalespersonId) })
                                                 </abp-column>
                                             </abp-row>
 
@@ -747,7 +748,8 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input  asp-for="ExportBooking.ReferralById"></abp-input>
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ReferralById", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ReferralById"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ReferralById), IsRequired = false })
+                                                    @*<abp-input  asp-for="ExportBooking.ReferralById"></abp-input>*@
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
