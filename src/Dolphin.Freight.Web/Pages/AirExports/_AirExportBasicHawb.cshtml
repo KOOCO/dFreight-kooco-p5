@@ -376,8 +376,7 @@
                     <input asp-for="@Model.AirExportHawbDto.CanceledBy" class="form-control form-control-sm" id="HawbCanceledBy" value="@(_currentUser.Name + " " + _currentUser.SurName)" type="text" disabled />
                 </abp-column>
                 <abp-column size-md="_3">
-                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ReasonForCancel", AspItems = Html.GetEnumSelectList(typeof(ReasonForCancelType)).ToList(), IsShowLabel = true, IsRequired = true, FieldName = @L["ReasonForCancel"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ReasonForCancel) })
-                    @*  <abp-input asp-for="@Model.AirExportHawbDto.ReasonForCancel" class="form-select-sm form-control" id="AwbCancelledDate" />*@
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ReasonForCancel", AspItems = Html.GetEnumSelectList(typeof(ReasonForCancelType)).ToList(), IsShowLabel = true, IsRequired = false, FieldName = @L["ReasonForCancel"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ReasonForCancel) })
                 </abp-column>
             }
             else
@@ -390,8 +389,7 @@
                     <input asp-for="@Model.AirExportHawbDto.CanceledBy" class="form-control form-control-sm" id="HawbCanceledBy" type="text" disabled />
                 </abp-column>
                 <abp-column size-md="_3">
-                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ReasonForCancel", AspItems = Html.GetEnumSelectList(typeof(ReasonForCancelType)).ToList(), Disabled = "disabled", IsShowLabel = true, IsRequired = true, FieldName = @L["ReasonForCancel"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ReasonForCancel) })
-                    @*  <abp-input asp-for="@Model.AirExportHawbDto.ReasonForCancel" class="form-select-sm form-control" id="AwbCancelledDate" />*@
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ReasonForCancel", AspItems = Html.GetEnumSelectList(typeof(ReasonForCancelType)).ToList(), Disabled = "disabled", IsShowLabel = true, IsRequired = false, FieldName = @L["ReasonForCancel"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ReasonForCancel) })
                 </abp-column>
             }
             
