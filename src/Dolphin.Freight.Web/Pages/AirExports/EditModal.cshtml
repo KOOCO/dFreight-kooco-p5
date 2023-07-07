@@ -150,40 +150,42 @@
 
             var extraProperties = $('#AirExportHawbDto_ExtraProperties').val();
 
-            if(extraProperties){
+            if(extraProperties && extraProperties != 'null'){
                 var commodities = JSON.parse(extraProperties).Commodities;
                 
+                if(commodities && commodities.length){
                 var commodityIndex = 0;
-                commodities.forEach(function(commodity){
-                    commodity.chkIndex = commodityIndex;
+                    commodities.forEach(function(commodity){
+                        commodity.chkIndex = commodityIndex;
 
-                    var newRow = $('#commodityTemplate').tmpl(commodity);
-                    $('#commodityBody').append(newRow);
+                        var newRow = $('#commodityTemplate').tmpl(commodity);
+                        $('#commodityBody').append(newRow);
 
-                    commodityIndex += 1;
-                })
+                        commodityIndex += 1;
+                    })
+                }
             }
-            
         }
 
         function onSetOtherCharges() {
 
             var extraProperties = $('#AirExportHawbDto_ExtraProperties').val();
 
-            if (extraProperties) {
+            if (extraProperties && extraProperties != 'null') {
                 var otherCharges = JSON.parse(extraProperties).OtherCharges;
 
-                var Index = 0;
-                otherCharges.forEach(function (otherCharge) {
-                    otherCharge.chkIndex = Index;
+                if(otherCharges && otherCharges.length){
+                    var Index = 0;
+                    otherCharges.forEach(function (otherCharge) {
+                        otherCharge.chkIndex = Index;
 
-                    var newRow = $('#otherChargesTemplate').tmpl(otherCharge);
-                    $('#otherChargesBody').append(newRow);
+                        var newRow = $('#otherChargesTemplate').tmpl(otherCharge);
+                        $('#otherChargesBody').append(newRow);
 
-                    Index += 1;
-                })
+                        Index += 1;
+                    })
+                }
             }
-
         }
 
         var chkIndex = 0;
