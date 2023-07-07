@@ -19,9 +19,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// HB/L號碼
         /// </summary>
         public string HblNo { get; set; }
+
+        public string ItnNo { get; set; }
         /// <summary>
         /// S/O號碼
         /// </summary>
+
         public string SoNo { get; set; }
         /// <summary>
         /// 客戶參考編號
