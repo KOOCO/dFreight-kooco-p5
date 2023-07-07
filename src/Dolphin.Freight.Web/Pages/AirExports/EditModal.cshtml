@@ -25,6 +25,7 @@
     <abp-script src="/Pages/AirExports/CreateMawb.js" />
     <abp-script src="/Pages/AirExports/EditModel.js" />
     <script type="text/javascript">
+        var l = abp.localization.getResource('Freight');
         $(document).ready(function () {
 
             // Awb Cancel Area
@@ -362,7 +363,37 @@
             $('#saveBtn').click();
         }
 
-        
+        function deleteHawb() {
+            abp.message.confirm(l('DeletionConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airExports.airExportHawb
+                            .delete($('#AirExportHawbDto_Id').val())
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyDeleted'));
+                                $('#hblCard').remove();
+                                $('#hblCards').find('.card-body.show').closest('.card.board-item').remove()
+                            });
+                    }
+                });
+        }
+
+        function deleteMawb() {
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+            abp.message.confirm(l('DeletionConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airExports.airExportMawb
+                            .delete(mawbId)
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyDeleted')).done(function () {
+                                    location.href = '/AirExports/Index';
+                                });
+                            });
+                    }
+                })
+        }
 
     </script>
 }
@@ -411,7 +442,7 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="deleteMawb()">
                                         <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
                                     </a>
                                     <a class='dropdown-item' href='#'>
