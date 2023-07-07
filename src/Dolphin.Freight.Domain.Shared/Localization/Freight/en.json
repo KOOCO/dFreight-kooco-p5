@@ -573,7 +573,21 @@
         "Table:Header:MinPrice": "Min Price($)",
         "Table:Header:Action": "Action",
 
-        "HawbNo": "HAWB No.",
+    "HawbNo": "HAWB number",
+    "BookingNo": "Booking number",
+    "BookingDate": "Booking date",
+    "ITNNo": "ITN number",
+    "QuotationId": "Quotation number",
+    "ActualShipper": "Actual shipper",
+    "Customer": "Client",
+    "BillTo": "Bill To",
+    "Receiver": "Receiver",
+    "TruckReceivingPlace": "Truck receiving place",
+    "TruckDeliveryPlace": "Truck delivery point",
+    "SubAgentAwb": "Sub-agent bill of lading",
+    "AWBCancelledDate": "AWB cancellation date",
+    "CacelledBy": "Cancelled by",
+    "PONo": "PO number",
 
         // Display
         "Display:Button:Filter": "Filter",

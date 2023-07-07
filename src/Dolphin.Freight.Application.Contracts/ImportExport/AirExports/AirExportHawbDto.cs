@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Users;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -71,7 +72,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string CargoType { get; set; }
         public string SalesType { get; set; }
         public string ShipType { get; set; }
-        public DateTime FinalEta { get; set; }
+        public DateTime? FinalEta { get; set; }
         public string DVCarriage { get; set; }
         public string DVCustoms { get; set; }
         public string WTVAL { get; set; }
@@ -110,10 +111,13 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string HandlingInformation { get; set; }
         public string BookingRemarks { get; set; }
         public string PickupInstruction { get; set; }
+        public List<Commodity> Commodities { get; set; }
+        public List<OtherCharges> OtherCharges { get; set; }
 
         /// <summary>
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }
