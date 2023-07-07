@@ -25,6 +25,10 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// </summary>
         public Guid? MawbId { get; set; }
         /// <summary>
+        /// 對應的HawbId
+        /// </summary>
+        public Guid? HawbId { get; set; }
+        /// <summary>
         /// 分站
         /// </summary>
         public Guid? OfficeId { get; set; }

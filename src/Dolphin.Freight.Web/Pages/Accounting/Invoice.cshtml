@@ -130,20 +130,21 @@
 
                 switch (formControl) {
                     case 0:
-                        abp.message.success('儲存成功', '系統訊息');
-                        if (@Model.MethodType == 0) location.href = '/OceanImports/EditModal3?Id=@Model.Mid';
-                        if (@Model.MethodType == 1) location.href = '/OceanExports/EditModal3?Id=@Model.Mid';
-                        if (@Model.MethodType == 2) location.href = '/AirImports/EditModal3?Id=@Model.Mid';
-                        if (@Model.MethodType == 3) location.href = '/AirExports/EditModal3?Id=@Model.MawbId';
-                        if (@Model.MethodType == 4) location.href = '/OceanExports/ExportBookings/Edit2?Id=@Model.Bid';
+                        if (@Model.MethodType == 0) abp.message.success('儲存成功', '系統訊息').then(function () { location.href = '/OceanImports/EditModal3?Id=@Model.Mid'; });
+                        if (@Model.MethodType == 1) abp.message.success('儲存成功', '系統訊息').then(function(){ location.href = '/OceanExports/EditModal3?Id=@Model.Mid'; });
+                        if (@Model.MethodType == 2) abp.message.success('儲存成功', '系統訊息').then(function(){ location.href = '/AirImports/EditModal3?Id=@Model.Mid'; });
+                        if (@Model.MethodType == 3) abp.message.success('儲存成功', '系統訊息').then(function(){ location.href = '/AirExports/EditModal3?Id=@Model.MawbId'; });
+                        if (@Model.MethodType == 4) abp.message.success('儲存成功', '系統訊息').then(function(){ location.href = '/OceanExports/ExportBookings/Edit2?Id=@Model.Bid'; });
                         if (@Model.MethodType == 5) {
                             $.ajax({
                                 url: '/api/ImportExport/OceanExportAccountingHbl',
                                 type: 'GET',
                                 data: { Id: '@Model.Hid' },
                                 success: function(response) {
-                                    dolphin.freight.importExport.oceanExports.oceanExportHbl.get('@Model.Hid').done(function (res) { 
-                                        location.href = '/OceanExports/EditModal3?Id='+res.mblId+'';
+                                    abp.message.success('儲存成功', '系統訊息').then(function(){
+                                        dolphin.freight.importExport.oceanExports.oceanExportHbl.get('@Model.Hid').done(function (res) { 
+                                            location.href = '/OceanExports/EditModal3?Id='+res.mblId+'';
+                                        });
                                     });
                                 }
                             });
@@ -152,8 +153,15 @@
                             $.ajax({
                                 url: '/api/ImportExport/AirImportAccountHawb',
                                 type: 'GET',
-                                data: { Id: '@Model.Hid' },
-
+                                data: { Id: '@Model.HawbId' },
+                                success: function(res) {
+                                    abp.message.success('儲存成功', '系統訊息').then(function(){
+                                        dolphin.freight.importExport.airImports.airImportHawb.get('@Model.HawbId')
+                                        .done(function(res){
+                                            location.href = '/AirImports/EditModal3?Id=' + res.mawbId + '';
+                                        });
+                                    });
+                                }
                             });
                         }
                         break;
