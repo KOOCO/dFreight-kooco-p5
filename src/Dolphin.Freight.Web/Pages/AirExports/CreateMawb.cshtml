@@ -638,7 +638,7 @@
                                                         <td><input asp-for="MawbModel.SellingRate" class="form-control" /></td>
                                                         <td>per</td>
                                                         <td>
-                                                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.SellingRateUnitType", AspItems = Html.GetEnumSelectList(typeof(RateUnitType)).ToList(), FieldName = "SellingRateUnitType", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.SellingRateUnitType) })
+                                                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.SellingRateUnitType", AspItems = Html.GetEnumSelectList(typeof(RateUnitType)).ToList(), FieldName = "SellingRateUnitType", SelectType = 0, ShowFiledContentValue = "KG" })
                                                         </td>
                                                         <td></td>
                                                     </tr>

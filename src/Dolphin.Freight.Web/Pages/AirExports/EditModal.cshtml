@@ -24,6 +24,28 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-templates@1.0.0/jquery.tmpl.min.js"></script>
     <abp-script src="/Pages/AirExports/CreateMawb.js" />
     <abp-script src="/Pages/AirExports/EditModel.js" />
+    <script id="commodityTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_commodity" id="Id" />
+          </td>
+          <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].Description" value="${Description}" /></td>
+          <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].HTSCode" value="${HTSCode}" /></td>
+          <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].PONumber" value="${PoNumber}"  disabled /></td>
+        </tr>
+    </script>
+    <script id="otherChargesTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_otherCharges" id="chk_OtherCharges_${chkIndex}" />
+          </td>
+          <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].CarrierAgent" value="${CarrierAgent}"  /></td>
+          <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].CollectPaid" value="${CollectPaid}" /></td>
+          <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].ChargeItem" value="${ChargeItem}" /></td>
+          <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].Description" value="${Description}"  /></td>
+          <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].ChargeAmount" value="${ChargeAmount}"  /></td>
+        </tr>
+    </script>
     <script type="text/javascript">
         $(document).ready(function () {
 
@@ -101,7 +123,120 @@
             //$(this).addClass('disabled');
         })
 
-        
+        function resetCommodityIndex() {
+            $('#commodityBody > tr').each(function (e, elem) {
+                $(elem).find('td').each(function (a, aelem) {
+                    var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
+
+                    $(aelem).find('input').attr('name', attrName);
+                    if ($(aelem).hasClass('d-none')) {
+                        var aelemVal = $(aelem).find('input').val();
+                        $(aelem).find('input').val(aelemVal.replace(/[0-9]/, e));
+                    }
+                })
+            })
+        }
+
+        function resetOtherChargesIndex() {
+            $('#otherChargesBody > tr').each(function (e, elem) {
+                $(elem).find('td').each(function (a, aelem) {
+                    var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
+
+                    $(aelem).find('input').attr('name', attrName);
+                    if ($(aelem).hasClass('d-none')) {
+                        var aelemVal = $(aelem).find('input').val();
+                        $(aelem).find('input').val(aelemVal.replace(/[0-9]/, e));
+                    }
+                })
+            })
+        }
+
+        function onSetCommodity(){
+
+            var extraProperties = $('#AirExportHawbDto_ExtraProperties').val();
+
+            if(extraProperties){
+                var commodities = JSON.parse(extraProperties).Commodities;
+                
+                var commodityIndex = 0;
+                commodities.forEach(function(commodity){
+                    commodity.chkIndex = commodityIndex;
+
+                    var newRow = $('#commodityTemplate').tmpl(commodity);
+                    $('#commodityBody').append(newRow);
+
+                    commodityIndex += 1;
+                })
+            }
+            
+        }
+
+        function onSetOtherCharges() {
+
+            var extraProperties = $('#AirExportHawbDto_ExtraProperties').val();
+
+            if (extraProperties) {
+                var otherCharges = JSON.parse(extraProperties).OtherCharges;
+
+                var Index = 0;
+                otherCharges.forEach(function (otherCharge) {
+                    otherCharge.chkIndex = Index;
+
+                    var newRow = $('#otherChargesTemplate').tmpl(otherCharge);
+                    $('#otherChargesBody').append(newRow);
+
+                    Index += 1;
+                })
+            }
+
+        }
+
+        var chkIndex = 0;
+        function onAddCommodity() {
+            var newRowData = {
+                chkIndex: chkIndex
+            };
+
+            var newRow = $('#commodityTemplate').tmpl(newRowData);
+
+            $('#commodityBody').append(newRow);
+
+            chkIndex += 1;
+
+            resetCommodityIndex();
+        }
+
+        var chkOtherChargesIndex = 0;
+        function onAddOtherCharges() {
+
+            var newRowData = {
+                chkIndex: chkOtherChargesIndex
+            };
+
+            var newRow = $('#otherChargesTemplate').tmpl(newRowData);
+
+            $('#otherChargesBody').append(newRow);
+
+            chkOtherChargesIndex += 1;
+
+            resetOtherChargesIndex();
+        }
+
+        function onRemoveCommodity() {
+            $('[name="chk_commodity"]:checked').each(function (i, elem) {
+                $(elem).closest('tr').remove();
+            });
+
+            resetCommodityIndex();
+        }
+
+        function onRemoveOtherCharges() {
+            $('[name="chk_otherCharges"]:checked').each(function (i, elem) {
+                $(elem).closest('tr').remove();
+            });
+
+            resetOtherChargesIndex();
+        }
 
 
         $('#addCommodityBtn').on('click', function () {
@@ -273,23 +408,37 @@
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
                         setTimeout(function () {
+                            initializeDropdownSearch('AirExportHawbDto_ActualShippedr');
+                            initializeDropdownSearch('AirExportHawbDto_BillTo');
+                            initializeDropdownSearch('AirExportHawbDto_OverseaAgent');
                             initializeDropdownSearch('AirExportHawbDto_ConsigneeId');
                             initializeDropdownSearch('AirExportHawbDto_Notify');
+                            initializeDropdownSearch('AirExportHawbDto_IssuingCarrier');
+                            initializeDropdownSearch('AirExportHawbDto_Trucker');
+                            initializeDropdownSearch('AirExportHawbDto_Sales');
                             initializeDropdownSearch('AirExportHawbDto_Departure');
                             initializeDropdownSearch('AirExportHawbDto_Destination');
                             initializeDropdownSearch('AirExportHawbDto_CargoPickup');
                             initializeDropdownSearch('AirExportHawbDto_DeliveryTo');
-                            initializeDropdownSearch('AirExportHawbDto_IssuingCarrier');
-                            initializeDropdownSearch('AirExportHawbDto_Trucker');
-                            initializeDropdownSearch('AirExportHawbDto_Customer');
-                            initializeDropdownSearch('AirExportHawbDto_ActualShippedr');
-                            initializeDropdownSearch('AirExportHawbDto_DepartureId');
-                            initializeDropdownSearch('AirExportHawbDto_DestinationId');
                             initializeDropdownSearch('AirExportHawbDto_CargoType');
                             initializeDropdownSearch('AirExportHawbDto_SalesType');
                             initializeDropdownSearch('AirExportHawbDto_ShipType');
+                            initializeDropdownSearch('AirExportHawbDto_PackageUnitLookupList');
+                            initializeDropdownSearch('AirExportHawbDto_BuyingRateUnit');
+                            initializeDropdownSearch('AirExportHawbDto_SellingRateUnit');
+                            initializeDropdownSearch('AirExportHawbDto_Incoterms');
+                            initializeDropdownSearch('AirExportHawbDto_ServiceTermStart');
+                            initializeDropdownSearch('AirExportHawbDto_ServiceTermEnd');
+                            initializeDropdownSearch('AirExportHawbDto_Customer');
+                            initializeDropdownSearch('AirExportHawbDto_DepartureId');
+                            initializeDropdownSearch('AirExportHawbDto_DestinationId');
+                            initializeDropdownSearch('AirExportHawbDto_OverseaAgent');
                             initializeDropdownSearch('AirExportHawbDto_ReasonForCancel');
-                        }, 1000);
+                            
+                            onSetCommodity();
+                            onSetOtherCharges();
+
+                        }, 500);
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
                     })
@@ -306,14 +455,6 @@
                         }
                     })
 
-                    //let isExpanded = $('.btnHawbCardCollapse').filter(function(f, e){ return $(e).attr('aria-expanded') == 'true' }).length;
-
-                    //if (isExpanded) {
-                    //    $('.btnHawbCardCollapse').click();
-                    //}
-                    //else{
-                    //    $('#btnHawbCardCollapse_'+hawbNo).click();
-                    //}
                 }
             }
         }

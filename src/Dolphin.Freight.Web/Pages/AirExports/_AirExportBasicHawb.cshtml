@@ -111,6 +111,7 @@
         <!--第一列-->
         <abp-row>
             <abp-input asp-for="@Model.Id" type="hidden" />
+            <abp-input asp-for="AirExportHawbDto.ExtraProperties" value="@Json.Serialize(Model.AirExportHawbDto.ExtraProperties)" type="hidden" />
             <abp-input asp-for="@Model.AirExportHawbDto.Id" type="hidden" />
             <abp-column size-md="_3">
                 <abp-input asp-for="AirExportHawbDto.HawbNo" required size="Small" />
