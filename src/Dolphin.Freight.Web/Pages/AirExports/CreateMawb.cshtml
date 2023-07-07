@@ -13,7 +13,7 @@
     {
     <style>
         .redStar::before {
-            content: "*";
+            content: "* ";
             color: red;
         }
     </style>
@@ -328,11 +328,8 @@
             if (mawbErrors.length && $('#btnMawbCollapse').hasClass('collapsed')) {
                 $('#btnMawbCollapse').click();
                 setTimeout(()=> {
-                    var position = $(mawbErrors[0].element).position();
-                    scroll(position.top, 0);
-                })
-                //setTimeout(()=> mawbErrors[0].element.scrollIntoView(), 500);
-                
+                    $('#createForm').submit();  
+                }, 500)
             }
             else{
                 $('#createForm').submit();
@@ -426,7 +423,8 @@
                             <!--第二列-->
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="MawbModel.MawbNo" size="Small" required />
+                                    <label asp-for="MawbModel.MawbNo" class="redStar" >@L["MawbNo"].Value</label>
+                                    <abp-input asp-for="MawbModel.MawbNo" size="Small" suppress-label="true" required />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="MawbModel.AwbDate" size="Small" />
@@ -645,25 +643,25 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["BuyingRate"]</th>
+                                                            <th class="redStar">@L["BuyingRate"]</th>
                                                         <td><input asp-for="MawbModel.BuyingRate" class="form-control" /></td>
                                                         <td>@L["per"]</td>
                                                         <td>
-                                                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BuyingRateUnitType", AspItems = Html.GetEnumSelectList(typeof(RateUnitType)).ToList(), FieldName = "MawbCarrierId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.BuyingRateUnitType) })
+                                                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BuyingRateUnitType", AspItems = Html.GetEnumSelectList(typeof(RateUnitType)).ToList(), FieldName = "MawbCarrierId", SelectType = 0, ShowFiledContentValue = "1" })
                                                         </td>
                                                         <td></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["SellingRate"]</th>
+                                                            <th class="redStar">@L["SellingRate"]</th>
                                                         <td><input asp-for="MawbModel.SellingRate" class="form-control" /></td>
                                                         <td>@L["per"]</td>
                                                         <td>
-                                                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.SellingRateUnitType", AspItems = Html.GetEnumSelectList(typeof(RateUnitType)).ToList(), FieldName = "SellingRateUnitType", SelectType = 0, ShowFiledContentValue = "KG" })
+                                                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.SellingRateUnitType", AspItems = Html.GetEnumSelectList(typeof(RateUnitType)).ToList(), FieldName = "SellingRateUnitType", SelectType = 0, ShowFiledContentValue = "1" })
                                                         </td>
                                                         <td></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["VolumeWeight"]</th>
+                                                            <th>@L["VolumeWeight"]</th>
                                                         <td><input asp-for="MawbModel.VolumeWeightKg" class="form-control" /></td>
                                                         <td>@L["KG"]</td>
                                                         <td>
