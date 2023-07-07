@@ -1,5 +1,6 @@
 ﻿using AutoMapper.Internal.Mappers;
 using Dolphin.Freight.Settings.Ports;
+using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using Microsoft.AspNetCore.Mvc;
@@ -26,9 +27,11 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         private IRepository<VesselSchedule, Guid> _repository;
         private IRepository<SysCode, Guid> _sysCodeRepository;
         private IRepository<Port, Guid> _portRepository;
+        private readonly IPortsManagementAppService _portsManagementAppService;
         private IRepository<Substation, Guid> _substationRepository;
         private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
-        public VesselScheduleAppService(IRepository<VesselSchedule, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Port, Guid> portRepository, IRepository<Substation, Guid> substationRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository)
+        public VesselScheduleAppService(IRepository<VesselSchedule, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Port, Guid> portRepository, IRepository<Substation, Guid> substationRepository, 
+                                        IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IPortsManagementAppService portsManagementAppService)
             : base(repository)
         {
             _repository = repository;
@@ -36,6 +39,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
             _portRepository = portRepository;
             _substationRepository = substationRepository;
             _tradePartnerRepository = tradePartnerRepository;
+            _portsManagementAppService = portsManagementAppService;
             /*
             GetPolicyName = OceanExportPermissions.VesselScheduleas.Default;
             GetListPolicyName = OceanExportPermissions.VesselScheduleas.Default;
@@ -45,7 +49,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         }
         public async Task<PagedResultDto<VesselScheduleDto>> QueryListAsync(QueryVesselScheduleDto query)
         {
-            var Ports = await _portRepository.GetListAsync();
+            var Ports = await _portsManagementAppService.QueryListAsync();
             Dictionary<Guid, string> pdictionary = new Dictionary<Guid, string>();
             if (Ports != null)
             {
@@ -100,7 +104,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<List<VesselScheduleDto>> GetListAsync(QueryVesselScheduleDto query)
         {
-            var Ports = await _portRepository.GetListAsync();
+            var Ports = await _portsManagementAppService.QueryListAsync();
             Dictionary<Guid, string> pdictionary = new Dictionary<Guid, string>();
             if (Ports != null)
             {

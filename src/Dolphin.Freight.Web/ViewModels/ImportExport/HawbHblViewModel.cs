@@ -1,5 +1,4 @@
 using Dolphin.Freight.ImportExport.AirImports;
-﻿using Dolphin.Freight.ImportExport.AirImports;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -9,9 +8,7 @@ using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ImportExport.OceanImports;
 using Dolphin.Freight.ImportExport.Attachments;
 using Dolphin.Freight.Accounting.Invoices;
-using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Web.Pages.AirImports;
-using Dolphin.Freight.ImportExport.Attachments;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 
@@ -44,6 +41,12 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
 
         [BindProperty(SupportsGet = true)]
         public IList<InvoiceDto> m2invoiceDtos { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public IList<InvoiceDto> h0invoiceDtos { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public IList<InvoiceDto> h1invoiceDtos { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public IList<InvoiceDto> h2invoiceDtos { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> PortsManagementLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }

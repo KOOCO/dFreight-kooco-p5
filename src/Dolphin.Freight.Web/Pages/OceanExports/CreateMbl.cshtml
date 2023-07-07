@@ -47,7 +47,7 @@
             initializeDropdownSearch("OceanExportHbl_FreightTermForSalerId");
             initializeDropdownSearch("OceanExportHbl_HSvcTermFromId");
             initializeDropdownSearch("OceanExportHbl_HSvcTermToId");
-
+            
             var l = abp.localization.getResource('Freight');
             $("#addHBtn").click(function () {
                 addHBtn();
@@ -59,6 +59,21 @@
                     minDate: '2023-02-25'
                 }
             });
+
+            $('#OceanExportMbl_IsReleased').on('change', function (e, val) { 
+                if (this.checked) { 
+                    $('#OceanExportMbl_MblReleaseDate').removeAttr('disabled');
+                    $('#OceanExportMbl_ReleaseById').removeAttr('disabled');
+                    $("#OceanExportMbl_MblReleaseDate").datepicker("setDate", new Date());
+                    $('#releasedBy').val('@(CurrentUser.Name + " " + CurrentUser.SurName)');
+                } 
+                else{
+                    $('#OceanExportMbl_MblReleaseDate').attr('disabled', 'disabled');
+                    $("#OceanExportMbl_MblReleaseDate").datepicker("setDate", null);
+                    $('#OceanExportMbl_ReleaseById').val(null);
+                    $('#releasedBy').val(null);
+                }
+            })
 
         });
         var cardIndex = 0;
@@ -110,6 +125,7 @@
     </nav>
 </div>
 <div class="page-content-area">
+   
     <form submit-button="true" data-ajaxForm="true" id="createForm">
         <abp-row>
             <abp-column size-md="_9">
@@ -126,28 +142,6 @@
                                 <span id="title5" style="font-size:0.8em;"> </span>
                             </abp-card-title>
 
-
-                            <!--
-                            <div class="btn-group dropdown">
-                                <button class="btn btn-secondary dropdown-toggle"  type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                    請選擇
-                                </button>
-                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                    <a class='dropdown-item' href='#'>
-                                           <li class="fa fa-lock"></li> 鎖定
-                                        </a>
-                            <a class='dropdown-item' href='#'>
-                                <i class="fa fa-trash"></i> 刪除
-                            </a>
-                                    <li class="dropdown-divider"></li>
-                            <a class='dropdown-item' href='#'>
-                            <li class="fa fa-lock"></li> aaa
-                            </a>
-
-                                </div>
-                            </div>
-                            -->
-
                             <button class="btn btn-collapse " type="button" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
                             </button>
 
@@ -156,11 +150,11 @@
                             <abp-row>
                                 <abp-column size-md="_3">
                                     <input type="hidden" name="ShipmentNo" id="ShipmentNo">
-                                    <label class="">Doc No</label>
+                                    <label class="">@L["DocNo"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.FilingNo" readonly/>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">MB/L No</label>
+                                    <label class="">@L["MblNo"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.MblNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -172,16 +166,15 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label class="">Post Date</label>
+                                    <label class="">@L["PostDate"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.PostDate" readonly/>
-                                    @*<abp-input asp-for="OceanExportMbl.PostDate" type="text" abp-data-datepicker="false" readonly="true" />*@
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">S/O No</label>
+                                    <label class="">@L["SoNo"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.SoNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">Itn No</label>
+                                    <label class="">@L["ItnNo"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.ItnNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -232,7 +225,7 @@
                                     <input type="hidden" name="OceanExportMbl.CareOfContent" id="mCareOfContent" value="@Model.OceanExportMbl.CareOfContent" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">Operator</label>
+                                    <label class="">@L["OP"]</label>
                                     <select class="form-control ml-15" asp-for="OceanExportMbl.MblOperatorId" disabled="true">
                                         <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
                                     </select>
@@ -240,7 +233,7 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label class="">Carrier Contract No</label>
+                                    <label class="">@L["CarrierContractNo"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.CarrierContractNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -257,20 +250,19 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label class="">Vessel Name</label>
+                                    <label class="">@L["VesselName"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.VesselName" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">Voyage</label>
+                                    <label class="">@L["Voyage"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.Voyage" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PorId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">ETD</label>
+                                    <label class="">@L["PorEtd"]</label>
                                     <input class="form-control checkdate" type="text" name="OceanExportMbl.PorEtd" abp-data-datepicker="false" />
-                                    @*<abp-input asp-for="OceanExportMbl.PorEtd" type="text" abp-data-datepicker="false" class="checkdate" />*@
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -278,17 +270,15 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PolId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">ETD</label>
+                                    <label class="">@L["PolEtd"]</label>
                                     <input class="form-control checkdate" type="text" name="OceanExportMbl.PolEtd" abp-data-datepicker="false" />
-                                    @*<abp-input asp-for="OceanExportMbl.PolEtd" type="text" abp-data-datepicker="false" class="checkdate" />*@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PodId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">ETA</label>
+                                    <label class="">@L["ETA"]</label>
                                     <input class="form-control checkdate" type="text" name="OceanExportMbl.PodEta" abp-data-datepicker="false" />
-                                    @*<abp-input asp-for="OceanExportMbl.PodEta" type="text" abp-data-datepicker="false" class="checkdate" />*@
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -296,17 +286,15 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.DelId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">DEL ETA</label>
+                                    <label class="">@L["DelEta"]</label>
                                     <input class="form-control checkdate" type="text" name="OceanExportMbl.DelEta" abp-data-datepicker="false" />
-                                    @*<abp-input asp-for="OceanExportMbl.DelEta" type="text" abp-data-datepicker="false" class="checkdate" />*@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.FdestId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">Final dest ETA</label>
+                                    <label class="">@L["FinalDestETA"]</label>
                                     <input class="form-control checkdate" type="text" name="OceanExportMbl.FdestEta" abp-data-datepicker="false" />
-                                    @*<abp-input asp-for="OceanExportMbl.FdestEta" type="text" abp-data-datepicker="false" class="checkdate" />*@
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -320,17 +308,16 @@
                                     <input type="hidden" name="OceanExportMbl.DeliveryToId" id="mDeliveryToId" value="@Model.OceanExportMbl.DeliveryToId" />
                                     <input type="hidden" name="OceanExportMbl.DeliveryToContent" id="mDeliveryToContent" value="@Model.OceanExportMbl.DeliveryToContent" />
                                 </abp-column>
-                                <abp-column size-md="_6">
+                                <abp-column size-md="_3">
                                     <abp-row>
-                                        <abp-column size-md="_6">
-                                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PreCarriageVesselNameId", AspItems = _dropdown.PreCarriageVesselLookupList, IsShowLabel = true, FieldName = "PreCarriageVesselNameId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PreCarriageVesselNameId) })
+                                        <label asp-for="OceanExportMbl.PreCarriageVesselNameId"></label>
+                                        <abp-column size-md="_7">
+                                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PreCarriageVesselNameId", AspItems = _dropdown.PreCarriageVesselLookupList, IsShowLabel = false, FieldName = "PreCarriageVesselNameId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PreCarriageVesselNameId) })
                                         </abp-column>
-                                        <abp-column size-md="_6">
-                                            <label class="">PreCarriage Voyage</label>
-                                            <input class="form-control" type="text" name="OceanExportMbl.PrepreCarriageVoyage" />
+                                        <abp-column size-md="_5" class="pl-0">
+                                            <input class="form-control form-control-sm" type="text" name="OceanExportMbl.PrepreCarriageVoyage" />
                                         </abp-column>
                                     </abp-row>
-
                                 </abp-column>
 
                             </abp-row>
@@ -355,7 +342,7 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label class="">Display Mbl Container Size Qty Info</label>
+                                    <label class="">@L["DisplayMblContainerSizeQtyInfo"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.DisplayMblContainerSizeQtyInfo" readonly />
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -408,7 +395,7 @@
                             <abp-row>
                                 <abp-column size-md="_3" >
                                     <div class="mb-3">
-                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.MblReferralById", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblReferralById", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.MblReferralByContent) })
+                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.MblReferralById", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblReferralById", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.MblReferralById) })
                                         <input type="hidden" name="OceanExportMbl.MblReferralById" id="mMblReferralById" value="@Model.OceanExportMbl.MblReferralById" />
                                         <input type="hidden" name="OceanExportMbl.MblReferralByContent" id="mMblReferralByContent" value="@Model.OceanExportMbl.MblReferralByContent" />
                                     </div>
@@ -418,10 +405,12 @@
                                 </abp-column>
                                 <abp-column size-md="_3" class="customForm">
                                     <label for="CareOfId" class="form-label">@L["IsReleased"]<input type="checkbox" name="OceanExportMbl.IsReleased" id="OceanExportMbl_IsReleased" value="true" /></label>
-                                    <abp-input asp-for="OceanExportMbl.MblReleaseDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <input asp-for="OceanExportMbl.MblReleaseDate" class="form-control form-label" type="date" disabled />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.ReleaseById" value="@string.Concat(CurrentUser.Name, " ", CurrentUser.SurName)" readonly="true"></abp-input>
+                                    <label asp-for="OceanExportMbl.ReleaseById"></label>
+                                    <input id="releasedBy" class="form-control" readonly />
+                                    <input type="hidden" asp-for="OceanExportMbl.ReleaseById" value="@CurrentUser.Id" disabled />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -488,36 +477,13 @@
                                 <span id="htitle5" style="font-size:0.8em;"> </span>
                             </abp-card-title>
 
-
-                            <!--
-                            <div class="btn-group dropdown">
-                                <button class="btn btn-secondary dropdown-toggle"  type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                    請選擇
-                                </button>
-                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                    <a class='dropdown-item' href='#'>
-                                           <li class="fa fa-lock"></li> 鎖定
-                                        </a>
-                            <a class='dropdown-item' href='#'>
-                                <i class="fa fa-trash"></i> 刪除
-                            </a>
-                                    <li class="dropdown-divider"></li>
-                            <a class='dropdown-item' href='#'>
-                            <li class="fa fa-lock"></li> aaa
-                            </a>
-
-                                </div>
-                            </div>
-                            -->
-
                             <button class="btn btn-collapse " type="button" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="true" aria-controls="hblDiv">
                             </button>
                         </abp-card-header>
-                        <abp-card-body class="collapse show" id="hblDiv">
+                        <abp-card-body class="card-body collapse show" id="hblDiv">
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @*<label for="ceanExportHbl_HblNo" class="form-label">@L["HblNo"] <input type="checkbox" name="OceanExportHbl.IsCreateBySystem" id="OceanExportHbl_IsCreateBySystem" value="true" checked /></label>*@
-                                    <label class="">HB/L No</label>
+                                    <label class="">@L["DocNo"]HB/L No</label>
                                     <input class="form-control" type="text" name="OceanExportHbl.HblNo" id="OceanExportHbl_HblNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -563,7 +529,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.AgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "AgentId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.AgentId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblSaleId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblSaleId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.HblSaleId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
 
@@ -729,7 +695,7 @@
                                     <abp-input asp-for="OceanExportHbl.CancelReason" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HMblReferralById", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HMblReferralById", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.SvcTermToId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.MblReferralById", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblReferralById", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.MblReferralById) })
                                 </abp-column>
                             </abp-row>
                         </abp-card-body>
@@ -740,46 +706,46 @@
                 <div class="card-wrap">
 
                     <button class="btn btn-block btn-add" type="button" id="addHBtn">
-                        <i class="fa-solid fa-plus"></i>新增HB/L
+                        <i class="fa-solid fa-plus"></i>@L["Btn:AddHbl"]
                     </button>
 
                     <div class="function-wrap">
 
                         <div class="form">
                             <div class="form-group">
-                                <label for="cardOrderSet">卡片排序</label>
+                                <label for="cardOrderSet">@L["SortCard"]</label>
                                 <select class="form-control selectpicker" id="cardOrderSet">
-                                    <option selected>請選擇</option>
-                                    <option value="建立日期">建立日期</option>
-                                    <option value="HB/L 號碼">HB/L 號碼</option>
+                                    <option selected>@L["Dropdown:Select"]</option>
+                                    <option value="建立日期">@L["CraeteDate"]</option>
+                                    <option value="HB/L 號碼">@L["HBLNo"]</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label class="sr-only" for="cardOrder">Preference</label>
+                                <label class="sr-only" for="cardOrder">@L["Preference"]</label>
                                 <select class="form-control selectpicker" id="cardOrder">
-                                    <option selected>請選擇</option>
-                                    <option value="遞增">遞增</option>
-                                    <option value="遞減">遞減</option>
+                                    <option selected>@L["Dropdown:Select"]</option>
+                                    <option value="遞增">@L["Increment"]</option>
+                                    <option value="遞減">@L["Decrease"]</option>
                                 </select>
                             </div>
                             <fieldset class="form-group">
-                                <legend class="col-form-label">卡片顯示</legend>
+                                <legend class="col-form-label">@L["CardDisplay"]</legend>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox"
                                            id="inlineCheckbox1" value="option1">
                                     <label class="form-check-label"
-                                           for="inlineCheckbox1">託運人與收貨人</label>
+                                           for="inlineCheckbox1">@L["ShipperAndConsignee"]</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox"
                                            id="inlineCheckbox2" value="option2">
                                     <label class="form-check-label"
-                                           for="inlineCheckbox2">名稱標籤</label>
+                                           for="inlineCheckbox2">@L["Tag"]</label>
                                 </div>
                             </fieldset>
 
                             <button type="submit" class="btn btn-dark btn-block btn-update">
-                                <i class="fa-solid fa-arrows-rotate"></i>更新
+                                <i class="fa-solid fa-arrows-rotate"></i>@L["Update"]
                             </button>
                         </div>
 
@@ -842,4 +808,5 @@
             </abp-column>
         </abp-row>
     </form>
+    
 </div>

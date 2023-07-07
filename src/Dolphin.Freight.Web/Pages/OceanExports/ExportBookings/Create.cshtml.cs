@@ -13,6 +13,10 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
     {
         [BindProperty]
         public CreateUpdateExportBookingDto ExportBooking { get; set; }
+        public string CabinateSize { get; set; }
+        public int Quantity { get; set; }
+        public int Index { get; set; }
+
         private readonly ISysCodeAppService _sysCodeAppService;
         private readonly IExportBookingAppService _exportBookingAppService;
         public CreateModel(ISysCodeAppService sysCodeAppService,IExportBookingAppService exportBookingAppService )

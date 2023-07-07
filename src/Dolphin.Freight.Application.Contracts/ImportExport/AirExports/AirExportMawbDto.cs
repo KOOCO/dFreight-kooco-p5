@@ -324,7 +324,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// 提單取消日期
         /// </summary>
         [DataType(DataType.Date)]
-        public DateTime AwbCancelledDate { get; set; }
+        public DateTime? AwbCancelledDate { get; set; }
         /// <summary>
         /// 取消者Id
         /// </summary>
@@ -337,7 +337,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 取消原因
         /// </summary>
-        public ReasonForCancelType ReasonForCancel { get; set; }
+        public ReasonForCancelType? ReasonForCancel { get; set; }
         /// <summary>
         /// 業務推廣人
         /// </summary>

@@ -31,10 +31,8 @@ function initializeDropdownSearch(id, selectType) {
 
     var l = abp.localization.getResource('Freight');
     $('#' + id).select2({
-        placeholder: l("Dropdown:Empty"),
-        allowClear: true,
-        templateSelection: getFormat(),
-        templateResult: getFormat()
+        placeholder: l("Dropdown:Select"),
+        allowClear: true
     });
 
     setWidth(id, selectType);
@@ -42,6 +40,6 @@ function initializeDropdownSearch(id, selectType) {
 
 function setWidth(id, selectType) {
     if (selectType == 1) {
-        $('#' + id).parent().find('.select2-container').attr('style', 'width:calc(100% - 50px) !important')
+        $('#' + id).parent().find('.select2-container').attr('style', 'width:calc(100% - 50px) !important');
     }
 }

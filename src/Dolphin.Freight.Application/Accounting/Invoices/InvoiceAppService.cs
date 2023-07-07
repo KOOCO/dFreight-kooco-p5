@@ -134,7 +134,7 @@ namespace Dolphin.Freight.Accounting.Invoices
                     {
                         bill.InvoiceCompanyName = tDictionary[r.InvoiceCompanyId.Value];
                     }
-                    else
+                    else if (r.ShipToId != null)
                     {
                         bill.ShipTo = tDictionary[r.ShipToId.Value];
                     }

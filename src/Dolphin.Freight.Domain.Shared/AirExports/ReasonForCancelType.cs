@@ -6,8 +6,8 @@ namespace Dolphin.Freight.AirExports
 {
     public enum ReasonForCancelType
     {
-        ByCustomer ,
-        NoActivity = 1,
+        ByCustomer = 1,
+        NoActivity,
         NoLateGate,
         CarrierIssue,
         Others

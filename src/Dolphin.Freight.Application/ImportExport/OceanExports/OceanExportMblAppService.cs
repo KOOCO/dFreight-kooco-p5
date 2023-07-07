@@ -7,13 +7,16 @@ using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Identity;
 using Volo.Abp.ObjectMapping;
+using Volo.Abp.Users;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -31,7 +34,10 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         private readonly IRepository<Substation, Guid> _substationRepository;
         private readonly PortsManagementAppService _portRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
-        public OceanExportMblAppService(IRepository<OceanExportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository, PortsManagementAppService portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository)
+        private readonly IIdentityUserAppService _identityUserAppService;
+        private readonly IRepository<OceanExportHbl, Guid> _oceanExportHblRepository;
+        public OceanExportMblAppService(IRepository<OceanExportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository, PortsManagementAppService portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
+            IIdentityUserAppService identityUserAppService, IRepository<OceanExportHbl, Guid> oceanExportHblRepository)
             : base(repository)
         {
             _repository = repository;
@@ -39,6 +45,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             _substationRepository =  substationRepository;
             _portRepository = portRepository;
             _tradePartnerRepository = tradePartnerRepository;
+            _identityUserAppService = identityUserAppService;
+            _oceanExportHblRepository = oceanExportHblRepository;
             /*
             GetPolicyName = OceanExportPermissions.OceanExportMbls.Default;
             GetListPolicyName = OceanExportPermissions.OceanExportMbls.Default;
@@ -128,6 +136,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 if (dto.FdestId != null) dto.FdestName = pdictionary[dto.FdestId.Value];
                 if (dto.MblCarrierId != null)dto.MblCarrierName = tdictionary[dto.MblCarrierId.Value];
                 if(dto.MblOverseaAgentId != null)dto.MblOverseaAgentName = tdictionary[dto.MblOverseaAgentId.Value];
+                if(dto.ReleaseById != null)
+                    dto.ReleaseBy = ObjectMapper.Map<IdentityUserDto, UserData>(await _identityUserAppService.GetAsync(dto.ReleaseById.GetValueOrDefault()));
             }
             return dto;
         }
@@ -147,6 +157,15 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             var rs = ObjectMapper.Map<OceanExportMbl, CreateUpdateOceanExportMblDto>(oceanExportMbl);
             
             return rs;
+        }
+
+        public override async Task DeleteAsync(Guid Id)
+        {
+            var hbls = await _oceanExportHblRepository.GetListAsync();
+            var ids = hbls.Where(w => w.MblId == Id).Select(s => s.Id);
+
+            await Repository.DeleteAsync(Id);
+            await _oceanExportHblRepository.DeleteManyAsync(ids);
         }
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -330,7 +331,6 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             public double VolumeWeightKg { get; set; }
             
             public double VolumeWeightCbm { get; set; }
-            
             public FreightType? FreightType { get; set; }
             
             public IncotermsType? IncotermsType { get; set; }

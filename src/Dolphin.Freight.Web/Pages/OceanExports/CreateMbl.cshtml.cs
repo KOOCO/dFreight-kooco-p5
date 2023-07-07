@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp.Users;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
@@ -37,7 +38,10 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         private readonly ISubstationAppService _substationAppService;
         private readonly ITradePartnerAppService _tradePartnerAppService;
         private readonly IPortsManagementAppService _portsManagementAppService;
-        public CreateMblModel( IOceanExportMblAppService oceanExportMblAppService, IPortsManagementAppService portsManagementAppService, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService)
+        private readonly ICurrentUser _currentUser;
+        private Guid? releasedBy;
+        public CreateMblModel( IOceanExportMblAppService oceanExportMblAppService, IPortsManagementAppService portsManagementAppService, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService,
+            ICurrentUser currentUser)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -45,11 +49,14 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             _substationAppService = substationAppService;
             _tradePartnerAppService = tradePartnerAppService;
             _portsManagementAppService = portsManagementAppService;
+            _currentUser = currentUser;
         }
         public async Task OnGetAsync()
         {
             OceanExportHbl = new CreateUpdateOceanExportHblDto();
             OceanExportMbl = new CreateUpdateOceanExportMblDto();
+
+            releasedBy = _currentUser.Id;
 
             await FillSubstationAsync();
             await FillTradePartnerAsync();
