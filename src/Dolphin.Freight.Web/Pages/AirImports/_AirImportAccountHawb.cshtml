@@ -9,6 +9,21 @@
 @section scripts
     {
     <script type="text/javascript">
+
+        function gotoInvoiceHBL(MawbId, HawbId, InvoiceType) {
+            if (Hid != '00000000-0000-0000-0000-000000000000') {
+                location.href = '/Accounting/Invoice?MethodType=5&MawbId=' + MawbId + "&HawbId=" + HawbId + "&InvoiceType=" + InvoiceType;
+            }
+            else {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'The data has not been saved, Please save the data!',
+                    showCancelButton: true,
+                    confirmButtonText: "Continue",
+                });
+            }
+        }
+
         function gotoInvoice(MawbId, HawbId, InvoiceType) {
 
             location.href = '/Accounting/Invoice?MethodType=2&MawbId=' + MawbId + '&HawbId=' + HawbId + "&InvoiceType=" + InvoiceType;
@@ -74,9 +89,9 @@
 
             <abp-column size-md="_12">
                 <div>
-                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.AirImportHawbDto.MawbId','@Model.AirImportHawbDto.Id',0)">@L["Add AR"]</abp-button>
-                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.AirImportHawbDto.MawbId','@Model.AirImportHawbDto.Id,1)">@L["Add DC"]</abp-button>
-                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.AirImportHawbDto.MawbId','@Model.AirImportHawbDto.Id,2)">@L["Add AP"]</abp-button>
+                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('','@Model.AirImportHawbDto.Id',0)">@L["Add AR"]</abp-button>
+                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('','@Model.AirImportHawbDto.Id',1)">@L["Add DC"]</abp-button>
+                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('','@Model.AirImportHawbDto.Id',2)">@L["Add AP"]</abp-button>
                 </div>
                 <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:0.5em;">
                     <tr border="1">

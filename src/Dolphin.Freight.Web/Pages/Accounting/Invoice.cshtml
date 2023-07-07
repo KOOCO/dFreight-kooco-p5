@@ -148,6 +148,14 @@
                                 }
                             });
                         }
+                        if (@Model.MethodType == 6) {
+                            $.ajax({
+                                url: '/api/ImportExport/AirImportAccountHawb',
+                                type: 'GET',
+                                data: { Id: '@Model.Hid' },
+
+                            });
+                        }
                         break;
                     case 1:
                         abp.message.success('以草稿儲存成功', '系統訊息');
