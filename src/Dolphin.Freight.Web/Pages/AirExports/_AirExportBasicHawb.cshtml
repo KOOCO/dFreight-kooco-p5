@@ -130,7 +130,8 @@
             <abp-input asp-for="AirExportHawbDto.ExtraProperties" value="@Json.Serialize(Model.AirExportHawbDto.ExtraProperties)" type="hidden" />
             <abp-input asp-for="@Model.AirExportHawbDto.Id" type="hidden" />
             <abp-column size-md="_3">
-                <abp-input asp-for="AirExportHawbDto.HawbNo" required size="Small" />
+                <label class="redStar" asp-for="AirExportHawbDto.HawbNo">@L["HawbNo"].Value</label>
+                <abp-input asp-for="AirExportHawbDto.HawbNo" suppress-label="true" required size="Small" />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="AirExportHawbDto.BookingNo" size="Small" readonly="true">
