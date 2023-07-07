@@ -100,7 +100,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string ServiceTermStart { get; set; }
         public string ServiceTermEnd { get; set; }
         public bool AWBCancelled { get; set; }
-        public DateTime AWBCancelledDate { get; set; }
+        public DateTime? AWBCancelledDate { get; set; }
         public string CanceledBy { get; set; }
         public string ReasonForCancel { get; set; }
 

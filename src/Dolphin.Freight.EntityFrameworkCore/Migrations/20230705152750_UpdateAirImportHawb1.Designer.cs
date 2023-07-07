@@ -4,6 +4,7 @@ using Dolphin.Freight.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,10 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Dolphin.Freight.Migrations
 {
     [DbContext(typeof(FreightDbContext))]
-    partial class FreightDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230705152750_UpdateAirImportHawb1")]
+    partial class UpdateAirImportHawb1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -935,7 +937,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<bool>("AWBCancelled")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("AWBCancelledDate")
+                    b.Property<DateTime>("AWBCancelledDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ActualShippedr")
@@ -1172,7 +1174,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("AwbAcctCarrierId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("AwbCancelledDate")
+                    b.Property<DateTime>("AwbCancelledDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("AwbCancelledOpId")
@@ -2983,9 +2985,6 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<bool>("IsSubAgentBl")
                         .HasColumnType("bit");
-
-                    b.Property<string>("ItnNo")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime2")

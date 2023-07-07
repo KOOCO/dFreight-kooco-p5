@@ -29,7 +29,10 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly IRepository<Substation, Guid> _substationRepository;
         private readonly IRepository<Port, Guid> _portRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
-        public OceanImportMblAppService(IRepository<OceanImportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository)
+        private readonly IRepository<OceanImportHbl, Guid> _oceanImportHblRepository;
+        public OceanImportMblAppService(IRepository<OceanImportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository, 
+                                        IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository ,
+                                        IRepository<OceanImportHbl, Guid> oceanImportHblRepository)
             : base(repository)
         {
             _repository = repository;
@@ -37,6 +40,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             _substationRepository =  substationRepository;
             _portRepository = portRepository;
             _tradePartnerRepository = tradePartnerRepository;
+            _oceanImportHblRepository = oceanImportHblRepository;
             /*
             GetPolicyName = OceanImportPermissions.OceanImportMbls.Default;
             GetListPolicyName = OceanImportPermissions.OceanImportMbls.Default;
@@ -128,6 +132,14 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 if(dto.MblOverseaAgentId != null)dto.MblOverseaAgentName = tdictionary[dto.MblOverseaAgentId.Value];
             }
             return dto;
+        }
+        public override async Task DeleteAsync(Guid Id)
+        {
+            var hbls = await _oceanImportHblRepository.GetListAsync();
+            var ids = hbls.Where(w => w.MblId == Id).Select(s => s.Id);
+
+            await Repository.DeleteAsync(Id);
+            await _oceanImportHblRepository.DeleteManyAsync(ids);
         }
     }
 }

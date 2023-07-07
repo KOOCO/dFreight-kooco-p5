@@ -2,8 +2,10 @@
 using Dolphin.Freight.Settings.PortsManagement;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -24,18 +26,21 @@ namespace Dolphin.Freight.ImportExport.AirImports
         private IRepository<Airport, Guid> _airportRepository;
         private IRepository<PortsManagement, Guid> _portsManagementAppService;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
+        private readonly IRepository<AirImportHawb, Guid> _airImportHawbAppService;
 
         public AirImportMawbAppService(
             IRepository<AirImportMawb, Guid> repository,
             IRepository<Airport, Guid> airportRepository,
             IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
-            IRepository<PortsManagement, Guid> portsManagementAppService
+            IRepository<PortsManagement, Guid> portsManagementAppService,
+            IRepository<AirImportHawb, Guid> airImportHawbAppService
             ) : base(repository)
         {
             _repository = repository;
             _airportRepository = airportRepository;
             _tradePartnerRepository = tradePartnerRepository;
             _portsManagementAppService = portsManagementAppService;
+            _airImportHawbAppService = airImportHawbAppService;
         }
 
         public override async Task<PagedResultDto<AirImportMawbDto>> GetListAsync(PagedAndSortedResultRequestDto input)
@@ -118,6 +123,15 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 totalCount,
                 airImportMawbDtoList
             );
+        }
+
+        public override async Task DeleteAsync(Guid Id)
+        {
+            var hawbs = await _airImportHawbAppService.GetListAsync();
+            var ids = hawbs.Where(h => h.MawbId == Id).Select(s => s.Id);
+
+            await Repository.DeleteAsync(Id);
+            await _airImportHawbAppService.DeleteManyAsync(ids);
         }
 
     }

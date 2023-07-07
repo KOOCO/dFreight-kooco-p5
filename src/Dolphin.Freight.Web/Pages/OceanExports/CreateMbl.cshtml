@@ -150,11 +150,11 @@
                             <abp-row>
                                 <abp-column size-md="_3">
                                     <input type="hidden" name="ShipmentNo" id="ShipmentNo">
-                                    <label class="">Doc No</label>
+                                    <label class="">@L["DocNo"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.FilingNo" readonly/>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">MB/L No</label>
+                                    <label class="">@L["MblNo"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.MblNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -166,15 +166,15 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label class="">Post Date</label>
+                                    <label class="">@L["PostDate"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.PostDate" readonly/>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">S/O No</label>
+                                    <label class="">@L["SoNo"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.SoNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">Itn No</label>
+                                    <label class="">@L["ItnNo"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.ItnNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -225,7 +225,7 @@
                                     <input type="hidden" name="OceanExportMbl.CareOfContent" id="mCareOfContent" value="@Model.OceanExportMbl.CareOfContent" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">Operator</label>
+                                    <label class="">@L["OP"]</label>
                                     <select class="form-control ml-15" asp-for="OceanExportMbl.MblOperatorId" disabled="true">
                                         <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
                                     </select>
@@ -233,7 +233,7 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label class="">Carrier Contract No</label>
+                                    <label class="">@L["CarrierContractNo"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.CarrierContractNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -250,18 +250,18 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label class="">Vessel Name</label>
+                                    <label class="">@L["VesselName"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.VesselName" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">Voyage</label>
+                                    <label class="">@L["Voyage"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.Voyage" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PorId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">ETD</label>
+                                    <label class="">@L["PorEtd"]</label>
                                     <input class="form-control checkdate" type="text" name="OceanExportMbl.PorEtd" abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
@@ -270,14 +270,14 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PolId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">ETD</label>
+                                    <label class="">@L["PolEtd"]</label>
                                     <input class="form-control checkdate" type="text" name="OceanExportMbl.PolEtd" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PodId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">ETA</label>
+                                    <label class="">@L["ETA"]</label>
                                     <input class="form-control checkdate" type="text" name="OceanExportMbl.PodEta" abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
@@ -286,14 +286,14 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.DelId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">DEL ETA</label>
+                                    <label class="">@L["DelEta"]</label>
                                     <input class="form-control checkdate" type="text" name="OceanExportMbl.DelEta" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.FdestId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">Final dest ETA</label>
+                                    <label class="">@L["FinalDestETA"]</label>
                                     <input class="form-control checkdate" type="text" name="OceanExportMbl.FdestEta" abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
@@ -342,7 +342,7 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label class="">Display Mbl Container Size Qty Info</label>
+                                    <label class="">@L["DisplayMblContainerSizeQtyInfo"]</label>
                                     <input class="form-control" type="text" name="OceanExportMbl.DisplayMblContainerSizeQtyInfo" readonly />
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -483,7 +483,7 @@
                         <abp-card-body class="card-body collapse show" id="hblDiv">
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label class="">HB/L No</label>
+                                    <label class="">@L["DocNo"]HB/L No</label>
                                     <input class="form-control" type="text" name="OceanExportHbl.HblNo" id="OceanExportHbl_HblNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -706,46 +706,46 @@
                 <div class="card-wrap">
 
                     <button class="btn btn-block btn-add" type="button" id="addHBtn">
-                        <i class="fa-solid fa-plus"></i>新增HB/L
+                        <i class="fa-solid fa-plus"></i>@L["Btn:AddHbl"]
                     </button>
 
                     <div class="function-wrap">
 
                         <div class="form">
                             <div class="form-group">
-                                <label for="cardOrderSet">卡片排序</label>
+                                <label for="cardOrderSet">@L["SortCard"]</label>
                                 <select class="form-control selectpicker" id="cardOrderSet">
-                                    <option selected>請選擇</option>
-                                    <option value="建立日期">建立日期</option>
-                                    <option value="HB/L 號碼">HB/L 號碼</option>
+                                    <option selected>@L["Dropdown:Select"]</option>
+                                    <option value="建立日期">@L["CraeteDate"]</option>
+                                    <option value="HB/L 號碼">@L["HBLNo"]</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label class="sr-only" for="cardOrder">Preference</label>
+                                <label class="sr-only" for="cardOrder">@L["Preference"]</label>
                                 <select class="form-control selectpicker" id="cardOrder">
-                                    <option selected>請選擇</option>
-                                    <option value="遞增">遞增</option>
-                                    <option value="遞減">遞減</option>
+                                    <option selected>@L["Dropdown:Select"]</option>
+                                    <option value="遞增">@L["Increment"]</option>
+                                    <option value="遞減">@L["Decrease"]</option>
                                 </select>
                             </div>
                             <fieldset class="form-group">
-                                <legend class="col-form-label">卡片顯示</legend>
+                                <legend class="col-form-label">@L["CardDisplay"]</legend>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox"
                                            id="inlineCheckbox1" value="option1">
                                     <label class="form-check-label"
-                                           for="inlineCheckbox1">託運人與收貨人</label>
+                                           for="inlineCheckbox1">@L["ShipperAndConsignee"]</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox"
                                            id="inlineCheckbox2" value="option2">
                                     <label class="form-check-label"
-                                           for="inlineCheckbox2">名稱標籤</label>
+                                           for="inlineCheckbox2">@L["Tag"]</label>
                                 </div>
                             </fieldset>
 
                             <button type="submit" class="btn btn-dark btn-block btn-update">
-                                <i class="fa-solid fa-arrows-rotate"></i>更新
+                                <i class="fa-solid fa-arrows-rotate"></i>@L["Update"]
                             </button>
                         </div>
 

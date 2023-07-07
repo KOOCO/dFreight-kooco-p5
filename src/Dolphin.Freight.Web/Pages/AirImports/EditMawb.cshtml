@@ -25,6 +25,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-templates@1.0.0/jquery.tmpl.min.js"></script>
     <abp-script src="/Pages/AirImports/EditMawb.js" />
     <script type="text/javascript">
+        var l = abp.localization.getResource('Freight');
         $(document).ready(function () {
 
             initializeDropdownSearch('MawbModel_DestinationId');
@@ -94,7 +95,6 @@
             });
 
             $('#addHBtn').on('click', function () {
-                debugger;
                 if ($('#mawbDiv')[0].classList.contains('show')) {
                     $('#btnMawbCollapse').click();
                 }
@@ -184,7 +184,6 @@
         $('#hblMainCard').append('#mawbCard');
 
         function onHawbCardClick(e, hawbId) {
-            debugger;
             var element = e.currentTarget || e.target || e.srcElement;
             var hawbNo = element.id.split('_')[1];
 
@@ -227,6 +226,10 @@
                             initializeDropdownSearch('HawbModel_ServiceTermTo');
                             initializeDropdownSearch('HawbModel_Trucker');
                             initializeDropdownSearch('HawbModel_Freight');
+                            initializeDropdownSearch('HawbModel_Notify');
+                            initializeDropdownSearch('HawbModel_Customer');
+                            initializeDropdownSearch('HawbModel_BillToId');
+                            initializeDropdownSearch('HawbModel_CustomsBroker');
                             initializeDropdownSearch('HawbModel_FreightLocation');
                             initializeDropdownSearch('HawbModel_FinalDestination');
                             initializeDropdownSearch('HawbModel_DeliveryLocation');
@@ -308,6 +311,39 @@
         function alertConfirmation2() {
             $('#saveBtn').click();
         }
+
+        function deleteHawbAirImport() {
+            abp.message.confirm(l('DeletionConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airImports.airImportHawb
+                            .delete($('#HawbModel_Id').val())
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyDeleted'));
+                                $('#hblCard').remove();
+                                $('#hblCards').find('.card-body.show').closest('.card.board-item').remove()
+                            });
+                    }
+                });
+        }
+
+        function deleteMawbAirImport() {
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+            abp.message.confirm(l('DeletionConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airImports.airImportMawb
+                            .delete(mawbId)
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyDeleted')).done(function () {
+                                    location.href = '/AirImports/Index';
+                                });
+                            });
+                    }
+                })
+        }
+
     </script>
 
 
@@ -359,7 +395,7 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="deleteMawbAirImport()">
                                         <i class="fa fa-trash"></i> @L["Btn:Delete"]
                                     </a>
                                     <a class='dropdown-item' href='#'>
@@ -667,25 +703,25 @@
                             <!--第9列-->
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.FreightType", AspItems = Html.GetEnumSelectList(typeof(FreightType)).ToList(), IsShowLabel = true, FieldName = "Freight", ShowFiledContentValue = Convert.ToString(Model.MawbModel.FreightType) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.FreightType", AspItems = Html.GetEnumSelectList(typeof(FreightType)).ToList(), IsShowLabel = true, FieldName ="Freight", ShowFiledContentValue = Convert.ToString(Model.MawbModel.FreightType) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.IncotermsType", AspItems = Html.GetEnumSelectList(typeof(IncotermsType)).ToList(), IsShowLabel = true, FieldName = "Incoterms", ShowFiledContentValue = Convert.ToString(Model.MawbModel.IncotermsType) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeFrom", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, FieldName = "Service Term From", ShowFiledContentValue = Convert.ToString(Model.MawbModel.ServiceTermTypeFrom) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeFrom", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, FieldName = "ServiceTermFrom", ShowFiledContentValue = Convert.ToString(Model.MawbModel.ServiceTermTypeFrom) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeTo", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, FieldName = "Service Term To", ShowFiledContentValue = Convert.ToString(Model.MawbModel.ServiceTermTypeTo) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeTo", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, FieldName = "ServiceTermTo", ShowFiledContentValue = Convert.ToString(Model.MawbModel.ServiceTermTypeTo) })
                                 </abp-column>
                             </abp-row>
                             <!--第10列 Awb取消Checkbox, IsEcom-->
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BusinessReferredId", AspItems = _dropdownService.TradePartnerLookupList, IsShowLabel = true, FieldName = "Business Referred By", ShowFiledContentValue = Convert.ToString(Model.MawbModel.BusinessReferredId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BusinessReferredId", AspItems = _dropdownService.TradePartnerLookupList, IsShowLabel = true, FieldName = "BusinessReferredBy", ShowFiledContentValue = Convert.ToString(Model.MawbModel.BusinessReferredId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DisplayUnit", AspItems = Html.GetEnumSelectList(typeof(DisplayUnitType)).ToList(), IsShowLabel = true, FieldName = "Display Unit", ShowFiledContentValue = Convert.ToString(Model.MawbModel.DisplayUnit) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DisplayUnit", AspItems = Html.GetEnumSelectList(typeof(DisplayUnitType)).ToList(), IsShowLabel = true, FieldName = "DisplayUnit", ShowFiledContentValue = Convert.ToString(Model.MawbModel.DisplayUnit) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="MawbModel.IsECom" />
