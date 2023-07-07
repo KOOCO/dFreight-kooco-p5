@@ -320,6 +320,25 @@
             })
         }
 
+        function onFormSave(){
+            $('#createForm').valid();
+            var validate = $('#createForm').validate();
+            var mawbErrors = validate.errorList.filter((error) => error.element.name.includes('MawbModel'));  //AirExportHawbDto
+            var hawbErrors = validate.errorList.filter((error) => error.element.name.includes('AirExportHawbDto'));
+            if (mawbErrors.length && $('#btnMawbCollapse').hasClass('collapsed')) {
+                $('#btnMawbCollapse').click();
+                setTimeout(()=> {
+                    var position = $(mawbErrors[0].element).position();
+                    scroll(position.top, 0);
+                })
+                //setTimeout(()=> mawbErrors[0].element.scrollIntoView(), 500);
+                
+            }
+            else{
+                $('#createForm').submit();
+            }
+        }
+
     </script>
 
     <!-- Define the template -->
@@ -762,7 +781,7 @@
             <!-- 下方Save按鈕 -->
             <abp-row class="mt-3">
                 <abp-column>
-                    <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Display:Button:Submit"]</abp-button>
+                        <abp-button class="btn btn-primary me-md-2 cursor-pointer" type="button" id="saveBtn" onclick="onFormSave()">@L["Display:Button:Submit"]</abp-button>
                 </abp-column>
             </abp-row>
             <abp-row>
