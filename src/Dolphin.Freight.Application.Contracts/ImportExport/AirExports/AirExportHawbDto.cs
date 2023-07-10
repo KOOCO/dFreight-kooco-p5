@@ -23,8 +23,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 
         /// </summary>
-        public Guid? BookingNo { get; set; }
-        public DateTime BookingDate { get; set; }
+        public string BookingNo { get; set; }
+        public DateTime? BookingDate { get; set; }
         public string ITNNo { get; set; }
 
         public Guid? QuotationId { get; set; }

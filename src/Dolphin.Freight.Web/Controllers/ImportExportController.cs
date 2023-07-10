@@ -22,6 +22,7 @@ using Volo.Abp.AspNetCore.Mvc;
 using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
+using Org.BouncyCastle.Asn1.Mozilla;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -195,13 +196,12 @@ namespace Dolphin.Freight.Web.Controllers
             model.CountryName = CountryName;
 
             model.AirExportHawbDto = await _airExportHawbAppService.GetHawbCardById(Id);
-            if (model.AirExportHawbDto.Id == Guid.Empty)
+
+            if( Id == Guid.Empty)
             {
-                model.AirExportHawbDto.BookingNo = Guid.NewGuid();
+                model.AirExportHawbDto.BookingDate = DateTime.Now;  
             }
-            
-
-
+           
             return PartialView("~/Pages/AirExports/_AirExportBasicHawb.cshtml", model);
         }
 

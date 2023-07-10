@@ -11,7 +11,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
     {
         public Guid? MawbId { get; set; }
         public string HawbNo { get; set; }
-        public Guid? BookingNo { get; set; }
+        public string BookingNo { get; set; }
         public DateTime BookingDate { get; set; }
         public string ITNNo { get; set; }
         public Guid? QuotationId { get; set; }
