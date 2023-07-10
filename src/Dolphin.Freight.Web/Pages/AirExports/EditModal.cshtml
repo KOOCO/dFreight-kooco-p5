@@ -721,9 +721,8 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DepatureId", AspItems = _dropdown.PortsManagementLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.DepatureId.ToString(), IsShowLabel = true, FieldName = @L["DepatureId"] })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label asp-for="@Model.AirExportMawbDto.DepatureDate" class="form-label">Depature Date</label>
-                                    <span asp-validation-for="@Model.AirExportMawbDto.DepatureDate" class="text-danger"></span>
-                                    <input asp-for="@Model.AirExportMawbDto.DepatureDate" class="form-control" />
+                                    <label asp-for="AirExportMawbDto.DepatureDate" class="redStar form-label">@L["DepatureDate"]</label>
+                                    <abp-input asp-for="AirExportMawbDto.DepatureDate" suppress-label="true" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="@Model.AirExportMawbDto.FlightNo" size="Small" />
@@ -739,6 +738,9 @@
                             <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DestinationId", AspItems = _dropdown.PortsManagementLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.DestinationId.ToString(), IsShowLabel = true, FieldName = @L["Destination"] })
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="AirExportMawbDto.ArrivalDate" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="@Model.AirExportMawbDto.DVCarriage" size="Small" />

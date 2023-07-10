@@ -231,7 +231,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             public string FlightNo { get; set; }
 
             public string DestinationId { get; set; }
-            public DateTime ArrivalDate { get; set; }
+            public DateTime? ArrivalDate { get; set; }
             public string DVCarriage { get; set; }
             public string DVCustomer { get; set; }
 
