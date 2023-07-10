@@ -281,7 +281,7 @@
     "Message:SuccessEdit": "Edit Success",
     "Message:SuccessCopy": "Copy Success",
     "Message:SelectRequired": "Select Required",
-    "Message:Required": "This field is required.", 
+    "Message:Required": "This field is required.",
     "Message:LockMessage": "Aleardy Locked !  Edit must be careful！ The report will be affected !  ",
     "Message:AddHBLErr": "Only allow one HB/L before you save！",
     //Menu:OceanExports
@@ -489,8 +489,8 @@
     "OnBoardDate": "On Board Date",
     "IsStackable": "Is Stackable",
     "IsHold": "Is Hold",
-    "HoldReason ": "",
-    "HblReleaseDate": "",
+    "HoldReason ": "Hold Reason",
+    "HblReleaseDate": "Release Date",
     "CanceledDate": "",
     "PlaceOfRegistration": "Place Of Registration",
     "TheReferenceNo": "Reference No",
@@ -1294,6 +1294,12 @@
     "Freight": "Freight",
     "ServiceTermFrom": "Service Term From",
     "ServiceTermTo": "Service Term To",
-    "BusinessReferredBy": "Business Referred By"
+    "BusinessReferredBy": "Business Referred By",
+
+    // Ocean Export HBL
+    "AgentId": "HB/L Agent",
+    "HblSaleId": "Sales",
+    "HSvcTermToId": "Svc Term To",
+    "HblReleaseDate": "Release Date"
   }
 }
