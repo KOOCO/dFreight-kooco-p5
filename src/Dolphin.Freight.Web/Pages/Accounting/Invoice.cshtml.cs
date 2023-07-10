@@ -235,7 +235,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
             {
                 //如果有Mid，表示這是Mbl的
                 query.ParentId = Mid;
-                query.QueryType = 0;
+                query.QueryType = 3;
             }
             var createUpdateOceanImportMblDto = await _oceanImportMblAppService.GetCreateUpdateOceanImportMblDtoById(Mid.Value);
 

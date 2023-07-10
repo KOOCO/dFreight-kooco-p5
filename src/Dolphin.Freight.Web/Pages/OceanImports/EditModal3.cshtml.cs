@@ -55,7 +55,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             OceanImportMbl.Mid = Id;
             QueryHblDto query = new QueryHblDto() { MblId = OceanImportMbl.Id };
             OceanImportHbls = await _oceanImportHblAppService.QueryListByMidAsync(query);
-            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 0, ParentId = Id };
+            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 3, ParentId = Id };
             var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
             m0invoiceDtos = new List<InvoiceDto>();
             m1invoiceDtos = new List<InvoiceDto>();
@@ -76,7 +76,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
                             m2invoiceDtos.Add(dto);
                             break;
 
-
+                              
                     }
                 }
             }
