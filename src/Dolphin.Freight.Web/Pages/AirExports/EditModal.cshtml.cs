@@ -76,48 +76,60 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             await FillCountryNameAsync();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPostAsync()
         {
-            var updateItem = ObjectMapper.Map<AirExportMawbDto, CreateUpdateAirExportMawbDto>(AirExportMawbDto);
-
-            await _airExportMawbAppService.UpdateAsync(AirExportMawbDto.Id, updateItem);
-
-            if(AirExportHawbDto is not null)
+            Monitor.Enter(lockObject);
+            try
             {
-                var updateHawb = ObjectMapper.Map<AirExportHawbDto, CreateUpdateAirExportHawbDto>(AirExportHawbDto);
-                updateHawb.MawbId = AirExportMawbDto.Id;
+                var updateItem = ObjectMapper.Map<AirExportMawbDto, CreateUpdateAirExportMawbDto>(AirExportMawbDto);
 
-                if (updateHawb.ExtraProperties == null)
-                {
-                    updateHawb.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
-                }
+                _airExportMawbAppService.UpdateAsync(AirExportMawbDto.Id, updateItem).Wait();
 
-                if (AirExportHawbDto.Commodities != null)
+                if (AirExportHawbDto is not null)
                 {
-                    updateHawb.ExtraProperties.Remove("Commodites");
-                    updateHawb.ExtraProperties.Add("Commodities", AirExportHawbDto.Commodities);
-                }
+                    var updateHawb = ObjectMapper.Map<AirExportHawbDto, CreateUpdateAirExportHawbDto>(AirExportHawbDto);
+                    updateHawb.MawbId = AirExportMawbDto.Id;
 
-                if (AirExportHawbDto.OtherCharges != null)
-                {
-                    updateHawb.ExtraProperties.Remove("OtherCharges");
-                    updateHawb.ExtraProperties.Add("OtherCharges", AirExportHawbDto.OtherCharges);
-                }
+                    if (updateHawb.ExtraProperties == null)
+                    {
+                        updateHawb.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                    }
 
-                Monitor.Enter(lockObject);
-                try
-                {
+                    if (AirExportHawbDto.Commodities != null)
+                    {
+                        updateHawb.ExtraProperties.Remove("Commodites");
+                        updateHawb.ExtraProperties.Add("Commodities", AirExportHawbDto.Commodities);
+                    }
+
+                    if (AirExportHawbDto.OtherCharges != null)
+                    {
+                        updateHawb.ExtraProperties.Remove("OtherCharges");
+                        updateHawb.ExtraProperties.Add("OtherCharges", AirExportHawbDto.OtherCharges);
+                    }
+
+
                     if (AirExportHawbDto.Id != Guid.Empty)
                     {
-                        await _airExportHawbAppService.UpdateAsync(AirExportHawbDto.Id, updateHawb);
+                        _airExportHawbAppService.UpdateAsync(AirExportHawbDto.Id, updateHawb).Wait();
                     }
                     else
                     {
-                        await _airExportHawbAppService.CreateAsync(updateHawb);
+                        _airExportHawbAppService.CreateAsync(updateHawb).Wait();
                     }
+
                 }
-                catch (Exception) { throw; }
-                finally { Monitor.Exit(lockObject); }
+            }
+            finally 
+            {
+                try
+                {
+                    Monitor.Exit(lockObject);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+                
             }
 
             return new ObjectResult(new { id = AirExportMawbDto.Id });
