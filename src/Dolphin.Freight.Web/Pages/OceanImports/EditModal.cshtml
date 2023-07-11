@@ -270,6 +270,12 @@
                 })
         }
 
+        function OpenInTrackTrace() {
+            var MblNo = $('#OceanImportMbl_MblNo').val();
+            myWindow = window.open('https://www.track-trace.com/bol#' + MblNo, '_blank', 'width=1200,height=1000');
+            myWindow.focus();
+        }
+
     </script>
 }
 <div class="page-header">
@@ -372,7 +378,7 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Electronic Customs Declaration Status"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()">
                                         <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
                                     </a>
                                 </div>
@@ -410,6 +416,7 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanImportMbl.MblNo" />
+                                    <input type="hidden" name="OceanImportMbl.Id" id="OceanImportMbl_Id" value="@Model.Id" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "OfficeId", FieldName = "OfficeId",DefaultValue="" , IsShowLabel = true , IsRequired = true })

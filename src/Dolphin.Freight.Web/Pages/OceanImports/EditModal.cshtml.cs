@@ -63,12 +63,12 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var updateItem = ObjectMapper.Map<OceanImportMblDto, CreateUpdateOceanImportMblDto>(OceanImportMblDto);
-            await _oceanImportMblAppService.UpdateAsync(OceanImportMblDto.Id, updateItem);
 
-            if (OceanImportHblDto is not null)
+            await _oceanImportMblAppService.UpdateAsync(OceanImportMbl.Id, OceanImportMbl);
+
+            if (OceanImportHbl is not null && !string.IsNullOrEmpty(OceanImportHbl.HblNo))
             {
-                OceanImportHbl.MblId = OceanImportMblDto.Id;
+                OceanImportHbl.MblId = OceanImportMbl.Id;
 
                 if (OceanImportHbl.Id != Guid.Empty)
                 {
@@ -79,6 +79,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
                     await _oceanImportHblAppService.CreateAsync(OceanImportHbl);
                 }
             }
+
             return new ObjectResult(new { id = OceanImportMblDto.Id });
         }
     }
