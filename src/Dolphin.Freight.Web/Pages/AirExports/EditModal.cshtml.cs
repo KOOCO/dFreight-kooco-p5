@@ -23,6 +23,7 @@ using Volo.Abp.ObjectMapping;
 using System.Security.Cryptography.Xml;
 using Dolphin.Freight.Settings.Countries;
 using Volo.Abp.Uow;
+using System.Threading;
 
 namespace Dolphin.Freight.Web.Pages.AirExports
 {
@@ -60,6 +61,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
 
+        private static readonly Object lockObject = new object();
         public async Task OnGetAsync(Guid Id)
         {
             AirExportMawbDto = await _airExportMawbAppService.GetAsync(Id);
@@ -102,14 +104,20 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                     updateHawb.ExtraProperties.Add("OtherCharges", AirExportHawbDto.OtherCharges);
                 }
 
-                if (AirExportHawbDto.Id != Guid.Empty)
+                Monitor.Enter(lockObject);
+                try
                 {
-                    await _airExportHawbAppService.UpdateAsync(AirExportHawbDto.Id, updateHawb);
+                    if (AirExportHawbDto.Id != Guid.Empty)
+                    {
+                        await _airExportHawbAppService.UpdateAsync(AirExportHawbDto.Id, updateHawb);
+                    }
+                    else
+                    {
+                        await _airExportHawbAppService.CreateAsync(updateHawb);
+                    }
                 }
-                else
-                {
-                    await _airExportHawbAppService.CreateAsync(updateHawb);
-                }
+                catch (Exception) { throw; }
+                finally { Monitor.Exit(lockObject); }
             }
 
             return new ObjectResult(new { id = AirExportMawbDto.Id });
