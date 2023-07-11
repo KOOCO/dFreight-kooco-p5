@@ -360,7 +360,7 @@
 
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.CancelReason", AspItems = Html.GetEnumSelectList(typeof(ReasonForCancelType)).ToList(), IsShowLabel = true, FieldName = "ReasonForCancel", ShowFiledContentValue = Model.OceanExportHbl.CancelReason })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.CancelReason", AspItems = _dropdown.CancelReasonLookupList, IsShowLabel = true, FieldName = "ReasonForCancel", ShowFiledContentValue = Model.OceanExportHbl.CancelReason })
                 <input type="hidden" name="OceanExportHbl.CancelReason" id="hHCancelReason" value="@Model.OceanExportHbl.CancelReason" />
             </abp-column>
             <abp-column size-md="_3">
