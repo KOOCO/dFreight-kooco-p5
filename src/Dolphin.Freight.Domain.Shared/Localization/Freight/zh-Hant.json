@@ -453,6 +453,7 @@
     "MblSalesTypeId": "業務類別",
     "HblWhCutOffTime": "倉儲結關日",
     "EarlyReturnDatetime": "最早收櫃日",
+    "EarlyReturnDateTime": "最早收櫃日",
     "LcNo": "信用編號",
     "LcIssueBank": "信用狀開立銀行",
     "LcIssueDate": "信用狀開立日期",
@@ -1348,7 +1349,8 @@
     "TransshipmentPort": "中轉港",
     "DocNo": "文件號碼",
     "BuyingFreight": "運費(買方)",
-    "SellingFreight": "運費(賣方)"
+    "SellingFreight": "運費(賣方)",
+    "HblSalesTypeId": "業務類別"
 
 
 
