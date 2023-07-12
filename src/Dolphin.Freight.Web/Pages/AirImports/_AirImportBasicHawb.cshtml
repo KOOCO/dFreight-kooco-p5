@@ -12,6 +12,19 @@
 @inject IStringLocalizer<FreightResource> L
 
 @model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
+
+<script>
+    $(document).ready(function () {
+        if ($('#HawbCancelledDate').val() == '0001-01-01T00:00') {
+            $('#HawbCancelledDate').val('');
+        }
+           if ($('#HawbModel_FrtRelease').val() == '0001-01-01T00:00') {
+            $('#HawbModel_FrtRelease').val('');
+        }
+    });
+
+
+</script>
 <!-- HABL Card -->
 <abp-card class="card board-item" id="hblCard">
     <!-- 標題區域 -->
