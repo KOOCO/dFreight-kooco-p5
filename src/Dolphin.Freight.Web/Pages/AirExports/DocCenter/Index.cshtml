@@ -195,8 +195,9 @@
         }
 
         function OpenInTrackTrace() {
-            var url = new URL(window.location.href);
-            var mawbId = url.searchParams.get('Id');
+            var url = window.location.href;
+            var urlPath = url.split('/');
+            var mawbId = urlPath[urlPath.length - 1];
             dolphin.freight.importExport.airExports.airExportMawb.get(mawbId).done(function (res) {
                 myWindow = window.open('https://www.track-trace.com/bol#' + res.mawbNo, '_blank', 'width=1200,height=1000');
                 myWindow.focus();
