@@ -98,11 +98,6 @@ namespace Dolphin.Freight.Web.Controllers
         {
             HawbHblViewModel model = new();
 
-            model.SubstationLookupList = SubstationLookupList;
-            model.AirportLookupList = AirportLookupList;
-            model.TradePartnerLookupList = TradePartnerLookupList;
-            model.PackageUnitLookupList = PackageUnitLookupList;
-
             model.HawbModel = await _airImportHawbAppService.GetHawbCardById(Id);
 
             return PartialView("~/Pages/AirImports/_AirImportBasicHawb.cshtml", model);

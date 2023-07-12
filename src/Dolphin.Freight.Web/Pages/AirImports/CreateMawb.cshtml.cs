@@ -67,10 +67,6 @@ namespace Dolphin.Freight.Web.Pages.AirImports
                 DisplayUnit = DisplayUnitType.Both
             };
 
-            await FillTradePartnerAsync();
-            await FillSubstationAsync();
-            await FillAirportAsync();
-            await FillPackageUnitAsync();
         }
         #endregion
 
@@ -87,6 +83,21 @@ namespace Dolphin.Freight.Web.Pages.AirImports
 
             if (HawbModel is not null && !string.IsNullOrEmpty(HawbModel.HawbNo))
             {
+                if (HawbModel.ExtraProperties == null)
+                {
+                    HawbModel.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                }
+
+                if (HawbModel.Commodities != null)
+                {
+                    HawbModel.ExtraProperties.Add("Commodities", HawbModel.Commodities);
+                }
+
+                if (HawbModel.SubHawbs != null)
+                {
+                    HawbModel.ExtraProperties.Add("SubHawbs", HawbModel.SubHawbs);
+                }
+
                 var addHawb = ObjectMapper.Map<AirImportHawbDto, CreateUpdateAirImportHawbDto>(HawbModel);
                 addHawb.MawbId = MawbId;
 
@@ -101,46 +112,6 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         }
         #endregion
 
-        #region FillTradePartnerAsync()
-        private async Task FillTradePartnerAsync()
-        {
-            var tradePartnerLookup = await _tradePartnerAppService.GetTradePartnersLookupAsync();
-            TradePartnerLookupList = tradePartnerLookup.Items
-                                                .Select(x => new SelectListItem(x.TPName + " / " + x.TPCode, x.Id.ToString(), false))
-                                                .ToList();
-        }
-        #endregion
-
-        #region FillSubstationAsync()
-        private async Task FillSubstationAsync()
-        {
-            var substationLookup = await _substationAppService.GetSubstationsLookupAsync();
-            SubstationLookupList = substationLookup.Items
-                                                .Select(x => new SelectListItem(x.SubstationName + "  (" + x.AbbreviationName + ")", x.Id.ToString(), false))
-                                                .ToList();
-        }
-        #endregion
-
-        #region FillAirportAsync()
-        private async Task FillAirportAsync()
-        {
-            var airportLookup = await _airportAppService.GetAirportLookupAsync();
-            AirportLookupList = airportLookup.Items
-                                                .Select(x => new SelectListItem(x.AirportIataCode + " " + x.AirportName, x.Id.ToString(), false))
-                                                .ToList();
-        }
-        #endregion
-
-        #region FillPackageUnitAsync()
-        private async Task FillPackageUnitAsync()
-        {
-            var packageUnitLookup = await _packageUnitAppService.GetPackageUnitsLookupAsync();
-            PackageUnitLookupList = packageUnitLookup.Items
-                                                .Select(x => new SelectListItem(x.PackageName, x.Id.ToString(), false))
-                                                .ToList();
-        }
-        #endregion
-
         #region SetAirImportFileNo() 
         /// <summary>
         /// ³]©wAir ImportªºFile No
@@ -152,10 +123,6 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             return AIFileNo;
         }
         #endregion
-
-
-
-
 
         #region CreateMawbViewModel
         public class CreateAIMMawbViewModel

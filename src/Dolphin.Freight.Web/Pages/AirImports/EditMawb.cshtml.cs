@@ -113,6 +113,22 @@ namespace Dolphin.Freight.Web.Pages.AirImports
 
                 if (HawbModel is not null)
                 {
+
+                    if (HawbModel.ExtraProperties == null)
+                    {
+                        HawbModel.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                    }
+
+                    if (HawbModel.Commodities != null)
+                    {
+                        HawbModel.ExtraProperties.Add("Commodities", HawbModel.Commodities);
+                    }
+
+                    if (HawbModel.SubHawbs != null)
+                    {
+                        HawbModel.ExtraProperties.Add("SubHawbs", HawbModel.SubHawbs);
+                    }
+
                     HawbModel.MawbId = MawbModel.Id;
                     if (HawbModel.Id != Guid.Empty)
                     {

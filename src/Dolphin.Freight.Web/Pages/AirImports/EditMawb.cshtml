@@ -28,18 +28,6 @@
         var l = abp.localization.getResource('Freight');
         $(document).ready(function () {
 
-            initializeDropdownSearch('MawbModel_DestinationId');
-            initializeDropdownSearch('MawbModel_RouteTrans1CarrierId');
-            initializeDropdownSearch('MawbModel_RouteTrans2CarrierId');
-            initializeDropdownSearch('MawbModel_RouteTrans3CarrierId');
-            initializeDropdownSearch('MawbModel_AwbAcctCarrierId');
-            initializeDropdownSearch('MawbModel_CarrierId');
-            initializeDropdownSearch('MawbModel_ShipperId');
-            initializeDropdownSearch('MawbModel_ConsigneeId');
-            initializeDropdownSearch('MawbModel_NotifyId');
-            initializeDropdownSearch('MawbModel_CoLoaderId');
-            initializeDropdownSearch('MawbModel_FreightLocationId');
-
             var l = abp.localization.getResource('Freight');
             var showMsg = '@Model.ShowMsg';
             var HAWBNO = 0;
@@ -115,62 +103,8 @@
                         $('.hblCardTitle')[index].click();
                     }, 500);
                 }
-            })
-
-            $('#addCommodityBtn').on('click', function () {
-                addCommodityTr();
-            })
-
-            function addCommodityTr() {
-                addCommodityTrTag("", "", "");
-            }
-            var trindex = 0;
-            function addCommodityTrTag(value1, value2, value3) {
-                var trhtml = "<tr id='tr_" + trindex + "'><td> <input type='checkbox' name='f0' id='did_" + trindex + "'  value='" + trindex + "'    /></td>"
-                trhtml = trhtml + "<td><input type='text' " + trindex + " id='f0_" + trindex + "' class='form-control' value='" + value1 + "' /></td>"
-                trhtml = trhtml + "<td><input type='text' " + trindex + " id='f0_" + trindex + "' ' class='form-control' value='" + value2 + "' /></td>"
-                trhtml = trhtml + "<td><input type='text' " + trindex + " id='f0_" + trindex + "' ' class='form-control' value='" + value3 + "' /></td>"
-                $("#commodityBody").append(trhtml);
-                trindex++;
-            }
-
-            $("#deleteCommodityBtn").click(function () {
-                $("input[name='f0']:checked").each(function () {
-                    var tid = $(this).val();
-                    $("#did_" + tid).val("1");
-                    var val = $(this).attr('id').split('_')[1];
-                    $("#tr_" + val).hide();
-                })
-            })
+            })            
         });
-
-        $('#addSubHAWBBtn').on('click', function () {
-            addSubHAWBTr();
-        })
-
-        function addSubHAWBTr() {
-            addSubHAWBTrTag("", "", "", "", "");
-        }
-        var trSubHAWBindex = 0;
-        function addSubHAWBTrTag(value1, value2, value3, value4, value5) {
-            var trhtml = "<tr id='tr_" + trSubHAWBindex + "'><td> <input type='checkbox' name='f1' id='did_" + trSubHAWBindex + "'  value='" + trSubHAWBindex + "'    /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trSubHAWBindex + " id='f1_" + trSubHAWBindex + "' class='form-control' value='" + value1 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trSubHAWBindex + " id='f1_" + trSubHAWBindex + "' ' class='form-control' value='" + value2 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trSubHAWBindex + " id='f1_" + trSubHAWBindex + "' ' class='form-control' value='" + value3 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trSubHAWBindex + " id='f1_" + trSubHAWBindex + "' ' class='form-control' value='" + value4 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trSubHAWBindex + " id='f1_" + trSubHAWBindex + "' ' class='form-control' value='" + value5 + "' /></td>"
-            $("#subHAWBBody").append(trhtml);
-            trSubHAWBindex++;
-        }
-
-        $("#deleteSubHAWBBtn").click(function () {
-            $("input[name='f1']:checked").each(function () {
-                var tid = $(this).val();
-                $("#did_" + tid).val("1");
-                var val = $(this).attr('id').split('_')[1];
-                $("#tr_" + val).hide();
-            })
-        })
 
         $('#editForm').on('abp-ajax-success', function (result, rs) {
             console.log("enter here");
@@ -217,27 +151,27 @@
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
-                        setTimeout(() => {
-                            initializeDropdownSearch('HawbModel_QuotationId');
-                            initializeDropdownSearch('HawbModel_ShipperId');
-                            initializeDropdownSearch('HawbModel_ConsigneeId');
-                            initializeDropdownSearch('HawbModel_Incoterms');
-                            initializeDropdownSearch('HawbModel_ServiceTermStart');
-                            initializeDropdownSearch('HawbModel_ServiceTermTo');
-                            initializeDropdownSearch('HawbModel_Trucker');
-                            initializeDropdownSearch('HawbModel_Freight');
-                            initializeDropdownSearch('HawbModel_Notify');
-                            initializeDropdownSearch('HawbModel_Customer');
-                            initializeDropdownSearch('HawbModel_BillToId');
-                            initializeDropdownSearch('HawbModel_CustomsBroker');
-                            initializeDropdownSearch('HawbModel_FreightLocation');
-                            initializeDropdownSearch('HawbModel_FinalDestination');
-                            initializeDropdownSearch('HawbModel_DeliveryLocation');
-                            initializeDropdownSearch('HawbModel_SalesType');
-                            initializeDropdownSearch('HawbModel_PackageUnit');
-                        }, 1000)
-                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
+
+                        setFilteredDropdown();
+
+                        onSetCommodity();
+                        onSetSubHawbs();
                         Swal.clickCancel();
+                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
+
+                        $('#chkFrtRelease').on('change', function () {
+                            if (this.checked) {
+                                $('#HawbModel_FrtRelease').removeAttr('disabled');
+                                $('#HawbModel_ReleasedBy').val('@(CurrentUser.Name + " " + CurrentUser.SurName)');
+                            }
+                            else {
+                                $('#HawbModel_FrtRelease').val('');
+                                $('#HawbModel_ReleasedBy').val('');
+                                $('#HawbModel_FrtRelease').attr('disabled', 'disabled');
+                            }
+                        })
+
+                        $('#chkFrtRelease').prop('checked', ($('#HawbModel_ReleasedBy').val() != ''));
                     })
 
                     $('.btnHawbCardCollapse').each(function (i, e) {
@@ -344,8 +278,134 @@
                 })
         }
 
+        var chkIndex = 0;
+        function onAddCommodity() {
+            var newRowData = {
+                chkIndex: chkIndex
+            };
+
+            var newRow = $('#commodityTemplate').tmpl(newRowData);
+
+            $('#commodityBody').append(newRow);
+
+            chkIndex += 1;
+
+            resetIndex('commodityBody');
+        }
+
+        function onRemoveCommodity() {
+            $('[name="chk_commodity"]:checked').each(function (i, elem) {
+                $(elem).closest('tr').remove();
+            });
+
+            resetIndex('commodityBody');
+        }
+
+        function onSetCommodity() {
+
+            var extraProperties = $('#HawbModel_ExtraProperties').val();
+
+            if (extraProperties && extraProperties != 'null') {
+                var commodities = JSON.parse(extraProperties).Commodities;
+
+                if (commodities && commodities.length) {
+                    var commodityIndex = 0;
+                    commodities.forEach(function (commodity) {
+                        commodity.chkIndex = commodityIndex;
+
+                        var newRow = $('#commodityTemplate').tmpl(commodity);
+                        $('#commodityBody').append(newRow);
+
+                        commodityIndex += 1;
+                    })
+                }
+            }
+        }
+
+        var subHawbIndex = 0;
+        function onAddSubHawb() {
+
+            var newRowData = { index: subHawbIndex };
+
+            var newRow = $('#subHawbTemplate').tmpl(newRowData);
+
+            $('#subHAWBBody').append(newRow);
+
+            subHawbIndex += 1;
+
+            resetIndex('subHAWBBody');
+        }
+
+        function onRemoveSubHawbs() {
+            $('[name="chk_SubHawb"]:checked').each(function (i, elem) {
+                $(elem).closest('tr').remove();
+            });
+
+            resetIndex('subHAWBBody');
+        }
+
+        function onSetSubHawbs() {
+
+            var extraProperties = $('#HawbModel_ExtraProperties').val();
+
+            if (extraProperties && extraProperties != 'null') {
+                var subHawbs = JSON.parse(extraProperties).SubHawbs;
+
+                if (subHawbs && subHawbs.length) {
+                    var Index = 0;
+                    subHawbs.forEach(function (subHawb) {
+                        subHawb.index = Index;
+
+                        var newRow = $('#subHawbTemplate').tmpl(subHawb);
+                        $('#subHAWBBody').append(newRow);
+
+                        Index += 1;
+                    })
+                }
+            }
+        }
+
+        function resetIndex(tableName) {
+            $('#' + tableName + '> tr').each(function (e, elem) {
+                $(elem).find('td').each(function (a, aelem) {
+                    var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
+
+                    $(aelem).find('input').attr('name', attrName);
+                    if ($(aelem).hasClass('d-none')) {
+                        var aelemVal = $(aelem).find('input').val();
+                        $(aelem).find('input').val(aelemVal.replace(/[0-9]/, e));
+                    }
+                })
+            })
+        }
+
+        
+
     </script>
 
+    <script id="commodityTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_commodity" id="chk_Commodity_${chkIndex}" />
+          </td>
+          <td><input type="text" name="HawbModel.Commodities[${chkIndex}].Description" value="${Description}" /></td>
+          <td><input type="text" name="HawbModel.Commodities[${chkIndex}].HTSCode" value="${HTSCode}" /></td>
+          <td><input type="text" name="HawbModel.Commodities[${chkIndex}].PONumber" value="${PoNumber}" disabled /></td>
+        </tr>
+    </script>
+
+    <script id="subHawbTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_SubHawb" id="chk_SubHawb_${index}" />
+          </td>
+          <td><input type="text" name="HawbModel.SubHawbs[${index}].SubHAWB" value="${SubHAWB}" /></td>
+          <td><input type="text" name="HawbModel.SubHawbs[${index}].DescriptionITNo" value="${DescriptionITNo}" /></td>
+          <td><input type="text" name="HawbModel.SubHawbs[${index}].PCS" value="${PCS}" /></td>
+          <td><input type="text" name="HawbModel.SubHawbs[${index}].PKGUnit" value="${PKGUnit}" /></td>
+          <td><input type="text" name="HawbModel.SubHawbs[${index}].Amount" value="${Amount}" /></td>
+        </tr>
+    </script>
 
 }
 

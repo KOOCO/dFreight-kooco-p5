@@ -376,6 +376,9 @@ function removeDuplicatesFromLinkedList(linkedList) {
 }
 function setFilteredDropdown() {
     setTimeout(() => {
-        $('.filteredDropdown').each((i, elem) => initializeDropdownSearch(elem.id));
-    }, 500)
+        $('.filteredDropdown').select2({
+            placeholder: 'Select',
+            allowClear: true
+        })
+    }, 400)
 }

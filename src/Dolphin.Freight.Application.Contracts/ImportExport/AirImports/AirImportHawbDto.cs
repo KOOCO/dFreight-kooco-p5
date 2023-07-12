@@ -7,6 +7,8 @@ using System.Text;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Users;
 using System.ComponentModel;
+using Dolphin.Freight.ImportExport.AirExports;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.AirImports
 {
@@ -99,12 +101,14 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string Customer { get; set; }
         public string BillToId { get; set; }
         public string CustomsBroker { get; set; }
-
+        public List<Commodity> Commodities { get; set; }
+        public List<SubHawbs> SubHawbs { get; set; }
 
 
         /// <summary>
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }
