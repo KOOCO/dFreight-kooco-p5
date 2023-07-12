@@ -15,11 +15,11 @@ $(function () {
             },
             ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.airExports.airExportHawb.queryList),
             columnDefs: [
-                {
-                    className: 'dtr-control',
-                    orderable: false,
-                    "defaultContent": ""
-                },
+                //{
+                //    className: 'dtr-control',
+                //    orderable: false,
+                //    "defaultContent": ""
+                //},
                 {
                     title: l('Actions'),
                     rowAction: {

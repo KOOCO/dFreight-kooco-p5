@@ -35,18 +35,10 @@
             var isLocked = '@Model.OceanExportMbl.IsLocked';
             if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
 
-            $('#editForm').on('abp-ajax-success', function (result, rs) {
-                event.preventDefault();
-                var l = abp.localization.getResource('Freight');
-                abp.message.success(l("Message:SuccessEdit"));
-                location.href = '/OceanExports/EditModal?Id=' + rs.responseText.id + "&Hid=" + rs.responseText.hid
-            });
-
             console.log('@ViewData["HAVEHBL"]');
             if ('@ViewData["HAVEHBL"]' !== "Y") {
                 $("#RP").hide();
             }
-            debugger;
             if('@Model.OceanExportMbl.IsReleased' == 'True'){
                 $("#OceanExportMbl_MblReleaseDate").datepicker("setDate", new Date('@Model.OceanExportMbl.MblReleaseDate').toLocaleDateString());
             }

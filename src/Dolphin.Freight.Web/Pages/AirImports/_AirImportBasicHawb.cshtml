@@ -12,6 +12,17 @@
 @inject IStringLocalizer<FreightResource> L
 
 @model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
+
+<script>
+    function OpenInTrackTrace() {
+        var url = new URL(window.location.href);
+        var mawbId = url.searchParams.get('Id');
+        dolphin.freight.importExport.airImports.airImportMawb.get(mawbId).done(function (res) {
+            myWindow = window.open('https://www.track-trace.com/bol#' + res.mawbNo, '_blank', 'width=1200,height=1000');
+            myWindow.focus();
+        });
+    }
+</script>
 <!-- HABL Card -->
 <abp-card class="card board-item" id="hblCard">
     <!-- 標題區域 -->
@@ -72,8 +83,8 @@
                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
-                    <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
+                <a class='dropdown-item' href='javascript:void(0)' style="color: #4B77BE; font-weight: 500;" onclick="OpenInTrackTrace()">
+                    <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
                 </a>
             </div>
         </div>

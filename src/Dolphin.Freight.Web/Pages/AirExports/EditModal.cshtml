@@ -536,6 +536,11 @@
                 })
         }
 
+        function OpenInTrackTrace() {
+            var MawbNo = $('#AirExportMawbDto_MawbNo').val();
+            myWindow = window.open('https://www.track-trace.com/bol#' + MawbNo, '_blank', 'width=1200,height=1000');
+            myWindow.focus();
+        }
     </script>
 }
 
@@ -631,7 +636,7 @@
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                                     </a>
                                     <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()">
                                         <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
                                     </a>
                                 </div>
