@@ -1,11 +1,7 @@
 ﻿var l = abp.localization.getResource('Freight');
 var dataTable;
 
-var columns = [{
-    className: 'dtr-control',
-    orderable: false,
-    "defaultContent": ""
-},
+var columns = [
 {
     title: l('Actions'),
     orderable: false,

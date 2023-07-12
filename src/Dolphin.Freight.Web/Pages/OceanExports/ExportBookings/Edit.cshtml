@@ -156,7 +156,9 @@
             $('#editForm').on('abp-ajax-success', function (result, rs) {
                 event.preventDefault();
                 var l = abp.localization.getResource('Freight');
-                abp.message.success(l("Message:SuccessEdit"));
+                abp.message.success(l("Message:SuccessEdit")).done(function(res){
+                    window.location.href = '/OceanExports/ExportBookings/Index';
+                });
             });
         });
         function initRemark(remarkIndex) {

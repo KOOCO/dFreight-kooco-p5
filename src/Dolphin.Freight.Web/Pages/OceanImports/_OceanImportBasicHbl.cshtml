@@ -1,12 +1,17 @@
 ﻿@using Dolphin.Freight.ImportExport.OceanImports;
 @using Dolphin.Freight.Localization;
 @using Dolphin.Freight.Web.Pages.Components;
+@using Dolphin.Freight.Web.CommonService;
 @using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Microsoft.AspNetCore.Mvc.Localization;
 @using Microsoft.Extensions.Localization;
+@using Volo.Abp.Users;
 @using Volo.Abp.Account.Localization
 @model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
 @inject IStringLocalizer<FreightResource> L
+@inject ICurrentUser CurrentUser
+@inject IDropdownService _dropdown
+
 
 <script type="text/javascript">
     function OpenInTrackTrace() {
@@ -102,32 +107,32 @@
                 <abp-input asp-for="OceanImportHbl.QuotationNo" />
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HblShipperId", FieldName = "HblShipperId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.HblShipperId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblShipperId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.HblShipperId) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HblCustomerId", FieldName = "HblCustomerId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.HblCustomerId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblCustomerId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.HblCustomerId) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HblBillToId", FieldName = "HblBillToId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
-            </abp-column>
-        </abp-row>
-        <abp-row>
-            <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HblConsigneeId", FieldName = "HblConsigneeId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
-            </abp-column>
-            <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HblNotifyId", FieldName = "HblNotifyId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
-            </abp-column>
-            <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CustomsBrokerId", FieldName = "CustomsBrokerId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
-            </abp-column>
-            <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "TruckerId", FieldName = "TruckerId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.HblBillToId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblBillToId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.HblBillToId) })
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "AgentId", FieldName = "AgentId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.HblConsigneeId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblConsigneeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.HblConsigneeId) })
+            </abp-column>
+            <abp-column size-md="_3">
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.HblNotifyId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblNotifyId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.HblNotifyId) })
+            </abp-column>
+            <abp-column size-md="_3">
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.CustomsBrokerId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "CustomsBrokerId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.CustomsBrokerId) })
+            </abp-column>
+            <abp-column size-md="_3">
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.TruckerId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "TruckerId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.TruckerId) })
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column size-md="_3">
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.AgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "AgentId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.AgentId) })
             </abp-column>
             <abp-column size-md="_3">
 
@@ -136,7 +141,7 @@
 
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HblForwardingAgentId", FieldName = "HblForwardingAgentId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.HblForwardingAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblForwardingAgentId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.ForwardingAgentId) })
             </abp-column>
         </abp-row>
         <abp-row>
@@ -150,18 +155,18 @@
 
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "ReceivingAgentId", FieldName = "ReceivingAgentId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.ReceivingAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "ReceivingAgentId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.ReceivingAgentId) })
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HPorId", FieldName = "HPorId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.PorId) })
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="OceanImportHbl.PorEtd" type="text" abp-data-datepicker="false" />
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HPodId", FieldName = "HPodId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.PodId) })
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="OceanImportHbl.PodEta" type="text" abp-data-datepicker="false" />
@@ -169,13 +174,13 @@
         </abp-row>
         <abp-row>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HDelId", FieldName = "HDelId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.DelId) })
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="OceanImportHbl.DelEta" type="text" abp-data-datepicker="false" />
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HFdestId", FieldName = "HFdestId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.FdestId) })
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="OceanImportHbl.FdestEta" type="text" abp-data-datepicker="false" />
@@ -183,13 +188,13 @@
         </abp-row>
         <abp-row>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "FbaFcId", FieldName = "FbaFcId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.FbaFcId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FbaFcId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.FbaFcId) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HEmptyPickupId", FieldName = "HEmptyPickupId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.EmptyPickupId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "EmptyPickupId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.EmptyPickupId) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HDeliveryToId", FieldName = "HDeliveryToId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.DeliveryToId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DeliveryToId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.DeliveryToId) })
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="OceanImportHbl.CargoArrivalDate" type="text" abp-data-datepicker="false" />
@@ -200,19 +205,19 @@
                 @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CargoPickupId", FieldName = "CargoPickupId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HShipModeId", FieldName = "HShipModeId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.ShipModeId", AspItems = _dropdown.ShipModeLookupList, IsShowLabel = true, FieldName = "ShipModeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.ShipModeId) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "FreightTermForBuyerId", FieldName = "FreightTermForBuyerId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.FreightTermForBuyerId", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = "FreightTermForBuyerId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.FreightTermForBuyerId) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "FreightTermForSalerId", FieldName = "FreightTermForSalerId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.FreightTermForSalerId", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = "FreightTermForSalerId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.FreightTermForSalerId) })
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HSvcTermFromId", FieldName = "HSvcTermFromId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HSvcTermToId", FieldName = "HSvcTermToId",DefaultValue="" , IsShowLabel = false , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.SvcTermFromId", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, FieldName = "SvcTermFromId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.SvcTermFromId) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.SvcTermToId", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, FieldName = "SvcTermToId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.SvcTermToId) })
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="OceanImportHbl.DisplayHblContainerSizeQtyInfo" />
@@ -229,10 +234,10 @@
                 <abp-input asp-for="OceanImportHbl.IsExpress" />
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CargoTypeId", FieldName = "CargoTypeId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.CargoTypeId", AspItems = _dropdown.CargoTypeLookupList, IsShowLabel = true, FieldName = "CargoTypeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.CargoTypeId) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HblSalesTypeId", FieldName = "HblSalesTypeId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.HblSalesTypeId", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "HblSalesTypeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.HblSalesTypeId) })
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="OceanImportHbl.HblWhCutOffTime" class="cdatetime" type="text" abp-data-datetimepicker="false" />
@@ -291,11 +296,11 @@
 
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HCancelReason", FieldName = "HCancelReason",DefaultValue="" , IsShowLabel = true , IsRequired = false })
-                <input type="hidden" name="OceanImportHbl.CancelReason" id="hHCancelReason" value="@Model.OceanImportHbl.CancelReason" />
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.CancelReason", AspItems = _dropdown.CancelReasonLookupList, IsShowLabel = true, FieldName = "CancelReason", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.CancelReason) })
+
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "HMblReferralById", FieldName = "HMblReferralById",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.MblReferralById", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "MblReferralById", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.MblReferralById) })
             </abp-column>
         </abp-row>
         <abp-row></abp-row>
