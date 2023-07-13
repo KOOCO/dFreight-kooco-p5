@@ -150,6 +150,14 @@
         function changeHid(id, hid) {
             location.href = '/OceanImports/EditModal2?Id=' + id + "&Hid=" + hid
         }
+        function OpenInTrackTrace() {
+            var url = new URL(window.location.href);
+            var mblId = url.searchParams.get('Id');
+            dolphin.freight.importExport.oceanImports.oceanImportMbl.get(mblId).done(function (res) {
+                myWindow = window.open('https://www.track-trace.com/bol#' + res.mblNo, '_blank', 'width=1200,height=1000');
+                myWindow.focus();
+            });   
+        }
     </script>
 }
 <div class="page-header">
@@ -251,7 +259,7 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Electronic Customs Declaration Status"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()">
                                         <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
                                     </a>
                                 </div>
@@ -376,8 +384,8 @@
                                                 <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                                             </a>
                                             <p class="dropdown-divider"></p>
-                                            <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
-                                                <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
+                                            <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()" style="color: #4B77BE; font-weight: 500;">
+                                                <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
                                             </a>
                                         </div>
                                     </div>

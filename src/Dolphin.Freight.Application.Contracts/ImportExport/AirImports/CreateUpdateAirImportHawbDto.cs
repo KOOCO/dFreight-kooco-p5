@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Dolphin.Freight.ImportExport.AirExports;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 using Volo.Abp.Users;
 
 namespace Dolphin.Freight.ImportExport.AirImports
@@ -81,12 +83,14 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string Mark { get; set; }
         public string Description { get; set; }
         public string Remark { get; set; }
-
+        public List<Commodity> Commodities { get; set; }
+        public List<SubHawbs> SubHawbs { get; set; }
 
 
         /// <summary>
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

@@ -22,6 +22,7 @@ using Volo.Abp.AspNetCore.Mvc;
 using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
+using Org.BouncyCastle.Asn1.Mozilla;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -97,11 +98,6 @@ namespace Dolphin.Freight.Web.Controllers
         {
             HawbHblViewModel model = new();
 
-            model.SubstationLookupList = SubstationLookupList;
-            model.AirportLookupList = AirportLookupList;
-            model.TradePartnerLookupList = TradePartnerLookupList;
-            model.PackageUnitLookupList = PackageUnitLookupList;
-
             model.HawbModel = await _airImportHawbAppService.GetHawbCardById(Id);
 
             return PartialView("~/Pages/AirImports/_AirImportBasicHawb.cshtml", model);
@@ -120,11 +116,11 @@ namespace Dolphin.Freight.Web.Controllers
 
             model.AirImportHawbDto = await _airImportHawbAppService.GetHawbCardById(Id);
 
-            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 3, ParentId = Id };
+            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 4, ParentId = Id };
             var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
-            model.m0invoiceDtos = new List<InvoiceDto>();
-            model.m1invoiceDtos = new List<InvoiceDto>();
-            model.m2invoiceDtos = new List<InvoiceDto>();
+            model.h0invoiceDtos = new List<InvoiceDto>();
+            model.h1invoiceDtos = new List<InvoiceDto>();
+            model.h2invoiceDtos = new List<InvoiceDto>();
             if (invoiceDtos != null && invoiceDtos.Count > 0)
             {
                 foreach (var dto in invoiceDtos)
@@ -132,13 +128,13 @@ namespace Dolphin.Freight.Web.Controllers
                     switch (dto.InvoiceType)
                     {
                         default:
-                            model.m0invoiceDtos.Add(dto);
+                            model.h0invoiceDtos.Add(dto);
                             break;
                         case 1:
-                            model.m1invoiceDtos.Add(dto);
+                            model.h1invoiceDtos.Add(dto);
                             break;
                         case 2:
-                            model.m2invoiceDtos.Add(dto);
+                            model.h2invoiceDtos.Add(dto);
                             break;
                     }
                 }
@@ -195,13 +191,12 @@ namespace Dolphin.Freight.Web.Controllers
             model.CountryName = CountryName;
 
             model.AirExportHawbDto = await _airExportHawbAppService.GetHawbCardById(Id);
-            if (model.AirExportHawbDto.Id == Guid.Empty)
+
+            if( Id == Guid.Empty)
             {
-                model.AirExportHawbDto.BookingNo = Guid.NewGuid();
+                model.AirExportHawbDto.BookingDate = DateTime.Now;  
             }
-            
-
-
+           
             return PartialView("~/Pages/AirExports/_AirExportBasicHawb.cshtml", model);
         }
 

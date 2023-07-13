@@ -23,6 +23,7 @@ using Volo.Abp.ObjectMapping;
 using System.Security.Cryptography.Xml;
 using Dolphin.Freight.Settings.Countries;
 using Volo.Abp.Uow;
+using System.Threading;
 
 namespace Dolphin.Freight.Web.Pages.AirExports
 {
@@ -60,6 +61,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
 
+        private static readonly Object lockObject = new object();
         public async Task OnGetAsync(Guid Id)
         {
             AirExportMawbDto = await _airExportMawbAppService.GetAsync(Id);
@@ -74,25 +76,44 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             await FillCountryNameAsync();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPostAsync()
         {
             var updateItem = ObjectMapper.Map<AirExportMawbDto, CreateUpdateAirExportMawbDto>(AirExportMawbDto);
 
-            await _airExportMawbAppService.UpdateAsync(AirExportMawbDto.Id, updateItem);
+            _airExportMawbAppService.UpdateAsync(AirExportMawbDto.Id, updateItem).Wait();
 
-            if(AirExportHawbDto is not null)
+            if (AirExportHawbDto is not null)
             {
                 var updateHawb = ObjectMapper.Map<AirExportHawbDto, CreateUpdateAirExportHawbDto>(AirExportHawbDto);
                 updateHawb.MawbId = AirExportMawbDto.Id;
 
+                if (updateHawb.ExtraProperties == null)
+                {
+                    updateHawb.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                }
+
+                if (AirExportHawbDto.Commodities != null)
+                {
+                    updateHawb.ExtraProperties.Remove("Commodites");
+                    updateHawb.ExtraProperties.Add("Commodities", AirExportHawbDto.Commodities);
+                }
+
+                if (AirExportHawbDto.OtherCharges != null)
+                {
+                    updateHawb.ExtraProperties.Remove("OtherCharges");
+                    updateHawb.ExtraProperties.Add("OtherCharges", AirExportHawbDto.OtherCharges);
+                }
+
+
                 if (AirExportHawbDto.Id != Guid.Empty)
                 {
-                    await _airExportHawbAppService.UpdateAsync(AirExportHawbDto.Id, updateHawb);
+                    _airExportHawbAppService.UpdateAsync(AirExportHawbDto.Id, updateHawb).Wait();
                 }
                 else
                 {
-                    await _airExportHawbAppService.CreateAsync(updateHawb);
+                    _airExportHawbAppService.CreateAsync(updateHawb).Wait();
                 }
+
             }
 
             return new ObjectResult(new { id = AirExportMawbDto.Id });

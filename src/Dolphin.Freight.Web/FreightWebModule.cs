@@ -247,6 +247,7 @@ public class FreightWebModule : AbpModule
                     bundle.AddFiles("/js/popper.min.js");
                     bundle.AddFiles("/js/tempus-dominus.js");
                     bundle.AddFiles("/js/customDateFormat.js");
+                    bundle.AddFiles("/js/jquery-templates.tmpl.min.js");
                     /*
                     bundle.AddFiles("/newwebsite/js/popper.min.js");
                     bundle.AddFiles("/newwebsite/assets/bootstrap/js/bootstrap.min.js");

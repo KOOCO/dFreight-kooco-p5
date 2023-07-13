@@ -16,7 +16,6 @@
 <script>
 
     $(document).ready(function () {
-        debugger;
         if ($('#HawbCancelledDate').val() == '0001-01-01T00:00') {
             $('#HawbCancelledDate').val('');
         }
@@ -42,6 +41,15 @@
             $("#AirExportHawbDto_ReasonForCancel").attr("disabled", "disabled");
         }
     });
+
+    function OpenInTrackTrace(){
+        var url = new URL(window.location.href);
+        var mawbId = url.searchParams.get('Id');
+        dolphin.freight.importExport.airExports.airExportMawb.get(mawbId).done(function (res) {
+            myWindow = window.open('https://www.track-trace.com/bol#' + res.mawbNo, '_blank', 'width=1200,height=1000');
+            myWindow.focus();
+        });
+    }
 </script>
 
 
@@ -66,55 +74,52 @@
                 <a class='dropdown-item' href='#'>
                     <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="deleteHawb()">
                     <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
-                </a>
-                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["GoFreight EDI"]
                 </a>
                 <p class="dropdown-divider"></p>
                 <a class='dropdown-item' href='#'>
-                    <i class="fa fa-files-o"></i> @L["Btn:File Package"]
+                    <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                 </a>
                 <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Print MAWB"]
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Print HAWB"]
                 </a>
                 <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest (Comprehensive)"]
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
                 </a>
                 <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest (by agent)"]
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Package List"]
                 </a>
                 <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["Btn:S/O Confirmation"]
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Certdificate Of Origin"]
                 </a>
                 <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["Btn:MAWB Packaging Label"]
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
                 </a>
                 <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["Btn:All HAWB Packaging Labels"]
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
+                </a>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Package Label"]
                 </a>
                 <a class='dropdown-item' href='#'>
                     <i class="fa fa-file-text-o"></i> @L["Btn:Package Label List"]
                 </a>
                 <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Dispatch List"]
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Pre-Alert"]
                 </a>
                 <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Security Endorsement"]
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Pickup/Delivery Order"]
                 </a>
                 <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["Btn:On Hand Report"]
-                </a>
-                <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
-                </a>
-                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
                 </a>
                 <p class="dropdown-divider"></p>
                 <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
+                </a>
+                <p class="dropdown-divider"></p>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()">
                     <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
                 </a>
             </div>
@@ -126,20 +131,19 @@
     <abp-card-body id="hawbDiv" class="card-body collapse show customForm">
         <!--第一列-->
         <abp-row>
-            <abp-input asp-for="@Model.Id" type="hidden" />
-            <abp-input asp-for="@Model.AirExportHawbDto.Id" type="hidden" />
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.HawbNo" required size="Small" />
+                <label class="redStar" asp-for="AirExportHawbDto.HawbNo">@L["HawbNo"].Value</label>
+                <abp-input asp-for="AirExportHawbDto.HawbNo" suppress-label="true" required size="Small" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.BookingNo" readonly="true">
+                <abp-input asp-for="AirExportHawbDto.BookingNo" size="Small" >
                 </abp-input>
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.BookingDate" size="Small" type="text" abp-data-datepicker="false" readonly="true" />
+                <abp-input asp-for="AirExportHawbDto.BookingDate" size="Small" class="form-select-sm form-control" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.ITNNo" size="Small" type="text" abp-data-datepicker="false" />
+                <abp-input asp-for="AirExportHawbDto.ITNNo" size="Small" type="text" abp-data-datepicker="false" />
             </abp-column>
         </abp-row>
         <!--第二列-->
@@ -152,44 +156,44 @@
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Customer", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Customer"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Customer) })
-                @*<abp-input asp-for="@Model.AirExportHawbDto.Customer" size="Small" />*@
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.BillTo" size="Small" />
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.BillTo", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["BillTo"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.BillTo) })
             </abp-column>
         </abp-row>
         <!--第三列-->
         <abp-row>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ConsigneeId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ConsigneeId"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ConsigneeId) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ConsigneeId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Receiver"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ConsigneeId) })
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Notify", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Notify"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Notify) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.IssuingCarrier", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["IssuingCarrier"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.IssuingCarrier) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.OverseaAgent", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["OverseaAgent"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.OverseaAgent) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Trucker", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Trucker"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Trucker) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.IssuingCarrier", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["IssuingCarrierId"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.IssuingCarrier) })
             </abp-column>
         </abp-row>
         <!--第四列-->
         <abp-row>
             <abp-column size-md="_3">
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Trucker", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Trucker"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Trucker) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.Sales" label="@L["sales"].Value"  />
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Sales", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Sales"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Sales) })
             </abp-column>
             <abp-column size-md="_3">
-                <label asp-for="@Model.AirExportHawbDto.OPId" class="form-label">@L["OP"]</label>
+                <label asp-for="AirExportHawbDto.OPId" class="form-label"></label>
                 <input class="form-control form-control-sm" id="operator" type="text" value="@(_currentUser.Name + " " + _currentUser.SurName)" disabled />
             </abp-column>
-            <abp-column size-md="_3">
+            <abp-column size-md="_3" class="align-self-center">
                 <abp-input asp-for="@Model.AirExportHawbDto.SubAgentAwb" label="@L["subAgentawb"].Value" />
             </abp-column>
         </abp-row>
         <!--第五列-->
-        <abp-row class="pb-5">
+        <abp-row>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.DepartureId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = @L["Departure"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.DepartureId) })
             </abp-column>
@@ -197,44 +201,41 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.DestinationId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = @L["Destination"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.DestinationId) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.CargoPickup", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "TruckReceipt", ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.CargoPickup) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.CargoPickup", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "CargoPickup", ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.CargoPickup) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.DeliveryTo", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "TruckDeliveryPlace", ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.DeliveryTo) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.DeliveryTo", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "DeliveryTo", ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.DeliveryTo) })
             </abp-column>
         </abp-row>
         <!--第六列-->
         <abp-row>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.CargoType", AspItems = _dropdown.CargoTypeLookupList, IsShowLabel = true, FieldName = @L["CargoType"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.CargoType) })
-               @* <abp-input asp-for="@Model.AirExportHawbDto.CargoType" size="Small" label="@L["CargoType"].Value" />*@
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.SalesType", AspItems = Html.GetEnumSelectList(typeof(SalesType)).ToList(), IsShowLabel = true, FieldName = @L["SalesType"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.SalesType) })
-               @* <abp-input asp-for="@Model.AirExportHawbDto.SalesType" size="Small" label="@L["SalesType"].Value" />*@
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ShipType", AspItems = Html.GetEnumSelectList(typeof(ShipType)).ToList(), IsShowLabel = true, FieldName = @L["ShipType"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ShipType) })
-               @* <abp-input asp-for="@Model.AirExportHawbDto.ShipType" size="Small" label="@L["ShipType"].Value" />*@
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.FinalEta" size="Small" label="@L["FinalEta"].Value" />
+                <abp-input asp-for="AirExportHawbDto.FinalEta" size="Small" />
             </abp-column>
         </abp-row>
         <!--第七列-->
         <abp-row>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.DVCarriage" size="Small"/>
+                <abp-input asp-for="AirExportHawbDto.DVCarriage" size="Small"/>
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.AirExportHawbDto.DVCustoms" size="Small" label="@L["DVCustoms"].Value" />
+                <abp-input asp-for="AirExportHawbDto.DVCustoms" size="Small" label="@L["DVCustoms"].Value" />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-row>
 
-                    <abp-column >
+                    <abp-column>
                         @L["WT/VAL"]
-                        <abp-radio asp-for="@Model.AirExportHawbDto.WTVAL" asp-items="@Model.WtValOtherList" inline="true" />
+                        <abp-radio asp-for="AirExportHawbDto.WTVAL" asp-items="@Model.WtValOtherList" inline="true" />
                     </abp-column>
                 </abp-row>
             </abp-column>
@@ -248,14 +249,7 @@
                 </abp-row>
             </abp-column>
         </abp-row>
-        <!--第八列-->
-        @*<abp-row>
-        <abp-column size-md="_3">
-        <abp-input asp-for="@Model.AirExportHawbDto.Insure" size="Small" />
-        </abp-column>
-        </abp-row>*@
-        <!--Route區塊-->
-        <!--第九列 Package, Weight Settings Area-->
+      
         <abp-row>
             <div class="container">
                 <div class="row">
@@ -272,36 +266,35 @@
                             <tbody>
                                 <tr>
                                     <th>@L["Package"]</th>
-                                    <td><input asp-for="@Model.AirExportHawbDto.Package" class="form-control"/></td>
+                                    <td><input asp-for="AirExportHawbDto.Package" class="form-control form-control-sm"/></td>
                                     <td colspan="3">
                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.PackageUnitLookupList", AspItems = _dropdown.PackageUnitLookupList, FieldName = "PackageUnit", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.PackageUnit) })
-
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>@L["BuyingRate"]</th>
-                                    <td><input asp-for="@Model.AirExportHawbDto.BuyingRate" class="form-control" /></td>
+                                    <td><input asp-for="AirExportHawbDto.BuyingRate" class="form-control form-control-sm" /></td>
                                     <td>@L["per"]</td>
                                     <td>
-                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.BuyingRateUnit", AspItems = Html.GetEnumSelectList(typeof(RateUnitType)).ToList(), IsShowLabel = false, IsRequired = true, FieldName = @L["BuyingRateUnit"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.BuyingRateUnit) })
+                                        <abp-select asp-for="AirExportHawbDto.BuyingRateUnit" suppress-label="true" class="form-control-sm" asp-items="Html.GetEnumSelectList(typeof(RateUnitType))" />
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <th>@L["SellingRate"]</th>
-                                    <td><input asp-for="@Model.AirExportHawbDto.SellingRate" class="form-control" /></td>
+                                    <td><abp-input asp-for="AirExportHawbDto.SellingRate" suppress-label="true" size="Small" /></td>
                                     <td>@L["per"]</td>
                                     <td>
-                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.SellingRateUnit", AspItems = Html.GetEnumSelectList(typeof(RateUnitType)).ToList(), IsShowLabel = false, IsRequired = true, FieldName = @L["SellingRateUnit"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.SellingRateUnit) })
+                                        <abp-select asp-for="AirExportHawbDto.SellingRate" suppress-label="true" class="form-control-sm" asp-items="Html.GetEnumSelectList(typeof(RateUnitType))" />
                                     </td>
                                     <td></td> 
                                 </tr>
                                 <tr>
                                     <th>@L["VolumeWeight"]</th>
-                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeKG" class="form-control" /></td>
+                                    <td><input asp-for="AirExportHawbDto.ChargeableWeightCneeKG" class="form-control form-control-sm" /></td>
                                     <td>@L["KG"]</td>
                                     <td>
-                                        <input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeLB" class="form-control" />
+                                        <input asp-for="AirExportHawbDto.ChargeableWeightCneeLB" class="form-control form-control-sm" />
                                     </td>
                                     <td>@L["CBM"]</td>
                                 </tr>
@@ -325,21 +318,21 @@
                             <tbody>
                                 <tr>
                                     <th>@L["GrossWeight"]</th>
-                                    <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprKG" class="form-control" id="GrossWeightKg" /></td>
-                                    <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprLB" class="form-control" id="GrossWeightLb" /></td>
-                                    <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprAmount" class="form-control" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprKG" class="form-control form-control-sm" id="GrossWeightKg" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprLB" class="form-control form-control-sm" id="GrossWeightLb" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprAmount" class="form-control form-control-sm" /></td>
                                 </tr>
                                 <tr>
                                     <th>@L["ChargeableWeight"]</th>
-                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprKG" class="form-control" id="ChargeableWeightKg" /></td>
-                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprLB" class="form-control" id="ChargeableWeightLb" /></td>
-                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprAmount" class="form-control" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprKG" class="form-control form-control-sm" id="ChargeableWeightKg" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprLB" class="form-control form-control-sm" id="ChargeableWeightLb" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprAmount" class="form-control form-control-sm" /></td>
                                 </tr>
                                 <tr>
                                     <th>@L["AWBChargeableWeight"]</th>
-                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeKG" class="form-control" id="AwbChargeableWeightKg" /></td>
-                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeLB" class="form-control" id="AwbChargeableWeightLb" /></td>
-                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeAmount" class="form-control" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeKG" class="form-control form-control-sm" id="AwbChargeableWeightKg" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeLB" class="form-control form-control-sm" id="AwbChargeableWeightLb" /></td>
+                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeAmount" class="form-control form-control-sm" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -350,13 +343,13 @@
         <!--第10列-->
         <abp-row>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Incoterms", AspItems = Html.GetEnumSelectList(typeof(IncotermsType)).ToList(), IsShowLabel = true, IsRequired = true, FieldName = @L["Incoterms"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Incoterms) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Incoterms", AspItems = _dropdown.IncotermsLookupList, IsShowLabel = true, FieldName = @L["Incoterms"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Incoterms) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ServiceTermStart", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, IsRequired = true, FieldName = @L["ServiceTermStart"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ServiceTermStart) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ServiceTermStart", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, FieldName = @L["ServiceTermStart"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ServiceTermStart) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ServiceTermEnd", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, IsRequired = true, FieldName = @L["ServiceTermEnd"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ServiceTermEnd) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ServiceTermEnd", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true,  FieldName = @L["ServiceTermEnd"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ServiceTermEnd) })
             </abp-column>
         </abp-row>
         <!--第11列 Awb取消Checkbox, IsEcom-->
@@ -376,8 +369,7 @@
                     <input asp-for="@Model.AirExportHawbDto.CanceledBy" class="form-control form-control-sm" id="HawbCanceledBy" value="@(_currentUser.Name + " " + _currentUser.SurName)" type="text" disabled />
                 </abp-column>
                 <abp-column size-md="_3">
-                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ReasonForCancel", AspItems = Html.GetEnumSelectList(typeof(ReasonForCancelType)).ToList(), IsShowLabel = true, IsRequired = true, FieldName = @L["ReasonForCancel"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ReasonForCancel) })
-                    @*  <abp-input asp-for="@Model.AirExportHawbDto.ReasonForCancel" class="form-select-sm form-control" id="AwbCancelledDate" />*@
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ReasonForCancel", AspItems = Html.GetEnumSelectList(typeof(ReasonForCancelType)).ToList(), IsShowLabel = true, IsRequired = false, FieldName = @L["ReasonForCancel"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ReasonForCancel) })
                 </abp-column>
             }
             else
@@ -390,8 +382,7 @@
                     <input asp-for="@Model.AirExportHawbDto.CanceledBy" class="form-control form-control-sm" id="HawbCanceledBy" type="text" disabled />
                 </abp-column>
                 <abp-column size-md="_3">
-                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ReasonForCancel", AspItems = Html.GetEnumSelectList(typeof(ReasonForCancelType)).ToList(), Disabled = "disabled", IsShowLabel = true, IsRequired = true, FieldName = @L["ReasonForCancel"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ReasonForCancel) })
-                    @*  <abp-input asp-for="@Model.AirExportHawbDto.ReasonForCancel" class="form-select-sm form-control" id="AwbCancelledDate" />*@
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ReasonForCancel", AspItems = Html.GetEnumSelectList(typeof(ReasonForCancelType)).ToList(), Disabled = "disabled", IsShowLabel = true, IsRequired = false, FieldName = @L["ReasonForCancel"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ReasonForCancel) })
                 </abp-column>
             }
             
@@ -401,20 +392,14 @@
         <!--第12列 Awb取消Area-->
         <abp-row>
             <abp-column size-md="_12">
-                <abp-input asp-for="@Model.AirExportHawbDto.PONo" id="AwbCancelledOpId" label="@L["PONo"].Value" />
+                <abp-input asp-for="AirExportHawbDto.PONo" id="AwbCancelledOpId" />
             </abp-column>
         </abp-row>
-        <abp-row class="mt-4">
-            <abp-column size-md="_2">
-                <h3>@L["Commodity"]</h3>
-            </abp-column>
-            <abp-column size-md="_1">
-                <button class="btn btn-success me-md-2" type="button" id="addCommodityBtn" data-busy-text="Processing...">+</button>
-            </abp-column>
-            <abp-column size-md="_1">
-                <button class="btn btn-danger me-md-2" type="button" id="deleteBtn">-</button>
-            </abp-column>
-        </abp-row>
+        <div class="mt-4 mb-2 d-flex">
+            <h3 class="me-md-2">@L["Commodity"]</h3>
+            <button class="btn btn-success me-md-2" type="button" id="addCommodityBtn" onclick="onAddCommodity()" data-busy-text="Processing...">+</button>
+            <button class="btn btn-danger me-md-2" type="button" id="deleteBtn" onclick="onRemoveCommodity()">-</button>
+        </div>
         <abp-row>
             <abp-column size-md="_12">
                 <div class="table-responsive">
@@ -470,36 +455,30 @@
         <abp-row class="mt-4">
             <abp-column size-md="_6">
                 <h3>@L["Mark"]</h3>
-                <abp-input asp-for="@Model.AirExportHawbDto.Mark" />
+                <abp-input asp-for="AirExportHawbDto.Mark" suppress-label="true" />
             </abp-column>
             <abp-column size-md="_6">
-                <h3>@L["NatureAndQuantityOfGoods"]</h3>
-                <abp-input asp-for="@Model.AirExportHawbDto.NatureAndQuantityOfGoods" />
+                <h3>@L["Description"]</h3>
+                <abp-input asp-for="AirExportHawbDto.NatureAndQuantityOfGoods" suppress-label="true" />
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_12">
                 <h3>@L["HandlingInformation"]</h3>
-                <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation"  />
+                <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation" suppress-label="true" />
             </abp-column>
         </abp-row>
-        <abp-row class="mt-4">
-            <abp-column size-md="_3">
-                <h3> @L["OtherCharges"]</h3>
-            </abp-column>
-            <abp-column size-md="_1">
-                <button class="btn btn-success me-md-2" type="button" id="addOtherChargesBodyBtn" data-busy-text="Processing...">+</button>
-            </abp-column>
-            <abp-column size-md="_1">
-                <button class="btn btn-danger me-md-2" type="button" id="deleteOtherChargesBtn">-</button>
-            </abp-column>
-        </abp-row>
+        <div class="mt-4 d-flex mb-2">
+            <h3 class="me-md-2"> @L["OtherCharges"]</h3>
+             <button class="btn btn-success me-md-2" type="button" id="addOtherChargesBodyBtn" onclick="onAddOtherCharges()" data-busy-text="Processing...">+</button>
+            <button class="btn btn-danger me-md-2" type="button" id="deleteOtherChargesBtn" onclick="onRemoveOtherCharges()">-</button>
+        </div>
         <abp-row>
             <abp-column size-md="_12">
                 <div class="table-responsive">
                     <abp-table border="1" class="w-100">
                         <thead border="1">
-                        <th><input type="checkbox" /></th>
+                        <th></th>
                         <th>@L["CarrierAgent"]</th>
                         <th>@L["Collect/Prepaid"]</th>
                         <th>@L["ChargeItem"]</th>
@@ -551,6 +530,13 @@
                         </div>
                     </abp-card-body>
                 </abp-card>
+            </abp-column>
+        </abp-row>
+        <abp-row class="d-none">
+            <abp-column size="_12">
+                <abp-input asp-for="@Model.Id" type="hidden" />
+                <abp-input asp-for="AirExportHawbDto.ExtraProperties" value="@Json.Serialize(Model.AirExportHawbDto.ExtraProperties)" type="hidden" />
+                <abp-input asp-for="@Model.AirExportHawbDto.Id" type="hidden" />
             </abp-column>
         </abp-row>
     </abp-card-body>

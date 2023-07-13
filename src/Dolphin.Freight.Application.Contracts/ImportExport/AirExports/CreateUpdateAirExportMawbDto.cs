@@ -50,7 +50,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
 
         
         public string DestinationId { get; set; }
-        public DateTime ArrivalDate { get; set; }
+        public DateTime? ArrivalDate { get; set; }
         public string DVCarriage { get; set; }
         public string DVCustomer { get; set; }
 

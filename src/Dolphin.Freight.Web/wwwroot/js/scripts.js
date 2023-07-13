@@ -30,6 +30,7 @@ $(document).ready(function () {
     if (location.pathname != null && location.pathname != "") {
         $('.nav-link[href="' + location.pathname + '"]').parents('div.collapse').collapse('show');
     }
+
     $(".checkdate").keyup(function () {
         var checkValue = $(this).val();
         var checkValues = checkValue.split("");
@@ -372,4 +373,12 @@ function removeDuplicatesFromLinkedList(linkedList) {
         }
         ptr1 = ptr1.next;
     }
+}
+function setFilteredDropdown() {
+    setTimeout(() => {
+        $('.filteredDropdown').select2({
+            placeholder: 'Select',
+            allowClear: true
+        })
+    }, 400)
 }

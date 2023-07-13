@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using Volo.Abp.Data;
 using Volo.Abp.Users;
 
 namespace Dolphin.Freight.ImportExport.AirExports
@@ -10,7 +11,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
     {
         public Guid? MawbId { get; set; }
         public string HawbNo { get; set; }
-        public Guid? BookingNo { get; set; }
+        public string BookingNo { get; set; }
         public DateTime BookingDate { get; set; }
         public string ITNNo { get; set; }
         public Guid? QuotationId { get; set; }
@@ -76,5 +77,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string BookingRemarks { get; set; }
         public string PickupInstruction { get; set; }
         public bool IsDeleted { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

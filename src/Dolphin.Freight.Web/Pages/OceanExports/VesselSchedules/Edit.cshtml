@@ -130,7 +130,9 @@
             $('#editForm').on('abp-ajax-success', function (result, rs) {
                 event.preventDefault();
                 var l = abp.localization.getResource('Freight');
-                abp.message.success(l("Message:SuccessEdit"));
+                abp.message.success(l("Message:SuccessEdit")).then(function(res){
+                    window.location.href = '/OceanExports/VesselSchedules/Index';
+                });
             });
             $("#addBtn").click(function () {
                 addTr()

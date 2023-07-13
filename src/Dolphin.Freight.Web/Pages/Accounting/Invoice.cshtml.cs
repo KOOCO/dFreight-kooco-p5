@@ -53,6 +53,9 @@ namespace Dolphin.Freight.Web.Pages.Accounting
         public Guid? MawbId { get; set; }
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
+        public Guid? HawbId { get; set; }
+        [HiddenInput]
+        [BindProperty(SupportsGet = true)]
         public Guid? VesselId { get; set; }
 
         [BindProperty(SupportsGet = true)]
@@ -132,6 +135,9 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                     break;
                 case 5:
                     await InitVesselSchedule();
+                    break;
+                case 6:
+                    await InitAirImport();
                     break;
                 default:
                     await InitOceanExport();
@@ -229,7 +235,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
             {
                 //如果有Mid，表示這是Mbl的
                 query.ParentId = Mid;
-                query.QueryType = 0;
+                query.QueryType = 3;
             }
             var createUpdateOceanImportMblDto = await _oceanImportMblAppService.GetCreateUpdateOceanImportMblDtoById(Mid.Value);
 
@@ -276,6 +282,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
             InvoiceDto.HblId = Hid;
             InvoiceDto.BookingId = Bid;
             InvoiceDto.MawbId = MawbId;
+            InvoiceDto.HawbId = HawbId;
             if (InvoiceDto.InvoiceNo == null) 
             {
                 Random rnd = new Random(Guid.NewGuid().GetHashCode());

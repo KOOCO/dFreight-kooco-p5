@@ -14,7 +14,7 @@
     {
     <style>
         .redStar::before {
-            content: "*";
+            content: "* ";
             color: red;
         }
     </style>
@@ -24,7 +24,30 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-templates@1.0.0/jquery.tmpl.min.js"></script>
     <abp-script src="/Pages/AirExports/CreateMawb.js" />
     <abp-script src="/Pages/AirExports/EditModel.js" />
+    <script id="commodityTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_commodity" id="Id" />
+          </td>
+          <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].Description" value="${Description}" /></td>
+          <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].HTSCode" value="${HTSCode}" /></td>
+          <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].PONumber" value="${PoNumber}"  disabled /></td>
+        </tr>
+    </script>
+    <script id="otherChargesTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_otherCharges" id="chk_OtherCharges_${chkIndex}" />
+          </td>
+          <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].CarrierAgent" value="${CarrierAgent}"  /></td>
+          <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].CollectPaid" value="${CollectPaid}" /></td>
+          <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].ChargeItem" value="${ChargeItem}" /></td>
+          <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].Description" value="${Description}"  /></td>
+          <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].ChargeAmount" value="${ChargeAmount}"  /></td>
+        </tr>
+    </script>
     <script type="text/javascript">
+        var l = abp.localization.getResource('Freight');
         $(document).ready(function () {
 
             // Awb Cancel Area
@@ -95,7 +118,122 @@
             //$(this).addClass('disabled');
         })
 
-        
+        function resetCommodityIndex() {
+            $('#commodityBody > tr').each(function (e, elem) {
+                $(elem).find('td').each(function (a, aelem) {
+                    var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
+
+                    $(aelem).find('input').attr('name', attrName);
+                    if ($(aelem).hasClass('d-none')) {
+                        var aelemVal = $(aelem).find('input').val();
+                        $(aelem).find('input').val(aelemVal.replace(/[0-9]/, e));
+                    }
+                })
+            })
+        }
+
+        function resetOtherChargesIndex() {
+            $('#otherChargesBody > tr').each(function (e, elem) {
+                $(elem).find('td').each(function (a, aelem) {
+                    var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
+
+                    $(aelem).find('input').attr('name', attrName);
+                    if ($(aelem).hasClass('d-none')) {
+                        var aelemVal = $(aelem).find('input').val();
+                        $(aelem).find('input').val(aelemVal.replace(/[0-9]/, e));
+                    }
+                })
+            })
+        }
+
+        function onSetCommodity(){
+
+            var extraProperties = $('#AirExportHawbDto_ExtraProperties').val();
+
+            if(extraProperties && extraProperties != 'null'){
+                var commodities = JSON.parse(extraProperties).Commodities;
+                
+                if(commodities && commodities.length){
+                var commodityIndex = 0;
+                    commodities.forEach(function(commodity){
+                        commodity.chkIndex = commodityIndex;
+
+                        var newRow = $('#commodityTemplate').tmpl(commodity);
+                        $('#commodityBody').append(newRow);
+
+                        commodityIndex += 1;
+                    })
+                }
+            }
+        }
+
+        function onSetOtherCharges() {
+
+            var extraProperties = $('#AirExportHawbDto_ExtraProperties').val();
+
+            if (extraProperties && extraProperties != 'null') {
+                var otherCharges = JSON.parse(extraProperties).OtherCharges;
+
+                if(otherCharges && otherCharges.length){
+                    var Index = 0;
+                    otherCharges.forEach(function (otherCharge) {
+                        otherCharge.chkIndex = Index;
+
+                        var newRow = $('#otherChargesTemplate').tmpl(otherCharge);
+                        $('#otherChargesBody').append(newRow);
+
+                        Index += 1;
+                    })
+                }
+            }
+        }
+
+        var chkIndex = 0;
+        function onAddCommodity() {
+            var newRowData = {
+                chkIndex: chkIndex
+            };
+
+            var newRow = $('#commodityTemplate').tmpl(newRowData);
+
+            $('#commodityBody').append(newRow);
+
+            chkIndex += 1;
+
+            resetCommodityIndex();
+        }
+
+        var chkOtherChargesIndex = 0;
+        function onAddOtherCharges() {
+
+            var newRowData = {
+                chkIndex: chkOtherChargesIndex
+            };
+
+            var newRow = $('#otherChargesTemplate').tmpl(newRowData);
+
+            $('#otherChargesBody').append(newRow);
+
+            chkOtherChargesIndex += 1;
+
+            resetOtherChargesIndex();
+        }
+
+        function onRemoveCommodity() {
+            $('[name="chk_commodity"]:checked').each(function (i, elem) {
+                $(elem).closest('tr').remove();
+            });
+
+            resetCommodityIndex();
+        }
+
+        function onRemoveOtherCharges() {
+            $('[name="chk_otherCharges"]:checked').each(function (i, elem) {
+                $(elem).closest('tr').remove();
+            });
+
+            resetOtherChargesIndex();
+        }
 
 
         $('#addCommodityBtn').on('click', function () {
@@ -267,23 +405,35 @@
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
                         setTimeout(function () {
+                            initializeDropdownSearch('AirExportHawbDto_ActualShippedr');
+                            initializeDropdownSearch('AirExportHawbDto_BillTo');
+                            initializeDropdownSearch('AirExportHawbDto_OverseaAgent');
                             initializeDropdownSearch('AirExportHawbDto_ConsigneeId');
                             initializeDropdownSearch('AirExportHawbDto_Notify');
+                            initializeDropdownSearch('AirExportHawbDto_IssuingCarrier');
+                            initializeDropdownSearch('AirExportHawbDto_Trucker');
+                            initializeDropdownSearch('AirExportHawbDto_Sales');
                             initializeDropdownSearch('AirExportHawbDto_Departure');
                             initializeDropdownSearch('AirExportHawbDto_Destination');
                             initializeDropdownSearch('AirExportHawbDto_CargoPickup');
                             initializeDropdownSearch('AirExportHawbDto_DeliveryTo');
-                            initializeDropdownSearch('AirExportHawbDto_IssuingCarrier');
-                            initializeDropdownSearch('AirExportHawbDto_Trucker');
-                            initializeDropdownSearch('AirExportHawbDto_Customer');
-                            initializeDropdownSearch('AirExportHawbDto_ActualShippedr');
-                            initializeDropdownSearch('AirExportHawbDto_DepartureId');
-                            initializeDropdownSearch('AirExportHawbDto_DestinationId');
                             initializeDropdownSearch('AirExportHawbDto_CargoType');
                             initializeDropdownSearch('AirExportHawbDto_SalesType');
                             initializeDropdownSearch('AirExportHawbDto_ShipType');
+                            initializeDropdownSearch('AirExportHawbDto_PackageUnitLookupList');
+                            initializeDropdownSearch('AirExportHawbDto_Incoterms');
+                            initializeDropdownSearch('AirExportHawbDto_ServiceTermStart');
+                            initializeDropdownSearch('AirExportHawbDto_ServiceTermEnd');
+                            initializeDropdownSearch('AirExportHawbDto_Customer');
+                            initializeDropdownSearch('AirExportHawbDto_DepartureId');
+                            initializeDropdownSearch('AirExportHawbDto_DestinationId');
+                            initializeDropdownSearch('AirExportHawbDto_OverseaAgent');
                             initializeDropdownSearch('AirExportHawbDto_ReasonForCancel');
-                        }, 1000);
+                            
+                            onSetCommodity();
+                            onSetOtherCharges();
+
+                        }, 500);
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
                     })
@@ -300,14 +450,6 @@
                         }
                     })
 
-                    //let isExpanded = $('.btnHawbCardCollapse').filter(function(f, e){ return $(e).attr('aria-expanded') == 'true' }).length;
-
-                    //if (isExpanded) {
-                    //    $('.btnHawbCardCollapse').click();
-                    //}
-                    //else{
-                    //    $('#btnHawbCardCollapse_'+hawbNo).click();
-                    //}
                 }
             }
         }
@@ -362,8 +504,43 @@
             $('#saveBtn').click();
         }
 
-        
+        function deleteHawb() {
+            abp.message.confirm(l('DeletionConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airExports.airExportHawb
+                            .delete($('#AirExportHawbDto_Id').val())
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyDeleted'));
+                                $('#hblCard').remove();
+                                $('#hblCards').find('.card-body.show').closest('.card.board-item').remove()
+                            });
+                    }
+                });
+        }
 
+        function deleteMawb() {
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+            abp.message.confirm(l('DeletionConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airExports.airExportMawb
+                            .delete(mawbId)
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyDeleted')).done(function () {
+                                    location.href = '/AirExports/Index';
+                                });
+                            });
+                    }
+                })
+        }
+
+        function OpenInTrackTrace() {
+            var MawbNo = $('#AirExportMawbDto_MawbNo').val();
+            myWindow = window.open('https://www.track-trace.com/bol#' + MawbNo, '_blank', 'width=1200,height=1000');
+            myWindow.focus();
+        }
     </script>
 }
 
@@ -411,7 +588,7 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="deleteMawb()">
                                         <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
                                     </a>
                                     <a class='dropdown-item' href='#'>
@@ -459,7 +636,7 @@
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                                     </a>
                                     <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()">
                                         <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
                                     </a>
                                 </div>
@@ -549,9 +726,8 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DepatureId", AspItems = _dropdown.PortsManagementLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.DepatureId.ToString(), IsShowLabel = true, FieldName = @L["DepatureId"] })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label asp-for="@Model.AirExportMawbDto.DepatureDate" class="form-label">Depature Date</label>
-                                    <span asp-validation-for="@Model.AirExportMawbDto.DepatureDate" class="text-danger"></span>
-                                    <input asp-for="@Model.AirExportMawbDto.DepatureDate" class="form-control" />
+                                    <label asp-for="AirExportMawbDto.DepatureDate" class="redStar form-label">@L["DepatureDate"]</label>
+                                    <abp-input asp-for="AirExportMawbDto.DepatureDate" suppress-label="true" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="@Model.AirExportMawbDto.FlightNo" size="Small" />
@@ -567,6 +743,9 @@
                             <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DestinationId", AspItems = _dropdown.PortsManagementLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.DestinationId.ToString(), IsShowLabel = true, FieldName = @L["Destination"] })
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="AirExportMawbDto.ArrivalDate" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="@Model.AirExportMawbDto.DVCarriage" size="Small" />
