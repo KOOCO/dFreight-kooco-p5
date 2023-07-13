@@ -6,7 +6,7 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
 {
     public class HawbProfitReportViewModel
     {
-        public DateTime PostDate { get { return new DateTime(); } }
+        public DateTime PostDate { get; set; }
         public string Currency { get; set; } = "USD";
         public string Sales { get; set; }
         public string Customer { get; set; }
@@ -22,5 +22,12 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public string HawbNo { get; set; }
         public string Measurement { get; set; }
         public IList<InvoiceDto> Invoices { get; set; }
+        public IList<InvoiceDto> AR { get; set; }
+        public IList <InvoiceDto> AP { get; set;}
+        public IList<InvoiceDto> DC { get; set; }
+        public double ARTotal { get; set; }
+        public double APTotal { get; set; }
+        public double DCTotal { get; set; }
+        public double Total { get; set; }
     }
 }

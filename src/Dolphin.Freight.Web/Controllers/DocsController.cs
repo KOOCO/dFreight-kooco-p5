@@ -52,6 +52,7 @@ using Dolphin.Freight.Web.CommonService;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.Accounting.InvoiceBills;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -2034,6 +2035,8 @@ namespace Dolphin.Freight.Web.Controllers
 
             var mawb = await _airExportMawbAppService.GetAsync(hawb.MawbId.GetValueOrDefault());
 
+            var measurement = Convert.ToDouble(hawb.ChargeableWeightCneeLB) * 35.315;
+
             var hawbProfitReport = new HawbProfitReportViewModel()
             {
                 AgentName = hawb.OverseaAgent,
@@ -2042,16 +2045,71 @@ namespace Dolphin.Freight.Web.Controllers
                 Customer = hawb.Customer,
                 HawbNo = hawb.HawbNo,
                 Operator = hawb.OP?.Name,
-                Measurement = string.Empty,
+                Measurement = measurement.ToString("0.00"),
                 PolEtd = string.Concat(hawb.DepartureName, "/", mawb.DepatureDate),
                 PodEtd = string.Concat(hawb.DestinationName, "/", mawb.ArrivalDate),
                 Sales = hawb.Sales?.Name,
                 Shipper = hawb.Trucker,
                 MawbNo = mawb.MawbNo,   
+                ChargableWeight = string.Concat(hawb.ChargeableWeightCneeKG, "/", hawb.ChargeableWeightCneeLB),
+                PostDate = DateTime.Now
             };
 
             QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = 4, ParentId = hawbId };
             hawbProfitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+            hawbProfitReport.AR = new List<InvoiceDto>();
+            hawbProfitReport.AP = new List<InvoiceDto>();
+            hawbProfitReport.DC = new List<InvoiceDto>();
+
+            if (hawbProfitReport.Invoices != null && hawbProfitReport.Invoices.Count > 0)
+            {
+                foreach (var dto in hawbProfitReport.Invoices)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            hawbProfitReport.AR.Add(dto);
+                            break;
+                        case 1:
+                            hawbProfitReport.AP.Add(dto);
+                            break;
+                        case 2:
+                            hawbProfitReport.DC.Add(dto);
+                            break;
+                    }
+                }
+            }
+
+            if(hawbProfitReport.AR.Any())
+            {
+                double arTotal = 0;
+                foreach (var ar in hawbProfitReport.AR)
+                {
+                    arTotal += Convert.ToInt64(ar.InvoiceAmount);
+                }
+                hawbProfitReport.ARTotal = arTotal;
+            }
+            if (hawbProfitReport.AP.Any())
+            {
+                double apTotal = 0;
+                foreach (var ap in hawbProfitReport.AP)
+                {
+                    apTotal += Convert.ToInt64(ap.InvoiceAmount);
+                }
+
+                hawbProfitReport.APTotal = apTotal;
+            }
+            if (hawbProfitReport.DC.Any())
+            {
+                double dcTotal = 0;
+                foreach (var dc in hawbProfitReport.DC)
+                {
+                    dcTotal += Convert.ToInt64(dc.InvoiceAmount);
+                }
+                hawbProfitReport.DCTotal = dcTotal;
+            }
+
+            hawbProfitReport.Total = hawbProfitReport.ARTotal + hawbProfitReport.APTotal + hawbProfitReport.DCTotal;
 
             return View(hawbProfitReport);
         }

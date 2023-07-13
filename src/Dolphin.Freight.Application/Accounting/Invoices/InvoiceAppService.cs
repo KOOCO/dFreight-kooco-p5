@@ -83,7 +83,7 @@ namespace Dolphin.Freight.Accounting.Invoices
             listDto.TotalCount = list.Count;
             return listDto;
         }
-        public async Task<List<InvoiceDto>> QueryInvoicesAsync(QueryInvoiceDto query) 
+        public async Task<IList<InvoiceDto>> QueryInvoicesAsync(QueryInvoiceDto query) 
         {
             var tradePartners = await _tradePartnerRepository.GetListAsync();
             Dictionary<Guid, string> tDictionary = new Dictionary<Guid, string>();

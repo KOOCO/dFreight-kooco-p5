@@ -80,7 +80,7 @@
          <div class="wrap h-80">
             <div class="header">
                 <div class="text-center">
-                    <h4 class="margin-0"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">HAWB's profit</font></font></h4>
+                    <h4 class="margin-0"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">PROFIT BY HAWB</font></font></h4>
                 </div>
             </div>
             <div class="con oi-hbl-profit">
@@ -90,13 +90,13 @@
                     <tbody>
                         <tr>
                             <td class="w-10 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">release date</font></font></td>
-                            <td class="w-10 col-padding">@Model.PostDate</td>
+                            <td class="w-10 col-padding">@Model.PostDate.ToShortDateString()</td>
                             @*<td class="w-55 col-padding text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Air export</font></font></td>*@
                         </tr>
                         <tr class="border-b-strong">
                             <td class="w-10 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Currency</font></font></td>
                             <td class="w-10 col-padding">USD</td>
-                            <td class="w-55 col-padding text-right">07-13-2023</td>
+                            <td class="w-55 col-padding text-right">@DateTime.Now.ToShortDateString()</td>
                         </tr>
                     </tbody>
                 </table>
@@ -168,7 +168,7 @@
                                         </tr>
                                         <tr class="text-grey text-light">
                                             <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Shipping terms:</font></font></td>
-                                            <td></td>
+                                            <td>@Model.Shipper</td>
                                         </tr>
                                         <tr class="text-grey text-light">
                                             <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">weight :</font></font></td>
@@ -260,10 +260,10 @@
                                 <tr class="">
                             <td class="td text-center">H</td>
                             <td class="td">
-                                <div class="auto-font-size __width-bl-no"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoice.InvoiceNo</font></font></span></div>
+                                <div class="auto-font-size __width-bl-no"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.HawbNo</font></font></span></div>
                                 <div class="item-edit auto-font-size __width-invoice">
                                     <span>
-                                        <a href="/accounting/invoice/entry/289971/" target="_blank">IN-30802</a>
+                                        <a href="/accounting/invoice/entry/289971/" target="_blank">@invoice.InvoiceNo</a>
 
                                     </span>
                                 </div>
@@ -274,26 +274,33 @@
                                     </span>
                                 </div>
                             </td>
-                            <td class="td text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoice.InvoiceDate</font></font></td>
+                            <td class="td text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoice.InvoiceDate?.ToShortDateString()</font></font></td>
                             <td class="td text-bold text-bigger" colspan="5"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoice.InvoiceCompanyName</font></font></td>
                             <td class="td text-right">
                                 N
                                 <div class="auto-font-size __width-balance"><span>@invoice.BalanceAmount</span></div>
                             </td>
-                        </tr>
-                    
-                        <tr class="border-b-grey">
-                            <td class="td">&nbsp;</td>
-                            <td class="td"></td>
-                            <td class="td text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">H</font></font></td>
-                            <td class="td">AE01A/F / AIR FREIGHT CHARGE</td>
-                            <td class="td text-right">@invoice.PlaceOfRegistration</td>
-                            <td class="td text-right"><div class="auto-font-size __width-count"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoice.BalanceAmount</font></font></span></div></td>
-                            <td class="td text-right"><div class="auto-font-size __width-count"><span></span></div></td>
-                            <td class="td text-right"><div class="auto-font-size __width-count"><span></span></div></td>
-                            <td class="td text-right"><div div="" class="auto-font-size __width-balance"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoice.Currency</font></font></span></div></td>
-                        </tr>
+                                </tr>
+
+                        @if(invoice.InvoiceBillDtos != null && invoice.InvoiceBillDtos.Count > 0)
+                        {
+                                @foreach (var invoiceBill in invoice.InvoiceBillDtos)
+                                {
+                                   <tr class="border-b-grey">
+                                    <td class="td">&nbsp;</td>
+                                    <td class="td"></td>
+                                    <td class="td text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">H</font></font></td>
+                                    <td class="td">@invoice.InvoiceCompanyName</td>
+                                    <td class="td text-right">100.00</td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoiceBill.Amount</font></font></span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count"><span></span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count"><span></span></div></td>
+                                    <td class="td text-right"><div div="" class="auto-font-size __width-balance"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoiceBill.Currency</font></font></span></div></td>
+                                </tr>             
+                                }    
                         }
+
+                       }
 
                     </tbody>
                 </table>
@@ -303,23 +310,23 @@
                         <tr>
                             <td class="w-63">&nbsp;</td>
                             <td class="w-5"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">total</font></font></td>
-                            <td class="w-9 text-right"><div class="auto-font-size __width-total"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">31.00</font></font></span></div></td>
-                            <td class="w-9 text-right"><div class="auto-font-size __width-total"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">9.00</font></font></span></div></td>
-                            <td class="w-9 text-right"><div class="auto-font-size __width-total"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">4.00</font></font></span></div></td>
+                            <td class="w-9 text-right"><div class="auto-font-size __width-total"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.ARTotal</font></font></span></div></td>
+                            <td class="w-9 text-right"><div class="auto-font-size __width-total"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.APTotal</font></font></span></div></td>
+                            <td class="w-9 text-right"><div class="auto-font-size __width-total"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.DCTotal</font></font></span></div></td>
                             <td class="w-5">&nbsp;</td>
                         </tr>
                         <tr class="border-t">
                             <td>&nbsp;</td>
                             <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">profit</font></font></td>
                             <td class="text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">USD</font></font></td>
-                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>26.00</span></div></td>
+                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>@Model.Total</span></div></td>
                             <td>&nbsp;</td>
                         </tr>
                         <tr class="border-t">
                             <td>&nbsp;</td>
                             <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">balance</font></font></td>
                             <td class="text-right"></td>
-                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">26.00</font></font></span></div></td>
+                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Total</font></font></span></div></td>
                             <td>&nbsp;</td>
                         </tr>
                     </tbody>
