@@ -267,7 +267,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.DeliveryToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "DeliveryToId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.DeliveryToContent) })
       
                                 </abp-column>
-                                <abp-column size-md="_3">
+                                <abp-column size-md="_6">
                                     <abp-row>
                                         <label asp-for="OceanExportMbl.PreCarriageVesselNameId"></label>
                                         <abp-column size-md="_7">
@@ -362,13 +362,18 @@
                                     <label for="OceanExportMbl_IsBookingAgent" class="form-label">@L["IsBookingAgent"]<input type="checkbox" name="OceanExportMbl.IsBookingAgent" id="OceanExportMbl_IsBookingAgent" value="true" checked="" /></label>
                                 </abp-column>
                                 <abp-column size-md="_3" class="customForm">
-                                    <label for="CareOfId" class="form-label">@L["IsReleased"]<input type="checkbox" name="OceanExportMbl.IsReleased" id="OceanExportMbl_IsReleased" value="true" /></label>
-                                    <input asp-for="OceanExportMbl.MblReleaseDate" class="form-control form-label" type="date" disabled />
+                                    <abp-row>
+
+                                        <abp-column size-md="_5"><label for="CareOfId" class="form-label">@L["IsReleased"]<input type="checkbox" name="OceanExportMbl.IsReleased" id="OceanExportMbl_IsReleased" value="true" /></label></abp-column>
+                                        <abp-column size-md="_7"><input asp-for="OceanExportMbl.MblReleaseDate" class="form-control form-label" type="date" disabled /></abp-column>
+
+                                    </abp-row>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label asp-for="OceanExportMbl.ReleaseById"></label>
-                                    <input id="releasedBy" class="form-control" readonly />
-                                    <input type="hidden" asp-for="OceanExportMbl.ReleaseById" value="@CurrentUser.Id" disabled />
+                                    <abp-row>
+                                        <abp-column size-md ="_5"><label asp-for="OceanExportMbl.ReleaseById"></label></abp-column>
+                                    <abp-column size-md="_7"><input id="releasedBy" class="form-control" readonly /></abp-column>                                  
+                                    </abp-row>                         
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -504,10 +509,10 @@
                             
                                  <abp-column size-md="_3">
                                     <abp-row>
-                                        <abp-column>
+                                        <abp-column size-md="_5">
                                             <label class="">@L["OP"]</label>
                                         </abp-column>
-                                        <abp-column>
+                                        <abp-column size-md="_7">
                                             <select class="form-control ml-15" asp-for="OceanExportHbl.HblOperatorId" disabled="true">
                                                 <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
                                             </select>

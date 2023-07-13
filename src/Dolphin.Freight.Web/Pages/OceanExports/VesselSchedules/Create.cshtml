@@ -126,7 +126,7 @@
                         <abp-card-body class="collapse show customForm" id="mblDiv">
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.ReferenceNo" />
+                                    <abp-input asp-for="VesselSchedule.ReferenceNo" required-symbol="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OfficeId", AspItems = Model.SubstationLookupList, IsShowLabel = true, FieldName = "OfficeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.OfficeId.ToString() })
@@ -189,13 +189,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PolId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PolEtd" />
+                                    <abp-input asp-for="VesselSchedule.PolEtd" required-symbol="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PorId.ToString() })
                                  </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PorEtd" />
+                                    <abp-input asp-for="VesselSchedule.PorEtd" required-symbol="false" />
                                 </abp-column>
 
 
