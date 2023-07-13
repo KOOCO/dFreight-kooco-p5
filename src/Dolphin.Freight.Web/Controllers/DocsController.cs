@@ -1,4 +1,4 @@
-﻿using Dolphin.Freight.Common;
+using Dolphin.Freight.Common;
 using Volo.Abp.Users;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ReportLog;
@@ -52,8 +52,10 @@ using Dolphin.Freight.Web.CommonService;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 using Dolphin.Freight.Web.ViewModels.PackagingListAirExportHawb;
 using Dolphin.Freight.ImportExport.AirExports;
-using Dolphin.Freight.Web.ViewModels.CertificateOfOriginAirExportHawb;
+using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.Accounting.InvoiceBills;
 
+using Dolphin.Freight.Web.ViewModels.CertificateOfOriginAirExportHawb;
 namespace Dolphin.Freight.Web.Controllers
 {
     public class DocsController : AbpController
@@ -67,13 +69,17 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly ICurrentUser _currentUser;
         private readonly IDropdownService _dropdownService;
         private readonly IExportBookingAppService _exportBookingAppService;
-        private readonly IAirExportHawbAppService _airExportHawbAppService;
         private readonly IAirExportMawbAppService _airExportMawbAppService;
+        private readonly IAirExportHawbAppService _airExportHawbAppService;
+        private readonly IInvoiceAppService _invoiceAppService;
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
         public DocsController(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, IAjaxDropdownAppService ajaxDropdownAppService, IReportLogAppService reportLogAppService,
-          ICurrentUser currentUser, IDropdownService dropdownService, IExportBookingAppService exportBookingAppService, IAirExportHawbAppService airExportHawbAppService, IAirExportMawbAppService airExportMawbAppService)
+          ICurrentUser currentUser, IDropdownService dropdownService, IExportBookingAppService exportBookingAppService,
+          IAirExportMawbAppService airExportMawbAppService,
+          IAirExportHawbAppService airExportHawbAppService,
+          IInvoiceAppService invoiceAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -86,6 +92,7 @@ namespace Dolphin.Freight.Web.Controllers
             _exportBookingAppService = exportBookingAppService;
             _airExportHawbAppService = airExportHawbAppService;
             _airExportMawbAppService = airExportMawbAppService;
+            _invoiceAppService = invoiceAppService;
 
             ReportLog = new ReportLog.ReportLogDto();
         }
@@ -2075,7 +2082,92 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CertificateOfOriginAirExportHawb(Guid id)
+        public async Task<IActionResult> HawbProfitReport(Guid hawbId)
+        {
+            var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
+
+            var mawb = await _airExportMawbAppService.GetAsync(hawb.MawbId.GetValueOrDefault());
+
+            var measurement = Convert.ToDouble(hawb.ChargeableWeightCneeLB) * 35.315;
+
+            var hawbProfitReport = new HawbProfitReportViewModel()
+            {
+                AgentName = hawb.OverseaAgent,
+                Consignee = hawb.Consignee,
+                Currency = "USD",
+                Customer = hawb.Customer,
+                HawbNo = hawb.HawbNo,
+                Operator = hawb.OP?.Name,
+                Measurement = measurement.ToString("0.00"),
+                PolEtd = string.Concat(hawb.DepartureName, "/", mawb.DepatureDate),
+                PodEtd = string.Concat(hawb.DestinationName, "/", mawb.ArrivalDate),
+                Sales = hawb.Sales?.Name,
+                Shipper = hawb.Trucker,
+                MawbNo = mawb.MawbNo,   
+                ChargableWeight = string.Concat(hawb.ChargeableWeightCneeKG, "/", hawb.ChargeableWeightCneeLB),
+                PostDate = DateTime.Now
+            };
+
+            QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = 4, ParentId = hawbId };
+            hawbProfitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+            hawbProfitReport.AR = new List<InvoiceDto>();
+            hawbProfitReport.AP = new List<InvoiceDto>();
+            hawbProfitReport.DC = new List<InvoiceDto>();
+
+            if (hawbProfitReport.Invoices != null && hawbProfitReport.Invoices.Count > 0)
+            {
+                foreach (var dto in hawbProfitReport.Invoices)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            hawbProfitReport.AR.Add(dto);
+                            break;
+                        case 1:
+                            hawbProfitReport.AP.Add(dto);
+                            break;
+                        case 2:
+                            hawbProfitReport.DC.Add(dto);
+                            break;
+                    }
+                }
+            }
+
+            if(hawbProfitReport.AR.Any())
+            {
+                double arTotal = 0;
+                foreach (var ar in hawbProfitReport.AR)
+                {
+                    arTotal += Convert.ToInt64(ar.InvoiceAmount);
+                }
+                hawbProfitReport.ARTotal = arTotal;
+            }
+            if (hawbProfitReport.AP.Any())
+            {
+                double apTotal = 0;
+                foreach (var ap in hawbProfitReport.AP)
+                {
+                    apTotal += Convert.ToInt64(ap.InvoiceAmount);
+                }
+
+                hawbProfitReport.APTotal = apTotal;
+            }
+            if (hawbProfitReport.DC.Any())
+            {
+                double dcTotal = 0;
+                foreach (var dc in hawbProfitReport.DC)
+                {
+                    dcTotal += Convert.ToInt64(dc.InvoiceAmount);
+                }
+                hawbProfitReport.DCTotal = dcTotal;
+            }
+
+            hawbProfitReport.Total = hawbProfitReport.ARTotal + hawbProfitReport.APTotal + hawbProfitReport.DCTotal;
+
+            return View(hawbProfitReport);
+        }
+
+		public async Task<IActionResult> CertificateOfOriginAirExportHawb(Guid id)
         {
             CertificateOfOriginAirExportHawbIndexViewModel InfoViewModel = new CertificateOfOriginAirExportHawbIndexViewModel();
 

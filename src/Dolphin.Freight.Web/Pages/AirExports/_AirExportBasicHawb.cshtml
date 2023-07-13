@@ -1,4 +1,4 @@
-﻿@using Dolphin.Freight.Web.CommonService;
+@using Dolphin.Freight.Web.CommonService;
 @using Volo.Abp.Users
 @using Dolphin.Freight.AirExports;
 @using Dolphin.Freight.Localization;
@@ -56,6 +56,13 @@
         myWindow.focus()
     }
 
+    function ProfitReport(){
+        var url = '@Url.Action("HawbProfitReport", "Docs", new { hawbId = Model.AirExportHawbDto.Id })';
+
+        myWindow = window.open(url, "PROFIT BY HAWB", 'width=1200,height=800')
+        myWindow.focus()
+    }
+    
     function getCertificateOfOrigin() {
         var idNo = '@Model.AirExportHawbDto.Id';
         myWindow = window.open("@Url.Action("CertificateOfOriginAirExportHawb", "Docs")" + "?id=" + idNo, 'CertificateOfOrigin', 'width=1200,height=800');
@@ -126,7 +133,7 @@
                     <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="ProfitReport()">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                 </a>
                 <p class="dropdown-divider"></p>
