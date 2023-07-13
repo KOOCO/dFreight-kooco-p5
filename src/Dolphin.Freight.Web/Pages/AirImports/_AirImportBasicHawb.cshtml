@@ -33,6 +33,45 @@
         });
     }
 
+    function gotoReport(rindex) {
+        var url = "";
+        var pname = "";
+        switch (rindex) {
+            default:
+                url = '@Url.Action("Car", "Docs")';
+                pname = "Car";
+                break;
+            case 2:
+                url = '@Url.Action("Cargo", "Docs")';
+                pname = "Cargo";
+                break;
+            case 3:
+                url = '@Url.Action("Box", "Docs")';
+                pname = "Box";
+                break;
+            case 4:
+                url = '@Url.Action("HawbProfitReport", "Docs", new { hawbId = Model.HawbModel.Id })';
+                pname = "ProfitSummary";
+                break;
+            case 5:
+                url = '@Url.Action("ProfitDetail", "Docs", new { oceanExportMblId = Model.Id })';
+                pname = "ProfitDetail";
+                break;
+            case 6:
+                var idNo = $('#OceanExportHbl_Id').val();
+                url = '@Url.Action("Shipment", "Docs")' + "?id=" + idNo;
+                pname = "Shipment";
+                break;
+            case 7:
+                var idNo = $('#OceanExportHbl_Id').val();
+                url = '@Url.Action("OBL", "Docs")' + "?id=" + idNo;
+                pname = "OBL";
+                break;
+        }
+        myWindow = window.open(url, pname, 'width=1200,height=800')
+        myWindow.focus()
+    }
+
 </script>
 <!-- HABL Card -->
 <abp-card class="card board-item" id="hblCard">
@@ -90,7 +129,7 @@
                     <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javscript:void(0)' onclick="gotoReport(4)">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                 </a>
                 <p class="dropdown-divider"></p>

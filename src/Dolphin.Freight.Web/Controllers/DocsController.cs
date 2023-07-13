@@ -50,6 +50,8 @@ using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Dolphin.Freight.Web.CommonService;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
+using Dolphin.Freight.ImportExport.AirExports;
+using Dolphin.Freight.Accounting.Invoices;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -64,11 +66,17 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly ICurrentUser _currentUser;
         private readonly IDropdownService _dropdownService;
         private readonly IExportBookingAppService _exportBookingAppService;
+        private readonly IAirExportHawbAppService _airExportHawbAppService;
+        private readonly IAirExportMawbAppService _airExportMawbAppService;
+        private readonly IInvoiceAppService _invoiceAppService;
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
         public DocsController(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, IAjaxDropdownAppService ajaxDropdownAppService, IReportLogAppService reportLogAppService,
-          ICurrentUser currentUser, IDropdownService dropdownService, IExportBookingAppService exportBookingAppService)
+          ICurrentUser currentUser, IDropdownService dropdownService, IExportBookingAppService exportBookingAppService,
+          IAirExportHawbAppService airExportHawbAppService,
+          IAirExportMawbAppService airExportMawbAppService,
+          IInvoiceAppService invoiceAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -79,6 +87,9 @@ namespace Dolphin.Freight.Web.Controllers
             _currentUser = currentUser;
             _dropdownService = dropdownService;
             _exportBookingAppService = exportBookingAppService;
+            _airExportHawbAppService = airExportHawbAppService;
+            _airExportMawbAppService = airExportMawbAppService;
+            _invoiceAppService = invoiceAppService;
 
             ReportLog = new ReportLog.ReportLogDto();
         }
@@ -2014,6 +2025,35 @@ namespace Dolphin.Freight.Web.Controllers
                 else
                     return await _generatePdf.GetPdf("Views/Docs/Pdf/Manifest/ManifestByMbl.cshtml", InfoModel);
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HawbProfitReport(Guid hawbId)
+        {
+            var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
+
+            var mawb = await _airExportMawbAppService.GetAsync(hawb.MawbId.GetValueOrDefault());
+
+            var hawbProfitReport = new HawbProfitReportViewModel()
+            {
+                AgentName = hawb.OverseaAgent,
+                Consignee = hawb.Consignee,
+                Currency = "USD",
+                Customer = hawb.Customer,
+                HawbNo = hawb.HawbNo,
+                Operator = hawb.OP?.Name,
+                Measurement = string.Empty,
+                PolEtd = string.Concat(hawb.DepartureName, "/", mawb.DepatureDate),
+                PodEtd = string.Concat(hawb.DestinationName, "/", mawb.ArrivalDate),
+                Sales = hawb.Sales?.Name,
+                Shipper = hawb.Trucker,
+                MawbNo = mawb.MawbNo,   
+            };
+
+            QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = 4, ParentId = hawbId };
+            hawbProfitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+
+            return View(hawbProfitReport);
         }
     }
 }

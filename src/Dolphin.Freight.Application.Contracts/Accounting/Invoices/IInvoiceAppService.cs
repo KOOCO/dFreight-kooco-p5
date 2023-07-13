@@ -17,7 +17,7 @@ namespace Dolphin.Freight.Accounting.Invoices
         CreateUpdateInvoiceDto>
     {
         Task<PagedResultDto<InvoiceDto>> QueryListAsync(QueryInvoiceDto query);
-        Task<IList<InvoiceDto>> QueryInvoicesAsync(QueryInvoiceDto query);
+        Task<List<InvoiceDto>> QueryInvoicesAsync(QueryInvoiceDto query);
         Task<List<CopyIdDto>> CopyByBookingId(QueryInvoiceDto query,int IsAR,int IsAp,int IsDC);
     }
 }

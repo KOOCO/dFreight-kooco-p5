@@ -1,0 +1,333 @@
+﻿
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.Reports.HawbProfitReportViewModel
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+
+    .w-10, .w-20, .w-100, .text-right, .text-center, .auto-font-size, textarea {
+        font-size:10px;
+    }
+
+    table{
+        font-size: small;
+    }
+</style>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+    });
+</script>
+<form id="myForm" name="myForm" method="POST">
+    <div style="background-color:black;display: flex;justify-content:center;height:100%">
+    <div style="width:900px;background-color:white;height:100%" id="form" name = "form" class="edit">
+        <div class="container" style="background-color:black">    
+            <div style="display:flex;justify-content: center;" class="item-left">
+                @*<button class="btn"><i class="fa fa-file-pdf-o"></i></button>
+                <button class="btn"><i class="fa fa-print"></i></button>*@
+                @*<a class="btn" href="../OceanExports/print?handler=Download"><i class="fa fa-print">儲存PDF或列印</i></a>*@
+                <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+            </div>
+            @*<div style="float:right;" class="item-right">
+                <button class="btn zoom" id="zout" name="zout"><i class="fa fa-search-minus"></i></button>
+                <button class="btn zoom-out" id="zin" name="zin"><i class="fa fa-search-plus"></i></button>
+            </div>*@
+        </div>
+         <div class="wrap h-80">
+            <div class="header">
+                <div class="text-center">
+                    <h4 class="margin-0"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">HAWB's profit</font></font></h4>
+                </div>
+            </div>
+            <div class="con oi-hbl-profit">
+
+
+                <table class="text-sm">
+                    <tbody>
+                        <tr>
+                            <td class="w-10 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">release date</font></font></td>
+                            <td class="w-10 col-padding">@Model.PostDate</td>
+                            @*<td class="w-55 col-padding text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Air export</font></font></td>*@
+                        </tr>
+                        <tr class="border-b-strong">
+                            <td class="w-10 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Currency</font></font></td>
+                            <td class="w-10 col-padding">USD</td>
+                            <td class="w-55 col-padding text-right">07-13-2023</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+
+                <table class="td text-bold">
+                    <tbody>
+                        <tr class="text-sea text-12">
+                            <td class="w-17 bg-light col-padding-double"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Salesman:</font></font></td>
+                            <td class="w-33 bg-light col-padding-double">@Model.Sales</td>
+                            <td class="w-15 bg-light col-padding-double"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">client:</font></font></td>
+                            <td class="w-35 bg-light col-padding-double">@Model.Customer</td>
+                        </tr>
+                        <tr>
+
+                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Container Count :</font></font></td>
+                            <td class="col-padding"></td>
+
+                            <td class="w-12 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">FOR:</font></font></td>
+                            <td class="w-38 col-padding"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Agent name:</font></font></td>
+                            <td class="col-padding">@Model.Consignee</td>
+                            <td class="col-padding">P.O.L / ETD:</td>
+                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.PolEtd</font></font></td>
+                        </tr>
+                        <tr>
+                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Shipper:</font></font></td>
+                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Shipper</font></font></td>
+                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">POD/ETA:</font></font></td>
+                            <td class="col-padding">@Model.PodEtd</td>
+                        </tr>
+                        <tr>
+                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Receiver:</font></font></td>
+                            <td class="col-padding">@Model.Consignee</td>
+                            <td class="col-padding">D.E.L:</td>
+                            <td class="col-padding"></td>
+                        </tr>
+                        <tr>
+
+                            <td class="td col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">operator:</font></font></td>
+                            <td class="td col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Operator</font></font></td>
+
+                            <td class="td col-padding"></td>
+                            <td class="td col-padding"></td>
+
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-valign-top">
+                    <colgroup>
+                        <col class="w-50">
+                        <col class="w-50">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <table class="table-padding">
+                                    <colgroup>
+                                        <col class="w-34">
+                                        <col class="w-66">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr class="text-grey text-light">
+                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">File No :</font></font></td>
+                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.FileNo</font></font></td>
+                                        </tr>
+                                        <tr class="text-grey text-light">
+                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Shipping terms:</font></font></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr class="text-grey text-light">
+                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">weight :</font></font></td>
+                                            <td>@Model.ChargableWeight</td>
+                                        </tr>
+
+                                        <tr class="text-grey text-light">
+                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Volume :</font></font></td>
+                                            <td>@Model.Measurement</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td>
+                                <table class="table-padding">
+                                    <colgroup>
+                                        <col class="w-30">
+                                        <col class="w-70">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr class="text-grey text-light">
+                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Service category:</font></font></td>
+                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Appointed goods</font></font></td>
+                                        </tr>
+                                        <tr class="text-grey text-light">
+                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">MAWB number :</font></font></td>
+                                            <td class="col-padding">@Model.MawbNo</td>
+                                        </tr>
+                                        <tr class="text-grey text-light">
+                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">HAWB number :</font></font></td>
+                                            <td class="col-padding">@Model.HawbNo</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="item-edit">
+                </div>
+
+
+                <table class="table-padding single-currency">
+                    <colgroup>
+                        <col class="w-5"><!--type-->
+                        <col class="w-20"><!--BL No-->
+                        <col class="w-10"><!--Invoice / Post Date-->
+                        <col class="w-22"><!--Company / Description-->
+                        <col class="w-5"><!--Radio-->
+                        <col class="w-10"><!--AR Amount-->
+                        <col class="w-10"><!--AP Amount-->
+                        <col class="w-8"><!--DC Amount-->
+                        <col class="w-10"><!--PMT-->
+                    </colgroup>
+                    <tbody>
+                        <tr class="border title-sm">
+                            <td class="col-bg-grey text-center" rowspan="2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">category</font></font></td>
+                            <td class="col-bg-grey text-left"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">NO</font></font></td>
+                            <td class="col-bg-grey text-center" rowspan="2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Invoice </font></font><br><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">issue date</font></font></td>
+                            <td class="col-bg-grey text-left"><span class="text-bold text-bigger"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">company</font></font></span></td>
+                            <td class="col-bg-grey text-center" rowspan="2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">ratio </font></font><br><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">%</font></font></td>
+                            <td class="col-bg-grey text-center" colspan="2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">local</font></font></td>
+                            <td class="col-bg-grey text-right" rowspan="2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">D/C </font></font><br><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">amount</font></font></td>
+                            <td class="col-bg-grey text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Received and paid</font></font></td>
+                        </tr>
+                    
+                        <tr class="border title-sm">
+                            <td class="col-bg-grey text-left">
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        Invoice number
+                                    </font>
+                                </font>
+                            </td>
+                            <td class="col-bg-grey text-left"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">describe</font></font></td>
+                            <td class="col-bg-grey text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Amount receivable</font></font></td>
+                            <td class="col-bg-grey text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Amounts payable</font></font></td>
+                            <td class="col-bg-grey text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">balance</font></font></td>
+                        </tr>
+
+                        @foreach (var invoice in Model.Invoices)
+                        {
+                                <tr class="">
+                            <td class="td text-center">H</td>
+                            <td class="td">
+                                <div class="auto-font-size __width-bl-no"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoice.InvoiceNo</font></font></span></div>
+                                <div class="item-edit auto-font-size __width-invoice">
+                                    <span>
+                                        <a href="/accounting/invoice/entry/289971/" target="_blank">IN-30802</a>
+
+                                    </span>
+                                </div>
+                                <div class="item-pdf auto-font-size __width-invoice">
+                                    <span>
+                                        IN-30802
+
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="td text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoice.InvoiceDate</font></font></td>
+                            <td class="td text-bold text-bigger" colspan="5"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoice.InvoiceCompanyName</font></font></td>
+                            <td class="td text-right">
+                                N
+                                <div class="auto-font-size __width-balance"><span>@invoice.BalanceAmount</span></div>
+                            </td>
+                        </tr>
+                    
+                        <tr class="border-b-grey">
+                            <td class="td">&nbsp;</td>
+                            <td class="td"></td>
+                            <td class="td text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">H</font></font></td>
+                            <td class="td">AE01A/F / AIR FREIGHT CHARGE</td>
+                            <td class="td text-right">@invoice.PlaceOfRegistration</td>
+                            <td class="td text-right"><div class="auto-font-size __width-count"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoice.BalanceAmount</font></font></span></div></td>
+                            <td class="td text-right"><div class="auto-font-size __width-count"><span></span></div></td>
+                            <td class="td text-right"><div class="auto-font-size __width-count"><span></span></div></td>
+                            <td class="td text-right"><div div="" class="auto-font-size __width-balance"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoice.Currency</font></font></span></div></td>
+                        </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+                <table class="text-bold border bg-grey table-padding single-currency">
+                    <tbody>
+                        <tr>
+                            <td class="w-63">&nbsp;</td>
+                            <td class="w-5"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">total</font></font></td>
+                            <td class="w-9 text-right"><div class="auto-font-size __width-total"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">31.00</font></font></span></div></td>
+                            <td class="w-9 text-right"><div class="auto-font-size __width-total"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">9.00</font></font></span></div></td>
+                            <td class="w-9 text-right"><div class="auto-font-size __width-total"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">4.00</font></font></span></div></td>
+                            <td class="w-5">&nbsp;</td>
+                        </tr>
+                        <tr class="border-t">
+                            <td>&nbsp;</td>
+                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">profit</font></font></td>
+                            <td class="text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">USD</font></font></td>
+                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>26.00</span></div></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr class="border-t">
+                            <td>&nbsp;</td>
+                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">balance</font></font></td>
+                            <td class="text-right"></td>
+                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">26.00</font></font></span></div></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+</form>

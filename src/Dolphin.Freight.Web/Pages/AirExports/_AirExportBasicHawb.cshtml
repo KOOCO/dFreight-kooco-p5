@@ -50,6 +50,13 @@
             myWindow.focus();
         });
     }
+
+    function ProfitReport(){
+        var url = '@Url.Action("HawbProfitReport", "Docs", new { hawbId = Model.AirExportHawbDto.Id })';
+
+        myWindow = window.open(url, "HAWB Profit Report", 'width=1200,height=800')
+        myWindow.focus()
+    }
 </script>
 
 
@@ -115,7 +122,7 @@
                     <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="ProfitReport()">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                 </a>
                 <p class="dropdown-divider"></p>
