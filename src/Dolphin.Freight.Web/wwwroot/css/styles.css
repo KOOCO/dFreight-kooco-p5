@@ -11917,6 +11917,10 @@ body {
     border-radius: 0 !important;
     box-shadow:none;
 }
+
+.form-control-fix{
+    border:0px!important;
+}
 /*
 .Mawb .select2-container--default .select2-selection--single {
     display: block;

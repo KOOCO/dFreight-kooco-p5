@@ -124,16 +124,16 @@
                             </button>
 
                         </abp-card-header>
-                        <abp-card-body class="collapse show" id="mblDiv">
+                        <abp-card-body class="collapse show customForm" id="mblDiv">
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <input type="hidden" name="ShipmentNo" id="ShipmentNo">
-                                    <label class="">@L["DocNo"]</label>
-                                    <input class="form-control" type="text" name="OceanExportMbl.FilingNo" readonly/>
+                 @*                   <label class="">@L["DocNo"]</label>
+                                    <input class="form-control" type="text" name="OceanExportMbl.FilingNo" readonly/>*@
+                                    <abp-input asp-for="OceanExportMbl.FilingNo" disabled="true" />
+
                                 </abp-column>
-                                <abp-column size-md="_3">
-                                    <label class="">@L["MblNo"]</label>
-                                    <input class="form-control" type="text" name="OceanExportMbl.MblNo" />
+                                <abp-column size-md="_3">                         
+                                    <abp-input asp-for="OceanExportMbl.MblNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.OfficeId", AspItems = _dropdown.SubstationLookupList, IsShowLabel = true, FieldName = "OfficeId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.OfficeId), IsRequired = true })
@@ -144,75 +144,65 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label class="">@L["PostDate"]</label>
-                                    <input class="form-control" type="text" name="OceanExportMbl.PostDate" readonly/>
+               
+                                    <abp-input asp-for="OceanExportMbl.PostDate"/>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">@L["SoNo"]</label>
-                                    <input class="form-control" type="text" name="OceanExportMbl.SoNo" />
+                                    <abp-input asp-for="OceanExportMbl.SoNo"/>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">@L["ItnNo"]</label>
-                                    <input class="form-control" type="text" name="OceanExportMbl.ItnNo" />
+                                    <abp-input asp-for="OceanExportMbl.ItnNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.MblCarrierId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblCarrierId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.MblCarrierContent) })
-                                    <input type="hidden" name="OceanExportMbl.MblCarrierId" id="mMblCarrierId" value="@Model.OceanExportMbl.MblCarrierId" />
-                                    <input type="hidden" name="OceanExportMbl.MblCarrierContent" id="mMblCarrierContent" value="@Model.OceanExportMbl.MblCarrierContent" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.BlAcctCarrierId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "BlAcctCarrierId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.BlAcctCarrierContent) })
-                                    <input type="hidden" name="OceanExportMbl.BlAcctCarrierId" id="mBlAcctCarrierId" value="@Model.OceanExportMbl.BlAcctCarrierId" />
-                                    <input type="hidden" name="OceanExportMbl.BlAcctCarrierContent" id="mBlAcctCarrierContent" value="@Model.OceanExportMbl.BlAcctCarrierContent" />
-
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.ShippingAgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "ShippingAgentId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.ShippingAgentContent) })
-                                    <input type="hidden" name="OceanExportMbl.ShippingAgentId" id="mShippingAgentId" value="@Model.OceanExportMbl.ShippingAgentId" />
-                                    <input type="hidden" name="OceanExportMbl.ShippingAgentContent" id="mShippingAgentContent" value="@Model.OceanExportMbl.ShippingAgentContent" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.MblOverseaAgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblOverseaAgentId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.MblOverseaAgentContent) })
-                                    <input type="hidden" name="OceanExportMbl.MblOverseaAgentId" id="mMblOverseaAgentId" value="@Model.OceanExportMbl.MblOverseaAgentId" />
-                                    <input type="hidden" name="OceanExportMbl.MblOverseaAgentContent" id="mMblOverseaAgentContent" value="@Model.OceanExportMbl.MblOverseaAgentContent" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.MblNotifyId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblNotifyId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.MblNotifyContent) })
-                                    <input type="hidden" name="OceanExportMbl.MblNotifyId" id="mMblNotifyId" value="@Model.OceanExportMbl.MblNotifyId" />
-                                    <input type="hidden" name="OceanExportMbl.MblNotifyContent" id="mMblNotifyContent" value="@Model.OceanExportMbl.MblNotifyContent" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.ForwardingAgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "ForwardingAgentId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.ForwardingAgentContent) })
-                                    <input type="hidden" name="OceanExportMbl.ForwardingAgentId" id="mForwardingAgentId" value="@Model.OceanExportMbl.ForwardingAgentId" />
-                                    <input type="hidden" name="OceanExportMbl.ForwardingAgentContent" id="mForwardingAgentContent" value="@Model.OceanExportMbl.ForwardingAgentContent" />
+
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.CoLoaderId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "CoLoaderId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.CoLoaderContent) })
-                                    <input type="hidden" name="OceanExportMbl.CoLoaderId" id="mCoLoaderId" value="@Model.OceanExportMbl.CoLoaderId" />
-                                    <input type="hidden" name="OceanExportMbl.CoLoaderContent" id="mCoLoaderContent" value="@Model.OceanExportMbl.CoLoaderContent" />
+
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label for="CareOfId" class="form-label">C/O <input type="checkbox" name="OceanExportMbl.IsUsedCareOf" id="OceanExportMbl_IsUsedCareOf" value="true" /></label>
-                                    <br />
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.CareOfId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.CareOfContent) })
-                                    <input type="hidden" name="OceanExportMbl.CareOfId" id="mCareOfId" value="@Model.OceanExportMbl.CareOfId" />
-                                    <input type="hidden" name="OceanExportMbl.CareOfContent" id="mCareOfContent" value="@Model.OceanExportMbl.CareOfContent" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">@L["OP"]</label>
-                                    <select class="form-control ml-15" asp-for="OceanExportMbl.MblOperatorId" disabled="true">
-                                        <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
-                                    </select>
+                                    <abp-row>
+                                        <abp-column>
+                                             <label class="">@L["OP"]</label>
+                                        </abp-column>
+                                        <abp-column>
+                                            <select class="form-control ml-15" asp-for="OceanExportMbl.MblOperatorId" disabled="true">
+                                                <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
+                                            </select>
+                                        </abp-column>
+
+                                    </abp-row>
+                                   
+                                  
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label class="">@L["CarrierContractNo"]</label>
-                                    <input class="form-control" type="text" name="OceanExportMbl.CarrierContractNo" />
+                                    <abp-input asp-for="OceanExportMbl.CarrierContractNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label for="OceanExportMbl_IsDirect" class="form-label">@L["IsDirect"]<input type="checkbox" name="OceanExportMbl.IsDirect" id="OceanExportMbl.IsDirect" value="true" checked="@Model.OceanExportMbl.IsDirect" /></label>
@@ -228,19 +218,16 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label class="">@L["VesselName"]</label>
-                                    <input class="form-control" type="text" name="OceanExportMbl.VesselName" />
+                                    <abp-input asp-for="OceanExportMbl.VesselName" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">@L["Voyage"]</label>
-                                    <input class="form-control" type="text" name="OceanExportMbl.Voyage" />
+                                    <abp-input asp-for="OceanExportMbl.Voyage" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PorId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">@L["PorEtd"]</label>
-                                    <input class="form-control checkdate" type="text" name="OceanExportMbl.PorEtd" abp-data-datepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.PorEtd" type="text" abp-data-datepicker="false" class="checkdate" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -248,15 +235,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PolId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">@L["PolEtd"]</label>
-                                    <input class="form-control checkdate" type="text" name="OceanExportMbl.PolEtd" abp-data-datepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.PolEtd" type="text" abp-data-datepicker="false" class="checkdate" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PodId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">@L["ETA"]</label>
-                                    <input class="form-control checkdate" type="text" name="OceanExportMbl.PodEta" abp-data-datepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.PodEta" type="text" abp-data-datepicker="false" class="checkdate" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -264,27 +249,23 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.DelId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label class="">@L["DelEta"]</label>
-                                    <input class="form-control checkdate" type="text" name="OceanExportMbl.DelEta" abp-data-datepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.DelEta" type="text" abp-data-datepicker="false" class="checkdate" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.FdestId) })
                                 </abp-column>
-                                <abp-column size-md="_3">
-                                    <label class="">@L["FinalDestETA"]</label>
-                                    <input class="form-control checkdate" type="text" name="OceanExportMbl.FdestEta" abp-data-datepicker="false" />
+                                <abp-column size-md="_3">                                    
+                                    <abp-input asp-for="OceanExportMbl.FdestEta" type="text" abp-data-datepicker="false" class="checkdate" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.EmptyPickupId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "EmptyPickupId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.EmptyPickupContent) })
-                                    <input type="hidden" name="OceanExportMbl.EmptyPickupId" id="mEmptyPickupId" value="@Model.OceanExportMbl.EmptyPickupId" />
-                                    <input type="hidden" name="OceanExportMbl.EmptyPickupContent" id="mEmptyPickupContent" value="@Model.OceanExportMbl.EmptyPickupContent" />
+
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.DeliveryToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "DeliveryToId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.DeliveryToContent) })
-                                    <input type="hidden" name="OceanExportMbl.DeliveryToId" id="mDeliveryToId" value="@Model.OceanExportMbl.DeliveryToId" />
-                                    <input type="hidden" name="OceanExportMbl.DeliveryToContent" id="mDeliveryToContent" value="@Model.OceanExportMbl.DeliveryToContent" />
+      
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-row>
@@ -320,8 +301,7 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label class="">@L["DisplayMblContainerSizeQtyInfo"]</label>
-                                    <input class="form-control" type="text" name="OceanExportMbl.DisplayMblContainerSizeQtyInfo" readonly />
+                                    <abp-input asp-for="OceanExportMbl.DisplayMblContainerSizeQtyInfo" disabled="true"/>
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.OblTypeId", AspItems = _dropdown.OblTypeLookupList, IsShowLabel = true, FieldName = "OblTypeId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.OblTypeId) })
@@ -458,72 +438,95 @@
                             <button class="btn btn-collapse " type="button" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="true" aria-controls="hblDiv">
                             </button>
                         </abp-card-header>
-                        <abp-card-body class="card-body collapse show" id="hblDiv">
+                        <abp-card-body class="card-body collapse show customForm" id="hblDiv">
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportHbl.HblNo" size="Small" />
+   <abp-input asp-for="OceanExportHbl.HblNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportHbl.SoNo" size="Small" />
                                 </abp-column>
+                                <abp-column size-md="_6">
+                                    <abp-input asp-for="OceanExportHbl.ItnNo" />
+                                </abp-column>
+                             
+                            </abp-row>
+                            <abp-row>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportHbl.CustomerRefNo" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportHbl.DocNo" size="Small" />
                                 </abp-column>
-                            </abp-row>
-                            <abp-row>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportHbl.QuotationNo" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblShipperId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblShipperId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.HblShipperId) })
                                 </abp-column>
+                            </abp-row>
+                            <abp-row>
+                               
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblCustomerId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblCustomerId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.HblCustomerId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblBillToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblBillToId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.HblBillToId) })
                                 </abp-column>
-                            </abp-row>
-                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblConsigneeId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblConsigneeId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.HblConsigneeId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblNotifyId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblNotifyId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.HblNotifyId) })
                                 </abp-column>
+                            </abp-row>
+                            <abp-row>
+                              
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.CustomsBrokerId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "CustomsBrokerId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.CustomsBrokerId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.TruckerId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "TruckerId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.TruckerId) })
                                 </abp-column>
+                                <abp-column size-md="_3">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.AgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblAgentId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.AgentId) })
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblSaleId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "SalesId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.HblSaleId) })
+                                </abp-column>
                             </abp-row>
                             <abp-row>
-                                <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.AgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "AgentId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.AgentId) })
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblSaleId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblSaleId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.HblSaleId) })
-                                </abp-column>
-                                <abp-column size-md="_3">
-
-                                </abp-column>
+                              <abp-column size-md="_3"></abp-column>
+                               
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblForwardingAgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblForwardingAgentId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.ForwardingAgentId) })
                                 </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-column size-md="_3" class="align-self-center">
+                            
+                                 <abp-column size-md="_3">
+                                    <abp-row>
+                                        <abp-column>
+                                            <label class="">@L["OP"]</label>
+                                        </abp-column>
+                                        <abp-column>
+                                            <select class="form-control ml-15" asp-for="OceanExportHbl.HblOperatorId" disabled="true">
+                                                <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
+                                            </select>
+                                        </abp-column>
+
+                                    </abp-row>
+                                </abp-column>
+                                <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportHbl.IsSubAgentBl" />
                                 </abp-column>
+                            </abp-row>
+                            <abp-row>
+
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.ReceivingAgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "ReceivingAgentId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.ReceivingAgentId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @*@await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HPolId", AspItems = Model.PortsManagementLookupList, IsShowLabel = true, FieldName = "POL", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.PolId) })*@
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HPolId", AspItems = Model.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolName", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.PolId) })
+
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @*<abp-input asp-for="OceanExportHbl.PolEtd" type="text" size="Small" abp-data-datepicker="false" />*@
@@ -531,7 +534,8 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.PorId", AspItems = Model.PortsManagementLookupList, IsShowLabel = true, FieldName = "POR", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.PorId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HPorId", AspItems = Model.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorName", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.PorId) })
+
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportHbl.PorEtd" size="Small" type="text" abp-data-datepicker="false" />
@@ -587,17 +591,19 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.SvcTermFromId", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, FieldName = "HSvcTermFromId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.SvcTermFromId) })
+                          @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HSvcTermFromId", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, FieldName = "HSvcTermFromId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.SvcTermFromId) })
+                                    
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.SvcTermToId", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, FieldName = "HSvcTermToId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.SvcTermToId) })
+                                                                       @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HSvcTermToId", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, FieldName = "ServiceTermTypeTo", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.SvcTermToId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportHbl.DisplayHblContainerSizeQtyInfo" size="Small" />
+                                    <abp-input asp-for="OceanExportHbl.DisplayHblContainerSizeQtyInfo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
 
                                 </abp-column>
+
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3" class="align-self-center">
@@ -642,26 +648,44 @@
                                 </abp-column>
                             </abp-row>
                             <abp-row>
-                                <abp-column size-md="_1" class="align-self-center">
-                                    <abp-input asp-for="OceanExportHbl.IsHold" label="Hold" />
-                                </abp-column>
-                                <abp-column size-md="_2">
-                                    <abp-input asp-for="OceanExportHbl.HoldReason" size="Small" />
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                </abp-column>
-                                <abp-column size-md="_1" class="align-self-center">
-                                    <abp-input suppress-label="true" asp-for="OceanExportHbl.IsReleased" />
-                                </abp-column>
-                                <abp-column size-md="_2">
-                                    <abp-input asp-for="OceanExportHbl.HblReleaseDate" size="Small" />
+       <abp-column size-md="_3">
+                                    <abp-row>
+                                        <abp-column>
+                                             <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsHold" /> @L["IsHold"] </label>
+                                        </abp-column>
+                                        <abp-column>
+                                            <abp-input suppress-label="true" asp-for="OceanExportHbl.HoldReason" />
+                                        </abp-column>
+                                    </abp-row>             
                                 </abp-column>
                                 <abp-column size-md="_3">
+
+                                </abp-column>
+                                       <abp-column size-md="_3">
+                                    <abp-row>
+                                        <abp-column>
+                                            <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsReleased" id="OceanExportHbl_IsReleased" value="true" /> @L["IsReleased"] </label>
+                                        </abp-column>
+                                        <abp-column>
+                                            <abp-input suppress-label="true" asp-for="OceanExportHbl.HblReleaseDate" />
+                                        </abp-column>
+                                    </abp-row>
+
+                                </abp-column>
+                                                <abp-column size-md="_3">
+
                                 </abp-column>
                             </abp-row>
                             <abp-row>
-                                <abp-column size-md="_1" class="align-self-center">
-                                    <abp-input suppress-label="true" asp-for="OceanExportHbl.IsCanceled" />
+                                <abp-column size-md="_3">
+                                    <abp-row>
+                                        <abp-column>
+                                            <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsCanceled" /> @L["IsCanceled"] </label>
+                                        </abp-column>
+                                        <abp-column>
+                                            <abp-input suppress-label="true" asp-for="OceanExportHbl.CanceledDate" />
+                                        </abp-column>
+                                     </abp-row>
                                 </abp-column>
                                 <abp-column size-md="_2">
                                     <abp-input asp-for="OceanExportHbl.CanceledDate" size="Small" />
