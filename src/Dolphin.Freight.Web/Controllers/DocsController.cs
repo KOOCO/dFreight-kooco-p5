@@ -75,7 +75,10 @@ namespace Dolphin.Freight.Web.Controllers
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
         public DocsController(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, IAjaxDropdownAppService ajaxDropdownAppService, IReportLogAppService reportLogAppService,
-          ICurrentUser currentUser, IDropdownService dropdownService, IExportBookingAppService exportBookingAppService)
+          ICurrentUser currentUser, IDropdownService dropdownService, IExportBookingAppService exportBookingAppService,
+          IAirExportMawbAppService airExportMawbAppService,
+          IAirExportHawbAppService airExportHawbAppService,
+          IInvoiceAppService invoiceAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -86,6 +89,9 @@ namespace Dolphin.Freight.Web.Controllers
             _currentUser = currentUser;
             _dropdownService = dropdownService;
             _exportBookingAppService = exportBookingAppService;
+            _airExportHawbAppService = airExportHawbAppService;
+            _airExportMawbAppService = airExportMawbAppService;
+            _invoiceAppService = invoiceAppService;
 
             ReportLog = new ReportLog.ReportLogDto();
         }
