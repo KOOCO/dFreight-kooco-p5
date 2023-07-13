@@ -210,10 +210,16 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.ForwardingAgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblForwardingAgentId", SelectType = 1, ShowFiledContentValue = Model.OceanExportHbl.ForwardingAgentId.ToString()})
             </abp-column>
             <abp-column size-md="_3">
-                <label class="">@L["OP"]</label>
-                <select class="form-control ml-15" asp-for="OceanExportHbl.HblOperatorId" disabled="true">
-                    <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
-                </select>
+                <abp-row>
+                    <abp-column  size-md="_5"> <label class="">@L["OP"]</label></abp-column>
+                    <abp-column size-md="_7">
+                        <select class="form-control ml-15" asp-for="OceanExportHbl.HblOperatorId" disabled="true">
+                            <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
+                        </select>
+                    </abp-column>
+                </abp-row>
+               
+              
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="OceanExportHbl.IsSubAgentBl" />
@@ -348,24 +354,39 @@
         </abp-row>
         <abp-row>
             <abp-column size-md="_3">
-                <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsHold" id="OceanExportHbl_IsHold" value="true" /> @L["IsHold"] </label>
-                <abp-input asp-for="OceanExportHbl.HoldReason" />
+                <abp-row>
+                    <abp-column size-md="_4">
+                    
+                        <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsHold" /> @L["IsHold"] </label>
+                    </abp-column>
+                    <abp-column size-md="_8">
+                        <abp-input suppress-label="true" asp-for="OceanExportHbl.HoldReason" />
+                    </abp-column>
+                </abp-row>
             </abp-column>
             <abp-column size-md="_3">
 
             </abp-column>
             <abp-column size-md="_3">
-                <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsReleased" id="OceanExportHbl_IsReleased" value="true" /> @L["IsReleased"] </label>
-                <abp-input asp-for="OceanExportHbl.HblReleaseDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                <abp-row>
+                    <abp-column size-md="_4"> <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsReleased" id="OceanExportHbl_IsReleased" value="true" /> @L["IsReleased"] </label></abp-column>
+                    <abp-column size-md="_8"><abp-input suppress-label="true" asp-for="OceanExportHbl.HblReleaseDate" class="cdatetime" type="text" abp-data-datetimepicker="false" /></abp-column>
+                </abp-row>
+               
+                
             </abp-column>
-            <abp-column size-md="_3">
 
-            </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_3">
-                <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsCanceled" id="OceanExportHbl_IsCanceled" value="true" /> @L["IsCanceled"] </label>
-                <abp-input asp-for="OceanExportHbl.CanceledDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                <abp-row>
+                    <abp-column size-md="_4">
+                        <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsCanceled" id="OceanExportHbl_IsCanceled" value="true" /> @L["IsCanceled"] </label>
+                    </abp-column>
+                    <abp-column size-md="_8">
+                        <abp-input suppress-label="true" asp-for="OceanExportHbl.CanceledDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                    </abp-column>
+                </abp-row>
             </abp-column>
             <abp-column size-md="_3">
 
