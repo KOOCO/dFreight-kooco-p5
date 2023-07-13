@@ -6,7 +6,8 @@
 
 @if (Model.IsShowLabel) 
 {
-<label for="@Model.FieldName">
+
+  <label class="form-label" for="@Model.FieldName">
         @if (Model.IsRequired)
         {
             <span class="text-danger">*</span>
@@ -15,7 +16,7 @@
 </label>
 }
 
-<div class="d-flex mb-5">
+<div class="d-flex mb-5 dropdown form-control form-control-fix">
     
 <select name="@Model.Name" id="@Model.Id" class="filteredDropdown form-select form-control cursor-pointer" @Model.Disabled @(Model.IsRequired? "required": "")>
     <option></option>

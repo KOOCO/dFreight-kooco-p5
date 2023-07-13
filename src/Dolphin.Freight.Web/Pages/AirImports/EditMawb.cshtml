@@ -202,7 +202,7 @@
             let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title text-light hblCardTitle" id="title_{{hawbNo}}"' +
                 ' onclick="onHawbCardClick(event,{{hblCardId}})">{{hawbNo}}</h5>' +
                 ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hawbNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
-                ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+                ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse customForm" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
             return abpCard;
         }
 
@@ -494,7 +494,7 @@
                             </button>
                         </abp-card-header>
                         <!-- Mawb資訊欄 -->
-                        <abp-card-body class="Mawb collapse show" id="mawbDiv">
+                        <abp-card-body class="Mawb collapse show customForm" id="mawbDiv">
                             <!--第1列-->
                             <abp-row>
                                 <abp-input asp-for="MawbModel.Id" type="hidden" />
