@@ -269,12 +269,15 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-row>
-                                        <label asp-for="OceanExportMbl.PreCarriageVesselNameId"></label>
-                                        <abp-column size-md="_7">
+                                        <abp-column  size-md="_2">
+                                            <label asp-for="OceanExportMbl.PreCarriageVesselNameId"></label>
+                                        </abp-column>
+                                        <abp-column size-md="_5">
                                             @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PreCarriageVesselNameId", AspItems = _dropdown.PreCarriageVesselLookupList, IsShowLabel = false, FieldName = "PreCarriageVesselNameId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PreCarriageVesselNameId) })
                                         </abp-column>
                                         <abp-column size-md="_5" class="pl-0">
-                                            <input class="form-control form-control-sm" type="text" name="OceanExportMbl.PrepreCarriageVoyage" />
+                                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PrepreCarriageVoyage", AspItems = _dropdown.PreCarriageVesselLookupList, IsShowLabel = false, FieldName = "PrepreCarriageVoyage", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.PrepreCarriageVoyage) })
+
                                         </abp-column>
                                     </abp-row>
                                 </abp-column>
@@ -362,13 +365,20 @@
                                     <label for="OceanExportMbl_IsBookingAgent" class="form-label">@L["IsBookingAgent"]<input type="checkbox" name="OceanExportMbl.IsBookingAgent" id="OceanExportMbl_IsBookingAgent" value="true" checked="" /></label>
                                 </abp-column>
                                 <abp-column size-md="_3" class="customForm">
-                                    <label for="CareOfId" class="form-label">@L["IsReleased"]<input type="checkbox" name="OceanExportMbl.IsReleased" id="OceanExportMbl_IsReleased" value="true" /></label>
-                                    <input asp-for="OceanExportMbl.MblReleaseDate" class="form-control form-label" type="date" disabled />
+                                    <abp-row>
+                                        <abp-column size-md="_5"><label for="CareOfId" class="form-label">@L["IsReleased"]<input type="checkbox" name="OceanExportMbl.IsReleased" id="OceanExportMbl_IsReleased" value="true" /></label></abp-column>
+                                        <abp-column size-md="_7"><input asp-for="OceanExportMbl.MblReleaseDate" class="form-control form-label" type="date" disabled /></abp-column>
+                                    </abp-row>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label asp-for="OceanExportMbl.ReleaseById"></label>
-                                    <input id="releasedBy" class="form-control" readonly />
-                                    <input type="hidden" asp-for="OceanExportMbl.ReleaseById" value="@CurrentUser.Id" disabled />
+                                    <abp-row>
+                                        <abp-column size-md ="_5"><label asp-for="OceanExportMbl.ReleaseById"></label></abp-column>
+                                    <abp-column size-md="_7"><input id="releasedBy" class="form-control" readonly /></abp-column>
+                                        <abp-column><input type="hidden" asp-for="OceanExportMbl.ReleaseById" value="@CurrentUser.Id" disabled /></abp-column>
+                                    </abp-row>
+                                    
+                                    
+                                    
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -591,11 +601,10 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                          @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HSvcTermFromId", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, FieldName = "HSvcTermFromId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.SvcTermFromId) })
-                                    
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HSvcTermFromId", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, FieldName = "HSvcTermFromId", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.SvcTermFromId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                                                       @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HSvcTermToId", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, FieldName = "ServiceTermTypeTo", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.SvcTermToId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HSvcTermToId", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, FieldName = "ServiceTermTypeTo", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.SvcTermToId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportHbl.DisplayHblContainerSizeQtyInfo" />
