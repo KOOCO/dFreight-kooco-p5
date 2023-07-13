@@ -32,6 +32,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         private readonly IRepository<Substation, Guid> _substationRepository;
         private readonly IPortsManagementAppService _portRepository;
         private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
+        
         public AirExportHawbAppService(IRepository<AirExportHawb, Guid> repository,
             IRepository<SysCode, Guid> sysCodeRepository,
             IRepository<AirExportHawb, Guid> mblRepository,
@@ -234,6 +235,64 @@ namespace Dolphin.Freight.ImportExport.AirExports
             }
 
             return new AirExportHawbDto();
+        }
+
+        public async Task<AirExportHawbDto> GetHawbWithDetailsById(Guid Id)
+        {
+            var tradePartners = await _tradePartnerRepository.GetListAsync();
+            var portMangements = await _portRepository.QueryListAsync();
+
+            var hawb = await GetHawbCardById(Id);
+
+            if(hawb.SalesId != null)
+            {
+                var salesPerson = tradePartners.Where(w => w.Id == hawb.SalesId).FirstOrDefault();
+                hawb.Sales = new Volo.Abp.Users.UserData() { Id = salesPerson.Id, Name = salesPerson?.TPName + " / " + salesPerson?.TPCode };
+            }
+
+            if(hawb.ConsigneeId != null)
+            {
+                var consignee = tradePartners.Where(w => w.Id == hawb.ConsigneeId).FirstOrDefault();
+                hawb.Consignee = string.Concat(consignee.TPName, "/", consignee.TPCode);
+            }
+            
+            if(hawb.OPId != null)
+            {
+                var op = tradePartners.Where(w => w.Id == hawb.OPId).FirstOrDefault();
+                hawb.OP = new Volo.Abp.Users.UserData() { Id = op.Id, Name = op.TPName + " / " + op.TPCode };
+            }
+
+            if(hawb.Customer != null)
+            {
+                var customer = tradePartners.Where(w => w.Id == Guid.Parse(hawb.Customer)).FirstOrDefault();
+                hawb.Customer = string.Concat(customer.TPName, "/", customer.TPCode);
+            }
+
+            if(hawb.Trucker != null)
+            {
+                var trucker = tradePartners.Where(w => w.Id == Guid.Parse(hawb.Trucker)).FirstOrDefault();
+                hawb.Trucker = string.Concat(trucker.TPName, "/", trucker.TPCode);
+            }
+
+            if(hawb.OverseaAgent != null)
+            {
+                var overSeaAgent = tradePartners.Where(w => w.Id == Guid.Parse(hawb.OverseaAgent)).FirstOrDefault();
+                hawb.OverseaAgent = string.Concat(overSeaAgent.TPName, "/", overSeaAgent.TPCode);
+            }
+
+            if(hawb.DepartureId != null)
+            {
+                var departure = portMangements.Where(w => Id == hawb.DepartureId).FirstOrDefault();
+                hawb.DepartureName = departure?.PortName;
+            }
+
+            if(hawb.DestinationId != null)
+            {
+                var destination = portMangements.Where(w => Id == hawb.DestinationId).FirstOrDefault();
+                hawb.DestinationName = destination?.PortName;
+            }
+
+            return hawb;
         }
     }
 }

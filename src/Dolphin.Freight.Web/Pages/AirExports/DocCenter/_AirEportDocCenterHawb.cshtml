@@ -18,6 +18,16 @@
             myWindow.focus();
         });
     }
+    function getPackingListAirExportHawb() {
+        myWindow = window.open("@Url.Action("PackagingListAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })", 'PackingListAirExportHawb', 'width=1200,height=800');
+        myWindow.focus()
+    }
+    function ProfitReport() {
+        var url = '@Url.Action("HawbProfitReport", "Docs", new { hawbId = Model.AirExportHawbDto.Id })';
+
+        myWindow = window.open(url, "PROFIT BY HAWB", 'width=1200,height=800')
+        myWindow.focus()
+    }
 </script>
 
 <abp-card id="hblCard">
@@ -44,7 +54,7 @@
         <a class='dropdown-item' href='#'>
             <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
         </a>
-        <a class='dropdown-item' href='#'>
+        <a class='dropdown-item' href='javascript:void(0)' onclick="getPackingListAirExportHawb()">
             <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
         </a>
         <a class='dropdown-item' href='#'>
@@ -72,7 +82,7 @@
             <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
         </a>
         <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='#'>
+        <a class='dropdown-item' href='javascript:void(0)' onclick="ProfitReport()">
             <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
         </a>
         <li class="dropdown-divider"></li>

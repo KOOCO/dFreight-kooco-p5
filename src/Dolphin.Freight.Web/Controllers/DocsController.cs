@@ -50,6 +50,10 @@ using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Dolphin.Freight.Web.CommonService;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
+using Dolphin.Freight.Web.ViewModels.PackagingListAirExportHawb;
+using Dolphin.Freight.ImportExport.AirExports;
+using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.Accounting.InvoiceBills;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -64,11 +68,17 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly ICurrentUser _currentUser;
         private readonly IDropdownService _dropdownService;
         private readonly IExportBookingAppService _exportBookingAppService;
+        private readonly IAirExportMawbAppService _airExportMawbAppService;
+        private readonly IAirExportHawbAppService _airExportHawbAppService;
+        private readonly IInvoiceAppService _invoiceAppService;
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
         public DocsController(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, IAjaxDropdownAppService ajaxDropdownAppService, IReportLogAppService reportLogAppService,
-          ICurrentUser currentUser, IDropdownService dropdownService, IExportBookingAppService exportBookingAppService)
+          ICurrentUser currentUser, IDropdownService dropdownService, IExportBookingAppService exportBookingAppService,
+          IAirExportMawbAppService airExportMawbAppService,
+          IAirExportHawbAppService airExportHawbAppService,
+          IInvoiceAppService invoiceAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -79,6 +89,9 @@ namespace Dolphin.Freight.Web.Controllers
             _currentUser = currentUser;
             _dropdownService = dropdownService;
             _exportBookingAppService = exportBookingAppService;
+            _airExportHawbAppService = airExportHawbAppService;
+            _airExportMawbAppService = airExportMawbAppService;
+            _invoiceAppService = invoiceAppService;
 
             ReportLog = new ReportLog.ReportLogDto();
         }
@@ -2015,5 +2028,143 @@ namespace Dolphin.Freight.Web.Controllers
                     return await _generatePdf.GetPdf("Views/Docs/Pdf/Manifest/ManifestByMbl.cshtml", InfoModel);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> PackagingListAirExportHawb(Guid hawbId)
+        {
+            PackagingListAirExportHawb InfoViewModel = new PackagingListAirExportHawb();
+
+            var data = await _airExportHawbAppService.GetAsync(hawbId);
+            var mawb = await _airExportMawbAppService.GetAsync(data.MawbId.GetValueOrDefault());
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
+            var incoTerms = _dropdownService.IncotermsLookupList;
+
+            InfoViewModel.Shipper_name = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.ActualShippedr)).Select(s => s.Text));
+            InfoViewModel.Notify_party = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.Notify)).Select(s => s.Text));
+            InfoViewModel.Consignee_address = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.Consignee)).Select(s => s.Text));
+            InfoViewModel.Inv_no = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.BookingNo)).Select(s => s.Text));
+            InfoViewModel.Inv_date = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.BookingDate)).Select(s => s.Text));
+            InfoViewModel.POL_location = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(data.DepartureId)).Select(s => s.Text));
+            InfoViewModel.POD_location = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(data.DestinationId)).Select(s => s.Text));
+            InfoViewModel.Issue_date = "";
+            InfoViewModel.Departure_date = string.Concat(mawb.DepatureDate);
+            InfoViewModel.Issue_bank = "";
+            InfoViewModel.LC_no = "";
+            InfoViewModel.Term = string.Concat(incoTerms.Where(w => w.Value == Convert.ToString(data.Incoterms)).Select(s => s.Text));
+            InfoViewModel.Flight_no = string.Concat(mawb.FlightNo);
+
+            InfoViewModel.ContainerList = new List<PackagingListAirExportHawbList>()
+            {
+                new
+                PackagingListAirExportHawbList
+                {
+                    Booking_no = "",
+                    Package = "",
+                    Pkg = "",
+                    Description = "",
+                    Hts = "",
+                    Pcs = "",
+                    Net_weight_kg = string.Concat(data.ChargeableWeightShprKG),
+                    Net_weight_lb = string.Concat(data.ChargeableWeightShprLB),
+                    Gross_weight_kg = string.Concat(data.GrossWeightShprKG),
+                    Gross_weight_lb = string.Concat(data.GrossWeightShprLB),
+                    Price = "",
+                    Details = "",
+                    Volumns = string.Concat(data.ChargeableWeightCneeLB),
+                    Amount = (double.Parse(data.ChargeableWeightCneeLB) * 35.315).ToString("0.00"),
+                    Quantity = string.Concat(data.Package + "/" + data.PackageUnit)
+                }
+            };
+
+            return View(InfoViewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HawbProfitReport(Guid hawbId)
+        {
+            var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
+
+            var mawb = await _airExportMawbAppService.GetAsync(hawb.MawbId.GetValueOrDefault());
+
+            var measurement = Convert.ToDouble(hawb.ChargeableWeightCneeLB) * 35.315;
+
+            var hawbProfitReport = new HawbProfitReportViewModel()
+            {
+                AgentName = hawb.OverseaAgent,
+                Consignee = hawb.Consignee,
+                Currency = "USD",
+                Customer = hawb.Customer,
+                HawbNo = hawb.HawbNo,
+                Operator = hawb.OP?.Name,
+                Measurement = measurement.ToString("0.00"),
+                PolEtd = string.Concat(hawb.DepartureName, "/", mawb.DepatureDate),
+                PodEtd = string.Concat(hawb.DestinationName, "/", mawb.ArrivalDate),
+                Sales = hawb.Sales?.Name,
+                Shipper = hawb.Trucker,
+                MawbNo = mawb.MawbNo,   
+                ChargableWeight = string.Concat(hawb.ChargeableWeightCneeKG, "/", hawb.ChargeableWeightCneeLB),
+                PostDate = DateTime.Now
+            };
+
+            QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = 4, ParentId = hawbId };
+            hawbProfitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+            hawbProfitReport.AR = new List<InvoiceDto>();
+            hawbProfitReport.AP = new List<InvoiceDto>();
+            hawbProfitReport.DC = new List<InvoiceDto>();
+
+            if (hawbProfitReport.Invoices != null && hawbProfitReport.Invoices.Count > 0)
+            {
+                foreach (var dto in hawbProfitReport.Invoices)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            hawbProfitReport.AR.Add(dto);
+                            break;
+                        case 1:
+                            hawbProfitReport.AP.Add(dto);
+                            break;
+                        case 2:
+                            hawbProfitReport.DC.Add(dto);
+                            break;
+                    }
+                }
+            }
+
+            if(hawbProfitReport.AR.Any())
+            {
+                double arTotal = 0;
+                foreach (var ar in hawbProfitReport.AR)
+                {
+                    arTotal += Convert.ToInt64(ar.InvoiceAmount);
+                }
+                hawbProfitReport.ARTotal = arTotal;
+            }
+            if (hawbProfitReport.AP.Any())
+            {
+                double apTotal = 0;
+                foreach (var ap in hawbProfitReport.AP)
+                {
+                    apTotal += Convert.ToInt64(ap.InvoiceAmount);
+                }
+
+                hawbProfitReport.APTotal = apTotal;
+            }
+            if (hawbProfitReport.DC.Any())
+            {
+                double dcTotal = 0;
+                foreach (var dc in hawbProfitReport.DC)
+                {
+                    dcTotal += Convert.ToInt64(dc.InvoiceAmount);
+                }
+                hawbProfitReport.DCTotal = dcTotal;
+            }
+
+            hawbProfitReport.Total = hawbProfitReport.ARTotal + hawbProfitReport.APTotal + hawbProfitReport.DCTotal;
+
+            return View(hawbProfitReport);
+        }
+
     }
 }
