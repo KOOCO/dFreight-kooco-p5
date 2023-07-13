@@ -2073,8 +2073,8 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(InfoViewModel);
         }
-    }
-    [HttpGet]
+
+        [HttpGet]
         public async Task<IActionResult> HawbProfitReport(Guid hawbId)
         {
             var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
@@ -2159,5 +2159,6 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(hawbProfitReport);
         }
+
     }
 }
