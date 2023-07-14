@@ -178,7 +178,7 @@ namespace Dolphin.Freight.Web.Controllers
                                                                                 ? JsonConvert.DeserializeObject<OceanExportMblDto>(TempData["PrintData"].ToString())
                                                                                 : await _oceanExportMblAppService.GetAsync(oceanExportMblId);
 
-            if(oceanExportMbl.Id != oceanExportMblId && oceanExportMblId != Guid.Empty)
+            if (oceanExportMbl.Id != oceanExportMblId && oceanExportMblId != Guid.Empty)
             {
                 oceanExportMbl = await _oceanExportMblAppService.GetAsync(oceanExportMblId);
             }
@@ -1592,7 +1592,7 @@ namespace Dolphin.Freight.Web.Controllers
             var tradePartner = _dropdownService.TradePartnerLookupList;
             var portManagement = _dropdownService.PortsManagementLookupList;
             var exportBooking = await _exportBookingAppService.GetSONo();
-            
+
             InfoViewModel.Header_Consignee = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblConsigneeId)).Select(s => s.Text));
             InfoViewModel.Header_Notify = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblNotifyId)).Select(s => s.Text));
             InfoViewModel.Header_Shipper = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(Ocean.HblShipperId)).Select(s => s.Text));
@@ -2104,7 +2104,7 @@ namespace Dolphin.Freight.Web.Controllers
                 PodEtd = string.Concat(hawb.DestinationName, "/", mawb.ArrivalDate),
                 Sales = hawb.Sales?.Name,
                 Shipper = hawb.Trucker,
-                MawbNo = mawb.MawbNo,   
+                MawbNo = mawb.MawbNo,
                 ChargableWeight = string.Concat(hawb.ChargeableWeightCneeKG, "/", hawb.ChargeableWeightCneeLB),
                 PostDate = DateTime.Now
             };
@@ -2134,7 +2134,7 @@ namespace Dolphin.Freight.Web.Controllers
                 }
             }
 
-            if(hawbProfitReport.AR.Any())
+            if (hawbProfitReport.AR.Any())
             {
                 double arTotal = 0;
                 foreach (var ar in hawbProfitReport.AR)
@@ -2167,8 +2167,8 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(hawbProfitReport);
         }
-        
-         [HttpGet]
+
+        [HttpGet]
         public async Task<ActionResult> DangerousGoods(Guid hawbId)
         {
             var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
@@ -2188,7 +2188,7 @@ namespace Dolphin.Freight.Web.Controllers
                 Shipper = hawb.CargoPickupName
             };
 
-            return View(viewModel);  
+            return View(viewModel);
         }
         [HttpPost]
         public async Task<IActionResult> DangerousGoods(DangerousGoodsViewModel model)
@@ -2196,7 +2196,7 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/DangerousGoods.cshtml", model);
         }
 
-		public async Task<IActionResult> CertificateOfOriginAirExportHawb(Guid id)
+        public async Task<IActionResult> CertificateOfOriginAirExportHawb(Guid id)
         {
             CertificateOfOriginAirExportHawbIndexViewModel InfoViewModel = new CertificateOfOriginAirExportHawbIndexViewModel();
 
@@ -2225,9 +2225,12 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.DESCRIPTION_OF_GOODS = hawb.NatureAndQuantityOfGoods;
             InfoViewModel.WEIGHT_G = hawb.GrossWeightShprKG + " KG" + Environment.NewLine + hawb.GrossWeightShprLB + " LBS";
             InfoViewModel.WEIGHT_C = hawb.ChargeableWeightShprKG + " KG" + Environment.NewLine + hawb.ChargeableWeightShprLB + " LBS";
-            if(hawb.ChargeableWeightCneeKG is not null) {
+            if (hawb.ChargeableWeightCneeKG is not null)
+            {
                 InfoViewModel.MEASUREMENT = hawb.ChargeableWeightCneeKG + " CBM" + Environment.NewLine + (double.Parse(hawb.ChargeableWeightCneeKG) * 35.315).ToString("0.00") + " CFT";
-            } else { 
+            }
+            else
+            {
                 InfoViewModel.MEASUREMENT = "";
             }
             InfoViewModel.Show_Container_Information = "true";
@@ -2271,20 +2274,20 @@ namespace Dolphin.Freight.Web.Controllers
 
         public async Task<IActionResult> PackageLabelAirExportHawb()
         {
-          
 
-        
+
+
 
             return View();
         }
 
         public async Task<IActionResult> PreAlertAirExportHawb()
         {
-           
 
 
 
-            return  View();
+
+            return View();
         }
 
         public async Task<IActionResult> PackageLabelListAirExportHawb()
@@ -2330,7 +2333,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View();
         }
-  public async Task<IActionResult> HawbPrintAirExportHawb()
+        public async Task<IActionResult> HawbPrintAirExportHawb()
         {
 
 
@@ -2338,11 +2341,11 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View();
         }
-		
-		[HttpPost]
+
+        [HttpPost]
         public async Task<IActionResult> PackagingListAirExportHawb(PackagingListAirExportHawb InfoViewModel, Guid guid)
         {
-            
+
             InfoViewModel.BaseUrl = string.Format("{0}://{1}/", HttpContext.Request.Scheme, HttpContext.Request.Host);
 
             string Input = JsonConvert.SerializeObject(InfoViewModel);
@@ -2356,6 +2359,5 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/Pdf/PackagingListAirExportHawb/Default.cshtml", InfoViewModel);
 
         }
-
-    
+    }
 }
