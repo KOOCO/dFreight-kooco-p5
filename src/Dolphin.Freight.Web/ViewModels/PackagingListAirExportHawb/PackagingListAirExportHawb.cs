@@ -6,6 +6,8 @@ namespace Dolphin.Freight.Web.ViewModels.PackagingListAirExportHawb
 {
     public class PackagingListAirExportHawb
     {
+        public Guid ReportId { get; set; }
+        public string BaseUrl { get; set; }
         public string Shipper_name { get; set; }
         public string Notify_party { get; set; }
         public string Consignee_address { get; set; }
