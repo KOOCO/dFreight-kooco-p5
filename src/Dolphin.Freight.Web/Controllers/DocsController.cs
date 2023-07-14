@@ -2167,6 +2167,34 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(hawbProfitReport);
         }
+        
+         [HttpGet]
+        public async Task<ActionResult> DangerousGoods(Guid hawbId)
+        {
+            var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
+
+            var mawb = await _airExportMawbAppService.GetAsync(hawb.MawbId.GetValueOrDefault());
+
+            var viewModel = new DangerousGoodsViewModel()
+            {
+                HawbId = hawbId,
+                MawbId = mawb.Id,
+                AirWayBillNo = hawb.HawbNo,
+                Consignee = hawb.Consignee,
+                DepartureName = hawb.DepartureName,
+                DestinationName = hawb.DestinationName,
+                NameOfSignatory = string.Concat(hawb.OP?.Name, " ", hawb.OP?.Surname),
+                PodEtd = string.Concat(hawb.DepartureName, ",", mawb.DepatureDate).TrimStart(','),
+                Shipper = hawb.CargoPickupName
+            };
+
+            return View(viewModel);  
+        }
+        [HttpPost]
+        public async Task<IActionResult> DangerousGoods(DangerousGoodsViewModel model)
+        {
+            return await _generatePdf.GetPdf("Views/Docs/DangerousGoods.cshtml", model);
+        }
 
 		public async Task<IActionResult> CertificateOfOriginAirExportHawb(Guid id)
         {
@@ -2322,7 +2350,8 @@ namespace Dolphin.Freight.Web.Controllers
             await _reportLogAppService.UpdateReportLog(ReportLog);
 
             return await _generatePdf.GetPdf("Views/Docs/Pdf/PackagingListAirExportHawb/Default.cshtml", InfoViewModel);
+
         }
 
-    }
+    
 }
