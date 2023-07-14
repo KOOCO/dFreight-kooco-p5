@@ -52,16 +52,12 @@
 			$('#form').css('transform', 'scale(' + zoom + ')');
 		});
 
-        //document.getElementById("reportLink").onclick = function() {
-        //    var url = new URL(window.location.href);
-        //    var guid = url.searchParams.get('Id');
-        //    document.getElementById("guidInput").value = guid;
-        //    document.getElementById("myForm").submit();
-        //}
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
     });
 </script>
 <form id="myForm" name="myForm" method="POST">
-    <input type="hidden" id="guidInput" name="guid" value="">
 <div style="background-color:black;display: flex;justify-content:center;">
     <div style="width:900px;background-color:white;" id="form" name = "form" class="edit">
         <div class="container" style="background-color:black">    

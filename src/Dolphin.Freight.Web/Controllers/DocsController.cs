@@ -2072,5 +2072,22 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(InfoViewModel);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> PackagingListAirExportHawb(PackagingListAirExportHawb InfoViewModel, Guid guid)
+        {
+            
+            InfoViewModel.BaseUrl = string.Format("{0}://{1}/", HttpContext.Request.Scheme, HttpContext.Request.Host);
+
+            string Input = JsonConvert.SerializeObject(InfoViewModel);
+
+            ReportLog.ReportId = InfoViewModel.ReportId;
+            ReportLog.ReportName = "PackagingListAirExportHawb";
+            ReportLog.ReportData = Input;
+            ReportLog.LastUpdateTime = DateTime.Now;
+            await _reportLogAppService.UpdateReportLog(ReportLog);
+
+            return await _generatePdf.GetPdf("Views/Docs/Pdf/PackagingListAirExportHawb/Default.cshtml", InfoViewModel);
+        }
     }
 }
