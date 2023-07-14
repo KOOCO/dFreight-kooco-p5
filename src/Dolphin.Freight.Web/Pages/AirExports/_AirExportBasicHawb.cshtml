@@ -68,6 +68,53 @@
         myWindow = window.open("@Url.Action("CertificateOfOriginAirExportHawb", "Docs")" + "?id=" + idNo, 'CertificateOfOrigin', 'width=1200,height=800');
         myWindow.focus()
     }
+    function getPackageLabelAirExportHawb() {
+        var idNo = '@Model.AirExportHawbDto.Id';
+        myWindow = window.open("@Url.Action("PackageLabelAirExportHawb", "Docs")", 'width=1200,height=800');
+        myWindow.focus()
+    }
+    function getPreAlertAirExportHawb() {
+        var idNo = '@Model.AirExportHawbDto.Id';
+        myWindow = window.open("@Url.Action("PreAlertAirExportHawb", "Docs")", 'width=1200,height=800');
+        myWindow.focus()
+    }
+    function getPackageLabelListAirExportHawb() {
+        var idNo = '@Model.AirExportHawbDto.Id';
+        myWindow = window.open("@Url.Action("PackageLabelListAirExportHawb", "Docs")", 'width=1200,height=800');
+        myWindow.focus()
+    }
+    function getBankDraftAirExportHawb() {
+        var idNo = '@Model.AirExportHawbDto.Id';
+        myWindow = window.open("@Url.Action("BankDraftAirExportHawb", "Docs")", 'width=1200,height=800');
+        myWindow.focus()
+    }
+    function getPickupDeliveryOrderAirExportHawb() {
+        var idNo = '@Model.AirExportHawbDto.Id';
+        myWindow = window.open("@Url.Action("PickupDeliveryOrderAirExportHawb", "Docs")", 'width=1200,height=800');
+        myWindow.focus()
+    }
+    function getCommercialInvoiceAirExportHawb() {
+        var idNo = '@Model.AirExportHawbDto.Id';
+        myWindow = window.open("@Url.Action("CommercialInvoiceAirExportHawb", "Docs")", 'width=1200,height=800');
+        myWindow.focus()
+    }
+    function getBookingConfirmationAirExportHawb() {
+        var idNo = '@Model.AirExportHawbDto.Id';
+        myWindow = window.open("@Url.Action("BookingConfirmationAirExportHawb", "Docs")", 'width=1200,height=800');
+        myWindow.focus()
+    }
+
+    function getCommercialInvoiceAirExportHawb() {
+        var idNo = '@Model.AirExportHawbDto.Id';
+        myWindow = window.open("@Url.Action("CommercialInvoiceAirExportHawb", "Docs")", 'width=1200,height=800');
+        myWindow.focus()
+    }
+
+    function getHawbPrintAirExportHawb() {
+        var idNo = '@Model.AirExportHawbDto.Id';
+        myWindow = window.open("@Url.Action("HawbPrintAirExportHawb", "Docs")", 'width=1200,height=800');
+        myWindow.focus()
+    }
 </script>
 
 
@@ -96,13 +143,13 @@
                     <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='#'>
+            @*    <a class='dropdown-item' href='#'>
                     <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
-                </a>
-                <a class='dropdown-item' href='#'>
+                </a>*@
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getHawbPrintAirExportHawb()">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Print HAWB"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getCommercialInvoiceAirExportHawb()">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
                 </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="getPackingListAirExportHawb()">
@@ -111,25 +158,25 @@
                 <a class='dropdown-item' href='javascript:void(0)' onclick="getCertificateOfOrigin()">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Certdificate Of Origin"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getBookingConfirmationAirExportHawb()">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getBankDraftAirExportHawb()">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPackageLabelAirExportHawb()">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Package Label"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPackageLabelListAirExportHawb()">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Package Label List"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPreAlertAirExportHawb()">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Pre-Alert"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrderAirExportHawb()">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Pickup/Delivery Order"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getCertificateOfOrigin()">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
                 </a>
                 <p class="dropdown-divider"></p>

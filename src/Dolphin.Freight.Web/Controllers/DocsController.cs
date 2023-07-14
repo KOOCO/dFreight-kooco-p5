@@ -56,6 +56,7 @@ using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Accounting.InvoiceBills;
 
 using Dolphin.Freight.Web.ViewModels.CertificateOfOriginAirExportHawb;
+
 namespace Dolphin.Freight.Web.Controllers
 {
     public class DocsController : AbpController
@@ -2235,5 +2236,77 @@ namespace Dolphin.Freight.Web.Controllers
 
             return await _generatePdf.GetPdf("Views/Docs/Pdf/CertificateOfOriginAirExportHawb/Default.cshtml", InfoModel);
         }
+
+        public async Task<IActionResult> PackageLabelAirExportHawb()
+        {
+          
+
+        
+
+            return View();
+        }
+
+        public async Task<IActionResult> PreAlertAirExportHawb()
+        {
+           
+
+
+
+            return  View();
+        }
+
+        public async Task<IActionResult> PackageLabelListAirExportHawb()
+        {
+
+
+
+
+            return View();
+        }
+        public async Task<IActionResult> BankDraftAirExportHawb()
+        {
+
+
+
+
+            return View();
+        }
+
+        public async Task<IActionResult> PickupDeliveryOrderAirExportHawb()
+        {
+
+
+
+
+            return View();
+        }
+
+        public async Task<IActionResult> CommercialInvoiceAirExportHawb()
+        {
+
+
+
+
+            return View();
+        }
+
+        public async Task<IActionResult> BookingConfirmationAirExportHawb()
+        {
+
+
+
+
+            return View();
+        }
+  public async Task<IActionResult> HawbPrintAirExportHawb()
+        {
+
+
+
+
+            return View();
+        }
+
+
     }
 }
