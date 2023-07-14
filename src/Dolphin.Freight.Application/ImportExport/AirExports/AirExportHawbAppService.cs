@@ -274,7 +274,13 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 hawb.Trucker = string.Concat(trucker.TPName, "/", trucker.TPCode);
             }
 
-            if(hawb.OverseaAgent != null)
+            if (hawb.CargoPickup != null)
+            {
+                var cargoPickup = tradePartners.Where(w => w.Id == Guid.Parse(hawb.CargoPickup)).FirstOrDefault();
+                hawb.CargoPickupName = string.Concat(cargoPickup.TPName, "/", cargoPickup.TPCode);
+            }
+
+            if (hawb.OverseaAgent != null)
             {
                 var overSeaAgent = tradePartners.Where(w => w.Id == Guid.Parse(hawb.OverseaAgent)).FirstOrDefault();
                 hawb.OverseaAgent = string.Concat(overSeaAgent.TPName, "/", overSeaAgent.TPCode);
