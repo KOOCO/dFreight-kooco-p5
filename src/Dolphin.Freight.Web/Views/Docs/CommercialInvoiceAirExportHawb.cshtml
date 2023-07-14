@@ -1,0 +1,677 @@
+﻿
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.CommercialInvoice.CommercialInvoiceAirExportHawbModel
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+</style>
+<script>
+    $(document).ready(function () {
+      $('#id_show_container_info').change(function () {
+
+     if($("#id_show_container_info").prop("checked"))
+     {         
+         $('#container-table').show();
+         $('.show_container').attr('rows', 19)
+     }
+     else
+     {
+         $('#container-table').hide();
+         $('.show_container').attr('rows', 28)
+     }
+ });
+    });
+    
+</script>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+    });
+</script>
+<form id="myForm" name="myForm" method="POST">
+   <div style="background-color:black;display: flex;justify-content:center;">
+      <div style="width:900px;background-color:white;" id="form" name = "form" class="edit">
+         <div class="container" style="background-color:black">
+            <div style="display:flex;justify-content: center;" class="item-left">
+               @*<button class="btn"><i class="fa fa-file-pdf-o"></i></button>
+               <button class="btn"><i class="fa fa-print"></i></button>*@
+               @*<a class="btn" href="../OceanExports/print?handler=Download"><i class="fa fa-print">儲存PDF或列印</i></a>*@
+               <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+            </div>
+            @*
+            <div style="float:right;" class="item-right">
+               <button class="btn zoom" id="zout" name="zout"><i class="fa fa-search-minus"></i></button>
+               <button class="btn zoom-out" id="zin" name="zin"><i class="fa fa-search-plus"></i></button>
+            </div>
+            *@
+         </div>
+
+         @*Start of template*@
+
+         <div class="wrap">
+        <div class="item-edit topbar">
+            
+
+    
+
+    <div class="topbar-block">
+        Data Source :
+        <select class="select w-160px" onchange="loadDataSource(this)">
+            <option selected="selected" value="loadInitial">Shipment</option>
+            <option value="loadDraft">Last Modified</option>
+            <option value="loadEmptyFromDraft">Load empty fields from last modified</option>
+            
+        </select>
+
+        <script>
+            function loadDataSource(sel) {
+                function genUrl(url, params) {
+                  const pString = Array.from(Object.entries(params)).map(([k, v]) => `${k}=${v}`).join('&');
+                  return `${url}?${pString}`;
+                }
+
+                const basicParam = {};
+
+                Array.from(new URL(window.location.href).searchParams.entries()).forEach(params => {
+                  if (params[0] !== 'action' && params[0] !== 'form_source') {
+                    basicParam[params[0]] = params[1]
+                  }
+                });
+
+                const last_modified_form_layout = '';
+
+                if (sel.value === 'loadInitial') {
+                    window.location.href = genUrl('/reports/air/hbl/commercial-invoice/47123/', basicParam);
+                }
+                else if (sel.value === 'loadDraft') {
+
+                  const params = {
+                    ...basicParam,
+                    action: 'edit',
+                    form_source: 'draft',
+                  };
+
+                  if (last_modified_form_layout) {
+                    params['form_layout'] = last_modified_form_layout
+                  }
+
+                  window.location.href = genUrl('/reports/air/hbl/commercial-invoice/47123/', params);
+                }
+                else if (sel.value === 'loadEmptyFromDraft') {
+
+                  const params = {
+                    ...basicParam,
+                    action: 'edit',
+                    form_source: 'empty-from-draft',
+                  };
+
+                  if (last_modified_form_layout) {
+                    params['form_layout'] = last_modified_form_layout
+                  }
+
+                  window.location.href = genUrl('/reports/air/hbl/commercial-invoice/47123/', params);
+                }
+                
+                else {
+                  throw Error('unknown dataSource value')
+                }
+            }
+        </script>
+    </div>
+
+
+        </div>
+
+        <div class="header margin-b-md">
+            <table>
+                <!-- from USA Bank request, can't put office name & LOGO -->
+                <tbody><tr>
+                    <td class="w-25">&nbsp;</td>
+                    <td class="w-50 title">
+                        <div class="text-center border-deep-blue col-padding-sm">
+                            <h2 class="blue-lg">COMMERCIAL INVOICE</h2>
+                        </div>
+                    </td>
+                    <td class="w-25">&nbsp;</td>
+                </tr>
+            </tbody></table>
+        </div>
+        <div class="con commercial-invoice">
+            <table>
+                <tbody><tr>
+                    <td class="w-48">
+                        <table class="data-height-md">
+                            <tbody><tr>
+                                <td class="td highlight-block">
+                                    <div class="title">SHIPPER / EXPORTER (SELLER)</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="shipper_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.shipper_area" id="id_shipper_area">HARD CORE TECHNOLOGY
+198 PEARSON GATEWAY APT. 555
+NORTH JAMES, KY 98809-9933
+WALNUT, CA 91789, UNITED STATES
+ATTN: JENNIFER JIMENEZ TEL: 585.592.4848 FAX: 649-277-5122</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 5px; left: 298px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a2ffd6278830" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>HARD CORE TECHNOLOGY<br>
+198 PEARSON GATEWAY APT. 555<br>
+NORTH JAMES, KY 98809-9933<br>
+WALNUT, CA 91789, UNITED STATES<br>
+ATTN: JENNIFER JIMENEZ TEL: 585.592.4848 FAX: 649-277-5122</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="td highlight-block">
+                                    <div class="title">FOR ACCOUNT OF (CONSIGNEE)</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="consignee_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.consignee_area" id="id_consignee_area">11</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 5px; left: 315px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="afa2b9c2b60f" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>11</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="td highlight-block">
+                                    <div class="title">NOTIFY PARTY</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="notify_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.notify_area" id="id_notify_area">1231231
+ATTN: SDSDSD</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 5px; left: 315px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="aa240a8a47ef" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>1231231<br>
+ATTN: SDSDSD</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td class="w-4">&nbsp;</td>
+                    <td class="w-48 border-t td data-lg">
+                        <table class="border-l border-r">
+                            <tbody><tr>
+                                <td class="td border-b">
+                                    <div class="title">INVOICE NO. &amp; DATE</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="invoice_no_and_date" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.invoice_no_and_date" id="id_invoice_no_and_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="aa981f031846" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>&nbsp;</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td border-b">
+                                    <div class="title">L/C NO.</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="LC_NO" value="RRR" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.LC_NO" id="id_LC_NO" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a21c1d611fce" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>RRR</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td border-b">
+                                    <div class="title">L/C ISSUE BANK</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="LC_issue_bank" value="YYY" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.LC_issue_bank" id="id_LC_issue_bank" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a09b681d085d" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>YYY</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td border-b">
+                                    <div class="title">DEPARTURE DATE</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ETD_date" value="07-10-2023" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.ETD_date" id="id_ETD_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a9ce6024f8c9" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf">07-10-2023</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td border-b">
+                                    <div class="title">PORT OF LOADING</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="APOL_code_name" value="(AAA) ANAA" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.APOL_code_name" id="id_APOL_code_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a7d15008aeaf" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>(AAA) ANAA</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td border-b">
+                                    <div class="title">FINAL DESTINATION</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="APOD_code_name" value="(AAB) ARRABURY" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.APOD_code_name" id="id_APOD_code_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a4d103061a71" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>(AAB) ARRABURY</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td border-b">
+                                    <div class="title">FLIGHT NO. / VSL &amp; VOY NO.</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="flight_no" value="RTETRR" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.flight_no" id="id_flight_no" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="abac7a5076b6" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>RTETRR</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td border-b">
+                                    <div class="title">TERM</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="freight_term" value="FREIGHT PREPAID" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.freight_term" id="id_freight_term" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ad1718d95d11" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>FREIGHT PREPAID</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+            </tbody></table>
+            <div class="item-edit">
+                
+                    <label class="text-10 _margin-r-sm" for="id_desc_layout_choice_0">
+                        <input type="radio" id="id_desc_layout_choice_0" name="desc_layout_choice" value="standard" ng-model="vm.desc_layout_choice" hc-user-preference="ae_commercial_invoice_layout_choice" class="ng-untouched ng-valid ng-dirty ng-not-empty"> Standard Layout
+                    </label>
+                    
+                        <br>
+                    
+                
+                    <label class="text-10 _margin-r-sm" for="id_desc_layout_choice_1">
+                        <input type="radio" id="id_desc_layout_choice_1" name="desc_layout_choice" value="widen_desc" ng-model="vm.desc_layout_choice" hc-user-preference="ae_commercial_invoice_layout_choice" class="ng-untouched ng-valid ng-dirty ng-not-empty"> Widen DESCRIPTION OF GOODS
+                    </label>
+                    
+                
+            </div>
+            <table class="border-b margin-t-sm">
+                <colgroup class="item-edit" ng-hide="vm.desc_layout_choice != 'standard'">
+                    <col class="w-27">
+                    <col class="w-15">
+                    <col class="w-28">
+                    <col class="w-15">
+                    <col class="w-15">
+                </colgroup>
+                <colgroup class="item-edit ng-hide" ng-hide="vm.desc_layout_choice != 'widen_desc'">
+                    <col class="w-15">
+                    <col class="w-15">
+                    <col class="w-40">
+                    <col class="w-15">
+                    <col class="w-15">
+                </colgroup>
+                <colgroup class="item-pdf">
+                    
+                        <col class="w-15">
+                        <col class="w-15">
+                        <col class="w-40">
+                    
+                    <col class="w-15">
+                    <col class="w-15">
+                </colgroup>
+                <tbody><tr class="border-b border-t bg-light text-8">
+                    <th class="border-r text-left col-padding-double">
+                        SHIPPING MARKS
+                    </th>
+                    <th class="border-r text-right col-padding-double">
+                        QTY / UOM
+                    </th>
+                    <th class="border-r text-left col-padding-double">
+                        DESCRIPTION OF GOODS
+                    </th>
+                    <th class="border-r text-right col-padding-double">
+                        UNIT PRICE
+                    </th>
+                    <th class="text-right col-padding-double">
+                        TOTAL AMOUNT
+                    </th>
+                </tr>
+                <tr>
+                    <td class="td td-item border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="41" class="text-scroll ng-isolate-scope" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.mark" id="id_mark">!!!</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 3px; left: 171px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a9e38c887e68" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                        <div class="item-pdf">!!!<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;</div>
+                    </td>
+                    <td class="td td-item text-right border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="packages" cols="40" rows="41" class="text-scroll ng-isolate-scope" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.packages" id="id_packages">333 CARTON(S)</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 3px; left: 89px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a8cb0096fea0" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                        <div class="item-pdf">333 CARTON(S)<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;</div>
+                    </td>
+                    <td class="td td-item border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="41" class="text-scroll ng-isolate-scope" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.good_items" id="id_good_items">??</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 3px; left: 178px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a76c051bef64" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                        <div class="item-pdf">??<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;</div>
+                    </td>
+                    <td class="td td-item text-right border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="unit_price" cols="40" rows="41" class="text-scroll ng-isolate-scope" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.unit_price" id="id_unit_price"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 3px; left: 89px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="aa790af24389" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                        <div class="item-pdf text-right"><br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;</div>
+                    </td>
+                    <td class="td td-item text-right">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="total_amount" cols="40" rows="41" class="text-scroll ng-isolate-scope" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.total_amount" id="id_total_amount"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 3px; left: 90px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a13a5b75a304" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                        <div class="item-pdf text-right"><br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;</div>
+                    </td>
+                </tr>
+            </tbody></table>
+            <div class="space_area">
+                <p>&nbsp;</p>
+            </div>
+            <table>
+                <tbody><tr>
+                    <td class="w-30">&nbsp;</td>
+                    <td class="w-30">&nbsp;</td>
+                    <td class="w-10">SIGNED BY</td>
+                    <td class="w-30 border-b"></td>
+                </tr>
+            </tbody></table>
+            <div class="text-right margin-t">
+                <div class="item-pdf text-bold padding-t-xs">HARD CORE TECHNOLOGY</div>
+                <div class="item-edit">
+                    <table>
+                        <tbody><tr>
+                            <td class="w-57">&nbsp;</td>
+                            <td class="w-3 text-center"><input type="checkbox" name="show_shipper_name" id="id_show_shipper_name" checked=""></td>
+                            <td class="w-40 text-left hover-toggle-icon-text-template"><input type="text" name="shipper_name" value="HARD CORE TECHNOLOGY" template-id="939d8ea6489e3664c878b889cd03e2a64d8c3c5edaa38b3aca2ab59caa86f9ed:CommercialInvoiceForm.shipper_name" class="w-100 ng-isolate-scope" id="id_shipper_name"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-hii-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-hii-c260="" class="icon-text-template" style="top: 3px; left: 285px;"></span><!---->
+
+<ng-select _ngcontent-hii-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a043e26590c9" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></td>
+                        </tr>
+                    </tbody></table>
+                </div>
+            </div>
+
+
+            
+
+        </div>
+    </div>
+
+      </div>
+   </div>
+</form>
