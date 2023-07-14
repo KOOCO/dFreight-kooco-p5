@@ -67,9 +67,9 @@
 			$('#form').css('transform', 'scale(' + zoom + ')');
 		});
 
-        //document.getElementById("reportLink").onclick = function() {
-        //    document.getElementById("myForm").submit();
-        //}
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
     });
 </script>
 <form id="myForm" name="myForm" method="POST">
@@ -311,7 +311,13 @@
                             </tr>
                         </tbody></table>
                         <input type="hidden" name="reportid" value="@Model.ReportId" id="id_current_reportid">
-                        <input type="hidden" name="hawbpc" value="@Model.Hawb_Pc" id="id_current_hawbpc">
+                        <input type="hidden" name="hawb_pc" value="@Model.Hawb_Pc" id="id_current_hawbpc">
+                        <input type="hidden" name="origin" value="@Model.Origin" id="id_current_origin">
+                        <input type="hidden" name="total_no_of_pieces" value="@Model.Total_no_of_pieces" id="id_current_total_no_of_pieces">
+                        <input type="hidden" name="hawbno" value="@Model.HawbNo" id="id_current_hawbno">
+                        <input type="hidden" name="number_of_forwarder" value="@Model.Number_of_forwarder" id="id_current_number_of_forwarder">
+                        <input type="hidden" name="destination" value="@Model.Destination" id="id_current_destination">
+                        <input type="hidden" name="air_way_bill_no" value="@Model.Air_way_bill_no" id="id_current_air_way_bill_no">
                     </div>
         
             </div>

@@ -2328,13 +2328,89 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View();
         }
-        public async Task<IActionResult> BankDraftAirExportHawb()
+        public async Task<IActionResult> BankDraftAirExportHawb(Guid hawbId)
         {
+            BankDraftAirExportHawbModel InfoViewModel = new();
 
+            var data = await _airExportHawbAppService.GetAsync(hawbId);
+            var tradePartner = _dropdownService.TradePartnerLookupList;
 
+            InfoViewModel.Amount = ".00";
+            InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
+            InfoViewModel.AtSight = "AT SIGHT";
+            InfoViewModel.ShipperName = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.ActualShippedr)).Select(s => s.Text));
+            InfoViewModel.DrawnDocCredit = "\"DRAWN UNDER DOCUMENTARY CREDIT NO. : OOO";
+            InfoViewModel.IssueDate = string.Concat(data.BookingDate);
+            InfoViewModel.LCIssueBank = "PPP";
+            InfoViewModel.ToLCIssueBank = "PPP";
+            InfoViewModel.ToTradePartnerLoadFrom = "CONSIGNEE"; //NOTIFY
+            InfoViewModel.Consignee = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.ConsigneeId)).Select(s => s.Text));
+            InfoViewModel.NotifyParty = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.Notify)).Select(s => s.Text));
+            InfoViewModel.ToTradePartnerName = "GALLAGHER-CANNON";
+            InfoViewModel.DraftNo = "";
+            InfoViewModel.BankPreference = "";
+            InfoViewModel.ShipperName2 = "LONG BEACH CONTAINER PIER F";
+            InfoViewModel.Gentlemen = "";
+            InfoViewModel.GentlemenNameAddress = "";
+            InfoViewModel.EncloseDate = DateTime.Now.ToString("yyyy-MM-dd");
+            InfoViewModel.EncloseDraftNo = "";
+            InfoViewModel.EncloseForCollection = "";
+            InfoViewModel.EncloseForOther = "";
+            InfoViewModel.EncloseForPayment = "";
+            InfoViewModel.ExtraBl = "";
+            InfoViewModel.ExtraBlCopy = "";
+            InfoViewModel.ExtraCommInv = "";
+            InfoViewModel.ExtraInsCtf = "";
+            InfoViewModel.ExtraCtfOrig = "";
+            InfoViewModel.ExtraConsInv = "";
+            InfoViewModel.ExtraPkngList = "";
+            InfoViewModel.ExtraWgtCtf = "";
+            InfoViewModel.DeliverInOneMailing = "";
+            InfoViewModel.DeliverInTwoMailing = "";
+            InfoViewModel.DeliverIfDraft = "";
+            InfoViewModel.AllChargesForAccount = "";
+            InfoViewModel.DoNotWaiveCharges = "";
+            InfoViewModel.ProtestForNonPayment = "";
+            InfoViewModel.DoNotProtest = "";
+            InfoViewModel.PresentOnArrival = "";
+            InfoViewModel.AdviseNonPaymentBy = "";
+            InfoViewModel.AdvisePaymentBy = "";
+            InfoViewModel.ReferToName = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.IssuingCarrier)).Select(s => s.Text));
+            InfoViewModel.ReferToAddress = "";
+            InfoViewModel.ToActFullyOnOurBehalf = "";
+            InfoViewModel.ToAssistNotToAlter = "";
+            InfoViewModel.OtherInstructions = "";
+            InfoViewModel.ReferQuestionTo = "";
+            InfoViewModel.ReferQuestionName = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.IssuingCarrier)).Select(s => s.Text));
+            InfoViewModel.ReferQuestionPhone = "TEL: " + "08417606080";
+            InfoViewModel.ReferQuestionShipperName = "LONG BEACH CONTAINER PIER F";
+            InfoViewModel.ReferQuestionShipperPhone = "TEL: " + "(358)459-8430";
+            InfoViewModel.ReferQuestionFreightForwarderName = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.IssuingCarrier)).Select(s => s.Text));
+            InfoViewModel.ReferQuestionFreightForwarderPhone = "TEL: " + "08417606080";
+            InfoViewModel.ShipperName3 = "LONG BEACH CONTAINER PIER F";
+            InfoViewModel.AuthorizedSignatureInput = "";
+            InfoViewModel.UserCompany = CurrentUser.Name + " " + CurrentUser.SurName + "/" + string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.IssuingCarrier)).Select(s => s.Text));
 
+            InfoViewModel.ReportId = data.Id;
 
-            return View();
+            return View(InfoViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BankDraftAirExportHawb(BankDraftAirExportHawbModel model)
+        {
+            model.BaseUrl = string.Format("{0}://{1}/", HttpContext.Request.Scheme, HttpContext.Request.Host);
+
+            string Input = JsonConvert.SerializeObject(model);
+
+            ReportLog.ReportId = model.ReportId;
+            ReportLog.ReportName = "BankDraftAirExportHawb";
+            ReportLog.ReportData = Input;
+            ReportLog.LastUpdateTime = DateTime.Now;
+
+            await _reportLogAppService.UpdateReportLog(ReportLog);
+
+            return await _generatePdf.GetPdf("Views/Docs/Pdf/BankDraft/BankDraftAirExportHawb.cshtml", model);
         }
 
         public async Task<IActionResult> PickupDeliveryOrderAirExportHawb()
