@@ -68,6 +68,11 @@
         myWindow = window.open("@Url.Action("BookingConfirmationAirExportHawb", "Docs")");
         myWindow.focus()
     }
+    function getHawbPrintAirExportHawb() {
+        var idNo = '@Model.AirExportHawbDto.Id';
+        myWindow = window.open("@Url.Action("HawbPrintAirExportHawb", "Docs")", 'width=1200,height=800');
+        myWindow.focus()
+    }
 </script>
 
 <abp-card id="hblCard">
@@ -85,13 +90,10 @@
                     <i class="fa fa-lock"></i> @L["Btn:Block"]
                 </a>
         <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
-        </a>
-        <a class='dropdown-item' href='#'>
+        <a class='dropdown-item' href='javascript:void(0)' onclick="getHawbPrintAirExportHawb()">
             <i class="fa fa-file-text-o"></i> @L["Btn:Print HAWB"]
         </a>
-        <a class='dropdown-item' href='#'>
+        <a class='dropdown-item' href='javascript:void(0)' onclick="getCommercialInvoiceAirExportHawb()">
             <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
         </a>
         <a class='dropdown-item' href='javascript:void(0)' onclick="getPackingListAirExportHawb()">

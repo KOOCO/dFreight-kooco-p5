@@ -12,8 +12,8 @@ namespace Dolphin.Freight.Migrations
    
 
             migrationBuilder.AddColumn<string>(
-                name: "ItnNo",
-                table: "AppOceanExportHbls",
+                name: "ItNo",
+                table: "AppOceanImportHbls",
                 type: "nvarchar(max)",
                 nullable: true);
 
@@ -23,8 +23,8 @@ namespace Dolphin.Freight.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ItnNo",
-                table: "AppOceanExportHbls");
+                name: "ItNo",
+                table: "AppOceanImportHbls");
 
        
         }

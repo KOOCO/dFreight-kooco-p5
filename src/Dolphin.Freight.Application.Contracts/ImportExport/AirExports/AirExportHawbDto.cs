@@ -115,6 +115,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public List<OtherCharges> OtherCharges { get; set; }
         public string DepartureName { get; set; }
         public string DestinationName { get; set; }
+        public string CargoPickupName { get; set; }
 
         /// <summary>
         /// 是否刪除
