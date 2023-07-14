@@ -2272,13 +2272,43 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/Pdf/CertificateOfOriginAirExportHawb/Default.cshtml", InfoModel);
         }
 
-        public async Task<IActionResult> PackageLabelAirExportHawb()
+        public async Task<IActionResult> PackageLabelAirExportHawb(Guid hawbId)
         {
+            PackageLabelAirExportHawbIndexViewModel InfoModel = new ();
 
+            var data = await _airExportHawbAppService.GetAsync(hawbId);
+            var mawb = await _airExportMawbAppService.GetAsync(data.MawbId.GetValueOrDefault());
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
 
+            InfoModel.HawbNo = data.HawbNo;
+            InfoModel.Hawb_Pc = data.Package;
+            InfoModel.Delivery_To = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.DeliveryTo)).Select(s => s.Text));
+            InfoModel.Destination = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(data.DestinationId)).Select(s => s.Text));
+            InfoModel.Total_no_of_pieces = data.Package;
+            InfoModel.Number_of_forwarder = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.IssuingCarrier)).Select(s => s.Text));
+            InfoModel.Origin = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(data.DepartureId)).Select(s => s.Text));
+            InfoModel.Air_way_bill_no = mawb.MawbNo;
+            InfoModel.ReportId = data.Id;
 
+            return View(InfoModel);
+        }
 
-            return View();
+        [HttpPost]
+        public async Task<IActionResult> PackageLabelAirExportHawb(PackageLabelAirExportHawbIndexViewModel model)
+        {
+            model.BaseUrl = string.Format("{0}://{1}/", HttpContext.Request.Scheme, HttpContext.Request.Host);
+
+            string Input = JsonConvert.SerializeObject(model);
+
+            ReportLog.ReportId = model.ReportId;
+            ReportLog.ReportName = "PackageLabelAirExportHawb";
+            ReportLog.ReportData = Input;
+            ReportLog.LastUpdateTime = DateTime.Now;
+
+            await _reportLogAppService.UpdateReportLog(ReportLog);
+
+            return await _generatePdf.GetPdf("Views/Docs/Pdf/PackageLabel/PackageLabelAirExportHawb.cshtml", model);
         }
 
         public async Task<IActionResult> PreAlertAirExportHawb()
