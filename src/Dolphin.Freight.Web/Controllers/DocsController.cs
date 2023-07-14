@@ -2197,7 +2197,11 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.DESCRIPTION_OF_GOODS = hawb.NatureAndQuantityOfGoods;
             InfoViewModel.WEIGHT_G = hawb.GrossWeightShprKG + " KG" + Environment.NewLine + hawb.GrossWeightShprLB + " LBS";
             InfoViewModel.WEIGHT_C = hawb.ChargeableWeightShprKG + " KG" + Environment.NewLine + hawb.ChargeableWeightShprLB + " LBS";
-            InfoViewModel.MEASUREMENT = hawb.ChargeableWeightCneeKG + " CBM" + Environment.NewLine + (double.Parse(hawb.ChargeableWeightCneeKG)*35.315).ToString("0.00") + " CFT";
+            if(hawb.ChargeableWeightCneeKG is not null) {
+                InfoViewModel.MEASUREMENT = hawb.ChargeableWeightCneeKG + " CBM" + Environment.NewLine + (double.Parse(hawb.ChargeableWeightCneeKG) * 35.315).ToString("0.00") + " CFT";
+            } else { 
+                InfoViewModel.MEASUREMENT = "";
+            }
             InfoViewModel.Show_Container_Information = "true";
             InfoViewModel.CONTAINER_NO = "";
             InfoViewModel.TYPE = "";
