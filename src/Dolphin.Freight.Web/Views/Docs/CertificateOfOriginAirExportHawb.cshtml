@@ -1,0 +1,597 @@
+﻿
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.CertificateOfOriginAirExportHawb.CertificateOfOriginAirExportHawbIndexViewModel
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+</style>
+<script>
+    $(document).ready(function () {
+      $('#id_show_container_info').change(function () {
+
+     if($("#id_show_container_info").prop("checked"))
+     {         
+         $('#container-table').show();
+         $('.show_container').attr('rows', 19)
+     }
+     else
+     {
+         $('#container-table').hide();
+         $('.show_container').attr('rows', 28)
+     }
+ });
+    });
+    
+</script>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+    });
+</script>
+<form id="myForm" name="myForm" method="POST">
+   <div style="background-color:black;display: flex;justify-content:center;">
+      <div style="width:900px;background-color:white;" id="form" name = "form" class="edit">
+         <div class="container" style="background-color:black">
+            <div style="display:flex;justify-content: center;" class="item-left">
+               @*<button class="btn"><i class="fa fa-file-pdf-o"></i></button>
+               <button class="btn"><i class="fa fa-print"></i></button>*@
+               @*<a class="btn" href="../OceanExports/print?handler=Download"><i class="fa fa-print">儲存PDF或列印</i></a>*@
+               <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+            </div>
+            @*
+            <div style="float:right;" class="item-right">
+               <button class="btn zoom" id="zout" name="zout"><i class="fa fa-search-minus"></i></button>
+               <button class="btn zoom-out" id="zin" name="zin"><i class="fa fa-search-plus"></i></button>
+            </div>
+            *@
+         </div>
+         <div class="wrap">
+            <div class="item-edit topbar">
+               <div class="topbar-block">
+                  Data Source :
+                  <select class="select w-160px">
+                     <option selected="selected" value="loadInitial">Shipment</option>
+                     <option value="loadDraft">Last Modified</option>
+                     <option value="loadEmptyFromDraft">Load empty fields from last modified</option>
+                  </select>
+               </div>
+            </div>
+            <div class="header margin-b-md">
+               <table>
+                  <tbody>
+                     <tr>
+                        <td class="w-25">&nbsp;</td>
+                        <td class="w-50 title">
+                           <div class="border-deep-blue text-center col-padding-sm">
+                              <h2 class="blue-lg">CERTIFICATE OF ORIGIN</h2>
+                           </div>
+                        </td>
+                        <td class="w-25">&nbsp;</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+            <div class="con oe-certificate">
+               <table>
+                  <tbody>
+                     <tr>
+                        <td class="w-48 td">
+                           <table class="data-height-md">
+                              <tbody>
+                                 <tr>
+                                    <td class="td highlight-block">
+                                       <div class="title">SHIPPER / EXPORTER</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             <textarea name="SHIPPER_EXPORTER" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_shipper_area">
+                                            @{
+                                                if (Model.SHIPPER_EXPORTER != "")
+                                                {
+                                                    @Model.SHIPPER_EXPORTER
+                                                }
+                                            }
+                                            </textarea>
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td>&nbsp;</td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td highlight-block">
+                                       <div class="title">CONSIGNEE</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             <textarea name="CONSIGNEE" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_consignee_area">
+                                            @{
+                                                if (Model.CONSIGNEE != "")
+                                                {
+                                                    @Model.CONSIGNEE
+                                                }
+                                            }
+                                             </textarea>
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td>&nbsp;</td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td highlight-block">
+                                       <div class="title">NOTIFY</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             <textarea name="NOTIFY" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_notify_area">
+                                            @{
+                                                if (Model.NOTIFY != "")
+                                                {
+                                                    @Model.NOTIFY
+                                                }
+                                            }
+                                             </textarea>
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td>&nbsp;</td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </td>
+                        <td class="w-4">&nbsp;</td>
+                        <td class="w-48 border-t td data-lg">
+                           <table class="border-l border-r">
+                              <tbody>
+                                 <tr>
+                                    <td class="td">
+                                       <table>
+                                          <tbody>
+                                             <tr>
+                                                <td class="td w-49 border-b valign-bottom">
+                                                   <div class="title">DOCUMENT NO.</div>
+                                                   <div class="data">
+                                                      <div class="item-edit hover-toggle-icon-text-template">
+                                                         <input type="text" name="DOCUMENT_NO" value="@Model.DOCUMENT_NO" id="id_doc_no" class="ng-isolate-scope">
+                                                      </div>
+                                                   </div>
+                                                </td>
+                                                <td class="w-2">&nbsp;</td>
+                                                <td class="td w-49 border-b valign-bottom">
+                                                   <div class="title">
+                                                      <span class="item-edit">
+                                                      <input type="checkbox" name="BL_NO_CHECK" value="true" @(!string.IsNullOrEmpty(Model.BL_NO_CHECK) ? "checked" : "") hc-user-preference="oe_hbl_certificate_of_origin_show_hbl_no" id="id_show_HBL_NO" class="ng-untouched ng-valid ng-empty ng-dirty">
+                                                      </span>
+                                                      B/L NO.
+                                                   </div>
+                                                   <div class="data">
+                                                      <div class="item-edit hover-toggle-icon-text-template">
+                                                         <input type="text" name="BL_NO" value="@Model.BL_NO" id="id_HBL_NO" class="ng-isolate-scope">
+                                                      </div>
+                                                   </div>
+                                                </td>
+                                             </tr>
+                                          </tbody>
+                                       </table>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td border-b">
+                                       <div class="title">EXPORT FILE NO.</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             <textarea name="export_ref_area" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope" id="id_export_ref_area">
+                                            @{
+                                                if (Model.EXPORT_FILE_NO != "")
+                                                {
+                                                    @Model.EXPORT_FILE_NO
+                                                }
+                                            }
+                                             </textarea>
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td border-b">
+                                       <div class="title">FORWARDING AGENT</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             <textarea name="forwarding_agent_area" cols="40" rows="4" class="text-scroll no-adjustment ng-isolate-scope" id="id_forwarding_agent_area">
+                                            @{
+                                                if (Model.FORWARDING_AGENT != "")
+                                                {
+                                                    @Model.FORWARDING_AGENT
+                                                }
+                                            }
+                                            </textarea>
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td border-b">
+                                       <div class="title">POINT AND COUNTRY OF ORIGIN</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             <input type="text" name="POINT_AND_COUNTRY_OF_ORIGIN" value="@Model.POINT_AND_COUNTRY_OF_ORIGIN" id="id_point_country_origin" class="ng-isolate-scope">
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td border-b">
+                                       <div class="title">EXPORT CARRIER</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             <input type="text" name="EXPORT_CARRIER" value="@Model.EXPORT_CARRIER" id="id_vessel_voyage" class="ng-isolate-scope">
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td border-b">
+                                       <div class="title">PORT OF LOADING</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             <input type="text" name="PORT_OF_LOADING" value="@Model.PORT_OF_LOADING" id="id_POL_location" class="ng-isolate-scope">
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td border-b">
+                                       <div class="title">PORT OF DISCHARGE</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             <input type="text" name="PORT_OF_DISCHARGE" value="@Model.PORT_OF_DISCHARGE" id="id_POD_location" class="ng-isolate-scope">
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td border-b">
+                                       <div class="title">PLACE OF DELIVERY</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             <input type="text" name="PLACE_OF_DELIVERY" value="@Model.PLACE_OF_DELIVERY" id="id_DEL_location" class="ng-isolate-scope">
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+               <div class="item-edit">
+                  <button type="button" class="btn btn-default btn-sm" uib-tooltip="Small font size"><small class="text-10">A</small></button><!--font-size: 8px-->
+                  <button type="button" class="btn btn-default btn-sm active" uib-tooltip="Regular font size">A</button>
+               </div>
+               <table class="margin-t-sm table-valign-top">
+                  <tbody>
+                     <tr class="border-b border-t bg-light text-8">
+                        <th class="w-20 border-r text-left col-padding-double">
+                           SHIPPING MARKS
+                        </th>
+                        <th class="w-8 border-r text-right col-padding-double">
+                           QTY
+                        </th>
+                        <th class="w-39 border-r text-left col-padding-double">
+                           DESCRIPTION OF GOODS
+                        </th>
+                        <th class="w-11 border-r text-right col-padding-double">
+                           WEIGHT(G)
+                        </th>
+                        <th class="w-11 border-r text-right col-padding-double">
+                           WEIGHT(C)
+                        </th>
+                        <th class="w-11 text-right col-padding-double">
+                           MEASUREMENT
+                        </th>
+                     </tr>
+                     <tr class="border-b">
+                        <!--
+                           show container:     rows: 19
+                           not show container: rows: 28
+                           -->
+                        <td class="td td-item border-r">
+                           <div class="item-edit hover-toggle-icon-text-template">
+                              <textarea name="SHIPPING_MARKS" cols="40" rows="@(!string.IsNullOrEmpty(Model.Show_Container_Information) ? "19" : "28")" class="text-scroll ng-isolate-scope show_container" id="id_shipping_marks">
+                                @{
+                                    if (Model.SHIPPING_MARKS != "")
+                                    {
+                                        @Model.SHIPPING_MARKS
+                                    }
+                                }
+                              </textarea>
+                           </div>
+                           <div class="container-table">
+                              <label class="item-edit _text-10 text-bold">
+                              <input type="checkbox" name="Show_Container_Information" value="true" @(!string.IsNullOrEmpty(Model.Show_Container_Information) ? "checked" : "") hc-user-preference="oe_hbl_certificate_of_origin_show_container_info" id="id_show_container_info" class="ng-valid ng-dirty ng-valid-parse ng-touched ng-not-empty"> Show Container Information
+                              </label>
+                              <table id="container-table" class="table-padding" style="font-size:10px;@(!string.IsNullOrEmpty(Model.Show_Container_Information) ? "" : "display:none")" >
+                                 <colgroup>
+                                    <col class="w-15">
+                                    <!-- container no. -->
+                                    <col class="w-10">
+                                    <!-- type -->
+                                    <col class="w-15">
+                                    <!-- seal no. -->
+                                    <col class="w-20">
+                                    <!-- pkg -->
+                                    <col class="w-20">
+                                    <!-- kg -->
+                                    <col class="w-20">
+                                    <!-- cbm -->
+                                 </colgroup>
+                                 <tbody>
+                                    <tr class="border-b">
+                                       <th class="text-left">CONTAINER NO.</th>
+                                       <th class="text-center">TYPE</th>
+                                       <th class="text-left">SEAL NO.</th>
+                                       <th class="text-center">PKG</th>
+                                       <th class="text-right">KG/LB</th>
+                                       <th class="text-right">CBM/CFT</th>
+                                    </tr>
+                                    <tr>
+                                       <td class="text-left">
+                                          <div class="auto-font-size __width-container-no">
+                                             <span>
+                                                @{
+                                                    if (Model.CONTAINER_NO != "")
+                                                    {
+                                                        @Model.CONTAINER_NO
+                                                    }
+                                                }
+                                                <input type="hidden" name="CONTAINER_NO" value="@Model.CONTAINER_NO" />
+                                             </span>
+                                          </div>
+                                       </td>
+                                       <td class="text-center">
+                                          <div class="auto-font-size __width-type">
+                                             <span>
+                                                @{
+                                                    if (Model.TYPE != "")
+                                                    {
+                                                        @Model.TYPE
+                                                    }
+                                                }
+                                                <input type="hidden" name="CONTAINER_NO" value="@Model.CONTAINER_NO" />
+                                             </span>
+                                          </div>
+                                       </td>
+                                       <td class="text-left">
+                                          <div class="auto-font-size __width-seal-no">
+                                             <span>
+                                                @{
+                                                    if (Model.SEAL_NO != "")
+                                                    {
+                                                        @Model.SEAL_NO
+                                                    }
+                                                }
+                                                <input type="hidden" name="SEAL_NO" value="@Model.SEAL_NO" />
+                                            </span>
+                                          </div>
+                                       </td>
+                                       <td class="text-center">
+                                          <div class="auto-font-size __width-pkg">
+                                             <span>
+                                                @{
+                                                    if (Model.PKG != "")
+                                                    {
+                                                        @Model.PKG
+                                                    }
+                                                }
+                                                <input type="hidden" name="PKG" value="@Model.PKG" />
+                                            </span>
+                                          </div>
+                                       </td>
+                                       <td class="text-right">
+                                          <div class="auto-font-size __width-kg">
+                                             <span>
+                                                @{
+                                                    if (Model.KG_LB != "")
+                                                    {
+                                                        @Model.KG_LB
+                                                    }
+                                                }
+                                                <input type="hidden" name="KG_LB" value="@Model.KG_LB" />
+                                            </span>
+                                          </div>
+                                       </td>
+                                       <td class="text-right">
+                                          <div class="auto-font-size __width-cbm">
+                                             <span>
+                                                @{
+                                                    if (Model.CBM_CFT != "")
+                                                    {
+                                                        @Model.CBM_CFT
+                                                    }
+                                                }
+                                                <input type="hidden" name="CBM_CFT" value="@Model.CBM_CFT" />
+                                            </span>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                 </tbody>
+                              </table>
+                           </div>
+                        </td>
+                        <!--
+                           show container:     rows: 19 class: __col-pkg-sm
+                           not show container: rows: 28 class: __col-pkg
+                           -->
+                        <td class="td td-item border-r text-right">
+                           <div class="item-edit hover-toggle-icon-text-template">
+                              <textarea name="QTY" cols="40" rows="@(!string.IsNullOrEmpty(Model.Show_Container_Information) ? "19" : "28")" class="text-scroll no-adjustment ng-isolate-scope show_container" id="id_packages">
+                                @{
+                                    if (Model.QTY != "")
+                                    {
+                                        @Model.QTY
+                                    }
+                                }
+                                </textarea>
+                           </div>
+                        </td>
+                        <!--
+                           show container:     rows: 19
+                           not show container: rows: 28
+                           -->
+                        <td class="td td-item border-r">
+                           <div class="item-edit hover-toggle-icon-text-template">
+                              <textarea name="DESCRIPTION_OF_GOODS" cols="40" rows="@(!string.IsNullOrEmpty(Model.Show_Container_Information) ? "19" : "28")" class="text-scroll ng-isolate-scope show_container" id="id_good_items">                                  
+                                @{
+                                    if (Model.DESCRIPTION_OF_GOODS != "")
+                                    {
+                                        @Model.DESCRIPTION_OF_GOODS
+                                    }
+                                }
+                              </textarea>
+                           </div>
+                        </td>
+                        <!--
+                           show container:     rows: 19 class: __col-gw-sm
+                           not show container: rows: 28 class: __col-gw
+                           -->
+                        <td class="td td-item text-right border-r">
+                           <div class="item-edit hover-toggle-icon-text-template">
+                              <textarea name="WEIGHT_G" cols="40" rows="@(!string.IsNullOrEmpty(Model.Show_Container_Information) ? "19" : "28")" class="text-scroll no-adjustment ng-isolate-scope show_container" id="id_gross_weight">                                  
+                                @{
+                                    if (Model.WEIGHT_G != "")
+                                    {
+                                        @Model.WEIGHT_G
+                                    }
+                                }
+                                </textarea>
+                           </div>
+                        </td>
+                        <td class="td td-item text-right border-r">
+                           <div class="item-edit hover-toggle-icon-text-template">
+                               <textarea name="WEIGHT_C" cols="40" rows="28" class="text-scroll no-adjustment ng-isolate-scope" id="id_net_weight">                                  
+                                @{
+                                    if (Model.WEIGHT_C != "")
+                                    {
+                                        @Model.WEIGHT_C
+                                    }
+                                }
+                                </textarea>
+                           </div>
+                        </td>
+                        <td class="td td-item text-right">
+                           <div class="item-edit hover-toggle-icon-text-template">
+                               <textarea name="MEASUREMENT" cols="40" rows="28" class="text-scroll no-adjustment ng-isolate-scope" id="id_measure">                                  
+                                @{
+                                    if (Model.MEASUREMENT != "")
+                                    {
+                                        @Model.MEASUREMENT
+                                    }
+                                }
+                                </textarea>
+                           </div>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+               <div class="col-padding">
+                  The Undersigned Agent (Owner or Agent), does hereby declare for the above named shipper, the goods as described above were shipped on the above date and consigned as indicated and are product the stated of date at on the 
+                  <span class="item-edit hover-toggle-icon-text-template">
+                  <input type="text" name="bl_date" value="@Model.bl_date" class="w-auto ng-isolate-scope" id="id_bl_date"></span>
+                  <br>
+                  Sworn this 
+                  <span class="item-edit hover-toggle-icon-text-template">
+                      <input type="text" name="sworn_date" value="@Model.sworn_date"  class="w-auto ng-isolate-scope" id="id_sworn_date">
+                  </span>
+               </div>
+               <table>
+                  <tbody>
+                     <tr>
+                        <td class="w-70">&nbsp;</td>
+                        <td class="w-30 border-b"></td>
+                     </tr>
+                     <tr>
+                        <td>&nbsp;</td>
+                        <td class="text-center col-padding-double" style="font-size:10px">Signature of Owner or Agent</td>
+                     </tr>
+                  </tbody>
+               </table>
+               <div class="border-t col-padding margin-t-lg">
+                  The 
+                  <div class="item-edit w-15 inline-block hover-toggle-icon-text-template">
+                      <input type="text" name="name_of_chamber" value="@Model.name_of_chamber" placeholder="Name of chamber" id="id_name_of_chamber" class="ng-isolate-scope">
+                    </div>
+                   Chamber of Commerce, a recognized Chamber of Commerce under the law of State of 
+                  <div class="item-edit w-10 inline-block hover-toggle-icon-text-template">
+                      <input type="text" name="state_of_chamber" value="@Model.state_of_chamber" placeholder="State" id="id_state_of_chamber" class="ng-isolate-scope">
+                    </div>
+                   has examined the manufacturer's invoice or shipper's affidavit concerning the origin of the merchandise, and, according to the best of its knowledge and belief, finds that the products named originated in the 
+                  <div class="item-edit w-20 inline-block hover-toggle-icon-text-template">
+                      <input type="text" name="name_of_country" value="@Model.name_of_country" placeholder="Name of country" id="id_name_of_country" class="ng-isolate-scope">
+                    </div>
+                  .
+               </div>
+               <table class="margin-t-md">
+                  <tbody>
+                     <tr>
+                        <td class="w-70">&nbsp;</td>
+                        <td class="w-30 border-b"></td>
+                     </tr>
+                     <tr>
+                        <td>&nbsp;</td>
+                        <td class="text-center col-padding-double" style="font-size:10px">Secretary</td>
+                     </tr>
+                  </tbody>
+               </table>
+               <input type="hidden" name="reportid" value="@Model.ReportId" id="id_current_reportid">
+            </div>
+         </div>
+      </div>
+   </div>
+</form>

@@ -16,6 +16,17 @@
 @inject IDropdownService _dropdown
 @inject IStringLocalizer<FreightResource> L
 
+<script type="text/javascript">
+    function OpenInTrackTrace() {
+        var url = new URL(window.location.href);
+        var mblId = url.searchParams.get('Id');
+        dolphin.freight.importExport.oceanExports.oceanExportMbl.get(mblId).done(function (res) {
+            myWindow = window.open('https://www.track-trace.com/bol#' + res.mblNo, '_blank', 'width=1200,height=1000');
+            myWindow.focus();
+        });
+    }
+</script>
+
 <abp-card class="card board-item" id="hblCard">
 
     <abp-card-header id="hblCardHeader" class="card-header active @Model.OceanExportHbl.CardColorValue ">
@@ -114,8 +125,8 @@
                             <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class='dropdown-item' href='javascript:void(0)' style="color: #4B77BE; font-weight: 500;">
-                            <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()" style="color: #4B77BE; font-weight: 500;">
+                            <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
                         </a>
                     </div>
                 </div>
@@ -129,10 +140,10 @@
         </abp-row>
     </abp-card-header>
     @*<div id="hblDiv" class="collapse show customForm">*@
-    <abp-card-body id="hawbDiv" class="card-body collapse show">
+    <abp-card-body id="hawbDiv" class="card-body collapse show customForm">
         <abp-row>
             <abp-column size-md="_3">
-                <input type="hidden" name="OceanExportHbl.Id" id="OceanExportHbl_Id" value="@Model.OceanExportHbl.Id" />
+                <input type="hidden" id="OceanExportHbl_Id" value="@Model.OceanExportHbl.Id" />
                 <abp-input asp-for="OceanExportHbl.HblNo" required />
             </abp-column>
             <abp-column size-md="_3">
@@ -199,10 +210,16 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.ForwardingAgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblForwardingAgentId", SelectType = 1, ShowFiledContentValue = Model.OceanExportHbl.ForwardingAgentId.ToString()})
             </abp-column>
             <abp-column size-md="_3">
-                <label class="">@L["OP"]</label>
-                <select class="form-control ml-15" asp-for="OceanExportHbl.HblOperatorId" disabled="true">
-                    <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
-                </select>
+                <abp-row>
+                    <abp-column  size-md="_5"> <label class="">@L["OP"]</label></abp-column>
+                    <abp-column size-md="_7">
+                        <select class="form-control ml-15" asp-for="OceanExportHbl.HblOperatorId" disabled="true">
+                            <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
+                        </select>
+                    </abp-column>
+                </abp-row>
+               
+              
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="OceanExportHbl.IsSubAgentBl" />
@@ -337,30 +354,45 @@
         </abp-row>
         <abp-row>
             <abp-column size-md="_3">
-                <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsHold" id="OceanExportHbl_IsHold" value="true" /> @L["IsHold"] </label>
-                <abp-input asp-for="OceanExportHbl.HoldReason" />
+                <abp-row>
+                    <abp-column size-md="_4">
+                    
+                        <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsHold" /> @L["IsHold"] </label>
+                    </abp-column>
+                    <abp-column size-md="_8">
+                        <abp-input suppress-label="true" asp-for="OceanExportHbl.HoldReason" />
+                    </abp-column>
+                </abp-row>
             </abp-column>
             <abp-column size-md="_3">
 
             </abp-column>
             <abp-column size-md="_3">
-                <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsReleased" id="OceanExportHbl_IsReleased" value="true" /> @L["IsReleased"] </label>
-                <abp-input asp-for="OceanExportHbl.HblReleaseDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                <abp-row>
+                    <abp-column size-md="_4"> <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsReleased" id="OceanExportHbl_IsReleased" value="true" /> @L["IsReleased"] </label></abp-column>
+                    <abp-column size-md="_8"><abp-input suppress-label="true" asp-for="OceanExportHbl.HblReleaseDate" class="cdatetime" type="text" abp-data-datetimepicker="false" /></abp-column>
+                </abp-row>
+               
+                
             </abp-column>
-            <abp-column size-md="_3">
 
-            </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_3">
-                <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsCanceled" id="OceanExportHbl_IsCanceled" value="true" /> @L["IsCanceled"] </label>
-                <abp-input asp-for="OceanExportHbl.CanceledDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                <abp-row>
+                    <abp-column size-md="_4">
+                        <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsCanceled" id="OceanExportHbl_IsCanceled" value="true" /> @L["IsCanceled"] </label>
+                    </abp-column>
+                    <abp-column size-md="_8">
+                        <abp-input suppress-label="true" asp-for="OceanExportHbl.CanceledDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                    </abp-column>
+                </abp-row>
             </abp-column>
             <abp-column size-md="_3">
 
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.CancelReason", AspItems = Html.GetEnumSelectList(typeof(ReasonForCancelType)).ToList(), IsShowLabel = true, FieldName = "ReasonForCancel", ShowFiledContentValue = Model.OceanExportHbl.CancelReason })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.CancelReason", AspItems = _dropdown.CancelReasonLookupList, IsShowLabel = true, FieldName = "ReasonForCancel", ShowFiledContentValue = Model.OceanExportHbl.CancelReason })
                 <input type="hidden" name="OceanExportHbl.CancelReason" id="hHCancelReason" value="@Model.OceanExportHbl.CancelReason" />
             </abp-column>
             <abp-column size-md="_3">

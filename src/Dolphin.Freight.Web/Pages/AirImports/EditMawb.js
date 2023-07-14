@@ -2,7 +2,7 @@
     var url = new URL(window.location.href);
     var selectedHblNo;
 
-    dolphin.freight.importExport.airImports.airImportHawb.getHblCardsById(url.searchParams.get('Id'))
+    dolphin.freight.importExport.airImports.airImportHawb.getHawbCardsByMawbId(url.searchParams.get('Id'))
         .done(function (hblCards) {
             if (hblCards && hblCards.length) {
                 hblCards.forEach(function (hblCard, index) {

@@ -253,7 +253,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// 抵達日期
         /// </summary>
         [DataType(DataType.Date)]
-        public DateTime ArrivalDate { get; set; }
+        public DateTime? ArrivalDate { get; set; }
         /// <summary>
         /// 運輸聲明價值
         /// </summary>

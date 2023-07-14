@@ -150,40 +150,42 @@
 
             var extraProperties = $('#AirExportHawbDto_ExtraProperties').val();
 
-            if(extraProperties){
+            if(extraProperties && extraProperties != 'null'){
                 var commodities = JSON.parse(extraProperties).Commodities;
                 
+                if(commodities && commodities.length){
                 var commodityIndex = 0;
-                commodities.forEach(function(commodity){
-                    commodity.chkIndex = commodityIndex;
+                    commodities.forEach(function(commodity){
+                        commodity.chkIndex = commodityIndex;
 
-                    var newRow = $('#commodityTemplate').tmpl(commodity);
-                    $('#commodityBody').append(newRow);
+                        var newRow = $('#commodityTemplate').tmpl(commodity);
+                        $('#commodityBody').append(newRow);
 
-                    commodityIndex += 1;
-                })
+                        commodityIndex += 1;
+                    })
+                }
             }
-            
         }
 
         function onSetOtherCharges() {
 
             var extraProperties = $('#AirExportHawbDto_ExtraProperties').val();
 
-            if (extraProperties) {
+            if (extraProperties && extraProperties != 'null') {
                 var otherCharges = JSON.parse(extraProperties).OtherCharges;
 
-                var Index = 0;
-                otherCharges.forEach(function (otherCharge) {
-                    otherCharge.chkIndex = Index;
+                if(otherCharges && otherCharges.length){
+                    var Index = 0;
+                    otherCharges.forEach(function (otherCharge) {
+                        otherCharge.chkIndex = Index;
 
-                    var newRow = $('#otherChargesTemplate').tmpl(otherCharge);
-                    $('#otherChargesBody').append(newRow);
+                        var newRow = $('#otherChargesTemplate').tmpl(otherCharge);
+                        $('#otherChargesBody').append(newRow);
 
-                    Index += 1;
-                })
+                        Index += 1;
+                    })
+                }
             }
-
         }
 
         var chkIndex = 0;
@@ -419,8 +421,6 @@
                             initializeDropdownSearch('AirExportHawbDto_SalesType');
                             initializeDropdownSearch('AirExportHawbDto_ShipType');
                             initializeDropdownSearch('AirExportHawbDto_PackageUnitLookupList');
-                            initializeDropdownSearch('AirExportHawbDto_BuyingRateUnit');
-                            initializeDropdownSearch('AirExportHawbDto_SellingRateUnit');
                             initializeDropdownSearch('AirExportHawbDto_Incoterms');
                             initializeDropdownSearch('AirExportHawbDto_ServiceTermStart');
                             initializeDropdownSearch('AirExportHawbDto_ServiceTermEnd');
@@ -458,7 +458,7 @@
             let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title hblCardTitle" id="title_{{hawbNo}}"' +
                 ' onclick="onHawbCardClick(event,{{hblCardId}})">{{hawbNo}}</h5>' +
                 ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hawbNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
-                ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+                ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse customForm" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
             return abpCard;
         }
 
@@ -536,6 +536,11 @@
                 })
         }
 
+        function OpenInTrackTrace() {
+            var MawbNo = $('#AirExportMawbDto_MawbNo').val();
+            myWindow = window.open('https://www.track-trace.com/bol#' + MawbNo, '_blank', 'width=1200,height=1000');
+            myWindow.focus();
+        }
     </script>
 }
 
@@ -631,7 +636,7 @@
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                                     </a>
                                     <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()">
                                         <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
                                     </a>
                                 </div>
@@ -640,7 +645,7 @@
                             </button>
                         </abp-card-header>
                         <!-- Mawb資訊欄 -->
-                        <abp-card-body class="collapse show" id="mawbDiv">
+                        <abp-card-body class="collapse show customForm" id="mawbDiv">
                             <!--第一列-->
                             <abp-row>
                                 <abp-input asp-for="@Model.AirExportMawbDto.Id" type="hidden" />
@@ -721,9 +726,8 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DepatureId", AspItems = _dropdown.PortsManagementLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.DepatureId.ToString(), IsShowLabel = true, FieldName = @L["DepatureId"] })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label asp-for="@Model.AirExportMawbDto.DepatureDate" class="form-label">Depature Date</label>
-                                    <span asp-validation-for="@Model.AirExportMawbDto.DepatureDate" class="text-danger"></span>
-                                    <input asp-for="@Model.AirExportMawbDto.DepatureDate" class="form-control" />
+                                    <label asp-for="AirExportMawbDto.DepatureDate" class="redStar form-label">@L["DepatureDate"]</label>
+                                    <abp-input asp-for="AirExportMawbDto.DepatureDate" suppress-label="true" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="@Model.AirExportMawbDto.FlightNo" size="Small" />
@@ -739,6 +743,9 @@
                             <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DestinationId", AspItems = _dropdown.PortsManagementLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.DestinationId.ToString(), IsShowLabel = true, FieldName = @L["Destination"] })
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="AirExportMawbDto.ArrivalDate" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="@Model.AirExportMawbDto.DVCarriage" size="Small" />
@@ -794,7 +801,7 @@
                             <!--Route區塊-->
                             <abp-row>
                                 <div class="collapse" id="collapseRoute">
-                                    <div class="card card-body">
+                                    <div class="card card-body customForm">
                                         <h3>Route</h3>
                                         <abp-table class="table table-bordered table-responsive">
                                             <thead>

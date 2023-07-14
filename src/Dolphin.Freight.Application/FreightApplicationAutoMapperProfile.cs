@@ -39,11 +39,8 @@ using Dolphin.Freight.Settings.DisplaySetting;
 using Dolphin.Freight.Settings.Offices;
 using Dolphin.Freight.Settinngs.Offices;
 using Dolphin.Freight.TradePartners.TradeParties;
-using Dolphin.Freight.TradePartners.TradeParties;
 using Dolphin.Freight.Common.Memos;
-
 using Dolphin.Freight.Settings.PortsManagement;
-using Dolphin.Freight.Common.Memos;
 using Dolphin.Freight.Settings.CurrencySetting;
 using Dolphin.Freight.TradePartners.DefaultFreight;
 using Dolphin.Freight.ImportExport.Configuration;

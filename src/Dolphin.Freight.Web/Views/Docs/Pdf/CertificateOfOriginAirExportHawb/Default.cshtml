@@ -1,0 +1,464 @@
+﻿@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@model Dolphin.Freight.Web.ViewModels.CertificateOfOriginAirExportHawb.CertificateOfOriginAirExportHawbIndexViewModel
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+@if (!string.IsNullOrEmpty(Model.BaseUrl))
+{
+    <base href="@Model.BaseUrl">
+}
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }  
+
+    .w-10, .w-20, .w-100, .text-right, .text-center, .auto-font-size, textarea {
+        font-size:10px;
+    }
+</style>
+<link href="/Pages/Reports/Reports.css" rel="stylesheet">
+
+   <div style="background-color:black;display: flex;justify-content:center;">
+      <div style="width:900px;background-color:white;" id="form" name = "form" class="edit">
+
+         <div class="wrap">
+            <div class="header margin-b-md">
+               <table>
+                  <tbody>
+                     <tr>
+                        <td class="w-25">&nbsp;</td>
+                        <td class="w-50 title">
+                           <div class="border-deep-blue text-center col-padding-sm">
+                              <h2 class="blue-lg">CERTIFICATE OF ORIGIN</h2>
+                           </div>
+                        </td>
+                        <td class="w-25">&nbsp;</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+            <div class="con oe-certificate">
+               <table>
+                  <tbody>
+                     <tr>
+                        <td class="w-48 td">
+                           <table class="data-height-md">
+                              <tbody>
+                                 <tr>
+                                    <td class="td highlight-block">
+                                       <div class="title">SHIPPER / EXPORTER</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             @Html.Raw((Model.SHIPPER_EXPORTER ?? "").Replace(Environment.NewLine, "<br/>")) 
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td>&nbsp;</td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td highlight-block">
+                                       <div class="title">CONSIGNEE</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             @Html.Raw((Model.CONSIGNEE ?? "").Replace(Environment.NewLine, "<br/>")) 
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td>&nbsp;</td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td highlight-block">
+                                       <div class="title">NOTIFY</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             @Html.Raw((Model.NOTIFY ?? "").Replace(Environment.NewLine, "<br/>")) 
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td>&nbsp;</td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </td>
+                        <td class="w-4">&nbsp;</td>
+                        <td class="w-48 border-t td data-lg">
+                           <table class="border-l border-r">
+                              <tbody>
+                                 <tr>
+                                    <td class="td">
+                                       <table>
+                                          <tbody>
+                                             <tr>
+                                                <td class="td w-49 border-b valign-bottom">
+                                                   <div class="title">DOCUMENT NO.</div>
+                                                   <div class="data">
+                                                      <div class="item-edit hover-toggle-icon-text-template">
+                                                         @Model.DOCUMENT_NO
+                                                      </div>
+                                                   </div>
+                                                </td>
+                                                <td class="w-2">&nbsp;</td>
+                                                <td class="td w-49 border-b valign-bottom" style="@(!string.IsNullOrEmpty(Model.BL_NO_CHECK) ? "" : "display:none")">
+                                                   <div class="title">
+                                                      B/L NO.
+                                                   </div>
+                                                   <div class="data">
+                                                      <div class="item-edit hover-toggle-icon-text-template">
+                                                         @Model.BL_NO
+                                                      </div>
+                                                   </div>
+                                                </td>
+                                             </tr>
+                                          </tbody>
+                                       </table>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td border-b">
+                                       <div class="title">EXPORT FILE NO.</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             @Html.Raw((Model.EXPORT_FILE_NO ?? "").Replace(Environment.NewLine, "<br/>")) 
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td border-b">
+                                       <div class="title">FORWARDING AGENT</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             @Html.Raw((Model.FORWARDING_AGENT ?? "").Replace(Environment.NewLine, "<br/>")) 
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td border-b">
+                                       <div class="title">POINT AND COUNTRY OF ORIGIN</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             @Model.POINT_AND_COUNTRY_OF_ORIGIN
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td border-b">
+                                       <div class="title">EXPORT CARRIER</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             @Model.EXPORT_CARRIER
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td border-b">
+                                       <div class="title">PORT OF LOADING</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             @Model.PORT_OF_LOADING
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td border-b">
+                                       <div class="title">PORT OF DISCHARGE</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             @Model.PORT_OF_DISCHARGE
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td class="td border-b">
+                                       <div class="title">PLACE OF DELIVERY</div>
+                                       <div class="data">
+                                          <div class="item-edit hover-toggle-icon-text-template">
+                                             @Model.PLACE_OF_DELIVERY
+                                          </div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+
+               <table class="margin-t-sm table-valign-top">
+                  <tbody>
+                     <tr class="border-b border-t bg-light text-8">
+                        <th class="w-20 border-r text-left col-padding-double">
+                           SHIPPING MARKS
+                        </th>
+                        <th class="w-8 border-r text-right col-padding-double">
+                           QTY
+                        </th>
+                        <th class="w-39 border-r text-left col-padding-double">
+                           DESCRIPTION OF GOODS
+                        </th>
+                        <th class="w-11 border-r text-right col-padding-double">
+                           WEIGHT(G)
+                        </th>
+                        <th class="w-11 border-r text-right col-padding-double">
+                           WEIGHT(C)
+                        </th>
+                        <th class="w-11 text-right col-padding-double">
+                           MEASUREMENT
+                        </th>
+                     </tr>
+                     <tr class="border-b">
+                        <!--
+                           show container:     rows: 19
+                           not show container: rows: 28
+                           -->
+                        <td class="td td-item border-r">
+                           <div class="item-edit hover-toggle-icon-text-template">
+                              @Html.Raw((Model.SHIPPING_MARKS ?? "").Replace(Environment.NewLine, "<br/>")) 
+
+                            @{
+                                var table_rows = (Model.SHIPPING_MARKS ?? "").Replace(Environment.NewLine, "<br/>").Split(new string[] { "<br/>" }, StringSplitOptions.RemoveEmptyEntries).Length;
+
+                                if(table_rows < 27)
+                                {
+                                    for (int i = 0; i < 27 - table_rows; i++)
+                                    {
+                                        <br/>
+                                    }
+                                }
+                            }
+
+                           </div>
+                           <div class="container-table">
+                              <table id="container-table" class="table-padding" style="font-size:10px;@(!string.IsNullOrEmpty(Model.Show_Container_Information) ? "" : "display:none")" >
+                                 <colgroup>
+                                    <col class="w-15">
+                                    <!-- container no. -->
+                                    <col class="w-10">
+                                    <!-- type -->
+                                    <col class="w-15">
+                                    <!-- seal no. -->
+                                    <col class="w-20">
+                                    <!-- pkg -->
+                                    <col class="w-20">
+                                    <!-- kg -->
+                                    <col class="w-20">
+                                    <!-- cbm -->
+                                 </colgroup>
+                                 <tbody>
+                                    <tr class="border-b">
+                                       <th class="text-left">CONTAINER NO.</th>
+                                       <th class="text-center">TYPE</th>
+                                       <th class="text-left">SEAL NO.</th>
+                                       <th class="text-center">PKG</th>
+                                       <th class="text-right">KG/LB</th>
+                                       <th class="text-right">CBM/CFT</th>
+                                    </tr>
+                                    <tr>
+                                       <td class="text-left">
+                                          <div class="auto-font-size __width-container-no">
+                                             <span>
+                                                @{
+                                                    if (Model.CONTAINER_NO != "")
+                                                    {
+                                                        @Model.CONTAINER_NO
+                                                    }
+                                                }
+
+                                                @{
+                                                    var table2_rows = (Model.CONTAINER_NO ?? "").Replace(Environment.NewLine, "<br/>").Split(new string[] { "<br/>" }, StringSplitOptions.RemoveEmptyEntries).Length;
+
+                                                    if(table2_rows < 4)
+                                                    {
+                                                        for (int i = 0; i < 4 - table2_rows; i++)
+                                                        {
+                                                            <br/>
+                                                        }
+                                                    }
+                                                }
+                                             </span>
+                                          </div>
+                                       </td>
+                                       <td class="text-center">
+                                          <div class="auto-font-size __width-type">
+                                             <span>
+                                                @{
+                                                    if (Model.TYPE != "")
+                                                    {
+                                                        @Model.TYPE
+                                                    }
+                                                }
+                                             </span>
+                                          </div>
+                                       </td>
+                                       <td class="text-left">
+                                          <div class="auto-font-size __width-seal-no">
+                                             <span>
+                                                @{
+                                                    if (Model.SEAL_NO != "")
+                                                    {
+                                                        @Model.SEAL_NO
+                                                    }
+                                                }
+                                            </span>
+                                          </div>
+                                       </td>
+                                       <td class="text-center">
+                                          <div class="auto-font-size __width-pkg">
+                                             <span>
+                                                @{
+                                                    if (Model.PKG != "")
+                                                    {
+                                                        @Model.PKG
+                                                    }
+                                                }
+                                            </span>
+                                          </div>
+                                       </td>
+                                       <td class="text-right">
+                                          <div class="auto-font-size __width-kg">
+                                             <span>
+                                                @{
+                                                    if (Model.KG_LB != "")
+                                                    {
+                                                        @Model.KG_LB
+                                                    }
+                                                }
+                                            </span>
+                                          </div>
+                                       </td>
+                                       <td class="text-right">
+                                          <div class="auto-font-size __width-cbm">
+                                             <span>
+                                                @{
+                                                    if (Model.CBM_CFT != "")
+                                                    {
+                                                        @Model.CBM_CFT
+                                                    }
+                                                }
+                                            </span>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                 </tbody>
+                              </table>
+                           </div>
+                        </td>
+                        <!--
+                           show container:     rows: 19 class: __col-pkg-sm
+                           not show container: rows: 28 class: __col-pkg
+                           -->
+                        <td class="td td-item border-r text-right">
+                           <div class="item-edit hover-toggle-icon-text-template">
+                              @Html.Raw((Model.QTY ?? "").Replace(Environment.NewLine, "<br/>")) 
+                           </div>
+                        </td>
+                        <!--
+                           show container:     rows: 19
+                           not show container: rows: 28
+                           -->
+                        <td class="td td-item border-r">
+                           <div class="item-edit hover-toggle-icon-text-template">
+                              @Html.Raw((Model.DESCRIPTION_OF_GOODS ?? "").Replace(Environment.NewLine, "<br/>")) 
+                           </div>
+                        </td>
+                        <!--
+                           show container:     rows: 19 class: __col-gw-sm
+                           not show container: rows: 28 class: __col-gw
+                           -->
+                        <td class="td td-item text-right border-r">
+                           <div class="item-edit hover-toggle-icon-text-template">
+                              @Html.Raw((Model.WEIGHT_G ?? "").Replace(Environment.NewLine, "<br/>")) 
+                           </div>
+                        </td>
+                        <td class="td td-item text-right border-r">
+                           <div class="item-edit hover-toggle-icon-text-template">
+                               @Html.Raw((Model.WEIGHT_C ?? "").Replace(Environment.NewLine, "<br/>")) 
+                           </div>
+                        </td>
+                        <td class="td td-item text-right">
+                           <div class="item-edit hover-toggle-icon-text-template">
+                               @Html.Raw((Model.MEASUREMENT ?? "").Replace(Environment.NewLine, "<br/>")) 
+                           </div>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+               <div class="col-padding">
+                  The Undersigned Agent (Owner or Agent), does hereby declare for the above named shipper, the goods as described above were shipped on the above date and consigned as indicated and are product the stated of date at on the 
+                  <span style="font-weight:700">
+                    @Model.bl_date
+                  </span>
+                  <br>
+                  Sworn this 
+                  <span style="font-weight:700">
+                      @Model.sworn_date
+                  </span>
+               </div>
+               <table>
+                  <tbody>
+                     <tr>
+                        <td class="w-70">&nbsp;</td>
+                        <td class="w-30 border-b"></td>
+                     </tr>
+                     <tr>
+                        <td>&nbsp;</td>
+                        <td class="text-center col-padding-double" style="font-size:10px">Signature of Owner or Agent</td>
+                     </tr>
+                  </tbody>
+               </table>
+               <div class="border-t col-padding margin-t-lg">
+                  The @(Model.name_of_chamber) Chamber of Commerce, a recognized Chamber of Commerce under the law of State of @(Model.state_of_chamber) has examined the manufacturer's invoice or shipper's affidavit concerning the origin of the merchandise, and, according to the best of its knowledge and belief, finds that the products named originated in the @(Model.name_of_country).
+               </div>
+               <table class="margin-t-md">
+                  <tbody>
+                     <tr>
+                        <td class="w-70">&nbsp;</td>
+                        <td class="w-30 border-b"></td>
+                     </tr>
+                     <tr>
+                        <td>&nbsp;</td>
+                        <td class="text-center col-padding-double" style="font-size:10px">Secretary</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+   </div>

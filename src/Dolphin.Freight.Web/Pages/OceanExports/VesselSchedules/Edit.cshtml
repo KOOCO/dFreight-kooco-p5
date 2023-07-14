@@ -130,7 +130,9 @@
             $('#editForm').on('abp-ajax-success', function (result, rs) {
                 event.preventDefault();
                 var l = abp.localization.getResource('Freight');
-                abp.message.success(l("Message:SuccessEdit"));
+                abp.message.success(l("Message:SuccessEdit")).then(function(res){
+                    window.location.href = '/OceanExports/VesselSchedules/Index';
+                });
             });
             $("#addBtn").click(function () {
                 addTr()
@@ -237,7 +239,7 @@
                             <button class="btn btn-collapse " type="button" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
                             </button>
                         </abp-card-header>
-                        <abp-card-body class="collapse show" id="mblDiv">
+                        <abp-card-body class="collapse show customForm" id="mblDiv">
                             <abp-row>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.ReferenceNo" />

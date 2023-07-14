@@ -156,7 +156,9 @@
             $('#editForm').on('abp-ajax-success', function (result, rs) {
                 event.preventDefault();
                 var l = abp.localization.getResource('Freight');
-                abp.message.success(l("Message:SuccessEdit"));
+                abp.message.success(l("Message:SuccessEdit")).done(function(res){
+                    window.location.href = '/OceanExports/ExportBookings/Index';
+                });
             });
         });
         function initRemark(remarkIndex) {
@@ -413,7 +415,7 @@
 
                             </abp-row>
                         </abp-card-header>
-                        <abp-card-body class="collapse show" id="mblDiv">
+                        <abp-card-body class="collapse show customForm" id="mblDiv">
                             <abp-row>
                                 <abp-column size-md="_3">
                                     <abp-card>
@@ -427,7 +429,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.SoNoDate" />
+                                                    <abp-input asp-for="ExportBooking.SoNoDate" required-symbol="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>

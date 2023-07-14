@@ -12,6 +12,67 @@
 @inject IStringLocalizer<FreightResource> L
 
 @model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
+
+<script>
+
+      $(document).ready(function () {
+        if ($('#HawbCancelledDate').val() == '0001-01-01T00:00') {
+            $('#HawbCancelledDate').val('');
+        }
+           if ($('#HawbModel_FrtRelease').val() == '0001-01-01T00:00') {
+            $('#HawbModel_FrtRelease').val('');
+        }
+    });
+  
+    function OpenInTrackTrace() {
+        var url = new URL(window.location.href);
+        var mawbId = url.searchParams.get('Id');
+        dolphin.freight.importExport.airImports.airImportMawb.get(mawbId).done(function (res) {
+            myWindow = window.open('https://www.track-trace.com/bol#' + res.mawbNo, '_blank', 'width=1200,height=1000');
+            myWindow.focus();
+        });
+    }
+
+    function gotoReport(rindex) {
+        var url = "";
+        var pname = "";
+        switch (rindex) {
+            default:
+                url = '@Url.Action("Car", "Docs")';
+                pname = "Car";
+                break;
+            case 2:
+                url = '@Url.Action("Cargo", "Docs")';
+                pname = "Cargo";
+                break;
+            case 3:
+                url = '@Url.Action("Box", "Docs")';
+                pname = "Box";
+                break;
+            case 4:
+                url = '@Url.Action("HawbProfitReport", "Docs", new { hawbId = Model.HawbModel.Id })';
+                pname = "ProfitSummary";
+                break;
+            case 5:
+                url = '@Url.Action("ProfitDetail", "Docs", new { oceanExportMblId = Model.Id })';
+                pname = "ProfitDetail";
+                break;
+            case 6:
+                var idNo = $('#OceanExportHbl_Id').val();
+                url = '@Url.Action("Shipment", "Docs")' + "?id=" + idNo;
+                pname = "Shipment";
+                break;
+            case 7:
+                var idNo = $('#OceanExportHbl_Id').val();
+                url = '@Url.Action("OBL", "Docs")' + "?id=" + idNo;
+                pname = "OBL";
+                break;
+        }
+        myWindow = window.open(url, pname, 'width=1200,height=800')
+        myWindow.focus()
+    }
+
+</script>
 <!-- HABL Card -->
 <abp-card class="card board-item" id="hblCard">
     <!-- 標題區域 -->
@@ -23,7 +84,9 @@
             HAWB Information - @Model.Title
         </abp-card-title>
 
-        <div class="btn-group dropdown">
+        @if(Model.HawbModel.Id != Guid.Empty)
+        {
+            <div class="btn-group dropdown">
             <button class="btn btn-secondary dropdown-toggle" style="position: relative;" type="button" id="ActionDrop" data-bs-toggle="dropdown">
                 @L["Display:Function"]
             </button>
@@ -66,21 +129,22 @@
                     <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javscript:void(0)' onclick="gotoReport(4)">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
-                    <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
+                <a class='dropdown-item' href='javascript:void(0)' style="color: #4B77BE; font-weight: 500;" onclick="OpenInTrackTrace()">
+                    <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
                 </a>
             </div>
         </div>
-
+        }
+        
         <button type="button" id="btnHawbCollapse" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#hawbDiv" aria-expanded="true" aria-controls="hawbDiv">
         </button>
     </abp-card-header>
     <!-- Mawb資訊欄 -->
-    <abp-card-body id="hawbDiv" class="card-body collapse show">
+    <abp-card-body id="hawbDiv" class="card-body collapse show customForm">
         <!--第一列-->
         <abp-row>
             <abp-input asp-for="@Model.Id" type="hidden" />
@@ -124,11 +188,10 @@
 
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.SalesId" />
+                <abp-input asp-for="@Model.HawbModel.SalesId" size="Small" />
             </abp-column>
             <abp-column size-md="_3">
-                <label asp-for="@Model.HawbModel.OPId" class="form-label"></label>
-                <input class="form-control form-control-sm" name="HawbModel.OPId" type="text" value="@(_currentUser.Name + " " + _currentUser.SurName)" disabled />
+                <abp-input asp-for="HawbModel.OPId" size="Small" readonly="true" value="@(Model.HawbModel.OP?.Name + " " + Model.HawbModel.OP?.Surname)" />
             </abp-column>
         </abp-row>
         <hr />
@@ -157,19 +220,19 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.Trucker", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Trucker"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.Trucker) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.LastFreeDay"  />
+                <abp-input asp-for="@Model.HawbModel.LastFreeDay" size="Small"  />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.StorageStartDate" />
+                <abp-input asp-for="@Model.HawbModel.StorageStartDate" size="Small" />
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.Freight", AspItems = Html.GetEnumSelectList(typeof(FreightType)).ToList(), IsShowLabel = true, FieldName = "Freight", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.HawbModel.Freight) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.Freight", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = "Freight", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.HawbModel.Freight) })
             </abp-column>
         </abp-row>
         <!--第五列-->
         <abp-row>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.SalesType", AspItems = Html.GetEnumSelectList(typeof(SalesType)).ToList(), IsShowLabel = true, FieldName = "SalesType", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.HawbModel.SalesType) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.SalesType", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "SalesType", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.HawbModel.SalesType) })
             </abp-column>
         </abp-row>
         <hr />
@@ -211,52 +274,54 @@
         <!--第八列-->
         <abp-row>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.ITNo" />
+                <abp-input asp-for="@Model.HawbModel.ITNo" size="Small" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.ClassOfEntry" />
+                <abp-input asp-for="@Model.HawbModel.ClassOfEntry" size="Small"  />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.ITDate" />
+                <abp-input asp-for="@Model.HawbModel.ITDate" size="Small"  />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.ITIssuedLocation" />
+                <abp-input asp-for="@Model.HawbModel.ITIssuedLocation" size="Small"  />
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column size-md="_1" class="align-self-center">
+                <input type="checkbox" id="chkFrtRelease" />
+            </abp-column>
+            <abp-column size-md="_2">
+                <abp-input asp-for="HawbModel.FrtRelease" size="Small" disabled />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="HawbModel.ReleasedBy" size="Small" readonly="true" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.HawbModel.CargoReleasedto" size="Small" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="@Model.HawbModel.CReleasedDate" size="Small" />
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.FrtRelease" />
-            </abp-column>
-            <abp-column size-md="_3">
-                <label asp-for="@Model.HawbModel.ReleasedBy" class="form-label"></label>
-                <input class="form-control form-control-sm" name="HawbModel.ReleasedBy" type="text" value="@(_currentUser.Name + " " + _currentUser.SurName)" disabled />
-            </abp-column>
-            <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.CargoReleasedto" />
-            </abp-column>
-            <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.CReleasedDate" />
-            </abp-column>
-        </abp-row>
-        <abp-row>
-            <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.DoorDelivered" />
+                <abp-input asp-for="@Model.HawbModel.DoorDelivered" size="Small" />
             </abp-column>
         </abp-row>
         <hr />
         <!--第10列-->
         <abp-row>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.ShipType" />
+                <abp-input asp-for="@Model.HawbModel.ShipType" size="Small" />
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.Incoterms", AspItems = Html.GetEnumSelectList(typeof(IncotermsType)).ToList(), IsShowLabel = true, IsRequired = true, FieldName = @L["Incoterms"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.Incoterms) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.Incoterms", AspItems = _dropdown.IncotermsLookupList, IsShowLabel = true, IsRequired = true, FieldName = @L["Incoterms"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.Incoterms) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.ServiceTermStart", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, IsRequired = true, FieldName = @L["ServiceTermStart"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.ServiceTermStart) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.ServiceTermStart", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, IsRequired = true, FieldName = @L["ServiceTermStart"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.ServiceTermStart) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.ServiceTermTo", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, IsRequired = true, FieldName = @L["ServiceTermTo"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.ServiceTermTo) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.ServiceTermTo", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, IsRequired = true, FieldName = @L["ServiceTermTo"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.ServiceTermTo) })
             </abp-column>
         </abp-row>
         <!-- SUB HAWB -->
@@ -265,10 +330,10 @@
                 <h3>@L["SubHAWB"]</h3>
             </abp-column>
             <abp-column size-md="_1">
-                <button class="btn btn-success me-md-2" type="button" id="addSubHAWBBtn" data-busy-text="Processing...">+</button>
+                <button class="btn btn-success me-md-2" type="button" id="addSubHAWBBtn" onclick="onAddSubHawb()" data-busy-text="Processing...">+</button>
             </abp-column>
             <abp-column size-md="_1">
-                <button class="btn btn-danger me-md-2" type="button" id="deleteSubHAWBBtn">-</button>
+                <button class="btn btn-danger me-md-2" type="button" id="deleteSubHAWBBtn" onclick="onRemoveSubHawbs()">-</button>
             </abp-column>
         </abp-row>
         <abp-row>
@@ -276,7 +341,7 @@
                 <div class="table-responsive">
                     <abp-table border="1" class="w-100">
                         <thead border="1">
-                        <th><input type="checkbox" /></th>
+                        <th></th>
                         <th>@L["SubHAWB"]</th>
                         <th>@L["DescriptionITNo"]</th>
                         <th>@L["PCS"]</th>
@@ -292,29 +357,29 @@
         <!-- P.O. No. -->
         <abp-row>
             <abp-column size-md="_12">
-                <abp-input asp-for="@Model.HawbModel.PONo" id="AwbCancelledOpId" />
+                <abp-input asp-for="@Model.HawbModel.PONo" id="AwbCancelledOpId" size="Small" />
             </abp-column>
         </abp-row>
         <!-- Commodity -->
         <abp-row class="mt-4">
-            <abp-column size-md="_2">
+            <abp-column size-md="_2" class="d-flex">
                 <h3>@L["Commodity"]</h3>
             </abp-column>
             <abp-column size-md="_1">
-                <button class="btn btn-success me-md-2" type="button" id="addCommodityBtn" data-busy-text="Processing...">+</button>
+                <button class="btn btn-success me-md-2" type="button" id="addCommodityBtn" onclick="onAddCommodity()" data-busy-text="Processing...">+</button>
             </abp-column>
             <abp-column size-md="_1">
-                <button class="btn btn-danger me-md-2" type="button" id="deleteCommodityBtn">-</button>
+                <button class="btn btn-danger me-md-2" type="button" id="deleteCommodityBtn" onclick="onRemoveCommodity()">-</button>
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_12">
                 <abp-table border="1" class="w-100">
                     <thead border="1">
-                    <th><input type="checkbox" /></th>
-                    <th>@L["CommodityDescription"]</th>
-                    <th>@L["HTSCode"]HTS Code</th>
-                    <th>@L["PoNo"]</th>
+                        <th></th>
+                        <th>@L["CommodityDescription"]</th>
+                        <th>@L["HTSCode"]</th>
+                        <th>@L["PoNo"]</th>
                     </thead>
                     <tbody id="commodityBody">
                     </tbody>
@@ -357,19 +422,25 @@
         <abp-row class="mt-4">
             <abp-column size-md="_6">
   
-                <abp-input asp-for="@Model.HawbModel.Mark" />
+                <abp-input asp-for="@Model.HawbModel.Mark" size="Small" />
             </abp-column>
             <abp-column size-md="_6">
 
-                <abp-input asp-for="@Model.HawbModel.Description" />
+                <abp-input asp-for="@Model.HawbModel.Description" size="Small" />
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_12">
 
-                <abp-input asp-for="@Model.HawbModel.Remark" />
+                <abp-input asp-for="@Model.HawbModel.Remark" size="Small" />
             </abp-column>
         </abp-row>
-
+        <abp-row class="d-none">
+            <abp-column size="_12">
+                <abp-input asp-for="@Model.Id" type="hidden" />
+                <abp-input asp-for="HawbModel.ExtraProperties" value="@Json.Serialize(Model.HawbModel.ExtraProperties)" type="hidden" />
+                <abp-input asp-for="@Model.HawbModel.Id" type="hidden" />
+            </abp-column>
+        </abp-row>
     </abp-card-body>
 </abp-card>

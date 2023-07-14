@@ -103,7 +103,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 出發日期
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime DepatureDate { get; set; }
         /// <summary>
         /// 航班號碼
@@ -182,8 +181,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 抵達日期
         /// </summary>
-        [DataType(DataType.Date)]
-        public DateTime ArrivalDate { get; set; }
+        public DateTime? ArrivalDate { get; set; }
         /// <summary>
         /// 運輸聲明價值
         /// </summary>

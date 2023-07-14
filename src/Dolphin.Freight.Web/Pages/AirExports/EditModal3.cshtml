@@ -1,4 +1,4 @@
-﻿@page
+@page
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Web.Pages.Components
 @using Dolphin.Freight.Web.Pages.Shared.Memos;
@@ -18,6 +18,29 @@
         }
         function changeHid(id, hid) {
             location.href = '/AirExports/EditModal3?Id=' + id + "&Hid=" + hid
+        }
+        function OpenInTrackTrace() {
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+            dolphin.freight.importExport.airExports.airExportMawb.get(mawbId).done(function (res) {
+                myWindow = window.open('https://www.track-trace.com/bol#' + res.mawbNo, '_blank', 'width=1200,height=1000');
+                myWindow.focus();
+            });
+        }
+        function getPackingListAirExportHawb() {
+            myWindow = window.open("@Url.Action("PackagingListAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })", 'PackingListAirExportHawb', 'width=1200,height=800');
+            myWindow.focus()
+        }
+        function ProfitReport() {
+            var url = '@Url.Action("HawbProfitReport", "Docs", new { hawbId = Model.AirExportHawbDto.Id })';
+
+            myWindow = window.open(url, "PROFIT BY HAWB", 'width=1200,height=800')
+            myWindow.focus()
+        }
+        function getCertificateOfOrigin() {
+            var idNo = '@Model.AirExportHawbDto.Id';
+            myWindow = window.open("@Url.Action("CertificateOfOriginAirExportHawb", "Docs")" + "?id=" + idNo, 'CertificateOfOrigin', 'width=1200,height=800');
+            myWindow.focus()
         }
     </script>
 }
@@ -104,7 +127,7 @@
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                                 </a>
                                 <p class="dropdown-divider"></p>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()">
                                     <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
                                 </a>
                             </div>
@@ -327,10 +350,10 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getPackingListAirExportHawb()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getCertificateOfOrigin()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Certificate of Origin"]
                                     </a>
                                     <a class='dropdown-item' href='#'>
@@ -355,12 +378,12 @@
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods Declaration"]
                                     </a>
                                     <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="ProfitReport()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                                     </a>
                                     <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='#' style="color: #4B77BE; font-weight: 500;">
-                                        <i class="fa fa-location-arrow"></i> @L["Btn:Tracking"]
+                                    <a class='dropdown-item' href='javascript:void(0)' style="color: #4B77BE; font-weight: 500;" onclick="OpenInTrackTrace()">
+                                        <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
                                     </a>
                                 </div>
                             </div>
