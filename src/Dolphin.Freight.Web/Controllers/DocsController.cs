@@ -2074,7 +2074,7 @@ namespace Dolphin.Freight.Web.Controllers
                     Price = "",
                     Details = "",
                     Volumns = string.Concat(data.ChargeableWeightCneeLB),
-                    Amount = (double.Parse(data.ChargeableWeightCneeLB) * 35.315).ToString("0.00"),
+                    Amount = data.ChargeableWeightCneeLB == null ? "" : (double.Parse(data.ChargeableWeightCneeLB) * 35.315).ToString("0.00"),
                     Quantity = string.Concat(data.Package + "/" + data.PackageUnit)
                 }
             };
