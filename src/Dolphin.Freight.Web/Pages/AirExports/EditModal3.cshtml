@@ -63,7 +63,7 @@
 
         function getPackageLabelAirExportHawb() {
             var idNo = '@Model.AirExportHawbDto.Id';
-            myWindow = window.open("@Url.Action("PackageLabelAirExportHawb", "Docs")", 'width=1200,height=800');
+            myWindow = window.open("@Url.Action("PackageLabelAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })", 'width=1200,height=800');
             myWindow.focus()
         }
         function getPreAlertAirExportHawb() {

@@ -176,7 +176,7 @@
                             <tbody><tr class="border-b">
                                 <td class="col-padding text-center padding-t-sm airline-name" colspan="2">
                                     <div class="auto-font-size __col-airline-name _text-35 text-bold lineheight-nor">
-                                        <span>ABBOTT INC124</span>
+                                        <span>@Model.Delivery_To</span>
                                     </div>
                                 </td>
                             </tr>
@@ -197,13 +197,13 @@
                                     <div class="title">AIR WAYBILL NO</div>
                                     <div class="data">
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <input type="text" name="MBL_NO" value="695-33679332" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.MBL_NO" class="input-xl ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" ng-model="vm.mblNo" id="id_MBL_NO">
+                                            <input type="text" name="MBL_NO" value="@Model.Air_way_bill_no" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.MBL_NO" class="input-xl ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" ng-model="vm.mblNo" id="id_MBL_NO">
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 331px;"></span><!---->
 
-                                        <ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="adc72bc33c70" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+                                        @*<ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="adc72bc33c70" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
                                         </hc-input-template></div>
                                         <div class="item-pdf auto-font-size __width-lg _text-35">
-                                            <h1><span>695-33679332</span></h1>
+                                            <h1><span>@Model.Air_way_bill_no</span></h1>
                                         </div>
                                     </div>
                                 </td>
@@ -212,12 +212,12 @@
                                 <td class="border-r">
                                     <div class="title">DESTINATION</div>
                                     <div class="data">
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="APOD_code" value="AAB" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.APOD_code" class="input-xl ng-isolate-scope" id="id_APOD_code"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 150px;"></span><!---->
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="APOD_code" value="@Model.Destination" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.APOD_code" class="input-xl ng-isolate-scope" id="id_APOD_code"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 150px;"></span><!---->
 
-                                        <ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="aff3f2cb335e" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+                                        @*<ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="aff3f2cb335e" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
                                         </hc-input-template></div>
                                         <div class="item-pdf">
-                                            <h1 class="auto-font-size __width-sm"><span>AAB</span></h1>
+                                            <h1 class="auto-font-size __width-sm"><span>@Model.Destination</span></h1>
                                         </div>
                                     </div>
                                 </td>
@@ -225,13 +225,13 @@
                                     <div class="title">TOTAL NO OF PIECES</div>
                                     <div class="data">
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <input type="text" name="total_pieces" value="333" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.total_pieces" class="input-xl ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" ng-model="vm.totalPieces" positive-integer="" char-limit="4" id="id_total_pieces">
+                                            <input type="text" name="total_pieces" value="@Model.Total_no_of_pieces" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.total_pieces" class="input-xl ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" ng-model="vm.totalPieces" positive-integer="" char-limit="4" id="id_total_pieces">
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 150px;"></span><!---->
 
-                                            <ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ad9f83dde8b7" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+                                            @*<ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ad9f83dde8b7" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
                                             </hc-input-template></div>
                                         <div class="item-pdf text-center">
-                                            <h1>333</h1>
+                                            <h1>@Model.Total_no_of_pieces</h1>
                                         </div>
                                     </div>
                                 </td>
@@ -248,13 +248,13 @@
                                     <div class="title">NAME OF FORWARDER</div>
                                     <div class="data">
                                         <div class="item-pdf">
-                                            <h2 class="lineheight-nor auto-font-size __col-forwarder-s"><span>HARD CORE TECHNOLOGY</span></h2>
+                                            <h2 class="lineheight-nor auto-font-size __col-forwarder-s"><span>@Model.Number_of_forwarder</span></h2>
                                         </div>
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <input type="text" name="forwarder_name" value="HARD CORE TECHNOLOGY" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.forwarder_name" class="input-lg ng-isolate-scope" id="id_forwarder_name">
+                                            <input type="text" name="forwarder_name" value="@Model.Number_of_forwarder" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.forwarder_name" class="input-lg ng-isolate-scope" id="id_forwarder_name">
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 223px;"></span><!---->
 
-                                    <ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="af6f6b65fc7c" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+                                    @*<ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="af6f6b65fc7c" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
                                     </hc-input-template></div>
                                     </div>
                                 </td>
@@ -262,13 +262,13 @@
                                     <div class="title">ORIGIN</div>
                                     <div class="data">
                                         <div class="item-pdf">
-                                            <h2 class="auto-font-size __width-xs"><span>AAA</span></h2>
+                                            <h2 class="auto-font-size __width-xs"><span>@Model.Origin</span></h2>
                                         </div>
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <input type="text" name="APOL_code" value="AAA" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.APOL_code" class="input-lg ng-isolate-scope" id="id_APOL_code">
+                                            <input type="text" name="APOL_code" value="@Model.Origin" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.APOL_code" class="input-lg ng-isolate-scope" id="id_APOL_code">
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 78px;"></span><!---->
 
-                                        <ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a017673ec17a" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+                                        @*<ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a017673ec17a" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
                                         </hc-input-template></div>
                                     </div>
                                 </td>
@@ -277,7 +277,7 @@
                                 <td class="border-r">
                                     <div class="title">HAWB NO.</div>
                                     <div class="data">
-                                        <h2 class="auto-font-size __col-hbl"><span>AH-23030003</span></h2>
+                                        <h2 class="auto-font-size __col-hbl"><span>@Model.HawbNo</span></h2>
                                     </div>
                                 </td>
                                 <td>
@@ -286,12 +286,12 @@
                                         <div class="item-pdf">
                                             <h2>
                                         
-                                                    1/333
+                                                    @Model.Hawb_Pc
                                         
                                             </h2>
                                         </div>
                                         <div class="item-edit">
-                                            <input type="number" name="total_pc" value="333" min="1" class="input-lg text-center" id="id_total_pc">
+                                            <input type="number" name="total_pc" value="@Model.Hawb_Pc" min="1" class="input-lg text-center" id="id_total_pc">
                                         </div>
                                     </div>
                                 </td>
@@ -305,11 +305,19 @@
                                         <input type="text" name="memo" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.memo" placeholder="Input more description here" id="id_memo" class="ng-isolate-scope">
                                     <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 336px;"></span><!---->
 
-                                    <ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ac7481a5a12f" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+                                    @*<ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ac7481a5a12f" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
                                     </hc-input-template></div>
                                 </td>
                             </tr>
                         </tbody></table>
+                        <input type="hidden" name="reportid" value="@Model.ReportId" id="id_current_reportid">
+                        <input type="hidden" name="hawb_pc" value="@Model.Hawb_Pc" id="id_current_hawbpc">
+                        <input type="hidden" name="origin" value="@Model.Origin" id="id_current_origin">
+                        <input type="hidden" name="total_no_of_pieces" value="@Model.Total_no_of_pieces" id="id_current_total_no_of_pieces">
+                        <input type="hidden" name="hawbno" value="@Model.HawbNo" id="id_current_hawbno">
+                        <input type="hidden" name="number_of_forwarder" value="@Model.Number_of_forwarder" id="id_current_number_of_forwarder">
+                        <input type="hidden" name="destination" value="@Model.Destination" id="id_current_destination">
+                        <input type="hidden" name="air_way_bill_no" value="@Model.Air_way_bill_no" id="id_current_air_way_bill_no">
                     </div>
         
             </div>
