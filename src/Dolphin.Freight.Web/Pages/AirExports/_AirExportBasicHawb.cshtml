@@ -63,12 +63,6 @@
         myWindow.focus()
     }
 
-    function DangerousGoods() {
-        var url = '@Url.Action("DangerousGoods", "Docs", new { hawbId = Model.AirExportHawbDto.Id })';
-
-        myWindow = window.open(url, "Dangerous Goods", 'width=1200,height=800')
-        myWindow.focus()
-    }
 </script>
 
 
@@ -130,7 +124,7 @@
                 <a class='dropdown-item' href='#'>
                     <i class="fa fa-file-text-o"></i> @L["Btn:Pickup/Delivery Order"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="DangerousGoods()">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="DangerousGoods('@Url.Action("DangerousGoods", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
                 </a>
                 <p class="dropdown-divider"></p>
