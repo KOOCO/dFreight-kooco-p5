@@ -2420,13 +2420,39 @@ namespace Dolphin.Freight.Web.Controllers
 
             var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
             var mawb = await _airExportMawbAppService.GetAsync(hawb.MawbId.GetValueOrDefault());
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
 
             InfoModel.Issued_At = string.Concat(DateTime.UtcNow);
-            InfoModel.Issued_By = hawb.OP?.Name;
+            InfoModel.Issued_By = _currentUser.Name + " " + _currentUser.SurName;
             InfoModel.Trucker = hawb.Trucker;
             InfoModel.Mawb_No = mawb.MawbNo;
+            InfoModel.Hawb_No = hawb.HawbNo;
+            InfoModel.Our_Ref_No = mawb.FilingNo;
+            InfoModel.Shipper = hawb.CargoPickupName;
+            InfoModel.Consignee = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.ConsigneeId)).Select(s => s.Text));
+            InfoModel.Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.DeliveryTo)).Select(s => s.Text));
+            InfoModel.Flight_No = mawb.FlightNo;
+            InfoModel.Pickup_Location = hawb.CargoPickupName;
+            InfoModel.Port_Of_Loading = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(hawb.DepartureId)).Select(s => s.Text));
+            InfoModel.ETD = string.Concat(mawb.DepatureDate);
+            InfoModel.Port_Of_Discharge = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(hawb.DestinationId)).Select(s => s.Text));
+            InfoModel.ETA = string.Concat(mawb.ArrivalDate);
+            InfoModel.Delivery_To = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.DeliveryTo)).Select(s => s.Text));
+            InfoModel.Packages = hawb.Package;
+            InfoModel.Measurement = hawb.ChargeableWeightCneeLB;
+            InfoModel.MeasurementWithCFT = hawb.ChargeableWeightCneeLB == null ? "" : (double.Parse(hawb.ChargeableWeightCneeLB) * 35.315).ToString("0.00");
+            InfoModel.Bill_To = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.IssuingCarrier)).Select(s => s.Text));
 
             return View(InfoModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PickupDeliveryOrderAirExportHawb(PickupDeliveryOrderAirExportHawbModel model)
+        {
+            model.IsPDF = true;
+            
+            return await _generatePdf.GetPdf("Views/Docs/PickupDeliveryOrderAirExportHawb.cshtml", model);
         }
 
         public async Task<IActionResult> CommercialInvoiceAirExportHawb()
