@@ -9,10 +9,12 @@ env:
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
   WORKING_DIRECTORY: src\Dolphin.Freight.Web
-  shell: pwsh
 jobs:
   build:
     runs-on: self-hosted
+    defaults:
+      run:
+        shell: pwsh
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET SDK
