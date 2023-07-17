@@ -179,7 +179,7 @@ namespace Dolphin.Freight.Web.Controllers
                                                                                 ? JsonConvert.DeserializeObject<OceanExportMblDto>(TempData["PrintData"].ToString())
                                                                                 : await _oceanExportMblAppService.GetAsync(oceanExportMblId);
 
-            if (oceanExportMbl.Id != oceanExportMblId && oceanExportMblId != Guid.Empty)
+            if(oceanExportMbl.Id != oceanExportMblId && oceanExportMblId != Guid.Empty)
             {
                 oceanExportMbl = await _oceanExportMblAppService.GetAsync(oceanExportMblId);
             }
@@ -2194,6 +2194,7 @@ namespace Dolphin.Freight.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DangerousGoods(DangerousGoodsViewModel model)
         {
+            model.IsPDF = true;
             return await _generatePdf.GetPdf("Views/Docs/DangerousGoods.cshtml", model);
         }
 
@@ -2226,14 +2227,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.DESCRIPTION_OF_GOODS = hawb.NatureAndQuantityOfGoods;
             InfoViewModel.WEIGHT_G = hawb.GrossWeightShprKG + " KG" + Environment.NewLine + hawb.GrossWeightShprLB + " LBS";
             InfoViewModel.WEIGHT_C = hawb.ChargeableWeightShprKG + " KG" + Environment.NewLine + hawb.ChargeableWeightShprLB + " LBS";
-            if (hawb.ChargeableWeightCneeKG is not null)
-            {
-                InfoViewModel.MEASUREMENT = hawb.ChargeableWeightCneeKG + " CBM" + Environment.NewLine + (double.Parse(hawb.ChargeableWeightCneeKG) * 35.315).ToString("0.00") + " CFT";
-            }
-            else
-            {
-                InfoViewModel.MEASUREMENT = "";
-            }
+            InfoViewModel.MEASUREMENT = hawb.ChargeableWeightCneeKG + " CBM" + Environment.NewLine + (double.Parse(hawb.ChargeableWeightCneeKG)*35.315).ToString("0.00") + " CFT";
             InfoViewModel.Show_Container_Information = "true";
             InfoViewModel.CONTAINER_NO = "";
             InfoViewModel.TYPE = "";
@@ -2508,11 +2502,5 @@ namespace Dolphin.Freight.Web.Controllers
 
         }
 
-        public async Task<IActionResult> DocumentPackage(Guid hawbId)
-        {
-
-
-            return View(new DocumentPackageViewModel());
-        }
-    }
+    
 }

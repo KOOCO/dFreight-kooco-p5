@@ -13,5 +13,6 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public string DestinationName { get; set; }
         public string NameOfSignatory { get; set; }
         public string PodEtd { get; set; }
+        public bool IsPDF { get; set; }
     }
 }
