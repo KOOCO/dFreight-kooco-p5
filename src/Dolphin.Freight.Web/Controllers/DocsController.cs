@@ -2414,13 +2414,19 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/Pdf/BankDraft/BankDraftAirExportHawb.cshtml", model);
         }
 
-        public async Task<IActionResult> PickupDeliveryOrderAirExportHawb()
+        public async Task<IActionResult> PickupDeliveryOrderAirExportHawb(Guid hawbId)
         {
+            PickupDeliveryOrderAirExportHawbModel InfoModel = new();
 
+            var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
+            var mawb = await _airExportMawbAppService.GetAsync(hawb.MawbId.GetValueOrDefault());
 
+            InfoModel.Issued_At = string.Concat(DateTime.UtcNow);
+            InfoModel.Issued_By = hawb.OP?.Name;
+            InfoModel.Trucker = hawb.Trucker;
+            InfoModel.Mawb_No = mawb.MawbNo;
 
-
-            return View();
+            return View(InfoModel);
         }
 
         public async Task<IActionResult> CommercialInvoiceAirExportHawb()
