@@ -142,9 +142,9 @@
                     <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
                 </a>
                 <p class="dropdown-divider"></p>
-            @*    <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="DocumentPackage('@Url.Action("DocumentPackage", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
                     <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
-                </a>*@
+                </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="getHawbPrintAirExportHawb()">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Print HAWB"]
                 </a>

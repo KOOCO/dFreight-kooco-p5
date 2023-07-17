@@ -2465,5 +2465,12 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/Pdf/PackagingListAirExportHawb/Default.cshtml", InfoViewModel);
 
         }
+
+        public async Task<IActionResult> DocumentPackage(Guid hawbId)
+        {
+
+
+            return View(new DocumentPackageViewModel());
+        }
     }
 }
