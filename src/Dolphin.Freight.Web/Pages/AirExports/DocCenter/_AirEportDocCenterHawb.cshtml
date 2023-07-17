@@ -64,8 +64,7 @@
         myWindow.focus()
     }
     function getBookingConfirmationAirExportHawb() {
-        var idNo = '@Model.AirExportHawbDto.Id';
-        myWindow = window.open("@Url.Action("BookingConfirmationAirExportHawb", "Docs")");
+        myWindow = window.open("@Url.Action("BookingConfirmationAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })", 'Empty', 'width=1200,height=800');
         myWindow.focus()
     }
     function getHawbPrintAirExportHawb() {
