@@ -1,0 +1,145 @@
+﻿
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.PackageLabelList.PackageLabelListAirExportHawb
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+</style>
+<script>
+    $(document).ready(function () {
+      $('#id_show_container_info').change(function () {
+
+     if($("#id_show_container_info").prop("checked"))
+     {         
+         $('#container-table').show();
+         $('.show_container').attr('rows', 19)
+     }
+     else
+     {
+         $('#container-table').hide();
+         $('.show_container').attr('rows', 28)
+     }
+ });
+    });
+    
+</script>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+    });
+</script>
+<form id="myForm" name="myForm" method="POST">
+   <div style="background-color:black;display: flex;justify-content:center;">
+      <div style="width:900px;background-color:white;" id="form" name = "form" class="edit">
+         <div class="container" style="background-color:black">
+            <div style="display:flex;justify-content: center;" class="item-left">
+               @*<button class="btn"><i class="fa fa-file-pdf-o"></i></button>
+               <button class="btn"><i class="fa fa-print"></i></button>*@
+               @*<a class="btn" href="../OceanExports/print?handler=Download"><i class="fa fa-print">儲存PDF或列印</i></a>*@
+               <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+            </div>
+            @*
+            <div style="float:right;" class="item-right">
+               <button class="btn zoom" id="zout" name="zout"><i class="fa fa-search-minus"></i></button>
+               <button class="btn zoom-out" id="zin" name="zin"><i class="fa fa-search-plus"></i></button>
+            </div>
+            *@
+         </div>
+
+         @*Start of template*@
+
+         <div class="wrap">
+        <div class="header">
+            <div class="text-center">
+                <h5 class="text-grey _padding-0"><strong>HARD CORE TECHNOLOGY(GST/VAT)</strong></h5>
+                <div class="text-lg text-bold">Package Label List</div>
+            </div>
+        </div>
+        <div class="con">
+            <table class="margin-b-sm">
+                <tbody><tr>
+                    <td class="w-10">MAWB NO. :</td>
+                    <td class="w-40">695-33679332</td>
+                    <td class="w-35 text-right">HAWB No. :</td>
+                    <td class="w-15 text-right">AH-23030003</td>
+                </tr>
+            </tbody></table>
+            <table class="table-padding-double">
+                <colgroup>
+                    <col class="w-28"> <!-- W/H RECEIPTS NO. -->
+                    <col class="w-10"> <!-- LENGTH -->
+                    <col class="w-10"> <!-- WIDTH -->
+                    <col class="w-10"> <!-- HEIGHT -->
+                    <col class="w-10"> <!-- DIMENSION -->
+                    <col class="w-10"> <!-- PKG -->
+                    <col class="w-10"> <!-- PCS -->
+                    <col class="w-12"> <!-- UNIT -->
+                </colgroup>
+                <tbody><tr class="text-bold col-bg-grey border-b border-t">
+                    <td>W/H RECEIPT NO.</td>
+                    <td class="text-right">LENGTH</td>
+                    <td class="text-right">WIDTH</td>
+                    <td class="text-right">HEIGHT</td>
+                    <td class="text-center">DIMENSION</td>
+                    <td class="text-center">PKG</td>
+                    <td class="text-center">PCS</td>
+                    <td>UNIT</td>
+                </tr>
+                
+                <tr class="text-bold col-bg-grey border-b border-t">
+                    <td>TOTAL</td>
+                    <td colspan="4"></td>
+                    <td class="text-center">0</td>
+                    <td class="text-center">0</td>
+                    <td></td>
+                </tr>
+            </tbody></table>
+        </div>
+    </div>
+      </div>
+   </div>
+</form>

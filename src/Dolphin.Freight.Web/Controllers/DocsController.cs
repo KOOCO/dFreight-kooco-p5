@@ -1,4 +1,4 @@
-﻿using Dolphin.Freight.Common;
+using Dolphin.Freight.Common;
 using Volo.Abp.Users;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ReportLog;
@@ -54,6 +54,8 @@ using Dolphin.Freight.Web.ViewModels.PackagingListAirExportHawb;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Accounting.InvoiceBills;
+
+using Dolphin.Freight.Web.ViewModels.CertificateOfOriginAirExportHawb;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -2165,8 +2167,8 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(hawbProfitReport);
         }
-
-        [HttpGet]
+        
+         [HttpGet]
         public async Task<ActionResult> DangerousGoods(Guid hawbId)
         {
             var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
@@ -2188,12 +2190,168 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(viewModel);  
         }
-
         [HttpPost]
         public async Task<IActionResult> DangerousGoods(DangerousGoodsViewModel model)
         {
             return await _generatePdf.GetPdf("Views/Docs/DangerousGoods.cshtml", model);
         }
 
-    }
+		public async Task<IActionResult> CertificateOfOriginAirExportHawb(Guid id)
+        {
+            CertificateOfOriginAirExportHawbIndexViewModel InfoViewModel = new CertificateOfOriginAirExportHawbIndexViewModel();
+
+            var hawb = await _airExportHawbAppService.GetAsync(id);
+            var mawb = await _airExportMawbAppService.GetAsync(hawb.MawbId.GetValueOrDefault());
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
+
+            #region
+            //https://eval-asia.gofreight.co/ocean/export/shipment/OEX-23030002/?hbl=47120&hide_mbl=false
+            InfoViewModel.SHIPPER_EXPORTER = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.ActualShippedr)).Select(s => s.Text));
+            InfoViewModel.CONSIGNEE = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.ConsigneeId)).Select(s => s.Text));
+            InfoViewModel.NOTIFY = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.Notify)).Select(s => s.Text));
+            InfoViewModel.DOCUMENT_NO = mawb.FilingNo;
+            InfoViewModel.BL_NO = hawb.BookingNo;
+            InfoViewModel.EXPORT_FILE_NO = "BOOKING # " + hawb.BookingNo;
+            InfoViewModel.FORWARDING_AGENT = "";
+            InfoViewModel.POINT_AND_COUNTRY_OF_ORIGIN = "";
+            InfoViewModel.EXPORT_CARRIER = mawb.FlightNo;
+            InfoViewModel.PORT_OF_LOADING = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(hawb.DepartureId)).Select(s => s.Text));
+            InfoViewModel.PORT_OF_DISCHARGE = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(hawb.DestinationId)).Select(s => s.Text));
+            InfoViewModel.PLACE_OF_DELIVERY = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.DeliveryTo)).Select(s => s.Text));
+
+            InfoViewModel.SHIPPING_MARKS = hawb.Mark;
+            InfoViewModel.QTY = hawb.Package + "/" + hawb.PackageUnit;
+            InfoViewModel.DESCRIPTION_OF_GOODS = hawb.NatureAndQuantityOfGoods;
+            InfoViewModel.WEIGHT_G = hawb.GrossWeightShprKG + " KG" + Environment.NewLine + hawb.GrossWeightShprLB + " LBS";
+            InfoViewModel.WEIGHT_C = hawb.ChargeableWeightShprKG + " KG" + Environment.NewLine + hawb.ChargeableWeightShprLB + " LBS";
+            InfoViewModel.MEASUREMENT = hawb.ChargeableWeightCneeKG + " CBM" + Environment.NewLine + (double.Parse(hawb.ChargeableWeightCneeKG)*35.315).ToString("0.00") + " CFT";
+            InfoViewModel.Show_Container_Information = "true";
+            InfoViewModel.CONTAINER_NO = "";
+            InfoViewModel.TYPE = "";
+            InfoViewModel.SEAL_NO = "";
+            InfoViewModel.PKG = "";
+            InfoViewModel.KG_LB = "";
+            InfoViewModel.CBM_CFT = "";
+            InfoViewModel.bl_date = "";
+            InfoViewModel.sworn_date = "";
+
+            InfoViewModel.name_of_chamber = "";
+            InfoViewModel.state_of_chamber = "";
+            InfoViewModel.name_of_country = "";
+
+            InfoViewModel.ReportId = hawb.Id;
+
+            //string Input = JsonConvert.SerializeObject(InfoViewModel);
+            #endregion
+
+            return View(InfoViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CertificateOfOriginAirExportHawb(CertificateOfOriginAirExportHawbIndexViewModel InfoModel)
+        {
+            InfoModel.BaseUrl = string.Format("{0}://{1}/", HttpContext.Request.Scheme, HttpContext.Request.Host);
+
+            string Input = JsonConvert.SerializeObject(InfoModel);
+
+            ReportLog.ReportId = InfoModel.ReportId;
+            ReportLog.ReportName = "CertificateOfOriginAirExportHawb";
+            ReportLog.ReportData = Input;
+            ReportLog.LastUpdateTime = DateTime.Now;
+
+            await _reportLogAppService.UpdateReportLog(ReportLog);
+
+            return await _generatePdf.GetPdf("Views/Docs/Pdf/CertificateOfOriginAirExportHawb/Default.cshtml", InfoModel);
+        }
+
+        public async Task<IActionResult> PackageLabelAirExportHawb()
+        {
+          
+
+        
+
+            return View();
+        }
+
+        public async Task<IActionResult> PreAlertAirExportHawb()
+        {
+           
+
+
+
+            return  View();
+        }
+
+        public async Task<IActionResult> PackageLabelListAirExportHawb()
+        {
+
+
+
+
+            return View();
+        }
+        public async Task<IActionResult> BankDraftAirExportHawb()
+        {
+
+
+
+
+            return View();
+        }
+
+        public async Task<IActionResult> PickupDeliveryOrderAirExportHawb()
+        {
+
+
+
+
+            return View();
+        }
+
+        public async Task<IActionResult> CommercialInvoiceAirExportHawb()
+        {
+
+
+
+
+            return View();
+        }
+
+        public async Task<IActionResult> BookingConfirmationAirExportHawb()
+        {
+
+
+
+
+            return View();
+        }
+  public async Task<IActionResult> HawbPrintAirExportHawb()
+        {
+
+
+
+
+            return View();
+        }
+		
+		[HttpPost]
+        public async Task<IActionResult> PackagingListAirExportHawb(PackagingListAirExportHawb InfoViewModel, Guid guid)
+        {
+            
+            InfoViewModel.BaseUrl = string.Format("{0}://{1}/", HttpContext.Request.Scheme, HttpContext.Request.Host);
+
+            string Input = JsonConvert.SerializeObject(InfoViewModel);
+
+            ReportLog.ReportId = InfoViewModel.ReportId;
+            ReportLog.ReportName = "PackagingListAirExportHawb";
+            ReportLog.ReportData = Input;
+            ReportLog.LastUpdateTime = DateTime.Now;
+            await _reportLogAppService.UpdateReportLog(ReportLog);
+
+            return await _generatePdf.GetPdf("Views/Docs/Pdf/PackagingListAirExportHawb/Default.cshtml", InfoViewModel);
+
+        }
+
+    
 }
