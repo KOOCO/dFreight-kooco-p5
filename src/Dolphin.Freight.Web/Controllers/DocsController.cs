@@ -2502,5 +2502,11 @@ namespace Dolphin.Freight.Web.Controllers
 
         }
 
+        public async Task<IActionResult> DocumentPackage(Guid hawbId)
+        {
+
+
+            return View(new DocumentPackageViewModel());
+        }
     }
 }
