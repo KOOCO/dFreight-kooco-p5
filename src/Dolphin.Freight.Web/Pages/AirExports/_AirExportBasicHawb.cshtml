@@ -83,10 +83,6 @@
         myWindow = window.open("@Url.Action("PackageLabelListAirExportHawb", "Docs")", 'width=1200,height=800');
         myWindow.focus()
     }
-    function getBankDraftAirExportHawb() {
-        myWindow = window.open("@Url.Action("BankDraftAirExportHawb", "Docs", new { hawbId = @Model.AirExportHawbDto.Id })", 'Empty', 'width=1200,height=800');
-        myWindow.focus()
-    }
     function getPickupDeliveryOrderAirExportHawb() {
         var idNo = '@Model.AirExportHawbDto.Id';
         myWindow = window.open("@Url.Action("PickupDeliveryOrderAirExportHawb", "Docs")", 'width=1200,height=800');
@@ -159,7 +155,7 @@
                 <a class='dropdown-item' href='javascript:void(0)' onclick="getBookingConfirmationAirExportHawb()">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="getBankDraftAirExportHawb()">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getBankDraftAirExportHawb('@Url.Action("BankDraftAirExportHawb", "Docs", new { hawbId = @Model.AirExportHawbDto.Id })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
                 </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="getPackageLabelAirExportHawb()">
