@@ -120,7 +120,7 @@
         <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrderAirExportHawb()">
             <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
         </a>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="getCertificateOfOrigin()">
+        <a class='dropdown-item' href='javascript:void(0)' onclick="DangerousGoods('@Url.Action("DangerousGoods", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
             <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
         </a>
         <li class="dropdown-divider"></li>

@@ -382,3 +382,7 @@ function setFilteredDropdown() {
         })
     }, 400)
 }
+function DangerousGoods(url) {
+    myWindow = window.open(url, "Dangerous Goods", 'width=1200,height=800')
+    myWindow.focus()
+}

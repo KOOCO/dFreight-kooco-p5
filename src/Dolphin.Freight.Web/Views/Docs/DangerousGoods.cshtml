@@ -58,13 +58,13 @@
 		});
 
         document.getElementById("reportLink").onclick = function() {
-            document.getElementById("myForm").submit();
+            //document.getElementById("myForm").submit();
         }
     });
 </script>
 <form id="myForm" name="myForm" method="POST">
-    <div style="background-color:black;display: flex;justify-content:center;height:100%">
-    <div style="width:900px;background-color:white;height:170%" id="form" name = "form" class="edit">
+    <div style="background-color:black;display: flex;justify-content:center;">
+    <div style="width:900px;background-color:white;height:100%" id="form" name = "form" class="edit">
         <div class="container" style="background-color:black">    
             <div style="display:flex;justify-content: center;" class="item-left">
                 <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
@@ -78,7 +78,7 @@
 
     <div class="topbar-block">
         Data Source :
-        <select class="select w-160px" onchange="loadDataSource(this)">
+        <select disabled class="select w-160px" onchange="loadDataSource(this)">
             <option selected="selected" value="loadInitial">Shipment</option>
             <option value="loadDraft">Last Modified</option>
             <option value="loadEmptyFromDraft">Load empty fields from last modified</option>
@@ -155,7 +155,7 @@
                             <div class="item-pdf auto-font-size data-height-md __width-lg">
                             </div>
                             <div class="item-edit hover-toggle-icon-text-template">
-                                <textarea name="shipper_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.shipper_area" id="id_shipper_area">
+                                <textarea name="Shipper" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.shipper_area" id="id_shipper_area">
                                     @Model.Shipper
                                 </textarea>
                           </div>
@@ -165,10 +165,10 @@
                         <div class="title">Air Waybill No.</div>
                         <div class="data">
                             <div class="item-pdf auto-font-size __width-lg">
-                                <span>@Model.AirWayBillNo</span>
+                                <span> </span>
                             </div>
                             <div class="item-edit hover-toggle-icon-text-template">
-                                <input type="text" name="HBL_NO" value="AH-23030003" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.HBL_NO" id="id_HBL_NO" class="ng-isolate-scope">
+                                <input name="AirWayBillNo" value="@Model.AirWayBillNo" />
                             </div>
                         </div>
                         <strong>Page 1 of 1</strong>
@@ -178,7 +178,7 @@
                                 <span></span>
                             </div>
                             <div class="item-edit hover-toggle-icon-text-template">
-                                <input type="text" name="MBL_NO" value="695-33679332" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.MBL_NO" id="id_MBL_NO" class="ng-isolate-scope">
+                                <input type="text" name="Shipper" value="@Model.Shipper" >
                             </div>
                         </div>
                     </td>
@@ -189,11 +189,9 @@
                         <div class="data">
                           
                             <div class="item-edit hover-toggle-icon-text-template">
-                                <textarea name="consignee_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.consignee_area" id="id_consignee_area">
+                                <textarea name="Consignee" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope">
                                     @Model.Consignee
                                 </textarea>
-                            <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-otb-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-otb-c260="" class="icon-text-template" style="top: 3px; left: 327px;"></span><!---->
-
                         </div>
                         </div>
                     </td>
@@ -211,7 +209,7 @@
                             <tr class="border-b">
                                 <td class="border-r">
                                     This Shipment is within the limitations prescribed for: <strong>(delete non-applicable)</strong>
-                                    <div class="select-group">
+                                    <div class="select-group" style="display: flex;">
 
                                         
                                             <label class="select-group__item " ng-class="{'selected': vm.prescribedFor === 'PASSENGER' }">
