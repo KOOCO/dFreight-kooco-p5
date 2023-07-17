@@ -179,7 +179,7 @@ namespace Dolphin.Freight.Web.Controllers
                                                                                 ? JsonConvert.DeserializeObject<OceanExportMblDto>(TempData["PrintData"].ToString())
                                                                                 : await _oceanExportMblAppService.GetAsync(oceanExportMblId);
 
-            if(oceanExportMbl.Id != oceanExportMblId && oceanExportMblId != Guid.Empty)
+            if (oceanExportMbl.Id != oceanExportMblId && oceanExportMblId != Guid.Empty)
             {
                 oceanExportMbl = await _oceanExportMblAppService.GetAsync(oceanExportMblId);
             }
@@ -2227,7 +2227,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.DESCRIPTION_OF_GOODS = hawb.NatureAndQuantityOfGoods;
             InfoViewModel.WEIGHT_G = hawb.GrossWeightShprKG + " KG" + Environment.NewLine + hawb.GrossWeightShprLB + " LBS";
             InfoViewModel.WEIGHT_C = hawb.ChargeableWeightShprKG + " KG" + Environment.NewLine + hawb.ChargeableWeightShprLB + " LBS";
-            InfoViewModel.MEASUREMENT = hawb.ChargeableWeightCneeKG + " CBM" + Environment.NewLine + (double.Parse(hawb.ChargeableWeightCneeKG)*35.315).ToString("0.00") + " CFT";
+            InfoViewModel.MEASUREMENT = hawb.ChargeableWeightCneeKG + " CBM" + Environment.NewLine + (double.Parse(hawb.ChargeableWeightCneeKG) * 35.315).ToString("0.00") + " CFT";
             InfoViewModel.Show_Container_Information = "true";
             InfoViewModel.CONTAINER_NO = "";
             InfoViewModel.TYPE = "";
@@ -2269,7 +2269,7 @@ namespace Dolphin.Freight.Web.Controllers
 
         public async Task<IActionResult> PackageLabelAirExportHawb(Guid hawbId)
         {
-            PackageLabelAirExportHawbIndexViewModel InfoModel = new ();
+            PackageLabelAirExportHawbIndexViewModel InfoModel = new();
 
             var data = await _airExportHawbAppService.GetAsync(hawbId);
             var mawb = await _airExportMawbAppService.GetAsync(data.MawbId.GetValueOrDefault());
@@ -2502,5 +2502,5 @@ namespace Dolphin.Freight.Web.Controllers
 
         }
 
-    
+    }
 }
