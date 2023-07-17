@@ -395,3 +395,7 @@ function DocumentPackage(url) {
     myWindow = window.open(url, "Document Package", 'width=1200,height=800');
     myWindow.focus();
 }
+function getPreAlertAirExportHawb(url) {
+    myWindow = window.open(url, 'Empty', 'width=1200,height=800');
+    myWindow.focus()
+}

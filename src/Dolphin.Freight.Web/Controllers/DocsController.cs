@@ -2306,13 +2306,31 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/Pdf/PackageLabel/PackageLabelAirExportHawb.cshtml", model);
         }
 
-        public async Task<IActionResult> PreAlertAirExportHawb()
+        public async Task<IActionResult> PreAlertAirExportHawb(Guid hawbId)
         {
+            PreAlertAirExportHawbIndexViewModel InfoModel = new();
 
+            var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
+            var mawb = await _airExportMawbAppService.GetAsync(hawb.MawbId.GetValueOrDefault());
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
 
+            InfoModel.Oversea_Agent = hawb.OverseaAgent;
+            InfoModel.Hawb_No = hawb.HawbNo;
+            InfoModel.Mawb_No = mawb.MawbNo;
+            InfoModel.Consignee = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.ConsigneeId)).Select(s => s.Text));
+            InfoModel.Shipper_Ref = hawb.ActualShippedr;
+            InfoModel.Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.IssuingCarrier)).Select(s => s.Text));
+            InfoModel.Flight_No = mawb.FlightNo;
+            InfoModel.Origin = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(hawb.DepartureId)).Select(s => s.Text));
+            InfoModel.Destination = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(hawb.DestinationId)).Select(s => s.Text));
+            InfoModel.Flight_Date = string.Concat(mawb.DepatureDate);
+            InfoModel.Filing_No = mawb.FilingNo;
+            InfoModel.ETA = string.Concat(mawb.ArrivalDate);
+            InfoModel.Gross_Weight = hawb.GrossWeightShprKG;
+            InfoModel.Total_Package = hawb.Package + " " + hawb.PackageUnit;
 
-
-            return View();
+            return View(InfoModel);
         }
 
         public async Task<IActionResult> PackageLabelListAirExportHawb()
