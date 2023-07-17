@@ -56,6 +56,7 @@ using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Accounting.InvoiceBills;
 
 using Dolphin.Freight.Web.ViewModels.CertificateOfOriginAirExportHawb;
+using NPOI.OpenXmlFormats.Wordprocessing;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -2431,13 +2432,54 @@ namespace Dolphin.Freight.Web.Controllers
             return View();
         }
 
-        public async Task<IActionResult> BookingConfirmationAirExportHawb()
+        public async Task<IActionResult> BookingConfirmationAirExportHawb(Guid hawbId)
         {
+            BookingConfirmationAirExportHawbModel InfoModel = new();
 
+            var data = await _airExportHawbAppService.GetAsync(hawbId);
+            var mawb = await _airExportMawbAppService.GetAsync(data.MawbId.GetValueOrDefault());
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
 
+            InfoModel.HblNo = string.Concat(data.HawbNo);
+            InfoModel.ActualShipper = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.ActualShippedr)).Select(s => s.Text));
+            InfoModel.File_No = string.Concat(mawb.MawbNo);
+            InfoModel.BookingDate = string.Concat(data.BookingDate);
+            InfoModel.PoNo = string.Concat(data.PONo);
+            InfoModel.ItnNo = string.Concat(data.ITNNo);
+            InfoModel.Consignee = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.ConsigneeId)).Select(s => s.Text));
+            InfoModel.Agent = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.OverseaAgent)).Select(s => s.Text));
+            InfoModel.Notify = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.Notify)).Select(s => s.Text));
+            InfoModel.Flight_No = string.Concat(mawb.FlightNo);
+            InfoModel.Departure = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(data.DepartureId)).Select(s => s.Text));
+            InfoModel.Destination = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(data.DestinationId)).Select(s => s.Text));
+            InfoModel.Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.DeliveryTo)).Select(s => s.Text));
+            InfoModel.ETD = string.Concat(mawb.DepatureDate);
+            InfoModel.ETA = string.Concat(mawb.ArrivalDate);
+            InfoModel.Measurement = data.ChargeableWeightCneeLB == null ? "" : string.Concat(data.ChargeableWeightCneeLB) + "CBM" + " " + (double.Parse(data.ChargeableWeightCneeLB) * 35.315).ToString("0.00") + "CFT";
+            InfoModel.PKG = string.Concat(data.Package) + " " + string.Concat(data.PackageUnit);
+            InfoModel.Deliver_To = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.DeliveryTo)).Select(s => s.Text));
+            InfoModel.CargoPickUp = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.CargoPickup)).Select(s => s.Text));
+            InfoModel.Trucker = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data.Trucker)).Select(s => s.Text));
 
+            return View(InfoModel);
+        }
 
-            return View();
+        [HttpPost]
+        public async Task<IActionResult> BookingConfirmationAirExportHawb(BookingConfirmationAirExportHawbModel model)
+        {
+            model.BaseUrl = string.Format("{0}://{1}/", HttpContext.Request.Scheme, HttpContext.Request.Host);
+
+            string Input = JsonConvert.SerializeObject(model);
+
+            ReportLog.ReportId = model.ReportId;
+            ReportLog.ReportName = "BookingConfirmationAirExportHawb";
+            ReportLog.ReportData = Input;
+            ReportLog.LastUpdateTime = DateTime.Now;
+
+            await _reportLogAppService.UpdateReportLog(ReportLog);
+
+            return await _generatePdf.GetPdf("Views/Docs/Pdf/BookingConfirmation/BookingConfirmationAirExportHawb.cshtml", model);
         }
         public async Task<IActionResult> HawbPrintAirExportHawb()
         {
