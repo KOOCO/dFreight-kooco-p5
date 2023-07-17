@@ -76,9 +76,9 @@
             myWindow = window.open("@Url.Action("PackageLabelListAirExportHawb", "Docs")", 'width=1200,height=800');
             myWindow.focus()
         }
-        function getPickupDeliveryOrderAirExportHawb() {
+        function getBankDraftAirExportHawb() {
             var idNo = '@Model.AirExportHawbDto.Id';
-            myWindow = window.open("@Url.Action("PickupDeliveryOrderAirExportHawb", "Docs")", 'width=1200,height=800');
+            myWindow = window.open("@Url.Action("BankDraftAirExportHawb", "Docs")", 'width=1200,height=800');
             myWindow.focus()
         }
         function getCommercialInvoiceAirExportHawb() {
@@ -433,6 +433,9 @@
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getPackingListAirExportHawb()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Dispatch List"]
+                                    </a>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrderAirExportHawb('@Url.Action("PickupDeliveryOrderAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="DangerousGoods('@Url.Action("DangerousGoods", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods Declaration"]
