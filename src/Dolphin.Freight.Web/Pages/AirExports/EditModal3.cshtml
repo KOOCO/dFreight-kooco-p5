@@ -77,8 +77,7 @@
             myWindow.focus()
         }
         function getBankDraftAirExportHawb() {
-            var idNo = '@Model.AirExportHawbDto.Id';
-            myWindow = window.open("@Url.Action("BankDraftAirExportHawb", "Docs")", 'width=1200,height=800');
+            myWindow = window.open("@Url.Action("BankDraftAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })", 'width=1200,height=800');
             myWindow.focus()
         }
         function getCommercialInvoiceAirExportHawb() {
