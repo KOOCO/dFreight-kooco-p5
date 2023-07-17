@@ -117,7 +117,7 @@
                                 <table>
                                     <tbody><tr>
                                         <td class="w-50">&nbsp;</td>
-                                        <td class="w-50">@Model.HawbNo <input type="hidden" name="HawbNo" /> </td>
+                                        <td class="w-50">@Model.AirWayBillNo <input type="hidden" name="AirWayBillNo" /> </td>
                                     </tr>
                                 </tbody></table>
                             </td>
@@ -137,7 +137,7 @@
                                     </tr>
                                 </tbody></table>
                                 <div class="data">
-                                    <div><textarea name="Shippper" cols="40" rows="5">@Model.Shippper</textarea></div>
+                                    <div class="item-edit"><textarea name="Shippper" cols="40" rows="5">@Model.Shippper</textarea></div>
                                 </div>
                             </td>
                             <td class="td w-50 border-b">
@@ -150,12 +150,12 @@
                                         </td>
                                         <td class="w-70">
                                             <div class="margin-t-sm">
-                                                <div><textarea name="IssuyingAgent" cols="40" rows="2">@Model.IssuyingAgent</textarea>
+                                                <div class="item-edit"><textarea name="IssuingCarrier" cols="40" rows="2">@Model.IssuingCarrier</textarea>
                                                     <span style="top: 3px; left: 228px;"></span>
                                                 </div>
                                             </div>
-                                            <div>
-									            <textarea name="issue_by_address" cols="40" rows="6">@Model.IssuyingAgent</textarea>
+                                            <div class="item-edit">
+									            <textarea name="issue_by_address" cols="40" rows="6" style="margin-top:5px">@Model.AirWayBillNo</textarea>
 								            </div>
                                         </td>
                                     </tr>
@@ -178,7 +178,7 @@
                                     </tr>
                                 </tbody></table>
                                 <div class="data">
-                                    <div><textarea name="consignee_area" cols="40" rows="5">11</textarea><span style="top: 5px; left: 331px;"></span></div>
+                                    <div class="item-edit"><textarea name="Consignee" cols="40" rows="5">@Model.Consignee</textarea><span style="top: 5px; left: 331px;"></span></div>
                                 </div>
                             </td>
                             <td class="w-50 border-b">
@@ -191,7 +191,7 @@
                             <td class="td border-r border-b">
                                 <div class="title text-var col-padding">Issuing Carrier's Agent Name and City</div>
                                 <div class="data">
-                                    <div><textarea> @Model.IssuyingAgent</textarea><span style="top: 5px; left: 331px;"></span></div>
+                                    <div class="item-edit"><textarea name="IssuingCarrier"> @Model.IssuingCarrier</textarea></div>
                                 </div>
                                 <table>
                                     <tbody><tr class="border-b">
@@ -202,13 +202,13 @@
                                         <td class="w-50 border-r">
                                             <div class="title text-var">Agent's IATA Code</div>
                                             <div class="data">
-                                                <div><input type="text" name="agent_IATA_code"><span style="top: 3px; left: 148px;"></span></div>
+                                                <div class="item-edit"><input type="text" name="IATA" value="@Model.IATA"></div>
                                             </div>
                                         </td>
                                         <td class="w-50">
                                             <div class="title text-var">Account No.</div>
                                             <div class="data">
-                                                <div><input type="text" name="account_no"><span style="top: 3px; left: 148px;"></span></div>
+                                                <div class="item-edit"><input type="text" name="account_no"></div>
                                             </div>
                                         </td>
                                     </tr>
@@ -219,25 +219,20 @@
                                     <div class="title text-var inline-block">Accounting Information</div>
                                     <div class="item-edit pull-right text-var col-padding-t">
                                         Load from:
-
-                                
                                             <label class="text-10 margin-r-xs _margin-b-0">
-                                                <input type="radio" name="accounting_information_choice" value="Notify" ng-model="vm.accountingInformationChoice" ng-change="vm.onAccountingInformationChoiceChanged()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                                                <input type="radio" name="accounting_information_choice">
                                                 Notify
                                             </label>
                                 
                                             <label class="text-10 margin-r-xs _margin-b-0">
-                                                <input type="radio" name="accounting_information_choice" value="Oversea Agent" ng-model="vm.accountingInformationChoice" ng-change="vm.onAccountingInformationChoiceChanged()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                                                <input type="radio" name="accounting_information_choice">
                                                 Oversea Agent
                                             </label>
-                                
                                     </div>
                                     <div class="data">
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <textarea name="accounting_information_area" cols="40" rows="5" class="text-scroll no-adjustment ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.accounting_information_area" ng-model="vm.accountingInformation" id="id_accounting_information_area"></textarea>
+                                            <textarea name="accounting_information_area" cols="40" rows="5"></textarea>
                                         </div>
-                                        <div class="item-pdf auto-font-size __textarea-lg">
-                                            <span></span></div>
                                     </div>
                                 </div>
                         
@@ -247,10 +242,7 @@
                             <td class="w-50 td border-b border-r">
                                 <div class="title text-var">Airport of Departure(addr. of First Carrier) and Requested Routing</div>
                                 <div class="data">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="APOL" value="(AAA) ANAA" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.APOL" id="id_APOL" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 327px;"></span><!---->
-
-                                    </div>
-                                    <div class="item-pdf auto-font-size __width-air-dep"><span>(AAA) ANAA</span></div>
+                                    <div class="item-edit"><input type="text" name="DepartureName" value="@Model.DepartureName"></div>
                                 </div>
                             </td>
                             <td class="w-50 td border-b">
@@ -271,10 +263,7 @@
                                     <tbody><tr>
                                         <td class="border-r w-30 td">
                                             <div class="data">
-                                                <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="filing_no" value="AEX-23030003" class="tune-l ng-isolate-scope" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.filing_no" id="id_filing_no"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 75px;"></span><!---->
-
-                                                 </div>
-                                                <div class="item-pdf auto-font-size __width-filing"><span>AEX-23030003</span></div>
+                                                <div class="item-edit"><input type="text" name="DocNumber" value="@Model.DocNumber"></div>
                                             </div>
                                         </td>
                                         <td class="border-r w-40 td">
@@ -293,10 +282,7 @@
                                     <tbody><tr>
                                         <td class="w-12 border-r text-center td">
                                             <div class="title text-var">To</div>
-                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="routing_to" value="AAB" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.routing_to" id="id_routing_to" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 23px;"></span><!---->
-
-                                            </div>
-                                            <div class="item-pdf text-bold auto-font-size __width-to"><span>AAB</span></div>
+                                            <div class="item-edit"><input type="text" name="DestinationName" value="@Model.DestinationName" style="top: 3px; left: 23px;"></div>
                                         </td>
                                         <td class="w-48 border-r td">
                                             <table class="table-padding">
@@ -307,44 +293,31 @@
                                                     <td class="w-40 td border-b">
                                                         <div class="title-oblique text-center text-var">Routing and Destination</div>
                                                     </td>
-                                                    <td class="w-15 td slash-md  slash-red-right" ng-class="vm.classSlashR">
+                                                    <td class="w-15 td">
                                                         &nbsp;
                                                     </td>
                                                 </tr>
                                             </tbody></table>
                                             <div class="col-padding-double">
-                                                <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="by_first_carrier" value="ABBOTT INC124" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.by_first_carrier" id="id_by_first_carrier" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 143px;"></span><!---->
+                                                <div class="item-edit"><input type="text" name="BillToName" value="@Model.BillTo" style="top: 3px; left: 143px;">
                                                 </div>
-                                                <div class="item-pdf text-bold"><small><div class="auto-font-size __width-carrier"><span>ABBOTT INC124</span></div></small></div>
                                             </div>
                                         </td>
                                         <td class="w-10 border-r text-center td">
                                             <div class="title text-var padding-b-xs">to</div>
-                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="routing_to_1" class="tune-50 ng-isolate-scope" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.routing_to_1" id="id_routing_to_1"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 7px;"></span><!---->
-
-                                            </div>
-                                            <div class="item-pdf text-bold auto-font-size __width-xs"><span>&nbsp;</span></div>
+                                            <div class="item-edit"><input type="text" name="routing_to_1"></div>
                                         </td>
                                         <td class="w-10 border-r text-center td">
                                             <div class="title text-var padding-b-xs">by</div>
-                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="routing_by_1" class="tune-50 ng-isolate-scope" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.routing_by_1" id="id_routing_by_1"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 7px;"></span><!---->
-
-                                        </div>
-                                            <div class="item-pdf text-bold auto-font-size __width-xs"><span>&nbsp;</span></div>
+                                            <div class="item-edit"><input type="text" name="routing_by_1"></div>
                                         </td>
                                         <td class="w-10 border-r text-center td">
                                             <div class="title text-var padding-b-xs">to</div>
-                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="routing_to_2" class="tune-50 ng-isolate-scope" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.routing_to_2" id="id_routing_to_2"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 7px;"></span><!---->
-
-                                            </div>
-                                            <div class="item-pdf text-bold auto-font-size __width-xs"><span>&nbsp;</span></div>
+                                            <div class="item-edit"><input type="text" name="routing_to_2"></div>
                                         </td>
                                         <td class="w-10 text-center td">
                                             <div class="title text-var padding-b-xs">by</div>
-                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="routing_by_2" class="tune-50 ng-isolate-scope" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.routing_by_2" id="id_routing_by_2"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 7px;"></span><!---->
-
-                                            </div>
-                                            <div class="item-pdf text-bold auto-font-size __width-xs"><span>&nbsp;</span></div>
+                                            <div class="item-edit"><input type="text" name="routing_by_2"></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -363,14 +336,10 @@
                                 <table class="lineheight-nor">
                                     <tbody><tr class="text-center">
                                         <td class="w-12 border-r">
-                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="currency" value="USD" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.currency" id="id_currency" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 23px;"></span><!---->
-                                            </div>
-                                            <div class="item-pdf">USD</div>
+                                            <div class="item-edit"><input type="text" name="currency" value="USD"></div>
                                         </td>
                                         <td class="w-8 border-r">
-                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="charges_code" value="PP" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.charges_code" id="id_charges_code" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 8px;"></span><!---->
-
-                                        </div>
+                                            <div class="item-edit"><input type="text" name="charges_code" value="PP"></div>
                                             <div class="item-pdf">PP</div>
                                         </td>
                                         <td class="w-7 border-r">
@@ -393,8 +362,8 @@
                                             <div class="item-edit"><input type="checkbox" name="other_charges_collect" id="id_other_charges_collect"></div>
                                             <div class="item-pdf">&nbsp;</div>
                                         </td>
-                                        <td class="w-25 border-r">NVD</td>
-                                        <td class="w-25">NCV</td>
+                                        <td class="w-25 border-r">@Model.NVD <input type="hidden" name="@Model.NVD" /></td>
+                                        <td class="w-25">@Model.NCV <input type="hidden" name="@Model.NCV" /></td>
                                     </tr>
                                 </tbody></table>
                             </td>
@@ -405,10 +374,7 @@
                                     <tbody><tr>
                                         <td class="w-60 border-r text-center">
                                             <div class="title-oblique text-var">Airport of Destination</div>
-                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="APOD" value="(AAB) ARRABURY" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.APOD" id="id_APOD" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 200px;"></span><!---->
-
-                                            </div>
-                                            <div class="item-pdf auto-font-size __width-air-des"><span>(AAB) ARRABURY</span></div>
+                                            <div class="item-edit"><input type="text" name="DestinationName" value="@Model.DestinationName"></div>
                                         </td>
                                         <td class="w-40">
                                             <table class="table-padding">
@@ -421,16 +387,10 @@
                                             <table class="table-padding">
                                                 <tbody><tr>
                                                     <td class="w-50 text-center border-r">
-                                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="flight_no_first" value="RTETRR / 07-10-2023" class="tune-l ng-isolate-scope" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.flight_no_first" id="id_flight_no_first"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 47px;"></span><!---->
-
-                                                        </div>
-                                                        <div class="item-pdf auto-font-size __width-request"><span>RTETRR / 07-10-2023</span></div>
+                                                        <div class="item-edit"><input type="text" name="ArrivalDate" value="@Model.ArrivalDate" /></div>
                                                     </td>
                                                     <td class="w-50 text-center">
-                                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="flight_no_last" class="tune-l ng-isolate-scope" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.flight_no_last" id="id_flight_no_last"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 47px;"></span><!---->
-
-                                                        </div>
-                                                        <div class="item-pdf auto-font-size __width-request"><span>&nbsp;</span></div>
+                                                        <div class="item-edit"><input type="text" name="flight_no_last"></div>
                                                     </td>
                                                 </tr>
                                             </tbody></table>
@@ -443,9 +403,7 @@
                                     <tbody><tr>
                                         <td class="border-r w-20 text-center">
                                             <div class="title-oblique text-var lineheight-nor">Amount of Insurance</div>
-                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="insurance" value="XXX" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.insurance" id="id_insurance" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 52px;"></span><!---->
-
-                                            </div>
+                                            <div class="item-edit"><input type="text" name="insurance" value="XXX"></div>
                                             <div class="item-pdf auto-font-size __width-amount"><span>XXX</span></div>
                                         </td>
                                         <td class="w-80 text-var col-padding lineheight-nor">
@@ -466,17 +424,9 @@
                                         <td colspan="2">
                                             <div class="title text-var">Handling Information</div>
                                             <div class="data">
-                                                <div class="item-pdf auto-font-size __textarea-handing">
-                                            
-                                                        <span>JJJ</span>
-                                            
+                                                <div class="item-edit">
+                                                    <textarea name="HandlingInformation" cols="40" rows="2">@Model.HandlingInformation</textarea>
                                                 </div>
-                                                <div class="item-edit hover-toggle-icon-text-template">
-                                                    <textarea name="handling_information" cols="40" rows="2" class="w-100 text-scroll no-adjustment ng-isolate-scope" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.handling_information" id="id_handling_information">JJJ</textarea>
-                                            
-                                                <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 5px; left: 715px;"></span><!---->
-
-                                            </div>
                                             </div>
                                         </td>
                                     </tr>
@@ -490,9 +440,7 @@
                                                     </td>
                                                     <td class="w-70 text-sm text-var col-padding">
                                                         These commodities, technology or software were exported from the United States in accordance with the Export Administration Regulations. Ultimate Destination
-                                                        <span class="item-edit hover-toggle-icon-text-template"><input type="text" name="APOD_country_name" value="AUSTRALIA" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.APOD_country_name" class="w-auto _bg-white ng-isolate-scope" placeholder="Country" id="id_APOD_country_name"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: -1px; left: 120px;"></span><!---->
-
-                                                    </span>
+                                                        <span class="item-edit"><input type="text" name="DestinationName" value="@Model.DestinationName"></span>
                                                     </td>
                                                     <td class="w-5">&nbsp;</td>
                                                     <td class="w-20 text-var text-sm">Diversion contrary to U.S. law prohibited.</td>
@@ -502,10 +450,7 @@
                                         </td>
                                         <td class="w-20 text-center border-t border-l">
                                             <div class="title">SCI</div>
-                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="SCI" value="X" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.SCI" id="id_SCI" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 127px;"></span><!---->
-
-                                            </div>
-                                            <div class="item-pdf">X</div>
+                                            <div class="item-edit"><input type="text" name="SCI" value="X"></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -572,13 +517,7 @@
                                     <div class="item-edit">
                                         <label class="text-10 text-bold _bg-white _margin-b-0"><input type="checkbox" name="show_dimension" id="id_show_dimension" checked=""> Show Mark</label>
                                         <div class="__toggle-area hover-toggle-icon-text-template">
-                                            <button class="btn btn-default btn-xs" uib-tooltip="Switch to wide layout" tooltip-placement="top" ng-click="vm.switchMarkAreaStyle()">
-                                                <img ng-hide="vm.isMarkAreaStyleWide" src="/static/freight/img/form/icon_scale_increase.png">
-                                                <img ng-show="vm.isMarkAreaStyleWide" src="/static/freight/img/form/icon_scale_decrease.png" class="ng-hide">
-                                            </button>
-                                            <textarea name="mark_dimension" cols="40" rows="5" class="w-100 text-scroll no-adjustment ng-isolate-scope" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.mark_dimension" style="position: relative; z-index: 2;" id="id_mark_dimension">!!!
-
-        333@123X321X222(CM)</textarea>
+                                            <textarea name="mark_dimension" cols="40" rows="5" style="position: relative; z-index: 2;" id="id_mark_dimension">!!! 333@123X321X222(CM)</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -710,17 +649,11 @@
                                 <table class="table-padding">
                                     <tbody><tr>
                                         <td class="w-50 text-right border-r">
-                                            <div class="item-edit text-center hover-toggle-icon-text-template"><input type="text" name="weight_prepaid" value="972,940.08" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.weight_prepaid" ng-model="vm.showAmountPool.weight_prepaid" id="id_weight_prepaid" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 122px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a42a71b14115" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
+                                            <div class="item-edit"><input type="text" name="weight_prepaid" value="972,940.08"></div>
                                             <div class="item-pdf auto-font-size __width-sm"><span>972,940.08</span></div>
                                         </td>
                                         <td class="w-50 text-right">
-                                            <div class="item-edit text-center hover-toggle-icon-text-template"><input type="text" name="weight_collect" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.weight_collect" ng-model="vm.showAmountPool.weight_collect" id="id_weight_collect" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 122px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a7335d7626f9" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
+                                            <div class="item-edit"><input type="text" name="weight_collect"></div>
                                             <div class="item-pdf auto-font-size __width-sm"><span>&nbsp;</span></div>
                                         </td>
                                     </tr>
@@ -735,18 +668,10 @@
                                 <table class="table-padding">
                                     <tbody><tr>
                                         <td class="w-50 text-right border-r">
-                                            <div class="item-edit text-center hover-toggle-icon-text-template"><input type="text" name="valuation_charge_prepaid" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.valuation_charge_prepaid" ng-model="vm.showAmountPool.valuation_charge_prepaid" id="id_valuation_charge_prepaid" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 122px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="aede055c6529" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
-                                            <div class="item-pdf auto-font-size __width-sm"><span>&nbsp;</span></div>
+                                            <div class="item-edit"><input type="text" name="valuation_charge_prepaid"></div>
                                         </td>
                                         <td class="w-50 text-right">
-                                            <div class="item-edit text-center hover-toggle-icon-text-template"><input type="text" name="valuation_charge_collect" value="333.00" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.valuation_charge_collect" ng-model="vm.showAmountPool.valuation_charge_collect" id="id_valuation_charge_collect" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 122px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a12ddbc6d856" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
-                                            <div class="item-pdf auto-font-size __width-sm"><span>333.00</span></div>
+                                            <div class="item-edit"><input type="text" name="valuation_charge_collect" value="333.00"></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -760,18 +685,10 @@
                                 <table class="table-padding">
                                     <tbody><tr>
                                         <td class="w-50 text-right border-r">
-                                            <div class="item-edit text-center hover-toggle-icon-text-template"><input type="text" name="tax_prepaid" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.tax_prepaid" ng-model="vm.showAmountPool.tax_prepaid" id="id_tax_prepaid" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 122px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a44391055b88" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
-                                            <div class="item-pdf auto-font-size __width-sm"><span>&nbsp;</span></div>
+                                            <div class="item-edit"><input type="text" name="tax_prepaid"></div>
                                         </td>
                                         <td class="w-50 text-right">
-                                            <div class="item-edit text-center hover-toggle-icon-text-template"><input type="text" name="tax_collect" value="3.00" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.tax_collect" ng-model="vm.showAmountPool.tax_collect" id="id_tax_collect" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 122px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a224fc7303e4" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
-                                            <div class="item-pdf auto-font-size __width-sm"><span>3.00</span></div>
+                                            <div class="item-edit"><input type="text" name="tax_collect" value="3.00"></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -781,33 +698,15 @@
                                     <tbody><tr>
                                         <td class="w-60 td">
                                             <div class="title-oblique text-var">Other Charges</div>
-                                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="other_charges_area" cols="40" rows="5" class="text-scroll no-adjustment ng-pristine ng-untouched ng-valid ng-isolate-scope ng-empty" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.other_charges_area" ng-model="vm.showAmountPool.other_charges_area" id="id_other_charges_area">CERTIFICATE OF ORIGIN
-        </textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 236px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a46019010c0c" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
-                                            <div class="item-pdf auto-font-size __textarea-charges"><span>CERTIFICATE OF ORIGIN<br>
-        </span></div>
+                                            <div class="item-edit"><textarea name="other_charges_area" cols="40" rows="5">CERTIFICATE OF ORIGIN</textarea></div>
                                         </td>
                                         <td class="w-20 td text-center">
                                             <div class="title-oblique text-var">PREPAID</div>
-                                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="other_charges_area_prepaid" cols="40" rows="5" class="tune-l text-scroll no-adjustment ng-pristine ng-untouched ng-valid ng-isolate-scope ng-empty" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.other_charges_area_prepaid" ng-model="vm.showAmountPool.other_charges_area_prepaid" id="id_other_charges_area_prepaid">9.00
-        </textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 58px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a39329807cd7" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
-                                            <div class="item-pdf auto-font-size __textarea-prepaid"><span>9.00<br>
-        </span></div>
+                                            <div class="item-edit"><textarea name="other_charges_area_prepaid" cols="40" rows="5">9.00</textarea></div>
                                         </td>
                                         <td class="w-20 td text-center">
                                             <div class="title-oblique text-var">COLLECT</div>
-                                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="other_charges_area_collect" cols="40" rows="5" class="tune-l text-scroll no-adjustment ng-pristine ng-untouched ng-valid ng-isolate-scope ng-empty" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.other_charges_area_collect" ng-model="vm.showAmountPool.other_charges_area_collect" id="id_other_charges_area_collect">
-        </textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 58px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a84e0ccfaba3" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
-                                            <div class="item-pdf auto-font-size __textarea-collect"><span><br>
-        </span></div>
+                                            <div class="item-edit"><textarea name="other_charges_area_collect" cols="40" rows="5"></textarea></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -825,17 +724,10 @@
                                 <table class="table-padding">
                                     <tbody><tr>
                                         <td class="w-50 text-right border-r">
-                                            <div class="item-edit text-center hover-toggle-icon-text-template"><input type="text" name="total_other_charges_due_agent_prepaid" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.total_other_charges_due_agent_prepaid" ng-model="vm.showAmountPool.total_other_charges_due_agent_prepaid" id="id_total_other_charges_due_agent_prepaid" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 122px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="accb490e88de" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
-                                            <div class="item-pdf auto-font-size __width-sm"><span>&nbsp;</span></div>
+                                            <div class="item-edit"><input type="text" name="total_other_charges_due_agent_prepaid"></div>
                                         </td>
                                         <td class="w-50 text-right">
-                                            <div class="item-edit text-center hover-toggle-icon-text-template"><input type="text" name="total_other_charges_due_agent_collect" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.total_other_charges_due_agent_collect" ng-model="vm.showAmountPool.total_other_charges_due_agent_collect" id="id_total_other_charges_due_agent_collect" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 122px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ae11b017c600" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
+                                            <div class="item-edit"><input type="text" name="total_other_charges_due_agent_collect"></div>
                                             <div class="item-pdf auto-font-size __width-sm"><span>&nbsp;</span></div>
                                         </td>
                                     </tr>
@@ -850,18 +742,10 @@
                                 <table class="table-padding">
                                     <tbody><tr>
                                         <td class="w-50 text-right border-r">
-                                            <div class="item-edit text-center hover-toggle-icon-text-template"><input type="text" name="total_other_charges_due_carrier_prepaid" value="9.00" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.total_other_charges_due_carrier_prepaid" ng-model="vm.showAmountPool.total_other_charges_due_carrier_prepaid" id="id_total_other_charges_due_carrier_prepaid" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 122px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a2e53fbb9735" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
-                                            <div class="item-pdf auto-font-size __width-sm"><span>9.00</span></div>
+                                            <div class="item-edit"><input type="text" name="total_other_charges_due_carrier_prepaid" value="9.00"></div>
                                         </td>
                                         <td class="w-50 text-right">
-                                            <div class="item-edit text-center hover-toggle-icon-text-template"><input type="text" name="total_other_charges_due_carrier_collect" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.total_other_charges_due_carrier_collect" ng-model="vm.showAmountPool.total_other_charges_due_carrier_collect" id="id_total_other_charges_due_carrier_collect" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 122px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="adf4b736758a" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
-                                            <div class="item-pdf auto-font-size __width-sm"><span>&nbsp;</span></div>
+                                            <div class="item-edit"><input type="text" name="total_other_charges_due_carrier_collect"></div>
                                         </td>
                                     </tr>
                                     <tr class="border-t">
@@ -879,21 +763,19 @@
                                     </tr>
                                     <tr>
                                         <td class="col-padding text-bold">
-                                            <div class="item-edit hover-toggle-icon-text-template">
+                                            <div class="item-edit">
                                                 <div class="margin-b-xs">
                                             
                                                         <label class="text-10 margin-r-xs _margin-b-0" for="id_signature_of_shipper_or_agent_choice_0">
-                                                        <input type="radio" id="id_signature_of_shipper_or_agent_choice_0" name="signature_of_shipper_or_agent_choice" value="agent" ng-model="vm.signatureOfShipperOrAgentChoice" ng-change="vm.onSignatureOfShipperOrAgentChoiceChange()" hc-user-preference="ae_awb_print_signature_of_shipper_or_agent_choice" class="ng-untouched ng-valid ng-dirty ng-not-empty"> Agent and Shipper
-                                                    </label>
+                                                        <input type="radio" name="signature_of_shipper_or_agent_choice" value="agent"> Agent and Shipper
+                                                        </label>
                                             
                                                         <label class="text-10 margin-r-xs _margin-b-0" for="id_signature_of_shipper_or_agent_choice_1">
-                                                        <input type="radio" id="id_signature_of_shipper_or_agent_choice_1" name="signature_of_shipper_or_agent_choice" value="shipper" ng-model="vm.signatureOfShipperOrAgentChoice" ng-change="vm.onSignatureOfShipperOrAgentChoiceChange()" hc-user-preference="ae_awb_print_signature_of_shipper_or_agent_choice" class="ng-untouched ng-valid ng-dirty ng-not-empty"> Shipper
+                                                        <input type="radio" id="id_signature_of_shipper_or_agent_choice_1" name="signature_of_shipper_or_agent_choice" value="shipper"> Shipper
                                                     </label>
-                                            
                                                 </div>
-                                                <textarea name="signature_of_shipper_or_agent" cols="40" rows="2" class="text-scroll no-adjustment ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.signature_of_shipper_or_agent" ng-model="vm.signatureOfShipperOrAgent" id="id_signature_of_shipper_or_agent">HARD CORE TECHNOLOGY</textarea>
+                                                <textarea name="signature_of_shipper_or_agent" cols="40" rows="2">HARD CORE TECHNOLOGY</textarea>
                                             </div>
-                                            <div class="item-pdf auto-font-size __textarea-signature"><span>HARD CORE TECHNOLOGY</span></div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -930,16 +812,10 @@
                                     </tr>
                                     <tr>
                                         <td class="w-50 border-r text-right">
-                                            <div class="item-edit text-center col-padding hover-toggle-icon-text-template"><input type="text" name="total_prepaid" value="972,949.08" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.total_prepaid" ng-model="vm.showAmountPool.total_prepaid" id="id_total_prepaid" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 5px; left: 124px;"></span><!---->
-
-        </div>
-                                            <div class="item-pdf auto-font-size __width-sm col-padding"><span>972,949.08</span></div>
+                                            <div class="item-edit"><input type="text" name="total_prepaid" value="972,949.08"></div>
                                         </td>
                                         <td class="w-50 text-right">
-                                            <div class="item-edit text-center col-padding hover-toggle-icon-text-template"><input type="text" name="total_collect" value="336.00" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.total_collect" ng-model="vm.showAmountPool.total_collect" id="id_total_collect" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 5px; left: 124px;"></span><!---->
-
-        </div>
-                                            <div class="item-pdf auto-font-size __width-sm col-padding"><span>336.00</span></div>
+                                            <div class="item-edit"><input type="text" name="total_collect" value="336.00"></div>
                                         </td>
                                     </tr>
                                     <tr class="border-t">
@@ -968,16 +844,10 @@
                                     </tr>
                                     <tr>
                                         <td class="w-50 border-r text-right bg-light">
-                                            <div class="item-edit text-center col-padding hover-toggle-icon-text-template"><input type="text" name="currency_conversion_rate" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.currency_conversion_rate" ng-model="vm.showAmountPool.currency_conversion_rate" id="id_currency_conversion_rate" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 5px; left: 124px;"></span><!---->
-
-        </div>
-                                            <div class="item-pdf auto-font-size __width-sm col-padding"><span>&nbsp;</span></div>
+                                            <div class="item-edit"><input type="text" name="currency_conversion_rate"></div>
                                         </td>
                                         <td class="w-50 text-right bg-light">
-                                            <div class="item-edit text-center col-padding hover-toggle-icon-text-template"><input type="text" name="cc_charges_in_dest" value="222.00" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.cc_charges_in_dest" ng-model="vm.showAmountPool.cc_charges_in_dest" id="id_cc_charges_in_dest" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 5px; left: 124px;"></span><!---->
-
-        </div>
-                                            <div class="item-pdf auto-font-size __width-sm col-padding"><span>222.00</span></div>
+                                            <div class="item-edit"><input type="text" name="cc_charges_in_dest" value="222.00"></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -986,34 +856,21 @@
                                 <table>
                                     <tbody><tr>
                                         <td class="col-padding text-bold">
-                                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="signature_of_issuing_carrier" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.signature_of_issuing_carrier" id="id_signature_of_issuing_carrier">HARD CORE TECHNOLOGY
-                                                AS AGENT FOR, THE CARRIER, ABBOTT INC124</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 409px;"></span><!---->
-
-        </div>
-                                            <div class="item-pdf auto-font-size __textarea-signature"><span>HARD CORE TECHNOLOGY<br>
-                                                AS AGENT FOR, THE CARRIER, ABBOTT INC124</span></div>
+                                            <div class="item-edit"><textarea name="signature_of_issuing_carrier" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope">HARD CORE TECHNOLOGY
+                                                AS AGENT FOR, THE CARRIER, ABBOTT INC124</textarea></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
                                 <table class="col-padding">
                                     <tbody><tr class="text-bold">
                                         <td class="w-25 text-center">
-                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="executed_on_date" value="03-22-2023" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.executed_on_date" id="id_executed_on_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 90px;"></span><!---->
-
-        </div>
-                                            <div class="item-pdf auto-font-size __width-date"><span>03-22-2023</span></div>
+                                            <div class="item-edit"><input type="text" name="executed_on_date" value="03-22-2023"></div>
                                         </td>
                                         <td class="w-25 text-center">
-                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="executed_at_place" value="AAA" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.executed_at_place" id="id_executed_at_place" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 90px;"></span><!---->
-
-        </div>
-                                            <div class="item-pdf auto-font-size __width-date"><span>AAA</span></div>
+                                            <div class="item-edit"><input type="text" name="executed_at_place" value="AAA"></div>
                                         </td>
                                         <td class="w-50 text-center">
-                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="signature_of_issuing_carrier_agent" value="HANJUN LIN" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.signature_of_issuing_carrier_agent" id="id_signature_of_issuing_carrier_agent" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 201px;"></span><!---->
-
-        </div>
-                                            <div class="item-pdf auto-font-size __width-date"><span>HANJUN LIN</span></div>
+                                            <div class="item-edit"><input type="text" name="signature_of_issuing_carrier_agent" value="HANJUN LIN"></div>
                                         </td>
                                     </tr>
                                     <tr class="border-t text-sm text-var text-center">
@@ -1040,10 +897,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="text-right" colspan="3">
-                                                        <div class="item-edit text-center col-padding hover-toggle-icon-text-template"><input type="text" name="charges_at_destination" value="666.00" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.charges_at_destination" ng-model="vm.showAmountPool.charges_at_destination" id="id_charges_at_destination" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 5px; left: 124px;"></span><!---->
-
-        </div>
-                                                        <div class="item-pdf auto-font-size __width-sm col-padding"><span>666.00</span></div>
+                                                        <div class="item-edit"><input type="text" name="charges_at_destination" value="666.00"></div>
                                                     </td>
                                                 </tr>
                                             </tbody></table>
@@ -1063,10 +917,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="text-right border-r" colspan="3">
-                                                        <div class="item-edit text-center col-padding hover-toggle-icon-text-template"><input type="text" name="total_collect_charges" value="1,002.00" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.total_collect_charges" ng-model="vm.showAmountPool.total_collect_charges" id="id_total_collect_charges" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 5px; left: 109px;"></span><!---->
-
-        </div>
-                                                        <div class="item-pdf auto-font-size __width-total-charge col-padding"><span>1,002.00</span></div>
+                                                        <div class="item-edit"><input type="text" name="total_collect_charges" value="1,002.00"></div>
                                                     </td>
                                                 </tr>
                                             </tbody></table>
@@ -1079,12 +930,10 @@
                     </tbody></table>
                     <div class="gap">&nbsp;</div>
                     <div class="col-padding text-bold text-center">
-                        <span class="item-edit ng-binding">
-                            <!-- UserPreference.ae_mawb_print_show_original_and_copy or UserPreference.ae_hawb_print_show_original_and_copy-->
-                            <input type="checkbox" name="show_original" hc-user-preference="ae_hawb_print_show_original_and_copy" ng-model="vm.isShowOriginalAndCopy" id="id_show_original" class="ng-untouched ng-valid ng-dirty ng-not-empty"> Show
+                        <span class="item-edit">
+                            <input type="checkbox" name="show_original"> Show
                             ORIGINAL
                         </span>
-                        <span class="item-pdf"></span>
                     </div>
                 </div>
             </div>

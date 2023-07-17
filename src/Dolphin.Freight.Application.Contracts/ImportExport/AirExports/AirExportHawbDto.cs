@@ -116,6 +116,11 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string DepartureName { get; set; }
         public string DestinationName { get; set; }
         public string CargoPickupName { get; set; }
+        public string IssuingCarrierName { get; set; }
+        public string NotifyName { get; set; }
+        public string IATA { get; set; }
+        public string ActualShipperName { get; set; }
+        public string BillToName { get; set; }
 
         /// <summary>
         /// 是否刪除

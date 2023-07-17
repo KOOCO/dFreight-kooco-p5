@@ -2504,9 +2504,31 @@ namespace Dolphin.Freight.Web.Controllers
 
         public async Task<IActionResult> DocumentPackage(Guid hawbId)
         {
+            var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
 
+            var mawb = await _airExportMawbAppService.GetAsync(hawb.MawbId.GetValueOrDefault());
 
-            return View(new DocumentPackageViewModel());
+            var viewModel = new DocumentPackageViewModel()
+            {
+                AirWayBillNo = hawb.HawbNo,
+                Carrier = hawb.IssuingCarrier,
+                Consignee = hawb.Consignee,
+                DepartureName = hawb.DepartureName,
+                DestinationName = hawb.DestinationName,
+                DocNumber = mawb.FilingNo,
+                GrossWeight = hawb.GrossWeightCneeKG,
+                HandlingInformation = hawb.HandlingInformation,
+                IATA = hawb.IATA,
+                IssuingCarrier = hawb.IssuingCarrierName,
+                Notify = hawb.NotifyName,
+                Shippper = hawb.ActualShipperName,
+                BillTo = hawb.BillToName,
+                ArrivalDate = mawb.ArrivalDate?.ToShortDateString(),
+                NVD = hawb.DVCarriage,
+                NCV = hawb.DVCustoms
+            };
+
+            return View(viewModel);
         }
     }
 }

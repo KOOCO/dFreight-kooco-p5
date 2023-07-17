@@ -244,31 +244,31 @@ namespace Dolphin.Freight.ImportExport.AirExports
 
             var hawb = await GetHawbCardById(Id);
 
-            if(hawb.SalesId != null)
+            if (hawb.SalesId != null)
             {
                 var salesPerson = tradePartners.Where(w => w.Id == hawb.SalesId).FirstOrDefault();
                 hawb.Sales = new Volo.Abp.Users.UserData() { Id = salesPerson.Id, Name = salesPerson?.TPName + " / " + salesPerson?.TPCode };
             }
 
-            if(hawb.ConsigneeId != null)
+            if (hawb.ConsigneeId != null)
             {
                 var consignee = tradePartners.Where(w => w.Id == hawb.ConsigneeId).FirstOrDefault();
                 hawb.Consignee = string.Concat(consignee.TPName, "/", consignee.TPCode);
             }
-            
-            if(hawb.OPId != null)
+
+            if (hawb.OPId != null)
             {
                 var op = tradePartners.Where(w => w.Id == hawb.OPId).FirstOrDefault();
                 hawb.OP = new Volo.Abp.Users.UserData() { Id = op.Id, Name = op.TPName + " / " + op.TPCode };
             }
 
-            if(hawb.Customer != null)
+            if (hawb.Customer != null)
             {
                 var customer = tradePartners.Where(w => w.Id == Guid.Parse(hawb.Customer)).FirstOrDefault();
                 hawb.Customer = string.Concat(customer.TPName, "/", customer.TPCode);
             }
 
-            if(hawb.Trucker != null)
+            if (hawb.Trucker != null)
             {
                 var trucker = tradePartners.Where(w => w.Id == Guid.Parse(hawb.Trucker)).FirstOrDefault();
                 hawb.Trucker = string.Concat(trucker.TPName, "/", trucker.TPCode);
@@ -286,16 +286,41 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 hawb.OverseaAgent = string.Concat(overSeaAgent.TPName, "/", overSeaAgent.TPCode);
             }
 
-            if(hawb.DepartureId != null)
+            if (hawb.DepartureId != null)
             {
                 var departure = portMangements.Where(w => Id == hawb.DepartureId).FirstOrDefault();
                 hawb.DepartureName = departure?.PortName;
             }
 
-            if(hawb.DestinationId != null)
+            if (hawb.DestinationId != null)
             {
                 var destination = portMangements.Where(w => Id == hawb.DestinationId).FirstOrDefault();
                 hawb.DestinationName = destination?.PortName;
+            }
+
+            if (hawb.IssuingCarrier != null)
+            {
+                var issuingCarrier = tradePartners.Where(w => w.Id == Guid.Parse(hawb.IssuingCarrier)).FirstOrDefault();
+                hawb.IssuingCarrierName = string.Concat(issuingCarrier.TPName, "/", issuingCarrier.TPCode);
+                hawb.IATA = issuingCarrier.IataCode;
+            }
+
+            if (hawb.Notify != null)
+            {
+                var notify = tradePartners.Where(w => w.Id == Guid.Parse(hawb.Notify)).FirstOrDefault();
+                hawb.NotifyName = string.Concat(notify.TPName, "/", notify.TPCode);
+            }
+
+            if (hawb.ActualShippedr != null)
+            {
+                var shipper = tradePartners.Where(w => w.Id == Guid.Parse(hawb.ActualShippedr)).FirstOrDefault();
+                hawb.ActualShipperName = string.Concat(shipper.TPName, "/", shipper.TPCode);
+            }
+
+            if (hawb.BillTo != null)
+            {
+                var billTo = tradePartners.Where(w => w.Id == Guid.Parse(hawb.BillTo)).FirstOrDefault();
+                hawb.BillToName = string.Concat(billTo.TPName, "/", billTo.TPCode);
             }
 
             return hawb;
