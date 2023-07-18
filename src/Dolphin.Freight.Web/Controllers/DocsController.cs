@@ -2603,6 +2603,27 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(airExportDetails);
         }
+        
+        #region Private Functions
+        private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
+        {
+            var data = new AirExportDetails();
+
+            switch (pageType)
+            {
+                case FreightPageType.AEMBL:
+                    data = await _airExportMawbAppService.GetAirExportDetailsById(Id);
+                    break;
+                case FreightPageType.AEHBL:
+                    data = await _airExportHawbAppService.GetAirExportDetailsById(Id);
+                    break;
+                default:
+                    break;
+            }
+
+            return data;
+        }
+        #endregion
 
         [HttpPost]
         public async Task<IActionResult> DocumentPackage(AirExportDetails model)
@@ -2737,25 +2758,40 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/HawbProfitReport.cshtml", model);
         }
 
-        #region Private Functions
-        private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
+
+
+        public async Task<IActionResult> BookingConfirmationAirExportMawb(Guid mawbId)
         {
-            var data = new AirExportDetails();
+            BookingConfirmationAirExportMawbModel InfoModel = new();
 
-            switch (pageType)
-            {
-                case FreightPageType.AEMBL:
-                    data = await _airExportMawbAppService.GetAirExportDetailsById(Id);
-                    break;
-                case FreightPageType.AEHBL:
-                    data = await _airExportHawbAppService.GetAirExportDetailsById(Id);
-                    break;
-                default:
-                    break;
-            }
+            var mawb = await _airExportMawbAppService.GetAsync(mawbId);
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
+            var packageUnit = _dropdownService.PackageUnitLookupList;
 
-            return data;
+            InfoModel.ActualShipper = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.ShipperId)).Select(s => s.Text));
+            InfoModel.MawbNo = mawb.MawbNo;
+            InfoModel.File_No = mawb.FilingNo;
+            InfoModel.ItnNo = mawb.ItnNo;
+            InfoModel.Consignee = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.ConsigneeId)).Select(s => s.Text));
+            InfoModel.Notify = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.NotifyId)).Select(s => s.Text));
+            InfoModel.Flight_No = mawb.FlightNo;
+            InfoModel.Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.MawbCarrierId)).Select(s => s.Text));
+            InfoModel.Departure = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DepatureId)).Select(s => s.Text));
+            InfoModel.ETD = string.Concat(mawb.DepatureDate);
+            InfoModel.Destination = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DestinationId)).Select(s => s.Text));
+            InfoModel.ETA = string.Concat(mawb.ArrivalDate);
+            InfoModel.Measurement = mawb.VolumeWeightCbm == 0 ? "" : string.Concat(mawb.VolumeWeightCbm) + " CBM" + " " + (mawb.VolumeWeightCbm * 35.315).ToString("0.00") + " CFT";
+            InfoModel.PKG = string.Concat(mawb.Package) + " " + string.Concat(packageUnit.Where(w => w.Value == Convert.ToString(mawb.MawbPackageUnitId)).Select(s => s.Text));
+            InfoModel.Deliver_To = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.DeliveryId)).Select(s => s.Text));
+
+            return View(InfoModel);
         }
-        #endregion
+        [HttpPost]
+        public async Task<IActionResult> BookingConfirmationAirExportMawb(BookingConfirmationAirExportMawbModel model)
+        {
+            model.IsPDF = true;
+            return await _generatePdf.GetPdf("Views/Docs/BookingConfirmationAirExportMawb.cshtml", model);
+        }
     }
 }
