@@ -500,23 +500,12 @@
                         <tr>
                             <td class="td col-padding border-r _position-relative">
                                 <div class="item-edit padding-b-xs hover-toggle-icon-text-template">
-                                    <textarea name="packages" cols="40" rows="4" class="w-auto text-scroll no-adjustment ng-isolate-scope" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.packages" id="id_packages">333 CARTON(S)</textarea>
-                                <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 40px;"></span><!---->
-
+                                    <textarea name="packages" cols="40" rows="4" >@Model.Package CARTON(S)</textarea>
                                 </div>
-                                <div class="item-pdf auto-font-size __textarea-piece"><span>333 CARTON(S)</span></div>
-
-                                <div class="mark-area " ng-class="{ 'mark-area--lg': vm.isMarkAreaStyleWide }">
-                                    <div class="item-pdf auto-font-size __textarea-mark">
-                                
-                                            <span>!!!<br>
-        <br>
-        333@123X321X222(CM)</span>
-                                
-                                    </div>
+                                <div class="mark-area ">
                                     <div class="item-edit">
                                         <label class="text-10 text-bold _bg-white _margin-b-0"><input type="checkbox" name="show_dimension" id="id_show_dimension" checked=""> Show Mark</label>
-                                        <div class="__toggle-area hover-toggle-icon-text-template">
+                                        <div>
                                             <textarea name="mark_dimension" cols="40" rows="5" style="position: relative; z-index: 2;" id="id_mark_dimension">!!! 333@123X321X222(CM)</textarea>
                                         </div>
                                     </div>
@@ -525,88 +514,54 @@
                                 <table class="table-padding piece-table">
                                     <tbody><tr>
                                         <td class="border-t">
-                                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="total_packages_area" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.total_packages_area" id="id_total_packages_area">333 CARTON(S)</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 19px;"></span><!---->
-
-        </div>
-                                            <div class="item-pdf auto-font-size __textarea-piece-sm"><span>333 CARTON(S)</span></div>
+                                            <div class="item-edit"><textarea name="Package" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope">@Model.Package CARTON(S)</textarea></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
                             </td>
                             <td class="td col-padding border-r text-right" colspan="2">
-                                <div class="item-edit padding-b-xs hover-toggle-icon-text-template">
-                                    <textarea name="gross_weight_area" cols="40" rows="4" class="text-scroll no-adjustment ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.gross_weight_area" ng-model="vm.grossWeight" id="id_gross_weight_area"></textarea>
-                                <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 58px;"></span><!---->
-
-        </div>
-                                <div class="item-pdf auto-font-size __textarea-gw"><span></span></div>
+                                <div class="item-edit">
+                                    <textarea name="gross_weight_area" cols="40" rows="4"></textarea>
+                                </div>
                                 <table class="table-padding gw-table">
                                     <tbody><tr>
                                         <td class="border-t">
-                                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="total_gross_weight_area" cols="40" rows="2" class="text-scroll no-adjustment ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.total_gross_weight_area" ng-model="vm.totalGrossWeight" id="id_total_gross_weight_area"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 55px;"></span><!---->
-
-        </div>
-                                            <div class="item-pdf auto-font-size __textarea-gw-sm"><span></span></div>
+                                            <div class="item-edit"><textarea name="GrossWeight" cols="40" rows="2">@Model.GrossWeight</textarea></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
                             </td>
                             <td class="border-r bg-light">&nbsp;</td>
                             <td class="td col-padding border-r">
-                                <div class="item-edit hover-toggle-icon-text-template"><textarea name="commodity_item_no" cols="40" rows="13" class="text-scroll no-adjustment ng-isolate-scope" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.commodity_item_no" id="id_commodity_item_no"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 47px;"></span><!---->
-
-        </div>
-                                <div class="item-pdf auto-font-size __textarea-commodity"><span></span></div>
+                                <div class="item-edit"><textarea name="commodity_item_no" cols="40" rows="13"></textarea></div>
                             </td>
                             <td class="border-r bg-light">&nbsp;</td>
                             <td class="td col-padding border-r text-right">
-                                <div class="item-edit hover-toggle-icon-text-template"><textarea name="chargeable_weight_area" cols="40" rows="13" class="text-scroll no-adjustment ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.chargeable_weight_area" ng-model="vm.chargeableWeight" id="id_chargeable_weight_area"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 43px;"></span><!---->
-
-        </div>
-                                <div class="item-pdf auto-font-size __textarea-cw"><span></span></div>
+                                <div class="item-edit"><textarea name="ChargableWeight" cols="40" rows="13">@Model.ChargableWeight</textarea></div>
                             </td>
                             <td class="border-r bg-light">&nbsp;</td>
                             <td class="td col-padding border-r">
-                                <div class="item-edit hover-toggle-icon-text-template">
-                                    <textarea name="rate_charge_area" cols="40" rows="13" class="text-scroll no-adjustment ng-pristine ng-untouched ng-valid ng-isolate-scope ng-empty" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.rate_charge_area" ng-model="vm.showAmountPool.rate_charge_area" id="id_rate_charge_area">2.00</textarea>
-                                <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 62px;"></span><!---->
-
-        </div>
-                                <div class="item-pdf auto-font-size __textarea-rate">
-                                    <span>2.00</span>
+                                <div class="item-edit">
+                                    <textarea name="rate_charge_area" cols="40" rows="13"></textarea>
                                 </div>
                             </td>
                             <td class="border-r bg-light">&nbsp;</td>
                             <td class="td col-padding border-r">
-                                <div class="item-edit padding-b-xs hover-toggle-icon-text-template">
-                                    <textarea name="total_charge_area" cols="40" rows="9" class="text-scroll no-adjustment ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.total_charge_area" ng-model="vm.showAmountPool.total_charge_area" id="id_total_charge_area"></textarea>
-                                <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 69px;"></span><!---->
-
-        </div>
-                                <div class="item-pdf auto-font-size __textarea-total"><span></span></div>
+                                <div class="item-edit">
+                                    <textarea name="total_charge_area" cols="40" rows="9"></textarea>
+                                </div>
                                 <table class="table-padding">
                                     <tbody><tr>
                                         <td class="border-t">
-                                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="total_charge_area_summary" cols="40" rows="2" class="text-scroll no-adjustment ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.total_charge_area_summary" ng-model="vm.showAmountPool.total_charge_area_summary" id="id_total_charge_area_summary"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 65px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a82a6cc75ded" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
-                                            <div class="item-pdf auto-font-size __textarea-total-sm"><span></span></div>
+                                            <div class="item-edit"><textarea name="total_charge_area_summary" cols="40" rows="2"></textarea></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
                             </td>
                             <td class="border-r bg-light">&nbsp;</td>
                             <td class="td col-padding">
-                                <div class="item-edit hover-toggle-icon-text-template">
-                                    <textarea name="nature_and_quantity_goods" cols="40" rows="12" class="text-scroll no-adjustment ng-isolate-scope" template-id="cc0957a476ad4de7fdd235f208083035a24cd3128819dfd0b121add238371f5b:AwbReportForm.nature_and_quantity_goods" id="id_nature_and_quantity_goods">??</textarea>
-                                <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-igm-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-igm-c260="" class="icon-text-template" style="top: 3px; left: 199px;"></span><!---->
-
-        <ng-select _ngcontent-igm-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a39af46b7a98" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-        </hc-input-template></div>
-                                <div class="item-pdf auto-font-size __textarea-nature">
-                                    <span>??</span><br>
-                                    <br>
+                                <div class="item-edit">
+                                    <textarea name="nature_and_quantity_goods" cols="40" rows="12">??</textarea>
                                 </div>
                                 "FREIGHT PREPAID"
                             </td>
@@ -774,7 +729,7 @@
                                                         <input type="radio" id="id_signature_of_shipper_or_agent_choice_1" name="signature_of_shipper_or_agent_choice" value="shipper"> Shipper
                                                     </label>
                                                 </div>
-                                                <textarea name="signature_of_shipper_or_agent" cols="40" rows="2">HARD CORE TECHNOLOGY</textarea>
+                                                <textarea name="IssuingCarrier" cols="40" rows="2">@Model.IssuingCarrier</textarea>
                                             </div>
                                         </td>
                                     </tr>
@@ -856,8 +811,7 @@
                                 <table>
                                     <tbody><tr>
                                         <td class="col-padding text-bold">
-                                            <div class="item-edit"><textarea name="signature_of_issuing_carrier" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope">HARD CORE TECHNOLOGY
-                                                AS AGENT FOR, THE CARRIER, ABBOTT INC124</textarea></div>
+                                            <div class="item-edit"><textarea name="IssuingCarrier" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope">@Model.IssuingCarrier</textarea></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -870,7 +824,7 @@
                                             <div class="item-edit"><input type="text" name="executed_at_place" value="AAA"></div>
                                         </td>
                                         <td class="w-50 text-center">
-                                            <div class="item-edit"><input type="text" name="signature_of_issuing_carrier_agent" value="HANJUN LIN"></div>
+                                            <div class="item-edit"><input type="text" name="OverSeaAgent" value="@Model.OverSeaAgent"></div>
                                         </td>
                                     </tr>
                                     <tr class="border-t text-sm text-var text-center">
@@ -922,7 +876,7 @@
                                                 </tr>
                                             </tbody></table>
                                         </td>
-                                        <td class="w-70 border-l text-center text-md text-bold">AH-23030003</td>
+                                        <td class="w-70 border-l text-center text-md text-bold">@Model.AirWayBillNo</td>
                                     </tr>
                                 </tbody></table>
                             </td>

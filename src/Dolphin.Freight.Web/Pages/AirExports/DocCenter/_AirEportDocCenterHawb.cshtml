@@ -83,49 +83,52 @@
                 <a class='dropdown-item' href='#'>
                     <i class="fa fa-lock"></i> @L["Btn:Block"]
                 </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="getHawbPrintAirExportHawb()">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Print HAWB"]
-        </a>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="getCommercialInvoiceAirExportHawb()">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
-        </a>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="getPackingListAirExportHawb()">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
-        </a>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="getCertificateOfOrigin()">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Certificate of Origin"]
-        </a>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="getBookingConfirmationAirExportHawb()">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
-        </a>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="getBankDraftAirExportHawb('@Url.Action("BankDraftAirExportHawb", "Docs", new { hawbId = @Model.AirExportHawbDto.Id })')">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
-        </a>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="getPackageLabelAirExportHawb()">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Package Label"]
-        </a>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="getPackageLabelListAirExportHawb()">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Package Label List"]
-        </a>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="getPreAlertAirExportHawb()">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Pre-Alert"]
-        </a>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrderAirExportHawb()">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
-        </a>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="DangerousGoods('@Url.Action("DangerousGoods", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
-        </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="ProfitReport()">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
-        </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='javascript:void(0)' style="color: #4B77BE; font-weight: 500;" onclick="OpenInTrackTrace()">
-            <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
-        </a>
-        </div>
+                <div class="dropdown-divider"></div>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="DocumentPackage('@Url.Action("DocumentPackage", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
+                    <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getHawbPrintAirExportHawb()">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Print HAWB"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getCommercialInvoiceAirExportHawb()">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPackingListAirExportHawb()">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getCertificateOfOrigin()">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Certificate of Origin"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getBookingConfirmationAirExportHawb()">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getBankDraftAirExportHawb('@Url.Action("BankDraftAirExportHawb", "Docs", new { hawbId = @Model.AirExportHawbDto.Id })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPackageLabelAirExportHawb()">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Package Label"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPackageLabelListAirExportHawb()">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Package Label List"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPreAlertAirExportHawb()">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Pre-Alert"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrderAirExportHawb()">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="DangerousGoods('@Url.Action("DangerousGoods", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="ProfitReport()">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class='dropdown-item' href='javascript:void(0)' style="color: #4B77BE; font-weight: 500;" onclick="OpenInTrackTrace()">
+                    <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
+                </a>
+            </div>
         </div>
 
         <button type="button" class="btn btn-collapse collapsed" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="true" aria-controls="hblDiv">

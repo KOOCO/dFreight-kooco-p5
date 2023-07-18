@@ -13,7 +13,6 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public string Carrier { get; set; }
         public string DestinationName { get; set; }
         public string HandlingInformation { get; set; }
-        public string RCP { get; set; }
         public string GrossWeight { get; set; }
         public string IATA { get; set; }
         public string DocNumber { get; set; }
@@ -22,5 +21,9 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public string NVD { get; set; }
         public string NCV { get; set; }
         public bool IsPDF { get; set; }
+        public string Package { get; set; }
+        public string ChargableWeight { get; set; }
+        public string Operator { get; set; }
+        public string OverSeaAgent { get; set; }
     }
 }
