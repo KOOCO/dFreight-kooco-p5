@@ -2594,6 +2594,27 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(airExportDetails);
         }
+        
+        #region Private Functions
+        private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
+        {
+            var data = new AirExportDetails();
+
+            switch (pageType)
+            {
+                case FreightPageType.AEMBL:
+                    data = await _airExportMawbAppService.GetAirExportDetailsById(Id);
+                    break;
+                case FreightPageType.AEHBL:
+                    data = await _airExportHawbAppService.GetAirExportDetailsById(Id);
+                    break;
+                default:
+                    break;
+            }
+
+            return data;
+        }
+        #endregion
 
         [HttpPost]
         public async Task<IActionResult> DocumentPackage(AirExportDetails model)
@@ -2659,27 +2680,5 @@ namespace Dolphin.Freight.Web.Controllers
             model.IsPDF = true;
             return await _generatePdf.GetPdf("Views/Docs/BookingConfirmationAirExportMawb.cshtml", model);
         }
-    }
-
-        #region Private Functions
-        private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
-        {
-            var data = new AirExportDetails();
-
-            switch (pageType)
-            {
-                case FreightPageType.AEMBL:
-                    data = await _airExportMawbAppService.GetAirExportDetailsById(Id);
-                    break;
-                case FreightPageType.AEHBL:
-                    data = await _airExportHawbAppService.GetAirExportDetailsById(Id);
-                    break;
-                default:
-                    break;
-            }
-
-            return data;
-        }
-        #endregion
     }
 }
