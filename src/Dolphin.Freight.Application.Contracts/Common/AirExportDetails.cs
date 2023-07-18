@@ -35,5 +35,9 @@ namespace Dolphin.Freight.Common
         public string TruckerName { get; set; }
         public string CargoPickupName { get; set; }
         public string BillToName { get; set; }
+        public string ChargeableWeightCneeLB { get; set; }
+        public string ChargeableWeightCneeKG { get; set; }
+        public Guid MawbId { get; set; }
+        public DateTime? DepatureDate { get; set; }
     }
 }

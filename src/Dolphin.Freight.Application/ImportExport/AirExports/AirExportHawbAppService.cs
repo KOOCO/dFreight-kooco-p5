@@ -445,9 +445,10 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 airExportDetails.NCV = data.DVCustoms;
                 airExportDetails.ChargableWeight = string.Concat(data.ChargeableWeightCneeKG, " ", data.ChargeableWeightCneeLB);
                 airExportDetails.Package = data.Package;
+                airExportDetails.ChargeableWeightCneeKG = data.ChargeableWeightCneeKG;
+                airExportDetails.ChargeableWeightCneeLB = data.ChargeableWeightCneeLB;
+                airExportDetails.DepatureDate = mawb.DepatureDate;
             }
-
-            
 
             return airExportDetails;
         }

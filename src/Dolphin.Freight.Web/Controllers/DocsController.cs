@@ -57,6 +57,7 @@ using Dolphin.Freight.Accounting.InvoiceBills;
 
 using Dolphin.Freight.Web.ViewModels.CertificateOfOriginAirExportHawb;
 using NPOI.OpenXmlFormats.Wordprocessing;
+using JetBrains.Annotations;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -2092,7 +2093,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             var measurement = Convert.ToDouble(hawb.ChargeableWeightCneeLB) * 35.315;
 
-            var hawbProfitReport = new HawbProfitReportViewModel()
+            var hawbProfitReport = new ProfitReportViewModel()
             {
                 AgentName = hawb.OverseaAgent,
                 Consignee = hawb.Consignee,
@@ -2167,6 +2168,14 @@ namespace Dolphin.Freight.Web.Controllers
             hawbProfitReport.Total = hawbProfitReport.ARTotal + hawbProfitReport.APTotal + hawbProfitReport.DCTotal;
 
             return View(hawbProfitReport);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> HawbProfitReport(ProfitReportViewModel model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/HawbProfitReport.cshtml", model);
         }
 
         [HttpGet]
@@ -2624,6 +2633,108 @@ namespace Dolphin.Freight.Web.Controllers
         {
             model.IsPDF = true;
             return await _generatePdf.GetPdf("Views/Docs/PackageLabelAirExportMawb.cshtml", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ProfitReport(Guid id, FreightPageType pageType)
+        {
+            var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
+
+            var measurement = Convert.ToDouble(airExportDetails.ChargeableWeightCneeLB) * 35.315;
+
+            var profitReport = new ProfitReportViewModel()
+            {
+                AgentName = airExportDetails.OverSeaAgentName,
+                Consignee = airExportDetails.ConsigneeName,
+                Currency = "USD",
+                Customer = airExportDetails.CustomerName,
+                HawbNo = airExportDetails.HawbNo,
+                Operator = airExportDetails.Operator,
+                Measurement = measurement.ToString("0.00"),
+                PolEtd = string.Concat(airExportDetails.DepartureName, "/", airExportDetails.DepatureDate),
+                PodEtd = string.Concat(airExportDetails.DestinationName, "/", airExportDetails.ArrivalDate),
+                Sales = airExportDetails.SalesName,
+                Shipper = airExportDetails.ShippperName,
+                MawbNo = airExportDetails.MawbNo,
+                ChargableWeight = string.Concat(airExportDetails.ChargeableWeightCneeKG, "/", airExportDetails.ChargeableWeightCneeLB),
+                PostDate = DateTime.Now,
+                PageType = pageType
+            };
+
+            var queryType = pageType == FreightPageType.AEMBL ? 5 : 4;
+
+            QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = id };
+            profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+            profitReport.AR = new List<InvoiceDto>();
+            profitReport.AP = new List<InvoiceDto>();
+            profitReport.DC = new List<InvoiceDto>();
+
+            if (profitReport.Invoices != null && profitReport.Invoices.Count > 0)
+            {
+                foreach (var dto in profitReport.Invoices)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            profitReport.AR.Add(dto);
+                            break;
+                        case 1:
+                            profitReport.AP.Add(dto);
+                            break;
+                        case 2:
+                            profitReport.DC.Add(dto);
+                            break;
+                    }
+                }
+            }
+
+            if (profitReport.AR.Any())
+            {
+                double arTotal = 0;
+                foreach (var ar in profitReport.AR)
+                {
+                    arTotal += Convert.ToInt64(ar.InvoiceAmount);
+                }
+                profitReport.ARTotal = arTotal;
+            }
+            if (profitReport.AP.Any())
+            {
+                double apTotal = 0;
+                foreach (var ap in profitReport.AP)
+                {
+                    apTotal += Convert.ToInt64(ap.InvoiceAmount);
+                }
+
+                profitReport.APTotal = apTotal;
+            }
+            if (profitReport.DC.Any())
+            {
+                double dcTotal = 0;
+                foreach (var dc in profitReport.DC)
+                {
+                    dcTotal += Convert.ToInt64(dc.InvoiceAmount);
+                }
+                profitReport.DCTotal = dcTotal;
+            }
+
+            profitReport.Total = profitReport.ARTotal + profitReport.APTotal + profitReport.DCTotal;
+
+            ViewBag.invoices = profitReport.Invoices;
+
+            if(pageType == FreightPageType.AEMBL)
+                return View("Views/Docs/MawbProfitReport.cshtml", profitReport);
+
+            return View("Views/Docs/HawbProfitReport.cshtml", profitReport);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProfitReport(ProfitReportViewModel model)
+        {
+            model.IsPDF = true;
+
+            model.Invoices = ViewBag.invoices;
+
+            return await _generatePdf.GetPdf("Views/Docs/HawbProfitReport.cshtml", model);
         }
 
         #region Private Functions
