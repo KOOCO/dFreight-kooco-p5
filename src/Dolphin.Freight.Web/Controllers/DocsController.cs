@@ -2627,5 +2627,28 @@ namespace Dolphin.Freight.Web.Controllers
 
             return await _generatePdf.GetPdf("Views/Docs/DocumentPackage.cshtml", model);
         }
+
+        public async Task<IActionResult> PackageLabelAirExportMawb(Guid mawbId) {
+            PackageLabelAirExportMawbIndexViewModel InfoModel = new();
+
+            var mawb = await _airExportMawbAppService.GetAsync(mawbId);
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
+
+            InfoModel.Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.MawbCarrierId)).Select(s => s.Text));
+            InfoModel.Air_Way_Bill_No = mawb.MawbNo;
+            InfoModel.Destination = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DestinationId)).Select(s => s.Text));
+            InfoModel.Total_No_Of_Pieces = string.Concat(mawb.Package);
+            InfoModel.Consignee = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.ConsigneeId)).Select(s => s.Text));
+            InfoModel.Origin = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DepatureId)).Select(s => s.Text));
+
+            return View(InfoModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> PackageLabelAirExportMawb(PackageLabelAirExportMawbIndexViewModel model)
+        {
+            model.IsPDF = true;
+            return await _generatePdf.GetPdf("Views/Docs/PackageLabelAirExportMawb.cshtml", model);
+        }
     }
 }
