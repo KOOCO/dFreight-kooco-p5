@@ -386,7 +386,7 @@ function DangerousGoods(url) {
     myWindow = window.open(url, "Dangerous Goods", 'width=1200,height=800')
     myWindow.focus()
 }
-function getBankDraftAirExportHawb(url) {
+function getPickupDeliveryOrderAirExportHawb(url) {
     myWindow = window.open(url, 'Empty', 'width=1200,height=800');
     myWindow.focus()
 }
@@ -394,4 +394,8 @@ function getBankDraftAirExportHawb(url) {
 function DocumentPackage(url) {
     myWindow = window.open(url, "Document Package", 'width=1200,height=800');
     myWindow.focus();
+}
+function getPreAlertAirExportHawb(url) {
+    myWindow = window.open(url, 'Empty', 'width=1200,height=800');
+    myWindow.focus()
 }
