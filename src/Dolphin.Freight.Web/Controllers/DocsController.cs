@@ -57,6 +57,7 @@ using Dolphin.Freight.Accounting.InvoiceBills;
 
 using Dolphin.Freight.Web.ViewModels.CertificateOfOriginAirExportHawb;
 using NPOI.OpenXmlFormats.Wordprocessing;
+using System.Runtime.Intrinsics.Arm;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -2679,6 +2680,18 @@ namespace Dolphin.Freight.Web.Controllers
         {
             model.IsPDF = true;
             return await _generatePdf.GetPdf("Views/Docs/BookingConfirmationAirExportMawb.cshtml", model);
+        }
+
+        public async Task<IActionResult> AllHawbPackageLabelAirExportMawb(Guid mawbId, Guid hawbId)
+        {
+            var hawb = await _airExportHawbAppService.GetHblCardsById(mawbId);
+
+            List<AllHawbPackageLabelModel> allHawbList = new List<AllHawbPackageLabelModel>();
+
+            var res = await _airExportHawbAppService.GetHblCardsById(hawbId);
+
+
+            return View();
         }
     }
 }

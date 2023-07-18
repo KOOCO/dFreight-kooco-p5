@@ -1,0 +1,325 @@
+﻿
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.PackageLabel.AllHawbPackageLabelModel
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+</style>
+<script>
+    $(document).ready(function () {
+      $('#id_show_container_info').change(function () {
+
+     if($("#id_show_container_info").prop("checked"))
+     {         
+         $('#container-table').show();
+         $('.show_container').attr('rows', 19)
+     }
+     else
+     {
+         $('#container-table').hide();
+         $('.show_container').attr('rows', 28)
+     }
+ });
+    });
+    
+</script>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+    });
+</script>
+<form id="myForm" name="myForm" method="POST">
+   <div style="background-color:black;display: flex;justify-content:center;">
+      <div style="width:450px;background-color:white;" id="form" name = "form" class="edit">
+         <div class="container" style="background-color:black">
+            <div style="display:flex;justify-content: center;" class="item-left">
+               @*<button class="btn"><i class="fa fa-file-pdf-o"></i></button>
+               <button class="btn"><i class="fa fa-print"></i></button>*@
+               @*<a class="btn" href="../OceanExports/print?handler=Download"><i class="fa fa-print">儲存PDF或列印</i></a>*@
+               <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+            </div>
+            @*
+            <div style="float:right;" class="item-right">
+               <button class="btn zoom" id="zout" name="zout"><i class="fa fa-search-minus"></i></button>
+               <button class="btn zoom-out" id="zin" name="zin"><i class="fa fa-search-plus"></i></button>
+            </div>
+            *@
+         </div>
+
+         @*Start of template*@
+
+         <div class="wrap label-size _padding-0">
+                <div class="item-edit topbar">
+            
+
+    
+
+            <div class="topbar-block">
+                Data Source :
+                <select class="select w-160px" onchange="loadDataSource(this)">
+                    <option selected="selected" value="loadInitial">Shipment</option>
+                    <option value="loadDraft">Last Modified</option>
+                    <option value="loadEmptyFromDraft">Load empty fields from last modified</option>
+            
+                </select>
+
+                <script>
+                    function loadDataSource(sel) {
+                        function genUrl(url, params) {
+                          const pString = Array.from(Object.entries(params)).map(([k, v]) => `${k}=${v}`).join('&');
+                          return `${url}?${pString}`;
+                        }
+
+                        const basicParam = {};
+
+                        Array.from(new URL(window.location.href).searchParams.entries()).forEach(params => {
+                          if (params[0] !== 'action' && params[0] !== 'form_source') {
+                            basicParam[params[0]] = params[1]
+                          }
+                        });
+
+                        const last_modified_form_layout = '';
+
+                        if (sel.value === 'loadInitial') {
+                            window.location.href = genUrl('/reports/air/hbl/package-label/47123/', basicParam);
+                        }
+                        else if (sel.value === 'loadDraft') {
+
+                          const params = {
+                            ...basicParam,
+                            action: 'edit',
+                            form_source: 'draft',
+                          };
+
+                          if (last_modified_form_layout) {
+                            params['form_layout'] = last_modified_form_layout
+                          }
+
+                          window.location.href = genUrl('/reports/air/hbl/package-label/47123/', params);
+                        }
+                        else if (sel.value === 'loadEmptyFromDraft') {
+
+                          const params = {
+                            ...basicParam,
+                            action: 'edit',
+                            form_source: 'empty-from-draft',
+                          };
+
+                          if (last_modified_form_layout) {
+                            params['form_layout'] = last_modified_form_layout
+                          }
+
+                          window.location.href = genUrl('/reports/air/hbl/package-label/47123/', params);
+                        }
+                
+                        else {
+                          throw Error('unknown dataSource value')
+                        }
+                    }
+                </script>
+            </div>
+
+
+                </div>
+
+        
+                    <div class="header ae-package-label _padding-0 ">
+                
+                    
+                    
+                
+                        <table>
+                            <tbody><tr class="border-b">
+                                <td class="col-padding text-center padding-t-sm airline-name" colspan="2">
+                                    <div class="auto-font-size __col-airline-name _text-35 text-bold lineheight-nor">
+                                        <span></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="barcode text-center" colspan="2">
+                            
+                                        <div class="item-edit">
+                                            <img src="//fms-static.gofreight.cn/2023-07-11-b4d34b3647/static/freight/img/form/barcode_sample.svg">
+                                            <div class="margin-t-0 text-16">
+                                                <strong ng-bind="vm.getBarcodeText()" class="ng-binding">6953367933200333</strong>
+                                            </div>
+                                        </div>
+                            
+                                </td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="general-height" colspan="2">
+                                    <div class="title">AIR WAYBILL NO</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template">
+                                            <input type="text" name="MBL_NO" value="" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.MBL_NO" class="input-xl ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" ng-model="vm.mblNo" id="id_MBL_NO">
+                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 331px;"></span><!---->
+
+                                        @*<ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="adc72bc33c70" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                        </hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg _text-35">
+                                            <h1><span></span></h1>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-b general-height">
+                                <td class="border-r">
+                                    <div class="title">DESTINATION</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Destination" value="@Model.Destination" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.APOD_code" class="input-xl ng-isolate-scope" id="id_APOD_code"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 150px;"></span><!---->
+
+                                        @*<ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="aff3f2cb335e" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                        </hc-input-template></div>
+                                        <div class="item-pdf">
+                                            <h1 class="auto-font-size __width-sm"><span>@Model.Destination</span></h1>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="title">TOTAL NO OF PIECES</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template">
+                                            <input type="text" name="Total_No_Of_Pieces" value="@Model.Total_No_Of_Pieces" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.total_pieces" class="input-xl ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" ng-model="vm.totalPieces" positive-integer="" char-limit="4" id="id_total_pieces">
+                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 150px;"></span><!---->
+
+                                            @*<ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ad9f83dde8b7" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                            </hc-input-template></div>
+                                        <div class="item-pdf text-center">
+                                            <h1>@Model.Total_No_Of_Pieces</h1>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+
+                        <table>
+                            <colgroup>
+                                <col class="w-70">
+                                <col class="w-30">
+                            </colgroup>
+                            <tbody><tr class="border-b">
+                                <td class="border-r">
+                                    <div class="title">NAME OF FORWARDER</div>
+                                    <div class="data">
+                                        <div class="item-pdf">
+                                            <h2 class="lineheight-nor auto-font-size __col-forwarder-s"><span>@Model.Name_Of_Forwarder</span></h2>
+                                        </div>
+                                        <div class="item-edit hover-toggle-icon-text-template">
+                                            <input type="text" name="forwarder_name" value="@Model.Name_Of_Forwarder" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.forwarder_name" class="input-lg ng-isolate-scope" id="id_forwarder_name">
+                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 223px;"></span><!---->
+
+                                    @*<ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="af6f6b65fc7c" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                    </hc-input-template></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="title">ORIGIN</div>
+                                    <div class="data">
+                                        <div class="item-pdf">
+                                            <h2 class="auto-font-size __width-xs"><span>@Model.Origin</span></h2>
+                                        </div>
+                                        <div class="item-edit hover-toggle-icon-text-template">
+                                            <input type="text" name="APOL_code" value="@Model.Origin" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.APOL_code" class="input-lg ng-isolate-scope" id="id_APOL_code">
+                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 78px;"></span><!---->
+
+                                        @*<ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a017673ec17a" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="border-r">
+                                    <div class="title">HAWB NO.</div>
+                                    <div class="data">
+                                        <h2 class="auto-font-size __col-hbl"><span>@Model.Hawb_No</span></h2>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="title">HAWB PC.</div>
+                                    <div class="data text-center">
+                                        <div class="item-pdf">
+                                            <h2>
+                                        
+                                                    @Model.Hawb_Pc
+                                        
+                                            </h2>
+                                        </div>
+                                        <div class="item-edit">
+                                            <input type="number" name="total_pc" value="@Model.Hawb_Pc" min="1" class="input-lg text-center" id="id_total_pc">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-t">
+                                <td colspan="2">
+                                    <div class="item-pdf __width-lg auto-font-size margin-l-xs">
+                                        <span>&nbsp;</span>
+                                    </div>
+                                    <div class="item-edit margin-t margin-l-xs hover-toggle-icon-text-template">
+                                        <input type="text" name="memo" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.memo" placeholder="Input more description here" id="id_memo" class="ng-isolate-scope">
+                                    <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 336px;"></span><!---->
+
+                                    @*<ng-select _ngcontent-kue-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ac7481a5a12f" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                    </hc-input-template></div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                        <input type="hidden" name="hawb_pc" value="@Model.Hawb_Pc" id="id_current_hawbpc">
+                        <input type="hidden" name="origin" value="@Model.Origin" id="id_current_origin">
+                        <input type="hidden" name="total_no_of_pieces" value="@Model.Total_No_Of_Pieces" id="id_current_total_no_of_pieces">
+                        <input type="hidden" name="hawbno" value="@Model.Hawb_No" id="id_current_hawbno">
+                        <input type="hidden" name="number_of_forwarder" value="@Model.Name_Of_Forwarder" id="id_current_number_of_forwarder">
+                        <input type="hidden" name="destination" value="@Model.Destination" id="id_current_destination">
+                        <input type="hidden" name="air_way_bill_no" value="@Model.Air_WayBill_No" id="id_current_air_way_bill_no">
+                    </div>
+        
+            </div>
+      </div>
+   </div>
+</form>
