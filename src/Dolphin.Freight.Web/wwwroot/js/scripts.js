@@ -407,3 +407,7 @@ function getPackageLabelAirExportMawb(url) {
     myWindow = window.open(url, 'Empty', 'width=1200,height=800');
     myWindow.focus()
 }
+function getBookingConfirmationAirExportMawb(url) {
+    myWindow = window.open(url, 'Empty', 'width=1200,height=800');
+    myWindow.focus()
+}

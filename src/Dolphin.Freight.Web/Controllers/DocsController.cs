@@ -2650,5 +2650,39 @@ namespace Dolphin.Freight.Web.Controllers
             model.IsPDF = true;
             return await _generatePdf.GetPdf("Views/Docs/PackageLabelAirExportMawb.cshtml", model);
         }
+
+        public async Task<IActionResult> BookingConfirmationAirExportMawb(Guid mawbId)
+        {
+            BookingConfirmationAirExportMawbModel InfoModel = new();
+
+            var mawb = await _airExportMawbAppService.GetAsync(mawbId);
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
+            var packageUnit = _dropdownService.PackageUnitLookupList;
+
+            InfoModel.ActualShipper = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.ShipperId)).Select(s => s.Text));
+            InfoModel.MawbNo = mawb.MawbNo;
+            InfoModel.File_No = mawb.FilingNo;
+            InfoModel.ItnNo = mawb.ItnNo;
+            InfoModel.Consignee = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.ConsigneeId)).Select(s => s.Text));
+            InfoModel.Notify = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.NotifyId)).Select(s => s.Text));
+            InfoModel.Flight_No = mawb.FlightNo;
+            InfoModel.Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.MawbCarrierId)).Select(s => s.Text));
+            InfoModel.Departure = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DepatureId)).Select(s => s.Text));
+            InfoModel.ETD = string.Concat(mawb.DepatureDate);
+            InfoModel.Destination = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DestinationId)).Select(s => s.Text));
+            InfoModel.ETA = string.Concat(mawb.ArrivalDate);
+            InfoModel.Measurement = mawb.VolumeWeightCbm == 0 ? "" : string.Concat(mawb.VolumeWeightCbm) + " CBM" + " " + (mawb.VolumeWeightCbm * 35.315).ToString("0.00") + " CFT";
+            InfoModel.PKG = string.Concat(mawb.Package) + " " + string.Concat(packageUnit.Where(w => w.Value == Convert.ToString(mawb.MawbPackageUnitId)).Select(s => s.Text));
+            InfoModel.Deliver_To = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.DeliveryId)).Select(s => s.Text));
+
+            return View(InfoModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> BookingConfirmationAirExportMawb(BookingConfirmationAirExportMawbModel model)
+        {
+            model.IsPDF = true;
+            return await _generatePdf.GetPdf("Views/Docs/BookingConfirmationAirExportMawb.cshtml", model);
+        }
     }
 }

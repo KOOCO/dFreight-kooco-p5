@@ -137,8 +137,8 @@
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest (by agent)"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-file-text-o"></i> @L["Btn:S/O Confirmation"]
+                                <a class='dropdown-item' href="javascript:void(0)" onclick="getBookingConfirmationAirExportMawb('@Url.Action("BookingConfirmationAirExportMawb", "Docs", new { mawbId = Model.AirExportMawbDto.Id })')">
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
                                 </a>
                                 <a class='dropdown-item' href='#' onclick="getPackageLabelAirExportMawb('@Url.Action("PackageLabelAirExportMawb", "Docs", new { mawbId = Model.AirExportMawbDto.Id })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:MAWB Packaging Label"]
