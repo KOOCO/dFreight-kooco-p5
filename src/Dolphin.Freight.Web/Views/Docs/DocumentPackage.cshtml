@@ -57,20 +57,26 @@
 		});
 
         document.getElementById("reportLink").onclick = function() {
-            //document.getElementById("myForm").submit();
+            document.getElementById("myForm").submit();
         }
     });
 </script>
 <form id="myForm" name="myForm" method="POST">
     <div style="background-color:black;display: flex;justify-content:center;">
-        <div style="width:900px;background-color:white;height:100%" id="form" name = "form" class="edit">
-            <div class="container" style="background-color:black">    
-                <div style="display:flex;justify-content: center;" class="item-left">
-                    <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+        <div @(Model.IsPDF? "style=width:100%;background-color:white;height:100%;" : "style=width:900px;background-color:white;height:100%;") id="form" name = "form" class="edit">
+            @if(!Model.IsPDF)
+            {
+                <div class="container" style="background-color:black">    
+                    <div style="display:flex;justify-content: center;" class="item-left">
+                        <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+                    </div>
                 </div>
-            </div>
+            }
+            
             <div id="form-wrap" class="wrap  border-red" ng-class="vm.borderClass">
-                <div class="item-edit topbar">
+                @if (!Model.IsPDF)
+                {
+                    <div class="item-edit topbar">
                     <div class="topbar-block">
                         Data Source :
                         <select disabled class="select w-160px" onchange="loadDataSource(this)">
@@ -101,6 +107,8 @@
                     <div class="topbar-block"><input type="checkbox" name="show_amount"> Show Amount</div>
                     <div class="topbar-block"><input type="checkbox" name="print_iata_terms" disabled> Print IATA Terms</div>
                 </div>
+                }
+                
                 <div class="con air-awb">
                     <table class="text-16 text-bold">
                         <tbody><tr>
@@ -506,7 +514,7 @@
                                     <div class="item-edit">
                                         <label class="text-10 text-bold _bg-white _margin-b-0"><input type="checkbox" name="show_dimension" id="id_show_dimension" checked=""> Show Mark</label>
                                         <div>
-                                            <textarea name="mark_dimension" cols="40" rows="5" style="position: relative; z-index: 2;" id="id_mark_dimension">!!! 333@123X321X222(CM)</textarea>
+                                            <textarea name="mark_dimension" cols="40" rows="5" style="position: relative; z-index: 2;" id="id_mark_dimension"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -604,12 +612,10 @@
                                 <table class="table-padding">
                                     <tbody><tr>
                                         <td class="w-50 text-right border-r">
-                                            <div class="item-edit"><input type="text" name="weight_prepaid" value="972,940.08"></div>
-                                            <div class="item-pdf auto-font-size __width-sm"><span>972,940.08</span></div>
+                                            <div class="item-edit"><input type="text" name="weight_prepaid" value=""></div>
                                         </td>
                                         <td class="w-50 text-right">
                                             <div class="item-edit"><input type="text" name="weight_collect"></div>
-                                            <div class="item-pdf auto-font-size __width-sm"><span>&nbsp;</span></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -626,7 +632,7 @@
                                             <div class="item-edit"><input type="text" name="valuation_charge_prepaid"></div>
                                         </td>
                                         <td class="w-50 text-right">
-                                            <div class="item-edit"><input type="text" name="valuation_charge_collect" value="333.00"></div>
+                                            <div class="item-edit"><input type="text" name="valuation_charge_collect" value=""></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -643,7 +649,7 @@
                                             <div class="item-edit"><input type="text" name="tax_prepaid"></div>
                                         </td>
                                         <td class="w-50 text-right">
-                                            <div class="item-edit"><input type="text" name="tax_collect" value="3.00"></div>
+                                            <div class="item-edit"><input type="text" name="tax_collect" value=""></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -653,11 +659,11 @@
                                     <tbody><tr>
                                         <td class="w-60 td">
                                             <div class="title-oblique text-var">Other Charges</div>
-                                            <div class="item-edit"><textarea name="other_charges_area" cols="40" rows="5">CERTIFICATE OF ORIGIN</textarea></div>
+                                            <div class="item-edit"><textarea name="other_charges_area" cols="40" rows="5"></textarea></div>
                                         </td>
                                         <td class="w-20 td text-center">
                                             <div class="title-oblique text-var">PREPAID</div>
-                                            <div class="item-edit"><textarea name="other_charges_area_prepaid" cols="40" rows="5">9.00</textarea></div>
+                                            <div class="item-edit"><textarea name="other_charges_area_prepaid" cols="40" rows="5"></textarea></div>
                                         </td>
                                         <td class="w-20 td text-center">
                                             <div class="title-oblique text-var">COLLECT</div>
@@ -697,7 +703,7 @@
                                 <table class="table-padding">
                                     <tbody><tr>
                                         <td class="w-50 text-right border-r">
-                                            <div class="item-edit"><input type="text" name="total_other_charges_due_carrier_prepaid" value="9.00"></div>
+                                            <div class="item-edit"><input type="text" name="total_other_charges_due_carrier_prepaid" value=""></div>
                                         </td>
                                         <td class="w-50 text-right">
                                             <div class="item-edit"><input type="text" name="total_other_charges_due_carrier_collect"></div>
@@ -767,10 +773,10 @@
                                     </tr>
                                     <tr>
                                         <td class="w-50 border-r text-right">
-                                            <div class="item-edit"><input type="text" name="total_prepaid" value="972,949.08"></div>
+                                            <div class="item-edit"><input type="text" name="total_prepaid" value=""></div>
                                         </td>
                                         <td class="w-50 text-right">
-                                            <div class="item-edit"><input type="text" name="total_collect" value="336.00"></div>
+                                            <div class="item-edit"><input type="text" name="total_collect" value=""></div>
                                         </td>
                                     </tr>
                                     <tr class="border-t">
@@ -802,7 +808,7 @@
                                             <div class="item-edit"><input type="text" name="currency_conversion_rate"></div>
                                         </td>
                                         <td class="w-50 text-right bg-light">
-                                            <div class="item-edit"><input type="text" name="cc_charges_in_dest" value="222.00"></div>
+                                            <div class="item-edit"><input type="text" name="cc_charges_in_dest" value=""></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -818,10 +824,10 @@
                                 <table class="col-padding">
                                     <tbody><tr class="text-bold">
                                         <td class="w-25 text-center">
-                                            <div class="item-edit"><input type="text" name="executed_on_date" value="03-22-2023"></div>
+                                            <div class="item-edit"><input type="text" name="executed_on_date" value=""></div>
                                         </td>
                                         <td class="w-25 text-center">
-                                            <div class="item-edit"><input type="text" name="executed_at_place" value="AAA"></div>
+                                            <div class="item-edit"><input type="text" name="executed_at_place" value=""></div>
                                         </td>
                                         <td class="w-50 text-center">
                                             <div class="item-edit"><input type="text" name="OverSeaAgent" value="@Model.OverSeaAgent"></div>
@@ -851,7 +857,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="text-right" colspan="3">
-                                                        <div class="item-edit"><input type="text" name="charges_at_destination" value="666.00"></div>
+                                                        <div class="item-edit"><input type="text" name="charges_at_destination" value=""></div>
                                                     </td>
                                                 </tr>
                                             </tbody></table>
@@ -871,7 +877,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="text-right border-r" colspan="3">
-                                                        <div class="item-edit"><input type="text" name="total_collect_charges" value="1,002.00"></div>
+                                                        <div class="item-edit"><input type="text" name="total_collect_charges" value=""></div>
                                                     </td>
                                                 </tr>
                                             </tbody></table>
@@ -882,13 +888,16 @@
                             </td>
                         </tr>
                     </tbody></table>
-                    <div class="gap">&nbsp;</div>
-                    <div class="col-padding text-bold text-center">
-                        <span class="item-edit">
-                            <input type="checkbox" name="show_original"> Show
-                            ORIGINAL
-                        </span>
-                    </div>
+                    @if(!Model.IsPDF)
+                    {
+                        <div class="gap">&nbsp;</div>
+                        <div class="col-padding text-bold text-center">
+                            <span class="item-edit">
+                                <input type="checkbox" name="show_original"> Show
+                                ORIGINAL
+                            </span>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

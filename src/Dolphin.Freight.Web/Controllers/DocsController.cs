@@ -2502,6 +2502,7 @@ namespace Dolphin.Freight.Web.Controllers
 
         }
 
+        [HttpGet]
         public async Task<IActionResult> DocumentPackage(Guid hawbId)
         {
             var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
@@ -2525,10 +2526,21 @@ namespace Dolphin.Freight.Web.Controllers
                 BillTo = hawb.BillToName,
                 ArrivalDate = mawb.ArrivalDate?.ToShortDateString(),
                 NVD = hawb.DVCarriage,
-                NCV = hawb.DVCustoms
+                NCV = hawb.DVCustoms,
+                ChargableWeight = string.Concat(hawb.ChargeableWeightCneeKG, " ", hawb.ChargeableWeightCneeLB),
+                OverSeaAgent = hawb.OverseaAgent,
+                Package = hawb.Package
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DocumentPackage(DocumentPackageViewModel model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/DocumentPackage.cshtml", model);
         }
     }
 }
