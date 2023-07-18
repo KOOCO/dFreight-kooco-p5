@@ -2318,7 +2318,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoModel.Oversea_Agent = hawb.OverseaAgent;
             InfoModel.Hawb_No = hawb.HawbNo;
             InfoModel.Mawb_No = mawb.MawbNo;
-            InfoModel.Consignee = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.ConsigneeId)).Select(s => s.Text));
+            InfoModel.Consignee = hawb.OverseaAgent;
             InfoModel.Shipper_Ref = hawb.ActualShippedr;
             InfoModel.Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.IssuingCarrier)).Select(s => s.Text));
             InfoModel.Flight_No = mawb.FlightNo;
@@ -2331,6 +2331,13 @@ namespace Dolphin.Freight.Web.Controllers
             InfoModel.Total_Package = hawb.Package + " " + hawb.PackageUnit;
 
             return View(InfoModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PreAlertAirExportHawb(PreAlertAirExportHawbIndexViewModel model)
+        {
+            model.IsPDF = true;
+            return await _generatePdf.GetPdf("Views/Docs/PreAlertAirExportHawb.cshtml", model);
         }
 
         public async Task<IActionResult> PackageLabelListAirExportHawb()

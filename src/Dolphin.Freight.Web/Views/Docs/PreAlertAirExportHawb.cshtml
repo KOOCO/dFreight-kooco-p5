@@ -74,21 +74,15 @@
 </script>
 <form id="myForm" name="myForm" method="POST">
    <div style="background-color:black;display: flex;justify-content:center;">
-      <div style="width:900px;background-color:white;" id="form" name = "form" class="edit">
-         <div class="container" style="background-color:black">
-            <div style="display:flex;justify-content: center;" class="item-left">
-               @*<button class="btn"><i class="fa fa-file-pdf-o"></i></button>
-               <button class="btn"><i class="fa fa-print"></i></button>*@
-               @*<a class="btn" href="../OceanExports/print?handler=Download"><i class="fa fa-print">儲存PDF或列印</i></a>*@
-               <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
-            </div>
-            @*
-            <div style="float:right;" class="item-right">
-               <button class="btn zoom" id="zout" name="zout"><i class="fa fa-search-minus"></i></button>
-               <button class="btn zoom-out" id="zin" name="zin"><i class="fa fa-search-plus"></i></button>
-            </div>
-            *@
-         </div>
+      <div @(Model.IsPDF? "style=width:100%;background-color:white;height:100%;" : "style=width:900px;background-color:white;height:100%;") id="form" name = "form" class="edit">
+            @if (!Model.IsPDF)
+            {
+                <div class="container" style="background-color:black">
+                   <div style="display:flex;justify-content: center;" class="item-left">
+                      <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+                   </div>
+                </div>
+            }
 
          @*Start of template*@
          <div class="wrap">
@@ -96,7 +90,7 @@
             <table>
                 <tbody><tr>
                     <td class="w-15 logo">
-                        <img src="/api/office/logo/1/">
+                        <img src="/img/hardcore-tech-logo.png">
                     </td>
                     <td class="w-48">
                         <h1 class="auto-font-size office-name">
@@ -105,9 +99,9 @@
                         <div class="auto-font-size office-des">
                             <span>
                                 77792 COBB CAPE<br>
-TRISTANCHESTER, NE 47478<br>
-TEL: 08417606080 FAX: 08417606080<br>
-EMAIL: hanjun.lin@dolphin-gp.com
+                                TRISTANCHESTER, NE 47478<br>
+                                TEL: 08417606080 FAX: 08417606080<br>
+                                EMAIL: hanjun.lin@dolphin-gp.com
                                 
                                     <br><strong>Prepared by Hanjun Lin 07-14-2023 11:18 (CST)</strong>
                                 
@@ -132,7 +126,7 @@ EMAIL: hanjun.lin@dolphin-gp.com
                         <div class="auto-font-size office-des">
                             <span>
                                 77792 COBB CAPE TRISTANCHESTER, NE 47478<br>
-TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
+                                TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                                 
                                     <br><strong>Prepared by Hanjun Lin 07-14-2023 11:18 (CST)</strong>
                                 
@@ -141,7 +135,7 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                     </td>
                     <td class="w-2">&nbsp;</td>
                     <td class="w-22 logo">
-                        <img src="/api/office/logo/1/">
+                        <img src="/img/hardcore-tech-logo.png">
                     </td>
                 </tr>
             </tbody></table>
@@ -157,43 +151,26 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                 <tbody><tr class="border-b">
                     <td class="text-bold">Attn</td>
                     <td>
-                        <div class="item-pdf">&nbsp;</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="attn" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.attn" id="id_attn" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 258px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ac3b4577a80a" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="attn" id="id_attn" class="ng-isolate-scope"></div>
                     </td>
                     <td colspan="2"></td>
                 </tr>
                 <tr class="border-b">
                     <td class="text-10" colspan="2" rowspan="2">
-                        <div class="item-pdf">
-                            11
-                        </div>
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="attn_addr" cols="40" rows="5" class="text-scroll ng-isolate-scope" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.attn_addr" id="id_attn_addr">11</textarea>
-                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 333px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ac47ab6e3c50" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                            <textarea name="Oversea_Agent" cols="40" rows="5" class="text-scroll ng-isolate-scope" id="id_attn_addr">@Model.Oversea_Agent</textarea>
+                            <input type="hidden" name="Oversea_Agent" value="@Model.Oversea_Agent" id="Oversea_Agent" />
+                        </div>
                     </td>
                     <td class="text-bold">HAWB No.</td>
                     <td>
-                        <div class="item-pdf">AH-23030003</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="HBL_NO" value="AH-23030003" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.HBL_NO" id="id_HBL_NO" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 244px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a1f6e4aafa51" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Hawb_No" value="@Model.Hawb_No" id="id_HBL_NO" class="ng-isolate-scope"></div>
                     </td>
                 </tr>
                 <tr>
                     <td class="text-bold">MAWB No.</td>
                     <td>
-                        <div class="item-pdf">695-33679332</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="MBL_NO" value="695-33679332" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.MBL_NO" id="id_MBL_NO" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 244px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a02ad8b41b2c" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Mawb_No" value="@Model.Mawb_No" id="id_MBL_NO" class="ng-isolate-scope"></div>
                     </td>
                 </tr>
             </tbody></table>
@@ -207,123 +184,70 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                 <tbody><tr class="border-b">
                     <td class="text-bold">Consignee</td>
                     <td>
-                        <div class="item-pdf">123</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="consignee_name" value="123" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.consignee_name" id="id_consignee_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 244px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a3df6e8f293a" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="consignee_name" value="@Model.Consignee" id="id_consignee_name" class="ng-isolate-scope"></div>
                     </td>
                     <td class="text-bold">Shipper Ref</td>
                     <td>
-                        <div class="item-pdf">ABBOTT-CRAIG</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="shipper_name" value="ABBOTT-CRAIG" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.shipper_name" id="id_shipper_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 244px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a8e5330e89e9" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Shipper_Ref" value="@Model.Shipper_Ref" id="id_shipper_name" class="ng-isolate-scope"></div>
                     </td>
                 </tr>
                 <tr class="border-b">
                     <td class="text-bold">Carrier</td>
                     <td>
-                        <div class="item-pdf">ABBOTT INC124</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="carrier_name" value="ABBOTT INC124" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.carrier_name" id="id_carrier_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 244px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a9b3890381b4" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Carrier" value="@Model.Carrier" id="id_carrier_name" class="ng-isolate-scope"></div>
                     </td>
                     <td class="text-bold">Flight No.</td>
                     <td>
-                        <div class="item-pdf">RTETRR</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="flight_no" value="RTETRR" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.flight_no" id="id_flight_no" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 244px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ab9dd5a13e29" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Flight_No" value="@Model.Flight_No" id="id_flight_no" class="ng-isolate-scope"></div>
                     </td>
                 </tr>
                 <tr class="border-b">
                     <td class="text-bold">Origin</td>
                     <td>
-                        <div class="item-pdf">(AAA) ANAA</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="APOL" value="(AAA) ANAA" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.APOL" id="id_APOL" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 244px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a6e8d80dc978" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Origin" value="@Model.Origin" id="id_APOL" class="ng-isolate-scope"></div>
                     </td>
                     <td class="text-bold">Flight No.</td>
                     <td>
-                        <div class="item-pdf">&nbsp;</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="flight_no_2" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.flight_no_2" id="id_flight_no_2" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 244px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ae9ffd2abc18" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Flight_No" id="id_flight_no_2" value="@Model.Flight_No" class="ng-isolate-scope"></div>
                     </td>
                 </tr>
                 <tr class="border-b">
                     <td class="text-bold">Destination</td>
                     <td>
-                        <div class="item-pdf">(AAB) ARRABURY</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="APOD" value="(AAB) ARRABURY" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.APOD" id="id_APOD" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 244px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a1fceea00e26" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Destination" value="@Model.Destination" id="id_APOD" class="ng-isolate-scope"></div>
                     </td>
                     <td class="text-bold">Flight Date</td>
                     <td>
-                        <div class="item-pdf">07-10-2023 00:00</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="flight_date" value="07-10-2023 00:00" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.flight_date" id="id_flight_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 244px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a60ee6fa6fa5" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Flight_Date" value="@Model.Flight_Date" id="id_flight_date" class="ng-isolate-scope"></div>
                     </td>
                 </tr>
                 <tr class="border-b">
                     <td class="text-bold">Filing No.</td>
                     <td>
-                        <div class="item-pdf">AEX-23030003</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="filing_no" value="AEX-23030003" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.filing_no" id="id_filing_no" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 244px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="aeb1e5f1444a" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Filing_No" value="@Model.Filing_No" id="id_filing_no" class="ng-isolate-scope"></div>
                     </td>
                     <td class="text-bold">ETA</td>
                     <td>
-                        <div class="item-pdf">07-11-2023 00:00</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ETA_datetime" value="07-11-2023 00:00" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.ETA_datetime" id="id_ETA_datetime" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 244px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ae41274f504d" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ETA" value="@Model.ETA" id="id_ETA_datetime" class="ng-isolate-scope"></div>
                     </td>
                 </tr>
                 <tr class="border-b">
                     <td class="text-bold">Gross Weight</td>
                     <td>
-                        <div class="item-pdf">&nbsp;</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="gross_weight" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.gross_weight" id="id_gross_weight" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 244px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a7009b5b6b8a" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Gross_Weight" id="id_gross_weight" value="@Model.Gross_Weight" class="ng-isolate-scope"></div>
                     </td>
                     <td class="text-bold">Total Package</td>
                     <td>
-                        <div class="item-pdf">333 CARTON(S)</div>
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="packages" value="333 CARTON(S)" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.packages" id="id_packages" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 244px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a42079da3e59" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Total_Package" value="@Model.Total_Package" id="id_packages" class="ng-isolate-scope"></div>
                     </td>
                 </tr>
             </tbody></table>
             <div class="text-12 margin-t-md border col-padding-double">
                 <div class="text-bold margin-b-xs">Cargo Description</div>
-                <div class="item-pdf">
-                    ??
-                </div>
                 <div class="item-edit hover-toggle-icon-text-template">
-                    <textarea name="cargo_description" cols="40" rows="5" class="text-scroll ng-isolate-scope" template-id="e0931d547da935757268a236c1cf25d5da01b8dcf5f022f08a6d2ba5a429c61c:Form.cargo_description" id="id_cargo_description">??</textarea>
-                <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fgd-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fgd-c260="" class="icon-text-template" style="top: 1px; left: 695px;"></span><!---->
-
-<ng-select _ngcontent-fgd-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a0413384222e" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
-</hc-input-template></div>
+                    <textarea name="Description" cols="40" rows="5" class="text-scroll ng-isolate-scope" id="id_cargo_description">@Model.Description</textarea>
+                    <input type="hidden" name="Description" value="@Model.Description" id="Description" />
+                </div>
             </div>
         </div>
     </div>

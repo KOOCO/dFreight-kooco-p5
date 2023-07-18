@@ -2,6 +2,7 @@
 {
     public class PreAlertAirExportHawbIndexViewModel
     {
+        public bool IsPDF { get; set; }
         public string Attn { get; set; }
         public string Oversea_Agent { get; set; }
         public string Hawb_No { get; set; }
