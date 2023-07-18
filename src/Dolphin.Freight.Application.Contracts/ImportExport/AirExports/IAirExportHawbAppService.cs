@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dolphin.Freight.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,5 +21,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
         Task<List<AirExportHawbDto>> GetHblCardsById(Guid Id);
         Task<AirExportHawbDto> GetHawbCardById(Guid Id);
         Task<AirExportHawbDto> GetHawbWithDetailsById(Guid Id);
+        Task<AirExportDetails> GetAirExportDetailsById(Guid Id);
     }
 }

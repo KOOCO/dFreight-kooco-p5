@@ -140,6 +140,9 @@
                                     <i class="fa fa-lock"></i> @L["Btn:Lock"]
                                 </a>
                                 <p class="dropdown-divider"></p>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="DocumentPackage('@Url.Action("DocumentPackage", "Docs", new { id = Model.AirExportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEMBL })')">
+                                    <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
+                                </a>
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Print MAWB"]
                                 </a>
@@ -392,7 +395,7 @@
                                         <i class="fa fa-lock"></i> @L["Btn:Lock"]
                                     </a>
                                     <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='javascript:void(0)' onclick="DocumentPackage('@Url.Action("DocumentPackage", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="DocumentPackage('@Url.Action("DocumentPackage", "Docs", new { id = Model.AirExportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEHBL })')">
                                         <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getHawbPrintAirExportHawb()">

@@ -2560,44 +2560,40 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DocumentPackage(Guid hawbId)
+        public async Task<IActionResult> DocumentPackage(Guid id, FreightPageType pageType)
         {
-            var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
+            var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
 
-            var mawb = await _airExportMawbAppService.GetAsync(hawb.MawbId.GetValueOrDefault());
-
-            var viewModel = new DocumentPackageViewModel()
-            {
-                AirWayBillNo = hawb.HawbNo,
-                Carrier = hawb.IssuingCarrier,
-                Consignee = hawb.Consignee,
-                DepartureName = hawb.DepartureName,
-                DestinationName = hawb.DestinationName,
-                DocNumber = mawb.FilingNo,
-                GrossWeight = hawb.GrossWeightCneeKG,
-                HandlingInformation = hawb.HandlingInformation,
-                IATA = hawb.IATA,
-                IssuingCarrier = hawb.IssuingCarrierName,
-                Notify = hawb.NotifyName,
-                Shippper = hawb.ActualShipperName,
-                BillTo = hawb.BillToName,
-                ArrivalDate = mawb.ArrivalDate?.ToShortDateString(),
-                NVD = hawb.DVCarriage,
-                NCV = hawb.DVCustoms,
-                ChargableWeight = string.Concat(hawb.ChargeableWeightCneeKG, " ", hawb.ChargeableWeightCneeLB),
-                OverSeaAgent = hawb.OverseaAgent,
-                Package = hawb.Package
-            };
-
-            return View(viewModel);
+            return View(airExportDetails);
         }
 
         [HttpPost]
-        public async Task<IActionResult> DocumentPackage(DocumentPackageViewModel model)
+        public async Task<IActionResult> DocumentPackage(AirExportDetails model)
         {
             model.IsPDF = true;
 
             return await _generatePdf.GetPdf("Views/Docs/DocumentPackage.cshtml", model);
         }
+
+        #region Private Functions
+        private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
+        {
+            var data = new AirExportDetails();
+
+            switch (pageType)
+            {
+                case FreightPageType.AEMBL:
+                    data = await _airExportMawbAppService.GetAirExportDetailsById(Id);
+                    break;
+                case FreightPageType.AEHBL:
+                    data = await _airExportHawbAppService.GetAirExportDetailsById(Id);
+                    break;
+                default:
+                    break;
+            }
+
+            return data;
+        }
+        #endregion
     }
 }

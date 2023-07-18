@@ -131,7 +131,7 @@
                     <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="DocumentPackage('@Url.Action("DocumentPackage", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="DocumentPackage('@Url.Action("DocumentPackage", "Docs", new { id = Model.AirExportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEHBL })')">
                     <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                 </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="getHawbPrintAirExportHawb()">

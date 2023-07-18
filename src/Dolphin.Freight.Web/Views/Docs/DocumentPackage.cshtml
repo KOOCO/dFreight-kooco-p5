@@ -3,7 +3,7 @@
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
-@model Dolphin.Freight.Web.ViewModels.Reports.DocumentPackageViewModel
+@model Dolphin.Freight.Common.AirExportDetails
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
 @{
@@ -115,9 +115,9 @@
                             <td class="w-50">
                                 <table>
                                     <tbody><tr>
-                                        <td class="w-20 border-r text-center">695</td>
-                                        <td class="w-20 border-r text-center">AAA</td>
-                                        <td class="w-60 padding-l-xs">3367 9332</td>
+                                        <td class="w-20 border-r text-center">@Model.MawbNo?.Split('-')[0]</td>
+                                        <td class="w-20 border-r text-center">@Model.DepartureName?.Split('/')[0]</td>
+                                        <td class="w-60 padding-l-xs">@(Model.MawbNo?.Split('-').Length > 1? Model.MawbNo?.Split("-")[1]: Model.MawbNo?.Split("-")[0])</td>
                                     </tr>
                                 </tbody></table>
                             </td>
@@ -145,7 +145,7 @@
                                     </tr>
                                 </tbody></table>
                                 <div class="data">
-                                    <div class="item-edit"><textarea name="Shippper" cols="40" rows="5">@Model.Shippper</textarea></div>
+                                    <div class="item-edit"><textarea name="ShippperName" cols="40" rows="5">@Model.ShippperName</textarea></div>
                                 </div>
                             </td>
                             <td class="td w-50 border-b">
@@ -158,7 +158,7 @@
                                         </td>
                                         <td class="w-70">
                                             <div class="margin-t-sm">
-                                                <div class="item-edit"><textarea name="IssuingCarrier" cols="40" rows="2">@Model.IssuingCarrier</textarea>
+                                                <div class="item-edit"><textarea name="IssuingCarrierName" cols="40" rows="2">@Model.IssuingCarrierName</textarea>
                                                     <span style="top: 3px; left: 228px;"></span>
                                                 </div>
                                             </div>
@@ -186,7 +186,7 @@
                                     </tr>
                                 </tbody></table>
                                 <div class="data">
-                                    <div class="item-edit"><textarea name="Consignee" cols="40" rows="5">@Model.Consignee</textarea><span style="top: 5px; left: 331px;"></span></div>
+                                    <div class="item-edit"><textarea name="ConsigneeName" cols="40" rows="5">@Model.ConsigneeName</textarea><span style="top: 5px; left: 331px;"></span></div>
                                 </div>
                             </td>
                             <td class="w-50 border-b">
@@ -199,7 +199,7 @@
                             <td class="td border-r border-b">
                                 <div class="title text-var col-padding">Issuing Carrier's Agent Name and City</div>
                                 <div class="data">
-                                    <div class="item-edit"><textarea name="IssuingCarrier"> @Model.IssuingCarrier</textarea></div>
+                                    <div class="item-edit"><textarea name="IssuingCarrierName"> @Model.IssuingCarrierName</textarea></div>
                                 </div>
                                 <table>
                                     <tbody><tr class="border-b">
@@ -307,7 +307,7 @@
                                                 </tr>
                                             </tbody></table>
                                             <div class="col-padding-double">
-                                                <div class="item-edit"><input type="text" name="BillToName" value="@Model.BillTo" style="top: 3px; left: 143px;">
+                                                <div class="item-edit"><input type="text" name="BillToName" value="@Model.BillToName" style="top: 3px; left: 143px;">
                                                 </div>
                                             </div>
                                         </td>
@@ -508,7 +508,7 @@
                         <tr>
                             <td class="td col-padding border-r _position-relative">
                                 <div class="item-edit padding-b-xs hover-toggle-icon-text-template">
-                                    <textarea name="packages" cols="40" rows="4" >@Model.Package CARTON(S)</textarea>
+                                    <textarea name="Package" cols="40" rows="4" >@Model.Package CARTON(S)</textarea>
                                 </div>
                                 <div class="mark-area ">
                                     <div class="item-edit">
@@ -735,7 +735,7 @@
                                                         <input type="radio" id="id_signature_of_shipper_or_agent_choice_1" name="signature_of_shipper_or_agent_choice" value="shipper"> Shipper
                                                     </label>
                                                 </div>
-                                                <textarea name="IssuingCarrier" cols="40" rows="2">@Model.IssuingCarrier</textarea>
+                                                <textarea name="IssuingCarrierName" cols="40" rows="2">@Model.IssuingCarrierName</textarea>
                                             </div>
                                         </td>
                                     </tr>
@@ -817,7 +817,7 @@
                                 <table>
                                     <tbody><tr>
                                         <td class="col-padding text-bold">
-                                            <div class="item-edit"><textarea name="IssuingCarrier" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope">@Model.IssuingCarrier</textarea></div>
+                                            <div class="item-edit"><textarea name="IssuingCarrierName" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope">@Model.IssuingCarrierName</textarea></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -830,7 +830,7 @@
                                             <div class="item-edit"><input type="text" name="executed_at_place" value=""></div>
                                         </td>
                                         <td class="w-50 text-center">
-                                            <div class="item-edit"><input type="text" name="OverSeaAgent" value="@Model.OverSeaAgent"></div>
+                                            <div class="item-edit"><input type="text" name="OverSeaAgentName" value="@Model.OverSeaAgentName"></div>
                                         </td>
                                     </tr>
                                     <tr class="border-t text-sm text-var text-center">
