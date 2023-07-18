@@ -329,6 +329,12 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 hawb.ActualShippedr = shipper.TPName;
             }
 
+            if(hawb.Notify is not null)
+            {
+                var notify = tradePartners.Where(w => w.Id.ToString() == hawb.Notify).FirstOrDefault();
+                hawb.Notify = string.Concat(notify.TPName, "/", notify.TPCode);
+            }
+
             return hawb;
         }
     }
