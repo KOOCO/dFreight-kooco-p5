@@ -2758,8 +2758,6 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/HawbProfitReport.cshtml", model);
         }
 
-
-
         public async Task<IActionResult> BookingConfirmationAirExportMawb(Guid mawbId)
         {
             BookingConfirmationAirExportMawbModel InfoModel = new();
@@ -2787,6 +2785,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(InfoModel);
         }
+
         [HttpPost]
         public async Task<IActionResult> BookingConfirmationAirExportMawb(BookingConfirmationAirExportMawbModel model)
         {

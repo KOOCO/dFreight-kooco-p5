@@ -15,7 +15,7 @@ namespace Dolphin.Freight.Common
         public string MawbNo { get; set; }
         public string ConsigneeName { get; set; }
         public string DepartureName { get; set; }
-        public string Carrier { get; set; }
+        public string CarrierName { get; set; }
         public string DestinationName { get; set; }
         public string HandlingInformation { get; set; }
         public string GrossWeight { get; set; }
