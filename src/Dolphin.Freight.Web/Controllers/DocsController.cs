@@ -2693,14 +2693,14 @@ namespace Dolphin.Freight.Web.Controllers
                 HawbNo = airExportDetails.HawbNo,
                 Operator = airExportDetails.Operator,
                 Measurement = measurement.ToString("0.00"),
-                PolEtd = string.Concat(airExportDetails.DepartureName, "/", airExportDetails.DepatureDate),
-                PodEtd = string.Concat(airExportDetails.DestinationName, "/", airExportDetails.ArrivalDate),
+                PolEtd = string.Concat(airExportDetails.DepartureName, " / ", airExportDetails.DepatureDate),
+                PodEtd = string.Concat(airExportDetails.DestinationName, " / ", airExportDetails.ArrivalDate),
                 Sales = airExportDetails.SalesName,
-                Shipper = airExportDetails.ShippperName,
+                Shipper = airExportDetails.CarrierName,
                 MawbNo = airExportDetails.MawbNo,
-                ChargableWeight = string.Concat(airExportDetails.ChargeableWeightCneeKG, "/", airExportDetails.ChargeableWeightCneeLB),
-                PostDate = DateTime.Now,
-                PageType = pageType
+                ChargableWeight = string.Concat(airExportDetails.ChargeableWeightCneeKG, " / ", airExportDetails.ChargeableWeightCneeLB),
+                PageType = pageType,
+                FileNo = airExportDetails.DocNumber
             };
 
             var queryType = pageType == FreightPageType.AEMBL ? 5 : 4;
