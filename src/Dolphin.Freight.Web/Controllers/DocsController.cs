@@ -2678,8 +2678,10 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ProfitReport(Guid id, FreightPageType pageType)
+        public async Task<IActionResult> ProfitReport(Guid id, FreightPageType pageType, string reportType)
         {
+            string returnUrl = string.Empty;
+
             var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
 
             var measurement = Convert.ToDouble(airExportDetails.ChargeableWeightCneeLB) * 35.315;
@@ -2764,10 +2766,11 @@ namespace Dolphin.Freight.Web.Controllers
 
             ViewBag.invoices = profitReport.Invoices;
 
-            if(pageType == FreightPageType.AEMBL)
-                return View("Views/Docs/MawbProfitReport.cshtml", profitReport);
+            returnUrl = pageType == FreightPageType.AEMBL
+                ? (reportType == "Summary") ? "Views/Docs/MawbProfitReport.cshtml" : "Views/Docs/MawbProfitReportDetailed.cshtml"
+                : "Views/Docs/HawbProfitReport.cshtml";
 
-            return View("Views/Docs/HawbProfitReport.cshtml", profitReport);
+            return View(returnUrl, profitReport);
         }
 
         [HttpPost]

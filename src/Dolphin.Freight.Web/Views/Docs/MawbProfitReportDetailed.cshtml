@@ -1,0 +1,594 @@
+﻿
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.Reports.ProfitReportViewModel
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+
+    .w-10, .w-20, .w-100, .text-right, .text-center, .auto-font-size, textarea {
+        font-size:10px;
+    }
+</style>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+    });
+</script>
+<div id="main" style="background: #333;padding-bottom: 20px;">
+
+    <div class="nav">
+           <ul>
+        
+        <li uib-tooltip="Download PDF &amp; Save to Doc Center (or Work Order)" tooltip-placement="bottom">
+            <button type="button" class="pdf" ng-click="vm.onSavePDF('/reports/accounting/mbl/profit-detail/AEX-23030003/')" ng-disabled="vm.isSavingBlocked()">
+            </button>
+        </li>
+        
+        <li uib-tooltip="Print &amp; Save to Doc Center (or Work Order)" tooltip-placement="bottom">
+            <button type="button" class="print" ng-click="vm.onSavePrint('/reports/accounting/mbl/profit-detail/AEX-23030003/print/')" ng-disabled="vm.isSavingBlocked()">
+            </button>
+        </li>
+
+    
+        <li uib-tooltip="" tooltip-enable="vm.isSendEmailBlocked()" tooltip-placement="bottom">
+            <button type="button" class="mail" ng-click="vm.onSendEmail()" ng-disabled="vm.isSendEmailBlocked()">
+            </button>
+        </li>
+    
+
+    
+    <!-- ngIf: vm.canSelectLanguage --><li ng-if="vm.canSelectLanguage" class="ng-scope">
+        
+            <select ng-model="vm.lang" ng-change="vm.switchLanguage(vm.lang)" class="select ng-pristine ng-untouched ng-valid ng-not-empty">
+    <option value="en">English</option>
+    <option value="zh-hans">简体中文 (Simplified Chinese)</option>
+    <option value="zh-hant">繁體中文 (Traditional Chinese)</option>
+</select>
+        
+    </li><!-- end ngIf: vm.canSelectLanguage -->
+
+    </ul>
+
+        <div class="view-setting">
+            <div class="btn-group">
+                <button class="button btn btn-sm" title="Zoom Out" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"><i class="fa fa-search-minus"></i>
+                </button>
+                <button class="button btn btn-sm" title="Zoom In" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"><i class="fa fa-search-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <form id="form" method="post">
+    <input type="hidden" autocomplete="off">
+
+    <div class="wrap landscape">
+        <div class="header">
+            <div class="text-center">
+                <h4 class="margin-0">PROFIT BY MAWB</h4>
+            </div>
+        </div>
+        <div class="con oi-mbl-profit-detail">
+                <table class="text-sm table-padding single-currency">
+                    <tbody><tr>
+                        <td class="w-6">POST DATE:</td>
+                        <td class="w-14">07-10-2023</td>
+                        <td class="w-35"></td>
+                        <td class="w-8"></td>
+                        <td class="w-17"></td>
+                        <td class="w-20 text-right">AIR EXPORT</td>
+                    </tr>
+                    <tr>
+                        <td>CURRENCY:</td>
+                        <td>USD</td>
+                        <td></td>
+                        <td>PRINT OPTION:</td>
+                        <td>DETAIL</td>
+                        <td class="text-right">07-19-2023</td>
+                    </tr>
+                </tbody></table>
+            
+
+            <table class="td table-padding text-bold margin-t border-t">
+                    <tbody><tr class="text-sea text-12 col-bg-grey-light">
+                        <td class="w-13 padding-t-xs">SALES :</td>
+                        <td class="w-38 padding-t-xs">Angelica Hawkins</td>
+                        <td class="w-12 padding-t-xs">CUSTOMER :</td>
+                        <td class="w-37 padding-t-xs">1231231</td>
+                    </tr>
+                <tr>
+                        <td class="w-13">CONTAINER COUNT :</td>
+                        <td class="w-38"></td>
+                    
+                    <td class="w-12">P.O.R :</td>
+                    <td class="w-37"></td>
+                </tr>
+                <tr>
+                    <td>AGENT NAME :</td>
+                    <td>11</td>
+                    <td>P.O.L / ETD :</td>
+                    <td>(AAA) ANAA / 07-10-2023 00:00</td>
+                </tr>
+                <tr>
+                    <td>D.E.L :</td>
+                    <td></td>
+                    <td>P.O.D / ETA :</td>
+                    <td>(AAB) ARRABURY / 07-11-2023 00:00</td>
+                </tr>
+                <tr>
+                    
+                    <td class="td">OP :</td>
+                    <td class="td">Hanjun Lin</td>
+                    
+                        <td class="td"></td>
+                        <td class="td"></td>
+                    
+                </tr>
+            </tbody></table>
+            <table class="table-valign-top text-bold">
+                <colgroup>
+                    <col class="w-51">
+                    <col class="w-49">
+                </colgroup>
+                <tbody><tr>
+                    <td>
+                        <table class="table-padding">
+                            <colgroup>
+                                <col class="w-25">
+                                <col class="w-75">
+                            </colgroup>
+                            <tbody><tr>
+                                <td>FILE NO. :</td>
+                                <td>AEX-23030003</td>
+                            </tr>
+                            <tr>
+                                <td>MAWB NO. :</td>
+                                <td>695-33679332</td>
+                            </tr>
+                            <tr>
+                                <td>WEIGHT :</td>
+                                <td>3.00 KGS / 6.61 LBS</td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td>
+                        <table class="table-padding">
+                            <colgroup>
+                                <col class="w-24">
+                                <col class="w-76">
+                            </colgroup>
+                            <tbody><tr>
+                                <td>SHIP MODE :</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>SERVICE TERM :</td>
+                                <td></td>
+                            </tr>
+                            
+                                <tr>
+                                    <td>MEASUREMENT :</td>
+                                    <td>0.02 CBM / 0.71 CFT</td>
+                                </tr>
+                            
+                            
+                        </tbody></table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+            </tbody></table>
+            <!--HBL group實線分隔-->
+            <!--PMT是N的時候一樣保留check那個row-->
+            
+                <table class="text-sm table-padding single-currency">
+                    <colgroup>
+                        <col class="w-5"><!--type-->
+                        <col class="w-13"><!--item descriptiom / BL No.-->
+                        <col class="w-13"><!--invoce no-->
+                        <col class="w-6"><!--volumn / company-->
+                        <col class="w-6"><!--rate-->
+                        <col class="w-6"><!--revenue-->
+                        <col class="w-6"><!--cost-->
+                        <col class="w-6"><!--debit-->
+                        <col class="w-6"><!--credit-->
+                        <col class="w-7"><!--invoice / post date-->
+                        <col class="w-6"><!--AR Amount-->
+                        <col class="w-6"><!--AP Amount-->
+                        <col class="w-6"><!--DC Amount-->
+                        <col class="w-8"><!--PMT-->
+                    </colgroup>
+
+                    <thead>
+                        <tr class="border title-sm col-bg-grey">
+                            <td class="text-center text-bold" rowspan="2">TYPE</td>
+                            <td class="text-center" colspan="2">ITEM DESCRIPTION (HAWB NO)</td>
+                            <td class="text-right">VOLUME</td>
+                            <td class="text-right">RATE</td>
+                            <td class="text-right">REVENUE</td>
+                            <td class="text-right">COST</td>
+                            <td class="text-right">DEBIT(+)</td>
+                            <td class="text-right">CREDIT(-)</td>
+                            <td class="text-center text-bold" rowspan="2">INV<br>POST DATE</td>
+                            <td class="text-right text-bold" rowspan="2">A/R<br>AMOUNT</td>
+                            <td class="text-right text-bold" rowspan="2">A/P<br>AMOUNT</td>
+                            <td class="text-right text-bold" rowspan="2">D/C<br>AMOUNT</td>
+                            <td class="text-center text-bold" rowspan="2">BALANCE | PMT</td>
+                        </tr>
+                        <tr class="border title-sm text-bold col-bg-grey">
+                            <td>AWB NO</td>
+                            <td>INV NO.</td>
+                            <td colspan="6">COMPANY</td>
+                        </tr>
+                    </thead>
+                                <tbody><tr class="text-sm">
+                                    <td></td>
+                                    <td colspan="2" class="td">AE01A/F / AIR FREIGHT CHARGE</td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>1.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>31.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>31.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td" colspan="5"></td>
+                                </tr>
+                            
+
+                            <tr class="text-bold">
+                                <td class="td text-center">H</td>
+                                <td class="td"><div class="auto-font-size __width-bl-no"><span>AH-23030003</span></div></td>
+                                <td class="td">
+                                    <div class="auto-font-size __width-invoice">
+                                        <span class="item-edit">
+                                            <a href="/accounting/invoice/entry/289971/" target="_blank">IN-30802</a>
+                                            
+                                        </span>
+                                        <span class="item-pdf">
+                                            IN-30802
+                                            
+                                        </span>
+                                    </div>
+                                </td>
+                                <td colspan="6" class="td">1231231</td>
+                                <td class="td text-center">07-10-2023</td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>31.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-balance inline-block"><span>31.00</span></div> N</td>
+                            </tr>
+                            <tr class="border-b-grey">
+                                
+
+                                <td colspan="3"></td>
+                                <td colspan="7"></td>
+                                <td class="text-right" colspan="4"> </td>
+                            </tr>
+                                <tr class="text-sm">
+                                    <td></td>
+                                    <td colspan="2" class="td">AE02FSC / FUEL SUR CHARGE</td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>2.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>2.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>4.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td" colspan="5"></td>
+                                </tr>
+                            
+
+                            <tr class="text-bold">
+                                <td class="td text-center">H</td>
+                                <td class="td"><div class="auto-font-size __width-bl-no"><span>AH-23030003</span></div></td>
+                                <td class="td">
+                                    <div class="auto-font-size __width-invoice">
+                                        <span class="item-edit">
+                                            <a href="/accounting/invoice/entry/289972/" target="_blank">DC-19098</a>
+                                            
+                                        </span>
+                                        <span class="item-pdf">
+                                            DC-19098
+                                            
+                                        </span>
+                                    </div>
+                                </td>
+                                <td colspan="6" class="td">11</td>
+                                <td class="td text-center">07-10-2023</td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>4.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-balance inline-block"><span>4.00</span></div> N</td>
+                            </tr>
+                            <tr class="border-b-grey">
+                                
+
+                                <td colspan="3"></td>
+                                <td colspan="7"></td>
+                                <td class="text-right" colspan="4"> </td>
+                            </tr>
+                                <tr class="text-sm">
+                                    <td></td>
+                                    <td colspan="2" class="td">AE03SECURI / SECURITY CHARGE</td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>3.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>3.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>9.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td" colspan="5"></td>
+                                </tr>
+                            
+
+                            <tr class="text-bold">
+                                <td class="td text-center">H</td>
+                                <td class="td"><div class="auto-font-size __width-bl-no"><span>AH-23030003</span></div></td>
+                                <td class="td">
+                                    <div class="auto-font-size __width-invoice">
+                                        <span class="item-edit">
+                                            <a href="/accounting/invoice/entry/289973/" target="_blank">VIEW</a>
+                                            
+                                        </span>
+                                        <span class="item-pdf">
+                                            
+                                            
+                                        </span>
+                                    </div>
+                                </td>
+                                <td colspan="6" class="td">11</td>
+                                <td class="td text-center">07-10-2023</td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>9.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-balance inline-block"><span>-9.00</span></div> N</td>
+                            </tr>
+                            <tr class="border-b-grey">
+                                
+
+                                <td colspan="3"></td>
+                                <td colspan="7"></td>
+                                <td class="text-right" colspan="4"> </td>
+                            </tr>
+                                <tr class="text-sm">
+                                    <td></td>
+                                    <td colspan="2" class="td">AE01A/F / AIR FREIGHT CHARGE</td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>2.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>20.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>40.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td" colspan="5"></td>
+                                </tr>
+                            
+                                <tr class="text-sm">
+                                    <td></td>
+                                    <td colspan="2" class="td">AE01A/F / AIR FREIGHT CHARGE</td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>1.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>10.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>10.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td" colspan="5"></td>
+                                </tr>
+                            
+
+                            <tr class="text-bold">
+                                <td class="td text-center">H</td>
+                                <td class="td"><div class="auto-font-size __width-bl-no"><span>AH-23030003</span></div></td>
+                                <td class="td">
+                                    <div class="auto-font-size __width-invoice">
+                                        <span class="item-edit">
+                                            <a href="/accounting/invoice/entry/289974/" target="_blank">222</a>
+                                            
+                                        </span>
+                                        <span class="item-pdf">
+                                            222
+                                            
+                                        </span>
+                                    </div>
+                                </td>
+                                <td colspan="6" class="td">1231231</td>
+                                <td class="td text-center">07-13-2023</td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>50.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-balance inline-block"><span>50.00</span></div> N</td>
+                            </tr>
+                            <tr class="border-b-grey">
+                                
+
+                                <td colspan="3"></td>
+                                <td colspan="7"></td>
+                                <td class="text-right" colspan="4"> </td>
+                            </tr>
+                        
+                                <tr class="text-sm">
+                                    <td></td>
+                                    <td colspan="2" class="td">AE02FSC / FUEL SUR CHARGE</td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>3.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>11.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>33.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td" colspan="5"></td>
+                                </tr>
+                            
+
+                            <tr class="text-bold">
+                                <td class="td text-center">H</td>
+                                <td class="td"><div class="auto-font-size __width-bl-no"><span>AH-23030003</span></div></td>
+                                <td class="td">
+                                    <div class="auto-font-size __width-invoice">
+                                        <span class="item-edit">
+                                            <a href="/accounting/invoice/entry/289975/" target="_blank">DC-19099</a>
+                                            
+                                        </span>
+                                        <span class="item-pdf">
+                                            DC-19099
+                                            
+                                        </span>
+                                    </div>
+                                </td>
+                                <td colspan="6" class="td">11</td>
+                                <td class="td text-center">07-11-2023</td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>33.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-balance inline-block"><span>33.00</span></div> N</td>
+                            </tr>
+                            <tr class="border-b-grey">
+                                
+
+                                <td colspan="3"></td>
+                                <td colspan="7"></td>
+                                <td class="text-right" colspan="4"> </td>
+                            </tr>
+                        
+                                <tr class="text-sm">
+                                    <td></td>
+                                    <td colspan="2" class="td">AE03SECURI / SECURITY CHARGE</td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>3.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>4.50</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>13.50</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td class="td" colspan="5"></td>
+                                </tr>
+                            
+
+                            <tr class="text-bold">
+                                <td class="td text-center">H</td>
+                                <td class="td"><div class="auto-font-size __width-bl-no"><span>AH-23030003</span></div></td>
+                                <td class="td">
+                                    <div class="auto-font-size __width-invoice">
+                                        <span class="item-edit">
+                                            <a href="/accounting/invoice/entry/289976/" target="_blank">VIEW</a>
+                                            
+                                        </span>
+                                        <span class="item-pdf">
+                                            
+                                            
+                                        </span>
+                                    </div>
+                                </td>
+                                <td colspan="6" class="td">1231231</td>
+                                <td class="td text-center">07-11-2023</td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>13.50</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-balance inline-block"><span>-13.50</span></div> N</td>
+                            </tr>
+                            <tr class="">
+                                
+
+                                <td colspan="3">  </td>
+                                <td colspan="7"> Shipper: ABBOTT-CRAIG </td>
+                                <td class="text-right" colspan="4"> </td>
+                            </tr>
+                        
+            </tbody></table>
+
+            
+                <table class="text-bold bg-grey border table-padding-double single-currency">
+                    <tbody><tr>
+                        <td class="w-62">&nbsp;</td>
+                        <td class="w-12 text-right">TOTAL</td>
+                        <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>81.00</span></div></td>
+                        <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>22.50</span></div></td>
+                        <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>37.00</span></div></td>
+                        <td class="w-8">&nbsp;</td>
+                    </tr>
+                    <tr class="border-t">
+                        <td>&nbsp;</td>
+                        <td class="text-right">PROFIT</td>
+                        <td class="text-right">USD</td>
+                        <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>95.50</span></div></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr class="border-t">
+                        <td>&nbsp;</td>
+                        <td class="text-right">BALANCE</td>
+                        <td class="text-right"></td>
+                        <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>95.50</span></div></td>
+                        <td>&nbsp;</td>
+                    </tr>
+
+                    
+                    <tr class="border-t">
+                        <td></td>
+                        <td class="text-right">
+                            <span class="item-edit">
+                                <input type="checkbox" name="is_show_profit_percentage" hc-user-preference="acct_profit_mbl_is_show_profit_percentage" ng-model="vm.isShowProfitPercentage" id="id_is_show_profit_percentage" checked="" class="ng-untouched ng-valid ng-dirty ng-not-empty">
+                            </span> PROFIT PERCENTAGE
+                        </td>
+                        <td class="text-right">424.44%</td>
+                        <td colspan="3"></td>
+                    </tr>
+                    
+
+                    
+                    <tr class="border-t">
+                        <td>&nbsp;</td>
+                        <td class="text-right">
+                            <span class="item-edit">
+                                <input type="checkbox" name="is_show_profit_margin" hc-user-preference="acct_profit_mbl_is_show_profit_margin" ng-model="vm.isShowProfitMargin" id="id_is_show_profit_margin" checked="" class="ng-untouched ng-valid ng-dirty ng-not-empty">
+                            </span>
+                            PROFIT MARGIN
+                        </td>
+                        <td class="text-right">80.93%</td>
+                        <td colspan="3"></td>
+                    </tr>
+                    
+
+                </tbody></table>
+            
+        </div>
+    </div>
+</form>
+</div>
