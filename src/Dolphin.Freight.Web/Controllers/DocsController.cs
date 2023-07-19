@@ -2695,14 +2695,14 @@ namespace Dolphin.Freight.Web.Controllers
                 HawbNo = airExportDetails.HawbNo,
                 Operator = airExportDetails.Operator,
                 Measurement = measurement.ToString("0.00"),
-                PolEtd = string.Concat(airExportDetails.DepartureName, "/", airExportDetails.DepatureDate),
-                PodEtd = string.Concat(airExportDetails.DestinationName, "/", airExportDetails.ArrivalDate),
+                PolEtd = string.Concat(airExportDetails.DepartureName, " / ", airExportDetails.DepatureDate),
+                PodEtd = string.Concat(airExportDetails.DestinationName, " / ", airExportDetails.ArrivalDate),
                 Sales = airExportDetails.SalesName,
-                Shipper = airExportDetails.ShippperName,
+                Shipper = airExportDetails.CarrierName,
                 MawbNo = airExportDetails.MawbNo,
-                ChargableWeight = string.Concat(airExportDetails.ChargeableWeightCneeKG, "/", airExportDetails.ChargeableWeightCneeLB),
-                PostDate = DateTime.Now,
-                PageType = pageType
+                ChargableWeight = string.Concat(airExportDetails.ChargeableWeightCneeKG, " / ", airExportDetails.ChargeableWeightCneeLB),
+                PageType = pageType,
+                FileNo = airExportDetails.DocNumber
             };
 
             var queryType = pageType == FreightPageType.AEMBL ? 5 : 4;
@@ -2844,6 +2844,41 @@ namespace Dolphin.Freight.Web.Controllers
         {
             model.IsPDF = true;
             return await _generatePdf.GetPdf("Views/Docs/AllHawbPackageLabelAirExportMawb.cshtml", model);
+        }
+
+        public async Task<IActionResult> PickupDeliveryOrderAirExportMawb(Guid mawbId)
+        {
+            PickupDeliveryOrderAirExportMawbModel InfoModel = new();
+
+            var mawb = await _airExportMawbAppService.GetAsync(mawbId);
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
+            var packageUnit = _dropdownService.PackageUnitLookupList;
+
+            InfoModel.Issued_At = string.Concat(DateTime.UtcNow);
+            InfoModel.Issued_By = _currentUser.Name + " " + _currentUser.SurName;
+            InfoModel.Mawb_No = mawb.MawbNo;
+            InfoModel.Our_Ref_No = mawb.FilingNo;
+            InfoModel.Shipper = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.ShipperId)).Select(s => s.Text));
+            InfoModel.Consignee = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.ConsigneeId)).Select(s => s.Text));
+            InfoModel.Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.MawbCarrierId)).Select(s => s.Text));
+            InfoModel.Flight_No = mawb.FlightNo;
+            InfoModel.Port_Of_Loading = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DepatureId)).Select(s => s.Text));
+            InfoModel.ETD = string.Concat(mawb.DepatureDate);
+            InfoModel.Port_Of_Discharge = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DestinationId)).Select(s => s.Text));
+            InfoModel.ETA = string.Concat(mawb.ArrivalDate);
+            InfoModel.Packages = string.Concat(mawb.Package);
+            InfoModel.Package_Unit = string.Concat(packageUnit.Where(w => w.Value == Convert.ToString(mawb.MawbPackageUnitId)).Select(s => s.Text));
+            InfoModel.Measurement = string.Concat(mawb.VolumeWeightCbm);
+            InfoModel.MeasurementWithCFT = mawb.VolumeWeightCbm == 0.00 ? "" : (mawb.VolumeWeightCbm * 35.315).ToString("0.00");
+
+            return View(InfoModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> PickupDeliveryOrderAirExportMawb(PickupDeliveryOrderAirExportMawbModel model)
+        {
+            model.IsPDF = true;
+            return await _generatePdf.GetPdf("Views/Docs/PickupDeliveryOrderAirExportMawb.cshtml", model);
         }
     }
 }

@@ -237,12 +237,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 airExportDetails.ConsigneeName = string.Concat(consignee.TPName, "/", consignee.TPCode);
             }
 
-            if (data.MawbOperatorId != null)
-            {
-                var op = tradePartners.Where(w => w.Id == data.MawbOperatorId).FirstOrDefault();
-                airExportDetails.Operator = string.Concat(op.TPName, "/", op.TPCode);
-            }
-
             if (data.DepatureId != null)
             {
                 var departure = portMangements.Where(w => w.Id == data.DepatureId).FirstOrDefault();
@@ -292,6 +286,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
             airExportDetails.DepatureDate = data.DepatureDate;
             airExportDetails.ChargeableWeightCneeKG = Convert.ToString(data.ChargeableWeightKg);
             airExportDetails.ChargeableWeightCneeLB = Convert.ToString(data.ChargeableWeightLb);
+            airExportDetails.Operator = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
 
             return airExportDetails;
         }
