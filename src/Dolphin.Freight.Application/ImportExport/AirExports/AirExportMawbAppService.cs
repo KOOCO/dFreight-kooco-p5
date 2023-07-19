@@ -271,6 +271,13 @@ namespace Dolphin.Freight.ImportExport.AirExports
             {
                 var issuingCarrier = tradePartners.Where(w => w.Id == data.IssuingCarrierId).FirstOrDefault();
                 airExportDetails.IssuingCarrierName = string.Concat(issuingCarrier.TPName, "/", issuingCarrier.TPCode);
+                airExportDetails.IATA = issuingCarrier.IataCode;
+            }
+
+            if (data.MawbCarrierId != null)
+            {
+                var carrier = tradePartners.Where(w => w.Id == data.MawbCarrierId).FirstOrDefault();
+                airExportDetails.CarrierName = string.Concat(carrier.TPName, "/", carrier.TPCode);
             }
 
             airExportDetails.AirWayBillNo = data.MawbNo;

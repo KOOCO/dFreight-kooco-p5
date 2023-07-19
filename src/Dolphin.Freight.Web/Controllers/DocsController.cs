@@ -58,6 +58,8 @@ using Dolphin.Freight.Accounting.InvoiceBills;
 using Dolphin.Freight.Web.ViewModels.CertificateOfOriginAirExportHawb;
 using NPOI.OpenXmlFormats.Wordprocessing;
 using JetBrains.Annotations;
+using System.Runtime.Intrinsics.Arm;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -2623,6 +2625,25 @@ namespace Dolphin.Freight.Web.Controllers
 
             return data;
         }
+        private async Task<List<AllHawbList>> GetAllHawbLists(Guid mawbId)
+        {
+            var data = await _airExportHawbAppService.GetHblCardsById(mawbId);
+
+            var allHawbLists = new List<AllHawbList>();
+
+            foreach (var hawb in data)
+            {
+                var allHawbs = new AllHawbList
+                {
+                    Id = string.Concat(hawb.Id),
+                    Hawb_No = hawb.HawbNo,
+                    Hawb_Pc = hawb.Package
+                };
+                allHawbLists.Add(allHawbs);
+            }
+
+            return allHawbLists;
+        }
         #endregion
 
         [HttpPost]
@@ -2759,8 +2780,6 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/MawbProfitReport.cshtml", model);
         }
 
-
-
         public async Task<IActionResult> BookingConfirmationAirExportMawb(Guid mawbId)
         {
             BookingConfirmationAirExportMawbModel InfoModel = new();
@@ -2788,11 +2807,40 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(InfoModel);
         }
+
         [HttpPost]
         public async Task<IActionResult> BookingConfirmationAirExportMawb(BookingConfirmationAirExportMawbModel model)
         {
             model.IsPDF = true;
             return await _generatePdf.GetPdf("Views/Docs/BookingConfirmationAirExportMawb.cshtml", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AllHawbPackageLabelAirExportMawb(Guid mawbId)
+        {
+            AllHawbPackageLabelModel InfoModel = new();
+            var mawb = await _airExportMawbAppService.GetAsync(mawbId);
+            var hawb = await _airExportHawbAppService.GetHblCardsById(mawbId);
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
+            var allHawbLists = await GetAllHawbLists(mawbId);
+
+            InfoModel.AllHawbLists = allHawbLists;
+            InfoModel.Air_WayBill_No = mawb.MawbNo;
+            InfoModel.Destination = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DestinationId)).Select(s => s.Text));
+            InfoModel.Name_Of_Forwarder = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.IssuingCarrierId)).Select(s => s.Text));
+            InfoModel.Origin = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DepatureId)).Select(s => s.Text));
+            InfoModel.Hawb_No = hawb[0].HawbNo;
+            InfoModel.Hawb_Pc = hawb[0].Package;
+            InfoModel.Total_No_Of_Pieces = string.Concat(mawb.Package);
+
+            return View(InfoModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AllHawbPackageLabelAirExportMawb(AllHawbPackageLabelModel model)
+        {
+            model.IsPDF = true;
+            return await _generatePdf.GetPdf("Views/Docs/AllHawbPackageLabelAirExportMawb.cshtml", model);
         }
     }
 }
