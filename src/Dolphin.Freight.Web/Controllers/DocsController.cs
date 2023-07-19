@@ -2707,6 +2707,7 @@ namespace Dolphin.Freight.Web.Controllers
                             break;
                     }
                 }
+                profitReport.InvoicesJson = JsonConvert.SerializeObject(profitReport.Invoices);
             }
 
             if (profitReport.AR.Any())
@@ -2738,7 +2739,7 @@ namespace Dolphin.Freight.Web.Controllers
                 profitReport.DCTotal = dcTotal;
             }
 
-            profitReport.Total = profitReport.ARTotal + profitReport.APTotal + profitReport.DCTotal;
+            profitReport.Total = profitReport.ARTotal - profitReport.APTotal + profitReport.DCTotal;
 
             ViewBag.invoices = profitReport.Invoices;
 
@@ -2753,9 +2754,9 @@ namespace Dolphin.Freight.Web.Controllers
         {
             model.IsPDF = true;
 
-            model.Invoices = ViewBag.invoices;
+            model.Invoices = JsonConvert.DeserializeObject<IList<InvoiceDto>>(model.InvoicesJson);
 
-            return await _generatePdf.GetPdf("Views/Docs/HawbProfitReport.cshtml", model);
+            return await _generatePdf.GetPdf("Views/Docs/MawbProfitReport.cshtml", model);
         }
 
 

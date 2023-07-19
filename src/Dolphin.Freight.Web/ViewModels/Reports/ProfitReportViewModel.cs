@@ -32,5 +32,6 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public double Total { get; set; }
         public FreightPageType PageType { get; set; }
         public bool IsPDF { get; set; }
+        public string InvoicesJson { get; set; }
     }
 }

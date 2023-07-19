@@ -64,12 +64,17 @@
 </script>
 <form id="myForm" name="myForm" method="POST">
     <div style="background-color:black;display: flex;justify-content:center;height:100%">
-    <div style="width:900px;background-color:white;height:100%" id="form" name = "form" class="edit">
-        <div class="container" style="background-color:black">    
-            <div style="display:flex;justify-content: center;" class="item-left">
-                <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
-            </div>
-        </div>
+    <div @(Model.IsPDF? "style=width:100%;background-color:white;height:100%;" : "style=width:900px;background-color:white;height:100%;") id="form" name = "form" class="edit">
+            @if (!Model.IsPDF)
+            {
+                <div class="container" style="background-color:black">    
+                    <div style="display:flex;justify-content: center;" class="item-left">
+                        <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+                    </div>
+                </div>
+            }
+            
+        
          <div class="wrap">
             <div class="header">
                 <div class="text-center">
@@ -80,20 +85,20 @@
                 <table class="text-sm table-padding single-currency">
                     <tbody>
                         <tr>
-                            <td class="w-10"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">POST DATE</font></font></td>
-                            <td class="w-10">@Model.PostDate.ToShortDateString()</td>
-                            <td class="w-35"></td>
-                            <td class="w-15"></td>
-                            <td class="w-10"></td>
-                            <td class="w-20 text-right">Air export</td>
+                            <td style="width: 10%"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">POST DATE</font></font></td>
+                            <td style="width: 10%">@DateTime.Now.ToShortDateString()</td>
+                            <td style="width: 35%"></td>
+                            <td style="width: 15%"></td>
+                            <td style="width: 10%"></td>
+                            <td style="width: 20%; text-align: center">Air export</td>
                         </tr>
-                        <tr class="border-b-strong">
-                            <td class="w-10 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CURRENCY</font></font></td>
-                            <td class="w-10 col-padding">USD</td>
-                            <td class="w-35"></td>
-                            <td class="w-15">PRINT OPTION</td>
-                            <td class="w-10">SUMMARY</td>
-                            <td class="w-20 col-padding text-right">@DateTime.Now.ToShortDateString()</td>
+                        <tr style="border-bottom: 2pt solid #000">
+                            <td style="width: 10%"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CURRENCY</font></font></td>
+                            <td style="width: 10%">USD</td>
+                            <td style="width: 35%"></td>
+                            <td style="width: 15%">PRINT OPTION</td>
+                            <td style="width: 10%">SUMMARY</td>
+                            <td style="width: 20%; text-align: center">@DateTime.Now.ToShortDateString()</td>
                         </tr>
                     </tbody>
                 </table>
@@ -115,19 +120,19 @@
                         </tr>
                         <tr>
                             <td>AGENT NAME:</td>
-                            <td>@Model.Consignee</td>
+                            <td>@Model.Consignee <input type="hidden" asp-for="@Model.Consignee" /></td>
                             <td>P.O.L / ETD:</td>
-                            <td>@Model.PolEtd</td>
+                            <td>@Model.PolEtd <input type="hidden" asp-for="@Model.PolEtd" /></td>
                         </tr>
                         <tr>
                             <td>D.E.L :</td>
                             <td></td>
                             <td>P.O.D / ETA :</td>
-                            <td>@Model.PodEtd</td>
+                            <td>@Model.PodEtd <input type="hidden" asp-for="@Model.PodEtd" /></td>
                         </tr>
                         <tr>
                             <td>OP :</td>
-                            <td>@Model.Operator</td>
+                            <td>@Model.Operator <input type="hidden" asp-for="@Model.Operator" /></td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -150,15 +155,21 @@
                                     <tbody>
                                         <tr class="text-grey text-light">
                                             <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">FILE NO :</font></font></td>
-                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.FileNo</font></font></td>
+                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.FileNo
+                                            <input type="hidden" asp-for="@Model.FileNo" />
+                                            </font></font></td>
                                         </tr>
                                         <tr class="text-grey text-light">
                                             <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">MAWB NO. :</font></font></td>
-                                            <td>@Model.MawbNo</td>
+                                            <td>@Model.MawbNo
+                                            <input type="hidden" asp-for="@Model.MawbNo" />
+                                            </td>
                                         </tr>
                                         <tr class="text-grey text-light">
                                             <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">WEIGHT :</font></font></td>
-                                            <td>@Model.ChargableWeight</td>
+                                            <td>@Model.ChargableWeight
+                                            <input type="hidden" asp-for="@Model.ChargableWeight" />
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -180,7 +191,7 @@
                                         </tr>
                                         <tr class="text-grey text-light">
                                             <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">MEASUREMENT :</font></font></td>
-                                            <td class="col-padding">@Model.Measurement</td>
+                                            <td class="col-padding">@Model.Measurement <input type="hidden" asp-for="@Model.Measurement" /></td>
                                         </tr>
 
                                     </tbody>
@@ -222,7 +233,7 @@
                         <td class="text-left">INV NO.</td>
                         <td class="text-right">Balance</td>
                     </tr>
-
+                    <input type="hidden" asp-for="@Model.InvoicesJson" />
                         @foreach (var invoice in Model.Invoices)
                         {
                          <tr>
@@ -273,16 +284,20 @@
                         <tr>
                             <td class="w-60"></td>
                             <td class="w-14 text-right">TOTAL</td>
-                            <td class="w-7 text-right">@Model.ARTotal</td>
-                            <td class="w-7 text-right">@Model.APTotal</td>
-                            <td class="w-7 text-right">@Model.DCTotal</td>
+                            <td class="w-7 text-right">@Model.ARTotal <input type="hidden" asp-for="@Model.ARTotal" /></td>
+                            <td class="w-7 text-right">@Model.APTotal <input type="hidden" asp-for="@Model.APTotal" /></td>
+                            <td class="w-7 text-right">@Model.DCTotal <input type="hidden" asp-for="@Model.DCTotal" /></td>
                             <td class="w-5"></td>
                         </tr>
                         <tr class="border-t">
                             <td>&nbsp;</td>
                             <td class="text-right">PROFIT</td>
                             <td class="text-right">USD</td>
-                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>@Model.Total</span></div></td>
+                            <td class="text-right" colspan="2">
+                                <div class="auto-font-size __width-total-lg">
+                                    <span>@Model.Total <input type="hidden" asp-for="@Model.Total" /></span>
+                                </div>
+                            </td>
                             <td>&nbsp;</td>
                         </tr>
                         <tr class="border-t">
@@ -300,7 +315,7 @@
                                 <input type="checkbox" name="is_show_profit_percentage" checked="">
                             </span> PROFIT PERCENTAGE
                         </td>
-                        <td class="text-right">424.44</td>
+                        <td class="text-right">@((Model.Total * 100) / Model.APTotal)%</td>
                         <td colspan="3"></td>
                     </tr>
                     
@@ -314,7 +329,7 @@
                             </span>
                             PROFIT MARGIN
                         </td>
-                        <td class="text-right">500</td>
+                        <td class="text-right"></td>
                         <td colspan="3"></td>
                     </tr>
 
