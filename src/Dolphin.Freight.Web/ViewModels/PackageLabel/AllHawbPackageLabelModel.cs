@@ -19,6 +19,7 @@ namespace Dolphin.Freight.Web.ViewModels.PackageLabel
     public class AllHawbList 
     { 
         public string Id { get; set; } 
-        public string Hawb_No { get; set; } 
+        public string Hawb_No { get; set; }
+        public string Hawb_Pc { get; set; }
     }
 }

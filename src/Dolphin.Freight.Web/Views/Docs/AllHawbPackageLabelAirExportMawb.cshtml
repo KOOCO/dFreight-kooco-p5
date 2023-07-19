@@ -73,6 +73,19 @@
 
         $('#hawbsList').on('change', function(){
             $('#hawbNo').text($('#hawbsList').val());
+            $('#hawbNo_hidden').text('');
+            $('#hawbNo_hidden').text($('#hawbsList').val());
+            $('#hawbNo_hidden').val('');
+            $('#hawbNo_hidden').val($('#hawbNo_hidden').text());
+            var selectedOption = $("#hawbsList option:selected");
+            var hawbPcValue = selectedOption.data("hawb-pc");
+            if(hawbPcValue == ''){ hawbPcValue = '0'; }
+            $('#id_total_pc').text('');
+            $('#id_total_pc').text(hawbPcValue);
+            $('#hawbPc_hidden').val('');
+            $('#hawbPc_hidden').val(hawbPcValue);
+            $('#id_total_pc').val('');
+            $('#id_total_pc').val(hawbPcValue);
         });
     });
 </script>
@@ -89,7 +102,7 @@
                        <select id="hawbsList" name="hawbsList">
                            @foreach (var hawb in Model.AllHawbLists)
                            {
-                               <option value="@hawb.Hawb_No" id="@hawb.Id">@hawb.Hawb_No</option>
+                               <option value="@hawb.Hawb_No" data-hawb-pc="@hawb.Hawb_Pc" id="@hawb.Id">@hawb.Hawb_No</option>
                            }
                        </select>
                    </div>
@@ -204,9 +217,6 @@
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 331px;"></span><!---->
 
                                         </hc-input-template></div>
-                                        <div class="item-pdf auto-font-size __width-lg _text-35">
-                                            <h1><span>@Model.Air_WayBill_No</span></h1>
-                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -217,9 +227,6 @@
                                         <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Destination" value="@Model.Destination" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.APOD_code" class="input-xl ng-isolate-scope" id="id_APOD_code"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 150px;"></span><!---->
 
                                         </hc-input-template></div>
-                                        <div class="item-pdf">
-                                            <h1 class="auto-font-size __width-sm"><span>@Model.Destination</span></h1>
-                                        </div>
                                     </div>
                                 </td>
                                 <td>
@@ -230,9 +237,6 @@
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 150px;"></span><!---->
 
                                         </hc-input-template></div>
-                                        <div class="item-pdf text-center">
-                                            <h1>@Model.Total_No_Of_Pieces</h1>
-                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -247,9 +251,6 @@
                                 <td class="border-r">
                                     <div class="title">NAME OF FORWARDER</div>
                                     <div class="data">
-                                        <div class="item-pdf">
-                                            <h2 class="lineheight-nor auto-font-size __col-forwarder-s"><span>@Model.Name_Of_Forwarder</span></h2>
-                                        </div>
                                         <div class="item-edit hover-toggle-icon-text-template">
                                             <input type="text" name="forwarder_name" value="@Model.Name_Of_Forwarder" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.forwarder_name" class="input-lg ng-isolate-scope" id="id_forwarder_name">
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 223px;"></span><!---->
@@ -260,9 +261,6 @@
                                 <td>
                                     <div class="title">ORIGIN</div>
                                     <div class="data">
-                                        <div class="item-pdf">
-                                            <h2 class="auto-font-size __width-xs"><span>@Model.Origin</span></h2>
-                                        </div>
                                         <div class="item-edit hover-toggle-icon-text-template">
                                             <input type="text" name="APOL_code" value="@Model.Origin" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.APOL_code" class="input-lg ng-isolate-scope" id="id_APOL_code">
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 78px;"></span><!---->
@@ -275,30 +273,24 @@
                                 <td class="border-r">
                                     <div class="title">HAWB NO.</div>
                                     <div class="data">
-                                        <h2 class="auto-font-size __col-hbl"><span id="hawbNo">@Model.Hawb_No</span></h2>
+                                        <h2 class="auto-font-size __col-hbl">
+                                            <span id="hawbNo">@Model.Hawb_No</span>
+                                            <input type="hidden" id="hawbNo_hidden" name="Hawb_No" value="@Model.Hawb_No" />
+                                        </h2>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="title">HAWB PC.</div>
                                     <div class="data text-center">
-                                        <div class="item-pdf">
-                                            <h2>
-                                        
-                                                    @Model.Hawb_Pc
-                                        
-                                            </h2>
-                                        </div>
                                         <div class="item-edit">
                                             <input type="number" name="total_pc" value="@Model.Hawb_Pc" min="1" class="input-lg text-center" id="id_total_pc">
+                                            <input type="hidden" id="hawbPc_hidden" name="Hawb_Pc" value="@Model.Hawb_Pc" />
                                         </div>
                                     </div>
                                 </td>
                             </tr>
                             <tr class="border-t">
                                 <td colspan="2">
-                                    <div class="item-pdf __width-lg auto-font-size margin-l-xs">
-                                        <span>&nbsp;</span>
-                                    </div>
                                     <div class="item-edit margin-t margin-l-xs hover-toggle-icon-text-template">
                                         <input type="text" name="memo" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.memo" placeholder="Input more description here" id="id_memo" class="ng-isolate-scope">
                                     <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 336px;"></span><!---->

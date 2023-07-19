@@ -2627,7 +2627,8 @@ namespace Dolphin.Freight.Web.Controllers
                 var allHawbs = new AllHawbList
                 {
                     Id = string.Concat(hawb.Id),
-                    Hawb_No = hawb.HawbNo
+                    Hawb_No = hawb.HawbNo,
+                    Hawb_Pc = hawb.Package
                 };
                 allHawbLists.Add(allHawbs);
             }
@@ -2717,6 +2718,8 @@ namespace Dolphin.Freight.Web.Controllers
             InfoModel.Name_Of_Forwarder = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.IssuingCarrierId)).Select(s => s.Text));
             InfoModel.Origin = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DepatureId)).Select(s => s.Text));
             InfoModel.Hawb_No = hawb[0].HawbNo;
+            InfoModel.Hawb_Pc = hawb[0].Package;
+            InfoModel.Total_No_Of_Pieces = string.Concat(mawb.Package);
 
             return View(InfoModel);
         }
