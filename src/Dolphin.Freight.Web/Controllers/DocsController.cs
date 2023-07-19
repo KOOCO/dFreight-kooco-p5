@@ -2607,6 +2607,7 @@ namespace Dolphin.Freight.Web.Controllers
         }
         
         #region Private Functions
+
         private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
         {
             var data = new AirExportDetails();
@@ -2644,6 +2645,18 @@ namespace Dolphin.Freight.Web.Controllers
 
             return allHawbLists;
         }
+
+        private string GetViewUrlByPageType(FreightPageType pageType, string reportType)
+        {
+            string viewUrl = string.Empty;
+
+            viewUrl = pageType == FreightPageType.AEMBL
+                ? (reportType == "Summary") ? "Views/Docs/MawbProfitReport.cshtml" : "Views/Docs/MawbProfitReportDetailed.cshtml"
+                : "Views/Docs/HawbProfitReport.cshtml";
+
+            return viewUrl;
+        }
+
         #endregion
 
         [HttpPost]
@@ -2702,6 +2715,7 @@ namespace Dolphin.Freight.Web.Controllers
                 MawbNo = airExportDetails.MawbNo,
                 ChargableWeight = string.Concat(airExportDetails.ChargeableWeightCneeKG, " / ", airExportDetails.ChargeableWeightCneeLB),
                 PageType = pageType,
+                ReportType = reportType,
                 FileNo = airExportDetails.DocNumber
             };
 
@@ -2723,10 +2737,10 @@ namespace Dolphin.Freight.Web.Controllers
                             profitReport.AR.Add(dto);
                             break;
                         case 1:
-                            profitReport.AP.Add(dto);
+                            profitReport.DC.Add(dto);
                             break;
                         case 2:
-                            profitReport.DC.Add(dto);
+                            profitReport.AP.Add(dto);
                             break;
                     }
                 }
@@ -2738,7 +2752,7 @@ namespace Dolphin.Freight.Web.Controllers
                 double arTotal = 0;
                 foreach (var ar in profitReport.AR)
                 {
-                    arTotal += Convert.ToInt64(ar.InvoiceAmount);
+                    arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
                 }
                 profitReport.ARTotal = arTotal;
             }
@@ -2747,7 +2761,7 @@ namespace Dolphin.Freight.Web.Controllers
                 double apTotal = 0;
                 foreach (var ap in profitReport.AP)
                 {
-                    apTotal += Convert.ToInt64(ap.InvoiceAmount);
+                    apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
                 }
 
                 profitReport.APTotal = apTotal;
@@ -2757,14 +2771,12 @@ namespace Dolphin.Freight.Web.Controllers
                 double dcTotal = 0;
                 foreach (var dc in profitReport.DC)
                 {
-                    dcTotal += Convert.ToInt64(dc.InvoiceAmount);
+                    dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
                 }
                 profitReport.DCTotal = dcTotal;
             }
 
             profitReport.Total = profitReport.ARTotal - profitReport.APTotal + profitReport.DCTotal;
-
-            ViewBag.invoices = profitReport.Invoices;
 
             returnUrl = pageType == FreightPageType.AEMBL
                 ? (reportType == "Summary") ? "Views/Docs/MawbProfitReport.cshtml" : "Views/Docs/MawbProfitReportDetailed.cshtml"
@@ -2776,11 +2788,13 @@ namespace Dolphin.Freight.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ProfitReport(ProfitReportViewModel model)
         {
+            string returnUrl = GetViewUrlByPageType(model.PageType, model.ReportType);
+
             model.IsPDF = true;
 
             model.Invoices = JsonConvert.DeserializeObject<IList<InvoiceDto>>(model.InvoicesJson);
 
-            return await _generatePdf.GetPdf("Views/Docs/MawbProfitReport.cshtml", model);
+            return await _generatePdf.GetPdf(returnUrl, model);
         }
 
         public async Task<IActionResult> BookingConfirmationAirExportMawb(Guid mawbId)

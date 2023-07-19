@@ -38,8 +38,115 @@
     .w-10, .w-20, .w-100, .text-right, .text-center, .auto-font-size, textarea {
         font-size:10px;
     }
+    .edit {
+        background: #333 !important;
+        padding-bottom: 20px !important
+    }
+
+    .nav {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        border-bottom: 2px solid #111 !important;
+        background: #222 !important;
+        z-index: 1049 !important;
+        text-align: center !important;
+        font-size: 12px !important;
+    }
+
+    .nav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.nav ul li {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+}
+
+.nav ul li button {
+    width: 48px;
+    height: 38px;
+    background-size: 22px 22px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: #222;
+    border: none;
+    cursor: pointer;
+    opacity: .5;
+    transition: all ease-in .3s;
+}
+
+.view-setting {
+    position: fixed;
+    top: 8px;
+    right: 10px;
+    color: #c5c5c5;
+}
+
+.edit .wrap.landscape {
+    width: 1056px;
+}
+
+.edit .wrap {
+    width: 816px;
+    margin: auto;
+    background: #fff;
+    padding: 20pt;
+    position: relative;
+    margin-top: 34px;
+}
+
+.header {
+    font-size: 11px;
+    padding: 15px 0;
+}
+
+.edit .wrap table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.text-sm {
+    font-size: 9px;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+    width: 100%;
+}
+
+table tr {
+    page-break-inside: avoid;
+}
+
+.margin-t {
+    margin-top: 5px;
+}
+
+.text-bold {
+    font-weight: 700;
+}
+
+.border-t {
+    border-top: 0.25pt solid #000;
+}
+
+.td {
+    vertical-align: top;
+}
+
+.text-center {
+    text-align: center!important;
+}
+
 </style>
-<abp-style src="/Pages/Reports/Reports.css" />
+<link rel="stylesheet" href="@Url.Content("/Pages/Reports/Reports.css")" />
 <script>
     var zoom = 1;
     $(document).ready(function(){
@@ -57,37 +164,31 @@
             document.getElementById("myForm").submit();
         }
     });
-</script>
-<div id="main" style="background: #333;padding-bottom: 20px;">
 
-    <div class="nav">
+    function print()
+    {
+        document.getElementById("form").submit();
+    }
+</script>
+<div id="main" class="edit">
+
+    @if (!Model.IsPDF)
+    {
+        <div class="nav">
            <ul>
         
-        <li uib-tooltip="Download PDF &amp; Save to Doc Center (or Work Order)" tooltip-placement="bottom">
-            <button type="button" class="pdf" ng-click="vm.onSavePDF('/reports/accounting/mbl/profit-detail/AEX-23030003/')" ng-disabled="vm.isSavingBlocked()">
-            </button>
+        <li>
+            <button type="button" style="width:120px; color:white" onclick="print()"><i class="fa fa-print">儲存PDF或列印</i></button>
         </li>
+       
+    
+    <li>
         
-        <li uib-tooltip="Print &amp; Save to Doc Center (or Work Order)" tooltip-placement="bottom">
-            <button type="button" class="print" ng-click="vm.onSavePrint('/reports/accounting/mbl/profit-detail/AEX-23030003/print/')" ng-disabled="vm.isSavingBlocked()">
-            </button>
-        </li>
-
-    
-        <li uib-tooltip="" tooltip-enable="vm.isSendEmailBlocked()" tooltip-placement="bottom">
-            <button type="button" class="mail" ng-click="vm.onSendEmail()" ng-disabled="vm.isSendEmailBlocked()">
-            </button>
-        </li>
-    
-
-    
-    <!-- ngIf: vm.canSelectLanguage --><li ng-if="vm.canSelectLanguage" class="ng-scope">
-        
-            <select ng-model="vm.lang" ng-change="vm.switchLanguage(vm.lang)" class="select ng-pristine ng-untouched ng-valid ng-not-empty">
-    <option value="en">English</option>
-    <option value="zh-hans">简体中文 (Simplified Chinese)</option>
-    <option value="zh-hant">繁體中文 (Traditional Chinese)</option>
-</select>
+      <select disabled>
+            <option value="en">English</option>
+            <option value="zh-hans">简体中文 (Simplified Chinese)</option>
+            <option value="zh-hant">繁體中文 (Traditional Chinese)</option>
+    </select>
         
     </li><!-- end ngIf: vm.canSelectLanguage -->
 
@@ -102,9 +203,14 @@
             </div>
         </div>
     </div>
+    }
+    
+
     <form id="form" method="post">
     <input type="hidden" autocomplete="off">
-
+    <input type="hidden" asp-for="@Model.PageType" />
+    <input type="hidden" asp-for="@Model.ReportType" />
+    <input type="hidden" asp-for="@Model.InvoicesJson" />
     <div class="wrap landscape">
         <div class="header">
             <div class="text-center">
@@ -115,7 +221,7 @@
                 <table class="text-sm table-padding single-currency">
                     <tbody><tr>
                         <td class="w-6">POST DATE:</td>
-                        <td class="w-14">07-10-2023</td>
+                        <td class="w-14">@DateTime.Now.ToShortDateString()</td>
                         <td class="w-35"></td>
                         <td class="w-8"></td>
                         <td class="w-17"></td>
@@ -123,11 +229,11 @@
                     </tr>
                     <tr>
                         <td>CURRENCY:</td>
-                        <td>USD</td>
+                        <td>@Model.Currency</td>
                         <td></td>
                         <td>PRINT OPTION:</td>
                         <td>DETAIL</td>
-                        <td class="text-right">07-19-2023</td>
+                        <td class="text-right">@DateTime.Now.ToShortDateString()</td>
                     </tr>
                 </tbody></table>
             
@@ -135,9 +241,9 @@
             <table class="td table-padding text-bold margin-t border-t">
                     <tbody><tr class="text-sea text-12 col-bg-grey-light">
                         <td class="w-13 padding-t-xs">SALES :</td>
-                        <td class="w-38 padding-t-xs">Angelica Hawkins</td>
+                        <td class="w-38 padding-t-xs">@Model.Sales</td>
                         <td class="w-12 padding-t-xs">CUSTOMER :</td>
-                        <td class="w-37 padding-t-xs">1231231</td>
+                        <td class="w-37 padding-t-xs">@Model.Customer</td>
                     </tr>
                 <tr>
                         <td class="w-13">CONTAINER COUNT :</td>
@@ -150,18 +256,18 @@
                     <td>AGENT NAME :</td>
                     <td>11</td>
                     <td>P.O.L / ETD :</td>
-                    <td>(AAA) ANAA / 07-10-2023 00:00</td>
+                    <td>@Model.PolEtd</td>
                 </tr>
                 <tr>
                     <td>D.E.L :</td>
                     <td></td>
                     <td>P.O.D / ETA :</td>
-                    <td>(AAB) ARRABURY / 07-11-2023 00:00</td>
+                    <td>@Model.PodEtd</td>
                 </tr>
                 <tr>
                     
                     <td class="td">OP :</td>
-                    <td class="td">Hanjun Lin</td>
+                    <td class="td">@Model.Operator</td>
                     
                         <td class="td"></td>
                         <td class="td"></td>
@@ -182,15 +288,15 @@
                             </colgroup>
                             <tbody><tr>
                                 <td>FILE NO. :</td>
-                                <td>AEX-23030003</td>
+                                <td>@Model.FileNo</td>
                             </tr>
                             <tr>
                                 <td>MAWB NO. :</td>
-                                <td>695-33679332</td>
+                                <td>@Model.MawbNo</td>
                             </tr>
                             <tr>
                                 <td>WEIGHT :</td>
-                                <td>3.00 KGS / 6.61 LBS</td>
+                                <td>@Model.ChargableWeight</td>
                             </tr>
                         </tbody></table>
                     </td>
@@ -209,9 +315,9 @@
                                 <td></td>
                             </tr>
                             
-                                <tr>
-                                    <td>MEASUREMENT :</td>
-                                    <td>0.02 CBM / 0.71 CFT</td>
+                                <tr style="display:flex">
+                                    <td>MEASUREMENT:</td>
+                                    <td>@Model.Measurement</td>
                                 </tr>
                             
                             
@@ -265,273 +371,60 @@
                             <td colspan="6">COMPANY</td>
                         </tr>
                     </thead>
-                                <tbody><tr class="text-sm">
+                     <tbody>
+
+                         @foreach (var invoice in Model.Invoices)
+                        {
+                            @foreach (var invoiceBill in invoice.InvoiceBillDtos)
+                            {
+                                <tr class="text-sm">
                                     <td></td>
-                                    <td colspan="2" class="td">AE01A/F / AIR FREIGHT CHARGE</td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>1.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>31.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>31.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
+                                    <td colspan="2" class="td">@invoiceBill.Description</td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>@invoiceBill.Quantity</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>@invoiceBill.Rate</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md">
+                                        <span>@(invoice.InvoiceType == 0? Convert.ToDecimal(invoiceBill.Quantity * invoiceBill.Rate).ToString("0.00") : 0)</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md">
+                                        <span>@(invoice.InvoiceType == 1? Convert.ToDecimal(invoiceBill.Quantity * invoiceBill.Rate).ToString("0.00") : 0)</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md">
+                                        <span>@(invoice.InvoiceType == 2? Convert.ToDecimal(invoiceBill.Quantity * invoiceBill.Rate).ToString("0.00") : 0)</span></div></td>
                                     <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
                                     <td class="td" colspan="5"></td>
                                 </tr>
+                            }
                             
-
                             <tr class="text-bold">
                                 <td class="td text-center">H</td>
-                                <td class="td"><div class="auto-font-size __width-bl-no"><span>AH-23030003</span></div></td>
+                                <td class="td"><div class="auto-font-size __width-bl-no"><span>@Model.MawbNo</span></div></td>
                                 <td class="td">
                                     <div class="auto-font-size __width-invoice">
                                         <span class="item-edit">
-                                            <a href="/accounting/invoice/entry/289971/" target="_blank">IN-30802</a>
-                                            
-                                        </span>
-                                        <span class="item-pdf">
-                                            IN-30802
-                                            
+                                            <a href="/accounting/invoice/entry/289971/" target="_blank">@invoice.InvoiceNo</a>
                                         </span>
                                     </div>
                                 </td>
-                                <td colspan="6" class="td">1231231</td>
-                                <td class="td text-center">07-10-2023</td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>31.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-balance inline-block"><span>31.00</span></div> N</td>
+                                <td colspan="6" class="td">@invoice.InvoiceCompanyName</td>
+                                <td class="td text-center">@invoice.PostDate?.ToShortDateString()</td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>
+                                    @(invoice.InvoiceType == 0 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)
+                                    </span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>
+                                    @(invoice.InvoiceType == 1 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)
+                                    </span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>
+                                    @(invoice.InvoiceType == 2 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)
+                                    </span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-balance inline-block">
+                                    <span>@invoice.InvoiceBillDtos.Sum(c => c.Rate)</span></div> N</td>
                             </tr>
                             <tr class="border-b-grey">
-                                
-
                                 <td colspan="3"></td>
                                 <td colspan="7"></td>
                                 <td class="text-right" colspan="4"> </td>
                             </tr>
-                                <tr class="text-sm">
-                                    <td></td>
-                                    <td colspan="2" class="td">AE02FSC / FUEL SUR CHARGE</td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>2.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>2.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>4.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td" colspan="5"></td>
-                                </tr>
-                            
 
-                            <tr class="text-bold">
-                                <td class="td text-center">H</td>
-                                <td class="td"><div class="auto-font-size __width-bl-no"><span>AH-23030003</span></div></td>
-                                <td class="td">
-                                    <div class="auto-font-size __width-invoice">
-                                        <span class="item-edit">
-                                            <a href="/accounting/invoice/entry/289972/" target="_blank">DC-19098</a>
-                                            
-                                        </span>
-                                        <span class="item-pdf">
-                                            DC-19098
-                                            
-                                        </span>
-                                    </div>
-                                </td>
-                                <td colspan="6" class="td">11</td>
-                                <td class="td text-center">07-10-2023</td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>4.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-balance inline-block"><span>4.00</span></div> N</td>
-                            </tr>
-                            <tr class="border-b-grey">
-                                
+                        }
 
-                                <td colspan="3"></td>
-                                <td colspan="7"></td>
-                                <td class="text-right" colspan="4"> </td>
-                            </tr>
-                                <tr class="text-sm">
-                                    <td></td>
-                                    <td colspan="2" class="td">AE03SECURI / SECURITY CHARGE</td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>3.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>3.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>9.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td" colspan="5"></td>
-                                </tr>
-                            
-
-                            <tr class="text-bold">
-                                <td class="td text-center">H</td>
-                                <td class="td"><div class="auto-font-size __width-bl-no"><span>AH-23030003</span></div></td>
-                                <td class="td">
-                                    <div class="auto-font-size __width-invoice">
-                                        <span class="item-edit">
-                                            <a href="/accounting/invoice/entry/289973/" target="_blank">VIEW</a>
-                                            
-                                        </span>
-                                        <span class="item-pdf">
-                                            
-                                            
-                                        </span>
-                                    </div>
-                                </td>
-                                <td colspan="6" class="td">11</td>
-                                <td class="td text-center">07-10-2023</td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>9.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-balance inline-block"><span>-9.00</span></div> N</td>
-                            </tr>
-                            <tr class="border-b-grey">
-                                
-
-                                <td colspan="3"></td>
-                                <td colspan="7"></td>
-                                <td class="text-right" colspan="4"> </td>
-                            </tr>
-                                <tr class="text-sm">
-                                    <td></td>
-                                    <td colspan="2" class="td">AE01A/F / AIR FREIGHT CHARGE</td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>2.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>20.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>40.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td" colspan="5"></td>
-                                </tr>
-                            
-                                <tr class="text-sm">
-                                    <td></td>
-                                    <td colspan="2" class="td">AE01A/F / AIR FREIGHT CHARGE</td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>1.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>10.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>10.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td" colspan="5"></td>
-                                </tr>
-                            
-
-                            <tr class="text-bold">
-                                <td class="td text-center">H</td>
-                                <td class="td"><div class="auto-font-size __width-bl-no"><span>AH-23030003</span></div></td>
-                                <td class="td">
-                                    <div class="auto-font-size __width-invoice">
-                                        <span class="item-edit">
-                                            <a href="/accounting/invoice/entry/289974/" target="_blank">222</a>
-                                            
-                                        </span>
-                                        <span class="item-pdf">
-                                            222
-                                            
-                                        </span>
-                                    </div>
-                                </td>
-                                <td colspan="6" class="td">1231231</td>
-                                <td class="td text-center">07-13-2023</td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>50.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-balance inline-block"><span>50.00</span></div> N</td>
-                            </tr>
-                            <tr class="border-b-grey">
-                                
-
-                                <td colspan="3"></td>
-                                <td colspan="7"></td>
-                                <td class="text-right" colspan="4"> </td>
-                            </tr>
-                        
-                                <tr class="text-sm">
-                                    <td></td>
-                                    <td colspan="2" class="td">AE02FSC / FUEL SUR CHARGE</td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>3.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>11.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>33.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td" colspan="5"></td>
-                                </tr>
-                            
-
-                            <tr class="text-bold">
-                                <td class="td text-center">H</td>
-                                <td class="td"><div class="auto-font-size __width-bl-no"><span>AH-23030003</span></div></td>
-                                <td class="td">
-                                    <div class="auto-font-size __width-invoice">
-                                        <span class="item-edit">
-                                            <a href="/accounting/invoice/entry/289975/" target="_blank">DC-19099</a>
-                                            
-                                        </span>
-                                        <span class="item-pdf">
-                                            DC-19099
-                                            
-                                        </span>
-                                    </div>
-                                </td>
-                                <td colspan="6" class="td">11</td>
-                                <td class="td text-center">07-11-2023</td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>33.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-balance inline-block"><span>33.00</span></div> N</td>
-                            </tr>
-                            <tr class="border-b-grey">
-                                
-
-                                <td colspan="3"></td>
-                                <td colspan="7"></td>
-                                <td class="text-right" colspan="4"> </td>
-                            </tr>
-                        
-                                <tr class="text-sm">
-                                    <td></td>
-                                    <td colspan="2" class="td">AE03SECURI / SECURITY CHARGE</td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>3.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>4.50</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>13.50</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                    <td class="td" colspan="5"></td>
-                                </tr>
-                            
-
-                            <tr class="text-bold">
-                                <td class="td text-center">H</td>
-                                <td class="td"><div class="auto-font-size __width-bl-no"><span>AH-23030003</span></div></td>
-                                <td class="td">
-                                    <div class="auto-font-size __width-invoice">
-                                        <span class="item-edit">
-                                            <a href="/accounting/invoice/entry/289976/" target="_blank">VIEW</a>
-                                            
-                                        </span>
-                                        <span class="item-pdf">
-                                            
-                                            
-                                        </span>
-                                    </div>
-                                </td>
-                                <td colspan="6" class="td">1231231</td>
-                                <td class="td text-center">07-11-2023</td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>13.50</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-balance inline-block"><span>-13.50</span></div> N</td>
-                            </tr>
-                            <tr class="">
-                                
-
-                                <td colspan="3">  </td>
-                                <td colspan="7"> Shipper: ABBOTT-CRAIG </td>
-                                <td class="text-right" colspan="4"> </td>
-                            </tr>
-                        
             </tbody></table>
 
             
@@ -539,27 +432,26 @@
                     <tbody><tr>
                         <td class="w-62">&nbsp;</td>
                         <td class="w-12 text-right">TOTAL</td>
-                        <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>81.00</span></div></td>
-                        <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>22.50</span></div></td>
-                        <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>37.00</span></div></td>
+                        <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>@Model.ARTotal.ToString("0.00")</span></div></td>
+                        <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>@Model.APTotal.ToString("0.00")</span></div></td>
+                        <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>@Model.DCTotal.ToString("0.00")</span></div></td>
                         <td class="w-8">&nbsp;</td>
                     </tr>
                     <tr class="border-t">
                         <td>&nbsp;</td>
                         <td class="text-right">PROFIT</td>
                         <td class="text-right">USD</td>
-                        <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>95.50</span></div></td>
+                        <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>@Model.Total</span></div></td>
                         <td>&nbsp;</td>
                     </tr>
                     <tr class="border-t">
                         <td>&nbsp;</td>
                         <td class="text-right">BALANCE</td>
                         <td class="text-right"></td>
-                        <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>95.50</span></div></td>
+                        <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>@Model.Total</span></div></td>
                         <td>&nbsp;</td>
                     </tr>
 
-                    
                     <tr class="border-t">
                         <td></td>
                         <td class="text-right">
@@ -567,7 +459,7 @@
                                 <input type="checkbox" name="is_show_profit_percentage" hc-user-preference="acct_profit_mbl_is_show_profit_percentage" ng-model="vm.isShowProfitPercentage" id="id_is_show_profit_percentage" checked="" class="ng-untouched ng-valid ng-dirty ng-not-empty">
                             </span> PROFIT PERCENTAGE
                         </td>
-                        <td class="text-right">424.44%</td>
+                        <td class="text-right">@Convert.ToDouble((Model.Total * 100) / Model.APTotal).ToString("0.00") %</td>
                         <td colspan="3"></td>
                     </tr>
                     
@@ -581,7 +473,7 @@
                             </span>
                             PROFIT MARGIN
                         </td>
-                        <td class="text-right">80.93%</td>
+                        <td class="text-right"></td>
                         <td colspan="3"></td>
                     </tr>
                     
