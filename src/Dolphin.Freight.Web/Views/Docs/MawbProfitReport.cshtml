@@ -242,38 +242,28 @@
                                 <div class="auto-font-size __width-bl-no"> <span> @Model.MawbNo</span></div>
                                 <div class="auto-font-size __width-invoice">
                                     <span class="item-edit">
-                                        <a href="/accounting/invoice/entry/289971/" target="_blank">@invoice.InvoiceNo</a>
+                                        <a href="/Accounting/Invoice?MethodType=3&MawbId=@invoice.MawbId&Hid=&InvoiceType=@invoice.InvoiceType&InvoiceId=@invoice.Id" target="_blank">@invoice.InvoiceNo</a>
                                     </span>
                                 </div>
                             </td>
                             <td class="td" rowspan="1">@invoice.InvoiceCompanyName</td>
                             <td class="td text-center">@invoice.InvoiceDate?.ToShortDateString()</td>
                             
-                            <td class="td text-center"><div class="auto-font-size __width-count"><span>@(invoice.InvoiceType == 0? (invoice.BalanceAmount ?? 0) : 0)</span></div></td>
-                            <td class="td text-center"><div class="auto-font-size __width-count"><span>@(invoice.InvoiceType == 1? (invoice.BalanceAmount ?? 0) : 0)</span></div></td>
-                            <td class="td text-center"><div class="auto-font-size __width-count"><span>@(invoice.InvoiceType == 2? (invoice.BalanceAmount ?? 0) : 0)</span></div></td>
+                            <td class="td text-center"><div class="auto-font-size __width-count">
+                                <span>@(invoice.InvoiceType == 0 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)</span></div></td>
+                            <td class="td text-center"><div class="auto-font-size __width-count">
+                                <span>@(invoice.InvoiceType == 2 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)</span></div></td>
+                            <td class="td text-center"><div class="auto-font-size __width-count"><span>
+                                @(invoice.InvoiceType == 1 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)</span></div></td>
                             <td class="td text-right">
                                 N
-                                <div class="auto-font-size __width-balance"><span>@(invoice.BalanceAmount ?? 0)</span></div>
+                                <div class="auto-font-size __width-balance"><span>@invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00")</span></div>
                             </td>
                         </tr>
-
-                        @if(invoice.InvoiceBillDtos != null && invoice.InvoiceBillDtos.Count > 0)
-                        {
-                                @foreach (var invoiceBill in invoice.InvoiceBillDtos)
-                                {
-                                   <tr class="border-b-grey">
-                                    <td class="td" colspan="2"></td>
-                                    <td class="td" colspan="2"></td>
-                                    <td colspan="4" class="text-right"></td>
-                                </tr>             
-                                }    
-                        }
-
                        }
                        <tr>
                            <td colspan="2"></td>
-                           <td colspan="4">Shipper: @Model.Shipper</td>
+                           <td colspan="4">Shipper: @Model.Shipper <input type="hidden" asp-asp-for="@Model.Shipper" /></td>
                            <td colspan="2" class="text-right"></td>
                        </tr>
                     </tbody>
@@ -284,9 +274,9 @@
                         <tr>
                             <td class="w-60"></td>
                             <td class="w-14 text-right">TOTAL</td>
-                            <td class="w-7 text-right">@Model.ARTotal <input type="hidden" asp-for="@Model.ARTotal" /></td>
-                            <td class="w-7 text-right">@Model.APTotal <input type="hidden" asp-for="@Model.APTotal" /></td>
-                            <td class="w-7 text-right">@Model.DCTotal <input type="hidden" asp-for="@Model.DCTotal" /></td>
+                            <td class="w-7 text-right">@Model.ARTotal.ToString("0.00") <input type="hidden" asp-for="@Model.ARTotal" /></td>
+                            <td class="w-7 text-right">@Model.APTotal.ToString("0.00") <input type="hidden" asp-for="@Model.APTotal" /></td>
+                            <td class="w-7 text-right">@Model.DCTotal.ToString("0.00") <input type="hidden" asp-for="@Model.DCTotal" /></td>
                             <td class="w-5"></td>
                         </tr>
                         <tr class="border-t">
@@ -295,7 +285,7 @@
                             <td class="text-right">USD</td>
                             <td class="text-right" colspan="2">
                                 <div class="auto-font-size __width-total-lg">
-                                    <span>@Model.Total <input type="hidden" asp-for="@Model.Total" /></span>
+                                    <span>@Model.Total.ToString("0.00") <input type="hidden" asp-for="@Model.Total" /></span>
                                 </div>
                             </td>
                             <td>&nbsp;</td>
@@ -304,7 +294,7 @@
                             <td>&nbsp;</td>
                             <td class="text-right">BALANCE</td>
                             <td class="text-right"></td>
-                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Total</font></font></span></div></td>
+                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Total.ToString("0.00")</font></font></span></div></td>
                             <td>&nbsp;</td>
                         </tr>
 
@@ -315,7 +305,7 @@
                                 <input type="checkbox" name="is_show_profit_percentage" checked="">
                             </span> PROFIT PERCENTAGE
                         </td>
-                        <td class="text-right">@((Model.Total * 100) / Model.APTotal)%</td>
+                        <td class="text-right">@Convert.ToDouble((Model.Total * 100) / Model.APTotal).ToString("0.00")%</td>
                         <td colspan="3"></td>
                     </tr>
                     
