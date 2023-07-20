@@ -2867,6 +2867,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoModel.Package_Unit = string.Concat(packageUnit.Where(w => w.Value == Convert.ToString(mawb.MawbPackageUnitId)).Select(s => s.Text));
             InfoModel.Measurement = string.Concat(mawb.VolumeWeightCbm);
             InfoModel.MeasurementWithCFT = mawb.VolumeWeightCbm == 0.00 ? "" : (mawb.VolumeWeightCbm * 35.315).ToString("0.00");
+            InfoModel.Bill_To = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.IssuingCarrierId)).Select(s => s.Text));
 
             return View(InfoModel);
         }
