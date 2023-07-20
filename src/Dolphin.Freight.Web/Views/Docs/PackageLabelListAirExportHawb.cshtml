@@ -4,7 +4,7 @@
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
-@model Dolphin.Freight.Web.ViewModels.PackageLabelList.PackageLabelListAirExportHawb
+@model Dolphin.Freight.Common.AirExportDetails
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
 @{
@@ -34,6 +34,95 @@
         .item-right, .item-center, .item-left{
          flex:1;
         }
+
+        .btn-sm, .btn-xs {
+            padding: 4px 10px 5px 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        body {
+            background-color: #364150;
+        }
+
+        .edit .wrap {
+    width: 816px;
+    margin: auto;
+    background: #fff;
+    padding: 20pt;
+    position: relative;
+    margin-top: 34px;
+}
+
+.nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    border-bottom: 2px solid #111;
+    background: #222;
+    z-index: 1049;
+    text-align: center;
+    font-size: 12px;
+}
+.edit {
+    background: #333;
+    padding-bottom: 20px;
+}
+
+.text-center {
+    text-align: center!important;
+}
+
+.edit h5 {
+    font-size: 12px;
+}
+
+.header h5 {
+    font-size: 11px;
+    margin-bottom: 0;
+    padding-bottom: 15px;
+    padding-top: 10px;
+    margin-top: 5px;
+    font-weight: 400;
+}
+
+._padding-0 {
+    padding: 0!important;
+}
+
+.text-grey {
+    color: #757575;
+}
+
+.edit .wrap table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.margin-b-sm {
+    margin-bottom: 10px;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+    width: 100%;
+}
+.col-bg-grey {
+    background: silver;
+    padding-top: 3px;
+    padding-bottom: 0;
+}
+.w-10 {
+    width: 10%;
+}
+.w-40 {
+    width: 40%!important;
+}
+table td {
+    padding: 0;
+}
 </style>
 <script>
     $(document).ready(function () {
@@ -73,39 +162,66 @@
     });
 </script>
 <form id="myForm" name="myForm" method="POST">
-   <div style="background-color:black;display: flex;justify-content:center;">
-      <div style="width:900px;background-color:white;" id="form" name = "form" class="edit">
-         <div class="container" style="background-color:black">
-            <div style="display:flex;justify-content: center;" class="item-left">
-               @*<button class="btn"><i class="fa fa-file-pdf-o"></i></button>
-               <button class="btn"><i class="fa fa-print"></i></button>*@
-               @*<a class="btn" href="../OceanExports/print?handler=Download"><i class="fa fa-print">儲存PDF或列印</i></a>*@
-               <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
-            </div>
-            @*
-            <div style="float:right;" class="item-right">
-               <button class="btn zoom" id="zout" name="zout"><i class="fa fa-search-minus"></i></button>
-               <button class="btn zoom-out" id="zin" name="zin"><i class="fa fa-search-plus"></i></button>
-            </div>
-            *@
-         </div>
+    <input type="hidden" asp-for="@Model.MawbNo" />
+    <input type="hidden" asp-for="@Model.HawbNo" />
+    <input type="hidden" asp-for="@Model.PageType" />
+    
+    <div id="main" class="edit">
+     
+        @if (!Model.IsPDF)
+    {
+        <div class="nav">
+           <ul>
+        
+        <li>
+            <button type="button" style="width:120px; color:white" id="reportLink"><i class="fa fa-print">儲存PDF或列印</i></button>
+        </li>
+       
+    
+    <li>
+        
+      <select disabled>
+            <option value="en">English</option>
+            <option value="zh-hans">简体中文 (Simplified Chinese)</option>
+            <option value="zh-hant">繁體中文 (Traditional Chinese)</option>
+    </select>
+        
+    </li><!-- end ngIf: vm.canSelectLanguage -->
 
+    </ul>
+
+        <div class="view-setting">
+            <div class="btn-group">
+                <button class="button btn btn-sm" title="Zoom Out" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"><i class="fa fa-search-minus"></i>
+                </button>
+                <button class="button btn btn-sm" title="Zoom In" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"><i class="fa fa-search-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+            
          @*Start of template*@
 
-         <div class="wrap">
-        <div class="header">
+   <div class="wrap">
+            <div class="header">
             <div class="text-center">
-                <h5 class="text-grey _padding-0"><strong>HARD CORE TECHNOLOGY(GST/VAT)</strong></h5>
+                <h5 class="text-grey _padding-0"><strong>@(Model.IssuingCarrierName)(GST/VAT)</strong></h5>
                 <div class="text-lg text-bold">Package Label List</div>
             </div>
         </div>
-        <div class="con">
+            <div class="con">
             <table class="margin-b-sm">
                 <tbody><tr>
                     <td class="w-10">MAWB NO. :</td>
-                    <td class="w-40">695-33679332</td>
-                    <td class="w-35 text-right">HAWB No. :</td>
-                    <td class="w-15 text-right">AH-23030003</td>
+                    <td class="w-40">@Model.MawbNo</td>
+
+                    @if (Model.PageType == Dolphin.Freight.Common.FreightPageType.AIHBL)
+                    {
+                        <td class="w-35 text-right">HAWB No. :</td>
+                        <td class="w-15 text-right">@Model.HawbNo</td>                
+                    }
+
                 </tr>
             </tbody></table>
             <table class="table-padding-double">
@@ -139,7 +255,8 @@
                 </tr>
             </tbody></table>
         </div>
+        </div>
+
     </div>
-      </div>
-   </div>
+   
 </form>

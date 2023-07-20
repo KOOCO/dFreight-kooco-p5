@@ -149,7 +149,7 @@
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getAllHawbPackageLabelAirExportMawb('@Url.Action("AllHawbPackageLabelAirExportMawb", "Docs", new { mawbId = Model.AirExportMawbDto.Id })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:All HAWB Packaging Labels"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PackageLabelListAirExportHawb", "Docs", new { id = Model.AirExportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEMBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Package Label List"]
                                 </a>
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PickupDeliveryOrderAirExportMawb", "Docs", new { mawbId = Model.AirExportMawbDto.Id })')">

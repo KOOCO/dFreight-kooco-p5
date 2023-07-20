@@ -2351,14 +2351,22 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/PreAlertAirExportHawb.cshtml", model);
         }
 
-        public async Task<IActionResult> PackageLabelListAirExportHawb()
+        [HttpGet]
+        public async Task<IActionResult> PackageLabelListAirExportHawb(Guid id, FreightPageType pageType)
         {
+            var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
 
-
-
-
-            return View();
+            return View(airExportDetails);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> PackageLabelListAirExportHawb(AirExportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/PackageLabelListAirExportHawb.cshtml", model);
+        }
+
         public async Task<IActionResult> BankDraftAirExportHawb(Guid hawbId)
         {
             BankDraftAirExportHawbModel InfoViewModel = new();
@@ -2623,6 +2631,8 @@ namespace Dolphin.Freight.Web.Controllers
                 default:
                     break;
             }
+
+            data.PageType = pageType;
 
             return data;
         }

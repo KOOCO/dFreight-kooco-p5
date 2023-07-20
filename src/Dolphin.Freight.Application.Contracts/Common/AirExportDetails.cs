@@ -40,5 +40,6 @@ namespace Dolphin.Freight.Common
         public Guid MawbId { get; set; }
         public DateTime? DepatureDate { get; set; }
         public string DestinationCountry { get; set; }
+        public FreightPageType PageType { get; set; }
     }
 }
