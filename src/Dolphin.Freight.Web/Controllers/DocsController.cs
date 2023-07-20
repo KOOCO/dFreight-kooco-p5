@@ -2629,16 +2629,25 @@ namespace Dolphin.Freight.Web.Controllers
         private async Task<List<AllHawbList>> GetAllHawbLists(Guid mawbId)
         {
             var data = await _airExportHawbAppService.GetHblCardsById(mawbId);
-
             var allHawbLists = new List<AllHawbList>();
 
             foreach (var hawb in data)
             {
+                var mawb = await _airExportMawbAppService.GetAsync(mawbId);
+                var tradePartner = _dropdownService.TradePartnerLookupList;
+                var portManagement = _dropdownService.PortsManagementLookupList;
+
                 var allHawbs = new AllHawbList
                 {
                     Id = string.Concat(hawb.Id),
                     Hawb_No = hawb.HawbNo,
-                    Hawb_Pc = hawb.Package
+                    Hawb_Pc = hawb.Package,
+                    Weight_LB = hawb.GrossWeightShprLB,
+                    Weight_KG = hawb.GrossWeightShprKG,
+                    Shipper = string.Concat(tradePartner.Where(w => w.Value == hawb.ActualShippedr).Select(s => s.Text)),
+                    Consignee = string.Concat(tradePartner.Where(w => w.Value == hawb.OverseaAgent).Select(s => s.Text)),
+                    Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.MawbCarrierId)).Select(s => s.Text)),
+                    Destination = string.Concat(portManagement.Where(s => s.Value == Convert.ToString(mawb.DestinationId)).Select(s => s.Text))
                 };
                 allHawbLists.Add(allHawbs);
             }
@@ -2893,6 +2902,28 @@ namespace Dolphin.Freight.Web.Controllers
         {
             model.IsPDF = true;
             return await _generatePdf.GetPdf("Views/Docs/PickupDeliveryOrderAirExportMawb.cshtml", model);
+        }
+
+        public async Task<IActionResult> OnHandReportAirExportMawb(Guid mawbId)
+        {
+            OnHandReportAirExportMawbModel InfoModel = new();
+
+            var allHawbLists = await GetAllHawbLists(mawbId);
+
+            InfoModel.AllHawbLists = allHawbLists;
+
+            InfoModel.HawbListsJson = JsonConvert.SerializeObject(allHawbLists);
+
+            return View(InfoModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> OnHandReportAirExportMawb(OnHandReportAirExportMawbModel model)
+        {
+            model.IsPDF = true;
+
+            model.AllHawbLists = JsonConvert.DeserializeObject<List<AllHawbList>>(model.HawbListsJson);
+
+            return await _generatePdf.GetPdf("Views/Docs/OnHandReportAirExportMawb.cshtml", model);
         }
     }
 }
