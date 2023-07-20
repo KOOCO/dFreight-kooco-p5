@@ -274,9 +274,9 @@
                         <tr>
                             <td class="w-60"></td>
                             <td class="w-14 text-right">TOTAL</td>
-                            <td class="w-7 text-right">@Model.ARTotal <input type="hidden" asp-for="@Model.ARTotal" /></td>
-                            <td class="w-7 text-right">@Model.APTotal <input type="hidden" asp-for="@Model.APTotal" /></td>
-                            <td class="w-7 text-right">@Model.DCTotal <input type="hidden" asp-for="@Model.DCTotal" /></td>
+                            <td class="w-7 text-right">@Model.ARTotal.ToString("0.00") <input type="hidden" asp-for="@Model.ARTotal" /></td>
+                            <td class="w-7 text-right">@Model.APTotal.ToString("0.00") <input type="hidden" asp-for="@Model.APTotal" /></td>
+                            <td class="w-7 text-right">@Model.DCTotal.ToString("0.00") <input type="hidden" asp-for="@Model.DCTotal" /></td>
                             <td class="w-5"></td>
                         </tr>
                         <tr class="border-t">
@@ -285,7 +285,7 @@
                             <td class="text-right">USD</td>
                             <td class="text-right" colspan="2">
                                 <div class="auto-font-size __width-total-lg">
-                                    <span>@Model.Total <input type="hidden" asp-for="@Model.Total" /></span>
+                                    <span>@Model.Total.ToString("0.00") <input type="hidden" asp-for="@Model.Total" /></span>
                                 </div>
                             </td>
                             <td>&nbsp;</td>
@@ -294,7 +294,7 @@
                             <td>&nbsp;</td>
                             <td class="text-right">BALANCE</td>
                             <td class="text-right"></td>
-                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Total</font></font></span></div></td>
+                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Total.ToString("0.00")</font></font></span></div></td>
                             <td>&nbsp;</td>
                         </tr>
 
