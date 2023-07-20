@@ -2891,9 +2891,12 @@ namespace Dolphin.Freight.Web.Controllers
         {
             OnHandReportAirExportMawbModel InfoModel = new();
 
+            var mawb = await _airExportMawbAppService.GetAsync(mawbId);
             var allHawbLists = await GetAllHawbLists(mawbId);
 
             InfoModel.AllHawbLists = allHawbLists;
+
+            InfoModel.Mawb_No = mawb.MawbNo;
 
             InfoModel.HawbListsJson = JsonConvert.SerializeObject(allHawbLists);
 

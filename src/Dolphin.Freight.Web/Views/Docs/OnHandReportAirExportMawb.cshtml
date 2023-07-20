@@ -92,6 +92,7 @@
     });
 
     function calculateTotals() {
+        debugger;
         var table = document.getElementById('handReportTable');
         var hawbPCTotal = 0;
         var weightLBTotal = 0;
@@ -128,14 +129,15 @@
                 <div class="header">
                 <div class="text-center">
                     <h5 class="text-grey _padding-0"><strong>HARD CORE TECHNOLOGY(GST/VAT)</strong></h5>
-                    <div class="text-lg text-bold">Shipment 695-33679332</div>
+                    <div class="text-lg text-bold">Shipment @Model.Mawb_No</div>
+                    <input type="hidden" name="Mawb_No" value="@Model.Mawb_No" id="Mawb_No" />
                     <h4 class="text-light margin-t-sm">House Listing</h4>
                 </div>
             </div>
                 <div class="con">
                 <table class="table-padding">
                 <tbody><tr>
-                    <td>Date: @(DateTime.Now)</td>
+                    <td>Date: @(DateTime.Now.ToString("M/dd/yyyy"))</td>
                 </tr>
             </tbody></table>
                 <table class="table-padding-double margin-t" id="handReportTable">
@@ -159,18 +161,30 @@
                         <input type="hidden" name="Hawb_No" value="@item.Hawb_No" id="Hawb_No" />
                         <td>@item.Warehouse_Receipt</td>
                         <input type="hidden" name="Warehouse_Receipt" value="@item.Warehouse_Receipt" id="Warehouse_Receipt" />
-                        <td class="text-right">
-                            @item.Hawb_Pc
-                        </td>
-                        <input type="hidden" name="Hawb_Pc" value="@item.Hawb_Pc" id="Hawb_Pc" />
-                        <td class="text-right">
-                            @item.Weight_LB
-                        </td>
-                        <input type="hidden" name="Weight_LB" value="@item.Weight_LB" id="Weight_LB" />
-                        <td class="text-right">
-                            @item.Weight_KG
-                        </td>
-                        <input type="hidden" name="Weight_KG" value="@item.Weight_KG" id="Weight_KG" />
+                        @if(item.Hawb_Pc != null){
+                            <td class="text-right">
+                                @item.Hawb_Pc
+                            </td>
+                            <input type="hidden" name="Hawb_Pc" value="@item.Hawb_Pc" id="Hawb_Pc" />
+                        } else {
+                            <td class="text-right">0</td>
+                        }
+                        @if(item.Weight_LB != null){
+                            <td class="text-right">
+                                @item.Weight_LB
+                            </td>
+                            <input type="hidden" name="Weight_LB" value="@item.Weight_LB" id="Weight_LB" />
+                        } else {
+                            <td class="text-right">0</td>
+                        }
+                        @if(item.Weight_KG != null){
+                            <td class="text-right">
+                                @item.Weight_KG
+                            </td>
+                            <input type="hidden" name="Weight_KG" value="@item.Weight_KG" id="Weight_KG" />
+                        } else {
+                            <td class="text-right">0</td>
+                        }
                         <td>@item.Shipper</td>
                         <input type="hidden" name="Shipper" value="@item.Shipper" id="Shipper" />
                         <td>@item.Consignee</td>
