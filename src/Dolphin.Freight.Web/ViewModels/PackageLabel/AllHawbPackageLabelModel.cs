@@ -21,5 +21,13 @@ namespace Dolphin.Freight.Web.ViewModels.PackageLabel
         public string Id { get; set; } 
         public string Hawb_No { get; set; }
         public string Hawb_Pc { get; set; }
+        public string Warehouse_Receipt { get; set; }
+        public string Weight_LB { get; set; }
+        public string Weight_KG { get; set; }
+        public string Shipper { get; set; }
+        public string Consignee { get; set; }
+        public string Carrier { get; set; }
+        public string Destination { get; set; }
+        public string HawbListJson { get; set; }
     }
 }
