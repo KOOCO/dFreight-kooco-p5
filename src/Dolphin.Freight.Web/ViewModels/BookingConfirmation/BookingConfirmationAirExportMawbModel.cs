@@ -2,8 +2,9 @@
 
 namespace Dolphin.Freight.Web.ViewModels.BookingConfirmation
 {
-    public class BookingConfirmationAirExportHawbModel
+    public class BookingConfirmationAirExportMawbModel
     {
+        public bool IsPDF { get; set; }
         public string File_No { get; set; }
         public string Departure { get; set; }
         public string Destination { get; set; }
@@ -40,7 +41,7 @@ namespace Dolphin.Freight.Web.ViewModels.BookingConfirmation
         //海外代理(MBL 海外代理)
         public string OverseaAgent { get; set; }
         //HBL號碼
-        public string HblNo { get; set; }
+        public string MawbNo { get; set; }
         //我司訂艙號碼(S/O號碼)
         public string OutBookingNo { get; set; }
         //訂艙日期

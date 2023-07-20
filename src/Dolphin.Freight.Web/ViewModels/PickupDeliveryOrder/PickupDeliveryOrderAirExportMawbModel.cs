@@ -2,7 +2,7 @@
 
 namespace Dolphin.Freight.Web.ViewModels.PickupDeliveryOrder
 {
-    public class PickupDeliveryOrderAirExportHawbModel
+    public class PickupDeliveryOrderAirExportMawbModel
     {
         public bool IsPDF { get; set; }
         public string Issued_At { get; set; }
@@ -22,6 +22,7 @@ namespace Dolphin.Freight.Web.ViewModels.PickupDeliveryOrder
         public string ETA { get; set; }
         public string Delivery_To { get; set; }
         public string Packages { get; set; }
+        public string Package_Unit { get; set; }
         public string Measurement { get; set; }
         public string MeasurementWithCFT { get; set; }
         public string Bill_To { get; set; }

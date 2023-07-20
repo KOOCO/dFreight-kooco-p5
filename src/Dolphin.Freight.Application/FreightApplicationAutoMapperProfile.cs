@@ -47,6 +47,7 @@ using Dolphin.Freight.ImportExport.Configuration;
 using Dolphin.Freight.Account.Languages;
 using Volo.Abp.Users;
 using Volo.Abp.Identity;
+using Dolphin.Freight.Common;
 
 namespace Dolphin.Freight;
 
@@ -179,6 +180,8 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<AirExportMawb, AirExportMawbDto>();
         CreateMap<CreateUpdateAirExportMawbDto, AirExportMawb>();
         CreateMap<AirExportMawbDto, CreateUpdateAirExportMawbDto>();
+        CreateMap<AirExportMawb, AirExportDetails>();
+        CreateMap<AirExportHawbDto, AirExportDetails>();
 
         // AirExportHawb
         CreateMap<AirExportHawb, AirExportHawbDto>();

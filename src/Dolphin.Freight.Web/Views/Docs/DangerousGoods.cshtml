@@ -63,375 +63,279 @@
     });
 </script>
 <form id="myForm" name="myForm" method="POST">
-    <div style="background-color:black;display: flex;justify-content:center;height:100%">
-    <div style="width:900px;background-color:white;height:170%" id="form" name = "form" class="edit">
-        <div class="container" style="background-color:black">    
-            <div style="display:flex;justify-content: center;" class="item-left">
-                <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
-            </div>
-        </div>
-         <div class="wrap ae-dangerous-goods">
-        <div class="item-edit topbar">
-            
-
-    
-
-    <div class="topbar-block">
-        Data Source :
-        <select class="select w-160px" onchange="loadDataSource(this)">
-            <option selected="selected" value="loadInitial">Shipment</option>
-            <option value="loadDraft">Last Modified</option>
-            <option value="loadEmptyFromDraft">Load empty fields from last modified</option>
-            
-        </select>
-
-        <script>
-            function loadDataSource(sel) {
-                function genUrl(url, params) {
-                  const pString = Array.from(Object.entries(params)).map(([k, v]) => `${k}=${v}`).join('&');
-                  return `${url}?${pString}`;
-                }
-
-                const basicParam = {};
-
-                Array.from(new URL(window.location.href).searchParams.entries()).forEach(params => {
-                  if (params[0] !== 'action' && params[0] !== 'form_source') {
-                    basicParam[params[0]] = params[1]
-                  }
-                });
-
-                const last_modified_form_layout = '';
-
-                if (sel.value === 'loadInitial') {
-                    window.location.href = genUrl('/reports/air/hbl/ae-dangers-goods/47123/', basicParam);
-                }
-                else if (sel.value === 'loadDraft') {
-
-                  const params = {
-                    ...basicParam,
-                    action: 'edit',
-                    form_source: 'draft',
-                  };
-
-                  if (last_modified_form_layout) {
-                    params['form_layout'] = last_modified_form_layout
-                  }
-
-                  window.location.href = genUrl('/reports/air/hbl/ae-dangers-goods/47123/', params);
-                }
-                else if (sel.value === 'loadEmptyFromDraft') {
-
-                  const params = {
-                    ...basicParam,
-                    action: 'edit',
-                    form_source: 'empty-from-draft',
-                  };
-
-                  if (last_modified_form_layout) {
-                    params['form_layout'] = last_modified_form_layout
-                  }
-
-                  window.location.href = genUrl('/reports/air/hbl/ae-dangers-goods/47123/', params);
-                }
-                
-                else {
-                  throw Error('unknown dataSource value')
-                }
+    <div style="background-color:black;display: flex;justify-content:center;">
+    <div @(Model.IsPDF? "style=width:100%;background-color:white;height:100%;" : "style=width:900px;background-color:white;height:100%;") id="form" name = "form" class="edit">
+        <div class="container" style="background-color:black">  
+            @if (!Model.IsPDF)
+            {
+                <div style="display:flex;justify-content: center;" class="item-left">
+                    <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+                </div>       
             }
-        </script>
-    </div>
-
-
         </div>
-        <div class="header _padding-0">
-            <h3 class="_margin-b-0">SHIPPER'S DECLARATION FOR DANGEROUS GOODS</h3>
+            <div class="wrap ae-dangerous-goods">
+                <div class="item-edit topbar">
+                    <div class="topbar-block">
+                        Data Source :
+                        <select disabled class="select w-160px" onchange="loadDataSource(this)">
+                            <option selected="selected" value="loadInitial">Shipment</option>
+                            <option value="loadDraft">Last Modified</option>
+                            <option value="loadEmptyFromDraft">Load empty fields from last modified</option>
+            
+                        </select>
+                    </div>
+                </div>
+                <div class="header _padding-0">
+                    <h3 class="_margin-b-0">SHIPPER'S DECLARATION FOR DANGEROUS GOODS</h3>
+                </div>
+                <div class="con">
+                    <table class="border table-padding table-valign-top">
+                        <tbody><tr>
+                            <td class="w-50 border-r border-b">
+                                <div class="title">Shipper</div>
+                                <div class="data">
+                                    <div class="item-pdf auto-font-size data-height-md __width-lg">
+                                    </div>
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <textarea name="Shipper" cols="40" rows="5">
+                                            @Model.Shipper
+                                        </textarea>
+                                  </div>
+                                </div>
+                            </td>
+                            <td class="w-50 border-b border-r data-lg">
+                                <div class="title">Air Waybill No.</div>
+                                <div class="data">
+                                    <div>
+                                        <input name="AirWayBillNo" value="@Model.AirWayBillNo" />
+                                    </div>
+                                </div>
+                                <strong>Page 1 of 1</strong>
+                                <div class="title margin-t">Shipper's Reference Number (optional)</div>
+                                <div class="data">
+                                    <div>
+                                        <input type="text" name="Shipper" value="@Model.Shipper" >
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border-r border-b">
+                                <div class="title">Consignee</div>
+                                <div class="data">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <textarea name="Consignee" cols="40" rows="5">
+                                            @Model.Consignee
+                                        </textarea>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr class="border-t">
+                            <td class="border-r border-b data-lg" rowspan="2">
+                                <div class="title">
+                                    Two completed and signed copies of this Declaration must be handed to the operator
+                                </div>
+                                <table class="table-padding-double border-strong margin-t-sm">
+                                    <tbody><tr>
+                                        <td class="text-bold border-b text-12" colspan="2">TRANSPORT DETAILS</td>
+                                    </tr>
+                                    <tr class="border-b">
+                                        <td class="border-r">
+                                            This Shipment is within the limitations prescribed for: <strong>(delete non-applicable)</strong>
+                                            <div class="select-group" style="display: flex;">
+                                                    <label>
+                                                        <input type="radio" value="PASSENGER"> PASSENGER
+                                                    </label>
+                                        
+                                                    <label>
+                                                        <input type="radio" value="CARGO"> CARGO
+                                                    </label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            Airport of Departure:
+                                            <div class="data">
+                                                <div class="item-pdf auto-font-size __col-departure">
+                                                    <span>@Model.DepartureName</span>
+                                                </div>
+                                                <div>
+                                                    <input type="text" name="APOL" value="(AAA) ANAA">
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            Airport of Destination:
+                                            <div class="data">
+
+                                                <div>
+                                                    <span>@Model.DestinationName</span>
+                                                </div>
+                                                <div>
+                                                    <input type="text" name="APOD" value="(AAB) ARRABURY">
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                            <td class="border-b border-r">
+                                <div class="text-12 text-bold margin-t-md">WARNING</div>
+                                <div class="text-12 margin-t-md margin-b-md">
+                                    Failure to comply in all respects with the applicable Dangerous Goods Regulations may be in breach of the applicable law, subject to legal penalties.
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="border-t border-b">
+                            <td>
+                                Shipment type: <strong>(delete non-applicable)</strong>
+                                <div class="select-group">
+                                        <label class="select-group__item " ng-class="{'selected': vm.shipmentType === 'NON_RADIOACTIVE' }">
+                                            <input type="radio" class="item-edit ng-pristine ng-untouched ng-valid ng-empty" name="shipment_type" value="NON_RADIOACTIVE" ng-model="vm.shipmentType"> NON_RADIOACTIVE
+                                        </label>
+                            
+                                        <label class="select-group__item " ng-class="{'selected': vm.shipmentType === 'RADIOACTIVE' }">
+                                            <input type="radio" class="item-edit ng-pristine ng-untouched ng-valid ng-empty" name="shipment_type" value="RADIOACTIVE" ng-model="vm.shipmentType"> RADIOACTIVE
+                                        </label>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody></table>
+                    <table class="border margin-t">
+                       <colgroup>
+                            <col class="w-8 border-r-dashed">
+                            <col class="w-32 border-r-dashed">
+                            <col class="w-10 border-r-dashed">
+                            <col class="w-8 border-r-dashed">
+                            <col class="w-24 border-r-dashed">
+                            <col class="w-8 border-r-dashed">
+                            <col class="w-10">
+                        </colgroup>
+                        <tbody><tr class="border-b-dashed">
+                            <th class="text-left col-padding-double" colspan="7">
+                                NATURE AND QUANTITY OF DANGEROUS GOODS
+                            </th>
+                        </tr>
+                        <tr class="border-b-dashed">
+                            <th class="text-center col-padding-double" colspan="4">
+                                Dangerous Goods Identification
+                            </th>
+                            <th class="text-center col-padding-double" rowspan="2">
+                                Quantity and<br>type of packing
+                            </th>
+                            <th class="text-center col-padding-double" rowspan="2">
+                                Packing<br>Inst.
+                            </th>
+                            <th class="text-center col-padding-double" rowspan="2">
+                                Authorization
+                            </th>
+                        </tr>
+                        <tr class="border-b-dashed">
+                            <th class="text-center col-padding-double">
+                                UN or ID No.
+                            </th>
+                            <th class="text-center col-padding-double">
+                                Proper Shipping Name
+                            </th>
+                            <th class="text-center col-padding-double">
+                                Class or Division (Subsidiary Risk)
+                            </th>
+                            <th class="text-center col-padding-double">
+                                Packing Group
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="td td-item">
+                                <div class="item-edit">
+                                    <textarea cols="40" rows="31"></textarea>
+                                </div>
+                            </td>
+                            <td class="td td-item">
+                                <div class="item-edit">
+                                    <textarea cols="40" rows="31"></textarea>
+                                </div>
+                            </td>
+                            <td class="td td-item">
+                                <div class="item-edit">
+                                    <textarea cols="40" rows="31"></textarea>
+                                </div>
+                            </td>
+                            <td class="td td-item">
+                                <div class="item-edit">
+                                    <textarea cols="40" rows="31"></textarea>
+                                </div>
+                            </td>
+                            <td class="td td-item">
+                                <div class="item-edit">
+                                    <textarea cols="40" rows="31"></textarea>
+                                </div>
+                            </td>
+                            <td class="td td-item">
+                                <div class="item-edit">
+                                    <textarea cols="40" rows="31"></textarea>
+                                </div>
+                            </td>
+                            <td class="td td-item">
+                                <div class="item-edit">
+                                    <textarea cols="40" rows="31"></textarea>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="border-t-dashed">
+                            <td class="col-padding-double" colspan="7">
+                                <div class="title">Additional Handling Information</div>
+                                <div class="data">
+                                    <div class="item-pdf auto-font-size __width-xl">
+                                        <span>&nbsp;</span>
+                                    </div>
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="addition_handling_information" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.addition_handling_information" id="id_addition_handling_information" class="ng-isolate-scope">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody></table>
+                    <table class="border margin-t data-lg">
+                         <tbody><tr>
+                            <td class="w-50 border-r col-padding-double text-bold">
+                                I hereby declare that the contents of this consignment are fully and accurately described above by the proper shipping name, and are classified, packaged, marked and labelled/placarded, and are in all respects in proper condition for transport according to applicable international and national governmental regulations. I declare that all of the applicable air transport requirements have been met.
+                            </td>
+                            <td class="w-50 border-b border-r">
+                                <div class="title">Name/Title of Signatory</div>
+                                <div class="data">
+                                    <div class="item-pdf auto-font-size __width-lg">
+                                        <span>@Model.NameOfSignatory</span>
+                                    </div>
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="signatory" value="HANJUN LIN" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.signatory" id="id_signatory" class="ng-isolate-scope">
+                                    </div>
+                                </div>
+                                <div class="title">Place and Date</div>
+                                <div class="data">
+                                    <div class="item-pdf auto-font-size __width-lg">
+                                        <span>@Model.PodEtd</span>
+                                    </div>
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="place_and_date" value="(AAA) ANAA, 07-13-2023" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.place_and_date" id="id_place_and_date" class="ng-isolate-scope">
+                                    </div>
+                                </div>
+                                <div class="title">Signature (see warning above)</div>
+                                <div class="data">
+                                    <div class="item-pdf auto-font-size __width-lg">
+                                        <span>&nbsp;</span>
+                                    </div>
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="packer_signature" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.packer_signature" id="id_packer_signature" class="ng-isolate-scope">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </div>
         </div>
-        <div class="con">
-            <table class="border table-padding table-valign-top">
-                <tbody><tr>
-                    <td class="w-50 border-r border-b">
-                        <div class="title">Shipper</div>
-                        <div class="data">
-                            <div class="item-pdf auto-font-size data-height-md __width-lg">
-                            </div>
-                            <div class="item-edit hover-toggle-icon-text-template">
-                                <textarea name="shipper_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.shipper_area" id="id_shipper_area">
-                                    @Model.Shipper
-                                </textarea>
-                          </div>
-                        </div>
-                    </td>
-                    <td class="w-50 border-b border-r data-lg">
-                        <div class="title">Air Waybill No.</div>
-                        <div class="data">
-                            <div class="item-pdf auto-font-size __width-lg">
-                                <span>@Model.AirWayBillNo</span>
-                            </div>
-                            <div class="item-edit hover-toggle-icon-text-template">
-                                <input type="text" name="HBL_NO" value="AH-23030003" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.HBL_NO" id="id_HBL_NO" class="ng-isolate-scope">
-                            </div>
-                        </div>
-                        <strong>Page 1 of 1</strong>
-                        <div class="title margin-t">Shipper's Reference Number (optional)</div>
-                        <div class="data">
-                            <div class="item-pdf auto-font-size __width-lg">
-                                <span></span>
-                            </div>
-                            <div class="item-edit hover-toggle-icon-text-template">
-                                <input type="text" name="MBL_NO" value="695-33679332" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.MBL_NO" id="id_MBL_NO" class="ng-isolate-scope">
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="border-r border-b">
-                        <div class="title">Consignee</div>
-                        <div class="data">
-                          
-                            <div class="item-edit hover-toggle-icon-text-template">
-                                <textarea name="consignee_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.consignee_area" id="id_consignee_area">
-                                    @Model.Consignee
-                                </textarea>
-                            <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-otb-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-otb-c260="" class="icon-text-template" style="top: 3px; left: 327px;"></span><!---->
-
-                        </div>
-                        </div>
-                    </td>
-                    <td></td>
-                </tr>
-                <tr class="border-t">
-                    <td class="border-r border-b data-lg" rowspan="2">
-                        <div class="title">
-                            Two completed and signed copies of this Declaration must be handed to the operator
-                        </div>
-                        <table class="table-padding-double border-strong margin-t-sm">
-                            <tbody><tr>
-                                <td class="text-bold border-b text-12" colspan="2">TRANSPORT DETAILS</td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="border-r">
-                                    This Shipment is within the limitations prescribed for: <strong>(delete non-applicable)</strong>
-                                    <div class="select-group">
-
-                                        
-                                            <label class="select-group__item " ng-class="{'selected': vm.prescribedFor === 'PASSENGER' }">
-                                                <input type="radio" class="item-edit ng-pristine ng-untouched ng-valid ng-empty" name="prescribed_for" ng-model="vm.prescribedFor" value="PASSENGER"> PASSENGER
-                                            </label>
-                                        
-                                            <label class="select-group__item " ng-class="{'selected': vm.prescribedFor === 'CARGO' }">
-                                                <input type="radio" class="item-edit ng-pristine ng-untouched ng-valid ng-empty" name="prescribed_for" ng-model="vm.prescribedFor" value="CARGO"> CARGO
-                                            </label>
-                                        
-
-                                    </div>
-                                </td>
-                                <td>
-                                    Airport of Departure:
-                                    <div class="data">
-                                        <div class="item-pdf auto-font-size __col-departure">
-                                            <span>@Model.DepartureName</span>
-                                        </div>
-                                        <div class="item-edit hover-toggle-icon-text-template">
-                                            <input type="text" name="APOL" value="(AAA) ANAA" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.APOL" id="id_APOL" class="ng-isolate-scope">
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    Airport of Destination:
-                                    <div class="data">
-
-                                        <div class="item-pdf auto-font-size __col-destination">
-                                            <span>@Model.DestinationName</span>
-                                        </div>
-                                        <div class="item-edit hover-toggle-icon-text-template">
-                                            <input type="text" name="APOD" value="(AAB) ARRABURY" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.APOD" id="id_APOD" class="ng-isolate-scope">
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody></table>
-                    </td>
-                    <td class="border-b border-r">
-                        <div class="text-12 text-bold margin-t-md">WARNING</div>
-                        <div class="text-12 margin-t-md margin-b-md">
-                            Failure to comply in all respects with the applicable Dangerous Goods Regulations may be in breach of the applicable law, subject to legal penalties.
-                        </div>
-                    </td>
-                </tr>
-                <tr class="border-t border-b">
-                    <td>
-                        Shipment type: <strong>(delete non-applicable)</strong>
-                        <div class="select-group">
-
-                            
-                                <label class="select-group__item " ng-class="{'selected': vm.shipmentType === 'NON_RADIOACTIVE' }">
-                                    <input type="radio" class="item-edit ng-pristine ng-untouched ng-valid ng-empty" name="shipment_type" value="NON_RADIOACTIVE" ng-model="vm.shipmentType"> NON_RADIOACTIVE
-                                </label>
-                            
-                                <label class="select-group__item " ng-class="{'selected': vm.shipmentType === 'RADIOACTIVE' }">
-                                    <input type="radio" class="item-edit ng-pristine ng-untouched ng-valid ng-empty" name="shipment_type" value="RADIOACTIVE" ng-model="vm.shipmentType"> RADIOACTIVE
-                                </label>
-                            
-
-                        </div>
-                    </td>
-                </tr>
-            </tbody></table>
-            <table class="border margin-t">
-                <colgroup>
-                    <col class="w-8 border-r-dashed"><!-- UN -->
-                    <col class="w-32 border-r-dashed"><!-- Shipper Name -->
-                    <col class="w-10 border-r-dashed"><!-- Class -->
-                    <col class="w-8 border-r-dashed"><!-- Packing Group -->
-                    <col class="w-24 border-r-dashed"><!-- Quantity -->
-                    <col class="w-8 border-r-dashed"><!-- Packing Inst -->
-                    <col class="w-10"><!-- Authorization -->
-                </colgroup>
-                <tbody><tr class="border-b-dashed">
-                    <th class="text-left col-padding-double" colspan="7">
-                        NATURE AND QUANTITY OF DANGEROUS GOODS
-                    </th>
-                </tr>
-                <tr class="border-b-dashed">
-                    <th class="text-center col-padding-double" colspan="4">
-                        Dangerous Goods Identification
-                    </th>
-                    <th class="text-center col-padding-double" rowspan="2">
-                        Quantity and<br>type of packing
-                    </th>
-                    <th class="text-center col-padding-double" rowspan="2">
-                        Packing<br>Inst.
-                    </th>
-                    <th class="text-center col-padding-double" rowspan="2">
-                        Authorization
-                    </th>
-                </tr>
-                <tr class="border-b-dashed">
-                    <th class="text-center col-padding-double">
-                        UN or ID No.
-                    </th>
-                    <th class="text-center col-padding-double">
-                        Proper Shipping Name
-                    </th>
-                    <th class="text-center col-padding-double">
-                        Class or Division (Subsidiary Risk)
-                    </th>
-                    <th class="text-center col-padding-double">
-                        Packing Group
-                    </th>
-                </tr>
-                <tr>
-                    <td class="td td-item">
-                        <div class="item-pdf auto-font-size __col-un">
-                            <span></span>
-                        </div>
-                        <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="id_no" cols="40" rows="31" class="text-scroll no-adjustment ng-isolate-scope" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.id_no" id="id_id_no"></textarea>
-                        </div>
-                    </td>
-                    <td class="td td-item">
-                        <div class="item-pdf auto-font-size __col-shipper-name">
-                            <span></span>
-                        </div>
-                        <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="proper_shipper_name" cols="40" rows="31" class="text-scroll no-adjustment ng-isolate-scope" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.proper_shipper_name" id="id_proper_shipper_name"></textarea>
-                        </div>
-                    </td>
-                    <td class="td td-item">
-                        <div class="item-pdf auto-font-size __col-class">
-                            <span></span>
-                        </div>
-                        <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="class_or_division" cols="40" rows="31" class="text-scroll no-adjustment ng-isolate-scope" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.class_or_division" id="id_class_or_division"></textarea>
-                        </div>
-                    </td>
-                    <td class="td td-item">
-                        <div class="item-pdf auto-font-size __col-packing-group">
-                            <span></span>
-                        </div>
-                        <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="packing_group" cols="40" rows="31" class="text-scroll no-adjustment ng-isolate-scope" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.packing_group" id="id_packing_group"></textarea>
-                        </div>
-                    </td>
-                    <td class="td td-item">
-                        <div class="item-pdf auto-font-size __col-quantity">
-                            <span></span>
-                        </div>
-                        <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="quantity_packing_type" cols="40" rows="31" class="text-scroll no-adjustment ng-isolate-scope" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.quantity_packing_type" id="id_quantity_packing_type"></textarea>
-                        </div>
-                    </td>
-                    <td class="td td-item">
-                        <div class="item-pdf auto-font-size __col-packing-inst">
-                            <span></span>
-                        </div>
-                        <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="packing_inst" cols="40" rows="31" class="text-scroll no-adjustment ng-isolate-scope" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.packing_inst" id="id_packing_inst"></textarea>
-                        </div>
-                    </td>
-                    <td class="td td-item">
-                        <div class="item-pdf auto-font-size __col-auth">
-                            <span></span>
-                        </div>
-                        <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="authorization" cols="40" rows="31" class="text-scroll no-adjustment ng-isolate-scope" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.authorization" id="id_authorization"></textarea>
-                        </div>
-                    </td>
-                </tr>
-                <tr class="border-t-dashed">
-                    <td class="col-padding-double" colspan="7">
-                        <div class="title">Additional Handling Information</div>
-                        <div class="data">
-                            <div class="item-pdf auto-font-size __width-xl">
-                                <span>&nbsp;</span>
-                            </div>
-                            <div class="item-edit hover-toggle-icon-text-template">
-                                <input type="text" name="addition_handling_information" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.addition_handling_information" id="id_addition_handling_information" class="ng-isolate-scope">
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody></table>
-            <table class="border margin-t data-lg">
-                 <tbody><tr>
-                    <td class="w-50 border-r col-padding-double text-bold">
-                        I hereby declare that the contents of this consignment are fully and accurately described above by the proper shipping name, and are classified, packaged, marked and labelled/placarded, and are in all respects in proper condition for transport according to applicable international and national governmental regulations. I declare that all of the applicable air transport requirements have been met.
-                    </td>
-                    <td class="w-50 border-b border-r">
-                        <div class="title">Name/Title of Signatory</div>
-                        <div class="data">
-                            <div class="item-pdf auto-font-size __width-lg">
-                                <span>@Model.NameOfSignatory</span>
-                            </div>
-                            <div class="item-edit hover-toggle-icon-text-template">
-                                <input type="text" name="signatory" value="HANJUN LIN" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.signatory" id="id_signatory" class="ng-isolate-scope">
-                            </div>
-                        </div>
-                        <div class="title">Place and Date</div>
-                        <div class="data">
-                            <div class="item-pdf auto-font-size __width-lg">
-                                <span>@Model.PodEtd</span>
-                            </div>
-                            <div class="item-edit hover-toggle-icon-text-template">
-                                <input type="text" name="place_and_date" value="(AAA) ANAA, 07-13-2023" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.place_and_date" id="id_place_and_date" class="ng-isolate-scope">
-                            </div>
-                        </div>
-                        <div class="title">Signature (see warning above)</div>
-                        <div class="data">
-                            <div class="item-pdf auto-font-size __width-lg">
-                                <span>&nbsp;</span>
-                            </div>
-                            <div class="item-edit hover-toggle-icon-text-template">
-                                <input type="text" name="packer_signature" template-id="ad01ed4ca56d3c66872927973721753d76f7dedfec8c4cc1d3cb1874afabc8fe:Form.packer_signature" id="id_packer_signature" class="ng-isolate-scope">
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody></table>
-        </div>
-    </div>
     </div>
 </div>
 </form>

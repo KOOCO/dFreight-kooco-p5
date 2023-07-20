@@ -1,0 +1,459 @@
+﻿
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Common.AirExportDetails
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        /*color: white;*/
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+
+        .btn-sm, .btn-xs {
+            padding: 4px 10px 5px 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        body {
+            background-color: #364150;
+        }
+
+        .edit .wrap {
+    width: 816px;
+    margin: auto;
+    background: #fff;
+    padding: 20pt;
+    position: relative;
+    margin-top: 34px;
+}
+
+.nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    border-bottom: 2px solid #111;
+    background: #222;
+    z-index: 1049;
+    text-align: center;
+    font-size: 12px;
+}
+.edit {
+    background: #333;
+    padding-bottom: 20px;
+}
+
+.text-center {
+    text-align: center!important;
+}
+
+.edit h5 {
+    font-size: 12px;
+}
+
+.header h5 {
+    font-size: 11px;
+    margin-bottom: 0;
+    padding-bottom: 15px;
+    padding-top: 10px;
+    margin-top: 5px;
+    font-weight: 400;
+}
+
+._padding-0 {
+    padding: 0!important;
+}
+
+.text-grey {
+    color: #757575;
+}
+
+.edit .wrap table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.margin-b-sm {
+    margin-bottom: 10px;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+    width: 100%;
+}
+.col-bg-grey {
+    background: silver;
+    padding-top: 3px;
+    padding-bottom: 0;
+}
+.w-10 {
+    width: 10%;
+}
+.w-40 {
+    width: 40%!important;
+}
+table td {
+    padding: 0;
+}
+</style>
+<script>
+    $(document).ready(function () {
+      $('#id_show_container_info').change(function () {
+
+     if($("#id_show_container_info").prop("checked"))
+     {         
+         $('#container-table').show();
+         $('.show_container').attr('rows', 19)
+     }
+     else
+     {
+         $('#container-table').hide();
+         $('.show_container').attr('rows', 28)
+     }
+ });
+    });
+    
+</script>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		//$('#zin').on('click', function(){
+		//	zoom += 0.1;
+		//	$('#form').css('transform', 'scale(' + zoom + ')');
+		//});
+
+		//$('#zout').on('click', function(){
+		//	zoom -= 0.1;
+		//	$('#form').css('transform', 'scale(' + zoom + ')');
+		//});
+
+        document.getElementById('zin').onclick = function() {
+            zoom += 0.1;
+            document.getElementById('myForm').style.transform = 'scale('+zoom+')';
+            document.getElementById('zout').disabled = false;
+        }
+
+        document.getElementById('zout').onclick = function() {
+            if(zoom > 1){
+                zoom -= 0.1;
+                document.getElementById('myForm').style.transform = 'scale('+zoom+')';
+            }
+        }
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+    });
+</script>
+
+@if (!Model.IsPDF)
+        {
+        <div class="nav">
+           <ul>
+                <li>
+                    <button type="button" style="width:120px; color:white" id="reportLink"><i class="fa fa-print">儲存PDF或列印</i></button>
+                </li>
+            </ul>
+            <div class="view-setting">
+                <div class="btn-group">
+                    <button class="button btn btn-sm" title="Zoom Out" id="zout" disabled="disabled"><i class="fa fa-search-minus"></i>
+                    </button>
+                    <button class="button btn btn-sm" title="Zoom In" id="zin"><i class="fa fa-search-plus"></i>
+                    </button>
+                </div>
+            </div>
+         </div>
+    }
+
+<form id="myForm" name="myForm" method="POST">
+    <input type="hidden" asp-for="@Model.MawbNo" />
+    <input type="hidden" asp-for="@Model.HawbNo" />
+    <input type="hidden" asp-for="@Model.PageType" />
+    <input type="hidden" asp-for="@Model.IssuingCarrierName" />
+    <input type="hidden" asp-for="@Model.Operator" />
+    <input type="hidden" asp-for="@Model.DestinationName" />
+    <input type="hidden" asp-for="@Model.DestinationCountry" />
+    <input type="hidden" asp-for="@Model.Package" />
+    
+    <div id="main" class="edit">
+     
+        <div class="wrap security-endorsement" id="wrap">
+        
+
+        <div class="header header-normal">
+            <table>
+                <tbody><tr>
+                    <td class="w-15 logo">
+                        @*<img src="/api/office/logo/1/">*@
+                    </td>
+                    <td class="w-48">
+                        <h1 class="auto-font-size office-name"><span>@(Model.IssuingCarrierName)(GST/VAT)</span></h1>
+                        <div class="auto-font-size office-des">
+                            <span>
+                               @* 77792 COBB CAPE<br>
+                                TRISTANCHESTER, NE 47478<br>
+                                TEL: 08417606080 FAX: 08417606080*@
+                                
+                            </span>
+                        </div>
+                    </td>
+                    <td class="w-2">&nbsp;</td>
+                    <td class="w-35 title border-deep-blue">
+                        <div class="text-center">
+                            <h2 class="blue-lg">INDIRECT AIR CARRIER'S<br>SECURITY ENDORSEMENT</h2>
+                        </div>
+                    </td>
+                </tr>
+            </tbody></table>
+            <table class="text-10 margin-t table-padding-double">
+                <tbody><tr>
+                    <td class="w-52">&nbsp;</td>
+                    <td class="w-5 border-t border-b border-l"><strong>DATE:</strong></td>
+                    <td class="w-10 border-t border-b border-r">
+                        <div class="item-pdf">07-20-2023</div>
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <input type="text" name="current_date" value="@DateTime.Now.ToShortDateString()" class="ng-isolate-scope">
+                        </div>
+                    </td>
+                    <td class="w-12 border-t border-b"><strong>PREPARED BY :</strong></td>
+                    <td class="w-21 border-t border-b border-r">
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <input type="text" name="Operator" value="@Model.Operator?.ToUpper()" class="ng-isolate-scope">
+                        </div>
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+        <div class="header header-horizontal-logo">
+            <table>
+                <tbody><tr>
+                    <td class="w-75">
+                        <h1 class="text-blue-deep">INDIRECT AIR CARRIER'S SECURITY ENDORSEMENT</h1>
+                        <h2 class="auto-font-size office-name"><span>@(Model.IssuingCarrierName?.ToUpper())(GST/VAT)</span></h2>
+                        <div class="auto-font-size office-des">
+                            <span>
+                                77792 COBB CAPE TRISTANCHESTER, NE 47478<br>
+                                TEL: 08417606080 FAX: 08417606080
+                                
+                            </span>
+                        </div>
+                    </td>
+                    <td class="w-2">&nbsp;</td>
+                    <td class="w-22 logo">
+                        <img src="/api/office/logo/1/">
+                    </td>
+                </tr>
+            </tbody></table>
+            <table class="text-10 margin-t">
+                <tbody><tr>
+                    <td class="w-5"><strong>DATE :</strong></td>
+                    <td class="w-10">
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <input type="text" name="current_date" value="@DateTime.Now.ToShortDateString()" class="ng-isolate-scope">
+                        </div>
+                    </td>
+                    <td class="w-13"><strong>PREPARED BY :</strong></td>
+                    <td class="w-72">
+                        <div class="item-edit w-30 hover-toggle-icon-text-template">
+                            <input type="text" name="prepared_by" value="@Model.Operator" class="ng-isolate-scope">
+                        </div>
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+        <div class="con">
+            <div class="item-pdf">
+                <div class="text-bold text-md"></div>
+            </div>
+            <div class="item-edit">
+                <select disabled name="shipper_type" class="select text-bold text-md ng-pristine ng-untouched ng-valid ng-not-empty">
+                  <option value="KNOWN SHIPPER">KNOWN SHIPPER</option>
+                  <option value="UNKNOWN SHIPPER">UNKNOWN SHIPPER</option>
+                </select>
+            </div>
+            <div class="text-12 margin-t-sm" ng-switch="vm.shipperType">
+                
+                <!-- ngSwitchWhen: KNOWN SHIPPER --><div ng-switch-when="KNOWN SHIPPER" class="ng-scope">
+                    "<span class="item-pdf">@(Model.IssuingCarrierName?.ToUpper())(GST/VAT)</span><span class="item-edit hover-toggle-icon-text-template">
+                        <input type="text" name="IssuingCarrierName" value="@(Model.IssuingCarrierName?.ToUpper())(GST/VAT)" class="w-30"></span> is in compliance with its
+                    TSA-approved security program and all applicable security directives. Our number assigned by TSA is
+                    <span name="FAA_No."></span>
+                    
+        
+            ,<span class="__border-b-toggle">
+                <input type="checkbox" name="show_expiration_date" class="item-edit ng-untouched ng-valid ng-not-empty ng-dirty" ng-model="vm.showExpirationDate"> our expiration date is
+                <div class="inline-block">
+                    <div class="item-pdf">&nbsp;</div>
+                    <div class="item-edit hover-toggle-icon-text-template">
+                        <input type="text" name="expiration_date" template-id="18ec55aab3d4e539caafb83713375d12882c4ed85ee400c0e38f4b4e1548d8a1:Form.expiration_date" ng-model="vm.companyExpirationDate" char-limit="32" to-upper-case="true" id="id_expiration_date" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-empty">
+                    </div>
+                </div>
+            </span>
+        .<!--period sign-->
+    
+                    All cargo tendered in conjunction with this certification was
+                    either 1) accepted from a known shipper or an unknown shipper in accordance with TSA requirements
+                    specified in the Indirect Air Carrier Standard Security Program or 2) accepted under transfer from
+                    another aircraft operator, foreign air carrier, or IAC operating under a TSA-approved or accepted
+                    security program. The individual whose name appears below certifies that he or she is an employee or
+                    authorized representative of <span class="item-pdf">@(Model.IssuingCarrierName?.ToUpper())(GST/VAT)</span><span class="item-edit ng-binding">@(Model.IssuingCarrierName?.ToUpper())(GST/VAT)</span>
+                    and understands that any fraudulent or false statement made in connection with this certification
+                    may subject this individual and <span class="item-pdf">@(Model.IssuingCarrierName?.ToUpper())(GST/VAT)</span><span class="item-edit ng-binding">@(Model.IssuingCarrierName?.ToUpper())(GST/VAT)</span> to both (1) civil penalties
+                    under 49 CFR 1540. 103(b) and (2) fines and/or imprisonment of not more than 5 years under 18 USC
+                    1001."
+                </div><!-- end ngSwitchWhen: -->
+                
+                <!-- ngSwitchWhen: UNKNOWN SHIPPER -->
+            </div>
+            <table class="table-padding border margin-t-lg">
+                <colgroup>
+                    <col class="w-20 border-r">
+                    <col class="w-20 border-r">
+                    <col class="w-40">
+                </colgroup>
+                <tbody><tr class="border-b">
+                    <td>
+                        <div class="title-oblique">MASTER AWB NO.</div>
+                        <div class="data text-12 margin-t">695-33679332</div>
+                    </td>
+                    <td>
+                        <div class="title-oblique">TSA APPROVAL NO.</div>
+                        <div class="data text-12 margin-t">&nbsp;</div>
+                    </td>
+                    <td>
+                        <div class="title-oblique">CARRIER NAME</div>
+                        <div class="data text-12 margin-t auto-font-size __width-lg"><span>@Model.CarrierName</span></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="title-oblique">DESTINATION</div>
+                        <div class="data text-12 margin-t auto-font-size __width-md"><span>@Model.DestinationName</span></div>
+                    </td>
+                    <td>
+                        <div class="title-oblique">COUNTRY</div>
+                        <div class="data text-12 margin-t auto-font-size __width-md"><span>@Model.DestinationCountry</span></div>
+                    </td>
+                    <td>
+                        <div class="title-oblique">AGENT NAME</div>
+                        <div class="data text-12 margin-t auto-font-size __width-lg"><span>@(Model.IssuingCarrierName?.ToUpper())</span></div>
+                    </td>
+                </tr>
+            </tbody></table>
+            <div class="text-right margin-t-lg">
+                <div class="border-t text-left w-25 inline-block">AGENT SIGNATURE</div>
+                <div class="border-t text-left w-25 inline-block">DATE</div>
+            </div>
+            <table class="table-padding-xs margin-t-lg border text-12">
+                <tbody><tr class="border-b">
+                    <td>
+                        Total number of pieces
+                        <div class="inline-block border-b w-72 margin-l-sm">
+                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="num_of_pieces" value="@Model.Package" class="ng-isolate-scope"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td>
+                        Items offered for transportation under 16 oz.
+                        <div class="inline-block border-b w-66 margin-l-sm">
+                            <div class="item-pdf">NONE</div>
+                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="items_offered" value="NONE" class="ng-isolate-scope"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Which of the items are under 16 oz. in the consolidation
+                        <div class="inline-block border-b w-58 margin-l-sm">
+                            <div class="item-pdf">NONE</div>
+                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="items_in_the_consolidation" value="NONE" class="ng-isolate-scope"></div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody></table>
+
+            
+                <div class="margin-t-md">
+                    <div class="_text-14 text-bold">
+                        <span class="item-edit">
+                            <input type="checkbox" name="show_shipper_table" class="ng-untouched ng-valid ng-dirty ng-not-empty">
+                            Show <span ng-bind="vm.shipperType" class="ng-binding">KNOWN SHIPPER</span>
+                        </span>
+                        <span class="item-pdf">
+                            
+                        </span>
+                    </div>
+                </div>
+                <table class="table-padding-double border margin-t" ng-show="vm.showShipperTable">
+                    <colgroup>
+                        <col class="w-40">
+                        <col class="w-10">
+                        <col class="w-40">
+                        <col class="w-10">
+                    </colgroup>
+                    <tbody><tr class="border-b">
+                        <th class="col-padding-double text-left">Name</th>
+                        <th class="col-padding-double text-left border-r">Phone</th>
+                    </tr>
+                        <tr>   
+                                <td>
+                                    <span class="item-edit">
+                                        <input type="checkbox" name="shipper_TP-004713" class="ng-pristine ng-untouched ng-valid ng-empty">
+                                    </span>
+                                    @Model.ShippperName
+                                </td>
+                                <td class="border-r">
+                                    
+                                </td>
+                            
+                        </tr>
+                    
+                </tbody></table>
+            
+
+            <div class="sign-block margin-b-md">
+                <div class="text-right margin-t-lg">
+                    <div class="border-t text-left w-25 inline-block">AIR CARRIER SIGNATURE</div>
+                    <div class="border-t text-left w-25 inline-block">DATE</div>
+                </div>
+                <div class="text-right margin-t-lg">
+                    <div class="border-t text-left w-25 inline-block">DRIVER SIGNATURE</div>
+                    <div class="border-t text-left w-25 inline-block">DATE</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+   
+</form>

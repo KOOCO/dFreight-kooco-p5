@@ -4,7 +4,7 @@
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
-@model Dolphin.Freight.Web.ViewModels.Reports.HawbProfitReportViewModel
+@model Dolphin.Freight.Web.ViewModels.Reports.ProfitReportViewModel
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
 @{
@@ -89,12 +89,12 @@
                 <table class="text-sm">
                     <tbody>
                         <tr>
-                            <td class="w-10 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">release date</font></font></td>
+                            <td class="w-10 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">POST DATE</font></font></td>
                             <td class="w-10 col-padding">@Model.PostDate.ToShortDateString()</td>
-                            @*<td class="w-55 col-padding text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Air export</font></font></td>*@
+                            <td class="w-55 col-padding text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Air export</font></font></td>
                         </tr>
                         <tr class="border-b-strong">
-                            <td class="w-10 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Currency</font></font></td>
+                            <td class="w-10 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CURRENCY</font></font></td>
                             <td class="w-10 col-padding">USD</td>
                             <td class="w-55 col-padding text-right">@DateTime.Now.ToShortDateString()</td>
                         </tr>

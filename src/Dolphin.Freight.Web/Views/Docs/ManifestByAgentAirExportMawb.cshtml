@@ -1,0 +1,482 @@
+﻿    
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.Manifest.ManifestByAgentAirExportMawb
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+</style>
+<script>
+    $(document).ready(function () {
+      $('#id_show_container_info').change(function () {
+
+     if($("#id_show_container_info").prop("checked"))
+     {         
+         $('#container-table').show();
+         $('.show_container').attr('rows', 19)
+     }
+     else
+     {
+         $('#container-table').hide();
+         $('.show_container').attr('rows', 28)
+     }
+ });
+    });
+    
+</script>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+
+        $('#weightSelect').on('change', function(){
+            if($('#weightSelect').val() == "CHARGEABLE WEIGHT"){
+                $('#grossWeight1').text('');
+                $('#grossWeight1').text('@Model.Chargable_Weight');
+                $('#grossWeight2').text('');
+                $('#grossWeight2').text('@Model.Chargable_Weight');
+            } else if($('#weightSelect').val() == "GROSS WEIGHT"){
+                $('#grossWeight1').text('');
+                $('#grossWeight1').text('@Model.Gross_Weight');
+                $('#grossWeight2').text('');
+                $('#grossWeight2').text('@Model.Gross_Weight');
+            }
+        });
+
+        var checkbox = $("#id_show_measurement");
+        var measurementDiv = $("#isShowMeasurement");
+
+        measurementDiv.hide();
+
+        checkbox.on("change", function() {
+            if (checkbox.is(":checked")) {
+                measurementDiv.show();
+            } else {
+                measurementDiv.hide();
+            }
+        });
+
+    });
+</script>
+<form id="myForm" name="myForm" method="POST">
+   <div style="background-color:black;display: flex;justify-content:center;">
+      <div @(Model.IsPDF? "style=width:100%;background-color:white;height:100%;" : "style=width:900px;background-color:white;height:100%;") id="form" name = "form" class="edit">
+            @if (!Model.IsPDF)
+            {
+                <div class="container" style="background-color:black">
+                    <div style="display:flex;justify-content: center;" class="item-left">
+                      <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+                   </div>
+                </div>
+            }
+
+         @*Start of template*@
+
+        <div class="wrap landscape">
+            <div class="item-edit topbar">
+                <div class="topbar-block">
+                    <script>
+                function loadDataSource(sel) {
+                    function genUrl(url, params) {
+                        const pString = Array.from(Object.entries(params)).map(([k, v]) => `${k}=${v}`).join('&');
+                        return `${url}?${pString}`;
+                    }
+
+                    const basicParam = {};
+
+                    Array.from(new URL(window.location.href).searchParams.entries()).forEach(params => {
+                        if (params[0] !== 'action' && params[0] !== 'form_source') {
+                            basicParam[params[0]] = params[1]
+                        }
+                    });
+
+                    const last_modified_form_layout = '';
+
+                    if (sel.value === 'loadInitial') {
+                        window.location.href = genUrl('/reports/air/mbl/export-manifest/AEX-23030003/agent/TP-007510/', basicParam);
+                    }
+                    else if (sel.value === 'loadDraft') {
+
+                        const params = {
+                            ...basicParam,
+                            action: 'edit',
+                            form_source: 'draft',
+                        };
+
+                        if (last_modified_form_layout) {
+                            params['form_layout'] = last_modified_form_layout
+                        }
+
+                        window.location.href = genUrl('/reports/air/mbl/export-manifest/AEX-23030003/agent/TP-007510/', params);
+                    }
+                    else if (sel.value === 'loadEmptyFromDraft') {
+
+                        const params = {
+                            ...basicParam,
+                            action: 'edit',
+                            form_source: 'empty-from-draft',
+                        };
+
+                        if (last_modified_form_layout) {
+                            params['form_layout'] = last_modified_form_layout
+                        }
+
+                        window.location.href = genUrl('/reports/air/mbl/export-manifest/AEX-23030003/agent/TP-007510/', params);
+                    }
+
+                    else {
+                        throw Error('unknown dataSource value')
+                    }
+                }
+            </script>
+                </div>
+            </div>
+            <div class="header">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td class="w-63">
+                                <h1>
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="office_name" value="HARD CORE TECHNOLOGY(GST/VAT)" template-id="25b310c4db5ce91bad4940bd8e9bc50d8fe8ab6b951fc878394aa9f185006f85:Form.office_name" id="id_office_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-vks-c260="" ng-version="12.2.17" tabindex="0">
+                                            <span _ngcontent-vks-c260="" class="icon-text-template" style="top: 1px; left: 573px;"></span><!---->
+
+                                            </hc-input-template>
+                                    </div>
+                                </h1>
+                                <div class="auto-font-size office-des">
+                                    <span>
+                                        77792 COBB CAPE<br>
+                                        TRISTANCHESTER, NE 47478<br>
+                                        TEL: 08417606080 FAX: 08417606080
+
+                                        <br><strong>Prepared by Hanjun Lin 07-20-2023 19:08 (CST)</strong>
+
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="w-2">&nbsp;</td>
+                            <td class="w-35 title text-center td">
+                                <h2 class="blue-lg border-deep-blue col-padding-sm">CARGO MANIFEST</h2>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="con ae-cargo-manifest">
+                <table>
+                    <tbody>
+                <tr>
+                    <td class="td w-28">
+                        <div class="space_area">&nbsp;</div>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td class="highlight-block">
+                                        <div class="title">TO :</div>
+                                        <div class="data">
+                                            <div class="item-edit hover-toggle-icon-text-template">
+                                                <textarea name="to_trade_partner_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="25b310c4db5ce91bad4940bd8e9bc50d8fe8ab6b951fc878394aa9f185006f85:Form.to_trade_partner_area" id="id_to_trade_partner_area">@Model.To</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-vks-c260="" ng-version="12.2.17" tabindex="0">
+                                                    <span _ngcontent-vks-c260="" class="icon-text-template" style="top: 3px; left: 234px;"></span><!---->
+
+                                                    </hc-input-template>
+                                                    <input type="hidden" name="To" value="@Model.To" id="To" />
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td class="highlight-block">
+                                        <div class="title">FROM :</div>
+                                        <div class="data">
+                                            <div class="item-edit hover-toggle-icon-text-template">
+                                                <input type="text" name="From" value="@Model.From" id="id_from_trade_partner" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-vks-c260="" ng-version="12.2.17" tabindex="0">
+                                                    <span _ngcontent-vks-c260="" class="icon-text-template" style="top: 1px; left: 231px;"></span><!---->
+
+                                                    </hc-input-template>
+                                                <input type="hidden" name="From" value="@Model.From" id="From" />
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td class="td w-2"></td>
+                    <td class="td w-70">
+                        <div class="space_area">&nbsp;</div>
+                        <table class="border table-padding-double">
+                            <tbody>
+                                <tr class="border">
+                                    <td class="w-18 bg-light border-r">MAWB NO.</td>
+                                    <td class="w-42">@Model.Mawb_No</td>
+                                    <td class="w-12 bg-light border-r border-l">FILE NO.</td>
+                                    <td class="w-28">
+                                        <div class="item-edit hover-toggle-icon-text-template">
+                                            <input type="text" name="File_No" value="@Model.File_No" template-id="25b310c4db5ce91bad4940bd8e9bc50d8fe8ab6b951fc878394aa9f185006f85:Form.filing_no" id="id_filing_no" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-vks-c260="" ng-version="12.2.17" tabindex="0">
+                                                <span _ngcontent-vks-c260="" class="icon-text-template" style="top: 1px; left: 156px;"></span><!---->
+
+                                                </hc-input-template>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="bg-light border-r">FLIGHT NO.</td>
+                                    <td>@Model.Flight_No</td>
+                                    <td class="bg-light border-r border-l">CARRIER</td>
+                                    <td>@Model.Carrier</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="bg-light border-r">DEPARTURE</td>
+                                    <td>
+                                        <div class="item-edit hover-toggle-icon-text-template">
+                                            <input type="text" name="Departure" value="@Model.Departure" id="id_APOL" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-vks-c260="" ng-version="12.2.17" tabindex="0">
+                                                <span _ngcontent-vks-c260="" class="icon-text-template" style="top: 1px; left: 248px;"></span><!---->
+
+                                                </hc-input-template>
+                                        </div>
+                                    </td>
+                                    <td class="bg-light border-r border-l">ETD</td>
+                                    <td>@Model.ETD</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="bg-light border-r">DESTINATION</td>
+                                    <td>
+                                        <div class="item-edit hover-toggle-icon-text-template">
+                                            <input type="text" name="Destination" value="@Model.Destination" template-id="25b310c4db5ce91bad4940bd8e9bc50d8fe8ab6b951fc878394aa9f185006f85:Form.APOD" id="id_APOD" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-vks-c260="" ng-version="12.2.17" tabindex="0">
+                                                <span _ngcontent-vks-c260="" class="icon-text-template" style="top: 1px; left: 248px;"></span><!---->
+
+                                                </hc-input-template>
+                                        </div>
+                                    </td>
+                                    <td class="bg-light border-r border-l">ETA</td>
+                                    <td>@Model.ETA</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+                </table>
+                <div class="space_area">&nbsp;</div>
+                <table class="text-10 table-padding-double">
+            <colgroup>
+                <col class="w-10"><!--HAWB / PCS-->
+                <col class="w-12"><!-- WEIGHT -->
+                <col class="w-25"><!-- Shipper address -->
+                <col class="w-23"><!-- Consignee address -->
+                <col class="w-26"><!-- Nature of goods -->
+                <col class="w-4"><!-- term -->
+            </colgroup>
+            <tbody>
+                <tr class="border-t border-b bg-light">
+                    <th class="col-padding-double text-left">
+                        PCS
+                    </th>
+                    <th class="col-padding-double text-center">
+                        <div class="item-edit">
+                            <select name="weight_select" class="select bg-white w-100 text-8 ng-valid ng-not-empty ng-dirty ng-valid-parse ng-touched" id="weightSelect">
+                                <option value="GROSS WEIGHT">GROSS WEIGHT</option>
+                                <option value="CHARGEABLE WEIGHT">CHARGEABLE WEIGHT</option>
+                            </select>
+                        </div>
+                    </th>
+
+                    <th class="col-padding-double text-left" ng-show="vm.isAddrContactInfo">
+                        SHIPPERS NAME &amp; ADDRESS
+                        <div class="item-edit">
+                            Show:
+                            <label class="text-10">
+                                <input type="checkbox" name="show_shipper_phone" ng-model="vm.showOptions.shipper.phone" hc-user-preference="ae_mbl_cargo_manifest_show_shipper_phone" ng-change="vm.onShipperShowOptionChanged()" id="id_show_shipper_phone" class="ng-untouched ng-valid ng-dirty ng-not-empty"> Phone
+                            </label>
+                            <label class="text-10 margin-l-xs">
+                                <input type="checkbox" name="show_shipper_fax" ng-model="vm.showOptions.shipper.fax" hc-user-preference="ae_mbl_cargo_manifest_show_shipper_fax" ng-change="vm.onShipperShowOptionChanged()" id="id_show_shipper_fax" class="ng-untouched ng-valid ng-dirty ng-not-empty"> Fax
+                            </label>
+                            <label class="text-10 margin-l-xs">
+                                <input type="checkbox" name="show_shipper_contact_info" ng-model="vm.showOptions.shipper.contactInfo" hc-user-preference="ae_mbl_cargo_manifest_show_shipper_contact_info" ng-change="vm.onShipperShowOptionChanged()" id="id_show_shipper_contact_info" class="ng-untouched ng-valid ng-dirty ng-not-empty"> Contact
+                            </label>
+                        </div>
+                    </th>
+                    <th class="col-padding-double text-left" ng-show="vm.isAddrContactInfo">
+                        CONSIGNEE NAME &amp; ADDRESS
+                        <div class="item-edit">
+                            Show:
+                            <label class="text-10">
+                                <input type="checkbox" name="show_consignee_phone" ng-model="vm.showOptions.consignee.phone" hc-user-preference="ae_mbl_cargo_manifest_show_consignee_phone" ng-change="vm.onConsigneeShowOptionChanged()" id="id_show_consignee_phone" class="ng-untouched ng-valid ng-dirty ng-not-empty"> Phone
+                            </label>
+                            <label class="text-10 margin-l-xs">
+                                <input type="checkbox" name="show_consignee_fax" ng-model="vm.showOptions.consignee.fax" hc-user-preference="ae_mbl_cargo_manifest_show_consignee_fax" ng-change="vm.onConsigneeShowOptionChanged()" id="id_show_consignee_fax" class="ng-untouched ng-valid ng-dirty ng-not-empty"> Fax
+                            </label>
+                            <label class="text-10 margin-l-xs">
+                                <input type="checkbox" name="show_consignee_contact_info" ng-model="vm.showOptions.consignee.contactInfo" hc-user-preference="ae_mbl_cargo_manifest_show_consignee_contact_info" ng-change="vm.onConsigneeShowOptionChanged()" id="id_show_consignee_contact_info" class="ng-untouched ng-valid ng-dirty ng-not-empty"> Contact
+                            </label>
+                        </div>
+                    </th>
+@*
+
+                    <th class="col-padding-double text-left ng-hide" ng-show="!vm.isAddrContactInfo">SHIPPERS NAME</th>
+                    <th class="col-padding-double text-left ng-hide" ng-show="!vm.isAddrContactInfo">CONSIGNEE NAME</th>*@
+
+                    <th class="col-padding-double text-left">NATURE OF GOODS</th>
+                    <th class="col-padding-double text-center">TERM</th>
+                </tr>
+
+                <tr>
+                    <td class="nowrap">
+                        @Model.File_No<br>
+                        @Model.Total_Package
+                    </td>
+                    <td class="text-center">
+                        <div class="item-edit ng-binding" id="grossWeight1">
+                            @Model.Gross_Weight
+                        </div>
+                    </td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <textarea name="shipper_AEX-23030003" cols="40" rows="7" class="text-scroll ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" template-id="4b8d8922c71d903241782e7beed0c54f68ba15685ffe7474085827cf0823d5df:FormExtend.shipper_AEX-23030003" ng-model="vm.shipper[&quot;AEX-23030003&quot;]" id="id_shipper_AEX-23030003">@Model.Shipper</textarea>
+                            <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-vks-c260="" ng-version="12.2.17" tabindex="0">
+                                <span _ngcontent-vks-c260="" class="icon-text-template" style="top: 3px; left: 210px;"></span><!---->
+
+                            </hc-input-template>
+                        </div>
+                    </td>
+                    <td>
+
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <textarea name="consignee_AEX-23030003" cols="40" rows="7" class="text-scroll ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" template-id="4b8d8922c71d903241782e7beed0c54f68ba15685ffe7474085827cf0823d5df:FormExtend.consignee_AEX-23030003" ng-model="vm.consignee[&quot;AEX-23030003&quot;]" id="id_consignee_AEX-23030003">@Model.To</textarea>
+                            <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-vks-c260="" ng-version="12.2.17" tabindex="0">
+                                <span _ngcontent-vks-c260="" class="icon-text-template" style="top: 3px; left: 191px;"></span><!---->
+
+                            </hc-input-template>
+                        </div>
+                    </td>
+                    <td>
+
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <textarea name="good_items_AEX-23030003" cols="40" rows="7" class="text-scroll ng-isolate-scope" template-id="4b8d8922c71d903241782e7beed0c54f68ba15685ffe7474085827cf0823d5df:FormExtend.good_items_AEX-23030003" id="id_good_items_AEX-23030003">ITN# @Model.Itn_No</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-vks-c260="" ng-version="12.2.17" tabindex="0">
+                                <span _ngcontent-vks-c260="" class="icon-text-template" style="top: 3px; left: 219px;"></span><!---->
+
+                            </hc-input-template>
+                        </div>
+                    </td>
+                    <td class="col-padding w-10 text-center">@Model.Term</td>
+                </tr>
+
+
+
+                <!-- Total -->
+                <tr class="border-t border-b text-bold bg-light">
+                    <td><strong>TOTAL @Model.Total_Pc (PCS)</strong></td>
+                    <td class="text-center">
+                        <div class="item-edit ng-binding" id="grossWeight2">
+                            @Model.Gross_Weight
+                        </div>
+                    </td>
+                    <td>
+                        <div class="item-edit">
+                            <label class="text-10">
+                                <input type="checkbox" name="show_measurement" id="id_show_measurement" class="ng-pristine ng-untouched ng-valid ng-empty">
+                                Show Measurement
+                            </label>
+                        </div>
+
+                        <div id="isShowMeasurement" class="ng-hide">@Model.Measurement</div>
+
+                    </td>
+                    <td colspan="3">1 AWB(S)</td>
+                </tr>
+            </tbody>
+        </table>
+                <div class="space_area">&nbsp;</div>
+                <table class="border-l border-r _pagebreak-inside-avoid">
+            <tbody>
+                <tr class="border-t">
+                    <td class="text-bold col-padding-double border-b">REMARK</td>
+                </tr>
+                <tr class="border-b">
+                    <td class="col-padding-double">
+                        <div class="data">
+                            <div class="item-edit hover-toggle-icon-text-template">
+                                <textarea name="remark" cols="40" rows="5" class="None ng-isolate-scope" limit-rows="" template-id="25b310c4db5ce91bad4940bd8e9bc50d8fe8ab6b951fc878394aa9f185006f85:Form.remark" id="id_remark"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-vks-c260="" ng-version="12.2.17" tabindex="0">
+                                    <span _ngcontent-vks-c260="" class="icon-text-template" style="top: 3px; left: 913px;"></span><!---->
+
+                                    <ng-select _ngcontent-vks-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a43c12fe8b03" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+                                </hc-input-template>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+            </div>
+        </div>
+      </div>
+      <input type="hidden" name="Mawb_No" value="@Model.Mawb_No" id="Mawb_No" />
+      <input type="hidden" name="File_No" value="@Model.File_No" id="File_No" />
+      <input type="hidden" name="Flight_No" value="@Model.Flight_No" id="Flight_No" />
+      <input type="hidden" name="Carrier" value="@Model.Carrier" id="Carrier" />
+      <input type="hidden" name="Departure" value="@Model.Departure" id="Departure" />
+      <input type="hidden" name="ETD" value="@Model.ETD" id="ETD" />
+      <input type="hidden" name="Destination" value="@Model.Destination" id="Destination" />
+      <input type="hidden" name="ETA" value="@Model.ETA" id="ETA" />
+      <input type="hidden" name="To" value="@Model.To" id="To" />
+      <input type="hidden" name="From" value="@Model.From" id="From" />
+      <input type="hidden" name="Total_Package" value="@Model.Total_Package" id="Total_Package" />
+      <input type="hidden" name="Total_Pc" value="@Model.Total_Pc" id="Total_Pc" />
+      <input type="hidden" name="Itn_No" value="@Model.Itn_No" id="Itn_No" />
+      <input type="hidden" name="Shipper" value="@Model.Shipper" id="Shipper" />
+      <input type="hidden" name="Gross_Weight" value="@Model.Gross_Weight" id="Gross_Weight" />
+      <input type="hidden" name="Chargable_Weight" value="@Model.Chargable_Weight" id="Chargable_Weight" />
+      <input type="hidden" name="Measurement" value="@Model.Measurement" id="Measurement" />
+      <input type="hidden" name="Agent" value="@Model.Agent" id="Agent" />
+      <input type="hidden" name="Term" value="@Model.Term" id="Term" />
+   </div>
+</form>

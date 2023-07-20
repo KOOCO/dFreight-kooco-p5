@@ -179,7 +179,7 @@
     "Btn:On Hand Report": "On Hand Report",
     "Btn:Security Endorsement": "Security Endorsement",
     "Btn:All Hawb Package Labels": "All Hawb Package Labels",
-    "Btn:Dispatch List": "Dispatch List",
+    "Btn:Dispatch List": "Pickup / Delivery Order",
     "Btn:Block": "Block",
     "Btn:Dangerous Goods": "Dangerous Goods",
     "Btn:Document Package": "Document Package",
@@ -210,7 +210,7 @@
     "Btn:Tracking": "Tracking",
     "Btn:AddHawb": "Add HAWB",
     "Btn:Lock": "Lock",
-    "Btn:All HAWB Packaging Labels": "All HAWB Packaging Labels",
+    "Btn:All HAWB Packaging Labels": "All HAWB Package Label",
     "Btn:Print MAWB": "Print MAWB",
     "Btn:Print HAWB": "Print HAWB",
     "Btn:Package Label List": "Package Label List",
@@ -1302,7 +1302,7 @@
     // Ocean Export HBL
     "AgentId": "HB/L Agent",
     "HblSaleId": "Sales",
-    "HSvcTermToId": "Svc Term To",
-  
+    "HSvcTermToId": "Svc Term To"
+
   }
 }

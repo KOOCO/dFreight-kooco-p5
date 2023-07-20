@@ -1,10 +1,11 @@
 ﻿using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.Common;
 using System;
 using System.Collections.Generic;
 
 namespace Dolphin.Freight.Web.ViewModels.Reports
 {
-    public class HawbProfitReportViewModel
+    public class ProfitReportViewModel
     {
         public DateTime PostDate { get; set; }
         public string Currency { get; set; } = "USD";
@@ -29,5 +30,10 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public double APTotal { get; set; }
         public double DCTotal { get; set; }
         public double Total { get; set; }
+        public FreightPageType PageType { get; set; }
+        public bool IsPDF { get; set; }
+        public string InvoicesJson { get; set; }
+        public string ReportType { get; set; }
+        public string AWbNo { get; set; }
     }
 }

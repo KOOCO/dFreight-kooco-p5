@@ -4,7 +4,7 @@
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
-@model Dolphin.Freight.Web.ViewModels.PickupDeliveryOrder.PickupDeliveryOrderAirExportHawbModel
+@model Dolphin.Freight.Web.ViewModels.PickupDeliveryOrder.PickupDeliveryOrderAirExportMawbModel
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
 @{
@@ -469,7 +469,6 @@
                             <tr>
                                 <td class="td highlight-block">
                                     <div class="title">
-                                        <div class="item-pdf">BILL TO</div>
                                         <div class="item-edit">
                                             <table>
                                                 <tbody><tr>
@@ -603,7 +602,6 @@
                                 <td class="td border-b w-74 border-l">
                                     <div class="title">PLACE OF RECEIPT</div>
                                     <div class="data">
-                                        <div class="item-pdf auto-font-size __width-md"><span>&nbsp;</span></div>
                                         <div class="item-edit hover-toggle-icon-text-template">
                                             <input type="text" name="POR" id="id_POR" class="ng-isolate-scope">
                                         </div>
@@ -1076,7 +1074,7 @@
                                     <div class="data">
                                         
                                             <div class="auto-font-size __width-lg">
-                                                <span>FFFFFFFFFF</span>
+                                                <span></span>
                                             </div>
                                         
                                     </div>
@@ -1112,15 +1110,12 @@
                 <tr class="border-r border-l border-b">
                     <td class="border-b">
                         <div class="data padding-t-xs">
-                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="instruction" cols="40" rows="17" class="text-scroll no-adjustment ng-isolate-scope" template-id="221d3c7e6763e5f069564d0078793c852a8c21d4b7a9723ec79d92ee09be0128:PickupDeliveryOrderReportForm.instruction" id="id_instruction">NNN
+                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="instruction" cols="40" rows="17" class="text-scroll no-adjustment ng-isolate-scope" template-id="221d3c7e6763e5f069564d0078793c852a8c21d4b7a9723ec79d92ee09be0128:PickupDeliveryOrderReportForm.instruction" id="id_instruction">
 
-                            333@123X321X222(CM)</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-xhc-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-xhc-c260="" class="icon-text-template" style="top: 5px; left: 331px;"></span><!---->
+                            </textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-xhc-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-xhc-c260="" class="icon-text-template" style="top: 5px; left: 331px;"></span><!---->
                             
                             <ng-select _ngcontent-xhc-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a52e3514d031" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
                             </hc-input-template></div>
-                            <div class="item-pdf auto-font-size __col-instruction-md"><span>NNN<br>
-                            <br>
-                            333@123X321X222(CM)</span></div>
                         </div>
                     </td>
                 </tr>
