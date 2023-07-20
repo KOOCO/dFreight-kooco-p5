@@ -247,6 +247,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
             {
                 var destination = portMangements.Where(w => w.Id == data.DestinationId).FirstOrDefault();
                 airExportDetails.DestinationName = destination?.PortName;
+                airExportDetails.DestinationCountry = destination?.Country;
             }
 
             if (data.NotifyId != null)

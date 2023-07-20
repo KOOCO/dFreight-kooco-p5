@@ -2926,5 +2926,22 @@ namespace Dolphin.Freight.Web.Controllers
 
             return await _generatePdf.GetPdf("Views/Docs/OnHandReportAirExportMawb.cshtml", model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> PrintMawb(Guid id, FreightPageType pageType)
+        {
+            var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
+
+            return View(airExportDetails);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PrintMawb(AirExportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/PrintMawb.cshtml", model);
+        }
+
     }
 }

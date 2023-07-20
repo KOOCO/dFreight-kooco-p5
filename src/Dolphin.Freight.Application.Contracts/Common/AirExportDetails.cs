@@ -39,5 +39,6 @@ namespace Dolphin.Freight.Common
         public string ChargeableWeightCneeKG { get; set; }
         public Guid MawbId { get; set; }
         public DateTime? DepatureDate { get; set; }
+        public string DestinationCountry { get; set; }
     }
 }
