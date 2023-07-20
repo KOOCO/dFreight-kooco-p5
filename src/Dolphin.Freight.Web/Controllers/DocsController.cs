@@ -2972,5 +2972,74 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/SecurityEndorsement.cshtml", model);
         }
 
+        public async Task<IActionResult> ManifestByAgentAirExportMawbPartial(Guid mawbId)
+        {
+            ManifestByAgentAirExportMawb InfoModel = new();
+
+            var mawb = await _airExportMawbAppService.GetAsync(mawbId);
+            var datas = _dropdownService.TradePartnerLookupList;
+            var overSeaAgents = new List<OverSeaAgent>();
+
+            foreach (var overSeaAgent in datas)
+            {
+                var data = new OverSeaAgent
+                {
+                    Name = overSeaAgent.Text
+                };
+                overSeaAgents.Add(data);
+            }
+
+            InfoModel.Agent = string.Concat(datas.Where(w => w.Value == Convert.ToString(mawb.ConsigneeId)).Select(s => s.Text));
+            InfoModel.OverSeaAgents = overSeaAgents;
+
+            return PartialView("Pages/Shared/_ManifestByAgent.cshtml", InfoModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ManifestByAgentAirExportMawb(Guid mawbId, string agent)
+        {
+            ManifestByAgentAirExportMawb InfoModel = new ManifestByAgentAirExportMawb();
+
+            var mawb = await _airExportMawbAppService.GetAsync(mawbId);
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
+            var packageUnit = _dropdownService.PackageUnitLookupList;
+
+            InfoModel.Mawb_No = mawb.MawbNo;
+            InfoModel.File_No = mawb.FilingNo;
+            InfoModel.Flight_No = mawb.FlightNo;
+            InfoModel.Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.MawbCarrierId)).Select(s => s.Text));
+            InfoModel.Departure = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DepatureId)).Select(s => s.Text));
+            InfoModel.ETD = string.Concat(mawb.DepatureDate);
+            InfoModel.Destination = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DestinationId)).Select(s => s.Text));
+            InfoModel.ETA = string.Concat(mawb.ArrivalDate);
+            InfoModel.From = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.ShipperId)).Select(s => s.Text));
+            InfoModel.Shipper = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.ShipperId)).Select(s => s.Text));
+            InfoModel.To = agent;
+            InfoModel.Total_Package = string.Concat(mawb.Package) + " " + string.Concat(packageUnit.Where(w => w.Value == Convert.ToString(mawb.MawbPackageUnitId)).Select(s => s.Text));
+            InfoModel.Total_Pc = string.Concat(mawb.Package);
+            InfoModel.Gross_Weight = string.Concat(mawb.GrossWeightKg) + " KG" + " " + string.Concat(mawb.GrossWeightLb) + " LB";
+            InfoModel.Chargable_Weight = string.Concat(mawb.ChargeableWeightKg) + " KG" + " " + string.Concat(mawb.ChargeableWeightLb) + " LB";
+            InfoModel.Itn_No = mawb.ItnNo;
+            InfoModel.Measurement = string.Concat(mawb.VolumeWeightCbm) + " CBM" + " " + (mawb.VolumeWeightCbm * 35.315).ToString("0.00") + " CFT";
+            if(mawb.WtVal == "PPD")
+            {
+                InfoModel.Term = "PP";
+            }
+            else if(mawb.WtVal == "COLL")
+            {
+                InfoModel.Term = "CC";
+            }
+
+            return View(InfoModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ManifestByAgentAirExportMawb(ManifestByAgentAirExportMawb model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/ManifestByAgentAirExportMawb.cshtml", model);
+        }
     }
 }

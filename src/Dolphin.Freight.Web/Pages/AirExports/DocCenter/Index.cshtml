@@ -203,6 +203,18 @@
                 myWindow.focus();
             });
         }
+
+        function getManifestByAgentAirExportMawb() {
+            $.ajax({
+                url: abp.appPath + 'Docs/ManifestByAgentAirExportMawbPartial?mawbId=' + '@Model.AirExportMawbDto.Id',
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('.modal-content').html(res);
+                    $('.modal').modal('show');
+                }
+            });
+        }
     </script>
 }
 <div class="page-header">
@@ -239,6 +251,13 @@
                                 <span id="title0">@Model.AirExportMawbDto.MawbNo </span>
                             </abp-card-title>
 
+                            <div id="myModal" class="modal" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="btn-group dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
                                     @L["Display:Function"]
@@ -258,7 +277,7 @@
                         <a class='dropdown-item' href='#'>
                             <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Manifest"]
                         </a>
-                        <a class='dropdown-item' href='#'>
+                        <a class='dropdown-item' href="javascript:void(0)" onclick="getManifestByAgentAirExportMawb()">
                             <i class="fa fa-file-text-o"></i> @L["Btn:Manifest by Agent"]
                         </a>
                         <a class='dropdown-item' href="javascript:void(0)" onclick="getBookingConfirmationAirExportMawb('@Url.Action("BookingConfirmationAirExportMawb", "Docs", new { mawbId = Model.AirExportMawbDto.Id })')">
