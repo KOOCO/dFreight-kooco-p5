@@ -385,9 +385,9 @@ table tr {
                                     <td class="td text-right"><div class="auto-font-size __width-count-md">
                                         <span>@(invoice.InvoiceType == 0? Convert.ToDecimal(invoiceBill.Quantity * invoiceBill.Rate).ToString("0.00") : 0)</span></div></td>
                                     <td class="td text-right"><div class="auto-font-size __width-count-md">
-                                        <span>@(invoice.InvoiceType == 1? Convert.ToDecimal(invoiceBill.Quantity * invoiceBill.Rate).ToString("0.00") : 0)</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count-md">
                                         <span>@(invoice.InvoiceType == 2? Convert.ToDecimal(invoiceBill.Quantity * invoiceBill.Rate).ToString("0.00") : 0)</span></div></td>
+                                    <td class="td text-right"><div class="auto-font-size __width-count-md">
+                                        <span>@(invoice.InvoiceType == 1? Convert.ToDecimal(invoiceBill.Quantity * invoiceBill.Rate).ToString("0.00") : 0)</span></div></td>
                                     <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
                                     <td class="td" colspan="5"></td>
                                 </tr>
@@ -399,7 +399,7 @@ table tr {
                                 <td class="td">
                                     <div class="auto-font-size __width-invoice">
                                         <span class="item-edit">
-                                            <a href="/accounting/invoice/entry/289971/" target="_blank">@invoice.InvoiceNo</a>
+                                            <a href="/Accounting/Invoice?MethodType=3&MawbId=@invoice.MawbId&Hid=&InvoiceType=@invoice.InvoiceType&InvoiceId=@invoice.Id" target="_blank">@invoice.InvoiceNo</a>
                                         </span>
                                     </div>
                                 </td>
@@ -409,13 +409,13 @@ table tr {
                                     @(invoice.InvoiceType == 0 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)
                                     </span></div></td>
                                 <td class="td text-right"><div class="auto-font-size __width-count-md"><span>
-                                    @(invoice.InvoiceType == 1 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)
-                                    </span></div></td>
-                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>
                                     @(invoice.InvoiceType == 2 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)
                                     </span></div></td>
+                                <td class="td text-right"><div class="auto-font-size __width-count-md"><span>
+                                    @(invoice.InvoiceType == 1 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)
+                                    </span></div></td>
                                 <td class="td text-right"><div class="auto-font-size __width-balance inline-block">
-                                    <span>@invoice.InvoiceBillDtos.Sum(c => c.Rate)</span></div> N</td>
+                                    <span>@invoice.InvoiceBillDtos.Sum(c => c.Rate * c.Quantity).ToString("0.00")</span></div> N</td>
                             </tr>
                             <tr class="border-b-grey">
                                 <td colspan="3"></td>
@@ -424,7 +424,13 @@ table tr {
                             </tr>
 
                         }
+                        <tr class="">
+                                
 
+                                <td colspan="3">  </td>
+                                <td colspan="7"> Shipper: @Model.Shipper <input type="hidden" asp-asp-for="@Model.Shipper" /> </td>
+                                <td class="text-right" colspan="4"> </td>
+                            </tr>
             </tbody></table>
 
             
