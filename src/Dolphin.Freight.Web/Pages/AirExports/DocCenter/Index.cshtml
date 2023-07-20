@@ -276,7 +276,7 @@
                         <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PickupDeliveryOrderAirExportMawb", "Docs", new { mawbId = Model.AirExportMawbDto.Id })')">
                             <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
                         </a>
-                        <a class='dropdown-item' href='#'>
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("SecurityEndorsement", "Docs", new { id = Model.AirExportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEMBL, reportType = "Summary" })')">
                             <i class="fa fa-file-text-o"></i> @L["Btn:Security Endorsement"]
                         </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OnHandReportAirExportMawb", "Docs", new { mawbId = Model.AirExportMawbDto.Id })')">

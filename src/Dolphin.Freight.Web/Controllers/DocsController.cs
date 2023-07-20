@@ -2956,5 +2956,21 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/PrintMawb.cshtml", model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> SecurityEndorsement(Guid id, FreightPageType pageType)
+        {
+            var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
+
+            return View(airExportDetails);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SecurityEndorsement(AirExportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/SecurityEndorsement.cshtml", model);
+        }
+
     }
 }
