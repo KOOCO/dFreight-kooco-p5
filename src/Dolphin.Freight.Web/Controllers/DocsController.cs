@@ -2636,6 +2636,90 @@ namespace Dolphin.Freight.Web.Controllers
 
             return data;
         }
+
+        private async Task<OceanExportDetails> GetOceanExportDetailsByPageType(Guid Id, FreightPageType pageType = FreightPageType.OEMBL, bool isIncludeInvoices = false)
+        {
+            var data = new OceanExportDetails();
+
+            switch (pageType)
+            {
+                case FreightPageType.OEMBL:
+                    data = await _oceanExportMblAppService.GetOceanExportDetailsById(Id);
+                    break;
+                default:
+                    break;
+            }
+
+            if (data != null && isIncludeInvoices)
+            {
+                var queryType = pageType == FreightPageType.OEMBL ? 3 : 1;
+
+                QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = Id };
+
+                data.Invoices = (await _invoiceAppService.QueryInvoicesAsync(queryDto)).ToList();
+
+                if (data.Invoices != null && data.Invoices.Count > 0)
+                {
+                    data.AR = new List<InvoiceDto>();
+                    data.DC = new List<InvoiceDto>();
+                    data.AP = new List<InvoiceDto>();
+                    foreach (var dto in data.Invoices)
+                    {
+                        switch (dto.InvoiceType)
+                        {
+                            default:
+                                data.AR.Add(dto);
+                                break;
+                            case 1:
+                                data.DC.Add(dto);
+                                break;
+                            case 2:
+                                data.AP.Add(dto);
+                                break;
+                        }
+                    }
+
+                    if (data.AR.Any())
+                    {
+                        double arTotal = 0;
+                        foreach (var ar in data.AR)
+                        {
+                            arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                        }
+                        data.ARTotal = arTotal;
+                    }
+                    if (data.AP.Any())
+                    {
+                        double apTotal = 0;
+                        foreach (var ap in data.AP)
+                        {
+                            apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                        }
+
+                        data.APTotal = apTotal;
+                    }
+                    if (data.DC.Any())
+                    {
+                        double dcTotal = 0;
+                        foreach (var dc in data.DC)
+                        {
+                            dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                        }
+                        data.DCTotal = dcTotal;
+                    }
+
+                    data.Total = data.ARTotal - data.APTotal + data.DCTotal;
+
+                    data.InvoicesJson = JsonConvert.SerializeObject(data.Invoices);
+                }
+            }
+
+            data.PageType = pageType;
+
+            if (string.IsNullOrEmpty(data.MblOperatorName)) data.MblOperatorName = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
+
+            return data;
+        }
         private async Task<List<AllHawbList>> GetAllHawbLists(Guid mawbId)
         {
             var data = await _airExportHawbAppService.GetHblCardsById(mawbId);
@@ -3040,6 +3124,24 @@ namespace Dolphin.Freight.Web.Controllers
             model.IsPDF = true;
 
             return await _generatePdf.GetPdf("Views/Docs/ManifestByAgentAirExportMawb.cshtml", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MblProfitReportSummary(Guid id, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType, true);
+
+            return View(oceanExportDetails);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MblProfitReportSummary(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            model.Invoices = JsonConvert.DeserializeObject<List<InvoiceDto>>(model.InvoicesJson);
+
+            return await _generatePdf.GetPdf("Views/Docs/MblProfitReportSummary.cshtml", model);
         }
     }
 }

@@ -247,7 +247,7 @@
                                         <i class="fa fa-file-text-o"></i> @L["Btn:All HBL Packaging Labels"]
                                     </a>
                                     <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("MblProfitReportSummary", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
                                     </a>
                                     <a class='dropdown-item' href='#'>
