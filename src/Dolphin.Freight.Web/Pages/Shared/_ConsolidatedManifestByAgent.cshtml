@@ -1,0 +1,108 @@
+﻿@using Dolphin.Freight.Localization;
+@using Microsoft.Extensions.Localization;
+@model Dolphin.Freight.Web.ViewModels.Manifest.ManifestByAgentAirExportMawb
+@inject IStringLocalizer<FreightResource> L
+<style>
+    .sortable-list__item {
+        padding: 5px 22px 5px 7px;
+        color: #fff;
+        margin-bottom: 5px;
+        background: #AAAAAA url(data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjEwIiB2aWV3Qm94PSIwIDAgNyAxMCIgd2lkdGg9IjciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0ibTggMTdjLjU1MjI4NDc1IDAgMSAuNDQ3NzE1MyAxIDFzLS40NDc3MTUyNSAxLTEgMS0xLS40NDc3MTUzLTEtMSAuNDQ3NzE1MjUtMSAxLTF6bTUgMGMuNTUyMjg0NyAwIDEgLjQ0NzcxNTMgMSAxcy0uNDQ3NzE1MyAxLTEgMS0xLS40NDc3MTUzLTEtMSAuNDQ3NzE1My0xIDEtMXptLTUtNGMuNTUyMjg0NzUgMCAxIC40NDc3MTUzIDEgMXMtLjQ0NzcxNTI1IDEtMSAxLTEtLjQ0NzcxNTMtMS0xIC40NDc3MTUyNS0xIDEtMXptNSAwYy41NTIyODQ3IDAgMSAuNDQ3NzE1MyAxIDFzLS40NDc3MTUzIDEtMSAxLTEtLjQ0NzcxNTMtMS0xIC40NDc3MTUzLTEgMS0xem0tNS00Yy41NTIyODQ3NSAwIDEgLjQ0NzcxNTI1IDEgMSAwIC41NTIyODQ3LS40NDc3MTUyNSAxLTEgMXMtMS0uNDQ3NzE1My0xLTFjMC0uNTUyMjg0NzUuNDQ3NzE1MjUtMSAxLTF6bTUgMGMuNTUyMjg0NyAwIDEgLjQ0NzcxNTI1IDEgMSAwIC41NTIyODQ3LS40NDc3MTUzIDEtMSAxcy0xLS40NDc3MTUzLTEtMWMwLS41NTIyODQ3NS40NDc3MTUzLTEgMS0xeiIgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBvcGFjaXR5PSIuNTAzOTMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC03IC05KSIvPjwvc3ZnPg==) calc(100% - 8px) 10px no-repeat;
+    }
+</style>
+
+<form id="frmManifest" data-check-form-on-close="false">
+    <abp-modal>
+        <h5 class="modal-title mx-3" style="color: black;">Cargo Manifest</h5>
+        <abp-modal-body class="overflow-auto" style="height:400px;">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group form-full">
+                        <label class="name-sm control-label ng-binding" style="color: black;">MAWB No.</label>
+                        <input type="text" class="form-control value-sm" readonly="" name="Mawb_No" value="@Model.Mawb_No">
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group form-full">
+                        <label class="name-sm control-label form-textarea-label ng-binding" style="color: black;">Master Agent</label>
+                        <textarea rows="6" class="value-sm form-control ng-binding" readonly="">@Model.Agent</textarea>
+                        <input type="hidden" name="Agent" value="@Model.Agent" />
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group form-full">
+                        <label class="name-sm control-label form-textarea-label ng-binding">Report</label>
+                        <label class="radio-inline ng-binding">
+                            <div class="radio" style="color: black; font-weight: 200"><span class="checked"><input type="radio" name="report" value="MASTER" id="masterRadio" bind-uniform="" class="ng-valid ng-not-empty ng-dirty ng-touched ng-valid-parse" checked></span>Master Agent</div>
+                        </label>
+                        <label class="radio-inline ng-binding mx-5">
+                            <div class="radio" style="color: black; font-weight: 200"><span class=""><input type="radio" name="report" onclick="checkSubAgent" value="SUB_AGENT" id="subRadio" bind-uniform="" class="ng-valid ng-not-empty ng-dirty ng-touched" disabled>Sub Agent</span></div>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-xs-12" id="oceanAgentModal" style="display: none;">
+                <label style="color: black">Oversea Agent: </label>
+                    <select id="overSeaAgentsList" name="overSeaAgentsList">
+                        <option value="@Model.Agent" id="agent" selected>@Model.Agent</option>
+                        @foreach (var item in Model.OverSeaAgents)
+                        {
+                            var index = Model.OverSeaAgents.IndexOf(item);
+                            <option value="@item.Name" id="item_@index">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </abp-modal-body>
+        <abp-modal-footer>
+            <abp-button id="btnManifestCancel"
+                        text="Cancel"
+                        button-type="Default"
+                        onclick="ManifestCancel()" />
+            <abp-button id="btnManifestSave"
+                        text="View"
+                        button-type="Primary"
+                        onclick="ManifestSave()" /> 
+        </abp-modal-footer>
+    </abp-modal>
+</form>
+
+
+<script>
+    function checkSubAgent(){
+        var subAgentRadio = document.getElementById('subRadio');
+
+        var oceanAgentModal = document.getElementById('oceanAgentModal');
+
+        if (subAgentRadio.checked) {
+            oceanAgentModal.style.display = 'block';
+        } else {
+            oceanAgentModal.style.display = 'none';
+        }
+    }
+
+    function ManifestSave(){
+        var url = new URL(window.location.href);
+        var mawbId = url.searchParams.get('Id');
+
+        if (mawbId == null) {
+            var url = window.location.href;
+            var mawbId = url.split('/')[url.split('/').length - 1];
+        }
+
+        $.ajax({
+            url: abp.appPath + 'Docs/ManifestByAgentAirExportMawb',
+            type: 'GET',
+            data: { mawbId: mawbId, agent: '@Model.Agent' },
+            success: function (res) {
+                var agent = $('#overSeaAgentsList').val();
+                var Url = abp.appPath + 'Docs/ManifestByAgentAirExportMawb?mawbId=' + mawbId + '&agent=' + agent
+                var myWindows = window.open(Url, 'Empty', 'width=1200,height=800');
+                myWindows.focus();
+            }
+        });
+    }
+
+    function ManifestCancel(){
+        $('.modal').modal('hide');
+    }
+</script>
