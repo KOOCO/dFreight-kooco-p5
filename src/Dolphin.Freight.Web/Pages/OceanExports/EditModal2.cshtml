@@ -243,8 +243,8 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:MBL Packaging Label"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:All HBL Packaging Labels"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AllHblPackageLabelOceanExportMBL", "Docs", new { mblId = Model.OceanExportMbl.Id })')">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:All HBL Package Labels"]
                                     </a>
                                     <p class="dropdown-divider"></p>
                                     <a class='dropdown-item' href='#'>

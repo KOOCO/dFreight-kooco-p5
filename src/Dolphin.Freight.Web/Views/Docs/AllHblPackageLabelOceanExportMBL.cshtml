@@ -1,0 +1,386 @@
+﻿@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.PackageLabel.AllHblPackageLabelOceanExportMBL
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        /*color: white;*/
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+
+        .btn-sm, .btn-xs {
+            padding: 4px 10px 5px 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        body {
+            background-color: #364150;
+        }
+
+        .edit .wrap {
+    width: 816px;
+    margin: auto;
+    background: #fff;
+    padding: 20pt;
+    position: relative;
+    margin-top: 34px;
+}
+
+.nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    border-bottom: 2px solid #111;
+    background: #222;
+    z-index: 1049;
+    text-align: center;
+    font-size: 12px;
+}
+.edit {
+    background: #333;
+    padding-bottom: 20px;
+}
+
+.text-center {
+    text-align: center!important;
+}
+
+.edit h5 {
+    font-size: 12px;
+}
+
+.header h5 {
+    font-size: 11px;
+    margin-bottom: 0;
+    padding-bottom: 15px;
+    padding-top: 10px;
+    margin-top: 5px;
+    font-weight: 400;
+}
+
+._padding-0 {
+    padding: 0!important;
+}
+
+.text-grey {
+    color: #757575;
+}
+
+.edit .wrap table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.margin-b-sm {
+    margin-bottom: 10px;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+    width: 100%;
+}
+.col-bg-grey {
+    background: silver;
+    padding-top: 3px;
+    padding-bottom: 0;
+}
+.w-10 {
+    width: 10%;
+}
+.w-40 {
+    width: 40%!important;
+}
+table td {
+    padding: 0;
+}
+</style>
+<script>
+    $(document).ready(function () {
+      $('#id_show_container_info').change(function () {
+
+     if($("#id_show_container_info").prop("checked"))
+     {         
+         $('#container-table').show();
+         $('.show_container').attr('rows', 19)
+     }
+     else
+     {
+         $('#container-table').hide();
+         $('.show_container').attr('rows', 28)
+     }
+ });
+    });
+    
+</script>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		//$('#zin').on('click', function(){
+		//	zoom += 0.1;
+		//	$('#form').css('transform', 'scale(' + zoom + ')');
+		//});
+
+		//$('#zout').on('click', function(){
+		//	zoom -= 0.1;
+		//	$('#form').css('transform', 'scale(' + zoom + ')');
+		//});
+
+        document.getElementById('zin').onclick = function() {
+            zoom += 0.1;
+            document.getElementById('myForm').style.transform = 'scale('+zoom+')';
+            document.getElementById('zout').disabled = false;
+        }
+
+        document.getElementById('zout').onclick = function() {
+            if(zoom > 1){
+                zoom -= 0.1;
+                document.getElementById('myForm').style.transform = 'scale('+zoom+')';
+            }
+        }
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+
+        if($('#Total_Pieces').val() == ''){
+            debugger;
+            $('#total_pieces').text('');
+            $('#total_pieces').text('0');
+        }
+        if($('#Pieces') == ''){
+            $('#id_pieces').val('');
+            $('#id_pieces').val('0');
+        }
+
+        $('#hblsList').on('change', function(){
+            debugger;
+            $('#hblNo').text($('#hblsList').val());
+            $('#Hbl_No').val('');
+            $('#Hbl_No').val($('#hblsList').val());
+            if($('#Total_Pieces').val() == ''){
+                $('#Total_Pieces').val('');
+                $('#Total_Pieces').val('0');
+                $('#total_pieces').text('');
+                $('#total_pieces').text('0');
+            }
+            if($('#Pieces') == ''){
+            $('#Pieces').val('');
+            $('#Pieces').val('0');
+            $('#id_pieces').val('');
+            $('#id_pieces').val('0');
+        }
+        });
+    });
+</script>
+
+@if (!Model.IsPDF)
+        {
+        <div class="nav">
+           <ul>
+                <li>
+                    <button type="button" style="width:120px; color:white" id="reportLink"><i class="fa fa-print">儲存PDF或列印</i></button>
+                </li>
+            </ul>
+            <div class="view-setting">
+                <div class="btn-group">
+                    <button class="button btn btn-sm" title="Zoom Out" id="zout" disabled="disabled"><i class="fa fa-search-minus"></i>
+                    </button>
+                    <button class="button btn btn-sm" title="Zoom In" id="zin"><i class="fa fa-search-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div style="display:flex;justify-content: center;" class="item-left">
+                <select id="hblsList" name="hblsList">
+                    @foreach (var hawb in Model.AllHblLists)
+                    {
+                        <option value="@hawb.Hbl_No" data-hawb-pc="@hawb.Hbl_Pc" id="@hawb.Id">@hawb.Hbl_No</option>
+                    }
+                </select>
+            </div>
+         </div>
+    }
+
+<form id="myForm" name="myForm" method="POST">
+    <input type="hidden" asp-for="@Model.Mbl_No" />
+    <input type="hidden" asp-for="@Model.Hbl_No" />
+    <input type="hidden" asp-for="@Model.Carrier" />
+    <input type="hidden" asp-for="@Model.Total_Pieces" />
+    <input type="hidden" asp-for="@Model.Destination" />
+    <input type="hidden" asp-for="@Model.Pieces" />
+    <input type="hidden" asp-for="@Model.To" />
+    
+    <div id="main" class="edit">
+        <div class="wrap label-size _padding-0">
+        <div class="item-edit topbar">
+    <div class="topbar-block">
+        Data Source :
+        <select class="select w-160px" onchange="loadDataSource(this)">
+            <option selected="selected" value="loadInitial">Shipment</option>
+            <option value="loadDraft">Last Modified</option>
+            <option value="loadEmptyFromDraft">Load empty fields from last modified</option>
+            
+        </select>
+
+        <script>
+            function loadDataSource(sel) {
+                function genUrl(url, params) {
+                  const pString = Array.from(Object.entries(params)).map(([k, v]) => `${k}=${v}`).join('&');
+                  return `${url}?${pString}`;
+                }
+
+                const basicParam = {};
+
+                Array.from(new URL(window.location.href).searchParams.entries()).forEach(params => {
+                  if (params[0] !== 'action' && params[0] !== 'form_source') {
+                    basicParam[params[0]] = params[1]
+                  }
+                });
+
+                const last_modified_form_layout = '';
+
+                if (sel.value === 'loadInitial') {
+                    window.location.href = genUrl('/reports/ocean/hbl/package-label/47050/', basicParam);
+                }
+                else if (sel.value === 'loadDraft') {
+
+                  const params = {
+                    ...basicParam,
+                    action: 'edit',
+                    form_source: 'draft',
+                  };
+
+                  if (last_modified_form_layout) {
+                    params['form_layout'] = last_modified_form_layout
+                  }
+
+                  window.location.href = genUrl('/reports/ocean/hbl/package-label/47050/', params);
+                }
+                else if (sel.value === 'loadEmptyFromDraft') {
+
+                  const params = {
+                    ...basicParam,
+                    action: 'edit',
+                    form_source: 'empty-from-draft',
+                  };
+
+                  if (last_modified_form_layout) {
+                    params['form_layout'] = last_modified_form_layout
+                  }
+
+                  window.location.href = genUrl('/reports/ocean/hbl/package-label/47050/', params);
+                }
+                
+                else {
+                  throw Error('unknown dataSource value')
+                }
+            }
+        </script>
+    </div>
+        </div>
+            <div class="header oe-package-label _padding-0 ">
+                <div class="data col-padding-xs padding-t-sm _text-20">
+                    <div class="auto-font-size __col-company"><span>@Model.Carrier</span></div>
+                </div>
+                <table class="border-t">
+                    <tbody><tr class="border-b">
+                        <td>
+                            <div class="title">TO</div>
+                            <div class="data">
+                                <div class="item-edit hover-toggle-icon-text-template"><textarea name="hbl_agent_area" cols="40" rows="5" class="lineheight-nor _text-20 text-scroll no-adjustment ng-isolate-scope" id="id_hbl_agent_area">@Model.To</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kou-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kou-c260="" class="icon-text-template" style="top: 3px; left: 335px;"></span><!---->
+
+                                </hc-input-template></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td>
+                            <div class="title">MBL NO.</div>
+                            <div class="data"><h1 class="auto-font-size __width-lg lineheight-nor"><span>@Model.Mbl_No</span></h1></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="title">
+                                <div class="item-edit">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="w-80">HBL NO.</td>
+                                                <td class="w-20">PIECES</td>
+                                            </tr>
+                                    </tbody></table>
+                                </div>
+                            </div>
+                            <div class="data">
+                                <div class="item-edit col-padding">
+                                    <table>
+                                        <tbody><tr>
+                                            <td class="w-80"><h1 id="hblNo">@Model.Hbl_No</h1></td>
+                                            <td class="w-15"><input type="number" name="Pieces" value="@Model.Pieces" class="input-xl text-center" min="1" id="id_pieces"></td>
+                                            <td class="w-5">&nbsp;</td>
+                                        </tr>
+                                    </tbody></table>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-t">
+                        <td>
+                            <div class="title">DESTINATION</div>
+                            <div class="data">
+                                <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="POD_location" value="@Model.Destination" class="input-xl ng-isolate-scope" id="id_POD_location"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kou-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kou-c260="" class="icon-text-template" style="top: 1px; left: 331px;"></span><!---->
+
+                                </hc-input-template></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="title">
+                                <div class="item-edit">
+                                    TOTAL PIECES
+                                </div>
+                            </div>
+                            <div class="data">
+                                <div class="item-edit">
+                                    <h1 class="lineheight-nor" name="total_pieces" id="total_pieces">@Model.Total_Pieces</h1>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody></table>
+            </div>
+        
+    </div>
+    </div>
+</form>
