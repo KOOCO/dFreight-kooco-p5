@@ -150,6 +150,7 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<SysCode, SysCodeDto>();
         CreateMap<PackageUnit, PackageUnitDto>();
         CreateMap<CreateUpdatePackageUnitDto, PackageUnit>();
+        CreateMap<OceanExportMbl, OceanExportDetails>();
 
         // ContactPerson
         CreateMap<ContactPerson, ContactPersonDto>();

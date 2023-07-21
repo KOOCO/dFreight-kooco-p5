@@ -6,6 +6,7 @@ namespace Dolphin.Freight.Web.ViewModels.Manifest
     public class ManifestByAgentAirExportMawb
     {
         public bool IsPDF { get; set; }
+        public string Carrier_Agent { get; set; }
         public string Mawb_No { get; set; }
         public string File_No { get; set; }
         public string Flight_No { get; set; }

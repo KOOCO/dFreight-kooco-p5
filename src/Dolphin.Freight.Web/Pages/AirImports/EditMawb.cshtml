@@ -1,5 +1,6 @@
 ﻿@page
 @using Dolphin.Freight.Web.CommonService;
+@using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Volo.Abp.Users
 @using Dolphin.Freight.AirExports
 @using Dolphin.Freight.AirImports
@@ -103,7 +104,7 @@
                         $('.hblCardTitle')[index].click();
                     }, 500);
                 }
-            })            
+            })
         });
 
         $('#editForm').on('abp-ajax-success', function (result, rs) {
@@ -384,7 +385,7 @@
             })
         }
 
-        
+
 
     </script>
 
@@ -554,7 +555,7 @@
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="MawbModel.IsDirectMaster" id="isDirectMaster" />
                                 </abp-column>
-                                
+
                             </abp-row>
                             <!--第5列-->
                             <br />
@@ -792,6 +793,19 @@
                                     <abp-input asp-for="MawbModel.IsECom" />
                                 </abp-column>
                                 <abp-column size-md="_3">
+                                </abp-column>
+                            </abp-row>
+
+                            <abp-row>
+                                <abp-column>
+                                    <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                                        @L["Title:Memo"]
+                                    </abp-card-header>
+                                    <abp-card>
+                                        <abp-card-body>
+                                            <partial name="Memos/_Memo" model="new _MemoModel(Model.HawbModel.Id, Dolphin.Freight.Common.FreightPageType.AIHBL)" />
+                                        </abp-card-body>
+                                    </abp-card>
                                 </abp-column>
                             </abp-row>
                         </abp-card-body>

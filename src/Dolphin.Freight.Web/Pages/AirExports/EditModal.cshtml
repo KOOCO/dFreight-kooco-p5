@@ -553,6 +553,18 @@
                 }
             });
         }
+
+        function getConsolidatedManifestByAgentAirExportMawb() {
+            $.ajax({
+                url: abp.appPath + 'Docs/ConsolidatedManifestByAgentAirExportMawbPartial?mawbId=' + '@Model.AirExportMawbDto.Id',
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('.modal-content').html(res);
+                    $('.modal').modal('show');
+                }
+            });
+        }
     </script>
 }
 
@@ -621,8 +633,8 @@
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PrintMawb", "Docs", new { id = Model.AirExportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Print MAWB"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest (Comprehensive)"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getConsolidatedManifestByAgentAirExportMawb()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Manifest"]
                                     </a>
                                     <a class='dropdown-item' href="javascript:void(0)" onclick="getManifestByAgentAirExportMawb()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Manifest by Agent"]
@@ -823,7 +835,7 @@
                                 <div class="collapse" id="collapseRoute">
                                     <div class="card card-body customForm">
                                         <h3>Route</h3>
-                                        <abp-table class="table table-bordered table-responsive">
+                                        <abp-table class="nowrap" class="table table-bordered table-responsive">
                                             <thead>
                                                 <tr>
                                                     <th></th>
@@ -917,7 +929,7 @@
                                 <div class="container">
                                     <div class="row">
                                         <div class="col">
-                                            <abp-table class="table table-borderless">
+                                            <abp-table class="nowrap" class="table table-borderless">
                                                 <thead>
                                                     <tr>
                                                         <th></th>
@@ -1101,7 +1113,7 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_12">
-                                    <abp-table border="1" class="w-100">
+                                    <abp-table class="nowrap" border="1" class="w-100">
                                         <thead border="1">
                                         <th><input type="checkbox" /></th>
                                         <th>@L["CarrierAgent"]</th>
@@ -1128,7 +1140,7 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_12">
-                                    <abp-table border="1" class="w-100">
+                                    <abp-table class="nowrap" border="1" class="w-100">
                                         <thead border="1">
                                         <th><input type="checkbox" /></th>
                                         <th>@L["Code"]</th>
@@ -1150,7 +1162,7 @@
                                     <abp-card>
                                         <abp-card-body>
                                             <div class="table-responsive">
-                                                <abp-table>
+                                                <abp-table class="nowrap">
                                                     <thead>
                                                     <th></th>
                                                     <th>@L["Valuation"]</th>
@@ -1198,7 +1210,7 @@
                                             <abp-row>
                                                 <abp-column size-md="_12">
                                                     <div class="table-responsive">
-                                                        <abp-table border="1" class="w-100">
+                                                        <abp-table class="nowrap" border="1" class="w-100">
                                                             <thead border="1">
                                                             <th></th>
                                                             <th>@L["CommodityDescription"]</th>
@@ -1219,7 +1231,7 @@
                                             <abp-row>
                                                 <abp-column size-md="_12">
                                                     <div class="table-responsive">
-                                                        <abp-table border="1" class="w-100">
+                                                        <abp-table class="nowrap" border="1" class="w-100">
                                                             <thead border="1">
                                                             <th><input type="checkbox" /></th>
                                                             <th>@L["ReceiptNo"]</th>

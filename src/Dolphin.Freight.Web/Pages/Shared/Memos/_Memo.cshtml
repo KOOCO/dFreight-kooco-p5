@@ -13,7 +13,7 @@
 </abp-row>
 <abp-row>
     <abp-column>
-        <abp-table border-style="Bordered" id="@Model.MemoTableId" class="@Model.MemoTableClass"></abp-table>
+        <abp-table border-style="Bordered" id="@Model.MemoTableId" class="@Model.MemoTableClass nowrap"></abp-table>
     </abp-column>
     <abp-column size="_4">
         <textarea rows="7" class="form-control" readonly id="@Model.MemoContentId"></textarea>
@@ -234,6 +234,7 @@
         };
 
         window.onload = function () {
+            debugger
             if (typeof oldOnload == 'function') {
                 oldOnload();
             }
