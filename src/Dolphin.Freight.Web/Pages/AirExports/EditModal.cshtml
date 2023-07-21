@@ -553,6 +553,18 @@
                 }
             });
         }
+
+        function getConsolidatedManifestByAgentAirExportMawb() {
+            $.ajax({
+                url: abp.appPath + 'Docs/ConsolidatedManifestByAgentAirExportMawbPartial?mawbId=' + '@Model.AirExportMawbDto.Id',
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('.modal-content').html(res);
+                    $('.modal').modal('show');
+                }
+            });
+        }
     </script>
 }
 
@@ -621,8 +633,8 @@
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PrintMawb", "Docs", new { id = Model.AirExportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Print MAWB"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest (Comprehensive)"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getConsolidatedManifestByAgentAirExportMawb()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Manifest"]
                                     </a>
                                     <a class='dropdown-item' href="javascript:void(0)" onclick="getManifestByAgentAirExportMawb()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Manifest by Agent"]

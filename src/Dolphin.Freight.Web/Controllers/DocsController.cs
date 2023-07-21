@@ -60,6 +60,7 @@ using NPOI.OpenXmlFormats.Wordprocessing;
 using JetBrains.Annotations;
 using System.Runtime.Intrinsics.Arm;
 using Microsoft.CodeAnalysis.CSharp;
+using System.Configuration;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -3006,6 +3007,7 @@ namespace Dolphin.Freight.Web.Controllers
             var packageUnit = _dropdownService.PackageUnitLookupList;
 
             InfoModel.Mawb_No = mawb.MawbNo;
+            InfoModel.Carrier_Agent = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.IssuingCarrierId)).Select(s => s.Text));
             InfoModel.File_No = mawb.FilingNo;
             InfoModel.Flight_No = mawb.FlightNo;
             InfoModel.Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.MawbCarrierId)).Select(s => s.Text));
@@ -3040,6 +3042,30 @@ namespace Dolphin.Freight.Web.Controllers
             model.IsPDF = true;
 
             return await _generatePdf.GetPdf("Views/Docs/ManifestByAgentAirExportMawb.cshtml", model);
+        }
+
+        public async Task<IActionResult> ConsolidatedManifestByAgentAirExportMawbPartial(Guid mawbId)
+        {
+            ManifestByAgentAirExportMawb InfoModel = new();
+
+            var mawb = await _airExportMawbAppService.GetAsync(mawbId);
+            var datas = _dropdownService.TradePartnerLookupList;
+            var overSeaAgents = new List<OverSeaAgent>();
+
+            foreach (var overSeaAgent in datas)
+            {
+                var data = new OverSeaAgent
+                {
+                    Name = overSeaAgent.Text
+                };
+                overSeaAgents.Add(data);
+            }
+
+            InfoModel.Mawb_No = mawb.MawbNo;
+            InfoModel.Agent = string.Concat(datas.Where(w => w.Value == Convert.ToString(mawb.ConsigneeId)).Select(s => s.Text));
+            InfoModel.OverSeaAgents = overSeaAgents;
+
+            return PartialView("Pages/Shared/_ConsolidatedManifestByAgent.cshtml", InfoModel);
         }
     }
 }
