@@ -36,9 +36,9 @@
             if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
 
             console.log('@ViewData["HAVEHBL"]');
-            if ('@ViewData["HAVEHBL"]' !== "Y") {
-                $("#RP").hide();
-            }
+            //if ('@ViewData["HAVEHBL"]' !== "Y") {
+            //    $("#RP").hide();
+            //}
             if('@Model.OceanExportMbl.IsReleased' == 'True'){
                 $("#OceanExportMbl_MblReleaseDate").datepicker("setDate", new Date('@Model.OceanExportMbl.MblReleaseDate').toLocaleDateString());
             }
@@ -526,11 +526,11 @@
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getReportPackageLabel()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:MBL Packaging Label"]
                                     </a>
-                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getReportPackage()" id="RP" name="RP">
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:All HBL Packaging Labels"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AllHblPackageLabelOceanExportMBL", "Docs", new { mblId = Model.OceanExportMbl.Id })')" id="RP" name="RP">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:All HBL Package Labels"]
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(4)">
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("MblProfitReportSummary", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(5)">
@@ -683,7 +683,7 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.DelId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "DelName", SelectType = 1, ShowFiledContentValue = Model.OceanExportMbl.DelId.ToString() })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelName", SelectType = 1, ShowFiledContentValue = Model.OceanExportMbl.DelId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportMbl.DelEta" type="text" abp-data-datepicker="false" class="checkdate" />
