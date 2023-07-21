@@ -1,0 +1,211 @@
+﻿@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.Reports.OnHandReportAirExportMawbModel
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+</style>
+<script>
+    $(document).ready(function () {
+        $('#id_show_container_info').change(function () {
+            if($("#id_show_container_info").prop("checked"))
+     {         
+         $('#container-table').show();
+         $('.show_container').attr('rows', 19)
+     }
+            else
+     {
+         $('#container-table').hide();
+         $('.show_container').attr('rows', 28)
+     }
+        });
+    });
+    
+</script>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+
+        $('#hawbsList').on('change', function(){
+            $('#hawbNo').text($('#hawbsList').val());
+            $('#hawbNo_hidden').text('');
+            $('#hawbNo_hidden').text($('#hawbsList').val());
+            $('#hawbNo_hidden').val('');
+            $('#hawbNo_hidden').val($('#hawbNo_hidden').text());
+            var selectedOption = $("#hawbsList option:selected");
+            var hawbPcValue = selectedOption.data("hawb-pc");
+            if(hawbPcValue == ''){ hawbPcValue = '0'; }
+            $('#id_total_pc').text('');
+            $('#id_total_pc').text(hawbPcValue);
+            $('#hawbPc_hidden').val('');
+            $('#hawbPc_hidden').val(hawbPcValue);
+            $('#id_total_pc').val('');
+            $('#id_total_pc').val(hawbPcValue);
+        });
+    });
+
+    window.addEventListener('DOMContentLoaded', function() {
+        calculateTotals();
+    });
+
+    function calculateTotals() {
+        debugger;
+        var table = document.getElementById('handReportTable');
+        var hawbPCTotal = 0;
+        var weightLBTotal = 0;
+        var weightKGTotal = 0;
+    
+        for (var i = 1; i < table.rows.length - 1; i++) {
+            var row = table.rows[i];
+            hawbPCTotal += parseInt(row.cells[2].innerText);
+            weightLBTotal += parseInt(row.cells[3].innerText);
+            weightKGTotal += parseInt(row.cells[4].innerText);
+        }
+    
+        $('#hawbPcId').text(hawbPCTotal);
+        $('#weightLBId').text(weightLBTotal);
+        $('#weightKGId').text(weightKGTotal);
+    }
+
+</script>
+<form id="myForm" name="myForm" method="POST">
+   <div style="background-color:black;display: flex;justify-content:center;">
+      <div @(Model.IsPDF? "style=width:100%;background-color:white;height:100%;" : "style=width:900px;background-color:white;height:100%;") id="form" name = "form" class="edit">
+            @if (!Model.IsPDF)
+            {
+                <div class="container" style="background-color:black">
+                    <div style="display:flex;justify-content: center;" class="item-left">
+                      <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+                   </div>
+                </div>
+            }
+
+         @*Start of template*@
+
+            <div class="wrap landscape">
+                <div class="header">
+                <div class="text-center">
+                    <h5 class="text-grey _padding-0"><strong>HARD CORE TECHNOLOGY(GST/VAT)</strong></h5>
+                    <div class="text-lg text-bold">Shipment @Model.Mawb_No</div>
+                    <input type="hidden" name="Mawb_No" value="@Model.Mawb_No" id="Mawb_No" />
+                    <h4 class="text-light margin-t-sm">House Listing</h4>
+                </div>
+            </div>
+                <div class="con">
+                <table class="table-padding">
+                <tbody><tr>
+                    <td>Date: @(DateTime.Now.ToString("M/dd/yyyy"))</td>
+                </tr>
+            </tbody></table>
+                <table class="table-padding-double margin-t" id="handReportTable">
+                <tbody><tr class="border-t border-b col-bg-grey">
+                    <th class="w-12 col-padding-double text-left">HAWB No.</th>
+                    <th class="w-20 col-padding-double text-left">Warehouse Receipts</th>
+                    <th class="w-3 col-padding-double text-right">Piece</th>
+                    <th class="w-8 col-padding-double text-right">Weight (LB)</th>
+                    <th class="w-8 col-padding-double text-right">Weight (KG)</th>
+                    <th class="w-13 col-padding-double text-left">Shipper</th>
+                    <th class="w-13 col-padding-double text-left">Consignee</th>
+                    <th class="w-13 col-padding-double text-left">Carrier</th>
+                    <th class="w-10 col-padding-double text-left">Destination</th>
+                </tr>
+                
+                <abp-input type="hidden" asp-for="@Model.HawbListsJson"></abp-input>
+                @foreach (var item in Model.AllHawbLists)
+                {
+                    <tr>
+                        <td>@item.Hawb_No</td>
+                        <input type="hidden" name="Hawb_No" value="@item.Hawb_No" id="Hawb_No" />
+                        <td>@item.Warehouse_Receipt</td>
+                        <input type="hidden" name="Warehouse_Receipt" value="@item.Warehouse_Receipt" id="Warehouse_Receipt" />
+                        @if(item.Hawb_Pc != null){
+                            <td class="text-right">
+                                @item.Hawb_Pc
+                            </td>
+                            <input type="hidden" name="Hawb_Pc" value="@item.Hawb_Pc" id="Hawb_Pc" />
+                        } else {
+                            <td class="text-right">0</td>
+                        }
+                        @if(item.Weight_LB != null){
+                            <td class="text-right">
+                                @item.Weight_LB
+                            </td>
+                            <input type="hidden" name="Weight_LB" value="@item.Weight_LB" id="Weight_LB" />
+                        } else {
+                            <td class="text-right">0</td>
+                        }
+                        @if(item.Weight_KG != null){
+                            <td class="text-right">
+                                @item.Weight_KG
+                            </td>
+                            <input type="hidden" name="Weight_KG" value="@item.Weight_KG" id="Weight_KG" />
+                        } else {
+                            <td class="text-right">0</td>
+                        }
+                        <td>@item.Shipper</td>
+                        <input type="hidden" name="Shipper" value="@item.Shipper" id="Shipper" />
+                        <td>@item.Consignee</td>
+                        <input type="hidden" name="Consignee" value="@item.Consignee" id="Consignee" />
+                        <td>@item.Carrier</td>
+                        <input type="hidden" name="Carrier" value="@item.Carrier" id="Carrier" />
+                        <td>@item.Destination</td>
+                        <input type="hidden" name="Destination" value="@item.Destination" id="Destination" />
+                    </tr>
+                }
+                
+                <tr class="border-t border-b col-bg-grey">
+                    <td colspan="2"><strong>Total</strong></td>
+                    <td class="text-right"><strong id="hawbPcId"></strong></td>
+                    <td class="text-right"><strong id="weightLBId"></strong></td>
+                    <td class="text-right"><strong id="weightKGId"></strong></td>
+                    <td colspan="4"></td>
+                </tr>
+                </tbody></table>
+                </div>
+            </div>
+      </div>
+   </div>
+</form>

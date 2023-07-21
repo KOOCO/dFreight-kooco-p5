@@ -947,8 +947,8 @@ namespace Dolphin.Freight.Migrations
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("BookingNo")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("BookingNo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BookingRemarks")
                         .HasColumnType("nvarchar(max)");
@@ -1166,7 +1166,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ArrivalDate")
+                    b.Property<DateTime?>("ArrivalDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("AwbAcctCarrierId")

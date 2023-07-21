@@ -170,12 +170,12 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// <summary>
         /// 發票金額
         /// </summary>
-        public string InvoiceAmount { get; set; }
+        public decimal? InvoiceAmount { get; set; }
 
         /// <summary>
         /// 餘額金額
         /// </summary>
-        public string BalanceAmount { get; set; }
+        public decimal? BalanceAmount { get; set; }
 
         /// <summary>
         /// 收付款

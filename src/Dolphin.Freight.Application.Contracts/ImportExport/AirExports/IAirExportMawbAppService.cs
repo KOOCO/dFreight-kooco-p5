@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dolphin.Freight.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
             CreateUpdateAirExportMawbDto
         >
     {
-       
+        Task<AirExportDetails> GetAirExportDetailsById(Guid Id);
     }
 }

@@ -1,4 +1,4 @@
-name: 建置 .NET Core 應用程式並部署到 Web 應用程式 dFreight
+name: dFreight CI/CD Running
 on:
   push:
     branches:

@@ -49,7 +49,7 @@
                     //是否顯示	
                     title: l('IsActive'),
                     data: "isActive",
-                    width: "500px", // Set the width of the third column
+                     // Set the width of the third column
                     render: function (data, type, row, meta) {
                         if (row.isActive == true) {
                             return '<input class="form-check-input" type="checkbox" id="showOnMAWBCheckBox" value="" checked disabled>'

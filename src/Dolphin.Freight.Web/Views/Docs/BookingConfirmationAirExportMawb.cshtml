@@ -1,0 +1,621 @@
+﻿
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.BookingConfirmation.BookingConfirmationAirExportMawbModel
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+</style>
+<script>
+    $(document).ready(function () {
+      $('#id_show_container_info').change(function () {
+
+     if($("#id_show_container_info").prop("checked"))
+     {         
+         $('#container-table').show();
+         $('.show_container').attr('rows', 19)
+     }
+     else
+     {
+         $('#container-table').hide();
+         $('.show_container').attr('rows', 28)
+     }
+ });
+    });
+    
+</script>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+    });
+</script>
+<form id="myForm" name="myForm" method="POST">
+   <div style="background-color:black;display: flex;justify-content:center;">
+      <div @(Model.IsPDF? "style=width:100%;background-color:white;height:100%;" : "style=width:900px;background-color:white;height:100%;") id="form" name = "form" class="edit">
+            @if (!Model.IsPDF)
+            {
+                <div class="container" style="background-color:black">
+                   <div style="display:flex;justify-content: center;" class="item-left">
+                      <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+                   </div>
+                </div>
+            }
+
+         @*Start of template*@
+         <div class="wrap oe-booking-confirmation">
+        
+
+        <div class="item-edit topbar">
+            
+
+    
+
+    <div class="topbar-block">
+        Data Source :
+        <select class="select w-160px" onchange="loadDataSource(this)">
+            <option selected="selected" value="loadInitial">Shipment</option>
+            <option value="loadDraft">Last Modified</option>
+            <option value="loadEmptyFromDraft">Load empty fields from last modified</option>
+            
+        </select>
+
+        <script>
+            function loadDataSource(sel) {
+                function genUrl(url, params) {
+                  const pString = Array.from(Object.entries(params)).map(([k, v]) => `${k}=${v}`).join('&');
+                  return `${url}?${pString}`;
+                }
+
+                const basicParam = {};
+
+                Array.from(new URL(window.location.href).searchParams.entries()).forEach(params => {
+                  if (params[0] !== 'action' && params[0] !== 'form_source') {
+                    basicParam[params[0]] = params[1]
+                  }
+                });
+
+                const last_modified_form_layout = '';
+
+                if (sel.value === 'loadInitial') {
+                    window.location.href = genUrl('/reports/air/hbl/booking-confirmation/47123/', basicParam);
+                }
+                else if (sel.value === 'loadDraft') {
+
+                  const params = {
+                    ...basicParam,
+                    action: 'edit',
+                    form_source: 'draft',
+                  };
+
+                  if (last_modified_form_layout) {
+                    params['form_layout'] = last_modified_form_layout
+                  }
+
+                  window.location.href = genUrl('/reports/air/hbl/booking-confirmation/47123/', params);
+                }
+                else if (sel.value === 'loadEmptyFromDraft') {
+
+                  const params = {
+                    ...basicParam,
+                    action: 'edit',
+                    form_source: 'empty-from-draft',
+                  };
+
+                  if (last_modified_form_layout) {
+                    params['form_layout'] = last_modified_form_layout
+                  }
+
+                  window.location.href = genUrl('/reports/air/hbl/booking-confirmation/47123/', params);
+                }
+                
+                else {
+                  throw Error('unknown dataSource value')
+                }
+            }
+        </script>
+    </div>
+
+
+        </div>
+        <div class="header header-normal _padding-0">
+            <table>
+                <tbody><tr>
+                    <td class="w-15 logo">
+                        <img src="/img/hardcore-tech-logo.png">
+                    </td>
+                    <td class="w-48">
+                        <h1 class="auto-font-size office-name"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h1>
+                        <div class="auto-font-size office-des">
+                            <span>
+                                77792 COBB CAPE<br>
+                                TRISTANCHESTER, NE 47478<br>
+                                TEL: 08417606080 FAX: 08417606080<br>
+                                EMAIL: hanjun.lin@dolphin-gp.com
+                                
+                                    <br><strong>Prepared by Hanjun Lin 07-14-2023 11:39 (CST)</strong>
+                                
+                            </span>
+                        </div>
+                    </td>
+                    <td class="w-2">&nbsp;</td>
+                    <td class="w-35 title border-deep-blue">
+                        <div class="text-center">
+                            <h2 class="blue-lg">BOOKING CONFIRMATION</h2>
+                        </div>
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+        <div class="header header-horizontal-logo _padding-0">
+            <table>
+                <tbody><tr>
+                    <td class="w-75">
+                        <h1 class="text-blue-deep">BOOKING CONFIRMATION</h1>
+                        <h2 class="auto-font-size office-name"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h2>
+                        <div class="auto-font-size office-des">
+                            <span>
+                                77792 COBB CAPE TRISTANCHESTER, NE 47478<br>
+                                TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
+                                
+                                    <br><strong>Prepared by Hanjun Lin 07-14-2023 11:39 (CST)</strong>
+                                
+                            </span>
+                        </div>
+                    </td>
+                    <td class="w-2">&nbsp;</td>
+                    <td class="w-22 logo">
+                        <img src="/api/office/logo/1/">
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+        <div class="con">
+            <h1 class="text-16 text-right">
+                
+                    MAWB NO. :
+                
+                <div class="inline-block">
+                    <div class="item-pdf"><span>@Model.MawbNo</span></div>
+                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="BL_NO" value="@Model.MawbNo" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.BL_NO" class="text-16 ng-isolate-scope" id="id_BL_NO"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 3px; left: 198px;"></span><!---->
+
+                    </hc-input-template></div>
+                </div>
+            </h1>
+            <table>
+                <colgroup>
+                    <col class="w-50">
+                    <col class="w-50">
+                </colgroup>
+                <tbody><tr class="border-t">
+                    <td class="td border-r border-b">
+                        <table>
+                            <tbody><tr class="border-b">
+                                <td class="bg-light col-padding-double text-bold">SHIPPER</td>
+                            </tr>
+                            <tr>
+                                <td class="col-padding">
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="shipper_area" cols="40" rows="6" class="text-scroll no-adjustment ng-isolate-scope" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.shipper_area" id="id_shipper_area">
+                                            @Model.ActualShipper
+                                        </textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 3px; left: 328px;"></span><!---->
+                                        
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td class="td border-b">
+                        <table>
+                            <tbody><tr class="border-b">
+                                <td class="bg-light col-padding-double text-bold">BOOKING INFORMATION</td>
+                            </tr>
+                        </tbody></table>
+                        <table class="table-padding">
+                            <colgroup>
+                                <col class="w-32">
+                                <col class="w-1">
+                                <col class="w-68">
+                            </colgroup>
+                            <tbody><tr>
+                                <td>FILE NO.</td>
+                                <td>:</td>
+                                <td>
+                                    <div class="data text-md">
+                                        <div class="item-pdf auto-font-size __width-bkg-info">
+                                            <span>@Model.File_No</span>
+                                        </div>
+                                        <div class="item-edit hover-toggle-icon-text-template">
+                                            <input type="text" name="filing_no" value="@Model.File_No" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.filing_no" id="id_filing_no" class="ng-isolate-scope">
+                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 1px; left: 208px;"></span><!---->
+
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>BOOKING DATE</td>
+                                <td>:</td>
+                                <td>
+                                    <div class="data">
+                                        <div class="item-pdf">@Model.BookingDate</div>
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="booking_date" value="@Model.BookingDate" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.booking_date" id="id_booking_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 1px; left: 208px;"></span><!---->
+
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P/O NO.</td>
+                                <td>:</td>
+                                <td>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="po_num_list" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.po_num_list" id="id_po_num_list">
+                                            @Model.PoNo
+                                        </textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 3px; left: 210px;"></span><!---->
+
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ITN NO.</td>
+                                <td>:</td>
+                                <td>
+                                    <div class="data">
+                                        <div class="item-pdf auto-font-size __width-bkg-info"><span>@Model.ItnNo</span></div>
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="itn_no" value="@Model.ItnNo" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.itn_no" id="id_itn_no" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 1px; left: 208px;"></span><!---->
+
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td border-r border-b">
+                        <table>
+                            <tbody><tr class="border-b">
+                                <td class="bg-light col-padding-double text-bold">CONSIGNEE</td>
+                            </tr>
+                            <tr>
+                                <td class="col-padding">
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="consignee_area" cols="40" rows="4" class="text-scroll no-adjustment ng-isolate-scope" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.consignee_area" id="id_consignee_area">
+                                            @Model.Consignee
+                                        </textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 3px; left: 312px;"></span><!---->
+                                        
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td class="td border-b">
+                        <table>
+                            <tbody><tr class="border-b">
+                                <td class="td w-100 bg-light col-padding-double text-bold">AGENT</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="td w-100 col-padding">
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="hbl_agent_name" value="@Model.Agent" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.hbl_agent_name" id="id_hbl_agent_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 1px; left: 325px;"></span><!---->
+
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="td w-100 bg-light col-padding-double text-bold">NOTIFY</td>
+                            </tr>
+                            <tr>
+                                <td class="td w-100 col-padding">
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="notify_name" value="@Model.Notify" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.notify_name" id="id_notify_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 1px; left: 325px;"></span><!---->
+
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td border-b" colspan="2">
+                        <table>
+                            <tbody><tr class="border-b">
+                                <td class="bg-light col-padding-double text-bold">FLIGHT &amp; ROUTE INFORMATION</td>
+                            </tr>
+                        </tbody></table>
+                        <table class="td table-padding">
+                            <colgroup>
+                                <col class="w-18">
+                                <col class="w-1">
+                                <col class="w-45">
+                                <col class="w-9">
+                                <col class="w-1">
+                                <col class="w-26">
+                            </colgroup>
+                            <tbody><tr>
+                                <td>FLIGHT NO.</td>
+                                <td>:</td>
+                                <td>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="flight_no" value="@Model.Flight_No" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.flight_no" id="id_flight_no" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 1px; left: 289px;"></span><!---->
+
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                                <td>CARRIER</td>
+                                <td>:</td>
+                                <td>
+                                    <div class="data auto-font-size __width-xxs text-md"><span>@Model.Carrier</span></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DEPARTURE</td>
+                                <td>:</td>
+                                <td>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="APOL" value="@Model.Departure" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.APOL" id="id_APOL" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 1px; left: 289px;"></span><!---->
+
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                                <td>ETD</td>
+                                <td>:</td>
+                                <td>
+                                    <div class="data">@Model.ETD</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DESTINATION</td>
+                                <td>:</td>
+                                <td>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="APOD" value="@Model.Destination" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.APOD" id="id_APOD" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 1px; left: 289px;"></span><!---->
+
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                                <td>ETA</td>
+                                <td>:</td>
+                                <td>
+                                    <div class="data">@Model.ETA</div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td border-b" colspan="2">
+                        <table>
+                            <tbody><tr class="border-b">
+                                <td class="bg-light col-padding-double text-bold">CARGO INFORMATION</td>
+                            </tr>
+                        </tbody></table>
+                        <table class="td table-padding">
+                            <colgroup>
+                                <col class="w-11">
+                                <col class="w-1">
+                                <col class="w-48">
+                                <col class="w-11">
+                                <col class="w-1">
+                                <col class="w-28">
+                            </colgroup>
+                            <tbody><tr>
+                                <td>COMMODITY</td>
+                                <td>:</td>
+                                <td colspan="4">
+                                    <div class="data">
+                                        <div class="item-pdf auto-font-size __width-lg"><span></span></div>
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="good_item_description" value="" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.good_item_description" id="id_good_item_description" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 1px; left: 597px;"></span><!---->
+
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>WEIGHT</td>
+                                <td>:</td>
+                                <td>
+                                    <div class="data"></div>
+                                </td>
+                                <td>DANGEROUS</td>
+                                <td>:</td>
+                                <td class="td">
+                                    <div class="data">
+                                        <div class="item-pdf">NO</div>
+                                        <div class="item-edit">
+                                            
+                                                <label class="_margin-b-0" for="id_is_dangerous_0"><input type="radio" name="is_dangerous" value="YES" id="id_is_dangerous_0" required=""> YES&nbsp;&nbsp;</label>
+                                            
+                                                <label class="_margin-b-0" for="id_is_dangerous_1"><input type="radio" name="is_dangerous" value="NO" id="id_is_dangerous_1" required="" checked=""> NO&nbsp;&nbsp;</label>
+                                            
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MEASUREMENT</td>
+                                <td>:</td>
+                                <td>
+                                    <div class="data">@Model.Measurement</div>
+                                </td>
+                                <td>L/C</td>
+                                <td>:</td>
+                                <td>
+                                    <div class="data">
+                                        <div class="item-pdf">YES</div>
+                                        <div class="item-edit">
+                                            
+                                                <label for="id_is_lc_0"><input type="radio" name="is_lc" value="YES" id="id_is_lc_0" required="" checked=""> YES&nbsp;&nbsp;</label>
+                                            
+                                                <label for="id_is_lc_1"><input type="radio" name="is_lc" value="NO" id="id_is_lc_1" required=""> NO&nbsp;&nbsp;</label>
+                                            
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PKG</td>
+                                <td>:</td>
+                                <td>
+                                    <div class="data">@Model.PKG</div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td border-r border-b">
+                        <table>
+                            <tbody><tr class="border-b">
+                                <td class="bg-light col-padding-double text-bold"> DELIVERY TO / PIER</td>
+                            </tr>
+                            <tr>
+                                <td class="col-padding">
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="delivery_to_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.delivery_to_area" id="id_delivery_to_area">
+                                            @Model.Deliver_To
+                                        </textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 3px; left: 328px;"></span><!---->
+                                        
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td class="td border-b">
+                        <table>
+                            <tbody><tr class="border-b">
+                                <td class="bg-light col-padding-double text-bold">CARGO PICK UP</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="col-padding">
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="cargo_pickup_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.cargo_pickup_area" id="id_cargo_pickup_area">
+                                            @Model.CargoPickUp
+                                        </textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 3px; left: 312px;"></span><!---->
+                                        
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="bg-light col-padding-double text-bold">TRUCKER</td>
+                            </tr>
+                            <tr>
+                                <td class="col-padding">
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Trucker" value="@Model.Trucker" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.trucker_name" id="id_trucker_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 1px; left: 325px;"></span><!---->
+
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td" colspan="2">
+
+                        
+                            <table ng-show="!vm.isTermsAndConditionsOverflow()">
+                                <colgroup>
+                                    <col class="w-50">
+                                    <col class="w-50">
+                                </colgroup>
+                                <tbody><tr class="border-b bg-light">
+                                    <td class="col-padding-double text-bold border-r">REMARK</td>
+                                    <td class="col-padding-double text-bold">TERMS &amp; CONDITIONS</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="col-padding border-r">
+                                        <div class="data">
+                                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="booking_remark" cols="40" rows="25" class="text-scroll no-adjustment ng-isolate-scope" template-id="cafc78c9d46b78e375178cd031ba7d90553c8cf559065831fccc3edb02e282d6:Form.booking_remark" id="id_booking_remark"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-qag-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-qag-c260="" class="icon-text-template" style="top: 3px; left: 328px;"></span><!---->
+
+                                            </hc-input-template></div>
+                                            <div class="item-pdf auto-font-size __textarea-xl"><span></span></div>
+                                        </div>
+                                    </td>
+                                    <td class="col-padding td">
+                                        <div class="text-xs" id="terms_and_conditions">
+                                            Note: As a result of the Passage of the Homeland Security Act, U.S. Customs officials are enforcing the requirement that AES information and other shipping documentation be received prior to cargo loading the vessel. Failure to complete may result in your cargo not loading on intended vessel. You can file your SED electronically through the Census website at https://ace.cbp.dhs.gov/ or you can inquire about our AES filing service with a fee. All export/hazardous declaration must be in our possession by the day of the cut off prior to cargo loading, Any fines incurred due to lack of SED filing compliance will be for the amount of shipper/forwarder. All shipments to Hong Kong, China, Taiwan, Australia, if wooden pallet and/or crate are used, it MUST comply with the IPPC certification; or use plastic pallets. Charges and consequences due to non-compliance will be at customer's expense. For I.E.and return cargo, freight MUST be PREPAID. All shipments are subject to U.S. Customs inspection.
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+    </div>
+         <input type="hidden" name="reportid" value="@Model.ReportId" id="id_current_reportid">
+         <input type="hidden" name="MawbNo" value="@Model." id="id_current_MawbNo">
+         <input type="hidden" name="ActualShipper" value="@Model.ActualShipper" id="id_current_ActualShipper">
+         <input type="hidden" name="File_No" value="@Model.File_No" id="id_current_File_No">
+         <input type="hidden" name="BookingDate" value="@Model.BookingDate" id="id_current_BookingDate">
+         <input type="hidden" name="PoNo" value="@Model.PoNo" id="id_current_PoNo">
+         <input type="hidden" name="ItnNo" value="@Model.ItnNo" id="id_current_ItnNo">
+         <input type="hidden" name="Consignee" value="@Model.Consignee" id="id_current_Consignee">
+         <input type="hidden" name="Agent" value="@Model.Agent" id="id_current_Agent">
+         <input type="hidden" name="Notify" value="@Model.Notify" id="id_current_Notify">
+         <input type="hidden" name="Flight_No" value="@Model.Flight_No" id="id_current_Flight_No">
+         <input type="hidden" name="Carrier" value="@Model.Carrier" id="id_current_Carrier">
+         <input type="hidden" name="Departure" value="@Model.Departure" id="id_current_Departure">
+         <input type="hidden" name="ETD" value="@Model.ETD" id="id_current_ETD">
+         <input type="hidden" name="Destination" value="@Model.Destination" id="id_current_Destination">
+         <input type="hidden" name="ETA" value="@Model.ETA" id="id_current_ETA">
+         <input type="hidden" name="Measurement" value="@Model.Measurement" id="id_current_Measurement">
+         <input type="hidden" name="PKG" value="@Model.PKG" id="id_current_PKG">
+         <input type="hidden" name="Deliver_To" value="@Model.Deliver_To" id="id_current_Deliver_To">
+         <input type="hidden" name="CargoPickUp" value="@Model.CargoPickUp" id="id_current_CargoPickUp">
+         <input type="hidden" name="Trucker" value="@Model.Trucker" id="id_current_Trucker">
+      </div>
+   </div>
+</form>

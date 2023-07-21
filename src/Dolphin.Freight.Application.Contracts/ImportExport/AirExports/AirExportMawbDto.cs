@@ -360,5 +360,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string DepatureAirportName { get; set; }
         public string DestinationAirportName { get; set; }
         public string CarrierTPName { get; set; }
+        public string ConsigneeName { get; set; }
+        public string NotifyName { get; set; }
     }
 }

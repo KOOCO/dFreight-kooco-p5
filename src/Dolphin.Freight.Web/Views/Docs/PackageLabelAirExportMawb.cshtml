@@ -1,0 +1,271 @@
+﻿@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.PackageLabel.PackageLabelAirExportMawbIndexViewModel
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+</style>
+<script>
+    $(document).ready(function () {
+      $('#id_show_container_info').change(function () {
+
+     if($("#id_show_container_info").prop("checked"))
+     {         
+         $('#container-table').show();
+         $('.show_container').attr('rows', 19)
+     }
+     else
+     {
+         $('#container-table').hide();
+         $('.show_container').attr('rows', 28)
+     }
+ });
+    });
+    
+</script>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        document.getElementById("reportLink").onclick = function() {
+            debugger;
+            document.getElementById("myForm").submit();
+        }
+    });
+</script>
+<form id="myForm" name="myForm" method="POST">
+   <div style="background-color:black;display: flex;justify-content:center;">
+      <div @(Model.IsPDF? "style=width:100%;background-color:white;height:100%;" : "style=width:900px;background-color:white;height:100%;") id="form" name = "form" class="edit">
+            @if (!Model.IsPDF)
+            {
+                <div class="container" style="background-color:black">
+                   <div style="display:flex;justify-content: center;" class="item-left">
+                      <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+                   </div>
+                </div>
+            }
+
+         @*Start of template*@
+
+        <div class="wrap label-size _padding-0" style="background: #fff;">
+            <div class="item-edit topbar">
+        <div class="topbar-block">
+            Data Source :
+            <select class="select w-160px" onchange="loadDataSource(this)">
+                <option selected="selected" value="loadInitial">Shipment</option>
+                <option value="loadDraft">Last Modified</option>
+                <option value="loadEmptyFromDraft">Load empty fields from last modified</option>
+
+            </select>
+
+            <script>
+                function loadDataSource(sel) {
+                    function genUrl(url, params) {
+                        const pString = Array.from(Object.entries(params)).map(([k, v]) => `${k}=${v}`).join('&');
+                        return `${url}?${pString}`;
+                    }
+
+                    const basicParam = {};
+
+                    Array.from(new URL(window.location.href).searchParams.entries()).forEach(params => {
+                        if (params[0] !== 'action' && params[0] !== 'form_source') {
+                            basicParam[params[0]] = params[1]
+                        }
+                    });
+
+                    const last_modified_form_layout = '';
+
+                    if (sel.value === 'loadInitial') {
+                        window.location.href = genUrl('/reports/air/mbl/package-label/AEX-23030003/', basicParam);
+                    }
+                    else if (sel.value === 'loadDraft') {
+
+                        const params = {
+                            ...basicParam,
+                            action: 'edit',
+                            form_source: 'draft',
+                        };
+
+                        if (last_modified_form_layout) {
+                            params['form_layout'] = last_modified_form_layout
+                        }
+
+                        window.location.href = genUrl('/reports/air/mbl/package-label/AEX-23030003/', params);
+                    }
+                    else if (sel.value === 'loadEmptyFromDraft') {
+
+                        const params = {
+                            ...basicParam,
+                            action: 'edit',
+                            form_source: 'empty-from-draft',
+                        };
+
+                        if (last_modified_form_layout) {
+                            params['form_layout'] = last_modified_form_layout
+                        }
+
+                        window.location.href = genUrl('/reports/air/mbl/package-label/AEX-23030003/', params);
+                    }
+
+                    else {
+                        throw Error('unknown dataSource value')
+                    }
+                }
+            </script>
+        </div>
+    </div>
+                <div class="header ae-package-label _padding-0 ">
+        <table>
+            <tbody>
+                <tr class="border-b">
+                    <td class="col-padding text-center padding-t-sm airline-name" colspan="2">
+                        <div class="auto-font-size __col-airline-name _text-35 text-bold lineheight-nor">
+                            <span>@Model.Carrier</span>
+                            <input type="hidden" name="Carrier" value="@Model.Carrier" id="Carrier" />
+                        </div>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="barcode text-center" colspan="2">
+
+                        <div class="item-edit">
+                            <img src="//fms-static.gofreight.cn/2023-07-11-b4d34b3647/static/freight/img/form/barcode_sample.svg">
+                            <div class="margin-t-0 text-16">
+                                <strong ng-bind="vm.getBarcodeText()" class="ng-binding">6953367933200333</strong>
+                            </div>
+                        </div>
+
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="general-height" colspan="2">
+                        <div class="title">AIR WAYBILL NO</div>
+                        <div class="data">
+                            <div class="item-edit hover-toggle-icon-text-template">
+                                <input type="text" name="Air_Way_Bill_No" value="@Model.Air_Way_Bill_No" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.Air_Way_Bill_No" class="input-xl ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" id="id_MBL_NO">
+                            <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 331px;"></span><!---->
+                            </hc-input-template></div>
+                            <div class="item-pdf auto-font-size __width-lg _text-35">
+                                <h1><span>@Model.Air_Way_Bill_No</span></h1>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="border-b general-height">
+                    <td class="border-r">
+                        <div class="title">DESTINATION</div>
+                        <div class="data">
+                            <div class="item-edit hover-toggle-icon-text-template">
+                                <input type="text" name="Destination" value="@Model.Destination" class="input-xl ng-isolate-scope" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.Destination"  id="id_APOD_code">
+                            <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 150px;"></span><!---->
+                            </hc-input-template></div>
+                            <div class="item-pdf">
+                                <h1 class="auto-font-size __width-sm"><span>@Model.Destination</span></h1>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="title">TOTAL NO OF PIECES</div>
+                        <div class="data">
+                            <div class="item-edit hover-toggle-icon-text-template">
+                                <input type="text" name="Total_No_Of_Pieces" value="@Model.Total_No_Of_Pieces" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.Total_No_Of_Pieces" class="input-xl ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" id="id_total_pieces">
+                            <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 150px;"></span><!---->
+                            </hc-input-template></div>
+                            <div class="item-pdf text-center">
+                                <h1>@Model.Total_No_Of_Pieces</h1>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="border-b">
+            <div class="title">NAME OF CONSIGNEE</div>
+            <div class="data">
+                <div class="item-edit hover-toggle-icon-text-template">
+                    <input type="text" name="Consignee" value="@Model.Consignee" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.Consignee" class="input-lg ng-isolate-scope" id="id_forwarder_name">
+                <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 223px;"></span><!---->
+                </hc-input-template></div>
+            </div>
+        </div>
+        <table>
+            <tbody>
+                <tr class="border-b">
+                    <td class="w-50 border-r">
+                        <div class="title">ORIGIN</div>
+                        <div class="data">
+                            <div class="item-edit hover-toggle-icon-text-template">
+                                <input type="text" name="Origin" value="@Model.Origin" template-id="de1d981c76a329301f91e7355d85b47fad63be8cce0041ea0172bed63a06f7c2:AePackageLabelFormDefault.Origin" class="input-lg ng-isolate-scope" id="id_APOL_code">
+                            <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kue-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kue-c260="" class="icon-text-template" style="top: 3px; left: 78px;"></span><!---->
+                            </hc-input-template></div>
+                        </div>
+                    </td>
+                    <td class="w-50">
+                        <div class="title">AIR WAYBILL PC.</div>
+                        <div class="data">
+                            <div class="item-pdf">
+                                <h2>
+                                    @Model.Air_Way_Bill_Pc
+                                </h2>
+                            </div>
+                            <h2 class="auto-font-size __width-sm">
+                                <input type="checkbox" name="show_piece_no" class="item-edit td ng-untouched ng-valid ng-dirty ng-not-empty" id="id_show_piece_no">
+                                <span>1</span>
+                            </h2>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="border-t">
+            <div class="item-pdf __width-lg auto-font-size margin-l-xs">
+                <span>&nbsp;</span>
+            </div>
+            <div class="item-edit margin-t margin-l-xs hover-toggle-icon-text-template">
+                <input type="text" name="memo" placeholder="Input more description here" id="id_memo" class="ng-isolate-scope">
+            </div>
+        </div>
+    </div>
+        </div>
+      </div>
+   </div>
+</form>

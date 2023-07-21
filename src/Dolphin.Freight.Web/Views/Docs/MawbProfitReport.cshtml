@@ -1,0 +1,332 @@
+﻿
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.Reports.ProfitReportViewModel
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+
+    .w-10, .w-20, .w-100, .text-right, .text-center, .auto-font-size, textarea {
+        font-size:10px;
+    }
+
+    table{
+        font-size: small;
+    }
+</style>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+    });
+</script>
+<form id="myForm" name="myForm" method="POST">
+    <div style="background-color:black;display: flex;justify-content:center;height:100%">
+    <div @(Model.IsPDF? "style=width:100%;background-color:white;height:100%;" : "style=width:900px;background-color:white;height:100%;") id="form" name = "form" class="edit">
+            @if (!Model.IsPDF)
+            {
+                <div class="container" style="background-color:black">    
+                    <div style="display:flex;justify-content: center;" class="item-left">
+                        <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+                    </div>
+                </div>
+            }
+            
+        
+         <div class="wrap">
+            <div class="header">
+                <div class="text-center">
+                    <h4 class="margin-0"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">PROFIT BY MAWB</font></font></h4>
+                </div>
+            </div>
+            <div>
+                <table class="text-sm table-padding single-currency">
+                    <tbody>
+                        <tr>
+                            <td style="width: 10%"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">POST DATE</font></font></td>
+                            <td style="width: 10%">@DateTime.Now.ToShortDateString()</td>
+                            <td style="width: 35%"></td>
+                            <td style="width: 15%"></td>
+                            <td style="width: 10%"></td>
+                            <td style="width: 20%; text-align: center">Air export</td>
+                        </tr>
+                        <tr style="border-bottom: 2pt solid #000">
+                            <td style="width: 10%"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CURRENCY</font></font></td>
+                            <td style="width: 10%">USD</td>
+                            <td style="width: 35%"></td>
+                            <td style="width: 15%">PRINT OPTION</td>
+                            <td style="width: 10%">SUMMARY</td>
+                            <td style="width: 20%; text-align: center">@DateTime.Now.ToShortDateString()</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="td text-bold table-padding">
+                    <tbody>
+                        <tr class="text-sea text-12">
+                            <td class="w-19 col-bg-grey-light padding-t-xs">SALES :</td>
+                            <td class="w-35 col-bg-grey-light padding-t-xs">@Model.Sales</td>
+                            <td class="w-15 col-bg-grey-light padding-t-xs">CUSTOMER :</td>
+                            <td class="w-33 col-bg-grey-light padding-t-xs">@Model.Customer</td>
+                        </tr>
+                        <tr>
+                            <td class="w-19" style="width: 20% !important">CONTAINER COUNT :</td>
+                            <td class="w-35"></td>
+
+                            <td class="w-12 col-padding">P.O.R:</td>
+                            <td class="w-38 col-padding"></td>
+                        </tr>
+                        <tr>
+                            <td>AGENT NAME:</td>
+                            <td>@Model.Consignee <input type="hidden" asp-for="@Model.Consignee" /></td>
+                            <td>P.O.L / ETD:</td>
+                            <td>@Model.PolEtd <input type="hidden" asp-for="@Model.PolEtd" /></td>
+                        </tr>
+                        <tr>
+                            <td>D.E.L :</td>
+                            <td></td>
+                            <td>P.O.D / ETA :</td>
+                            <td>@Model.PodEtd <input type="hidden" asp-for="@Model.PodEtd" /></td>
+                        </tr>
+                        <tr>
+                            <td>OP :</td>
+                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Operator <input type="hidden" asp-for="@Model.Operator" /></font></font></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="table-valign-top">
+                    <colgroup>
+                        <col class="w-52">
+                        <col class="w-48">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <table class="table-padding">
+                                    <colgroup>
+                                        <col class="w-33">
+                                        <col class="w-67">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr class="text-grey text-light">
+                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">FILE NO :</font></font></td>
+                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.FileNo
+                                            <input type="hidden" asp-for="@Model.FileNo" />
+                                            </font></font></td>
+                                        </tr>
+                                        <tr class="text-grey text-light">
+                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">MAWB NO. :</font></font></td>
+                                            <td>@Model.MawbNo
+                                            <input type="hidden" asp-for="@Model.MawbNo" />
+                                            </td>
+                                        </tr>
+                                        <tr class="text-grey text-light">
+                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">WEIGHT :</font></font></td>
+                                            <td>@Model.ChargableWeight
+                                            <input type="hidden" asp-for="@Model.ChargableWeight" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td>
+                                <table class="table-padding">
+                                    <colgroup>
+                                        <col class="w-31">
+                                        <col class="w-69">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr class="text-grey text-light">
+                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">SHIP MODE:</font></font></td>
+                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"></font></font></td>
+                                        </tr>
+                                        <tr class="text-grey text-light">
+                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">SERVICE TERM :</font></font></td>
+                                            <td class="col-padding"></td>
+                                        </tr>
+                                        <tr class="text-grey text-light">
+                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">MEASUREMENT :</font></font></td>
+                                            <td class="col-padding">@Model.Measurement <input type="hidden" asp-for="@Model.Measurement" /></td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="item-edit">
+                </div>
+
+
+                <table class="table-padding single-currency">
+                    <colgroup>
+                        <col class="w-5"><!-- type -->
+                        <col class="w-25"><!-- BL No. -->
+                        <col class="w-20"><!-- Company -->
+                        <col class="w-10"><!-- Invoice Post Date -->
+                        <col class="w-10"><!-- AR AMT -->
+                        <col class="w-10"><!-- AP AMT -->
+                        <col class="w-10"><!-- DC AMT -->
+                        <col class="w-10"><!-- PMT / Balance -->
+                    </colgroup>
+                    <tbody><tr class="border title-sm text-bold bg-grey">
+                        <td class="text-center" rowspan="2">TYPE</td>
+                        <td class="text-left border-b">AWB NO</td>
+                        <td class="text-left" rowspan="2">COMPANY</td>
+                        <td class="text-center" rowspan="2">INV<br>POST DATE</td>
+                        <td class="text-right" rowspan="2">A/R AMOUNT</td>
+                        <td class="text-right" rowspan="2">A/P AMOUNT</td>
+                        <td class="text-right" rowspan="2">D/C AMOUNT</td>
+                        <td class="text-right border-b">PMT</td>
+                    </tr>
+                    <tr class="border title-sm text-bold bg-grey">
+                        <td class="text-left">INV NO.</td>
+                        <td class="text-right">Balance</td>
+                    </tr>
+                    <input type="hidden" asp-for="@Model.InvoicesJson" />
+                        @foreach (var invoice in Model.Invoices)
+                        {
+                         <tr>
+                            <td class="td text-center">H</td>
+                            <td class="td">
+                                <div class="auto-font-size __width-bl-no"> <span> @Model.MawbNo</span></div>
+                                <div class="auto-font-size __width-invoice">
+                                    <span class="item-edit">
+                                        <a href="/Accounting/Invoice?MethodType=3&MawbId=@invoice.MawbId&Hid=&InvoiceType=@invoice.InvoiceType&InvoiceId=@invoice.Id" target="_blank">@invoice.InvoiceNo</a>
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="td" rowspan="1">@invoice.InvoiceCompanyName</td>
+                            <td class="td text-center">@invoice.InvoiceDate?.ToShortDateString()</td>
+                            
+                            <td class="td text-center"><div class="auto-font-size __width-count">
+                                <span>@(invoice.InvoiceType == 0 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)</span></div></td>
+                            <td class="td text-center"><div class="auto-font-size __width-count">
+                                <span>@(invoice.InvoiceType == 2 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)</span></div></td>
+                            <td class="td text-center"><div class="auto-font-size __width-count"><span>
+                                @(invoice.InvoiceType == 1 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)</span></div></td>
+                            <td class="td text-right">
+                                N
+                                <div class="auto-font-size __width-balance"><span>@invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00")</span></div>
+                            </td>
+                        </tr>
+                       }
+                       <tr>
+                           <td colspan="2"></td>
+                           <td colspan="4">Shipper: @Model.Shipper <input type="hidden" asp-asp-for="@Model.Shipper" /></td>
+                           <td colspan="2" class="text-right"></td>
+                       </tr>
+                    </tbody>
+                </table>
+
+                <table class="text-bold border bg-grey table-padding single-currency">
+                    <tbody>
+                        <tr>
+                            <td class="w-60"></td>
+                            <td class="w-14 text-right">TOTAL</td>
+                            <td class="w-7 text-right">@Model.ARTotal.ToString("0.00") <input type="hidden" asp-for="@Model.ARTotal" /></td>
+                            <td class="w-7 text-right">@Model.APTotal.ToString("0.00") <input type="hidden" asp-for="@Model.APTotal" /></td>
+                            <td class="w-7 text-right">@Model.DCTotal.ToString("0.00") <input type="hidden" asp-for="@Model.DCTotal" /></td>
+                            <td class="w-5"></td>
+                        </tr>
+                        <tr class="border-t">
+                            <td>&nbsp;</td>
+                            <td class="text-right">PROFIT</td>
+                            <td class="text-right">USD</td>
+                            <td class="text-right" colspan="2">
+                                <div class="auto-font-size __width-total-lg">
+                                    <span>@Model.Total.ToString("0.00") <input type="hidden" asp-for="@Model.Total" /></span>
+                                </div>
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr class="border-t">
+                            <td>&nbsp;</td>
+                            <td class="text-right">BALANCE</td>
+                            <td class="text-right"></td>
+                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Total.ToString("0.00")</font></font></span></div></td>
+                            <td>&nbsp;</td>
+                        </tr>
+
+                        <tr class="border-t">
+                        <td></td>
+                        <td class="text-right">
+                            <span class="item-edit">
+                                <input type="checkbox" name="is_show_profit_percentage" checked="">
+                            </span> PROFIT PERCENTAGE
+                        </td>
+                        <td class="text-right">@Convert.ToDouble((Model.Total * 100) / Model.APTotal).ToString("0.00")%</td>
+                        <td colspan="3"></td>
+                    </tr>
+                    
+
+                    
+                    <tr class="border-t">
+                        <td>&nbsp;</td>
+                        <td class="text-right">
+                            <span class="item-edit">
+                                <input type="checkbox" name="is_show_profit_margin" checked="">
+                            </span>
+                            PROFIT MARGIN
+                        </td>
+                        <td class="text-right"></td>
+                        <td colspan="3"></td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</form>

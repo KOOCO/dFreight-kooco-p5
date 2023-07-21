@@ -382,3 +382,40 @@ function setFilteredDropdown() {
         })
     }, 400)
 }
+function DangerousGoods(url) {
+    myWindow = window.open(url, "Dangerous Goods", 'width=1200,height=800')
+    myWindow.focus()
+}
+function getPickupDeliveryOrderAirExportHawb(url) {
+    myWindow = window.open(url, 'Empty', 'width=1200,height=800');
+    myWindow.focus()
+}
+
+function DocumentPackage(url) {
+    myWindow = window.open(url, "Document Package", 'width=1200,height=800');
+    myWindow.focus();
+}
+function getPreAlertAirExportHawb(url) {
+    myWindow = window.open(url, 'Empty', 'width=1200,height=800');
+    myWindow.focus()
+}
+function getCommercialInvoiceAirExportHawb(url) {
+    myWindow = window.open(url, 'Empty', 'width=1200,height=800');
+    myWindow.focus()
+}
+function getPackageLabelAirExportMawb(url) {
+    myWindow = window.open(url, 'Empty', 'width=1200,height=800');
+    myWindow.focus()
+}
+function getBookingConfirmationAirExportMawb(url) {
+    myWindow = window.open(url, 'Empty', 'width=1200,height=800');
+    myWindow.focus()
+}
+function getAllHawbPackageLabelAirExportMawb(url) {
+    myWindow = window.open(url, 'Empty', 'width=1200,height=800');
+    myWindow.focus();
+}
+function OpenWindow(url) {
+    myWindow = window.open(url, 'Empty', 'width=1200,height=800');
+    myWindow.focus();
+}

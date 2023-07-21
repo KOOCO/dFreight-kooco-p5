@@ -1,0 +1,992 @@
+﻿@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Common.AirExportDetails
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+
+    .w-10, .w-20, .w-100, .text-right, .text-center, .auto-font-size, textarea {
+        font-size:10px;
+    }
+
+    table{
+        font-size: small;
+    }
+
+    .slash-red-left {
+        background: transparent url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC0AAAAtCAYAAAA6GuKaAAAASElEQVR42u3OMQ0AIAwAwTphQSwOumOUFhmQ++T3iz1m9ite6oL7Aw4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4O/ic8C1dk0b2irRpAAAAAAElFTkSuQmCC') right top no-repeat !important;
+    }
+
+    .slash-red-right{
+        background: transparent url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC0AAAAtAgMAAABHdAoJAAAADFBMVEUAAACiHySiHySiHyTTQ0hqAAAAA3RSTlMAiJdnR9B6AAAAI0lEQVR4AWNAAMYGJA67AxJHlgEJlCBruTBytYxqYZiAxAYAAo4ShDHIvRQAAAAASUVORK5CYII=') left top no-repeat !important;
+    }
+
+    .edit .slash-md {
+    background-size: 26px !important;
+}
+
+.edit .slash-sm {
+    background-size: 18px !important;
+}
+
+.edit .slash-xs {
+    background-size: 15px !important;
+}
+
+.btn-sm, .btn-xs {
+    padding: 4px 10px 5px 10px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+</style>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+
+        if($('[name="ArrivalDate"]').val() == '1/1/0001')
+        {
+            $('#ArrivalDate').val('');
+        }
+    });
+</script>
+<form id="myForm" name="myForm" method="POST">
+    <input type="hidden" asp-for="@Model.MawbNo" />
+    <input type="hidden" asp-for="@Model.DepartureName" />
+    <input type="hidden" name="AirWayBillNo" /> 
+    <input type="hidden" name="@Model.NVD" />
+    <input type="hidden" name="@Model.NCV" />
+    <div id="main" class="edit">
+    @if (!Model.IsPDF)
+    {
+        <div class="nav">
+           <ul>
+        
+        <li>
+            <button type="button" style="width:120px; color:white" id="reportLink"><i class="fa fa-print">儲存PDF或列印</i></button>
+        </li>
+       
+    
+    <li>
+        
+      <select disabled>
+            <option value="en">English</option>
+            <option value="zh-hans">简体中文 (Simplified Chinese)</option>
+            <option value="zh-hant">繁體中文 (Traditional Chinese)</option>
+    </select>
+        
+    </li><!-- end ngIf: vm.canSelectLanguage -->
+
+    </ul>
+
+        <div class="view-setting">
+            <div class="btn-group">
+                <button class="button btn btn-sm" title="Zoom Out" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"><i class="fa fa-search-minus"></i>
+                </button>
+                <button class="button btn btn-sm" title="Zoom In" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"><i class="fa fa-search-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+            
+            <div id="form-wrap" class="wrap  border-red" ng-class="vm.borderClass">
+                @if (!Model.IsPDF)
+                {
+                    <div class="item-edit topbar">
+                    <div class="topbar-block">
+                        Data Source :
+                        <select disabled class="select w-160px" onchange="loadDataSource(this)">
+                            <option selected="selected" value="loadInitial">Shipment</option>
+                            <option value="loadDraft">Last Modified</option>
+                            <option value="loadEmptyFromDraft">Load empty fields from last modified</option>
+            
+                        </select>
+                    </div>
+                    <div class="topbar-block">
+                       For : <select disabled name="form_type" class="select w-160px ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="vm.formType" ng-change="vm.onFormTypeChanged()" id="id_form_type">
+                      <option value="ISSUING CARRIER">ISSUING CARRIER</option>
+
+                      <option value="CONSIGNEE" selected="">CONSIGNEE</option>
+
+                      <option value="SHIPPER">SHIPPER</option>
+
+                      <option value="DELIVERY RECEIPT">DELIVERY RECEIPT</option>
+
+                      <option value="EXTRA COPY">EXTRA COPY</option>
+
+                    </select>
+                    <div class="margin-t" data-toggle="tooltip" data-placement="bottom" data-original-title="Generate Document Package">
+                         Doc. Package :
+                        <select disabled name="doc_package_type" class="select w-160px ng-untouched ng-valid ng-dirty ng-not-empty" ng-model="vm.docPackageType" hc-user-preference="ae_awb_print_doc_package_type_choice" id="id_doc_package_type">
+                          <option value="1">N/A</option>
+
+                          <option value="2">All parties (5 copies)</option>
+
+                          <option value="3">All parties + 1 more extra copy (6 copies)</option>
+
+                          <option value="4">All parties + 2 more extra copy + 1 agent (8 copies)</option>
+
+                        </select>
+                    </div>
+                </div>
+                    <div class="topbar-block"><input type="checkbox" name="show_amount" disabled> Show Amount</div>
+                    <div class="topbar-block"><input type="checkbox" name="print_iata_terms" disabled> Print IATA Terms</div>
+                </div>
+                }
+                
+                <div class="con air-awb">
+                    <table class="text-16 text-bold">
+                        <tbody><tr>
+                            <td class="w-50">
+                                <table>
+                                    <tbody><tr>
+                                        <td class="w-20 border-r text-center">@Model.MawbNo?.Split('-')[0]</td>
+                                        <td class="w-20 border-r text-center">@Model.DepartureName?.Split('/')[0]</td>
+                                        <td class="w-60 padding-l-xs">@(Model.MawbNo?.Split('-').Length > 1? Model.MawbNo?.Split("-")[1]: Model.MawbNo?.Split("-")[0])</td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                            <td class="w-50">
+                                <table>
+                                    <tbody><tr>
+                                        <td class="w-50">&nbsp;</td>
+                                        <td class="w-50">@Model.AirWayBillNo </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                        </tr>
+                    </tbody></table>
+                    <table class="border-t border-l border-r">
+                        <tbody><tr>
+                            <td class="td border-r border-b w-50">
+                                <table class="text-var table-padding">
+                                    <tbody><tr>
+                                        <td class="w-50 border-r">
+                                            <div class="title-oblique">Shipper's Name and Address</div>
+                                        </td>
+                                        <td class="w-50 text-center border-b td">
+                                            <div class="title-oblique padding-b-sm">Shipper's Account Number</div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                                <div class="data">
+                                    <div class="item-edit"><textarea name="ShippperName" cols="40" rows="5">@Model.ShippperName</textarea></div>
+                                </div>
+                            </td>
+                            <td class="td w-50 border-b">
+                                <table class="table-padding">
+                                    <tbody><tr>
+                                        <td class="w-30 ">
+                                            <div class="title text-var">Not Negotiable</div>
+                                            <h2 class="text-var text-16">Air Waybill</h2>
+                                            <div class="title text-var">Issued by</div>
+                                        </td>
+                                        <td class="w-70">
+                                            <div class="margin-t-sm">
+                                                <div class="item-edit"><textarea name="CarrierName" cols="40" rows="2">@Model.CarrierName</textarea>
+                                                    <span style="top: 3px; left: 228px;"></span>
+                                                </div>
+                                            </div>
+                                            <div class="item-edit">
+									            <textarea name="AirWayBillNo" cols="40" rows="6" style="margin-top:5px">@Model.AirWayBillNo</textarea>
+								            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="text-sm text-var border-t">Copies 1.2 and 3 of this Air Waybill are originals and have the some validity.</td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td border-r border-b w-50">
+                                <table class="text-var table-padding">
+                                    <tbody><tr>
+                                        <td class="w-50 border-r">
+                                            <div class="title-oblique">Consignee's Name and Address</div>
+                                        </td>
+                                        <td class="w-50 text-center bg-light border-b td">
+                                            <div class="title-oblique padding-b-sm">Consignee's Account Number</div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                                <div class="data">
+                                    <div class="item-edit"><textarea name="ConsigneeName" cols="40" rows="5">@Model.ConsigneeName</textarea><span style="top: 5px; left: 331px;"></span></div>
+                                </div>
+                            </td>
+                            <td class="w-50 border-b">
+                                <div class="text-sm col-padding text-var">
+                                    It is agreed that the goods described herein are accepted in apparent good order and condition (except as noted) for carriage SUBJECT TO THE CONDITIONS OF CONTRACT ON THE REVERSE HEREOF. ALL GOODS MAY BE CARRIED BY ANY OTHER MEANS INCLUDING ROAD OR ANY OTHER CARRIER UNLESS SPECIFIC CONTRARY INSTRUCTIONS ARE GIVEN HEREON BY THE SHIPPER, AND SHIPPER AGREES THAT THE SHIPMENT MAY BE CARRIED VIA INTERMEDIATE STOPPING PLACES WHICH THE CARRIER DEEMS APPROPRIATE. THE SHIPPER'S ATTENTION IS DRAWN TO THE NOTICE CONCERNING CARRIER'S LIMITITATION OF LIABILITY. Shipper may increase such limitation of liability by declaring a higher value for carriage and paying a supplemental charge if required.
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="border-l border-r">
+                            <td class="td border-r border-b">
+                                <div class="title text-var col-padding">Issuing Carrier's Agent Name and City</div>
+                                <div class="data">
+                                    <div class="item-edit"><textarea name="IssuingCarrierName"> @Model.IssuingCarrierName</textarea></div>
+                                </div>
+                                <table>
+                                    <tbody><tr class="border-b">
+                                        <td colspan="2">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-50 border-r">
+                                            <div class="title text-var">Agent's IATA Code</div>
+                                            <div class="data">
+                                                <div class="item-edit"><input type="text" name="IATA" value="@Model.IATA"></div>
+                                            </div>
+                                        </td>
+                                        <td class="w-50">
+                                            <div class="title text-var">Account No.</div>
+                                            <div class="data">
+                                                <div class="item-edit"><input type="text" name="account_no"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                            <td class="td border-b">
+                        <div class="margin-t-1  border-b ">
+                            <div class="title text-var inline-block">Accounting Information</div>
+                            <div class="item-edit pull-right text-var col-padding-t">
+                                Load from:
+
+                                
+                                    <label class="text-10 margin-r-xs _margin-b-0">
+                                        <input type="radio" name="accounting_information_choice" value="Notify" checked>
+                                        Notify
+                                    </label>
+                                
+                                    <label class="text-10 margin-r-xs _margin-b-0">
+                                        <input type="radio" name="accounting_information_choice" value="Consignee">
+                                        Consignee
+                                    </label>
+                                
+                            </div>
+                            <div class="data">
+                                <div class="item-edit hover-toggle-icon-text-template">
+                                    <textarea name="NotifyName" cols="40" rows="5" class="text-scroll" >@Model.NotifyName</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                            <div class="title text-var">Carrier's Spot No.</div>
+                            <div class="data">
+                                <div class="item-pdf auto-font-size __width-lg">
+                                    <span>07102104</span>
+                                </div>
+                                <div class="item-edit hover-toggle-icon-text-template"  style="display:flex">
+                                    <input type="checkbox" name="show_carrier_spot_no" hc-user-preference="ae_mawb_print_show_carrier_spot_no" ng-model="vm.isShowCarrierSpotNo" id="id_show_carrier_spot_no" class="ng-untouched ng-valid ng-empty ng-dirty">
+                                    <input type="text" name="carrier_spot_no" value="07102104">
+                                </div>
+                            </div>
+                        
+                    </td>
+                        </tr>
+                        <tr>
+                            <td class="w-50 td border-b border-r">
+                                <div class="title text-var">Airport of Departure(addr. of First Carrier) and Requested Routing</div>
+                                <div class="data">
+                                    <div class="item-edit"><input type="text" name="DepartureName" value="@Model.DepartureName"></div>
+                                </div>
+                            </td>
+                            <td class="w-50 td border-b">
+                                <table class="table-padding">
+                                    <tbody><tr>
+                                        <td class="w-30 td slash-sm  slash-red-left" ng-class="vm.classSlashL">
+                                            <div class="title-oblique text-var">File No.</div>
+                                         </td>
+                                        <td class="w-40 td border-b">
+                                            <div class="title-oblique text-center text-var">Optional Shipping Information</div>
+                                        </td>
+                                        <td class="w-25 td slash-sm  slash-red-right" ng-class="vm.classSlashR">
+                                            <div class="title-oblique text-var"></div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                                <table>
+                                    <tbody><tr>
+                                        <td class="border-r w-30 td">
+                                            <div class="data">
+                                                <div class="item-edit"><input type="text" name="DocNumber" value="@Model.DocNumber"></div>
+                                            </div>
+                                        </td>
+                                        <td class="border-r w-40 td">
+                                            <div class="data">&nbsp;</div>
+                                        </td>
+                                        <td class="w-25 td">
+                                            <div class="data">&nbsp;</div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="w-50 td border-b border-r">
+                                <table class="lineheight-nor">
+                                    <tbody><tr>
+                                        <td class="w-12 border-r text-center td">
+                                            <div class="title text-var">To</div>
+                                            <div class="item-edit"><input type="text" name="DestinationName" value="@Model.DestinationName" style="top: 3px; left: 23px;"></div>
+                                        </td>
+                                        <td class="w-48 border-r td">
+                                            <table class="table-padding">
+                                                <tbody><tr>
+                                                    <td class="w-45 td slash-md  slash-red-left" ng-class="vm.classSlashL">
+                                                        <div class="title-oblique text-var">By First<br>Carrier</div>
+                                                    </td>
+                                                    <td class="w-40 td border-b">
+                                                        <div class="title-oblique text-center text-var">Routing and Destination</div>
+                                                    </td>
+                                                    <td class="w-15 td slash-md  slash-red-right">
+                                                        &nbsp;
+                                                    </td>
+                                                </tr>
+                                            </tbody></table>
+                                            <div class="col-padding-double">
+                                                <div class="item-edit"><input type="text" name="BillToName" value="@Model.BillToName" style="top: 3px; left: 143px;">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="w-10 border-r text-center td">
+                                            <div class="title text-var padding-b-xs">to</div>
+                                            <div class="item-edit"><input type="text" name="routing_to_1"></div>
+                                        </td>
+                                        <td class="w-10 border-r text-center td">
+                                            <div class="title text-var padding-b-xs">by</div>
+                                            <div class="item-edit"><input type="text" name="routing_by_1"></div>
+                                        </td>
+                                        <td class="w-10 border-r text-center td">
+                                            <div class="title text-var padding-b-xs">to</div>
+                                            <div class="item-edit"><input type="text" name="routing_to_2"></div>
+                                        </td>
+                                        <td class="w-10 text-center td">
+                                            <div class="title text-var padding-b-xs">by</div>
+                                            <div class="item-edit"><input type="text" name="routing_by_2"></div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                            <td class="w-50 border-b">
+                                <table class="lineheight-nor">
+                                    <tbody><tr class="text-var title-oblique col-padding text-center">
+                                        <td class="w-12 border-r">Currency</td>
+                                        <td class="w-8 border-b border-r"><small>CHGS Code</small></td>
+                                        <td class="w-15 border-b border-r" colspan="2">WT/VAL</td>
+                                        <td class="w-15 border-b border-r" colspan="2">Other</td>
+                                        <td class="w-25 border-b border-r">Declared value for Carriage</td>
+                                        <td class="w-25 border-b">Declared value for Customs</td>
+                                    </tr>
+                                </tbody></table>
+                                <table class="lineheight-nor">
+                                    <tbody><tr class="text-center">
+                                        <td class="w-12 border-r">
+                                            <div class="item-edit"><input type="text" name="currency" value="USD"></div>
+                                        </td>
+                                        <td class="w-8 border-r">
+                                            <div class="item-edit"><input type="text" name="charges_code" value="PP"></div>
+                                            <div class="item-pdf">PP</div>
+                                        </td>
+                                        <td class="w-7 border-r">
+                                            <div class="title-oblique text-var"><small>PPD</small></div>
+                                            <div class="item-edit"><input type="checkbox" name="weight_valuation_charge_prepaid" id="id_weight_valuation_charge_prepaid" checked=""></div>
+                                            <div class="item-pdf">X</div>
+                                        </td>
+                                        <td class="w-8 border-r">
+                                            <div class="title-oblique text-var"><small>COLL</small></div>
+                                            <div class="item-edit"><input type="checkbox" name="weight_valuation_charge_collect" id="id_weight_valuation_charge_collect"></div>
+                                            <div class="item-pdf">&nbsp;</div>
+                                        </td>
+                                        <td class="w-7 border-r">
+                                            <div class="title-oblique text-var"><small>PPD</small></div>
+                                            <div class="item-edit"><input type="checkbox" name="other_charges_prepaid" id="id_other_charges_prepaid" checked=""></div>
+                                            <div class="item-pdf">X</div>
+                                        </td>
+                                        <td class="w-8 border-r">
+                                            <div class="title-oblique text-var"><small>COLL</small></div>
+                                            <div class="item-edit"><input type="checkbox" name="other_charges_collect" id="id_other_charges_collect"></div>
+                                            <div class="item-pdf">&nbsp;</div>
+                                        </td>
+                                        <td class="w-25 border-r">@Model.NVD</td>
+                                        <td class="w-25">@Model.NCV</td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="w-50 border-b border-r">
+                                <table>
+                                    <tbody><tr>
+                                        <td class="w-60 border-r text-center">
+                                            <div class="title-oblique text-var">Airport of Destination</div>
+                                            <div class="item-edit"><input type="text" name="DestinationName" value="@Model.DestinationName"></div>
+                                        </td>
+                                        <td class="w-40">
+                                            <table class="table-padding">
+                                                <tbody><tr>
+                                                    <td class="w-15 slash-sm  slash-red-left" ng-class="vm.classSlashL">&nbsp;</td>
+                                                    <td class="w-70 border-b"><div class="title-oblique text-center text-var">Requested Flight/Date</div></td>
+                                                    <td class="w-15 slash-sm  slash-red-right" ng-class="vm.classSlashR">&nbsp;</td>
+                                                </tr>
+                                            </tbody></table>
+                                            <table class="table-padding">
+                                                <tbody><tr>
+                                                    <td class="w-50 text-center border-r">
+                                                        <div class="item-edit"><input type="text" id="ArrivalDate" name="ArrivalDate" value="@Model.ArrivalDate" /></div>
+                                                    </td>
+                                                    <td class="w-50 text-center">
+                                                        <div class="item-edit"><input type="text" name="flight_no_last"></div>
+                                                    </td>
+                                                </tr>
+                                            </tbody></table>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                            <td class="w-50 td border-b">
+                                <table>
+                                    <tbody><tr>
+                                        <td class="border-r w-20 text-center">
+                                            <div class="title-oblique text-var lineheight-nor">Amount of Insurance</div>
+                                            <div class="item-edit"><input type="text" name="insurance" value="XXX"></div>
+                                            <div class="item-pdf auto-font-size __width-amount"><span>XXX</span></div>
+                                        </td>
+                                        <td class="w-80 text-var col-padding lineheight-nor">
+                                            INSURANCE - If carrier offers insurance, and such insurance is request in accordance with the conditions thereof, indicate amount to be insured in fiqures in box marked 'Amount of Insurance'.
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="w-50 border-l border-r" colspan="2">
+                                <table>
+                                    <colgroup>
+                                        <col class="w-80">
+                                        <col class="w-20">
+                                    </colgroup>
+                                    <tbody><tr>
+                                        <td colspan="2">
+                                            <div class="title text-var">Handling Information</div>
+                                            <div class="data">
+                                                <div class="item-edit">
+                                                    <textarea name="HandlingInformation" cols="40" rows="2">@Model.HandlingInformation</textarea>
+                                                    <div class="hover-toggle-icon-text-template">
+                                                    <span class="margin-r-xs">
+                                                        <input type="checkbox" name="show_dg_declaration" class="pull-left" id="id_show_dg_declaration">
+                                                    </span>
+                                                    <textarea name="dg_declaration" cols="40" rows="5" class="w-96 text-scroll no-adjustment ng-isolate-scope" template-id="b30f136eac6668ca1dd12864409ec2ae288dcf8be3d6a03ca0b77f206bb4e7f2:Form.dg_declaration" id="id_dg_declaration">THIS PACKAGE (333.0 CARTON(S)) CONTAINS LITHIUM ION BATTERIES.THIS PACKAGE MUST BE HANDLED WITH CARE. A FLAMMABILITY HAZARD EXISTS IF THE PACKAGE IS DAMAGED. IF THIS PACKAGE IS DAMAGED IN TRANSPORTATION, IT MUST NOT BE LOADED UNTIL THE CONDITION OF THE CONTENTS CAN BE VERIFIED.THE BATTERIES CONTAINED IN THIS PACKAGE MUST BE INSPECTED FOR DAMAGE AND MAY ONLY BE REPACKED IF THEY ARE INTACT AND PROTECTED AGAINST SHORT CIRCUITS. FOR MORE INFORMATION ABOUT THE BATTERIES CONTAINED IN THIS PACKAGE, CALL THE FOLLOWING TELEPHONE #: 08417606080</textarea>
+                                               </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-80">
+                                    
+                                            <table class="col-bg-even">
+                                                <tbody><tr>
+                                                    <td class="w-5 text-center">
+                                                        <div class="item-edit"><input type="checkbox" name="export_administration_regulations" id="id_export_administration_regulations" checked=""></div>
+                                                    </td>
+                                                    <td class="w-70 text-sm text-var col-padding">
+                                                        These commodities, technology or software were exported from the United States in accordance with the Export Administration Regulations. Ultimate Destination
+                                                        <span class="item-edit"><input type="text" name="DestinationCountry" class="w-auto _bg-white ng-isolate-scope" value="@Model.DestinationCountry"></span>
+                                                    </td>
+                                                    <td class="w-5">&nbsp;</td>
+                                                    <td class="w-20 text-var text-sm">Diversion contrary to U.S. law prohibited.</td>
+                                                </tr>
+                                            </tbody></table>
+                                    
+                                        </td>
+                                        <td class="w-20 text-center border-t border-l">
+                                            <div class="title">SCI</div>
+                                            <div class="item-edit"><input type="text" name="SCI" value="X"></div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                        </tr>
+                    </tbody></table>
+                    <table class="border">
+                        <colgroup>
+                            <col class="w-9">
+                            <col class="w-9">
+                            <col class="w-2">
+                            <col class="w-1">
+                            <col class="w-10">
+                            <col class="w-1">
+                            <col class="w-9">
+                            <col class="w-1">
+                            <col class="w-12">
+                            <col class="w-1">
+                            <col class="w-13">
+                            <col class="w-1">
+                            <col class="w-31">
+                        </colgroup>
+                        <tbody><tr class="text-sm text-var text-bold">
+                            <td class="border-b border-r text-center">No. of Pieces RCP</td>
+                            <td class="border-b border-r text-center">GROSS WEIGHT</td>
+                            <td class="border-b border-r text-center">kg<br>lb</td>
+                            <td class="border-r bg-light">&nbsp;</td>
+                            <td class="border-b border-r text-center">
+                                <table class="text-sm text-var text-bold">
+                                    <tbody><tr class="border-b">
+                                        <td>Rate Class</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Commodity<br>Item No.</td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                            <td class="border-r bg-light">&nbsp;</td>
+                            <td class="border-b border-r text-center">Chargeable Weight</td>
+                            <td class="border-r bg-light">&nbsp;</td>
+                            <td class="border-b border-r text-center">Rate / Charge</td>
+                            <td class="border-r bg-light">&nbsp;</td>
+                            <td class="border-b border-r text-center">Total</td>
+                            <td class="border-r bg-light">&nbsp;</td>
+                            <td class="border-b text-center">Nature and Quantity of Goods (incl. Dimensions of Volume)</td>
+                        </tr>
+                        <tr>
+                            <td class="td col-padding border-r _position-relative">
+                                <div class="item-edit padding-b-xs hover-toggle-icon-text-template">
+                                    <textarea name="Package" cols="40" rows="4" >@Model.Package CARTON(S)</textarea>
+                                </div>
+                                <div class="mark-area ">
+                                    <div class="item-edit">
+                                        <label class="text-10 text-bold _bg-white _margin-b-0"><input type="checkbox" name="show_dimension" id="id_show_dimension" checked=""> Show Mark</label>
+                                        <div>
+                                            <textarea name="mark_dimension" cols="40" rows="5" style="position: relative; z-index: 2;" id="id_mark_dimension"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <table class="table-padding piece-table">
+                                    <tbody><tr>
+                                        <td class="border-t">
+                                            <div class="item-edit"><textarea name="Package" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope">@Model.Package CARTON(S)</textarea></div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                            <td class="td col-padding border-r text-right" colspan="2">
+                                <div class="item-edit">
+                                    <textarea name="gross_weight_area" cols="40" rows="4"></textarea>
+                                </div>
+                                <table class="table-padding gw-table">
+                                    <tbody><tr>
+                                        <td class="border-t">
+                                            <div class="item-edit"><textarea name="GrossWeight" cols="40" rows="2">@Model.GrossWeight</textarea></div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                            <td class="border-r bg-light">&nbsp;</td>
+                            <td class="td col-padding border-r">
+                                <div class="item-edit"><textarea name="commodity_item_no" cols="40" rows="13"></textarea></div>
+                            </td>
+                            <td class="border-r bg-light">&nbsp;</td>
+                            <td class="td col-padding border-r text-right">
+                                <div class="item-edit"><textarea name="ChargableWeight" cols="40" rows="13">@Model.ChargableWeight</textarea></div>
+                            </td>
+                            <td class="border-r bg-light">&nbsp;</td>
+                            <td class="td col-padding border-r">
+                                <div class="item-edit">
+                                    <textarea name="rate_charge_area" cols="40" rows="13"></textarea>
+                                </div>
+                            </td>
+                            <td class="border-r bg-light">&nbsp;</td>
+                            <td class="td col-padding border-r">
+                                <div class="item-edit">
+                                    <textarea name="total_charge_area" cols="40" rows="9"></textarea>
+                                </div>
+                                <table class="table-padding">
+                                    <tbody><tr>
+                                        <td class="border-t">
+                                            <div class="item-edit"><textarea name="total_charge_area_summary" cols="40" rows="2"></textarea></div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                            <td class="border-r bg-light">&nbsp;</td>
+                            <td class="td col-padding">
+                                <div class="item-edit">
+                                    <textarea name="nature_and_quantity_goods" cols="40" rows="12"></textarea>
+                                </div>
+                                "FREIGHT PREPAID"
+                            </td>
+                        </tr>
+                    </tbody></table>
+                    <table class="border-r border-b border-l">
+                        <tbody><tr>
+                            <td class="w-40 border-r">
+                                <table class="text-var text-center">
+                                    <tbody><tr>
+                                        <td class="w-35">
+                                            <table class="text-var text-center">
+                                                <tbody><tr>
+                                                    <td class="slash-sm  slash-red-left" ng-class="vm.classSlashL">&nbsp;</td>
+                                                    <td class="border-b col-padding-t col-padding-b">Prepaid</td>
+                                                    <td class="slash-sm  slash-red-right" ng-class="vm.classSlashR"></td>
+                                                </tr>
+                                            </tbody></table>
+                                        </td>
+                                        <td class="w-30">
+                                            <table class="text-var text-center">
+                                                <tbody><tr>
+                                                    <td class="slash-sm  slash-red-left" ng-class="vm.classSlashL">&nbsp;</td>
+                                                    <td class="border-b col-padding-t col-padding-b w-50">Weight</td>
+                                                    <td class="slash-sm  slash-red-right" ng-class="vm.classSlashR">&nbsp;</td>
+                                                </tr>
+                                            </tbody></table>
+                                        </td>
+                                        <td class="w-35">
+                                            <table class="text-var text-center">
+                                                <tbody><tr>
+                                                    <td class="slash-sm  slash-red-left" ng-class="vm.classSlashL">&nbsp;</td>
+                                                    <td class="border-b col-padding-t col-padding-b">Collect</td>
+                                                    <td class="slash-sm  slash-red-right" ng-class="vm.classSlashR">&nbsp;</td>
+                                                </tr>
+                                            </tbody></table>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                                <table class="table-padding">
+                                    <tbody><tr>
+                                        <td class="w-50 text-right border-r">
+                                            <div class="item-edit"><input type="text" name="weight_prepaid" value=""></div>
+                                        </td>
+                                        <td class="w-50 text-right">
+                                            <div class="item-edit"><input type="text" name="weight_collect"></div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                                <table class="text-var text-center">
+                                    <tbody><tr class="border-t">
+                                        <td class="w-20 slash-sm  slash-red-left" ng-class="vm.classSlashL">&nbsp;</td>
+                                        <td class="w-60 border-b col-padding-t col-padding-b">Valuation Charge</td>
+                                        <td class="w-20 slash-sm  slash-red-right" ng-class="vm.classSlashR">&nbsp;</td>
+                                    </tr>
+                                </tbody></table>
+                                <table class="table-padding">
+                                    <tbody><tr>
+                                        <td class="w-50 text-right border-r">
+                                            <div class="item-edit"><input type="text" name="valuation_charge_prepaid"></div>
+                                        </td>
+                                        <td class="w-50 text-right">
+                                            <div class="item-edit"><input type="text" name="valuation_charge_collect" value=""></div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                                <table class="text-var text-center">
+                                    <tbody><tr class="border-t">
+                                        <td class="w-20 slash-sm  slash-red-left" ng-class="vm.classSlashL">&nbsp;</td>
+                                        <td class="w-60 border-b col-padding-t col-padding-b">Tax</td>
+                                        <td class="w-20 slash-sm  slash-red-right" ng-class="vm.classSlashR">&nbsp;</td>
+                                    </tr>
+                                </tbody></table>
+                                <table class="table-padding">
+                                    <tbody><tr>
+                                        <td class="w-50 text-right border-r">
+                                            <div class="item-edit"><input type="text" name="tax_prepaid"></div>
+                                        </td>
+                                        <td class="w-50 text-right">
+                                            <div class="item-edit"><input type="text" name="tax_collect" value=""></div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                            <td class="w-60 td border-b">
+                                <table class="table-padding">
+                                    <tbody><tr>
+                                        <td class="w-60 td">
+                                            <div class="title-oblique text-var">Other Charges</div>
+                                            <div class="item-edit"><textarea name="other_charges_area" cols="40" rows="5"></textarea></div>
+                                        </td>
+                                        <td class="w-20 td text-center">
+                                            <div class="title-oblique text-var">PREPAID</div>
+                                            <div class="item-edit"><textarea name="other_charges_area_prepaid" cols="40" rows="5"></textarea></div>
+                                        </td>
+                                        <td class="w-20 td text-center">
+                                            <div class="title-oblique text-var">COLLECT</div>
+                                            <div class="item-edit"><textarea name="other_charges_area_collect" cols="40" rows="5"></textarea></div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="w-40 td border-r">
+                                <table class="text-var text-center">
+                                    <tbody><tr class="border-t">
+                                        <td class="w-15 slash-sm  slash-red-left" ng-class="vm.classSlashL">&nbsp;</td>
+                                        <td class="w-70 border-b col-padding-t col-padding-b">Total Other Charges Due Agent</td>
+                                        <td class="w-15 slash-sm  slash-red-right" ng-class="vm.classSlashR">&nbsp;</td>
+                                    </tr>
+                                </tbody></table>
+                                <table class="table-padding">
+                                    <tbody><tr>
+                                        <td class="w-50 text-right border-r">
+                                            <div class="item-edit"><input type="text" name="total_other_charges_due_agent_prepaid"></div>
+                                        </td>
+                                        <td class="w-50 text-right">
+                                            <div class="item-edit"><input type="text" name="total_other_charges_due_agent_collect"></div>
+                                            <div class="item-pdf auto-font-size __width-sm"><span>&nbsp;</span></div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                                <table class="text-var text-center">
+                                    <tbody><tr class="border-t">
+                                        <td class="w-15 slash-sm  slash-red-left" ng-class="vm.classSlashL">&nbsp;</td>
+                                        <td class="w-70 border-b col-padding-t col-padding-b">Total Other Charges Due Carrier</td>
+                                        <td class="w-15 slash-sm  slash-red-right" ng-class="vm.classSlashR">&nbsp;</td>
+                                    </tr>
+                                </tbody></table>
+                                <table class="table-padding">
+                                    <tbody><tr>
+                                        <td class="w-50 text-right border-r">
+                                            <div class="item-edit"><input type="text" name="total_other_charges_due_carrier_prepaid" value=""></div>
+                                        </td>
+                                        <td class="w-50 text-right">
+                                            <div class="item-edit"><input type="text" name="total_other_charges_due_carrier_collect"></div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-t">
+                                        <td class="w-50 bg-light border-r">&nbsp;</td>
+                                        <td class="w-50 bg-light">&nbsp;</td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                            <td class="w-60 td border-b">
+                                <table>
+                                    <tbody><tr>
+                                        <td class="text-var text-xs col-padding">
+                                            Shipper certifies that particulars on the face hereof are correct and that insofar as any part of the consignment contains dangerous goods, such part is properly described by name and is in proper condition for carriage by air according to the applicable Dangerous Goods Regulations.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-padding text-bold">
+                                            <div class="item-edit">
+                                                <div class="margin-b-xs">
+                                            
+                                                        <label class="text-10 margin-r-xs _margin-b-0" for="id_signature_of_shipper_or_agent_choice_0">
+                                                        <input type="radio" name="signature_of_shipper_or_agent_choice" value="agent" checked> Agent and Shipper
+                                                        </label>
+                                            
+                                                        <label class="text-10 margin-r-xs _margin-b-0" for="id_signature_of_shipper_or_agent_choice_1">
+                                                        <input type="radio" id="id_signature_of_shipper_or_agent_choice_1" name="signature_of_shipper_or_agent_choice" value="shipper"> Shipper
+                                                    </label>
+                                                </div>
+                                                <textarea name="IssuingCarrierName" cols="40" rows="2">@Model.IssuingCarrierName</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-xs">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-100 border-t text-sm text-var text-center col-padding-t">Signature of Shipper or Agent</td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="w-40 border-r td">
+                                <table>
+                                    <tbody><tr class="border-t">
+                                        <td class="w-50 border-r text-center text-var">
+                                            <table class="text-sm text-var text-center">
+                                                <tbody><tr>
+                                                    <td class="slash-sm  slash-red-left" ng-class="vm.classSlashL">&nbsp;</td>
+                                                    <td class="border-b col-padding-t col-padding-b w-76">Total Prepaid</td>
+                                                    <td class="slash-sm  slash-red-right" ng-class="vm.classSlashR">&nbsp;</td>
+                                                </tr>
+                                            </tbody></table>
+                                        </td>
+                                        <td class="w-50 text-center text-var">
+                                            <table class="text-sm text-var text-center">
+                                                <tbody><tr>
+                                                    <td class="slash-sm w-12  slash-red-left" ng-class="vm.classSlashL">&nbsp;</td>
+                                                    <td class="border-b col-padding-t col-padding-b w-76">Total Collect</td>
+                                                    <td class="slash-sm w-12  slash-red-right" ng-class="vm.classSlashR">&nbsp;</td>
+                                                </tr>
+                                            </tbody></table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-50 border-r text-right">
+                                            <div class="item-edit"><input type="text" name="total_prepaid" value=""></div>
+                                        </td>
+                                        <td class="w-50 text-right">
+                                            <div class="item-edit"><input type="text" name="total_collect" value=""></div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-t">
+                                        <td class="w-50 border-r text-center text-var bg-light">
+                                            <small>
+                                                <table>
+                                                    <tbody><tr>
+                                                        <td class="slash-xs  slash-red-left" ng-class="vm.classSlashL">&nbsp;</td>
+                                                        <td class="border-b col-padding-t col-padding-b w-76 text-sm text-var">Currency Conversion Rates</td>
+                                                        <td class="slash-xs  slash-red-right" ng-class="vm.classSlashR">&nbsp;</td>
+                                                    </tr>
+                                                </tbody></table>
+                                            </small>
+                                        </td>
+                                        <td class="w-50 text-center text-var bg-light">
+                                            <small>
+                                                <table>
+                                                    <tbody><tr>
+                                                        <td class="slash-xs  slash-red-left" ng-class="vm.classSlashL">&nbsp;</td>
+                                                        <td class="border-b col-padding-t col-padding-b w-76 text-var" style="font-size: 8px">CC Charges in Dest, Currency</td>
+                                                        <td class="slash-xs  slash-red-right" ng-class="vm.classSlashR">&nbsp;</td>
+                                                    </tr>
+                                                </tbody></table>
+                                            </small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-50 border-r text-right bg-light">
+                                            <div class="item-edit"><input type="text" name="currency_conversion_rate"></div>
+                                        </td>
+                                        <td class="w-50 text-right bg-light">
+                                            <div class="item-edit"><input type="text" name="cc_charges_in_dest" value=""></div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                            <td class="w-60 td border-b">
+                                <table>
+                                    <tbody><tr>
+                                        <td class="col-padding text-bold">
+                                            <div class="item-edit"><textarea name="IssuingCarrierName" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope">@Model.IssuingCarrierName</textarea></div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                                <table class="col-padding">
+                                    <tbody><tr class="text-bold">
+                                        <td class="w-25 text-center">
+                                            <div class="item-edit"><input type="text" name="executed_on_date" value=""></div>
+                                        </td>
+                                        <td class="w-25 text-center">
+                                            <div class="item-edit"><input type="text" name="executed_at_place" value=""></div>
+                                        </td>
+                                        <td class="w-50 text-center">
+                                            <div class="item-edit"><input type="text" name="OverSeaAgentName" value="@Model.OverSeaAgentName"></div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-t text-sm text-var text-center">
+                                        <td class="w-25 col-padding-t">Executed on (date)</td>
+                                        <td class="w-25 col-padding-t">at (place)</td>
+                                        <td class="w-50 col-padding-t">Signature of Issuing Carrier or Agent</td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="w-40 border-r td">
+                                <table class="bg-light">
+                                    <tbody><tr class="border-t">
+                                        <td class="w-50 border-r text-center text-var">
+                                            For Carrier's Use Only at Destination
+                                        </td>
+                                        <td class="w-50 text-center">
+                                            <table>
+                                                <tbody><tr>
+                                                    <td class="slash-sm  slash-red-left" ng-class="vm.classSlashL">&nbsp;</td>
+                                                    <td class="border-b col-padding-t col-padding-b w-76 text-var text-sm">Charges at Destination</td>
+                                                    <td class="slash-sm  slash-red-right" ng-class="vm.classSlashR">&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right" colspan="3">
+                                                        <div class="item-edit"><input type="text" name="charges_at_destination" value=""></div>
+                                                    </td>
+                                                </tr>
+                                            </tbody></table>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                            <td class="w-60 td">
+                                <table>
+                                    <tbody><tr>
+                                        <td class="w-30 bg-light">
+                                            <table>
+                                                <tbody><tr>
+                                                    <td class="slash-sm  slash-red-left" ng-class="vm.classSlashL">&nbsp;</td>
+                                                    <td class="border-b col-padding-t col-padding-b w-76 text-var text-sm">Total Collect Charges</td>
+                                                    <td class="slash-sm  slash-red-right" ng-class="vm.classSlashR">&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right border-r" colspan="3">
+                                                        <div class="item-edit"><input type="text" name="total_collect_charges" value=""></div>
+                                                    </td>
+                                                </tr>
+                                            </tbody></table>
+                                        </td>
+                                        <td class="w-70 border-l text-center text-md text-bold">@Model.AirWayBillNo</td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                        </tr>
+                    </tbody></table>
+                    @if(!Model.IsPDF)
+                    {
+                        <div class="gap">&nbsp;</div>
+                        <div class="col-padding text-bold text-center">
+                            <span class="item-edit">
+                                <input type="checkbox" name="show_original"> Show
+                                ORIGINAL
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+</form>

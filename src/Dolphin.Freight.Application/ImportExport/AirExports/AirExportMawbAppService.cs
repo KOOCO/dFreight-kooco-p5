@@ -13,6 +13,7 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Dolphin.Freight.Settings.PortsManagement;
+using Dolphin.Freight.Common;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -221,5 +222,74 @@ namespace Dolphin.Freight.ImportExport.AirExports
             await _airExportHawbRepository.DeleteManyAsync(ids);
         }
 
+        public async Task<AirExportDetails> GetAirExportDetailsById(Guid Id)
+        {
+            var tradePartners = await _tradePartnerRepository.GetListAsync();
+            var portMangements = await _portRepository.QueryListAsync();
+
+            var data = await Repository.GetAsync(Id);
+
+            var airExportDetails = ObjectMapper.Map<AirExportMawb, AirExportDetails>(data);
+
+            if (data.ConsigneeId != null)
+            {
+                var consignee = tradePartners.Where(w => w.Id == data.ConsigneeId).FirstOrDefault();
+                airExportDetails.ConsigneeName = string.Concat(consignee.TPName, "/", consignee.TPCode);
+            }
+
+            if (data.DepatureId != null)
+            {
+                var departure = portMangements.Where(w => w.Id == data.DepatureId).FirstOrDefault();
+                airExportDetails.DepartureName = departure?.PortName;
+            }
+
+            if (data.DestinationId != null)
+            {
+                var destination = portMangements.Where(w => w.Id == data.DestinationId).FirstOrDefault();
+                airExportDetails.DestinationName = destination?.PortName;
+                airExportDetails.DestinationCountry = destination?.Country;
+            }
+
+            if (data.NotifyId != null)
+            {
+                var notify = tradePartners.Where(w => w.Id == data.NotifyId).FirstOrDefault();
+                airExportDetails.NotifyName = string.Concat(notify.TPName, "/", notify.TPCode);
+            }
+
+            if (data.ShipperId != null)
+            {
+                var shipper = tradePartners.Where(w => w.Id == data.ShipperId).FirstOrDefault();
+                airExportDetails.ShippperName = string.Concat(shipper.TPName, "/", shipper.TPCode);
+            }
+
+            if (data.IssuingCarrierId != null)
+            {
+                var issuingCarrier = tradePartners.Where(w => w.Id == data.IssuingCarrierId).FirstOrDefault();
+                airExportDetails.IssuingCarrierName = string.Concat(issuingCarrier.TPName, "/", issuingCarrier.TPCode);
+                airExportDetails.IATA = issuingCarrier.IataCode;
+            }
+
+            if (data.MawbCarrierId != null)
+            {
+                var carrier = tradePartners.Where(w => w.Id == data.MawbCarrierId).FirstOrDefault();
+                airExportDetails.CarrierName = string.Concat(carrier.TPName, "/", carrier.TPCode);
+            }
+
+            airExportDetails.AirWayBillNo = data.MawbNo;
+            airExportDetails.MawbNo = airExportDetails.MawbNo;
+            airExportDetails.DocNumber = data.FilingNo;
+            airExportDetails.GrossWeight = Convert.ToString(data.AwbChargeableWeightKg);
+            airExportDetails.ArrivalDate = data.ArrivalDate?.ToShortDateString();
+            airExportDetails.NVD = data.DVCarriage;
+            airExportDetails.NCV = data.DVCustomer;
+            airExportDetails.ChargableWeight = string.Concat(data.ChargeableWeightKg, " ", data.ChargeableWeightLb);
+            airExportDetails.Package = Convert.ToString(data.Package);
+            airExportDetails.DepatureDate = data.DepatureDate;
+            airExportDetails.ChargeableWeightCneeKG = Convert.ToString(data.ChargeableWeightKg);
+            airExportDetails.ChargeableWeightCneeLB = Convert.ToString(data.ChargeableWeightLb);
+            airExportDetails.Operator = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
+
+            return airExportDetails;
+        }
     }
 }
