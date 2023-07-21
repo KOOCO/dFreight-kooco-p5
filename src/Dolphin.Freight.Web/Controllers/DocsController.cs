@@ -387,123 +387,123 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/Pdf/PackageLabel/PackageLabel.cshtml", InfoModel);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Package(string target, string oldhblno, string oldto, string oldpieces, string olddestination)
-        {
-            var HblList = new List<PackageIndexViewModel>();
+        //[HttpGet]
+        //public async Task<IActionResult> Package(string target, string oldhblno, string oldto, string oldpieces, string olddestination)
+        //{
+        //    var HblList = new List<PackageIndexViewModel>();
 
-            if (TempData["PrintDataHBL"] != null && target != null)
-            {
-                HblList = JsonConvert.DeserializeObject<List<PackageIndexViewModel>>(TempData["PrintDataHBL"].ToString());
-            }
-            else
-            {
-                var OceanExportMbl = new CreateUpdateOceanExportMblDto();
-                OceanExportMbl = JsonConvert.DeserializeObject<CreateUpdateOceanExportMblDto>(TempData["PrintData"].ToString());
-                QueryHblDto query = new QueryHblDto() { MblId = OceanExportMbl.Id };
-                IList<OceanExportHblDto> OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
+        //    if (TempData["PrintDataHBL"] != null && target != null)
+        //    {
+        //        HblList = JsonConvert.DeserializeObject<List<PackageIndexViewModel>>(TempData["PrintDataHBL"].ToString());
+        //    }
+        //    else
+        //    {
+        //        var OceanExportMbl = new CreateUpdateOceanExportMblDto();
+        //        OceanExportMbl = JsonConvert.DeserializeObject<CreateUpdateOceanExportMblDto>(TempData["PrintData"].ToString());
+        //        QueryHblDto query = new QueryHblDto() { MblId = OceanExportMbl.Id };
+        //        IList<OceanExportHblDto> OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
 
-                if (OceanExportHbls != null && OceanExportHbls.Count > 1)
-                {
-                    for (int i = 0; i < OceanExportHbls.Count; i++)
-                    {
-                        HblList.Add(new PackageIndexViewModel()
-                        {
-                            Office = OceanExportHbls[i].OfficeName,
-                            To = OceanExportHbls[i].AgentName,
-                            MblNo = OceanExportMbl.MblNo,
-                            HblNo = OceanExportHbls[i].HblNo,
-                            Pieces = "1",
-                            Destination = OceanExportHbls[i].PodName,
-                            TotalPieces = "1",
-                            ReportId = OceanExportHbls[i].Id
-                        });
-                    }
-                }
-                else
-                {
-                    HblList.Add(new PackageIndexViewModel()
-                    {
-                        Office = OceanExportHbls[0].OfficeName,
-                        To = OceanExportHbls[0].AgentName,
-                        MblNo = OceanExportMbl.MblNo,
-                        HblNo = OceanExportHbls[0].HblNo,
-                        Pieces = "1",
-                        Destination = OceanExportHbls[0].PodName,
-                        TotalPieces = "1",
-                        ReportId = OceanExportHbls[0].Id
-                    });
-                }
-                TempData["PrintData"] = JsonConvert.SerializeObject(OceanExportMbl);
-            }
+        //        if (OceanExportHbls != null && OceanExportHbls.Count > 1)
+        //        {
+        //            for (int i = 0; i < OceanExportHbls.Count; i++)
+        //            {
+        //                HblList.Add(new PackageIndexViewModel()
+        //                {
+        //                    Office = OceanExportHbls[i].OfficeName,
+        //                    To = OceanExportHbls[i].AgentName,
+        //                    MblNo = OceanExportMbl.MblNo,
+        //                    HblNo = OceanExportHbls[i].HblNo,
+        //                    Pieces = "1",
+        //                    Destination = OceanExportHbls[i].PodName,
+        //                    TotalPieces = "1",
+        //                    ReportId = OceanExportHbls[i].Id
+        //                });
+        //            }
+        //        }
+        //        else
+        //        {
+        //            HblList.Add(new PackageIndexViewModel()
+        //            {
+        //                Office = OceanExportHbls[0].OfficeName,
+        //                To = OceanExportHbls[0].AgentName,
+        //                MblNo = OceanExportMbl.MblNo,
+        //                HblNo = OceanExportHbls[0].HblNo,
+        //                Pieces = "1",
+        //                Destination = OceanExportHbls[0].PodName,
+        //                TotalPieces = "1",
+        //                ReportId = OceanExportHbls[0].Id
+        //            });
+        //        }
+        //        TempData["PrintData"] = JsonConvert.SerializeObject(OceanExportMbl);
+        //    }
 
-            if (oldto != null)
-            {
-                oldto = oldto.Replace("%0D%0A", "\r\n");
-            }
+        //    if (oldto != null)
+        //    {
+        //        oldto = oldto.Replace("%0D%0A", "\r\n");
+        //    }
 
-            HblList.Where(x => x.HblNo == oldhblno && (x.To != oldto || x.Pieces != oldpieces || x.Destination != olddestination)).ToList()
-            .ForEach(x =>
-            {
-                x.To = oldto;
-                x.Pieces = oldpieces;
-                x.Destination = olddestination;
-                x.TotalPieces = oldpieces;
-            });
+        //    HblList.Where(x => x.HblNo == oldhblno && (x.To != oldto || x.Pieces != oldpieces || x.Destination != olddestination)).ToList()
+        //    .ForEach(x =>
+        //    {
+        //        x.To = oldto;
+        //        x.Pieces = oldpieces;
+        //        x.Destination = olddestination;
+        //        x.TotalPieces = oldpieces;
+        //    });
 
-            ViewBag.HblList = HblList.Select(x => x.HblNo).Select(x => new SelectListItem() { Text = x, Value = x, Selected = x == target }).ToList();
+        //    ViewBag.HblList = HblList.Select(x => x.HblNo).Select(x => new SelectListItem() { Text = x, Value = x, Selected = x == target }).ToList();
 
-            var hbl = string.IsNullOrEmpty(target) ? HblList[0] : (HblList.Any(x => x.HblNo == target) ? HblList.First(x => x.HblNo == target) : HblList[0]);
-            hbl.HblList = JsonConvert.SerializeObject(HblList);
-            TempData["PrintDataHBL"] = JsonConvert.SerializeObject(HblList);
-            return View(hbl);
-        }
+        //    var hbl = string.IsNullOrEmpty(target) ? HblList[0] : (HblList.Any(x => x.HblNo == target) ? HblList.First(x => x.HblNo == target) : HblList[0]);
+        //    hbl.HblList = JsonConvert.SerializeObject(HblList);
+        //    TempData["PrintDataHBL"] = JsonConvert.SerializeObject(HblList);
+        //    return View(hbl);
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> Package(string hbllist, string hblno, string to, string pieces, string destination, string totalpieces)
-        {
+        //[HttpPost]
+        //public async Task<IActionResult> Package(string hbllist, string hblno, string to, string pieces, string destination, string totalpieces)
+        //{
 
-            var HblList = new List<PackageIndexViewModel>();
-            HblList = JsonConvert.DeserializeObject<List<PackageIndexViewModel>>(hbllist);
+        //    var HblList = new List<PackageIndexViewModel>();
+        //    HblList = JsonConvert.DeserializeObject<List<PackageIndexViewModel>>(hbllist);
 
-            HblList.Where(x => x.HblNo == hblno && (x.To != to || x.Pieces != pieces || x.Destination != destination)).ToList()
-            .ForEach(x =>
-            {
-                x.To = to;
-                x.Pieces = pieces;
-                x.Destination = destination;
-                x.TotalPieces = totalpieces;
-            });
+        //    HblList.Where(x => x.HblNo == hblno && (x.To != to || x.Pieces != pieces || x.Destination != destination)).ToList()
+        //    .ForEach(x =>
+        //    {
+        //        x.To = to;
+        //        x.Pieces = pieces;
+        //        x.Destination = destination;
+        //        x.TotalPieces = totalpieces;
+        //    });
 
-            string Input = JsonConvert.SerializeObject(HblList);
-            TempData["PrintDataHBL"] = JsonConvert.SerializeObject(HblList);
+        //    string Input = JsonConvert.SerializeObject(HblList);
+        //    TempData["PrintDataHBL"] = JsonConvert.SerializeObject(HblList);
 
-            ReportLog.ReportId = HblList[0].ReportId;
-            ReportLog.ReportName = "Package";
-            ReportLog.ReportData = Input;
-            ReportLog.LastUpdateTime = DateTime.Now;
-            await _reportLogAppService.UpdateReportLog(ReportLog);
+        //    ReportLog.ReportId = HblList[0].ReportId;
+        //    ReportLog.ReportName = "Package";
+        //    ReportLog.ReportData = Input;
+        //    ReportLog.LastUpdateTime = DateTime.Now;
+        //    await _reportLogAppService.UpdateReportLog(ReportLog);
 
-            PackageIndexViewModel InfoModel = new PackageIndexViewModel();
+        //    PackageIndexViewModel InfoModel = new PackageIndexViewModel();
 
-            InfoModel.HblPDFList = new List<HblPDFListModel>();
+        //    InfoModel.HblPDFList = new List<HblPDFListModel>();
 
-            for (int i = 0; i < HblList.Count; i++)
-            {
-                InfoModel.HblPDFList.Add(new HblPDFListModel()
-                {
-                    Office = HblList[i].Office == null ? "" : HblList[i].Office,
-                    To = HblList[i].To == null ? "" : HblList[i].To,
-                    MblNo = HblList[i].MblNo == null ? "" : HblList[i].MblNo,
-                    HblNo = HblList[i].HblNo == null ? "" : HblList[i].HblNo,
-                    Pieces = HblList[i].Pieces == null ? "0" : HblList[i].Pieces,
-                    Destination = HblList[i].Destination == null ? "" : HblList[i].Destination,
-                    TotalPieces = HblList[i].TotalPieces == null ? "0" : HblList[i].TotalPieces
-                });
-            }
+        //    for (int i = 0; i < HblList.Count; i++)
+        //    {
+        //        InfoModel.HblPDFList.Add(new HblPDFListModel()
+        //        {
+        //            Office = HblList[i].Office == null ? "" : HblList[i].Office,
+        //            To = HblList[i].To == null ? "" : HblList[i].To,
+        //            MblNo = HblList[i].MblNo == null ? "" : HblList[i].MblNo,
+        //            HblNo = HblList[i].HblNo == null ? "" : HblList[i].HblNo,
+        //            Pieces = HblList[i].Pieces == null ? "0" : HblList[i].Pieces,
+        //            Destination = HblList[i].Destination == null ? "" : HblList[i].Destination,
+        //            TotalPieces = HblList[i].TotalPieces == null ? "0" : HblList[i].TotalPieces
+        //        });
+        //    }
 
-            return await _generatePdf.GetPdf("Views/Docs/Pdf/Package/Package.cshtml", InfoModel);
-        }
+        //    return await _generatePdf.GetPdf("Views/Docs/Pdf/Package/Package.cshtml", InfoModel);
+        //}
 
         [HttpGet]
         public async Task<IActionResult> HblPackageLabel(string id)
@@ -2749,6 +2749,23 @@ namespace Dolphin.Freight.Web.Controllers
 
             return allHawbLists;
         }
+        private async Task<List<AllHblList>> GetAllHblLists(Guid mblId)
+        {
+            var data = await _oceanExportHblAppService.GetHblCardsById(mblId);
+            var allHblLists = new List<AllHblList>();
+
+            foreach (var hbl in data)
+            {
+                var allHbls = new AllHblList
+                {
+                    Id = string.Concat(hbl.Id),
+                    Hbl_No = hbl.HblNo
+                };
+                allHblLists.Add(allHbls);
+            }
+            
+            return allHblLists;
+        }
 
         private string GetViewUrlByPageType(FreightPageType pageType, string reportType)
         {
@@ -3168,6 +3185,29 @@ namespace Dolphin.Freight.Web.Controllers
             model.Invoices = JsonConvert.DeserializeObject<List<InvoiceDto>>(model.InvoicesJson);
 
             return await _generatePdf.GetPdf("Views/Docs/MblProfitReportSummary.cshtml", model);
+        }
+        public async Task<IActionResult> AllHblPackageLabelOceanExportMBL(Guid mblId)
+        {
+            AllHblPackageLabelOceanExportMBL InfoModel = new();
+            var mbl = await _oceanExportMblAppService.GetAsync(mblId);
+            var hbl = await _oceanExportHblAppService.GetHblCardsById(mblId);
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var portManagement = _dropdownService.PortsManagementLookupList;
+
+            InfoModel.AllHblLists = await GetAllHblLists(mblId);
+            InfoModel.Mbl_No = mbl.MblNo;
+            InfoModel.Hbl_No = hbl[0].HblNo;
+            InfoModel.To = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mbl.MblOverseaAgentId)).Select(s => s.Text));
+            InfoModel.Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mbl.ShippingAgentId)).Select(s => s.Text));
+            InfoModel.Destination = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mbl.PodId)).Select(s => s.Text));
+
+            return View(InfoModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AllHblPackageLabelOceanExportMBL(AllHblPackageLabelOceanExportMBL model)
+        {
+            model.IsPDF = true;
+            return await _generatePdf.GetPdf("Views/Docs/AllHblPackageLabelOceanExportMBL.cshtml", model);
         }
     }
 }
