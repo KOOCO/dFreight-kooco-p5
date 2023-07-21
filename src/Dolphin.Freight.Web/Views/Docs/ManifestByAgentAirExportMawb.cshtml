@@ -102,7 +102,7 @@
 </script>
 <form id="myForm" name="myForm" method="POST">
    <div style="background-color:black;display: flex;justify-content:center;">
-      <div @(Model.IsPDF? "style=width:100%;background-color:white;height:100%;" : "style=width:900px;background-color:white;height:100%;") id="form" name = "form" class="edit">
+      <div @(Model.IsPDF? "style=width:100%;background-color:white;height:100%;" : "style=width:auto;background-color:white;height:100%;") id="form" name = "form" class="edit">
             @if (!Model.IsPDF)
             {
                 <div class="container" style="background-color:black">
@@ -180,7 +180,7 @@
                             <td class="w-63">
                                 <h1>
                                     <div class="item-edit hover-toggle-icon-text-template">
-                                        <input type="text" name="office_name" value="HARD CORE TECHNOLOGY(GST/VAT)" template-id="25b310c4db5ce91bad4940bd8e9bc50d8fe8ab6b951fc878394aa9f185006f85:Form.office_name" id="id_office_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-vks-c260="" ng-version="12.2.17" tabindex="0">
+                                        <input type="text" name="Carrier_Agent" value="@Model.Carrier_Agent" id="id_office_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-vks-c260="" ng-version="12.2.17" tabindex="0">
                                             <span _ngcontent-vks-c260="" class="icon-text-template" style="top: 1px; left: 573px;"></span><!---->
 
                                             </hc-input-template>
@@ -448,7 +448,6 @@
                                 <textarea name="remark" cols="40" rows="5" class="None ng-isolate-scope" limit-rows="" template-id="25b310c4db5ce91bad4940bd8e9bc50d8fe8ab6b951fc878394aa9f185006f85:Form.remark" id="id_remark"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-vks-c260="" ng-version="12.2.17" tabindex="0">
                                     <span _ngcontent-vks-c260="" class="icon-text-template" style="top: 3px; left: 913px;"></span><!---->
 
-                                    <ng-select _ngcontent-vks-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a43c12fe8b03" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
                                 </hc-input-template>
                             </div>
                         </div>
