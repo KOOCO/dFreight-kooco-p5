@@ -12,14 +12,15 @@
 <abp-modal>
     <abp-modal-header title="@L["Create"].Value"></abp-modal-header>
     <abp-modal-body>
+         <form id="createForm" method="post" action="/Settings/PackageUnits/CreateModal">
         <abp-row>
             <abp-column>
-                <abp-input asp-for="PackageUnit.PackageCode" maxlength="3" />
+                <abp-input asp-for="PackageUnit.PackageCode" maxlength="3" required-symbol=true />
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column>
-                <abp-input asp-for="PackageUnit.PackageName" />
+                <abp-input asp-for="PackageUnit.PackageName" required-symbol=true />
             </abp-column>
         </abp-row>
         <abp-row>
@@ -38,17 +39,11 @@
                 <abp-input asp-for="PackageUnit.Description" />
             </abp-column>
         </abp-row>
+        </form>
     </abp-modal-body>
     <abp-modal-footer>
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
             <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
         </div>
-        <form id="createForm" method="post" action="/Settings/PackageUnits/CreateModal">
-            <input type="hidden" name="PackageCode" id="formPackageCode" maxlength="3" />
-            <input type="hidden" name="PackageName" id="formPackageName" />
-            <input type="hidden" name="AmsNoId" id="formAmsNoId" />
-            <input type="hidden" name="EManifestId" id="formEManifestId" />
-            <input type="hidden" name="Description" id="formDescription" />
-        </form>
     </abp-modal-footer>
 </abp-modal>

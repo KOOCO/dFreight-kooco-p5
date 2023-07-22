@@ -8,6 +8,7 @@ namespace Dolphin.Freight.Settinngs.PackageUnits
     public class CreateUpdatePackageUnitDto
     {
         [MaxLength(3)]
+        [Required]
         /// <summary>
         /// 代碼
         /// </summary>
@@ -15,6 +16,7 @@ namespace Dolphin.Freight.Settinngs.PackageUnits
         /// <summary>
         /// 名稱
         /// </summary>
+        [Required]
         public string PackageName { get; set; }
         /// <summary>
         /// Ams編號ID
