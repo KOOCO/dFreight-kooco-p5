@@ -37,7 +37,7 @@ namespace Dolphin.Freight.Settings.AwbNoRanges
         {
             var query = await _repository.GetQueryableAsync();
             query = query.WhereIf((input.CompanyId != Guid.Empty && input.CompanyId != null), x => x.CompanyId == input.CompanyId)
-                           .WhereIf(input.CreatedDate != null, x => x.CreationTime == input.CreatedDate)
+                           .WhereIf(input.CreatedDate != null, x => x.CreationTime.Date == input.CreatedDate.Value.Date)
                            //.WhereIf(string.IsNullOrWhiteSpace(input.Prefix), x => x.Note == "")
                            .WhereIf(!string.IsNullOrWhiteSpace(input.Filter), x => x.EndNo.ToLower()
                            .Contains(input.Filter.ToLower()) || x.StartNo.ToLower()

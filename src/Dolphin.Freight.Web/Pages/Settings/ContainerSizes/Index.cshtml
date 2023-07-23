@@ -33,6 +33,21 @@
             }
         </abp-card-header>
         <abp-card-body>
+            <div class="row">
+                <abp-column size="_6">
+                    <abp-input asp-for="Search" />
+                </abp-column>
+                <abp-column size="_3">
+                    <abp-select asp-for="Active" asp-items="@Model.StatusList" />
+                </abp-column>
+                <abp-column size="_3">
+                    <abp-button id="SearchButton"
+                                text="@L["Search"].Value"
+                                icon="search"
+                                style="margin-top:29px"
+                                class="btn-primary" />
+                </abp-column>
+            </div>
             <abp-table class="nowrap"  striped-rows="true" id="ContainerSizesTable"></abp-table>
         </abp-card-body>
     </abp-card>
