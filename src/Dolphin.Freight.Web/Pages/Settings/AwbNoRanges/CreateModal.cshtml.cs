@@ -1,6 +1,7 @@
 
 using Dolphin.Freight.Settings.AwbNoRanges;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace Dolphin.Freight.Web.Pages.AwbNoRanges
@@ -9,6 +10,8 @@ namespace Dolphin.Freight.Web.Pages.AwbNoRanges
     {
         [BindProperty]
         public CreateUpdateAwbNoRangeDto AwbNoRange { get; set; }
+        [BindProperty]
+        public Guid? CarrierId { get; set; }
 
         private readonly IAwbNoRangeAppService _AwbNoRangeAppService;
 
@@ -25,6 +28,7 @@ namespace Dolphin.Freight.Web.Pages.AwbNoRanges
 
         public async Task<IActionResult> OnPostAsync()
         {
+            AwbNoRange.CompanyId = CarrierId;
             await _AwbNoRangeAppService.CreateAsync(AwbNoRange);
             return NoContent();
         }

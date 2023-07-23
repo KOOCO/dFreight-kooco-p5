@@ -15,6 +15,8 @@ namespace Dolphin.Freight.Web.Pages.AwbNoRanges
 
         [BindProperty]
         public CreateUpdateAwbNoRangeDto AwbNoRange { get; set; }
+        [BindProperty]
+        public Guid? CarrierId { get; set; }
 
         private readonly IAwbNoRangeAppService _AwbNoRangeAppService;
 
@@ -28,10 +30,12 @@ namespace Dolphin.Freight.Web.Pages.AwbNoRanges
         {
             var awbNoRange = await _AwbNoRangeAppService.GetAsync(Id);
             AwbNoRange = ObjectMapper.Map<AwbNoRangeDto, CreateUpdateAwbNoRangeDto>(awbNoRange);
+            CarrierId = AwbNoRange.CompanyId;
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            AwbNoRange.CompanyId = CarrierId;
             await _AwbNoRangeAppService.UpdateAsync(Id, AwbNoRange);
             return NoContent();
         }

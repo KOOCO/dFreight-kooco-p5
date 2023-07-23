@@ -3,7 +3,7 @@ $(function () {
     var l = abp.localization.getResource('Freight');
     $("#AwbNoRange_CompanyId").hide();
     dolphin.freight.tradePartners.tradePartner.getList({}).done(function (result) {
-        initTradePartnerSelect(result.items, "CompanyId", $("#formCompanyId").val());
+        initTradePartnerSelect(result.items, "CarrierId", $("#formCarrierId").val());
     });
 
     $("#saveBtn").click(function () { doSubmit() });
@@ -17,7 +17,6 @@ function initTradePartnerSelect(selectItems, tagName, tagValue) {
         for (var i = 0; i < selectItems.length; i++) {
             drophtml = drophtml + "<li class='form-control' style='width:450px;'><a  style='width:400px;' class='dropdown-item'  href='#' onclick='changeDropdownValue(\"" + tagName + "\",\"" + selectItems[i].id + "\",\"" + selectItems[i].tpName + "/" + selectItems[i].tpCode + "\")'>" + selectItems[i].tpName + "/" + selectItems[i].tpCode + "</div></a></li>"
             if (tagValue == selectItems[i].id) {
-                debugger
                 tag = selectItems[i].tpName + "/" + selectItems[i].tpCode;
             } 
         }
@@ -28,15 +27,15 @@ function initTradePartnerSelect(selectItems, tagName, tagValue) {
     $("#dropdownMenuButton_" + tagName).html(drophtml);
 }
 function changeDropdownValue(tagName, tagValue, showCode) {
-    debugger
     $("#" + tagName).val(tagValue);
     $("#drop_" + tagName).html(showCode);
 }
 function doSubmit()
 {
+    debugger
     $("#formStartNo").val($("#AwbNoRange_StartNo").val());
     $("#formEndNo").val($("#AwbNoRange_EndNo").val());
     $("#formNote").val($("#AwbNoRange_Note").val());
-    $("#formCompanyId").val($("#CompanyId").val());
+    $("#formCarrierId").val($("#CarrierId").val());
     $("#createForm").submit();
 }

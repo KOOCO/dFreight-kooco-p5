@@ -16,7 +16,7 @@
         <abp-modal-body>
         <abp-row>
             <abp-column>
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CompanyId", FieldName = "Carrier",DefaultValue="", IsShowLabel = true , IsRequired = true  })
+                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CarrierId", FieldName = "CarrierId",DefaultValue="", IsShowLabel = true , IsRequired = true  })
 
             </abp-column>
         </abp-row>
@@ -42,7 +42,7 @@
             <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
         </div>
         <form id="createForm" method="post" action="/Settings/AwbNoRanges/CreateModal">
-            <input type="hidden" name="CompanyId" id="formCompanyId"/>
+            <input type="hidden" name="CarrierId" id="formCarrierId" />
             <input type="hidden" name="StartNo" id="formStartNo" />
             <input type="hidden" name="EndNo" id="formEndNo" />
             <input type="hidden" name="Note" id="formNote" />
