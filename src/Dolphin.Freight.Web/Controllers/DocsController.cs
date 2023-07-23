@@ -3209,5 +3209,23 @@ namespace Dolphin.Freight.Web.Controllers
             model.IsPDF = true;
             return await _generatePdf.GetPdf("Views/Docs/AllHblPackageLabelOceanExportMBL.cshtml", model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> MblProfitReportDetailed(Guid id, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType, true);
+
+            return View(oceanExportDetails);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MblProfitReportDetailed(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            model.Invoices = JsonConvert.DeserializeObject<List<InvoiceDto>>(model.InvoicesJson);
+
+            return await _generatePdf.GetPdf("Views/Docs/MblProfitReportDetailed.cshtml", model);
+        }
     }
 }
