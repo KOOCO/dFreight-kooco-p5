@@ -18,8 +18,6 @@ namespace Dolphin.Freight.Settings.AwbNoRanges
         IAwbNoRangeAppService //實作IAwbNoRangeAppService
     {
 
-
-        IRepository<AwbNoRange, Guid> _Repository;
         public AwbNoRangeAppService(IRepository<AwbNoRange, Guid> repository)
             : base(repository)
         {
@@ -28,12 +26,6 @@ namespace Dolphin.Freight.Settings.AwbNoRanges
             CreatePolicyName = SettingsPermissions.AwbNoRanges.Create;
             UpdatePolicyName = SettingsPermissions.AwbNoRanges.Edit;
             DeletePolicyName = SettingsPermissions.AwbNoRanges.Delete;
-            _Repository = repository;
-        }
-
-        public override Task<PagedResultDto<AwbNoRangeDto>> GetListAsync(PagedAndSortedResultRequestDto input)
-        {
-            return base.GetListAsync(input);
         }
       
     }

@@ -1,7 +1,11 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
 
-
+    var tradePartners;
+    dolphin.freight.tradePartners.tradePartner.getList({}).done(function (result) {
+        tradePartners = result.items;
+        debugger
+    });
     var dataTable = $('#AwbNoRangesTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
@@ -55,6 +59,17 @@
                             .fromISO(data, {
                                 locale: abp.localization.currentCulture.name
                             }).toLocaleString(luxon.DateTime.DATETIME_SHORT);
+                    }
+                },
+                {
+                    //起始號碼
+                    title: l('Carrier'),
+                    data: "companyId",
+                    render: function (data) {
+                        var CompanyName;
+                        if (data) 
+                           CompanyName = tradePartners.find(x => x.id == data)
+                        return CompanyName ? CompanyName.tpName  :"";
                     }
                 },
                 {
