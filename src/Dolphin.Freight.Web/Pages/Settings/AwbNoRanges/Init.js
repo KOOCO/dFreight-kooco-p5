@@ -32,7 +32,6 @@ function changeDropdownValue(tagName, tagValue, showCode) {
 }
 function doSubmit()
 {
-    debugger
     $("#formStartNo").val($("#AwbNoRange_StartNo").val());
     $("#formEndNo").val($("#AwbNoRange_EndNo").val());
     $("#formNote").val($("#AwbNoRange_Note").val());

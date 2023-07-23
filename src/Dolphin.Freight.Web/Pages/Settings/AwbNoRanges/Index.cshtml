@@ -2,6 +2,7 @@
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Permissions
 @using Dolphin.Freight.Web.Pages.AwbNoRanges
+@using Dolphin.Freight.Web.Pages.Components;
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
 @model IndexModel
@@ -9,6 +10,7 @@
 @inject IAuthorizationService AuthorizationService
 @section scripts{
     <abp-script src="/Pages/Settings/AwbNoRanges/Index.js" />
+    <abp-script src="/Pages/Settings/AwbNoRanges/init.js" />
 }
 <div class="page-header">
     <div class="breadcrumb-wrapper">
@@ -33,7 +35,37 @@
             }
         </abp-card-header>
         <abp-card-body>
+            <div class="row">
+                <abp-column size="_4">
+                    <abp-input asp-for="Search" />
+                </abp-column>
+                <abp-column size="_3">
+                    <abp-input asp-for="CreatedDate" asp-items="@Model.CreatedDate" type="date" />
+                </abp-column>
+                @*<abp-column size="_2">
+                    <abp-input asp-for="Prefix" asp-items="@Model.Prefix" />
+                </abp-column>*@
+                <abp-column size="_3">
+                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CarrierId", FieldName = "CarrierId",DefaultValue="", IsShowLabel = true })
+                </abp-column>
+                <abp-column size="_2">
+                    <abp-button id="SearchButton"
+                                text="@L["Search"].Value"
+                                icon="search"
+                                style="margin-top:29px"
+                                class="btn-primary" />
+                </abp-column>
+            </div>
             <abp-table class="nowrap" striped-rows="true" id="AwbNoRangesTable"></abp-table>
         </abp-card-body>
     </abp-card>
 </div>
+<style>
+   .dropdown {
+       margin-top:7.5px !important;
+    }
+
+    #drop_CarrierId{
+        overflow: hidden;
+    }
+</style>

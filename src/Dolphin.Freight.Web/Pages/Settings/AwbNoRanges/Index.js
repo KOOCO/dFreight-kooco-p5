@@ -1,24 +1,30 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
-
+    var getAwbNoRangeFilter = function () {
+        return {
+            filter: $("input[name='Search'").val(),
+            prefix: $("#Prefix").val(),
+            createdDate: $("#CreatedDate").val(),
+            companyId: $("#CarrierId").val() 
+        };
+    };
     var tradePartners;
     dolphin.freight.tradePartners.tradePartner.getList({}).done(function (result) {
         tradePartners = result.items;
-        debugger
     });
     var dataTable = $('#AwbNoRangesTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
             paging: true,
             order: [[1, "asc"]],
-            searching: true,
+            searching: false,
             scrollX: true,
             responsive: {
                 details: {
                     type: 'column'
                 }
             },
-            ajax: abp.libs.datatables.createAjax(dolphin.freight.settings.awbNoRanges.awbNoRange.getList),
+            ajax: abp.libs.datatables.createAjax(dolphin.freight.settings.awbNoRanges.awbNoRange.getList, getAwbNoRangeFilter),
             columnDefs: [
                 {
                     title: l('Actions'),
@@ -96,8 +102,12 @@
         })
     );
   
-    $('[type=search]').on('keyup', function () {
-        dataTable.search(this.value).draw();
+    //$('[type=search]').on('keyup', function () {
+    //    dataTable.search(this.value).draw();
+    //});
+
+    $('#SearchButton').click(function (e) {
+        dataTable.ajax.reload();
     });
  
     var createModal = new abp.ModalManager(abp.appPath + 'Settings/AwbNoRanges/CreateModal');
