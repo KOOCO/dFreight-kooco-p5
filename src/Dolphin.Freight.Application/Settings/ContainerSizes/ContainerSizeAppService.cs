@@ -53,7 +53,7 @@ namespace Dolphin.Freight.Settings.ContainerSizes
             List<ContainerSize> rs;
             List<ContainerSizeDto> list = new List<ContainerSizeDto>();
 
-            ContainerSizes = ContainerSizes.WhereIf(query.Active != null, x => x.IsUseed)
+            ContainerSizes = ContainerSizes.WhereIf(query.Active != null, x => x.IsUseed == query.Active)
                                            .WhereIf(!string.IsNullOrWhiteSpace(query.Filter), x => x.SizeDescription.ToLower()
                                            .Contains(query.Filter.ToLower()) || x.ContainerCode.Contains(query.Filter.ToLower()));
 
