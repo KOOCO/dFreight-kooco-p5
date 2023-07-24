@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Users;
+using Dolphin.Freight.Common;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {

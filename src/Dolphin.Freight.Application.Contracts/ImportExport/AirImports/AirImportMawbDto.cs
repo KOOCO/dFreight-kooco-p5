@@ -1,5 +1,6 @@
 ﻿using Dolphin.Freight.AirExports;
 using Dolphin.Freight.AirImports;
+using Dolphin.Freight.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,6 +11,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
 {
     public class AirImportMawbDto : AuditedEntityDto<Guid>
     {
+        public string HawbJson { get; set; }
+        public bool IsPDF { get; set; }
         /// <summary>
         /// 文件編號
         /// </summary>
@@ -263,7 +266,20 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public string DepartureName { get; set; }
+        public string DestinationName { get; set; }
+        public string CarrierName { get; set; }
+        public FreightPageType PageType { get; set; }
 
-        
+        public List<AllHawbListAirImport> AllHawbListAirImports { get; set; }
+    }
+    public class AllHawbListAirImport
+    {
+        public string HawbNo { get; set; }
+        public string Customer { get; set; }
+        public string Shipper { get; set; }
+        public string Packages { get; set; }
+        public string Chargeable_Weight { get; set; }
+        public string Freight_Weight { get; set; }
     }
 }
