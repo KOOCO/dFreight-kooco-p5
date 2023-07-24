@@ -1,6 +1,7 @@
 ﻿using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Settings.Ports;
+using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using System;
@@ -12,7 +13,6 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
-
 namespace Dolphin.Freight.ImportExport.AirImports
 {
     public class AirImportHawbAppService :
@@ -30,7 +30,10 @@ namespace Dolphin.Freight.ImportExport.AirImports
         private readonly IRepository<AirImportHawb, Guid> _mblRepository;
         private readonly IRepository<Substation, Guid> _substationRepository;
         private readonly IRepository<Port, Guid> _portRepository;
+
+        private readonly IRepository<PortsManagement, Guid> _portsManagementAppService;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
+        private readonly IRepository<AirImportMawb, Guid> _mawbRepository;
         public AirImportHawbAppService(IRepository<AirImportHawb, Guid> repository,
 
             IRepository<Airport, Guid> airportRepository,
@@ -38,7 +41,9 @@ namespace Dolphin.Freight.ImportExport.AirImports
             IRepository<AirImportHawb, Guid> mblRepository,
              IRepository<SysCode, Guid> sysCodeRepository,
             IRepository<Port, Guid> portRepository,
-            IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository) : base(repository)
+            IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
+            IRepository<PortsManagement, Guid> portsManagementAppService,
+            IRepository<AirImportMawb, Guid> mawbRepository) : base(repository)
         {
             _repository = repository;
             _airportRepository = airportRepository;
@@ -48,8 +53,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
             _sysCodeRepository = sysCodeRepository;
             _airportRepository = airportRepository;
             _portRepository = portRepository;
-
-
+            _portsManagementAppService = portsManagementAppService;
+            _mawbRepository = mawbRepository;
         }
 
         public async Task<List<AirImportHawbDto>> GetHawbCardsByMawbId(Guid Id)
@@ -186,6 +191,85 @@ namespace Dolphin.Freight.ImportExport.AirImports
             listDto.Items = list;
             listDto.TotalCount = list.Count;
             return listDto;
+        }
+
+        public async Task<AirImportDetails> GetAirImportDetailsById(Guid Id)
+        {
+            var airImportDetails = new AirImportDetails();  
+            var tradePartners = await _tradePartnerRepository.GetListAsync();
+            var portMangements = await _portsManagementAppService.GetListAsync();
+
+            var data = await Repository.GetAsync(Id);
+
+            if( data != null)
+            {
+                airImportDetails = ObjectMapper.Map<AirImportHawb, AirImportDetails>(data);
+
+                var mawb = await _mawbRepository.GetAsync(data.MawbId.GetValueOrDefault());
+
+                if (data.ConsigneeId != null)
+                {
+                    var consignee = tradePartners.Where(w => w.Id == data.ConsigneeId).FirstOrDefault();
+                    airImportDetails.ConsigneeName = string.Concat(consignee.TPName, "/", consignee.TPCode);
+                }
+
+                if (mawb.DepatureId != null)
+                {
+                    var departure = portMangements.Where(w => w.Id == mawb.DepatureId).FirstOrDefault();
+                    airImportDetails.DepatureName = departure?.PortName;
+                }
+
+                if (mawb.DestinationId != null)
+                {
+                    var destination = portMangements.Where(w => w.Id == mawb.DestinationId).FirstOrDefault();
+                    airImportDetails.DestinationAirportName = destination?.PortName;
+                    airImportDetails.DestinationCountry = destination?.Country;
+                }
+
+                if (data.Notify != null)
+                {
+                    var notify = tradePartners.Where(w => w.Id == Guid.Parse(data.Notify)).FirstOrDefault();
+                    airImportDetails.NotifyName = string.Concat(notify.TPName, "/", notify.TPCode);
+                }
+
+                if (data.ShipperId != null)
+                {
+                    var shipper = tradePartners.Where(w => w.Id == data.ShipperId).FirstOrDefault();
+                    airImportDetails.ShipperName = string.Concat(shipper.TPName, "/", shipper.TPCode);
+                }
+
+                if (mawb.OverseaAgentId != null)
+                {
+                    var overseaAgent = tradePartners.Where(w => w.Id == mawb.OverseaAgentId).FirstOrDefault();
+                    airImportDetails.OverseaAgentTPName = string.Concat(overseaAgent.TPName, "/", overseaAgent.TPCode);
+                    airImportDetails.IATA = overseaAgent.IataCode;
+                }
+
+                if (mawb.CarrierId != null)
+                {
+                    var carrier = tradePartners.Where(w => w.Id == mawb.CarrierId).FirstOrDefault();
+                    airImportDetails.CarrierTPName = string.Concat(carrier.TPName, "/", carrier.TPCode);
+                }
+
+                if (data.BillToId != null)
+                {
+                    var billTo = tradePartners.Where(w => w.Id == Guid.Parse(data.BillToId)).FirstOrDefault();
+                    airImportDetails.BillToName = string.Concat(billTo.TPName, "/", billTo.TPCode);
+                }
+
+                airImportDetails.AirWayBillNo = data.HawbNo;
+                airImportDetails.MawbNo = airImportDetails.MawbNo;
+                airImportDetails.DocNumber = mawb.FilingNo;
+                airImportDetails.ChargableWeight = string.Concat(mawb.ChargeableWeightKg, " ", mawb.ChargeableWeightLb);
+                airImportDetails.DepatureDate = mawb.DepatureDate;
+                airImportDetails.OPName = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
+                airImportDetails.MawbId = mawb.Id;
+                airImportDetails.HawbId = data.Id;
+                airImportDetails.HawbNo = data.HawbNo;
+                airImportDetails.MawbNo = mawb.MawbNo;
+            }
+
+            return airImportDetails;
         }
     }
 }

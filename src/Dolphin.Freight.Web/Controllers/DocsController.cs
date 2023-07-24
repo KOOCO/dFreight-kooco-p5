@@ -61,6 +61,7 @@ using JetBrains.Annotations;
 using System.Runtime.Intrinsics.Arm;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Configuration;
+using Dolphin.Freight.ImportExport.AirImports;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -77,6 +78,8 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IExportBookingAppService _exportBookingAppService;
         private readonly IAirExportMawbAppService _airExportMawbAppService;
         private readonly IAirExportHawbAppService _airExportHawbAppService;
+        private readonly IAirImportMawbAppService _airImportMawbAppService;
+        private readonly IAirImportHawbAppService _airImportHawbAppService;
         private readonly IInvoiceAppService _invoiceAppService;
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
@@ -85,7 +88,9 @@ namespace Dolphin.Freight.Web.Controllers
           ICurrentUser currentUser, IDropdownService dropdownService, IExportBookingAppService exportBookingAppService,
           IAirExportMawbAppService airExportMawbAppService,
           IAirExportHawbAppService airExportHawbAppService,
-          IInvoiceAppService invoiceAppService)
+          IInvoiceAppService invoiceAppService,
+          IAirImportMawbAppService airImportMawbAppService,
+          IAirImportHawbAppService airImportHawbAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -99,6 +104,8 @@ namespace Dolphin.Freight.Web.Controllers
             _airExportHawbAppService = airExportHawbAppService;
             _airExportMawbAppService = airExportMawbAppService;
             _invoiceAppService = invoiceAppService;
+            _airImportMawbAppService = airImportMawbAppService;
+            _airImportHawbAppService = airImportHawbAppService;
 
             ReportLog = new ReportLog.ReportLogDto();
         }
@@ -2615,171 +2622,6 @@ namespace Dolphin.Freight.Web.Controllers
             return View(airExportDetails);
         }
         
-        #region Private Functions
-
-        private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
-        {
-            var data = new AirExportDetails();
-
-            switch (pageType)
-            {
-                case FreightPageType.AEMBL:
-                    data = await _airExportMawbAppService.GetAirExportDetailsById(Id);
-                    break;
-                case FreightPageType.AEHBL:
-                    data = await _airExportHawbAppService.GetAirExportDetailsById(Id);
-                    break;
-                default:
-                    break;
-            }
-
-            data.PageType = pageType;
-
-            return data;
-        }
-
-        private async Task<OceanExportDetails> GetOceanExportDetailsByPageType(Guid Id, FreightPageType pageType = FreightPageType.OEMBL, bool isIncludeInvoices = false)
-        {
-            var data = new OceanExportDetails();
-
-            switch (pageType)
-            {
-                case FreightPageType.OEMBL:
-                    data = await _oceanExportMblAppService.GetOceanExportDetailsById(Id);
-                    break;
-                default:
-                    break;
-            }
-
-            if (data != null && isIncludeInvoices)
-            {
-                var queryType = pageType == FreightPageType.OEMBL ? 3 : 1;
-
-                QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = Id };
-
-                data.Invoices = (await _invoiceAppService.QueryInvoicesAsync(queryDto)).ToList();
-
-                if (data.Invoices != null && data.Invoices.Count > 0)
-                {
-                    data.AR = new List<InvoiceDto>();
-                    data.DC = new List<InvoiceDto>();
-                    data.AP = new List<InvoiceDto>();
-                    foreach (var dto in data.Invoices)
-                    {
-                        switch (dto.InvoiceType)
-                        {
-                            default:
-                                data.AR.Add(dto);
-                                break;
-                            case 1:
-                                data.DC.Add(dto);
-                                break;
-                            case 2:
-                                data.AP.Add(dto);
-                                break;
-                        }
-                    }
-
-                    if (data.AR.Any())
-                    {
-                        double arTotal = 0;
-                        foreach (var ar in data.AR)
-                        {
-                            arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
-                        }
-                        data.ARTotal = arTotal;
-                    }
-                    if (data.AP.Any())
-                    {
-                        double apTotal = 0;
-                        foreach (var ap in data.AP)
-                        {
-                            apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
-                        }
-
-                        data.APTotal = apTotal;
-                    }
-                    if (data.DC.Any())
-                    {
-                        double dcTotal = 0;
-                        foreach (var dc in data.DC)
-                        {
-                            dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
-                        }
-                        data.DCTotal = dcTotal;
-                    }
-
-                    data.Total = data.ARTotal - data.APTotal + data.DCTotal;
-
-                    data.InvoicesJson = JsonConvert.SerializeObject(data.Invoices);
-                }
-            }
-
-            data.PageType = pageType;
-
-            if (string.IsNullOrEmpty(data.MblOperatorName)) data.MblOperatorName = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
-
-            return data;
-        }
-        private async Task<List<AllHawbList>> GetAllHawbLists(Guid mawbId)
-        {
-            var data = await _airExportHawbAppService.GetHblCardsById(mawbId);
-            var allHawbLists = new List<AllHawbList>();
-
-            foreach (var hawb in data)
-            {
-                var mawb = await _airExportMawbAppService.GetAsync(mawbId);
-                var tradePartner = _dropdownService.TradePartnerLookupList;
-                var portManagement = _dropdownService.PortsManagementLookupList;
-
-                var allHawbs = new AllHawbList
-                {
-                    Id = string.Concat(hawb.Id),
-                    Hawb_No = hawb.HawbNo,
-                    Hawb_Pc = hawb.Package,
-                    Weight_LB = hawb.GrossWeightShprLB,
-                    Weight_KG = hawb.GrossWeightShprKG,
-                    Shipper = string.Concat(tradePartner.Where(w => w.Value == hawb.ActualShippedr).Select(s => s.Text)),
-                    Consignee = string.Concat(tradePartner.Where(w => w.Value == hawb.OverseaAgent).Select(s => s.Text)),
-                    Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.MawbCarrierId)).Select(s => s.Text)),
-                    Destination = string.Concat(portManagement.Where(s => s.Value == Convert.ToString(mawb.DestinationId)).Select(s => s.Text))
-                };
-                allHawbLists.Add(allHawbs);
-            }
-
-            return allHawbLists;
-        }
-        private async Task<List<AllHblList>> GetAllHblLists(Guid mblId)
-        {
-            var data = await _oceanExportHblAppService.GetHblCardsById(mblId);
-            var allHblLists = new List<AllHblList>();
-
-            foreach (var hbl in data)
-            {
-                var allHbls = new AllHblList
-                {
-                    Id = string.Concat(hbl.Id),
-                    Hbl_No = hbl.HblNo
-                };
-                allHblLists.Add(allHbls);
-            }
-            
-            return allHblLists;
-        }
-
-        private string GetViewUrlByPageType(FreightPageType pageType, string reportType)
-        {
-            string viewUrl = string.Empty;
-
-            viewUrl = pageType == FreightPageType.AEMBL
-                ? (reportType == "Summary") ? "Views/Docs/MawbProfitReport.cshtml" : "Views/Docs/MawbProfitReportDetailed.cshtml"
-                : "Views/Docs/HawbProfitReport.cshtml";
-
-            return viewUrl;
-        }
-
-        #endregion
-
         [HttpPost]
         public async Task<IActionResult> DocumentPackage(AirExportDetails model)
         {
@@ -3208,6 +3050,411 @@ namespace Dolphin.Freight.Web.Controllers
         {
             model.IsPDF = true;
             return await _generatePdf.GetPdf("Views/Docs/AllHblPackageLabelOceanExportMBL.cshtml", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MblProfitReportDetailed(Guid id, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType, true);
+
+            return View(oceanExportDetails);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MblProfitReportDetailed(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            model.Invoices = JsonConvert.DeserializeObject<List<InvoiceDto>>(model.InvoicesJson);
+
+            return await _generatePdf.GetPdf("Views/Docs/MblProfitReportDetailed.cshtml", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AirImportProfitReport(Guid id, FreightPageType pageType, string reportType)
+        {
+            string returnUrl = string.Empty;
+
+            QueryInvoiceDto queryDto = new QueryInvoiceDto();
+
+            var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);
+
+            var measurement = Convert.ToDouble(airImportDetails.ChargeableWeightKg) * 35.315;
+
+            var profitReport = new ProfitReportViewModel()
+            {
+                AgentName = airImportDetails.OverseaAgentTPName,
+                Consignee = airImportDetails.ConsigneeName,
+                Currency = "USD",
+                Customer = airImportDetails.CustomerName,
+                Operator = airImportDetails.OPName,
+                Measurement = measurement.ToString("0.00"),
+                PolEtd = string.Concat(airImportDetails.DepatureAirportName, "/", airImportDetails.DepatureDate).TrimStart('/'),
+                PodEtd = string.Concat(airImportDetails.DestinationAirportName, "/", airImportDetails.ArrivalDate).TrimStart('/'),
+                Sales = airImportDetails.SalesName,
+                Shipper = airImportDetails.CarrierTPName,
+                MawbNo = airImportDetails.MawbNo,
+                ChargableWeight = string.Concat(airImportDetails.ChargeableWeightKg, " / ", airImportDetails.ChargeableWeightLb),
+                PageType = pageType,
+                ReportType = reportType,
+                FileNo = airImportDetails.DocNumber,
+                HawbNo = airImportDetails.HawbNo,
+                SvcTermToName = Convert.ToString(airImportDetails.ServiceTermTypeTo),
+                SvcTermFromName = Convert.ToString(airImportDetails.ServiceTermTypeFrom)
+            };
+
+            if(pageType == FreightPageType.AIHBL)
+            {
+
+                // Hawb invoices
+                queryDto = new QueryInvoiceDto() { QueryType = 4, ParentId = id };
+
+                profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+
+                // Mawb invoices
+                queryDto = new QueryInvoiceDto() { QueryType = 5, ParentId = airImportDetails.MawbId };
+
+                var mawbInvoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+
+                if(mawbInvoices != null && mawbInvoices.Any())
+                {
+                    profitReport.Invoices ??= new List<InvoiceDto>();
+
+                    foreach (var mawbInvoice in mawbInvoices)
+                    {
+                        profitReport.Invoices.Add(mawbInvoice);
+                    }
+                }
+
+            }
+            else
+            {
+                queryDto = new QueryInvoiceDto() { QueryType = 5, ParentId = id };
+
+                profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+            }
+
+            profitReport.AR = new List<InvoiceDto>();
+            profitReport.AP = new List<InvoiceDto>();
+            profitReport.DC = new List<InvoiceDto>();
+
+            if (profitReport.Invoices != null && profitReport.Invoices.Count > 0)
+            {
+                foreach (var dto in profitReport.Invoices)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            profitReport.AR.Add(dto);
+                            break;
+                        case 1:
+                            profitReport.DC.Add(dto);
+                            break;
+                        case 2:
+                            profitReport.AP.Add(dto);
+                            break;
+                    }
+                }
+                profitReport.InvoicesJson = JsonConvert.SerializeObject(profitReport.Invoices);
+            }
+
+            if (profitReport.AR.Any())
+            {
+                double arTotal = 0;
+                foreach (var ar in profitReport.AR)
+                {
+                    arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                }
+                profitReport.ARTotal = arTotal;
+            }
+            if (profitReport.AP.Any())
+            {
+                double apTotal = 0;
+                foreach (var ap in profitReport.AP)
+                {
+                    apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                }
+
+                profitReport.APTotal = apTotal;
+            }
+            if (profitReport.DC.Any())
+            {
+                double dcTotal = 0;
+                foreach (var dc in profitReport.DC)
+                {
+                    dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                }
+                profitReport.DCTotal = dcTotal;
+            }
+
+            profitReport.Total = profitReport.ARTotal - profitReport.APTotal + profitReport.DCTotal;
+
+            returnUrl = pageType == FreightPageType.AIMBL
+                ? (reportType == "Summary") ? "Views/Docs/MawbProfitReport.cshtml" : "Views/Docs/MawbProfitReportDetailed.cshtml"
+                : "Views/Docs/HawbProfitReport.cshtml";
+
+            return View(returnUrl, profitReport);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AirImportProfitReport(ProfitReportViewModel model)
+        {
+            string returnUrl = model.PageType == FreightPageType.AIMBL
+                ? (model.ReportType == "Summary") ? "Views/Docs/MawbProfitReport.cshtml" : "Views/Docs/MawbProfitReportDetailed.cshtml"
+                : "Views/Docs/HawbProfitReport.cshtml";
+
+            model.IsPDF = true;
+
+            model.Invoices = JsonConvert.DeserializeObject<IList<InvoiceDto>>(model.InvoicesJson);
+
+            return await _generatePdf.GetPdf(returnUrl, model);
+        }
+
+
+        #region Private Functions
+
+        private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
+        {
+            var data = new AirExportDetails();
+
+            switch (pageType)
+            {
+                case FreightPageType.AEMBL:
+                    data = await _airExportMawbAppService.GetAirExportDetailsById(Id);
+                    break;
+                case FreightPageType.AEHBL:
+                    data = await _airExportHawbAppService.GetAirExportDetailsById(Id);
+                    break;
+                default:
+                    break;
+            }
+
+            data.PageType = pageType;
+
+            return data;
+        }
+
+        private async Task<AirImportDetails> GetAirImportDetailsByPageType(Guid Id, FreightPageType pageType)
+        {
+            var data = new AirImportDetails();
+
+            switch (pageType)
+            {
+                case FreightPageType.AIMBL:
+                    data = await _airImportMawbAppService.GetAirImportDetailsById(Id);
+                    break;
+                case FreightPageType.AIHBL:
+                    data = await _airImportHawbAppService.GetAirImportDetailsById(Id);
+                    break;
+                default:
+                    break;
+            }
+
+            data.PageType = pageType;
+
+            return data;
+        }
+
+        private async Task<OceanExportDetails> GetOceanExportDetailsByPageType(Guid Id, FreightPageType pageType = FreightPageType.OEMBL, bool isIncludeInvoices = false)
+        {
+            var data = new OceanExportDetails();
+
+            switch (pageType)
+            {
+                case FreightPageType.OEMBL:
+                    data = await _oceanExportMblAppService.GetOceanExportDetailsById(Id);
+                    break;
+                default:
+                    break;
+            }
+
+            if (data != null && isIncludeInvoices)
+            {
+                var queryType = pageType == FreightPageType.OEMBL ? 3 : 1;
+
+                QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = Id };
+
+                data.Invoices = (await _invoiceAppService.QueryInvoicesAsync(queryDto)).ToList();
+
+                if (data.Invoices != null && data.Invoices.Count > 0)
+                {
+                    data.AR = new List<InvoiceDto>();
+                    data.DC = new List<InvoiceDto>();
+                    data.AP = new List<InvoiceDto>();
+                    foreach (var dto in data.Invoices)
+                    {
+                        switch (dto.InvoiceType)
+                        {
+                            default:
+                                data.AR.Add(dto);
+                                break;
+                            case 1:
+                                data.DC.Add(dto);
+                                break;
+                            case 2:
+                                data.AP.Add(dto);
+                                break;
+                        }
+                    }
+
+                    if (data.AR.Any())
+                    {
+                        double arTotal = 0;
+                        foreach (var ar in data.AR)
+                        {
+                            arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                        }
+                        data.ARTotal = arTotal;
+                    }
+                    if (data.AP.Any())
+                    {
+                        double apTotal = 0;
+                        foreach (var ap in data.AP)
+                        {
+                            apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                        }
+
+                        data.APTotal = apTotal;
+                    }
+                    if (data.DC.Any())
+                    {
+                        double dcTotal = 0;
+                        foreach (var dc in data.DC)
+                        {
+                            dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                        }
+                        data.DCTotal = dcTotal;
+                    }
+
+                    data.Total = data.ARTotal - data.APTotal + data.DCTotal;
+
+                    data.InvoicesJson = JsonConvert.SerializeObject(data.Invoices);
+                }
+            }
+
+            data.PageType = pageType;
+
+            if (string.IsNullOrEmpty(data.MblOperatorName)) data.MblOperatorName = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
+
+            return data;
+        }
+        private async Task<List<AllHawbList>> GetAllHawbLists(Guid mawbId)
+        {
+            var data = await _airExportHawbAppService.GetHblCardsById(mawbId);
+            var allHawbLists = new List<AllHawbList>();
+
+            foreach (var hawb in data)
+            {
+                var mawb = await _airExportMawbAppService.GetAsync(mawbId);
+                var tradePartner = _dropdownService.TradePartnerLookupList;
+                var portManagement = _dropdownService.PortsManagementLookupList;
+
+                var allHawbs = new AllHawbList
+                {
+                    Id = string.Concat(hawb.Id),
+                    Hawb_No = hawb.HawbNo,
+                    Hawb_Pc = hawb.Package,
+                    Weight_LB = hawb.GrossWeightShprLB,
+                    Weight_KG = hawb.GrossWeightShprKG,
+                    Shipper = string.Concat(tradePartner.Where(w => w.Value == hawb.ActualShippedr).Select(s => s.Text)),
+                    Consignee = string.Concat(tradePartner.Where(w => w.Value == hawb.OverseaAgent).Select(s => s.Text)),
+                    Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.MawbCarrierId)).Select(s => s.Text)),
+                    Destination = string.Concat(portManagement.Where(s => s.Value == Convert.ToString(mawb.DestinationId)).Select(s => s.Text))
+                };
+                allHawbLists.Add(allHawbs);
+            }
+
+            return allHawbLists;
+        }
+        private async Task<List<AllHblList>> GetAllHblLists(Guid mblId)
+        {
+            var data = await _oceanExportHblAppService.GetHblCardsById(mblId);
+            var allHblLists = new List<AllHblList>();
+
+            foreach (var hbl in data)
+            {
+                var allHbls = new AllHblList
+                {
+                    Id = string.Concat(hbl.Id),
+                    Hbl_No = hbl.HblNo
+                };
+                allHblLists.Add(allHbls);
+            }
+
+            return allHblLists;
+        }
+
+        private string GetViewUrlByPageType(FreightPageType pageType, string reportType)
+        {
+            string viewUrl = string.Empty;
+
+            viewUrl = pageType == FreightPageType.AEMBL
+                ? (reportType == "Summary") ? "Views/Docs/MawbProfitReport.cshtml" : "Views/Docs/MawbProfitReportDetailed.cshtml"
+                : "Views/Docs/HawbProfitReport.cshtml";
+
+            return viewUrl;
+        }
+
+        private async Task<List<AllHawbListAirImport>> GetAllHawbListsAirImport(Guid mawbId)
+        {
+            var data = await _airImportHawbAppService.GetHawbCardsByMawbId(mawbId);
+            var allHawbLists = new List<AllHawbListAirImport>();
+
+            foreach (var hawb in data)
+            {
+                var tradePartner = _dropdownService.TradePartnerLookupList;
+                var packageUnit = _dropdownService.PackageUnitLookupList;
+
+                var allHawbs = new AllHawbListAirImport
+                {
+                    HawbNo = hawb.HawbNo,
+                    Packages = hawb.Package + " " + string.Concat(packageUnit.Where(w => w.Value == Convert.ToString(hawb.PackageUnit)).Select(s => s.Text)),
+                    Chargeable_Weight = hawb.ChargeableWeightKG,
+                    Customer = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.ConsigneeId)).Select(s => s.Text)),
+                    Shipper = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.ShipperId)).Select(s => s.Text))
+                };
+                allHawbLists.Add(allHawbs);
+            }
+
+            return allHawbLists;
+        }
+
+        private async Task<AirImportMawbDto> GetAirImportMawbDetailsByPageType(Guid id, FreightPageType pageType)
+        {
+            var data = new AirImportMawbDto();
+
+            switch (pageType)
+            {
+                case FreightPageType.AIMBL:
+                    data = await _airImportMawbAppService.GetAirImportMawbDetailsById(id);
+                    break;
+                default:
+                    break;
+            }
+
+            data.PageType = pageType;
+            data.AllHawbListAirImports = await GetAllHawbListsAirImport(id);
+            data.HawbJson = JsonConvert.SerializeObject(data.AllHawbListAirImports);
+
+            return data;
+        }
+
+        #endregion
+
+        public async Task<IActionResult> ManifestAirImport(Guid id, FreightPageType pageType)
+        {
+            var airImportDetails = await GetAirImportMawbDetailsByPageType(id, pageType);
+
+            return View(airImportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ManifestAirImport(AirImportMawbDto model)
+        {
+            model.IsPDF = true;
+
+            model.AllHawbListAirImports = JsonConvert.DeserializeObject<List<AllHawbListAirImport>>(model.HawbJson);
+
+            return await _generatePdf.GetPdf("Views/Docs/ManifestAirImport.cshtml", model);
         }
     }
 }

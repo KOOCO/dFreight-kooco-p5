@@ -254,17 +254,17 @@
                                         <i class="fa fa-lock"></i> @L["Btn:Lock"]
                                     </a>
                             <li class="dropdown-divider"></li>
-                            <a class='dropdown-item' href='#'>
-                                <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest"]
+                            <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ManifestAirImport", "Docs", new { id = Model.AirImportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIMBL })')">
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
                             </a>
                             <a class='dropdown-item' href='#'>
                                 <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
                             </a>
                             <li class="dropdown-divider"></li>
-                            <a class='dropdown-item' href='#'>
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AirImportProfitReport", "Docs", new { id = Model.AirImportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIMBL, reportType = "Summary" })')">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
                             </a>
-                            <a class='dropdown-item' href='#'>
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AirImportProfitReport", "Docs", new { id = Model.AirImportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIMBL, reportType = "Detailed" })')">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                             </a>
                             <li class="dropdown-divider"></li>

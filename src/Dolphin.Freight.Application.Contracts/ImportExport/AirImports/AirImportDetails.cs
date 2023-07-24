@@ -4,18 +4,18 @@ using Dolphin.Freight.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Permissions;
 using System.Text;
-using Volo.Abp.Application.Dtos;
 
 namespace Dolphin.Freight.ImportExport.AirImports
 {
-    public class AirImportMawbDto : AuditedEntityDto<Guid>
+    public class AirImportDetails
     {
-        public string HawbJson { get; set; }
-        public bool IsPDF { get; set; }
-        /// <summary>
-        /// 文件編號
-        /// </summary>
+        public string AirWayBillNo { get; set; }
+        public Guid? HawbId { get; set; }
+        public Guid MawbId { get; set; }
+        public string HawbNo { get; set; }
+        public string DocNumber { get; set; }
         public string FilingNo { get; set; }
         /// <summary>
         /// Mawb號碼
@@ -25,6 +25,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 分站ID
         /// </summary>
         public Guid? OfficeId { get; set; }
+        public string OfficeName { get; set; }
         /// <summary>
         /// 提單類別
         /// </summary> 
@@ -39,6 +40,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? OverseaAgentId { get; set; }
         public string OverseaAgentTPName { get; set; }
+        public string IATA { get; set; }
         /// 航空公司Id
         /// </summary>
         public Guid? CarrierId { get; set; }
@@ -47,14 +49,17 @@ namespace Dolphin.Freight.ImportExport.AirImports
         ///  航空公司財務窗口Id
         /// </summary>
         public Guid? AwbAcctCarrierId { get; set; }
+        public string AwbAcctCarrierName { get; set; }
         /// <summary>
         ///  共通運裝人Id
         /// </summary>
         public Guid? CoLoaderId { get; set; }
+        public string CoLoaderName { get; set; }
         /// <summary>
         /// 操作員Id
         /// </summary>
         public Guid? OPId { get; set; }
+        public string OPName { get; set; }
         /// <summary>
         /// 是否直單
         /// </summary>
@@ -63,36 +68,43 @@ namespace Dolphin.Freight.ImportExport.AirImports
         ///  託運人Id
         /// </summary>
         public Guid? ShipperId { get; set; }
+        public string ShipperName { get; set; }
         /// <summary>
         ///  收貨人Id
         /// </summary>
         public Guid? ConsigneeId { get; set; }
+        public string ConsigneeName { get; set; }
         /// <summary>
         ///  通知方Id
         /// </summary>
         public Guid? NotifyId { get; set; }
+        public string NotifyName { get; set; }
         /// <summary>
         ///  
         /// </summary>
         public Guid? CustomerId { get; set; }
+        public string CustomerName { get; set; }
         /// <summary>
         ///  
         /// </summary>
         public Guid? BillToId { get; set; }
+        public string BillToName { get; set; }
         // <summary>
         /// 操作員Id
         /// </summary>
         public Guid? SalesId { get; set; }
+        public string SalesName { get; set; }
         /// <summary>
         ///  出發地Id
         /// </summary>
         public Guid? DepatureId { get; set; }
+        public string DepatureName { get; set; }
         public string DepatureAirportName { get; set; }
         /// <summary>
         /// 出發日期
         /// </summary>
         [DataType(DataType.Date)]
-        public DateTime DepatureDate { get; set; }
+        public DateTime? DepatureDate { get; set; }
         /// <summary>
         /// 航班號碼
         /// </summary>
@@ -101,6 +113,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         ///  中轉航班1-Id
         /// </summary>
         public Guid? RouteTrans1Id { get; set; }
+        public string RouteTrans1Name { get; set; }
         /// <summary>
         /// 中轉航班1到達日期
         /// </summary>
@@ -119,9 +132,11 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 中轉航班1航空公司Id
         /// </summary>
         public Guid? RouteTrans1CarrierId { get; set; }
+        public string RouteTrans1CarrierName { get; set; }
         ///  中轉航班2-Id
         /// </summary>
         public Guid? RouteTrans2Id { get; set; }
+        public string RouteTrans2Name { get; set; }
         /// <summary>
         /// 中轉航班2到達日期
         /// </summary>
@@ -140,10 +155,12 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 中轉航班2航空公司Id
         /// </summary>
         public Guid? RouteTrans2CarrierId { get; set; }
+        public string RouteTrans2CarrierName { get; set; }
         /// <summary>
         ///  中轉航班3-Id
         /// </summary>
         public Guid? RouteTrans3Id { get; set; }
+        public string RouteTrans3Name { get; set; }
         /// <summary>
         /// 中轉航班3到達日期
         /// </summary>
@@ -162,6 +179,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 中轉航班3航空公司Id
         /// </summary>
         public Guid? RouteTrans3CarrierId { get; set; }
+        public string RouteTrans3CarrierName { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -188,6 +206,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? DestinationId { get; set; }
         public string DestinationAirportName { get; set; }
+        public string DestinationCountry { get; set; }
         /// <summary>
         /// 抵達日期
         /// </summary>
@@ -197,6 +216,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 
         /// </summary>
         public Guid? FreightLocationId { get; set; }
+        public string FreightLocationName { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -210,6 +230,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 件數Id
         /// </summary>
         public Guid? MawbPackageUnitId { get; set; }
+        public string MawbPackageUnitName { get; set; }
         /// <summary>
         /// 毛重公斤
         /// </summary>
@@ -254,6 +275,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 業務推廣人
         /// </summary>
         public Guid? BusinessReferredId { get; set; }
+        public string BusinessReferredName { get; set; }
         /// <summary>
         /// 是否電子商務
         /// </summary>
@@ -266,20 +288,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
-        public string DepartureName { get; set; }
-        public string DestinationName { get; set; }
-        public string CarrierName { get; set; }
+        public string ChargableWeight { get; set; }
         public FreightPageType PageType { get; set; }
-
-        public List<AllHawbListAirImport> AllHawbListAirImports { get; set; }
-    }
-    public class AllHawbListAirImport
-    {
-        public string HawbNo { get; set; }
-        public string Customer { get; set; }
-        public string Shipper { get; set; }
-        public string Packages { get; set; }
-        public string Chargeable_Weight { get; set; }
-        public string Freight_Weight { get; set; }
     }
 }
