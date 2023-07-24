@@ -3,7 +3,7 @@
 
     var queryListFilter = function () {
         return {
-            filter: $("input[name='Search'").val(),
+            filter: $("input[name='Keyword'").val(),
         };
     };
 
