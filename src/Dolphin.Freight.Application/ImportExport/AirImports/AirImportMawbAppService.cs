@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.ImportExport.AirExports;
+using Dolphin.Freight.Common;
 using Dolphin.Freight.Settings.PortsManagement;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Dolphin.Freight.TradePartners;
 
 namespace Dolphin.Freight.ImportExport.AirImports
 {
@@ -132,6 +134,42 @@ namespace Dolphin.Freight.ImportExport.AirImports
 
             await Repository.DeleteAsync(Id);
             await _airImportHawbAppService.DeleteManyAsync(ids);
+        }
+
+        public async Task<AirImportMawbDto> GetAirImportDetailsById(Guid Id)
+        {
+            var tradePartner = await _tradePartnerRepository.GetListAsync();
+            var portManagement = await _portsManagementAppService.GetListAsync();
+
+            var data = await Repository.GetAsync(Id);
+
+            var airImportDetails = ObjectMapper.Map<AirImportMawb, AirImportMawbDto>(data);
+
+            if(data.DepatureId is not null)
+            {
+                var departure = portManagement.Where(w => w.Id == data.DepatureId).FirstOrDefault();
+                airImportDetails.DepartureName = departure?.PortName;
+            }
+
+            if(data.DestinationId is not null)
+            {
+                var destination = portManagement.Where(w => w.Id == data.DestinationId).FirstOrDefault();
+                airImportDetails.DestinationName = destination?.PortName;
+            }
+             
+            if (data.CarrierId is not null)
+            {
+                var carrier = tradePartner.Where(w => w.Id == data.CarrierId).FirstOrDefault();
+                airImportDetails.CarrierName = string.Concat(carrier.TPName, "/", carrier.TPCode);
+            }
+
+            airImportDetails.MawbNo = data.MawbNo;
+            airImportDetails.FilingNo = data.FilingNo;
+            airImportDetails.FlightNo = data.FlightNo;
+            airImportDetails.DepatureDate = data.DepatureDate;
+            airImportDetails.ArrivalDate = data.ArrivalDate;
+
+            return airImportDetails;
         }
 
     }

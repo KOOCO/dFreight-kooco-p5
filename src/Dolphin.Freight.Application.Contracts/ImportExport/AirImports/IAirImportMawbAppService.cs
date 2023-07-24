@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dolphin.Freight.Common;
+using System;
+using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 
@@ -12,6 +14,6 @@ namespace Dolphin.Freight.ImportExport.AirImports
             CreateUpdateAirImportMawbDto
         >
     {
-
+        Task<AirImportMawbDto> GetAirImportDetailsById(Guid Id);
     }
 }
