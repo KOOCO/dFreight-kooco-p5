@@ -158,7 +158,7 @@ table tr {
 }
 
 </style>
-<link rel="stylesheet" href="@Url.Content("/Pages/Reports/Reports.css")" />
+
 <script>
    var zoom = 1;
     $(document).ready(function(){
@@ -181,7 +181,7 @@ table tr {
 
     function print()
     {
-        document.getElementById("form").submit();
+        document.getElementById("myForm").submit();
     }
 </script>
 
@@ -223,6 +223,19 @@ table tr {
     <input type="hidden" asp-for="@Model.PageType" />
     <input type="hidden" asp-for="@Model.ReportType" />
     <input type="hidden" asp-for="@Model.InvoicesJson" />
+    <input type="hidden" asp-for="@Model.AgentName" />
+     <input type="hidden" asp-for="@Model.PodEtd" />
+     <input type="hidden" asp-for="@Model.PolEtd" />
+     <input type="hidden" asp-for="@Model.PostDate" />
+     <input type="hidden" asp-for="@Model.Operator" />
+      <input type="hidden" asp-for="@Model.FileNo" />
+         <input type="hidden" asp-for="@Model.MawbNo" />
+     <input type="hidden" asp-for="@Model.HawbNo" />
+     <input type="hidden" asp-for="@Model.Measurement" />
+      <input type="hidden" asp-for="@Model.ChargableWeight" />
+       <input type="hidden" asp-for="@Model.Shipper" />
+       
+
 <div id="main" class="edit">              
     <div class="wrap landscape">
         <div class="header">
@@ -324,13 +337,13 @@ table tr {
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>SERVICE TERM :</td>
-                                <td></td>
+                                <td style="white-space:nowrap">SERVICE TERM :</td>
+                                <td style="padding-left:20px"></td>
                             </tr>
                             
                                 <tr style="display:flex">
-                                    <td>MEASUREMENT:</td>
-                                    <td>@Model.Measurement</td>
+                                    <td style="white-space:nowrap">MEASUREMENT:</td>
+                                    <td style="padding-left:20px">@Model.Measurement</td>
                                 </tr>
                             
                             
