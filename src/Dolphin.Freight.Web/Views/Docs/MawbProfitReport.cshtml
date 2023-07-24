@@ -102,6 +102,7 @@
 <form id="myForm" name="myForm" method="POST">
     <abp-input type="hidden" asp-for="@Model.PageType" />
     <abp-input type="hidden" asp-for="@Model.ReportType" />
+    <abp-input type="hidden" asp-for="@Model.AgentName" />
 
     <div class="edit">
         <div class="wrap">
@@ -149,7 +150,7 @@
                         </tr>
                         <tr>
                             <td>AGENT NAME:</td>
-                            <td>@Model.Consignee <input type="hidden" asp-for="@Model.Consignee" /></td>
+                            <td>@Model.AgentName </td>
                             <td>P.O.L / ETD:</td>
                             <td>@Model.PolEtd <input type="hidden" asp-for="@Model.PolEtd" /></td>
                         </tr>
@@ -265,7 +266,7 @@
                         @foreach (var invoice in Model.Invoices)
                         {
                          <tr>
-                            <td class="td text-center">H</td>
+                            <td class="td text-center">@((Model.PageType == Dolphin.Freight.Common.FreightPageType.AIMBL || Model.PageType == Dolphin.Freight.Common.FreightPageType.AEMBL)? "M" : "H")</td>
                             <td class="td">
                                 <div class="auto-font-size __width-bl-no"> <span> @Model.MawbNo</span></div>
                                 <div class="auto-font-size __width-invoice">
@@ -289,11 +290,15 @@
                             </td>
                         </tr>
                        }
-                       <tr>
-                           <td colspan="2"></td>
-                           <td colspan="4">Shipper: @Model.Shipper <input type="hidden" asp-asp-for="@Model.Shipper" /></td>
-                           <td colspan="2" class="text-right"></td>
-                       </tr>
+
+                       @if(Model.PageType == Dolphin.Freight.Common.FreightPageType.AEMBL || Model.PageType == Dolphin.Freight.Common.FreightPageType.AEHBL)
+                        {
+                            <tr>
+                                <td colspan="2"></td>
+                                <td colspan="4">Shipper: @Model.Shipper <input type="hidden" asp-asp-for="@Model.Shipper" /></td>
+                                <td colspan="2" class="text-right"></td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
 
