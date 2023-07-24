@@ -62,7 +62,6 @@ using System.Runtime.Intrinsics.Arm;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Configuration;
 using Dolphin.Freight.ImportExport.AirImports;
-using OfficeOpenXml.Table.PivotTable;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -80,6 +79,7 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IAirExportMawbAppService _airExportMawbAppService;
         private readonly IAirExportHawbAppService _airExportHawbAppService;
         private readonly IAirImportMawbAppService _airImportMawbAppService;
+        private readonly IAirImportHawbAppService _airImportHawbAppService;
         private readonly IInvoiceAppService _invoiceAppService;
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
@@ -89,7 +89,8 @@ namespace Dolphin.Freight.Web.Controllers
           IAirExportMawbAppService airExportMawbAppService,
           IAirExportHawbAppService airExportHawbAppService,
           IInvoiceAppService invoiceAppService,
-          IAirImportMawbAppService airImportMawbAppService)
+          IAirImportMawbAppService airImportMawbAppService,
+          IAirImportHawbAppService airImportHawbAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -104,6 +105,7 @@ namespace Dolphin.Freight.Web.Controllers
             _airExportMawbAppService = airExportMawbAppService;
             _invoiceAppService = invoiceAppService;
             _airImportMawbAppService = airImportMawbAppService;
+            _airImportHawbAppService = airImportHawbAppService;
 
             ReportLog = new ReportLog.ReportLogDto();
         }
@@ -3358,7 +3360,66 @@ namespace Dolphin.Freight.Web.Controllers
             return viewUrl;
         }
 
+        private async Task<List<AllHawbListAirImport>> GetAllHawbListsAirImport(Guid mawbId)
+        {
+            var data = await _airImportHawbAppService.GetHawbCardsByMawbId(mawbId);
+            var allHawbLists = new List<AllHawbListAirImport>();
+
+            foreach (var hawb in data)
+            {
+                var tradePartner = _dropdownService.TradePartnerLookupList;
+                var packageUnit = _dropdownService.PackageUnitLookupList;
+
+                var allHawbs = new AllHawbListAirImport
+                {
+                    HawbNo = hawb.HawbNo,
+                    Packages = hawb.Package + " " + string.Concat(packageUnit.Where(w => w.Value == Convert.ToString(hawb.PackageUnit)).Select(s => s.Text)),
+                    Chargeable_Weight = hawb.ChargeableWeightKG,
+                    Customer = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.ConsigneeId)).Select(s => s.Text)),
+                    Shipper = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(hawb.ShipperId)).Select(s => s.Text))
+                };
+                allHawbLists.Add(allHawbs);
+            }
+
+            return allHawbLists;
+        }
+
+        private async Task<AirImportMawbDto> GetAirImportMawbDetailsByPageType(Guid id, FreightPageType pageType)
+        {
+            var data = new AirImportMawbDto();
+
+            switch (pageType)
+            {
+                case FreightPageType.AIMBL:
+                    data = await _airImportMawbAppService.GetAirImportMawbDetailsById(id);
+                    break;
+                default:
+                    break;
+            }
+
+            data.PageType = pageType;
+            data.AllHawbListAirImports = await GetAllHawbListsAirImport(id);
+            data.HawbJson = JsonConvert.SerializeObject(data.AllHawbListAirImports);
+
+            return data;
+        }
+
         #endregion
 
+        public async Task<IActionResult> ManifestAirImport(Guid id, FreightPageType pageType)
+        {
+            var airImportDetails = await GetAirImportMawbDetailsByPageType(id, pageType);
+
+            return View(airImportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ManifestAirImport(AirImportMawbDto model)
+        {
+            model.IsPDF = true;
+
+            model.AllHawbListAirImports = JsonConvert.DeserializeObject<List<AllHawbListAirImport>>(model.HawbJson);
+
+            return await _generatePdf.GetPdf("Views/Docs/ManifestAirImport.cshtml", model);
+        }
     }
 }
