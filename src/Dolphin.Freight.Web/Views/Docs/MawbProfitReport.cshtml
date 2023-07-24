@@ -90,7 +90,7 @@
                             <td style="width: 35%"></td>
                             <td style="width: 15%"></td>
                             <td style="width: 10%"></td>
-                            <td style="width: 20%; text-align: center">Air export</td>
+                            <td style="width: 20%; text-align: center">@((Model.PageType == Dolphin.Freight.Common.FreightPageType.AIHBL || Model.PageType == Dolphin.Freight.Common.FreightPageType.AIMBL)? "AIR IMPORT": "AIR EXPORT")</td>
                         </tr>
                         <tr style="border-bottom: 2pt solid #000">
                             <td style="width: 10%"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CURRENCY</font></font></td>
@@ -147,26 +147,25 @@
                     <tbody>
                         <tr>
                             <td>
-                                <table class="table-padding">
+                                <table class="table-padding td text-bold">
                                     <colgroup>
                                         <col class="w-33">
                                         <col class="w-67">
                                     </colgroup>
                                     <tbody>
-                                        <tr class="text-grey text-light">
-                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">FILE NO :</font></font></td>
-                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.FileNo
-                                            <input type="hidden" asp-for="@Model.FileNo" />
-                                            </font></font></td>
+                                        <tr>
+                                            <td>FILE NO :</td>
+                                            <td>@Model.FileNo
+                                            <input type="hidden" asp-for="@Model.FileNo" /></td>
                                         </tr>
-                                        <tr class="text-grey text-light">
-                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">MAWB NO. :</font></font></td>
+                                        <tr>
+                                            <td>MAWB NO. :</td>
                                             <td>@Model.MawbNo
                                             <input type="hidden" asp-for="@Model.MawbNo" />
                                             </td>
                                         </tr>
-                                        <tr class="text-grey text-light">
-                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">WEIGHT :</font></font></td>
+                                        <tr>
+                                            <td>WEIGHT :</td>
                                             <td>@Model.ChargableWeight
                                             <input type="hidden" asp-for="@Model.ChargableWeight" />
                                             </td>
@@ -175,22 +174,22 @@
                                 </table>
                             </td>
                             <td>
-                                <table class="table-padding">
+                                <table class="table-padding td text-bold">
                                     <colgroup>
                                         <col class="w-31">
                                         <col class="w-69">
                                     </colgroup>
                                     <tbody>
-                                        <tr class="text-grey text-light">
-                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">SHIP MODE:</font></font></td>
-                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"></font></font></td>
-                                        </tr>
-                                        <tr class="text-grey text-light">
-                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">SERVICE TERM :</font></font></td>
+                                        <tr>
+                                            <td class="col-padding">SHIP MODE:</td>
                                             <td class="col-padding"></td>
                                         </tr>
-                                        <tr class="text-grey text-light">
-                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">MEASUREMENT :</font></font></td>
+                                        <tr>
+                                            <td class="col-padding">SERVICE TERM :</td>
+                                            <td class="col-padding"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-padding" style="white-space: nowrap;">MEASUREMENT :</td>
                                             <td class="col-padding">@Model.Measurement <input type="hidden" asp-for="@Model.Measurement" /></td>
                                         </tr>
 

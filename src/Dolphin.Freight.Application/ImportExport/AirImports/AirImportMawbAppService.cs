@@ -1,4 +1,5 @@
-﻿using Dolphin.Freight.ImportExport.AirExports;
+﻿using Dolphin.Freight.Common;
+using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.Settings.PortsManagement;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.ObjectMapping;
 
 namespace Dolphin.Freight.ImportExport.AirImports
 {
@@ -132,6 +134,69 @@ namespace Dolphin.Freight.ImportExport.AirImports
 
             await Repository.DeleteAsync(Id);
             await _airImportHawbAppService.DeleteManyAsync(ids);
+        }
+
+        public async Task<AirImportDetails> GetAirImportDetailsById(Guid Id)
+        {
+            var tradePartners = await _tradePartnerRepository.GetListAsync();
+            var portMangements = await _portsManagementAppService.GetListAsync();
+
+            var data = await Repository.GetAsync(Id);
+
+            var airImportDetails = ObjectMapper.Map<AirImportMawb, AirImportDetails>(data);
+
+            if (data.ConsigneeId != null)
+            {
+                var consignee = tradePartners.Where(w => w.Id == data.ConsigneeId).FirstOrDefault();
+                airImportDetails.ConsigneeName = string.Concat(consignee.TPName, "/", consignee.TPCode);
+            }
+
+            if (data.DepatureId != null)
+            {
+                var departure = portMangements.Where(w => w.Id == data.DepatureId).FirstOrDefault();
+                airImportDetails.DepatureName = departure?.PortName;
+            }
+
+            if (data.DestinationId != null)
+            {
+                var destination = portMangements.Where(w => w.Id == data.DestinationId).FirstOrDefault();
+                airImportDetails.DestinationAirportName = destination?.PortName;
+                airImportDetails.DestinationCountry = destination?.Country;
+            }
+
+            if (data.NotifyId != null)
+            {
+                var notify = tradePartners.Where(w => w.Id == data.NotifyId).FirstOrDefault();
+                airImportDetails.NotifyName = string.Concat(notify.TPName, "/", notify.TPCode);
+            }
+
+            if (data.ShipperId != null)
+            {
+                var shipper = tradePartners.Where(w => w.Id == data.ShipperId).FirstOrDefault();
+                airImportDetails.ShipperName = string.Concat(shipper.TPName, "/", shipper.TPCode);
+            }
+
+            if (data.OverseaAgentId != null)
+            {
+                var overseaAgent = tradePartners.Where(w => w.Id == data.OverseaAgentId).FirstOrDefault();
+                airImportDetails.OverseaAgentTPName = string.Concat(overseaAgent.TPName, "/", overseaAgent.TPCode);
+                airImportDetails.IATA = overseaAgent.IataCode;
+            }
+
+            if (data.CarrierId != null)
+            {
+                var carrier = tradePartners.Where(w => w.Id == data.CarrierId).FirstOrDefault();
+                airImportDetails.CarrierTPName = string.Concat(carrier.TPName, "/", carrier.TPCode);
+            }
+
+            airImportDetails.AirWayBillNo = data.MawbNo;
+            airImportDetails.MawbNo = airImportDetails.MawbNo;
+            airImportDetails.DocNumber = data.FilingNo;
+            airImportDetails.ChargableWeight = string.Concat(data.ChargeableWeightKg, " ", data.ChargeableWeightLb);
+            airImportDetails.DepatureDate = data.DepatureDate;
+            airImportDetails.OPName = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
+
+            return airImportDetails;
         }
 
     }

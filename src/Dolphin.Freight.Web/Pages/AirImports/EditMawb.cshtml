@@ -475,7 +475,7 @@
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
                                     </a>
                                     <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AirImportProfitReport", "Docs", new { id = Model.MawbModel.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIMBL, reportType = "Summary" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
                                     </a>
                                     <a class='dropdown-item' href='#'>

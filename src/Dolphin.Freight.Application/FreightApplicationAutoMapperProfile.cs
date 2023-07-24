@@ -192,6 +192,8 @@ public class FreightApplicationAutoMapperProfile : Profile
         // AirImportMawb
         CreateMap<AirImportMawb, AirImportMawbDto>();
         CreateMap<CreateUpdateAirImportMawbDto, AirImportMawb>();
+        CreateMap<AirImportMawb, AirImportDetails>();
+        CreateMap<AirImportHawb, AirImportDetails>();
 
         // AirExportHawb
         CreateMap<AirImportHawb, AirImportHawbDto>();
