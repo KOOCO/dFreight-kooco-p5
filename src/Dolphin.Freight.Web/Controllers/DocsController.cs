@@ -3075,6 +3075,8 @@ namespace Dolphin.Freight.Web.Controllers
         {
             string returnUrl = string.Empty;
 
+            QueryInvoiceDto queryDto = new QueryInvoiceDto();
+
             var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);
 
             var measurement = Convert.ToDouble(airImportDetails.ChargeableWeightKg) * 35.315;
@@ -3095,13 +3097,43 @@ namespace Dolphin.Freight.Web.Controllers
                 ChargableWeight = string.Concat(airImportDetails.ChargeableWeightKg, " / ", airImportDetails.ChargeableWeightLb),
                 PageType = pageType,
                 ReportType = reportType,
-                FileNo = airImportDetails.DocNumber
+                FileNo = airImportDetails.DocNumber,
+                HawbNo = airImportDetails.HawbNo,
+                SvcTermToName = Convert.ToString(airImportDetails.ServiceTermTypeTo),
+                SvcTermFromName = Convert.ToString(airImportDetails.ServiceTermTypeFrom)
             };
 
-            var queryType = pageType == FreightPageType.AIMBL ? 5 : 4;
+            if(pageType == FreightPageType.AIHBL)
+            {
 
-            QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = id };
-            profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+                // Hawb invoices
+                queryDto = new QueryInvoiceDto() { QueryType = 4, ParentId = id };
+
+                profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+
+                // Mawb invoices
+                queryDto = new QueryInvoiceDto() { QueryType = 5, ParentId = airImportDetails.MawbId };
+
+                var mawbInvoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+
+                if(mawbInvoices != null && mawbInvoices.Any())
+                {
+                    profitReport.Invoices ??= new List<InvoiceDto>();
+
+                    foreach (var mawbInvoice in mawbInvoices)
+                    {
+                        profitReport.Invoices.Add(mawbInvoice);
+                    }
+                }
+
+            }
+            else
+            {
+                queryDto = new QueryInvoiceDto() { QueryType = 5, ParentId = id };
+
+                profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+            }
+
             profitReport.AR = new List<InvoiceDto>();
             profitReport.AP = new List<InvoiceDto>();
             profitReport.DC = new List<InvoiceDto>();
@@ -3210,6 +3242,9 @@ namespace Dolphin.Freight.Web.Controllers
             {
                 case FreightPageType.AIMBL:
                     data = await _airImportMawbAppService.GetAirImportDetailsById(Id);
+                    break;
+                case FreightPageType.AIHBL:
+                    data = await _airImportHawbAppService.GetAirImportDetailsById(Id);
                     break;
                 default:
                     break;

@@ -35,5 +35,7 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public string InvoicesJson { get; set; }
         public string ReportType { get; set; }
         public string AWbNo { get; set; }
+        public string SvcTermToName { get; set; }
+        public string SvcTermFromName { get; set; }
     }
 }

@@ -12,6 +12,9 @@ namespace Dolphin.Freight.ImportExport.AirImports
     public class AirImportDetails
     {
         public string AirWayBillNo { get; set; }
+        public Guid? HawbId { get; set; }
+        public Guid MawbId { get; set; }
+        public string HawbNo { get; set; }
         public string DocNumber { get; set; }
         public string FilingNo { get; set; }
         /// <summary>

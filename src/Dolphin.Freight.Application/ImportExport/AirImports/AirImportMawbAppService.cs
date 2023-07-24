@@ -196,6 +196,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
             airImportDetails.ChargableWeight = string.Concat(data.ChargeableWeightKg, " ", data.ChargeableWeightLb);
             airImportDetails.DepatureDate = data.DepatureDate;
             airImportDetails.OPName = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
+            airImportDetails.MawbId = data.Id;
+
 
             return airImportDetails;
         }
