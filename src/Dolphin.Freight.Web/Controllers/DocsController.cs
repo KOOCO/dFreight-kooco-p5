@@ -62,6 +62,7 @@ using System.Runtime.Intrinsics.Arm;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Configuration;
 using Dolphin.Freight.ImportExport.AirImports;
+using OfficeOpenXml.Table.PivotTable;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -3164,7 +3165,9 @@ namespace Dolphin.Freight.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AirImportProfitReport(ProfitReportViewModel model)
         {
-            string returnUrl = GetViewUrlByPageType(model.PageType, model.ReportType);
+            string returnUrl = model.PageType == FreightPageType.AIMBL
+                ? (model.ReportType == "Summary") ? "Views/Docs/MawbProfitReport.cshtml" : "Views/Docs/MawbProfitReportDetailed.cshtml"
+                : "Views/Docs/HawbProfitReport.cshtml";
 
             model.IsPDF = true;
 
