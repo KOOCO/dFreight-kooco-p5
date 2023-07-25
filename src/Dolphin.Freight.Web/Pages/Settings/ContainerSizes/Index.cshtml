@@ -41,11 +41,11 @@
         </div>
         <div id='hidden' class='collapse' style="text-align: center">
             <div class="row col-12" style="text-align: center">
-                <abp-column size="_6">
-                    <abp-input asp-for="Search" label="Keyword" inline="true" />
+                <abp-column size="_6" class="filterDiv">
+                    <abp-input asp-for="Search" label="Keyword" class="ml-4 mr-3" />
                 </abp-column>
-                <abp-column size="_3">
-                    <abp-select asp-for="Active" asp-items="@Model.StatusList" inline="true" />
+                <abp-column size="_3" class="filterDiv">
+                    <abp-select asp-for="Active" asp-items="@Model.StatusList" class="ml-4" />
                 </abp-column>
             </div>
             <div class="col-12" style="text-align: center">
@@ -89,4 +89,9 @@
     #drop_CarrierId {
         overflow: hidden;
     }
+
+    .filterDiv div {
+        display: flex;
+    }
+
 </style>
