@@ -5,11 +5,7 @@ using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
-<<<<<<< HEAD
-using Org.BouncyCastle.Cms;
-=======
 using Newtonsoft.Json;
->>>>>>> main
 using System;
 using System.Collections.Generic;
 using System.Linq;
