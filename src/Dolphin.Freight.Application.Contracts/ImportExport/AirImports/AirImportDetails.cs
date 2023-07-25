@@ -307,6 +307,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string GrossWeightStr { get; set; }
         public string VolumeWeightStr { get; set; }
         public string MeasurementStr { get; set; }
+        public string CurrentAgentId { get; set; }
         public string CurrentAgent { get; set; }
         public string PackagesStr { get; set; }
         public FreightPageType PageType { get; set; }
@@ -325,6 +326,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
     }
     public class OverSeaAgentAirImport
     {
+        public string Id { get; set; }
         public string Name { get; set; }
     }
     public class HawbNo
