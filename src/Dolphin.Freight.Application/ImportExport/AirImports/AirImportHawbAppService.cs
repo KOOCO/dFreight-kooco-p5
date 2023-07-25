@@ -263,7 +263,19 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     var freightLocation = tradePartners.Where(w => w.Id == Guid.Parse(data.FreightLocation)).FirstOrDefault();
                     airImportDetails.FreightLocationName = string.Concat(freightLocation.TPName, "/", freightLocation.TPCode);
                 }
-                
+
+                if (data.Trucker!=null)
+                {
+                    var trucker = tradePartners.Where(w => w.Id == Guid.Parse(data.Trucker)).FirstOrDefault();
+                    airImportDetails.HTruckerName = string.Concat(trucker.TPName, "/", trucker.TPCode);
+                }
+
+                if (data.FinalDestination != null)
+                {
+                    var finalDestination = tradePartners.Where(w => w.Id == Guid.Parse(data.FinalDestination)).FirstOrDefault();
+                    airImportDetails.FinalDestination = string.Concat(finalDestination.TPName, "/", finalDestination.TPCode);
+                }
+
                 var subHawbs = new List<SubHawbs>();
 
                 object subHawbsStr;

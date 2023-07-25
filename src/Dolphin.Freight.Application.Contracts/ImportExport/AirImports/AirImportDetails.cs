@@ -110,6 +110,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 航班號碼
         /// </summary>
         public string FlightNo { get; set; }
+        public string HTruckerName { get; set; }
         /// <summary>
         ///  中轉航班1-Id
         /// </summary>

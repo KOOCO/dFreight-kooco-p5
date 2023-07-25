@@ -3254,7 +3254,7 @@ namespace Dolphin.Freight.Web.Controllers
                 Remark = data.Remark,
                 Shipper = data.ShipperName,
                 SubHawb = string.Join(",", data.SubHawbs?.Select(s => s.SubHAWB)),
-                Trucker = data.Trucker,
+                Trucker = data.HTruckerName,
                 Amount = data.SubHawbs?.Sum(s => Convert.ToDouble(s.Amount)),
                 VIA = data.CarrierTPName,
                 PrepBy = data.OPName
