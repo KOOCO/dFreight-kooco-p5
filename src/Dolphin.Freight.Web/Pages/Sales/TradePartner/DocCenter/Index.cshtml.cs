@@ -1,4 +1,5 @@
 using Dolphin.Freight.ImportExport.Attachments;
+using Dolphin.Freight.TradePartners;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
+using static Dolphin.Freight.Web.Pages.Sales.TradePartner.EditTradePartnerInfoModel;
 
 namespace Dolphin.Freight.Web.Pages.Sales.TradePartner.DocCenter
 {
@@ -14,17 +16,20 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner.DocCenter
     {
         public Guid Id { get; set; }
         public List<AttachmentDto> FileList { get; set; }
-
+        [BindProperty]
+        public CreateTradePartnerInfoViewModel TPInfoModel { get; set; }
         private readonly int fileType = 10;
         private readonly string url = "/Sales/TradePartner/DocCenter/";
 
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IAttachmentAppService _attachmentAppService;
+        private readonly ITradePartnerAppService _tradePartnerAppService;
 
-        public IndexModel(IWebHostEnvironment webHostEnvironment, IAttachmentAppService attachmentAppService)
+        public IndexModel(IWebHostEnvironment webHostEnvironment, IAttachmentAppService attachmentAppService,  ITradePartnerAppService tradePartnerAppService)
         {
             _webHostEnvironment = webHostEnvironment;
             _attachmentAppService = attachmentAppService;
+            _tradePartnerAppService = tradePartnerAppService;
         }
 
         public virtual string GetFileSize(string filename)
@@ -51,6 +56,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner.DocCenter
             }
 
             Id = id;
+            TradePartnerDto tradePartnerDto = await _tradePartnerAppService.GetTPAsync(id);
             QueryAttachmentDto dto = new() {
                 QueryId = Id,
                 QueryType = fileType,
@@ -61,38 +67,61 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner.DocCenter
             return Page();
         }
 
-        public async Task<IActionResult> OnPostUploader(IFormFile formFile, Guid id)
+        //public async Task<IActionResult> OnPostUploader(IFormFile formFile, Guid id)
+        //{
+        //    if (formFile == null)
+        //    {
+        //        return Redirect(url + id);
+        //    }
+
+        //    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload", "TradePartner", "DocCenter", id.ToString());
+        //    if (!Directory.Exists(uploadsFolder))
+        //    {
+        //        DirectoryInfo folder = Directory.CreateDirectory(uploadsFolder);
+        //    }
+
+        //    string filePath = Path.Combine(uploadsFolder, formFile.FileName);
+        //    using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //    {
+        //        formFile.CopyTo(fileStream);
+        //    }
+
+        //    string filename = formFile.FileName;
+        //    CreateUpdateAttachmentDto dto = new CreateUpdateAttachmentDto() { 
+        //        FileName = filename, 
+        //        ShowName = filename, 
+        //        Ftype = fileType, 
+        //        Fid = id, 
+        //        Size = formFile.Length / 1024,
+        //    };
+
+        //    await _attachmentAppService.CreateAsync(dto);
+        //    return Redirect(url + id);
+        //}
+        public async Task<IActionResult> OnPostUploader(IFormFile Uploader, Guid id, int ftype)
         {
-            if (formFile == null)
+            string fname = "";
+            if (Uploader != null)
             {
-                return Redirect(url + id);
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload", "TradePartner", "DocCenter", id.ToString());
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    DirectoryInfo folder = Directory.CreateDirectory(uploadsFolder);
+                }
+                string filePath = Path.Combine(uploadsFolder, Uploader.FileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    Uploader.CopyTo(fileStream);
+                }
+                fname = Uploader.FileName;
+                CreateUpdateAttachmentDto dto = new CreateUpdateAttachmentDto() { FileName = fname, ShowName = fname, Ftype = ftype, Fid = id, Size = Uploader.Length / 1024 };
+                await _attachmentAppService.CreateAsync(dto);
+                return new ObjectResult(new { status = "success", fname = fname, udate = DateTime.Now.ToString("yyyy-MM-dd"), size = Uploader.Length / 1024 });
             }
+            return new ObjectResult(new { status = "fail" });
 
-            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload", "TradePartner", "DocCenter", id.ToString());
-            if (!Directory.Exists(uploadsFolder))
-            {
-                DirectoryInfo folder = Directory.CreateDirectory(uploadsFolder);
-            }
-
-            string filePath = Path.Combine(uploadsFolder, formFile.FileName);
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                formFile.CopyTo(fileStream);
-            }
-
-            string filename = formFile.FileName;
-            CreateUpdateAttachmentDto dto = new CreateUpdateAttachmentDto() { 
-                FileName = filename, 
-                ShowName = filename, 
-                Ftype = fileType, 
-                Fid = id, 
-                Size = formFile.Length / 1024,
-            };
-
-            await _attachmentAppService.CreateAsync(dto);
-            return Redirect(url + id);
         }
-
         public async Task<IActionResult> OnGetDownload(Guid id, string filename)
         {
             if (filename == null)
@@ -118,6 +147,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner.DocCenter
             {
                 return new ObjectResult(new { status = "fail", message = "File Not Found" });
             }
+         
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(Guid id, Guid fileId, string filename)
