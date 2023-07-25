@@ -107,7 +107,7 @@
                     <i class="fa fa-share"></i> @L["Btn:Move"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='#'>
+                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ArrivalNoticeAirImportHawb", "Docs", new { id = Model.HawbModel.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
                 </a>
                 <a class='dropdown-item' href='#'>

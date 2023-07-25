@@ -44,7 +44,6 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc;
-using Volo.Abp.Users;
 using Wkhtmltopdf.NetCore;
 using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -3300,6 +3299,26 @@ namespace Dolphin.Freight.Web.Controllers
             model.IsPDF = true;
 
             return await _generatePdf.GetPdf("Views/Docs/ConsolidatedArrivalNoticeAirImport.cshtml", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ArrivalNoticeAirImportHawb(Guid id, FreightPageType pageType)
+        {
+            var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);
+
+            airImportDetails.GrossWeightStr = airImportDetails.GrossWeightKg == 0 ? "" : string.Concat(airImportDetails.GrossWeightKg) + " KGS " + (double.Parse(string.Concat(airImportDetails.GrossWeightKg)) * 2.20462).ToString("0.00") + " LBS";
+            airImportDetails.ChargableWeightStr = airImportDetails.ChargeableWeightKg == 0 ? "" : string.Concat(airImportDetails.ChargeableWeightKg) + " KGS " + (double.Parse(string.Concat(airImportDetails.ChargeableWeightKg)) * 2.20462).ToString("0.00") + " LBS";
+            airImportDetails.VolumeWeightStr = airImportDetails.VolumeWeightKg == 0 ? "" : string.Concat(airImportDetails.VolumeWeightKg) + " KGS " + (double.Parse(string.Concat(airImportDetails.VolumeWeightKg)) * 2.20462).ToString("0.00") + " LBS";
+            airImportDetails.MeasurementStr = airImportDetails.VolumeWeightCbm == 0 ? "" : string.Concat(airImportDetails.VolumeWeightCbm) + " CBM " + (double.Parse(string.Concat(airImportDetails.VolumeWeightCbm)) * 35.315).ToString("0.00") + " CFT";
+
+            return View(airImportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ArrivalNoticeAirImportHawb(AirImportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/ArrivalNoticeAirImportHawb.cshtml", model);
         }
 
         #region Private Functions

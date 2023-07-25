@@ -13,6 +13,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
     {
         public bool IsPDF { get; set; }
         public string AirWayBillNo { get; set; }
+        public string TotalPackage { get; set; }
         public Guid? HawbId { get; set; }
         public Guid MawbId { get; set; }
         public string HawbNo { get; set; }
@@ -62,6 +63,10 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? OPId { get; set; }
         public string OPName { get; set; }
+        public string HItNo { get; set; }
+        public string HItDate { get; set; }
+        public string HItLocation { get; set; }
+        public string HMark { get; set; }
         /// <summary>
         /// 是否直單
         /// </summary>
@@ -87,6 +92,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public Guid? CustomerId { get; set; }
         public string CustomerName { get; set; }
         public string CustomBroker { get; set; }
+        public string CustomBrokerName { get; set; }
+        public string HPackageUnitName { get; set; }
         /// <summary>
         ///  
         /// </summary>
@@ -221,6 +228,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? FreightLocationId { get; set; }
         public string FreightLocationName { get; set; }
+        public string MFreightLocationName { get; set; }
         /// <summary>
         /// 
         /// </summary>
