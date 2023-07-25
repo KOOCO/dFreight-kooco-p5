@@ -94,6 +94,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? SalesId { get; set; }
         public string SalesName { get; set; }
+        public string SalesType { get; set; }
         /// <summary>
         ///  出發地Id
         /// </summary>

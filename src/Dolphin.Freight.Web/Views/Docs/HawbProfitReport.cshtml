@@ -273,40 +273,40 @@ table tr {
                 <table class="td text-bold text-md">
                     <tbody>
                         <tr class="text-sea" style="font-size: 16px">
-                            <td class="w-17 bg-light col-padding-double"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Salesman:</font></font></td>
+                            <td class="w-17 bg-light col-padding-double"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">SALES:</font></font></td>
                             <td class="w-33 bg-light col-padding-double">@Model.Sales</td>
-                            <td class="w-15 bg-light col-padding-double"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">client:</font></font></td>
+                            <td class="w-15 bg-light col-padding-double"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CUSTOMER:</font></font></td>
                             <td class="w-35 bg-light col-padding-double">@Model.Customer</td>
                         </tr>
                         <tr>
 
-                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Container Count :</font></font></td>
+                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CONTAINER COUNT :</font></font></td>
                             <td class="col-padding"></td>
 
-                            <td class="w-12 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">FOR:</font></font></td>
+                            <td class="w-12 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">P.O.R:</font></font></td>
                             <td class="w-38 col-padding"></td>
                         </tr>
                         <tr>
-                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Agent name:</font></font></td>
+                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">AGENT NAME:</font></font></td>
                             <td class="col-padding">@Model.AgentName</td>
                             <td class="col-padding">P.O.L / ETD:</td>
                             <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.PolEtd</font></font></td>
                         </tr>
                         <tr>
-                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Shipper:</font></font></td>
+                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">SHIPPER:</font></font></td>
                             <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Shipper</font></font></td>
                             <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">POD/ETA:</font></font></td>
                             <td class="col-padding">@Model.PodEtd</td>
                         </tr>
                         <tr>
-                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Receiver:</font></font></td>
+                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CONSIGNEE:</font></font></td>
                             <td class="col-padding">@Model.Consignee</td>
                             <td class="col-padding">D.E.L:</td>
                             <td class="col-padding"></td>
                         </tr>
                         <tr>
 
-                            <td class="td col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">operator:</font></font></td>
+                            <td class="td col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">OPERATOR:</font></font></td>
                             <td class="td col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Operator</font></font></td>
 
                             <td class="td col-padding"></td>
@@ -330,20 +330,20 @@ table tr {
                                     </colgroup>
                                     <tbody>
                                         <tr>
-                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">File No :</font></font></td>
+                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">FILE NO :</font></font></td>
                                             <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.FileNo</font></font></td>
                                         </tr>
                                         <tr>
-                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Shipping terms:</font></font></td>
+                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">SERVICE TERM:</font></font></td>
                                             <td>@string.Concat(@Model.SvcTermToName, "-",  @Model.SvcTermFromName)?.TrimStart('-')</td>
                                         </tr>
                                         <tr>
-                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">weight :</font></font></td>
+                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">WEIGHT :</font></font></td>
                                             <td>@Model.ChargableWeight</td>
                                         </tr>
 
                                         <tr>
-                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Volume :</font></font></td>
+                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">MEASUREMENT :</font></font></td>
                                             <td>@Model.Measurement</td>
                                         </tr>
 
@@ -358,15 +358,15 @@ table tr {
                                     </colgroup>
                                     <tbody>
                                         <tr>
-                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Service category:</font></font></td>
-                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Appointed goods</font></font></td>
+                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">SALES TYPE:</font></font></td>
+                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.SalesType</font></font></td>
                                         </tr>
                                         <tr>
-                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">MAWB number :</font></font></td>
+                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">MAWB NO :</font></font></td>
                                             <td class="col-padding">@Model.MawbNo</td>
                                         </tr>
                                         <tr>
-                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">HAWB number :</font></font></td>
+                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">HAWB NO :</font></font></td>
                                             <td class="col-padding">@Model.HawbNo</td>
                                         </tr>
 
