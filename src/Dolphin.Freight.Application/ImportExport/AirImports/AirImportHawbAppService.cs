@@ -5,7 +5,11 @@ using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
+<<<<<<< HEAD
 using Org.BouncyCastle.Cms;
+=======
+using Newtonsoft.Json;
+>>>>>>> main
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -231,13 +235,13 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     airImportDetails.DestinationAirportName = destination?.PortName;
                     airImportDetails.DestinationCountry = destination?.Country;
                 }
-
+                
                 if (data.Notify != null)
                 {
                     var notify = tradePartners.Where(w => w.Id == Guid.Parse(data.Notify)).FirstOrDefault();
                     airImportDetails.NotifyName = string.Concat(notify.TPName, "/", notify.TPCode);
                 }
-
+               
                 if (data.ShipperId != null)
                 {
                     var shipper = tradePartners.Where(w => w.Id == data.ShipperId).FirstOrDefault();
@@ -250,7 +254,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     airImportDetails.OverseaAgentTPName = string.Concat(overseaAgent.TPName, "/", overseaAgent.TPCode);
                     airImportDetails.IATA = overseaAgent.IataCode;
                 }
-
+                
                 if (mawb.CarrierId != null)
                 {
                     var carrier = tradePartners.Where(w => w.Id == mawb.CarrierId).FirstOrDefault();
@@ -262,7 +266,6 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     var billTo = tradePartners.Where(w => w.Id == Guid.Parse(data.BillToId)).FirstOrDefault();
                     airImportDetails.BillToName = string.Concat(billTo.TPName, "/", billTo.TPCode);
                 }
-
                 if (data.SalesType != null)
                 {
                     var salesType = sysCodes.Where(w => w.Id == Guid.Parse(data.SalesType)).FirstOrDefault();
@@ -292,6 +295,32 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     airImportDetails.HPackageUnitName = string.Concat(packageUnit.PackageName);
                 }
 
+                if (data.FreightLocation != null)
+                {
+                    var freightLocation = tradePartners.Where(w => w.Id == Guid.Parse(data.FreightLocation)).FirstOrDefault();
+                    airImportDetails.FreightLocationName = string.Concat(freightLocation.TPName, "/", freightLocation.TPCode);
+                }
+
+                if (data.Trucker!=null)
+                {
+                    var trucker = tradePartners.Where(w => w.Id == Guid.Parse(data.Trucker)).FirstOrDefault();
+                    airImportDetails.HTruckerName = string.Concat(trucker.TPName, "/", trucker.TPCode);
+                }
+
+                if (data.FinalDestination != null)
+                {
+                    var finalDestination = tradePartners.Where(w => w.Id == Guid.Parse(data.FinalDestination)).FirstOrDefault();
+                    airImportDetails.FinalDestination = string.Concat(finalDestination.TPName, "/", finalDestination.TPCode);
+                }
+
+                var subHawbs = new List<SubHawbs>();
+
+                object subHawbsStr;
+
+                data.ExtraProperties.TryGetValue("SubHawbs", out subHawbsStr);
+
+                subHawbs = JsonConvert.DeserializeObject<List<SubHawbs>>(Convert.ToString(subHawbsStr));
+
                 airImportDetails.HItNo = data.ITNo;
                 airImportDetails.HItDate = string.Concat(data.ITDate);
                 airImportDetails.HItLocation = data.ITIssuedLocation;
@@ -309,6 +338,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.HawbNo = data.HawbNo;
                 airImportDetails.MawbNo = mawb.MawbNo;
                 airImportDetails.CustomerName = airImportDetails.BillToName;
+                airImportDetails.SalesType = data.SalesType;
             }
 
             return airImportDetails;
