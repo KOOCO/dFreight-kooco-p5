@@ -23,29 +23,121 @@
     <script>
         const l = abp.localization.getResource('Freight');
 
-        $(function() {
-            $(document).on('click', '.button-download', function() {
-                const filename = $(this).data('filename');
-                $('#form-download [name="filename"]').val(filename);
-                $('#form-download').submit();
+        //$(function() {
+        //    $(document).on('click', '.button-download', function() {
+        //        const filename = $(this).data('filename');
+        //        $('#form-download [name="filename"]').val(filename);
+        //        $('#form-download').submit();
+        //    });
+        //    $(document).on('click', '.button-delete', function () {
+        //        const filename = $(this).data('filename');
+        //        $('#form-delete [name="filename"]').val(filename);
+        //        const id = $(this).data('id');
+        //        $('#form-delete [name="fileId"]').val(id);
+        //        $('#form-delete').submit();
+        //    });
+        //    $(document).on('click', '#add-file', function () {
+        //        $('#form-uploader [type="file"]').click();
+        //    });
+        //    $(document).on('change', '#form-uploader [type="file"]', function () {
+        //        $('#form-uploader').submit();
+        //    });
+        //});
+           $(document).ready(function () {
+         
+          
+            $("#addHBtn").click(function () {
+                var url = "/Sales/TradePartner/DocCenter/@Model.Id&NewHbl=1";
+                location.href = url;
+            })
+            initAttments(0, '@Model.Id');
+          
+            $("#uploadFile").change(function () {
+                var id = '@Model.Id';
+                 debugger;
+                var files = $('#uploadFile').prop("files");
+                var url = "?handler=Uploader";
+                formData = new FormData();
+                formData.append("Uploader", files[0]);
+                formData.append("id", id);
+                formData.append("ftype", 2);
+                jQuery.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("XSRF-TOKEN",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    success: function (repo) {
+
+                        initAttments(0, id);
+                    },
+                    error: function (rs) {
+                        console.log(rs)
+                        alert("Error occurs");
+                    }
+                });
             });
-            $(document).on('click', '.button-delete', function () {
-                const filename = $(this).data('filename');
-                $('#form-delete [name="filename"]').val(filename);
-                const id = $(this).data('id');
-                $('#form-delete [name="fileId"]').val(id);
-                $('#form-delete').submit();
+           
+
+        })
+        function initAttments(tindex, qid) {
+            dolphin.freight.importExport.attachments.attachment.queryList({ queryType: 2, queryId: qid }).done(function (result) {
+                if (result != null && result.length > 0) {
+                    debugger;
+                    var l = abp.localization.getResource('Freight');
+                    var trhtml = "";
+                    for (var index = 0; index < result.length; index++) {
+                        if (tindex == 0) trhtml = trhtml + "<tr id='tr_";
+                        else trhtml = trhtml + "<tr id='trh_";
+                        trhtml = trhtml + index + "'><td>" + result[index].fileName + "</td><td>" + result[index].creationTime.substring(0, 10) + "</td> <td>" + result[index].size + "KB </td><td>";
+                        trhtml = trhtml + "<div class='btn-group dropdown'><button class='btn btn-secondary dropdown-toggle'  type='button' id='ActionDrop_" + index + "' data-bs-toggle='dropdown'>";
+                        trhtml = trhtml + l('Display:Function');
+                        trhtml = trhtml + "</button><div class='dropdown-menu ' aria-labelledby='dropdownMenuButton1' id='ActionDrop_div_" + index + "'>";
+                        trhtml = trhtml + "<a class='dropdown-item' href = '?handler=Download&filename=" + result[index].fileName + "'  ><li class='fa fa-file'></li>";
+                        trhtml = trhtml + l('Btn:Download');
+                        trhtml = trhtml + "</a><a class='dropdown-item' href='javascript:void(0)' onclick='deleteFile(" + index + ",\"" + result[index].id + "\"," + tindex + ")' ><i class='fa fa-trash'></i> "
+                        trhtml = trhtml + l('Btn:Delete');
+                        trhtml = trhtml + "</a></div></div></td></tr > ";
+
+                    }
+                    if (tindex == 0) {
+                        $("#ftbody").html(trhtml);
+                        $("#uploadFile").val("");
+                    } else {
+                        $("#htbody").html(trhtml);
+                        $("#uploadHFile").val("");
+                    }
+
+                }
             });
-            $(document).on('click', '#add-file', function () {
-                $('#form-uploader [type="file"]').click();
-            });
-            $(document).on('change', '#form-uploader [type="file"]', function () {
-                $('#form-uploader').submit();
-            });
-        });
+        }
+
+        function deleteFile(index, id, tindex) {
+
+            dolphin.freight.importExport.attachments.attachment.delete(id)
+                .then(function () {
+                    var l = abp.localization.getResource('Freight');
+                    abp.message.success(l('SuccessfullyDeleted'));
+                    if (tindex == 0) {
+                        $("#tr_" + index).remove();
+                    }
+                    else {
+                        $("#trh_" + index).remove();
+                    }
+
+                });
+        }
+      
+      
+        
     </script>
 }
-
+<div class="page-header">
 <nav class="submenu">
     <ol>
         <li class="menu-item">
@@ -62,71 +154,125 @@
         </li>
     </ol>
 </nav>
+</div>
 
-<abp-card>
-    <abp-card-body>
-        <abp-row>
-            <abp-column>
-                <abp-button id="add-file"
-                        text=@L["Display:Button:New"]
-                        icon="plus"
-                        button-type="Outline_Secondary" />
-            </abp-column>
-        </abp-row>
-        <abp-row class="default-freight-block">
-            <abp-column>
-                <table class="table file-list">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th scope="Column">@L["Actions"]</th>
-                            <th scope="Column">@L["Display:TradePartner:Document:THead:AttachmentName"]</th>
-                            <th scope="Column">@L["Display:TradePartner:Document:THead:AttachmentUploadDate"]</th>
-                            <th scope="Column">@L["Display:TradePartner:Document:THead:AttachmentSize"]</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (AttachmentDto dto in Model.FileList)
-                        {
-                            <tr>
-                                <th scope="Row">
-                                    <div class="btn-group dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop_0" data-bs-toggle="dropdown">
-                                            @L["Actions"]
-                                        </button>
-                                        <div class="dropdown-menu" id="ActionDrop_div_0">
-                                            <a class="dropdown-item button-download" href="javascript:void(0)" data-filename="@dto.FileName">
-                                                <li class="fa fa-file"></li>下載
-                                            </a>
-                                            <a class="dropdown-item button-delete" href="javascript:void(0)" data-id="@dto.Id" data-filename="@dto.FileName">
-                                                <i class="fa fa-trash"></i> 刪除
-                                            </a>
-                                        </div>
-                                    </div>
-                                </th>
-                                <td>@dto.FileName</td>
-                                <td>@dto.CreationTime</td>
-                                <td>@Model.GetFileSize(dto.FileName)</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </abp-column>
-        </abp-row>
-    </abp-card-body>
-</abp-card>
-<form method="get" asp-page-handler="download" id="form-download" target="_blank">
-    <input type="text" name="id" value="@Model.Id" />
-    <input type="text" name="filename" />
-    <button>Send</button>
-</form>
-<form method="post" asp-page-handler="delete" id="form-delete">
-    <input type="text" name="id" value="@Model.Id" />
-    <input type="text" name="fileId" value="" />
-    <input type="text" name="filename" />
-    <button>Send</button>
-</form>
-<form method="post" asp-page-handler="uploader" enctype="multipart/form-data" id="form-uploader">
-    <input type="text" name="id" value="@Model.Id" />
-    <input type="file" name="formFile" />
-    <button>Send</button>
-</form>
+<div class="page-content-area">
+    <abp-row>
+        <abp-column size-md="_12">
+            <div class="board-wrap">
+                <abp-card border="Dark">
+                    <abp-card-header style="background:#555555;color:#FFFFFF;">
+                        <abp-card-title>
+                           @L["Display:TradePartner:NavTab:DocCenter"]
+                    
+                         
+
+                   
+                        </abp-card-title>
+
+
+                        <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
+                        </button>
+                    </abp-card-header>
+                    <abp-card-body class="collapse show" id="mblDiv">
+
+                        <abp-row>
+                            <abp-column size-md="_4"><input type="file" id="uploadFile" /></abp-column>
+                            <abp-column size-md="_8">
+                                <table>
+                                    <tr>
+                                        <th width="55%">@L["Display:Name"]</th>
+                                        <th width="30%">@L["Display:Date"]</th>
+                                        <th width="15%">@L["Display:FileSize"]</th>
+                                    </tr>
+                                    <tbody id="ftbody">
+                                    </tbody>
+
+                                </table>
+
+                            </abp-column>
+                        </abp-row>
+                    </abp-card-body>
+                </abp-card>
+                <br />
+              @*  <abp-card border="Dark" id="hblCard">
+                    <abp-card-header id="hblCardHeader" class="@Model.OceanImportHbl.CardColorValue">
+                        <abp-card-title>
+                            HB/L @Model.OceanImportHbl.HblNo
+                        </abp-card-title>
+
+                        <div class="btn-group dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" style="position: relative;" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                                @L["Display:Function"]
+                            </button>
+                            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Proof of Delivery"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Pickup Delivery Instruction"]
+                                </a>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class='dropdown-item' href='#'>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick=" OpenInTrackTrace()" style="color: #4B77BE; font-weight: 500;">
+                                    <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
+                                </a>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="true" aria-controls="hblDiv">
+                        </button>
+                    </abp-card-header>
+                    <abp-card-body class="collapse show" id="hblDiv">
+                        <abp-row>
+                            <abp-column size-md="_4"><input type="file" id="uploadHFile" /></abp-column>
+                            <abp-column size-md="_8">
+                                <table>
+                                    <tr>
+                                        <th width="55%">@L["Display:Name"]</th>
+                                        <th width="30%">@L["Display:Date"]</th>
+                                        <th width="15%">@L["Display:FileSize"]</th>
+                                    </tr>
+                                    <tbody id="htbody">
+                                    </tbody>
+
+                                </table>
+
+                            </abp-column>
+                        </abp-row>
+                    </abp-card-body>
+                </abp-card>*@
+            </div>
+        </abp-column>
+      
+    </abp-row>
+
+</div>

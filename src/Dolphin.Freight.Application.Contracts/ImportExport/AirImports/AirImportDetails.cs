@@ -21,7 +21,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// <summary>
         /// Mawb號碼
         /// </summary> 
-        public string MawbNo { get; set; }
+        public string MawbNo { get; set; }       
         public string Hawb_Nos { get; set; }
         /// <summary>
         /// 分站ID
