@@ -211,6 +211,11 @@ table td {
     <input type="hidden" asp-for="@Model.CustomBroker" />
     <input type="hidden" asp-for="@Model.CurrentAgent" />
     <input type="hidden" asp-for="@Model.HawbString" />
+    <input type="hidden" asp-for="@Model.GrossWeightStr" />
+    <input type="hidden" asp-for="@Model.ChargableWeightStr" />
+    <input type="hidden" asp-for="@Model.VolumeWeightStr" />
+    <input type="hidden" asp-for="@Model.MeasurementStr" />
+    <input type="hidden" asp-for="@Model.PackagesStr" />
     
     <div id="main" class="edit">
 
@@ -616,7 +621,7 @@ l[            <table>
                     <td class="td td-item border-r text-right" rowspan="4">
                         <div class="auto-font-size __col-pkg">
                             <span>
-                                
+                                @Model.PackagesStr
                             </span>
                         </div>
                     </td>
@@ -628,14 +633,14 @@ l[            <table>
                     <td class="td td-item text-right border-r">
                         <div class="auto-font-size __col-gw">
                             <span>
-                                
+                                @Model.GrossWeightStr
                             </span>
                         </div>
                     </td>
                     <td class="td td-item text-right">
                         <div class="auto-font-size __col-cw">
                             <span>
-                                
+                                @Model.ChargableWeightStr
                             </span>
                         </div>
                     </td>
@@ -648,14 +653,14 @@ l[            <table>
                     <td class="td td-item border-r text-right">
                         <div class="auto-font-size __col-vw">
                             <span>
-                                
+                                @Model.VolumeWeightStr
                             </span>
                         </div>
                     </td>
                     <td class="td td-item text-right">
                         <div class="auto-font-size __col-measurement">
                             <span>
-                                
+                                @Model.MeasurementStr
                             </span>
                         </div>
                     </td>

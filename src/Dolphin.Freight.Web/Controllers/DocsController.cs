@@ -3261,6 +3261,7 @@ namespace Dolphin.Freight.Web.Controllers
         {
             var data = await _airImportHawbAppService.GetHawbCardsByMawbId(mawbId);
             var tradePartner = _dropdownService.TradePartnerLookupList;
+            var packgeUnit = _dropdownService.PackageUnitLookupList;
             var airImportDetails = await GetAirImportDetailsByPageType(mawbId, pageType);
             var hawbNos = new List<HawbNo>();
 
@@ -3268,12 +3269,23 @@ namespace Dolphin.Freight.Web.Controllers
             {
                 var hawb = new HawbNo
                 {
-                    HawbNos = item.HawbNo
+                    HawbNos = item.HawbNo,
+                    OverSeaAgent = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(item.ConsigneeId)).Select(s => s.Text)),
+                    GrossWeightKG = item.GrossWeightKG,
+                    ChargableWeightKG = item.ChargeableWeightKG,
+                    VolumeWeightKG = item.VolumeWeightKG,
+                    MeasurementWeight = item.VolumeWeightCBM,
+                    Packages = item.Package + " " + string.Concat(packgeUnit.Where(w => w.Value == Convert.ToString(item.PackageUnit)).Select(s => s.Text))
                 };
                 hawbNos.Add(hawb);
             }
             airImportDetails.HawbNos = hawbNos;
-            airImportDetails.HawbString = "Hawb Nos:- "+string.Join(", ", hawbNos.Select(s => s.HawbNos));
+            airImportDetails.PackagesStr = string.Join("\n", hawbNos.Where(w => w.OverSeaAgent == agent).Select(s => s.Packages));
+            airImportDetails.ChargableWeightStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.ChargableWeightKG))) + " KGS " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.ChargableWeightKG)) * 35.315).ToString("0.00") + " LBS";
+            airImportDetails.GrossWeightStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.GrossWeightKG))) + " KGS " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.GrossWeightKG)) * 35.315).ToString("0.00") + " LBS";
+            airImportDetails.VolumeWeightStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.VolumeWeightKG))) + " KGS " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.VolumeWeightKG)) * 35.315).ToString("0.00") + " LBS";
+            airImportDetails.MeasurementStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => double.Parse(s.MeasurementWeight))) + " KGS " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => double.Parse(s.MeasurementWeight)*35.315)).ToString("0.00") + " LBS";
+            airImportDetails.HawbString = "Hawb Nos:- "+string.Join(", ", hawbNos.Where(w => w.OverSeaAgent == agent).Select(s => s.HawbNos));
             airImportDetails.Hawb_Nos = JsonConvert.SerializeObject(hawbNos);
             airImportDetails.CurrentAgent = agent;
             airImportDetails.ShipperName = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data[0].ShipperId)).Select(s => s.Text));

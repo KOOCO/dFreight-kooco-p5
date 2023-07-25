@@ -22,7 +22,6 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// Mawb號碼
         /// </summary> 
         public string MawbNo { get; set; }
-        public string HawbNo { get; set; }
         public string Hawb_Nos { get; set; }
         /// <summary>
         /// 分站ID
@@ -295,7 +294,12 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public bool IsDeleted { get; set; }
         public string HawbString { get; set; }
         public string ChargableWeight { get; set; }
+        public string ChargableWeightStr { get; set; }
+        public string GrossWeightStr { get; set; }
+        public string VolumeWeightStr { get; set; }
+        public string MeasurementStr { get; set; }
         public string CurrentAgent { get; set; }
+        public string PackagesStr { get; set; }
         public FreightPageType PageType { get; set; }
         public List<OverSeaAgentAirImport> OverSeaAgents { get; set; }
         public List<HawbNo> HawbNos { get; set; }
@@ -307,5 +311,13 @@ namespace Dolphin.Freight.ImportExport.AirImports
     public class HawbNo
     {
         public string HawbNos { get; set; }
+        public string OverSeaAgent { get; set; }
+        public string GrossWeightKG { get; set; }
+        public string GrossWeightLBS { get; set; }
+        public string ChargableWeightKG { get; set; }
+        public string ChargableWeightLBS { get; set; }
+        public string VolumeWeightKG { get; set; }
+        public string MeasurementWeight { get; set; }
+        public string Packages { get; set; }
     }
 }
