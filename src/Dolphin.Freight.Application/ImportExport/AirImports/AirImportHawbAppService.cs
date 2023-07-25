@@ -4,6 +4,7 @@ using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -225,13 +226,13 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     airImportDetails.DestinationAirportName = destination?.PortName;
                     airImportDetails.DestinationCountry = destination?.Country;
                 }
-
+                
                 if (data.Notify != null)
                 {
                     var notify = tradePartners.Where(w => w.Id == Guid.Parse(data.Notify)).FirstOrDefault();
                     airImportDetails.NotifyName = string.Concat(notify.TPName, "/", notify.TPCode);
                 }
-
+               
                 if (data.ShipperId != null)
                 {
                     var shipper = tradePartners.Where(w => w.Id == data.ShipperId).FirstOrDefault();
@@ -244,7 +245,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     airImportDetails.OverseaAgentTPName = string.Concat(overseaAgent.TPName, "/", overseaAgent.TPCode);
                     airImportDetails.IATA = overseaAgent.IataCode;
                 }
-
+                
                 if (mawb.CarrierId != null)
                 {
                     var carrier = tradePartners.Where(w => w.Id == mawb.CarrierId).FirstOrDefault();
@@ -257,11 +258,27 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     airImportDetails.BillToName = string.Concat(billTo.TPName, "/", billTo.TPCode);
                 }
 
+                if (data.FreightLocation != null)
+                {
+                    var freightLocation = tradePartners.Where(w => w.Id == Guid.Parse(data.FreightLocation)).FirstOrDefault();
+                    airImportDetails.FreightLocationName = string.Concat(freightLocation.TPName, "/", freightLocation.TPCode);
+                }
+                
+                var subHawbs = new List<SubHawbs>();
+
+                object subHawbsStr;
+
+                data.ExtraProperties.TryGetValue("SubHawbs", out subHawbsStr);
+
+                subHawbs = JsonConvert.DeserializeObject<List<SubHawbs>>(Convert.ToString(subHawbsStr));
+
+
                 airImportDetails.AirWayBillNo = data.HawbNo;
                 airImportDetails.MawbNo = airImportDetails.MawbNo;
                 airImportDetails.DocNumber = mawb.FilingNo;
                 airImportDetails.ChargableWeight = string.Concat(mawb.ChargeableWeightKg, " ", mawb.ChargeableWeightLb);
                 airImportDetails.DepatureDate = mawb.DepatureDate;
+                airImportDetails.ArrivalDate = mawb.ArrivalDate;
                 airImportDetails.OPName = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
                 airImportDetails.MawbId = mawb.Id;
                 airImportDetails.HawbId = data.Id;
@@ -269,6 +286,13 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.MawbNo = mawb.MawbNo;
                 airImportDetails.CustomerName = airImportDetails.BillToName;
                 airImportDetails.SalesType = data.SalesType;
+                airImportDetails.SubHawbs = subHawbs;
+                airImportDetails.FilingNo = mawb.FilingNo;
+                airImportDetails.FlightNo = mawb.FlightNo;
+                airImportDetails.ITDate = data.ITDate;
+                airImportDetails.ITIssuedLocation = data.ITIssuedLocation;
+
+
             }
 
             return airImportDetails;

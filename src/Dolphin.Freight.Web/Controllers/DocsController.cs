@@ -3218,6 +3218,58 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf(returnUrl, model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> HawbAuthority(Guid id, FreightPageType pageType)
+        {
+            var data = await GetAirImportDetailsByPageType(id, pageType);
+            var viewModel = new AuthorityViewModel()
+            {
+                AgentName = data.OverseaAgentTPName,
+                Consignee = data.ConsigneeName,
+                CustomsBroker = data.CustomerName,
+                Date = DateTime.Now.ToShortDateString(),
+                DepAirport = data.DepatureName,
+                DescriptionITNO = data.ITNo,
+                DestAirport = data.DestinationAirportName,
+                DocumentPickedBy = data.ReleasedBy,
+                EntryPort = data.DestinationAirportName,
+                ETA1 = string.Concat(data.ArrivalDate),
+                ETA2 = string.Concat(data.ArrivalDate),
+                ETA3 = string.Concat(data.ArrivalDate),
+                ETD = data.DepatureDate,
+                FileNo = data.FilingNo,
+                FinalDest = data.FinalDestination,
+                FlightNo = data.FlightNo,
+                HawbNo = data.HawbNo,
+                MawbNo = data.MawbNo,
+                FrightLoc = data.FreightLocationName,
+                ITNO = data.ITNo,
+                ITDate = string.Concat(data.ITDate),
+                ITIssuePlace=data.ITIssuedLocation,
+                LastFreeDay = data.LastFreeDay,
+                MerchandiseImportedAt = data.DestinationAirportName,
+                NotifyParty = data.NotifyName,
+                On = string.Concat(data.ArrivalDate),
+                PCS = data.Package,
+                Remark = data.Remark,
+                Shipper = data.ShipperName,
+                SubHawb = string.Join(",", data.SubHawbs?.Select(s => s.SubHAWB)),
+                Trucker = data.Trucker,
+                Amount = data.SubHawbs?.Sum(s => Convert.ToDouble(s.Amount)),
+                VIA = data.CarrierTPName,
+                PrepBy = data.OPName
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> HawbAuthority(AuthorityViewModel model)
+        {
+            model.IsPDF = true;
+            return await _generatePdf.GetPdf("Views/Docs/HawbAuthority.cshtml", model);
+        }
+
 
         #region Private Functions
 

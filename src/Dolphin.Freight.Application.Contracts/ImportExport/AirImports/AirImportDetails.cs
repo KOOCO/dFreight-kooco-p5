@@ -291,5 +291,15 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public bool IsDeleted { get; set; }
         public string ChargableWeight { get; set; }
         public FreightPageType PageType { get; set; }
+        public string ITNo { get; set; }
+        public string ReleasedBy { get; set; }
+        public string FinalDestination { get; set; }
+        public DateTime LastFreeDay { get; set; }
+        public string Remark { get; set; }
+        public string SubHawbJson { get; set; }
+        public List<SubHawbs> SubHawbs { get; set; }
+        public string Trucker { get; set; }
+        public DateTime ITDate { get; set; }
+        public string ITIssuedLocation { get; set; }
     }
 }
