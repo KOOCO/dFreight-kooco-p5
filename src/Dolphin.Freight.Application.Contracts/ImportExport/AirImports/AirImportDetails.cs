@@ -11,6 +11,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
 {
     public class AirImportDetails
     {
+        public bool IsPDF { get; set; }
         public string AirWayBillNo { get; set; }
         public Guid? HawbId { get; set; }
         public Guid MawbId { get; set; }
@@ -21,6 +22,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// Mawb號碼
         /// </summary> 
         public string MawbNo { get; set; }
+        public string HawbNo { get; set; }
+        public string Hawb_Nos { get; set; }
         /// <summary>
         /// 分站ID
         /// </summary>
@@ -84,6 +87,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? CustomerId { get; set; }
         public string CustomerName { get; set; }
+        public string CustomBroker { get; set; }
         /// <summary>
         ///  
         /// </summary>
@@ -289,7 +293,19 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public string HawbString { get; set; }
         public string ChargableWeight { get; set; }
+        public string CurrentAgent { get; set; }
         public FreightPageType PageType { get; set; }
+        public List<OverSeaAgentAirImport> OverSeaAgents { get; set; }
+        public List<HawbNo> HawbNos { get; set; }
+    }
+    public class OverSeaAgentAirImport
+    {
+        public string Name { get; set; }
+    }
+    public class HawbNo
+    {
+        public string HawbNos { get; set; }
     }
 }

@@ -29,6 +29,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 
         /// </summary>
         public Guid? ShipperId { get; set; }
+        public Guid? ConsigneeId { get; set; }
         // <summary>
         /// 操作員Id
         /// </summary>
