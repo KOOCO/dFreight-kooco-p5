@@ -195,13 +195,14 @@ namespace Dolphin.Freight.ImportExport.AirImports
 
         public async Task<AirImportDetails> GetAirImportDetailsById(Guid Id)
         {
-            var airImportDetails = new AirImportDetails();  
+            var airImportDetails = new AirImportDetails();
             var tradePartners = await _tradePartnerRepository.GetListAsync();
             var portMangements = await _portsManagementAppService.GetListAsync();
+            var sysCodes = await _sysCodeRepository.GetListAsync();
 
             var data = await Repository.GetAsync(Id);
 
-            if( data != null)
+            if (data != null)
             {
                 airImportDetails = ObjectMapper.Map<AirImportHawb, AirImportDetails>(data);
 
@@ -257,6 +258,12 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     airImportDetails.BillToName = string.Concat(billTo.TPName, "/", billTo.TPCode);
                 }
 
+                if (data.SalesType != null)
+                {
+                    var salesType = sysCodes.Where(w => w.Id == Guid.Parse(data.SalesType)).FirstOrDefault();
+                    airImportDetails.SalesType = salesType.ShowName;
+                }
+
                 airImportDetails.AirWayBillNo = data.HawbNo;
                 airImportDetails.MawbNo = airImportDetails.MawbNo;
                 airImportDetails.DocNumber = mawb.FilingNo;
@@ -268,7 +275,6 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.HawbNo = data.HawbNo;
                 airImportDetails.MawbNo = mawb.MawbNo;
                 airImportDetails.CustomerName = airImportDetails.BillToName;
-                airImportDetails.SalesType = data.SalesType;
             }
 
             return airImportDetails;
