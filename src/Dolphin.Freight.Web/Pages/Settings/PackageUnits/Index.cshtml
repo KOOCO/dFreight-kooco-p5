@@ -32,31 +32,38 @@
                         class="btn btn-add" />
             }
         </abp-card-header>
-        <abp-card-body>
-            <div>
-                <button class="btn-success" data-bs-toggle="collapse" data-bs-target="#hidden" style="float: right;margin-top: -33px; margin-bottom:10px">
-                    <i class="fa fa-filter" aria-hidden="true"></i>
-                    Filters
+        <div>
+            <button class="btn-success" data-bs-toggle="collapse" data-bs-target="#hidden" style="float: right;margin-top: -20px; margin-right: 20px; margin-bottom: 10px;">
+                <i class="fa fa-filter" aria-hidden="true"></i>
+                Filters
+            </button>
+        </div>
+        <div id='hidden' class='collapse' style="text-align: center">
+            <div class="row col-12" style="text-align: center">
+                <abp-column size="_6">
+                    <abp-input asp-for="Keyword" />
+                </abp-column>
+            </div>
+            <div class="col-12" style="text-align: center">
+                <button class="btn btn-warning mr-2" data-bs-toggle="collapse" data-bs-target="#hidden">
+                    Cancel
                 </button>
+                <abp-button id="SearchButton"
+                            text="@L["Search"].Value"
+                            icon="search"
+                            class="btn-primary" />
             </div>
-            <div id='hidden' class='collapse flex flex-column mb-4'>
-                <div class="row">
-                    <abp-column size="_6">
-                        <abp-input asp-for="Keyword" />
-                    </abp-column>
-                </div>
-                <div style="display: flex; justify-content: center;">
-                    <button class="btn btn-warning mr-2" data-bs-toggle="collapse" data-bs-target="#hidden">
-                        Cancel
-                    </button>
-                    <abp-button id="SearchButton"
-                                text="@L["Search"].Value"
-                                icon="search"
-                                class="btn-primary" />
-                </div>
-            </div>
+        </div>
+        <abp-card-body>
+            
 
                 <abp-table class="nowrap" striped-rows="true" id="PackageUnitsTable"></abp-table>
         </abp-card-body>
     </abp-card>
 </div>
+
+<style>
+    #hidden {
+        height: 154px !important;
+    }
+</style>
