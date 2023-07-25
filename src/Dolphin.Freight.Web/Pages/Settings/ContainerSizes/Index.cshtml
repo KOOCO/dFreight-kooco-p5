@@ -24,31 +24,51 @@
             <div class="title">
                 @L["Menu:ContainerSizes"]
             </div>
+
             @if (await AuthorizationService.IsGrantedAsync(SettingsPermissions.ContainerSizes.Create))
             {
                 <abp-button id="NewContainerSizeButton"
-                        text="@L["Create"].Value"
-                        icon="plus"
+                            text="@L["Create"].Value"
+                            icon="plus"
                             class="btn btn-add" />
             }
         </abp-card-header>
         <abp-card-body>
-            <div class="row">
-                <abp-column size="_6">
-                    <abp-input asp-for="Search" />
-                </abp-column>
-                <abp-column size="_3">
-                    <abp-select asp-for="Active" asp-items="@Model.StatusList" />
-                </abp-column>
-                <abp-column size="_3">
+            <div>
+                <button class="btn-success" data-bs-toggle="collapse" data-bs-target="#hidden" style="float: right;margin-top: -33px; margin-bottom:10px">
+                    <i class="fa fa-filter" aria-hidden="true"></i>
+                    Filters
+                </button>
+            </div>
+            <div id='hidden' class='collapse flex flex-column mb-4'>
+
+                <div class="row">
+                    <abp-column size="_7">
+                        <abp-input asp-for="Search" />
+                    </abp-column>
+                    <abp-column size="_5">
+                        <abp-select asp-for="Active" asp-items="@Model.StatusList" />
+                    </abp-column>
+                    @* <abp-column size="_3">
+                    <abp-button id="SearchButton"
+                    text="@L["Search"].Value"
+                    icon="search"
+                    style="margin-top:29px"
+                    class="btn-primary" />
+                    </abp-column>*@
+                </div>
+                <div style="display: flex; justify-content: center;">
+                    <button class="btn btn-warning mr-2" data-bs-toggle="collapse" data-bs-target="#hidden">
+                        Cancel
+                    </button>
                     <abp-button id="SearchButton"
                                 text="@L["Search"].Value"
                                 icon="search"
-                                style="margin-top:29px"
                                 class="btn-primary" />
-                </abp-column>
+                </div>
             </div>
-            <abp-table class="nowrap"  striped-rows="true" id="ContainerSizesTable"></abp-table>
+
+            <abp-table class="nowrap" striped-rows="true" id="ContainerSizesTable"></abp-table>
         </abp-card-body>
     </abp-card>
 </div>

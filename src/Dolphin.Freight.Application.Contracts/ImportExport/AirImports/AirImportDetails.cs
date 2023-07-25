@@ -13,6 +13,9 @@ namespace Dolphin.Freight.ImportExport.AirImports
     {
         public bool IsPDF { get; set; }
         public string AirWayBillNo { get; set; }
+        public Guid? HawbId { get; set; }
+        public Guid MawbId { get; set; }
+        public string HawbNo { get; set; }
         public string DocNumber { get; set; }
         public string FilingNo { get; set; }
         /// <summary>
@@ -95,6 +98,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? SalesId { get; set; }
         public string SalesName { get; set; }
+        public string SalesType { get; set; }
         /// <summary>
         ///  出發地Id
         /// </summary>
@@ -105,7 +109,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 出發日期
         /// </summary>
         [DataType(DataType.Date)]
-        public DateTime DepatureDate { get; set; }
+        public DateTime? DepatureDate { get; set; }
         /// <summary>
         /// 航班號碼
         /// </summary>

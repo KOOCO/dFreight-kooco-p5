@@ -10,6 +10,7 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public DateTime PostDate { get; set; }
         public string Currency { get; set; } = "USD";
         public string Sales { get; set; }
+        public string SalesType { get; set; }
         public string Customer { get; set; }
         public string AgentName { get; set; }
         public string PolEtd { get; set; }
@@ -35,5 +36,7 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public string InvoicesJson { get; set; }
         public string ReportType { get; set; }
         public string AWbNo { get; set; }
+        public string SvcTermToName { get; set; }
+        public string SvcTermFromName { get; set; }
     }
 }

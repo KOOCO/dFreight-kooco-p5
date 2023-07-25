@@ -62,6 +62,7 @@ using System.Runtime.Intrinsics.Arm;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Configuration;
 using Dolphin.Freight.ImportExport.AirImports;
+using Dolphin.Freight.AirImports;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -2497,14 +2498,14 @@ namespace Dolphin.Freight.Web.Controllers
         public async Task<IActionResult> PickupDeliveryOrderAirExportHawb(PickupDeliveryOrderAirExportHawbModel model)
         {
             model.IsPDF = true;
-            
+
             return await _generatePdf.GetPdf("Views/Docs/PickupDeliveryOrderAirExportHawb.cshtml", model);
         }
 
         public async Task<IActionResult> CommercialInvoiceAirExportHawb(Guid hawbId)
         {
             CommercialInvoiceAirExportHawbModel InfoModel = new();
-            
+
             var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
             var mawb = await _airExportMawbAppService.GetAsync(hawb.MawbId.GetValueOrDefault());
             var tradePartner = _dropdownService.TradePartnerLookupList;
@@ -2520,11 +2521,16 @@ namespace Dolphin.Freight.Web.Controllers
             InfoModel.Shipping_Mark = hawb.Mark;
             InfoModel.Package_Quantity = hawb.Package + " " + hawb.PackageUnit;
             InfoModel.Description = hawb.NatureAndQuantityOfGoods;
-            if (hawb.WTVAL == "PPD") {
+            if (hawb.WTVAL == "PPD")
+            {
                 InfoModel.Term = "FREIGHT PREPAID";
-            } else if (hawb.WTVAL == "COLL") {
+            }
+            else if (hawb.WTVAL == "COLL")
+            {
                 InfoModel.Term = "FREIGHT COLLECT";
-            } else {
+            }
+            else
+            {
                 InfoModel.Term = "";
             }
 
@@ -2621,7 +2627,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(airExportDetails);
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> DocumentPackage(AirExportDetails model)
         {
@@ -2630,7 +2636,8 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/DocumentPackage.cshtml", model);
         }
 
-        public async Task<IActionResult> PackageLabelAirExportMawb(Guid mawbId) {
+        public async Task<IActionResult> PackageLabelAirExportMawb(Guid mawbId)
+        {
             PackageLabelAirExportMawbIndexViewModel InfoModel = new();
 
             var mawb = await _airExportMawbAppService.GetAsync(mawbId);
@@ -2967,11 +2974,11 @@ namespace Dolphin.Freight.Web.Controllers
             InfoModel.Chargable_Weight = string.Concat(mawb.ChargeableWeightKg) + " KG" + " " + string.Concat(mawb.ChargeableWeightLb) + " LB";
             InfoModel.Itn_No = mawb.ItnNo;
             InfoModel.Measurement = string.Concat(mawb.VolumeWeightCbm) + " CBM" + " " + (mawb.VolumeWeightCbm * 35.315).ToString("0.00") + " CFT";
-            if(mawb.WtVal == "PPD")
+            if (mawb.WtVal == "PPD")
             {
                 InfoModel.Term = "PP";
             }
-            else if(mawb.WtVal == "COLL")
+            else if (mawb.WtVal == "COLL")
             {
                 InfoModel.Term = "CC";
             }
@@ -3075,6 +3082,8 @@ namespace Dolphin.Freight.Web.Controllers
         {
             string returnUrl = string.Empty;
 
+            QueryInvoiceDto queryDto = new QueryInvoiceDto();
+
             var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);
 
             var measurement = Convert.ToDouble(airImportDetails.ChargeableWeightKg) * 35.315;
@@ -3090,18 +3099,49 @@ namespace Dolphin.Freight.Web.Controllers
                 PolEtd = string.Concat(airImportDetails.DepatureAirportName, "/", airImportDetails.DepatureDate).TrimStart('/'),
                 PodEtd = string.Concat(airImportDetails.DestinationAirportName, "/", airImportDetails.ArrivalDate).TrimStart('/'),
                 Sales = airImportDetails.SalesName,
-                Shipper = airImportDetails.CarrierTPName,
+                Shipper = airImportDetails.ShipperName,
                 MawbNo = airImportDetails.MawbNo,
                 ChargableWeight = string.Concat(airImportDetails.ChargeableWeightKg, " / ", airImportDetails.ChargeableWeightLb),
                 PageType = pageType,
                 ReportType = reportType,
-                FileNo = airImportDetails.DocNumber
+                FileNo = airImportDetails.DocNumber,
+                HawbNo = airImportDetails.HawbNo,
+                SvcTermToName = Convert.ToString(airImportDetails.ServiceTermTypeTo),
+                SvcTermFromName = Convert.ToString(airImportDetails.ServiceTermTypeFrom),
+                SalesType = airImportDetails.SalesType
             };
 
-            var queryType = pageType == FreightPageType.AIMBL ? 5 : 4;
+            if (pageType == FreightPageType.AIHBL)
+            {
 
-            QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = id };
-            profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+                // Hawb invoices
+                queryDto = new QueryInvoiceDto() { QueryType = 4, ParentId = id };
+
+                profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+
+                // Mawb invoices
+                queryDto = new QueryInvoiceDto() { QueryType = 5, ParentId = airImportDetails.MawbId };
+
+                var mawbInvoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+
+                if (mawbInvoices != null && mawbInvoices.Any())
+                {
+                    profitReport.Invoices ??= new List<InvoiceDto>();
+
+                    foreach (var mawbInvoice in mawbInvoices)
+                    {
+                        profitReport.Invoices.Add(mawbInvoice);
+                    }
+                }
+
+            }
+            else
+            {
+                queryDto = new QueryInvoiceDto() { QueryType = 5, ParentId = id };
+
+                profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+            }
+
             profitReport.AR = new List<InvoiceDto>();
             profitReport.AP = new List<InvoiceDto>();
             profitReport.DC = new List<InvoiceDto>();
@@ -3281,6 +3321,9 @@ namespace Dolphin.Freight.Web.Controllers
             {
                 case FreightPageType.AIMBL:
                     data = await _airImportMawbAppService.GetAirImportDetailsById(Id);
+                    break;
+                case FreightPageType.AIHBL:
+                    data = await _airImportHawbAppService.GetAirImportDetailsById(Id);
                     break;
                 default:
                     break;

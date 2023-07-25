@@ -129,7 +129,7 @@
                     <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='javscript:void(0)' onclick="gotoReport(4)">
+                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AirImportProfitReport", "Docs", new { id = Model.HawbModel.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL, reportType = "Summary" })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                 </a>
                 <p class="dropdown-divider"></p>
