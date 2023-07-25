@@ -196,11 +196,13 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.FreightLocationName = string.Concat(freightLocation.TPName, "/", freightLocation.TPCode);
             }
 
+            airImportDetails.FlightNo = data.FlightNo;
             airImportDetails.AirWayBillNo = data.MawbNo;
             airImportDetails.MawbNo = airImportDetails.MawbNo;
             airImportDetails.DocNumber = data.FilingNo;
             airImportDetails.ChargableWeight = string.Concat(data.ChargeableWeightKg, " ", data.ChargeableWeightLb);
             airImportDetails.DepatureDate = data.DepatureDate;
+            airImportDetails.ArrivalDate = data.ArrivalDate;
             airImportDetails.OPName = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
             airImportDetails.MawbId = data.Id;
 

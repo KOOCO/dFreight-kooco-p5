@@ -3297,7 +3297,7 @@ namespace Dolphin.Freight.Web.Controllers
             airImportDetails.CurrentAgent = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(agent)).Select(s => s.Text));
             airImportDetails.ShipperName = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data[0].ShipperId)).Select(s => s.Text));
             airImportDetails.NotifyName = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data[0].Notify)).Select(s => s.Text));
-            airImportDetails.CustomBroker = data[0].CustomsBroker;
+            airImportDetails.CustomBroker = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data[0].CustomsBroker)).Select(s => s.Text));
 
             return View(airImportDetails);
         }
