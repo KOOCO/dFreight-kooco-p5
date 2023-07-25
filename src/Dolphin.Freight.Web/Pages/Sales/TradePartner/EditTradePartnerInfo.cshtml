@@ -364,29 +364,33 @@
         });
     </script>
 }
-
+<div class="page-header">
     <abp-breadcrumb>
         <abp-breadcrumb-item href="#" title=@L["Menu:Home"] />
         <abp-breadcrumb-item title=@L["Menu:TradePartner"] />
         <abp-breadcrumb-item title=@L["Menu:TradePartner"]@Model.TPInfoModel.TPCode />
     </abp-breadcrumb>
-
-    <form abp-model="TPInfoModel" submit-button="true" data-ajaxForm="true" id="TPEditForm">
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
+        <nav class="submenu">
+        <ol>
+            <li class="menu-item">
                 <a class="nav-link active" id="nav-basic-tab" href="#">@L["Display:TradePartner:NavTab:Basic"]</a>
             </li>
-            <li class="nav-item">
+            <li class="menu-item">
                 <a class="nav-link disabled" id="nav-accounting-tab" href="#">@L["Display:TradePartner:NavTab:AccountingSetting"]</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" id="nav-doc-tab" href="#">@L["Display:TradePartner:NavTab:DocCenter"]</a>
+            <li class="menu-item">
+                <a class="nav-link active" id="nav-doc-tab" href="/Sales/TradePartner/DocCenter/@Model.Id">@L["Display:TradePartner:NavTab:DocCenter"]</a>
             </li>
-            <li class="nav-item">
+            <li class="menu-item">
                 <a class="nav-link disabled" id="nav-status-tab" href="#">@L["Display:TradePartner:NavTab:Status"]</a>
             </li>
-        </ul>
-
+        </ol>
+        </nav>
+        </div>
+        <div class="page-content-area">
+    <div class="board-wrap">
+    <form abp-model="TPInfoModel" submit-button="true" data-ajaxForm="true" id="TPEditForm">
+    
         <abp-card>
             <abp-card-header>
                 <abp-row>
@@ -764,3 +768,5 @@
         </abp-accordion-item>
     </abp-accordion>
 </form>
+</div>
+</div>

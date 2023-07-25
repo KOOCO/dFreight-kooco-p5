@@ -11,7 +11,9 @@ namespace Dolphin.Freight.ImportExport.AirImports
 {
     public class AirImportDetails
     {
+        public bool IsPDF { get; set; }
         public string AirWayBillNo { get; set; }
+        public string TotalPackage { get; set; }
         public Guid? HawbId { get; set; }
         public Guid MawbId { get; set; }
         public string HawbNo { get; set; }
@@ -20,7 +22,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// <summary>
         /// Mawb號碼
         /// </summary> 
-        public string MawbNo { get; set; }
+        public string MawbNo { get; set; }       
+        public string Hawb_Nos { get; set; }
         /// <summary>
         /// 分站ID
         /// </summary>
@@ -60,6 +63,10 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? OPId { get; set; }
         public string OPName { get; set; }
+        public string HItNo { get; set; }
+        public string HItDate { get; set; }
+        public string HItLocation { get; set; }
+        public string HMark { get; set; }
         /// <summary>
         /// 是否直單
         /// </summary>
@@ -84,6 +91,9 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? CustomerId { get; set; }
         public string CustomerName { get; set; }
+        public string CustomBroker { get; set; }
+        public string CustomBrokerName { get; set; }
+        public string HPackageUnitName { get; set; }
         /// <summary>
         ///  
         /// </summary>
@@ -94,6 +104,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? SalesId { get; set; }
         public string SalesName { get; set; }
+        public string SalesType { get; set; }
         /// <summary>
         ///  出發地Id
         /// </summary>
@@ -109,6 +120,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 航班號碼
         /// </summary>
         public string FlightNo { get; set; }
+        public string HTruckerName { get; set; }
         /// <summary>
         ///  中轉航班1-Id
         /// </summary>
@@ -217,6 +229,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? FreightLocationId { get; set; }
         public string FreightLocationName { get; set; }
+        public string MFreightLocationName { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -288,7 +301,42 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public string HawbString { get; set; }
         public string ChargableWeight { get; set; }
+        public string ChargableWeightStr { get; set; }
+        public string GrossWeightStr { get; set; }
+        public string VolumeWeightStr { get; set; }
+        public string MeasurementStr { get; set; }
+        public string CurrentAgent { get; set; }
+        public string PackagesStr { get; set; }
         public FreightPageType PageType { get; set; }
+        public List<OverSeaAgentAirImport> OverSeaAgents { get; set; }
+        public List<HawbNo> HawbNos { get; set; }
+        public string ITNo { get; set; }
+        public string ReleasedBy { get; set; }
+        public string FinalDestination { get; set; }
+        public DateTime LastFreeDay { get; set; }
+        public string Remark { get; set; }
+        public string SubHawbJson { get; set; }
+        public List<SubHawbs> SubHawbs { get; set; }
+        public string Trucker { get; set; }
+        public DateTime ITDate { get; set; }
+        public string ITIssuedLocation { get; set; }
+    }
+    public class OverSeaAgentAirImport
+    {
+        public string Name { get; set; }
+    }
+    public class HawbNo
+    {
+        public string HawbNos { get; set; }
+        public string OverSeaAgent { get; set; }
+        public string GrossWeightKG { get; set; }
+        public string GrossWeightLBS { get; set; }
+        public string ChargableWeightKG { get; set; }
+        public string ChargableWeightLBS { get; set; }
+        public string VolumeWeightKG { get; set; }
+        public string MeasurementWeight { get; set; }
+        public string Packages { get; set; }
     }
 }

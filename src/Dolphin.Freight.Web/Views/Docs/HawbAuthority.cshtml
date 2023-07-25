@@ -4,7 +4,7 @@
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
-@model Dolphin.Freight.Web.ViewModels.Reports.ProfitReportViewModel
+@model Dolphin.Freight.Web.ViewModels.Reports.AuthorityViewModel
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
 @{
@@ -221,281 +221,538 @@ table tr {
     <form id="myForm" method="post">
         <input type="hidden" autocomplete="off">
         <input type="hidden" asp-for="@Model.PageType" />
-        <input type="hidden" asp-for="@Model.ReportType" />
-        <input type="hidden" asp-for="@Model.InvoicesJson" />
-        <input type="hidden" asp-for="@Model.AgentName" />
-        <input type="hidden" asp-for="@Model.PodEtd" />
-        <input type="hidden" asp-for="@Model.PolEtd" />
-        <input type="hidden" asp-for="@Model.PostDate" />
-        <input type="hidden" asp-for="@Model.Operator" />
+        <input type="hidden" asp-for="@Model.ReportType" />       
+        <input type="hidden" asp-for="@Model.AgentName" />       
         <input type="hidden" asp-for="@Model.FileNo" />
         <input type="hidden" asp-for="@Model.MawbNo" />
-        <input type="hidden" asp-for="@Model.HawbNo" />
-        <input type="hidden" asp-for="@Model.Measurement" />
-        <input type="hidden" asp-for="@Model.ChargableWeight" />
-        <input type="hidden" asp-for="@Model.Shipper" />
-        <input type="hidden" asp-for="@Model.ARTotal" />
-        <input type="hidden" asp-for="@Model.DCTotal" />
-        <input type="hidden" asp-for="@Model.APTotal" />
-        <input type="hidden" asp-for="@Model.Total" />
-        <input type="hidden" asp-for="@Model.SvcTermFromName" />
-        <input type="hidden" asp-for="@Model.SvcTermToName" />
+        <input type="hidden" asp-for="@Model.HawbNo" />        
+        <input type="hidden" asp-for="@Model.Shipper" />       
         <input type="hidden" asp-for="@Model.Consignee" />
-        <input type="hidden" asp-for="@Model.Customer" />
+
+        <input type="hidden" asp-for="@Model.NotifyParty" />
+        <input type="hidden" asp-for="@Model.MerchandiseImportedAt" />       
+        <input type="hidden" asp-for="@Model.On" />       
+        <input type="hidden" asp-for="@Model.VIA" />
+        <input type="hidden" asp-for="@Model.Date" />
+        <input type="hidden" asp-for="@Model.PrepBy" />        
+        <input type="hidden" asp-for="@Model.SubAwbNO" />       
+        <input type="hidden" asp-for="@Model.MawbNo" />
+
+        <input type="hidden" asp-for="@Model.DepAirport" />
+        <input type="hidden" asp-for="@Model.ETD" />       
+        <input type="hidden" asp-for="@Model.HawbNo" />       
+        <input type="hidden" asp-for="@Model.EntryPort" />
+        <input type="hidden" asp-for="@Model.ETA1" />
+        <input type="hidden" asp-for="@Model.ETA2" />        
+        <input type="hidden" asp-for="@Model.ETA3" />       
+        <input type="hidden" asp-for="@Model.ManifestNo" />
+        <input type="hidden" asp-for="@Model.DestAirport" />
+        <input type="hidden" asp-for="@Model.FlightNo" />       
+        <input type="hidden" asp-for="@Model.FinalDest" />       
+        <input type="hidden" asp-for="@Model.LastFreeDay" />
+        <input type="hidden" asp-for="@Model.FrightLoc" />
+        <input type="hidden" asp-for="@Model.ITNO" />        
+        <input type="hidden" asp-for="@Model.Tel" />       
+        <input type="hidden" asp-for="@Model.Fax" />
+
+        <input type="hidden" asp-for="@Model.ITIssuePlace" />
+        <input type="hidden" asp-for="@Model.FirmCode" />       
+        <input type="hidden" asp-for="@Model.ITDate" />       
+        <input type="hidden" asp-for="@Model.SubHawb" />
+        <input type="hidden" asp-for="@Model.DescriptionITNO" />
+        <input type="hidden" asp-for="@Model.PCS" />        
+        <input type="hidden" asp-for="@Model.Amount" />       
+        <input type="hidden" asp-for="@Model.Remark" />
+        <input type="hidden" asp-for="@Model.AgentName" />
+        <input type="hidden" asp-for="@Model.CustomsBroker" />       
+        <input type="hidden" asp-for="@Model.Trucker" />       
+        <input type="hidden" asp-for="@Model.DocumentPickedBy" />
+        <input type="hidden" asp-for="@Model.DocumentPickedDate" />
+        <input type="hidden" asp-for="@Model.DocumentPickedTime" />        
+        <input type="hidden" asp-for="@Model.IsPDF" />    
+      
 
 <div id="main" class="edit">              
-    <div class="wrap h-80">
-            <div class="header">
-                <div class="text-center">
-                    <h4 class="margin-0"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">PROFIT BY HAWB</font></font></h4>
-                </div>
-            </div>
-            <div class="con oi-hbl-profit">
+   <div class="wrap _ai-authority">
+        
 
+        <div class="header header-normal margin-b-md">
+            <table>
+                <tbody><tr>
+                    <td class="w-15 logo">
+                       
+                    </td>
+                    <td class="w-48">
+                        <h1 class="auto-font-size office-name"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h1>
+                        <div class="auto-font-size office-des">
+                            <span>
+                                77792 COBB CAPE<br>
+                                TRISTANCHESTER, NE 47478<br>
+                                TEL: 08417606080 FAX: 08417606080<br>
+                                EMAIL: hanjun.lin@dolphin-gp.com
+                                
+                                    <br><strong>Prepared by Hanjun Lin 07-25-2023 14:56 (CST)</strong>
+                                
+                            </span>
+                        </div>
+                    </td>
+                    <td class="w-2">&nbsp;</td>
+                    <td class="w-35 title border-deep-blue">
+                        <div class="text-center">
+                            <h2 class="blue-lg">AUTHORITY TO MAKE ENTRY</h2>
+                        </div>
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+        <div class="header header-horizontal-logo margin-b-md">
+            <table>
+                <tbody><tr>
+                    <td class="w-75">
+                        <h1 class="text-blue-deep">AUTHORITY TO MAKE ENTRY</h1>
+                        <h2 class="auto-font-size office-name"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h2>
+                        <div class="auto-font-size office-des">
+                            <span>
+                                77792 COBB CAPE TRISTANCHESTER, NE 47478<br>
+                                TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
+                                
+                                    <br><strong>Prepared by Hanjun Lin 07-25-2023 14:56 (CST)</strong>
+                                
+                            </span>
+                        </div>
+                    </td>
+                    <td class="w-2">&nbsp;</td>
+                    <td class="w-22 logo">
+                        <img src="/api/office/logo/1/">
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+        <div class="con">
+            <table class="data-height-md">
+                <tbody><tr>
+                    <td class="w-30 td highlight-block">
+                        <div class="title">SHIPPER :</div>
+                        <div class="data">
+                            <div class="item-edit hover-toggle-icon-text-template">
+                                <textarea name="shipper_area" cols="40" rows="5" class="w-100 text-scroll no-adjustment">@Model.Shipper</textarea><</div>
+                        </div>
+                    </td>
+                    <td class="w-2"></td>
+                    <td class="w-30 td highlight-block">
+                        <div class="title">CONSIGNEE :</div>
+                        <div class="data">
+                            <div class="item-edit hover-toggle-icon-text-template">
+                                <textarea name="consignee_area" cols="40" rows="5" class="w-100 text-scroll no-adjustment">@Model.Consignee</textarea></div>
+                        </div>
+                    </td>
+                    <td class="w-2"></td>
+                    <td class="w-36 td highlight-block">
+                        <div class="title">NOTIFY PARTY :</div>
+                        <div class="data">
+                            <div class="item-edit hover-toggle-icon-text-template">
+                                <textarea name="notify_area" cols="40" rows="5" class="w-100 text-scroll no-adjustment " id="id_notify_area">@Model.NotifyParty</textarea></div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody></table>
+            <table class="border-b border-t margin-t-md table-padding-double text-sm">
+                <tbody><tr>
+                    <td class="w-23">MERCHANDISE IMPORTED AT : </td>
+                    <td class="w-32 text-bold">
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <input type="text" name="APOD" value="@Model.MerchandiseImportedAt" id="id_APOD"></div>
+                    </td>
+                    <td class="w-5">ON : </td>
+                    <td class="w-15 text-bold">
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <input type="text" name="ETA_date" value="@Model.On" id="id_ETA_date" ></div>
+                    </td>
+                    <td class="w-5">VIA : </td>
+                    <td class="w-20 text-bold">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="carrier" value="@Model.VIA" ></div>
+                    </td>
+                </tr>
+            </tbody></table>
+            <table class="border-b margin-t">
+                <tbody><tr>
+                    <td class="w-25 td">
+                        <table class="table-padding text-sm">
+                            <tbody><tr>
+                                <td class="w-42">FILE NO. : </td>
+                                <td class="w-58 text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="filing_no" value="@Model.FileNo"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">MAWB NO. : </td>
+                                <td class="text-bold _text-14">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="MBL_NO" value="@Model.MawbNo" ></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SUB-AWB NO. : </td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" class="ng-isolate-scope" value="@Model.SubAwbNO"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">HAWB NO. : </td>
+                                <td class="text-bold _text-14">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="HBL_NO" value="@Model.HawbNo"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MANIFEST NO. : </td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="manifest_no" value="@Model.ManifestNo"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold valign-top">FLIGHT NO. : </td>
+                                <td class="text-bold _text-14">
+                                    <select disabled name="flight_no_choices" class="item-edit select w-98 normal-style _text-13 text-light" >
+                                      <option value="F">First Flight</option>
+                                      <option value="L">Last Flight</option>
+                                    </select>
 
-                <table class="text-sm">
-                    <tbody>
-                        <tr>
-                            <td class="w-10 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">POST DATE</font></font></td>
-                            <td class="w-10 col-padding">@Model.PostDate.ToShortDateString()</td>
-                           <td style="width: 20%; text-align: right">@((Model.PageType == Dolphin.Freight.Common.FreightPageType.AIHBL || Model.PageType == Dolphin.Freight.Common.FreightPageType.AIMBL)? "AIR IMPORT": "AIR EXPORT")</td>
-                        </tr>
-                        <tr class="border-b-strong">
-                            <td class="w-10 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CURRENCY</font></font></td>
-                            <td class="w-10 col-padding">USD</td>
-                            <td class="w-55 col-padding text-right">@DateTime.Now.ToShortDateString()</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-
-
-                <table class="td text-bold text-md">
-                    <tbody>
-                        <tr class="text-sea" style="font-size: 16px">
-                            <td class="w-17 bg-light col-padding-double"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">SALES:</font></font></td>
-                            <td class="w-33 bg-light col-padding-double">@Model.Sales</td>
-                            <td class="w-15 bg-light col-padding-double"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CUSTOMER:</font></font></td>
-                            <td class="w-35 bg-light col-padding-double">@Model.Customer</td>
-                        </tr>
-                        <tr>
-
-                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CONTAINER COUNT :</font></font></td>
-                            <td class="col-padding"></td>
-
-                            <td class="w-12 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">P.O.R:</font></font></td>
-                            <td class="w-38 col-padding"></td>
-                        </tr>
-                        <tr>
-                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">AGENT NAME:</font></font></td>
-                            <td class="col-padding">@Model.AgentName</td>
-                            <td class="col-padding">P.O.L / ETD:</td>
-                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.PolEtd</font></font></td>
-                        </tr>
-                        <tr>
-                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">SHIPPER:</font></font></td>
-                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Shipper</font></font></td>
-                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">POD/ETA:</font></font></td>
-                            <td class="col-padding">@Model.PodEtd</td>
-                        </tr>
-                        <tr>
-                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CONSIGNEE:</font></font></td>
-                            <td class="col-padding">@Model.Consignee</td>
-                            <td class="col-padding">D.E.L:</td>
-                            <td class="col-padding"></td>
-                        </tr>
-                        <tr>
-
-                            <td class="td col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">OPERATOR:</font></font></td>
-                            <td class="td col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Operator</font></font></td>
-
-                            <td class="td col-padding"></td>
-                            <td class="td col-padding"></td>
-
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table-valign-top">
+                                    <div ng-if="vm.flightNoOrder==='F'" class="item-edit ng-scope hover-toggle-icon-text-template">
+                                        <input type="text" name="flight_no" value="@Model.FlightNo" class="ng-isolate-scope">
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td class="w-2">&nbsp;</td>
+                    <td class="w-55 td">
+                        <table class="table-padding text-sm">
+                            <tbody><tr>
+                                <td class="w-20">DATE: </td>
+                                <td class="w-80 text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="doc_date" value="@Model.Date"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PREP. BY: </td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="prepare_by" value="@Model.PrepBy"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DEP. AIRPORT: </td>
+                                <td class="text-bold text-11">
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="APOL" value="@Model.DepAirport"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ENTRY PORT: </td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="first_port" value="@Model.EntryPort">
+                                        </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DEST. AIRPORT: </td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="APOD_2" value="@Model.DestAirport"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FINAL DEST. : </td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="FDEST" value="@Model.FinalDest"></div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                        <table class="table-padding text-sm">
+                            <tbody><tr>
+                                <td class="w-20">LAST FREE DAY: </td>
+                                <td class="w-80 text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="last_free_date" value="@Model.LastFreeDay">
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td class="w-2">&nbsp;</td>
+                    <td class="w-15 td">
+                        <table class="table-padding text-sm">
+                            <tbody><tr>
+                                <td class="w-30"></td>
+                                <td class="w-70">
+                                    <div class="data">
+                                        <div class="item-edit" style="height:25px;">&nbsp;</div>
+                                        <div class="item-pdf">&nbsp;</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <div class="data">
+                                        <div class="item-edit">&nbsp;</div>
+                                        <div class="item-pdf">&nbsp;</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ETD: </td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="ETD_date" value="@Model.ETD"></div>
+                                    <div class="item-pdf">07-24-2023</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ETA: </td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="AFP_ETA_date" value="@Model.ETA1"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ETA: </td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="ETA_date_2" value="@Model.ETA2"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ETA: </td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="FETA_date" value="@Model.ETA3"></div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+            </tbody></table>
+            <table class="margin-t">
+                <tbody><tr>
+                    <td class="w-48 td">
+                        <table class="table-padding text-sm">
+                            <tbody><tr>
+                                <td class="w-25">FREIGHT LOC. : </td>
+                                <td class="w-75 text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="freight_location" value="@Model.FrightLoc"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td class="text-bold">
+                                    <table>
+                                        <tbody><tr>
+                                            <td class="w-10">Tel: </td>
+                                            <td class="w-37">
+                                                <div class="item-edit hover-toggle-icon-text-template">
+                                                    <input type="text" value="@Model.Tel"></div>
+                                            </td>
+                                            <td class="w-6">&nbsp;</td>
+                                            <td class="w-10">Fax: </td>
+                                            <td class="w-37">
+                                                <div class="item-edit hover-toggle-icon-text-template">
+                                                    <input type="text" name="freight_location_fax" value="@Model.Fax" /></div>
+                                            </td>
+                                        </tr>
+                                    </tbody></table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FIRM CODE: </td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="freight_location_firm_code" value="@Model.FirmCode"></div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td class="w-4">&nbsp;</td>
+                    <td class="w-48 td">
+                        <table class="table-padding text-sm">
+                            <tbody><tr>
+                                <td class="w-25">I.T. NO. : </td>
+                                <td class="w-75 text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" value="@Model.ITNO"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>I.T. ISSUE PLACE: </td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" value="@Model.ITIssuePlace"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>I.T. DATE: </td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" value="@Model.ITDate"></div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+            </tbody></table>
+            
+                <select name="content_table_type" class="item-edit select margin-t-sm" disabled>
+                    <option value="MARK_DESCRIPTION">Mark &amp; Description</option>
+                    <option value="SUB_HAWB" selected="">SubHAWB</option>
+                </select>
+            
+                <table class="margin-t table-padding-double">
                     <colgroup>
-                        <col class="w-50">
-                        <col class="w-50">
+                        <col class="w-20">
+                        <col class="w-20">
+                        <col class="w-20">
+                        <col class="w-20">
+                        <col class="w-20">
                     </colgroup>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <table class="table-padding text-bold text-md">
-                                    <colgroup>
-                                        <col class="w-34">
-                                        <col class="w-66">
-                                    </colgroup>
-                                    <tbody>
-                                        <tr>
-                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">FILE NO :</font></font></td>
-                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.FileNo</font></font></td>
-                                        </tr>
-                                        <tr>
-                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">SERVICE TERM:</font></font></td>
-                                            <td>@string.Concat(@Model.SvcTermToName, "-",  @Model.SvcTermFromName)?.TrimStart('-')</td>
-                                        </tr>
-                                        <tr>
-                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">WEIGHT :</font></font></td>
-                                            <td>@Model.ChargableWeight</td>
-                                        </tr>
+                    <tbody><tr class="bg-light text-8 border-t border-b">
+                        <th class="col-padding-double text-left border-r">HAWB</th>
+                        <th class="col-padding-double text-left border-r">SubHAWB</th>
+                        <th class="col-padding-double text-left border-r">Description / IT No.</th>
+                        <th class="col-padding-double text-right border-r">PCS</th>
+                        <th class="col-padding-double text-right">Amount</th>
+                    </tr>
 
-                                        <tr>
-                                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">MEASUREMENT :</font></font></td>
-                                            <td>@Model.Measurement</td>
-                                        </tr>
-
-                                    </tbody>
-                                </table>
-                            </td>
-                            <td>
-                                <table class="table-padding text-bold text-md">
-                                    <colgroup>
-                                        <col class="w-30">
-                                        <col class="w-70">
-                                    </colgroup>
-                                    <tbody>
-                                        <tr>
-                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">SALES TYPE:</font></font></td>
-                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.SalesType</font></font></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">MAWB NO :</font></font></td>
-                                            <td class="col-padding">@Model.MawbNo</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">HAWB NO :</font></font></td>
-                                            <td class="col-padding">@Model.HawbNo</td>
-                                        </tr>
-
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">&nbsp;</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div class="item-edit">
-                </div>
-
-
-                <table class="table-padding single-currency">
-                    <colgroup>
-                        <col class="w-5"><!--type-->
-                        <col class="w-20"><!--BL No-->
-                        <col class="w-10"><!--Invoice / Post Date-->
-                        <col class="w-22"><!--Company / Description-->
-                        <col class="w-5"><!--Radio-->
-                        <col class="w-10"><!--AR Amount-->
-                        <col class="w-10"><!--AP Amount-->
-                        <col class="w-8"><!--DC Amount-->
-                        <col class="w-10"><!--PMT-->
-                    </colgroup>
-                    <tbody>
-                        <tr class="border title-sm">
-                            <td class="col-bg-grey text-center" rowspan="2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">category</font></font></td>
-                            <td class="col-bg-grey text-left"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">NO</font></font></td>
-                            <td class="col-bg-grey text-center" rowspan="2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Invoice </font></font><br><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">issue date</font></font></td>
-                            <td class="col-bg-grey text-left"><span class="text-bold text-bigger"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">company</font></font></span></td>
-                            <td class="col-bg-grey text-center" rowspan="2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">ratio </font></font><br><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">%</font></font></td>
-                            <td class="col-bg-grey text-center" colspan="2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">local</font></font></td>
-                            <td class="col-bg-grey text-right" rowspan="2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">D/C </font></font><br><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">amount</font></font></td>
-                            <td class="col-bg-grey text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Received and paid</font></font></td>
-                        </tr>
                     
-                        <tr class="border title-sm">
-                            <td class="col-bg-grey text-left">
-                                <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">
-                                        Invoice number
-                                    </font>
-                                </font>
+                        <tr><!-- total 13 rows(not include see attatchment row) -->
+                            <td class="td text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" value="@Model.HawbNo">
+                                    </div>
+                                
                             </td>
-                            <td class="col-bg-grey text-left"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">describe</font></font></td>
-                            <td class="col-bg-grey text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Amount receivable</font></font></td>
-                            <td class="col-bg-grey text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Amounts payable</font></font></td>
-                            <td class="col-bg-grey text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">balance</font></font></td>
-                        </tr>
-
-                        @foreach (var invoice in Model.Invoices)
-                        {
-                                <tr class="">
-                            <td class="td text-center">@(invoice.HawbId != null ? "H" : "M")</td>
                             <td class="td">
-                                <div class="auto-font-size __width-bl-no"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.HawbNo</font></font></span></div>
-                                <div class="item-edit auto-font-size __width-invoice">
-                                    <span>
-                                        <a href="/Accounting/Invoice?MethodType=3&MawbId=&Hid=@invoice.HawbId&InvoiceType=@invoice.InvoiceType&InvoiceId=@invoice.Id" target="_blank">@invoice.InvoiceNo</a>
-                                    </span>
+                                <div class="item-edit hover-toggle-icon-text-template">
+                                    <input type="text" value="@Model.SubHawb">
                                 </div>
                             </td>
-                            <td class="td text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoice.InvoiceDate?.ToShortDateString()</font></font></td>
-                            <td class="td text-bold text-md" colspan="5"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoice.InvoiceCompanyName</font></font></td>
-                            <td class="td text-right">
-                                N
-                                <div class="auto-font-size __width-balance"><span>@invoice.InvoiceBillDtos.Sum(c => c.Rate * c.Quantity).ToString("0.00")</span></div>
+                            <td class="td">
+                                <div class="item-edit hover-toggle-icon-text-template">
+                                    <input type="text" value="@Model.DescriptionITNO">
+                                </div>
                             </td>
-                                </tr>
-
-                        @if(invoice.InvoiceBillDtos != null && invoice.InvoiceBillDtos.Count > 0)
-                        {
-                                @foreach (var invoiceBill in invoice.InvoiceBillDtos)
-                                {
-                                   <tr class="text-md">
-                                    <td class="td">&nbsp;</td>
-                                    <td class="td"></td>
-                                    <td class="td text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@invoice.InvoiceDate?.ToShortDateString()</font></font></td>
-                                    <td class="td">@invoiceBill.Description</td>
-                                    <td class="td text-right">100.00</td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@(invoice.InvoiceType == 0 ? (invoiceBill.Rate * invoiceBill.Quantity).ToString("0.00") : 0)</font></font></span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count"><span>@(invoice.InvoiceType == 2 ? (invoiceBill.Rate * invoiceBill.Quantity).ToString("0.00") : 0)</span></div></td>
-                                    <td class="td text-right"><div class="auto-font-size __width-count"><span>@(invoice.InvoiceType == 1 ? (invoiceBill.Rate * invoiceBill.Quantity).ToString("0.00") : 0)</span></div></td>
-                                    <td class="td text-right">USD</td>
-                                </tr>             
-                                }    
-                                <tr class="border-grey"></tr>
-                        }
-
-                       }
-
-                    </tbody>
-                </table>
-
-                <table class="text-bold text-md border bg-grey table-padding single-currency">
-                    <tbody>
-                        <tr>
-                            <td class="w-63">&nbsp;</td>
-                            <td class="w-5"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">TOTAL</font></font></td>
-                            <td class="w-9 text-right"><div class="auto-font-size __width-total"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.ARTotal.ToString("0.00")</font></font></span></div></td>
-                            <td class="w-9 text-right"><div class="auto-font-size __width-total"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.APTotal.ToString("0.00")</font></font></span></div></td>
-                            <td class="w-9 text-right"><div class="auto-font-size __width-total"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.DCTotal.ToString("0.00")</font></font></span></div></td>
-                            <td class="w-5">&nbsp;</td>
+                            <td class="td text-right">
+                                <div class="item-edit hover-toggle-icon-text-template">
+                                    <input type="text" value="@Model.PCS">
+                               </div>
+                            </td>
+                            <td class="td text-right">
+                                <div class="item-edit hover-toggle-icon-text-template">
+                                    <input type="text" name="sub_hawb_amount_0" value="@Model.Amount">
+                                </div>
+                            </td>
                         </tr>
-                        <tr class="border-t">
-                            <td>&nbsp;</td>
-                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">PROFIT</font></font></td>
-                            <td class="text-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Convert.ToDouble((Model.Total * 100) / Model.APTotal).ToString("0.00") %</font></font></td>
-                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>@Model.Total.ToString("0.00")</span></div></td>
-                            <td>&nbsp;</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td>&nbsp;</td>
-                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">BALANCE</font></font></td>
-                            <td class="text-right"></td>
-                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Total.ToString("0.00")</font></font></span></div></td>
-                            <td>&nbsp;</td>
-                        </tr>
-                    </tbody>
-                </table>
+                </tbody></table><!-- end ngIf: vm.contentTableType == vm.contentTableSubHawb -->
+            
+                <!-- ngIf: vm.contentTableType == vm.contentTableMarkDescription -->
+            
+            <table class="border">
+                <tbody><tr>
+                    <td class="w-100 text-bold border-b col-padding-double bg-light">REMARK</td>
+                </tr>
+                <tr>
+                    <td class="col-padding-double">
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <textarea name="remark" cols="40" rows="5" class="text-scroll">@Model.Remark</textarea></div>
+                    </td>
+                </tr>
+            </tbody></table>
+            <table class="margin-t">
+                <tbody><tr>
+                    <td class="w-3 text-bold title">WE, </td>
+                    <td class="w-60 border-b text-12 col-padding-t">
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <input type="text" name="company_name" value="@Model.AgentName" ></div>
+                    </td>
+                    <td class="w-35 text-bold title">,</td>
+                </tr>
+                <tr>
+                    <td class="w-3 text-bold title" colspan="3">THE CONSIGNEE FOR ABOVE MENTIONED BILL OF LADING COVERING</td>
+                </tr>
+                <tr>
+                    <td class="w-3 text-bold title" colspan="3">MERCHANDISE FOR VARIOUS ULTIMATE CONSIGNEE, HEREBY AUTHORIZES</td>
+                </tr>
+                <tr>
+                    <td class="w-3" colspan="3">
+                        <table>
+                            <tbody><tr>
+                                <td class="w-50 border-b text-12 col-padding-t">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="customs_broker" value="123"></div>
+                                    <div class="item-pdf auto-font-size __width-agent"><span>123</span></div>
+                                </td>
+                                <td class="w-50 text-bold title">TO MAKE CUSTOMS</td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table class="margin-t">
+                            <tbody><tr>
+                                <td class="w-15 title text-bold">ENTRY AND</td>
+                                <td class="w-60 border-b text-12">
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="trucker" value="@Model.Trucker" id="id_trucker"></div>
+                                    <div class="item-pdf auto-font-size __width-truck"><span>ABBOTT PLC</span></div>
+                                </td>
+                                <td class="w-25 title text-bold">TO TAKE DELIVERY</td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="text-bold title" colspan="3">FOR THE ABOVE DESCRIBED MERCHANDISE.</td>
 
-
-            </div>
+                </tr>
+                <tr>
+                    <td class="w-3">&nbsp;</td>
+                    <td class="w-60 border-b text-12 text-center padding-t-xs">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="company_name_2" value="@Model.AgentName" id="id_company_name_2"></div>
+                        <div class="item-pdf auto-font-size __width-company"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></div>
+                    </td>
+                    <td class="w-35">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="w-3">&nbsp;</td>
+                    <td class="w-60 text-bold padding-t-xs text-center">Attorney - In - Fact</td>
+                    <td class="w-35">&nbsp;</td>
+                </tr>
+            </tbody></table>
+            <table class="margin-t text-bold text-sm">
+                <tbody><tr class="border-t border-b">
+                    <td class="w-18 border-l col-padding-double">DOCUMENT PICKED BY :</td>
+                    <td class="w-32 col-padding-double">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="doc_picked_by" id="id_doc_picked_by" value="@Model.DocumentPickedBy"></div>
+                        <div class="item-pdf auto-font-size __width-document"><span>&nbsp;</span></div>
+                    </td>
+                    <td class="w-8 col-padding-double text-right">DATE :</td>
+                    <td class="w-17 col-padding-double">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="doc_picked_date" id="id_doc_picked_date" value=""></div>
+                        <div class="item-pdf">&nbsp;</div>
+                    </td>
+                    <td class="w-8 col-padding-double text-right">TIME :</td>
+                    <td class="w-17 col-padding-double border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="doc_picked_time" id="id_doc_picked_time" value=""></div>
+                        <div class="item-pdf">&nbsp;</div>
+                    </td>
+                </tr>
+            </tbody></table>
         </div>
+    </div>
 </div>
 </form>
 
