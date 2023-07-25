@@ -11,6 +11,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
 {
     public class AirImportDetails
     {
+        public bool IsPDF { get; set; }
         public string AirWayBillNo { get; set; }
         public Guid? HawbId { get; set; }
         public Guid MawbId { get; set; }
@@ -20,7 +21,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// <summary>
         /// Mawb號碼
         /// </summary> 
-        public string MawbNo { get; set; }
+        public string MawbNo { get; set; }       
+        public string Hawb_Nos { get; set; }
         /// <summary>
         /// 分站ID
         /// </summary>
@@ -84,6 +86,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? CustomerId { get; set; }
         public string CustomerName { get; set; }
+        public string CustomBroker { get; set; }
         /// <summary>
         ///  
         /// </summary>
@@ -290,8 +293,17 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public string HawbString { get; set; }
         public string ChargableWeight { get; set; }
+        public string ChargableWeightStr { get; set; }
+        public string GrossWeightStr { get; set; }
+        public string VolumeWeightStr { get; set; }
+        public string MeasurementStr { get; set; }
+        public string CurrentAgent { get; set; }
+        public string PackagesStr { get; set; }
         public FreightPageType PageType { get; set; }
+        public List<OverSeaAgentAirImport> OverSeaAgents { get; set; }
+        public List<HawbNo> HawbNos { get; set; }
         public string ITNo { get; set; }
         public string ReleasedBy { get; set; }
         public string FinalDestination { get; set; }
@@ -302,5 +314,21 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string Trucker { get; set; }
         public DateTime ITDate { get; set; }
         public string ITIssuedLocation { get; set; }
+    }
+    public class OverSeaAgentAirImport
+    {
+        public string Name { get; set; }
+    }
+    public class HawbNo
+    {
+        public string HawbNos { get; set; }
+        public string OverSeaAgent { get; set; }
+        public string GrossWeightKG { get; set; }
+        public string GrossWeightLBS { get; set; }
+        public string ChargableWeightKG { get; set; }
+        public string ChargableWeightLBS { get; set; }
+        public string VolumeWeightKG { get; set; }
+        public string MeasurementWeight { get; set; }
+        public string Packages { get; set; }
     }
 }

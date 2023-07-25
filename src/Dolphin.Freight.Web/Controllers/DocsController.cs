@@ -3218,6 +3218,90 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf(returnUrl, model);
         }
 
+        public async Task<IActionResult> ManifestAirImport(Guid id, FreightPageType pageType)
+        {
+            var airImportDetails = await GetAirImportMawbDetailsByPageType(id, pageType);
+
+            return View(airImportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ManifestAirImport(AirImportMawbDto model)
+        {
+            model.IsPDF = true;
+
+            model.AllHawbListAirImports = JsonConvert.DeserializeObject<List<AllHawbListAirImport>>(model.HawbJson);
+
+            return await _generatePdf.GetPdf("Views/Docs/ManifestAirImport.cshtml", model);
+        }
+
+        public async Task<IActionResult> ConsolidatedArrivalNoticePartialView(Guid mawbId, string conId)
+        {
+            AirImportDetails InfoModel = new();
+
+            var hawb = await _airImportHawbAppService.GetHawbCardsByMawbId(mawbId);
+            var tradePartners = _dropdownService.TradePartnerLookupList;
+            var overSeaAgents = new List<OverSeaAgentAirImport>();
+
+            foreach(var overSeaAgent in tradePartners)
+            {
+                var data = new OverSeaAgentAirImport
+                {
+                    Name = overSeaAgent.Text
+                };
+                overSeaAgents.Add(data);
+            }
+
+            InfoModel.CurrentAgent = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(conId)).Select(s => s.Text));
+            InfoModel.OverSeaAgents = overSeaAgents;
+
+            return PartialView("Pages/Shared/_ConsolidatedArrivalNotice.cshtml", InfoModel);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ConsolidatedArrivalNoticeAirImport(Guid mawbId, string agent, FreightPageType pageType)
+        {
+            var data = await _airImportHawbAppService.GetHawbCardsByMawbId(mawbId);
+            var tradePartner = _dropdownService.TradePartnerLookupList;
+            var packgeUnit = _dropdownService.PackageUnitLookupList;
+            var airImportDetails = await GetAirImportDetailsByPageType(mawbId, pageType);
+            var hawbNos = new List<HawbNo>();
+
+            foreach (var item in data)
+            {
+                var hawb = new HawbNo
+                {
+                    HawbNos = item.HawbNo,
+                    OverSeaAgent = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(item.ConsigneeId)).Select(s => s.Text)),
+                    GrossWeightKG = item.GrossWeightKG,
+                    ChargableWeightKG = item.ChargeableWeightKG,
+                    VolumeWeightKG = item.VolumeWeightKG,
+                    MeasurementWeight = item.VolumeWeightCBM,
+                    Packages = item.Package + " " + string.Concat(packgeUnit.Where(w => w.Value == Convert.ToString(item.PackageUnit)).Select(s => s.Text))
+                };
+                hawbNos.Add(hawb);
+            }
+            airImportDetails.HawbNos = hawbNos;
+            airImportDetails.PackagesStr = string.Join("\n", hawbNos.Where(w => w.OverSeaAgent == agent).Select(s => s.Packages));
+            airImportDetails.ChargableWeightStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.ChargableWeightKG))) + " KGS " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.ChargableWeightKG)) * 2.20462).ToString("0.00") + " LBS";
+            airImportDetails.GrossWeightStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.GrossWeightKG))) + " KGS " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.GrossWeightKG)) * 2.20462).ToString("0.00") + " LBS";
+            airImportDetails.VolumeWeightStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.VolumeWeightKG))) + " KGS " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.VolumeWeightKG)) * 2.20462).ToString("0.00") + " LBS";
+            airImportDetails.MeasurementStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => double.Parse(s.MeasurementWeight))) + " CBM " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => double.Parse(s.MeasurementWeight) * 35.315)).ToString("0.00") + " CFT";
+            airImportDetails.HawbString = "Hawb Nos:- "+string.Join(", ", hawbNos.Where(w => w.OverSeaAgent == agent).Select(s => s.HawbNos));
+            airImportDetails.Hawb_Nos = JsonConvert.SerializeObject(hawbNos);
+            airImportDetails.CurrentAgent = agent;
+            airImportDetails.ShipperName = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data[0].ShipperId)).Select(s => s.Text));
+            airImportDetails.NotifyName = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data[0].Notify)).Select(s => s.Text));
+            airImportDetails.CustomBroker = data[0].CustomsBroker;
+
+            return View(airImportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ConsolidatedArrivalNoticeAirImport(AirImportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/ConsolidatedArrivalNoticeAirImport.cshtml", model);
+        }
+
         [HttpGet]
         public async Task<IActionResult> HawbAuthority(Guid id, FreightPageType pageType)
         {
@@ -3500,21 +3584,5 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         #endregion
-
-        public async Task<IActionResult> ManifestAirImport(Guid id, FreightPageType pageType)
-        {
-            var airImportDetails = await GetAirImportMawbDetailsByPageType(id, pageType);
-
-            return View(airImportDetails);
-        }
-        [HttpPost]
-        public async Task<IActionResult> ManifestAirImport(AirImportMawbDto model)
-        {
-            model.IsPDF = true;
-
-            model.AllHawbListAirImports = JsonConvert.DeserializeObject<List<AllHawbListAirImport>>(model.HawbJson);
-
-            return await _generatePdf.GetPdf("Views/Docs/ManifestAirImport.cshtml", model);
-        }
     }
 }

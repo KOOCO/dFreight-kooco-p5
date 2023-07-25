@@ -190,6 +190,12 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.CarrierTPName = string.Concat(carrier.TPName, "/", carrier.TPCode);
             }
 
+            if (data.FreightLocationId != null)
+            {
+                var freightLocation = tradePartners.Where(w => w.Id == data.FreightLocationId).FirstOrDefault();
+                airImportDetails.FreightLocationName = string.Concat(freightLocation.TPName, "/", freightLocation.TPCode);
+            }
+
             airImportDetails.AirWayBillNo = data.MawbNo;
             airImportDetails.MawbNo = airImportDetails.MawbNo;
             airImportDetails.DocNumber = data.FilingNo;
