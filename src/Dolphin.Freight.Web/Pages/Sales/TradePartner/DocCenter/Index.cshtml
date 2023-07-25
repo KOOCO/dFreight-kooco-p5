@@ -163,33 +163,13 @@
                 <abp-card border="Dark">
                     <abp-card-header style="background:#555555;color:#FFFFFF;">
                         <abp-card-title>
-                            Code
-                            <span id="title0">@Model.TPInfoModel?.TPCode </span>
-                            @if (@Model.TPInfoModel?.TPName != null)
-                            {
-                                <span id="title1" style="font-size:0.8em;">@Model.TPInfoModel?.TPName</span>
-                            }
-                            @if (@Model.TPInfoModel?.TPType != null)
-                            {
-                                <span id="title2" style="font-size:0.8em;">@Html.DisplayFor( Model =>@Model.TPInfoModel.TPType ) </span>
-                            }
+                           @L["Display:TradePartner:NavTab:DocCenter"]
+                    
                          
 
                    
                         </abp-card-title>
 
-                        <div class="btn-group dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                @L["Display:Function"]
-                            </button>
-                            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                                </a>
-                                <div class="dropdown-divider"></div>
-                               
-                            </div>
-                        </div>
 
                         <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
                         </button>
