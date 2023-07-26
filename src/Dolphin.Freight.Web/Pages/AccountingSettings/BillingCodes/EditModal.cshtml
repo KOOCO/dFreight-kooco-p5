@@ -48,14 +48,17 @@
             </abp-column>
         </abp-row>
         <abp-row>
-            <abp-column size-md="_3">
+            <abp-column size-md="_2">
                 <abp-input asp-for="BillingCode.IsAR" />
             </abp-column>
-            <abp-column size-md="_3">
+            <abp-column size-md="_2">
                 <abp-input asp-for="BillingCode.IsAP"  />
             </abp-column>
-            <abp-column size-md="_3">
+            <abp-column size-md="_2">
                 <abp-input asp-for="BillingCode.IsDC" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="BillingCode.IsPayroll" />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="BillingCode.IsGA" />
@@ -124,6 +127,7 @@
             <input type="hidden" name="DeitId" id="formDeitId" value="@Model.BillingCode.DeitId" />
             <input type="hidden" name="IsAR" id="formIsAR" value="@Model.BillingCode.IsAR" />
             <input type="hidden" name="IsAP" id="formIsAP" value="@Model.BillingCode.IsAP" />
+            <input type="hidden" name="IsPayroll" id="formIsPayroll" value="@Model.BillingCode.IsPayroll" />
             <input type="hidden" name="IsDC" id="formIsDC" value="@Model.BillingCode.IsDC" />
             <input type="hidden" name="IsGA" id="formIsGA" value="@Model.BillingCode.IsGA" />
             <input type="hidden" name="IsOceanImportMbl" id="formIsOceanImportMbl" value="@Model.BillingCode.IsOceanImportMbl" />

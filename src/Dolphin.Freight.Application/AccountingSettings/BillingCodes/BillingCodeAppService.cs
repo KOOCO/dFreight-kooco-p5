@@ -107,6 +107,7 @@ namespace Dolphin.Freight.AccountingSettings.BillingCodes
                     dictionary.Add(code.Id, code.Code);
                 }
             }
+             
             List<string> glCodesKeys = new List<string>();
             string glCode = query.GlCode.ToLower();
             glCodesKeys = dictionary.Where(x => x.Value.Contains(glCode)).Select(x=>x.Key.ToString()).ToList();
@@ -115,7 +116,7 @@ namespace Dolphin.Freight.AccountingSettings.BillingCodes
                                      .Contains(query.Code.ToLower()))
                                      .WhereIf(!string.IsNullOrWhiteSpace(query.Name), x=>x.BillingName.ToLower()
                                      .Contains(query.Name.ToLower()) || x.LocalName.Contains(query.Name.ToLower()))
-                                     .WhereIf(!string.IsNullOrWhiteSpace(query.GlDescription), x=>x.Revenue.Remark.ToLower()
+                                     .WhereIf(!string.IsNullOrWhiteSpace(query.Remark), x=>x.Revenue.Remark.ToLower()
                                      .Contains(query.Remark))
                                      .WhereIf(!string.IsNullOrEmpty(query.GlCode), x=> glCodesKeys.Contains(x.RevenueId.ToString()) || 
                                      glCodesKeys.Contains(x.DeitId.ToString()) ||

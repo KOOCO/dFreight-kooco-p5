@@ -6,7 +6,7 @@
             code: $("#Code").val(),
             name: $("#Name").val(),
             glCode: $("#GlCode").val(),
-            glDescription: $("#GlDescription").val()
+            remark: $("#GlDescription").val()
         };
     };
 
@@ -120,6 +120,15 @@
                     title: l('IsDC'),
                     data: function (row, type, set) {
                         if (row.isDC) return "V";
+                        else return "";
+
+                    }
+                },
+                {
+                    //GA
+                    title: l('IsPayroll'),
+                    data: function (row, type, set) {
+                        if (row.isPayroll) return "V";
                         else return "";
 
                     }

@@ -42,6 +42,7 @@ function changeDropdownValue(tagName, tagValue, showCode) {
 }
 function doSubmit()
 {
+    debugger
     $("#formCode").val($("#BillingCode_Code").val());
     $("#formBillingName").val($("#BillingCode_BillingName").val());
     $("#formLocalName").val($("#BillingCode_LocalName").val());
@@ -65,5 +66,6 @@ function doSubmit()
     $("#formIsTkm").val($("#BillingCode_IsTkm").prop("checked"));
     $("#formIsMsm").val($("#BillingCode_IsMsm").prop("checked"));
     $("#formIsWhs").val($("#BillingCode_IsWhs").prop("checked"));
+    $("#formIsPayroll").val($("#BillingCode_IsPayroll").prop("checked"));
     $("#createForm").submit();
 }
