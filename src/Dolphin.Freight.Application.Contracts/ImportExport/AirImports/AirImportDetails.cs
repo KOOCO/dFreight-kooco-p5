@@ -343,5 +343,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
     {
         public string Id { get; set; }
         public string HawbNo { get; set; }
+        public string SubHawbJson { get; set; }
+        public List<SubHawbs> SubHawbs { get; set; }
     }
 }

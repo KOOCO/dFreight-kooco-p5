@@ -63,6 +63,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using System.Configuration;
 using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.AirImports;
+using Dolphin.Freight.ImportExport;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -3387,7 +3388,7 @@ namespace Dolphin.Freight.Web.Controllers
         {
             var airImportDetails = await GetAirImportDetailsByPageType(hawbId, pageType);
 
-            var  ids = JsonConvert.DeserializeObject<List<string>>(hawbIdJson);
+            var ids = JsonConvert.DeserializeObject<List<string>>(hawbIdJson);
             var hawbsList = new List<HawbNo>();
 
             foreach(var item in ids)
@@ -3409,12 +3410,25 @@ namespace Dolphin.Freight.Web.Controllers
                     Id = string.Concat(data.Id),
                     HawbNo = data.HawbNo
                 };
+
+                var airImportSubHawbs = await GetAirImportDetailsByPageType(Guid.Parse(hawb.Id), pageType);
+
+                newHawb.SubHawbJson = JsonConvert.SerializeObject(airImportSubHawbs.SubHawbs);
+
                 newHawbs.Add(newHawb);
             }
 
             airImportDetails.HawbList = newHawbs;
             
             return View(airImportDetails);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BatchPrintingAirImport(AirImportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/BatchPrintingAirImport.cshtml", model);
         }
 
         #region Private Functions

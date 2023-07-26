@@ -289,8 +289,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 data.ExtraProperties.TryGetValue("SubHawbs", out subHawbsStr);
 
                 subHawbs = JsonConvert.DeserializeObject<List<SubHawbs>>(Convert.ToString(subHawbsStr));
-
-
+                
+                airImportDetails.SubHawbs = subHawbs;
                 airImportDetails.AirWayBillNo = data.HawbNo;
                 airImportDetails.MawbNo = airImportDetails.MawbNo;
                 airImportDetails.DocNumber = mawb.FilingNo;

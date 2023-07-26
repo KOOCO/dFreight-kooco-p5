@@ -176,56 +176,96 @@ table tr {
                 document.getElementById('zout').disabled = true;
             }
         }
+
+        $('#hawbsList').on('change', function() {
+            var selectedOption = $(this).find('option:selected');
+            var subHawbs = selectedOption.attr('data-SubHawb');
+            var subHawbsArray = JSON.parse(subHawbs);
+            var tableBody = $('#subHawbsTable');
+            $('#subHawbsTable tbody').empty();
+            if(subHawbs !== 'null'){
+                subHawbsArray.forEach(function(subHawb){
+                    var row = $('<tr>');
+                    var cell0 = $('<td class="td0">').append('<div class="item-edit hover-toggle-icon-text-template"><input type="text" name="HBL_NO" value="' + selectedOption.val() + '" id="id_HBL_NO"></div>');
+                    var cell1 = $('<td class="td1">').append('<div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_sub_hawb" value="' + subHawb.SubHAWB + '"></div>');
+                    var cell2 = $('<td class="td2">').append('<div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_description" value="' + subHawb.DescriptionITNo + '"></div>');
+                    var cell3 = $('<td class="td3 text-right">').append('<div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_pcs_package_unit" value="' + subHawb.PCS + '" class="text-right"></div>');
+                    var cell4 = $('<td class="td4 text-right">').append('<div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_amount" value="' + subHawb.Amount + '" class="text-right"></div>');
+                    
+                    row.append(cell0);
+                    row.append(cell1);
+                    row.append(cell2);
+                    row.append(cell3);
+                    row.append(cell4);
+
+                    tableBody.append(row);
+                });
+            } 
+            else {
+                var row = $('<tr>');
+                var cell0 = $('<td class="td0">').append('<div class="item-edit hover-toggle-icon-text-template"><input type="text" name="HBL_NO" value="' + selectedOption.val() + '" id="id_HBL_NO"></div>');
+                var cell1 = $('<td class="td1">').append('<div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_sub_hawb" value=""></div>');
+                var cell2 = $('<td class="td2">').append('<div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_description" value=""></div>');
+                var cell3 = $('<td class="td3 text-right">').append('<div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_pcs_package_unit" value="" class="text-right"></div>');
+                var cell4 = $('<td class="td4 text-right">').append('<div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_amount" value="" class="text-right"></div>');
+                
+                row.append(cell0);
+                row.append(cell1);
+                row.append(cell2);
+                row.append(cell3);
+                row.append(cell4);
+
+                tableBody.append(row);
+            }
+        });
+        
     });
 
     function print()
     {
         document.getElementById("myForm").submit();
     }
+
 </script>
 
- @if (!Model.IsPDF)
-    {
-        <div class="nav">
-           <ul>
-        
-        <li>
-            <button type="button" style="width:120px; color:white" onclick="print()"><i class="fa fa-print">儲存PDF或列印</i></button>
-        </li>
-       
-    
-    <li>
-        
-      <select disabled>
-            <option value="en">English</option>
-            <option value="zh-hans">简体中文 (Simplified Chinese)</option>
-            <option value="zh-hant">繁體中文 (Traditional Chinese)</option>
-    </select>
-        
-    </li><!-- end ngIf: vm.canSelectLanguage -->
-
-    </ul>
-
-        <div class="view-setting">
-                <div class="btn-group">
-                    <button class="button btn-sm" title="Zoom Out" id="zout" disabled="disabled"><i class="fa fa-search-minus"></i>
-                    </button>
-                    <button class="button btn-sm" title="Zoom In" id="zin"><i class="fa fa-search-plus"></i>
-                    </button>
-                </div>
-        </div>
-
-        <div style="display:flex;justify-content: center;" class="item-left">
-            <select id="hawbsList" name="hawbsList">
-                @foreach (var hawb in Model.HawbList)
-                {
-                    <option value="@hawb.HawbNo" id="@hawb.Id">@hawb.HawbNo</option>
-                }
+@if (!Model.IsPDF)
+{
+    <div class="nav">
+       <ul>
+            <li>
+                <button type="button" style="width:120px; color:white" onclick="print()"><i class="fa fa-print">儲存PDF或列印</i></button>
+            </li>
+            <li>
+                
+              <select disabled>
+                    <option value="en">English</option>
+                    <option value="zh-hans">简体中文 (Simplified Chinese)</option>
+                    <option value="zh-hant">繁體中文 (Traditional Chinese)</option>
             </select>
-        </div>
+                
+            </li><!-- end ngIf: vm.canSelectLanguage -->
+
+       </ul>
+       <div class="view-setting">
+               <div class="btn-group">
+                   <button class="button btn-sm" title="Zoom Out" id="zout" disabled="disabled"><i class="fa fa-search-minus"></i>
+                   </button>
+                   <button class="button btn-sm" title="Zoom In" id="zin"><i class="fa fa-search-plus"></i>
+                   </button>
+               </div>
+       </div>
+
+       <div style="display:flex;justify-content: center;" class="item-left">
+           <select id="hawbsList" name="hawbsList">
+               @foreach (var hawb in Model.HawbList)
+               {
+                   <option value="@hawb.HawbNo" data-SubHawb="@hawb.SubHawbJson" id="@hawb.Id">@hawb.HawbNo</option>
+               }
+           </select>
+       </div>
 
     </div>
-    }
+}
 
     <form id="myForm" method="post">
         <input type="hidden" autocomplete="off">
@@ -235,52 +275,26 @@ table tr {
         <input type="hidden" asp-for="@Model.HawbNo" />        
         <input type="hidden" asp-for="@Model.ShipperName" />       
         <input type="hidden" asp-for="@Model.ConsigneeName" />
-
-        <input type="hidden" asp-for="@Model.NotifyName" />
-       @* <input type="hidden" asp-for="@Model.MerchandiseImportedAt" />       
-        <input type="hidden" asp-for="@Model.On" />       
-        <input type="hidden" asp-for="@Model.VIA" />
-        <input type="hidden" asp-for="@Model.Date" />
-        <input type="hidden" asp-for="@Model.PrepBy" />        
-        <input type="hidden" asp-for="@Model.SubAwbNO" /> *@      
+        <input type="hidden" asp-for="@Model.NotifyName" />   
         <input type="hidden" asp-for="@Model.MawbNo" />
-
-        <input type="hidden" asp-for="@Model.DepatureAirportName" />
-       @* <input type="hidden" asp-for="@Model.ETD" /> *@      
-        <input type="hidden" asp-for="@Model.HawbNo" />       
-       @* <input type="hidden" asp-for="@Model.EntryPort" />
-        <input type="hidden" asp-for="@Model.ETA1" />
-        <input type="hidden" asp-for="@Model.ETA2" />        
-        <input type="hidden" asp-for="@Model.ETA3" />       
-        <input type="hidden" asp-for="@Model.ManifestNo" />*@
+        <input type="hidden" asp-for="@Model.DepatureAirportName" />      
+        <input type="hidden" asp-for="@Model.HawbNo" />
         <input type="hidden" asp-for="@Model.DepatureAirportName" />
         <input type="hidden" asp-for="@Model.FlightNo" />       
         <input type="hidden" asp-for="@Model.FinalDestination" />       
         <input type="hidden" asp-for="@Model.LastFreeDay" />
         <input type="hidden" asp-for="@Model.FreightLocationName" />
-        <input type="hidden" asp-for="@Model.ITNo" />        
-       @* <input type="hidden" asp-for="@Model.Tel" />       
-        <input type="hidden" asp-for="@Model.Fax" />*@
-
-        <input type="hidden" asp-for="@Model.ITIssuedLocation" />
-       @* <input type="hidden" asp-for="@Model.FirmCode" />  *@     
+        <input type="hidden" asp-for="@Model.ITNo" /> 
+        <input type="hidden" asp-for="@Model.ITIssuedLocation" />   
         <input type="hidden" asp-for="@Model.ITDate" />       
-        <input type="hidden" asp-for="@Model.SubHawbs" />
-       @* <input type="hidden" asp-for="@Model.DescriptionITNO" />
-        <input type="hidden" asp-for="@Model.PCS" />        
-        <input type="hidden" asp-for="@Model.Amount" />  *@     
+        <input type="hidden" asp-for="@Model.SubHawbs" />   
         <input type="hidden" asp-for="@Model.Remark" />
-        @*<input type="hidden" asp-for="@Model.AgentName" />*@
         <input type="hidden" asp-for="@Model.CustomBroker" />       
-        <input type="hidden" asp-for="@Model.Trucker" />       
-       @* <input type="hidden" asp-for="@Model.DocumentPickedBy" />
-        <input type="hidden" asp-for="@Model.DocumentPickedDate" />
-        <input type="hidden" asp-for="@Model.DocumentPickedTime" />  *@      
+        <input type="hidden" asp-for="@Model.Trucker" />     
         <input type="hidden" asp-for="@Model.IsPDF" />    
       
 
-        <div id="main" class="edit">              
-           <div class="wrap _ai-authority">
+        <div id="main" class="edit">
                <div class="wrap _ai-authority">
                     <div class="header header-normal margin-b-md">
                         <table>
@@ -329,13 +343,13 @@ table tr {
                                 </td>
                                 <td class="w-2">&nbsp;</td>
                                 <td class="w-22 logo">
-                                   @* <img src="/api/office/logo/1/">*@
+                                   <img src="/img/hardcore-tech-logo.png">
                                 </td>
                             </tr>
                         </tbody></table>
                     </div>
                     <div class="con">
-            <table class="data-height-md text-sm">
+                <table class="data-height-md text-sm">
                 <tbody><tr>
                     <td class="w-30 td highlight-block">
                         <div class="title">SHIPPER :</div>
@@ -359,7 +373,7 @@ table tr {
                     </td>
                 </tr>
             </tbody></table>
-            <table class="border-b border-t margin-t-md table-padding-double text-sm">
+                <table class="border-b border-t margin-t-md table-padding-double text-sm">
                 <tbody><tr>
                     <td class="w-23">MERCHANDISE IMPORTED AT : </td>
                     <td class="w-32 text-bold">
@@ -378,7 +392,7 @@ table tr {
                     </td>
                 </tr>
             </tbody></table>
-            <table class="border-b margin-t">
+                <table class="border-b margin-t">
                 <tbody><tr>
                     <td class="w-25 td">
                         <table class="table-padding text-sm">
@@ -420,11 +434,11 @@ table tr {
                                 <td class="text-bold valign-top">FLIGHT NO. : </td>
                                 <td class="text-bold _text-14">
                                     <select name="flight_no_choices" class="item-edit select w-98 normal-style _text-13 text-light" hc-user-preference="ai_flight_no_order" id="id_flight_no_choices">
-  <option value="F">First Flight</option>
-
-  <option value="L">Last Flight</option>
-
-</select>
+                                      <option value="F">First Flight</option>
+                                    
+                                      <option value="L">Last Flight</option>
+                                    
+                                    </select>
                                         <div ng-if="vm.flightNoOrder==='F'" class="item-pdf auto-font-size __width-sm ng-scope"><span>ZARA</span></div>
                                         <div ng-if="vm.flightNoOrder==='F'" class="item-edit ng-scope hover-toggle-icon-text-template"><input type="text" name="flight_no" value="@Model.FlightNo" id="id_flight_no"></div>
                                     
@@ -505,7 +519,6 @@ table tr {
                                 <td>
                                     <div class="data">
                                         <div class="item-edit">&nbsp;</div>
-                                        <div class="item-pdf">&nbsp;</div>
                                     </div>
                                 </td>
                             </tr>
@@ -513,112 +526,103 @@ table tr {
                                 <td>ETD: </td>
                                 <td class="text-bold">
                                     <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ETD_date" value="@Model.DepatureDate" id="id_ETD_date"></div>
-                                  
                                 </td>
                             </tr>
                             <tr>
                                 <td>ETA: </td>
                                 <td class="text-bold">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="AFP_ETA_date" value="@Model.ArrivalDate" id="id_AFP_ETA_date" ></div>
-                                   
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="AFP_ETA_date" value="@Model.ArrivalDate" id="id_AFP_ETA_date"></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>ETA: </td>
                                 <td class="text-bold">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ETA_date_2" value="@Model.ArrivalDate"  id="id_ETA_date_2" ></div>
-                                    
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ETA_date_2" value="@Model.ArrivalDate"  id="id_ETA_date_2"></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>ETA: </td>
                                 <td class="text-bold">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="FETA_date" value="@Model.ArrivalDate" id="id_FETA_date" ></div>
-                                    
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="FETA_date" value="@Model.ArrivalDate" id="id_FETA_date"></div>
                                 </td>
                             </tr>
                         </tbody></table>
                     </td>
                 </tr>
             </tbody></table>
-            <table class="margin-t text-sm">
+                <table class="margin-t text-sm">
                 <tbody><tr>
-                    <td class="w-48 td">
-                        <table class="table-padding text-sm">
-                            <tbody><tr>
-                                <td class="w-25">FREIGHT LOC. : </td>
-                                <td class="w-75 text-bold">                                   
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="freight_location" value="@Model.FreightLocationName"  id="id_freight_location"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td class="text-bold">
-                                    <table>
-                                        <tbody><tr>
-                                            <td class="w-10">Tel: </td>
-                                            <td class="w-37">
-                                                <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="freight_location_phone" id="id_freight_location_phone" value=""></div>
-                                                
-                                            </td>
-                                            <td class="w-6">&nbsp;</td>
-                                            <td class="w-10">Fax: </td>
-                                            <td class="w-37">
-                                                <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="freight_location_fax" class="tune-l" id="id_freight_location_fax" value=""></div>                                              
-                                            </td>
-                                        </tr>
-                                    </tbody></table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>FIRM CODE: </td>
-                                <td class="text-bold">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="freight_location_firm_code" value="" id="id_freight_location_firm_code"></div>
-                                    
-                                </td>
-                            </tr>
-                        </tbody></table>
-                    </td>
-                    <td class="w-4">&nbsp;</td>
-                    <td class="w-48 td">
+                        <td class="w-48 td">
+                            <table class="table-padding text-sm">
+                                <tbody><tr>
+                                    <td class="w-25">FREIGHT LOC. : </td>
+                                    <td class="w-75 text-bold">                                   
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="freight_location" value="@Model.FreightLocationName"  id="id_freight_location"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td class="text-bold">
+                                        <table>
+                                            <tbody><tr>
+                                                <td class="w-10">Tel: </td>
+                                                <td class="w-37">
+                                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="freight_location_phone" id="id_freight_location_phone" value=""></div>
+                                                </td>
+                                                <td class="w-6">&nbsp;</td>
+                                                <td class="w-10">Fax: </td>
+                                                <td class="w-37">
+                                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="freight_location_fax" class="tune-l" id="id_freight_location_fax" value=""></div>                                              
+                                                </td>
+                                            </tr>
+                                        </tbody></table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>FIRM CODE: </td>
+                                    <td class="text-bold">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="freight_location_firm_code" value="" id="id_freight_location_firm_code"></div>
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                        </td>
+                        <td class="w-4">&nbsp;</td>
+                        <td class="w-48 td">
                         <table class="table-padding text-sm">
                             <tbody><tr>
                                 <td class="w-25">I.T. NO. : </td>
                                 <td class="w-75 text-bold">
                                     <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="it_no" value="@Model.ITNo" id="id_it_no"></div>
-                                   
                                 </td>
                             </tr>
                             <tr>
                                 <td>I.T. ISSUE PLACE: </td>
                                 <td class="text-bold">
                                     <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="it_issue_location" value="@Model.ITIssuedLocation" id="id_it_issue_location"></div>
-                                   
                                 </td>
                             </tr>
                             <tr>
                                 <td>I.T. DATE: </td>
                                 <td class="text-bold">
                                     <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="it_date" value="@Model.ITDate" id="id_it_date"></div>
-                                   
                                 </td>
                             </tr>
                         </tbody></table>
                     </td>
-                </tr>
-            </tbody></table>
+                    </tr>
+                </tbody></table>
 
             
-                <select name="content_table_type" class="item-edit select margin-t-sm ng-pristine ng-untouched ng-valid ng-not-empty" id="id_content_table_type">
-  <option value="MARK_DESCRIPTION">Mark &amp; Description</option>
-
-  <option value="SUB_HAWB" selected="">SubHAWB</option>
-
-</select>
+               <select name="content_table_type" class="item-edit select margin-t-sm ng-pristine ng-untouched ng-valid ng-not-empty" id="id_content_table_type">
+                   <option value="MARK_DESCRIPTION">Mark &amp; Description</option>
+                   
+                   <option value="SUB_HAWB" selected="">SubHAWB</option>
+               
+               </select>
             
 
             
-               <table class="margin-t table-padding-double ng-scope text-sm" ng-if="vm.contentTableType == vm.contentTableSubHawb">
+               <table class="margin-t table-padding-double ng-scope text-sm" id="subHawbsTable">
                     <colgroup>
                         <col class="w-20">
                         <col class="w-20">
@@ -626,98 +630,35 @@ table tr {
                         <col class="w-20">
                         <col class="w-20">
                     </colgroup>
-                    <tbody><tr class="bg-light text-8 border-t border-b">
-                        <th class="col-padding-double text-left border-r">HAWB</th>
-                        <th class="col-padding-double text-left border-r">SubHAWB</th>
-                        <th class="col-padding-double text-left border-r">Description / IT No.</th>
-                        <th class="col-padding-double text-right border-r">PCS</th>
-                        <th class="col-padding-double text-right">Amount</th>
-                    </tr>
-
-                    
-                        <tr>
-                            <td class="td text-bold">
-                                
-                                    <div class="item-pdf auto-font-size __width-sub">
-                                       
-                                    </div>
-                                    <div class="item-edit hover-toggle-icon-text-template">
-                                        <input type="text" name="HBL_NO_2" value="@Model.HawbNo" id="id_HBL_NO_2">
-                                    </div>
-                                
-                            </td>
-                            <td class="td">
-                                <div class="item-pdf auto-font-size __width-sub">
-                                 
-                                </div>
-                                <div class="item-edit hover-toggle-icon-text-template">
-                                    <input type="text" name="sub_hawb_sub_hawb_0" value="@Model.SubHawbs" id="id_sub_hawb_sub_hawb_0">
-                                </div>
-                            </td>
-                            <td class="td">
-                                <div class="item-pdf auto-font-size __width-sub">
-                                  
-                                </div>
-                                <div class="item-edit hover-toggle-icon-text-template">
-                                    <input type="text" name="sub_hawb_description_0"  id="id_sub_hawb_description_0" value="">
-                                </div>
-                            </td>
-                            <td class="td text-right">
-                                <div class="item-pdf auto-font-size __width-sub">
-                                   
-                                </div>
-                                <div class="item-edit hover-toggle-icon-text-template">
-                                    <input type="text" name="sub_hawb_pcs_package_unit_0" value="" class="text-right" id="id_sub_hawb_pcs_package_unit_0">
-                                </div>
-                            </td>
-                            <td class="td text-right">
-                                <div class="item-pdf auto-font-size __width-sub">
-                                   
-                                </div>
-                                <div class="item-edit hover-toggle-icon-text-template">
-                                    <input type="text" name="sub_hawb_amount_0" value="" class="text-right" id="id_sub_hawb_amount_0">
-                                </div>
-                            </td>
+                    <thead>
+                        <tr class="bg-light text-8 border-t border-b">
+                            <th class="col-padding-double text-left border-r">HAWB</th>
+                            <th class="col-padding-double text-left border-r">SubHAWB</th>
+                            <th class="col-padding-double text-left border-r">Description / IT No.</th>
+                            <th class="col-padding-double text-right border-r">PCS</th>
+                            <th class="col-padding-double text-right">Amount</th>
                         </tr>
-                    
-                       @* <tr>
-                            <td class="td text-bold">
-                                
-                            </td>
-                            <td class="td">
-                                <div class="item-pdf auto-font-size __width-sub">
-                                   
-                                </div>
-                                <div class="item-edit hover-toggle-icon-text-template">
-                                    <input type="text" name="sub_hawb_sub_hawb_1" value="232-2322232323" id="id_sub_hawb_sub_hawb_1">
-                                </div>
-                            </td>
-                            <td class="td">
-                                <div class="item-pdf auto-font-size __width-sub">
-                                   
-                                </div>
-                                <div class="item-edit hover-toggle-icon-text-template">
-                                    <input type="text" name="sub_hawb_description_1"  id="id_sub_hawb_description_1">
-                                </div>
-                            </td>
-                            <td class="td text-right">
-                                <div class="item-pdf auto-font-size __width-sub">
+                    </thead>
+                    <tbody>
+                            <tr>
+                                <td class="td0 text-bold">
+                                        
+                                </td>
+
+                                <td class="td1">
                                     
-                                </div>
-                                <div class="item-edit hover-toggle-icon-text-template">
-                                    <input type="text" name="sub_hawb_pcs_package_unit_1" value=" "  class="text-right" id="id_sub_hawb_pcs_package_unit_1">
-                                </div>
-                            </td>
-                            <td class="td text-right">
-                                <div class="item-pdf auto-font-size __width-sub">
-                                  
-                                </div>
-                                <div class="item-edit hover-toggle-icon-text-template">
-                                    <input type="text" name="sub_hawb_amount_1" value="35.00" class="text-right" id="id_sub_hawb_amount_1">
-                                </div>
-                            </td>
-                        </tr>*@
-                </tbody></table>
+                                </td>
+                                <td class="td2">
+                                    
+                                </td>
+                                <td class="td3 text-right">
+                                    
+                                </td>
+                                <td class="td4 text-right">
+                                    
+                                </td>
+                            </tr>
+                    </tbody></table>
             
 
             <table class="border text-sm">
@@ -813,7 +754,6 @@ table tr {
             </tbody></table>
         </div>
                 </div>
-           </div>
         </div>
 </form>
 
