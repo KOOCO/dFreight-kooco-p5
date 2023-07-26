@@ -3400,6 +3400,19 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/DeliveryOrderAirImportHawb.cshtml", model);
         }
 
+        public async Task<IActionResult> PreliminaryClaimAirImportHawb(Guid id, FreightPageType pageType)
+        {
+            var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);
+
+            return View(airImportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> PreliminaryClaimAirImportHawb(AirImportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/PreliminaryClaimAirImportHawb.cshtml", model);
+        }
 
         #region Private Functions
 
