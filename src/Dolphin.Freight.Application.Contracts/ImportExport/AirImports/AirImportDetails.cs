@@ -114,13 +114,13 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string DepatureAirportName { get; set; }
         /// <summary>
         /// 出發日期
-        /// </summary>
+        /// </summary>    
         [DataType(DataType.Date)]
         public DateTime? DepatureDate { get; set; }
         /// <summary>
         /// 航班號碼
         /// </summary>
-        public string FlightNo { get; set; }
+        public string FlightNo { get; set; } 
         public string HTruckerName { get; set; }
         /// <summary>
         ///  中轉航班1-Id
