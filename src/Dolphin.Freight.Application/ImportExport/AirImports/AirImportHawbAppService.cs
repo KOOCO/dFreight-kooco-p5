@@ -304,6 +304,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.MawbNo = mawb.MawbNo;
                 airImportDetails.CustomerName = airImportDetails.BillToName;
                 airImportDetails.SalesType = data.SalesType;
+                airImportDetails.SubHawbs = subHawbs;
             }
 
             return airImportDetails;

@@ -3337,12 +3337,18 @@ namespace Dolphin.Freight.Web.Controllers
                 PCS = data.Package,
                 Remark = data.Remark,
                 Shipper = data.ShipperName,
-                SubHawb = string.Join(",", data.SubHawbs?.Select(s => s.SubHAWB)),
+                //SubHawb = string.Join(",", data.SubHawbs?.Select(s => s.SubHAWB)),
                 Trucker = data.HTruckerName,
-                Amount = data.SubHawbs?.Sum(s => Convert.ToDouble(s.Amount)),
+                //Amount = data.SubHawbs?.Sum(s => Convert.ToDouble(s.Amount)),
                 VIA = data.CarrierTPName,
                 PrepBy = data.OPName
             };
+
+            if(data.SubHawbs != null && data.SubHawbs.Any())
+            {
+                viewModel.SubHawb = string.Join(",", data.SubHawbs?.Select(s => s.SubHAWB));
+                viewModel.Amount = data.SubHawbs?.Sum(s => Convert.ToDouble(s.Amount));
+            }
 
             return View(viewModel);
         }
