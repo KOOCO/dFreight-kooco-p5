@@ -21,6 +21,8 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
         [BindProperty(SupportsGet = true)]
         public Guid TradePartnerId { get; set; }
 
+        [Required(ErrorMessage = "Subject is Required")]
+        [Display(Name = "Display:Memo:THead:Title")]
         public string MemoTitle { get; set; }
         public string MemoContent { get; set; }
 
