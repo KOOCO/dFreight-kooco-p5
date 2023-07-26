@@ -7,6 +7,7 @@ $(function () {
     });
 
     $("#saveBtn").click(function () { doSubmit() });
+
 });
 function initTradePartnerSelect(selectItems, tagName, tagValue) {
     var l = abp.localization.getResource('Freight');

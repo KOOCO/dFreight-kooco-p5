@@ -262,6 +262,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     var billTo = tradePartners.Where(w => w.Id == Guid.Parse(data.BillToId)).FirstOrDefault();
                     airImportDetails.BillToName = string.Concat(billTo.TPName, "/", billTo.TPCode);
                 }
+
                 if (data.SalesType != null)
                 {
                     var salesType = sysCodes.Where(w => w.Id == Guid.Parse(data.SalesType)).FirstOrDefault();
@@ -297,7 +298,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     airImportDetails.FreightLocationName = string.Concat(freightLocation.TPName, "/", freightLocation.TPCode);
                 }
 
-                if (data.Trucker!=null)
+                if (data.Trucker != null)
                 {
                     var trucker = tradePartners.Where(w => w.Id == Guid.Parse(data.Trucker)).FirstOrDefault();
                     airImportDetails.HTruckerName = string.Concat(trucker.TPName, "/", trucker.TPCode);
@@ -309,6 +310,12 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     airImportDetails.FinalDestination = string.Concat(finalDestination.TPName, "/", finalDestination.TPCode);
                 }
 
+                if (data.DeliveryLocation != null)
+                {
+                    var deliveryLocation = tradePartners.Where(w => w.Id == Guid.Parse(data.DeliveryLocation)).FirstOrDefault();
+                    airImportDetails.DeliveryLocationName = string.Concat(deliveryLocation.TPName, "/", deliveryLocation.TPCode);
+                }
+
                 var subHawbs = new List<SubHawbs>();
 
                 object subHawbsStr;
@@ -317,6 +324,10 @@ namespace Dolphin.Freight.ImportExport.AirImports
 
                 subHawbs = JsonConvert.DeserializeObject<List<SubHawbs>>(Convert.ToString(subHawbsStr));
 
+                airImportDetails.GrossWeightStr = data.GrossWeightKG == "0" ? "" : data.GrossWeightKG + " KGS " + (double.Parse(data.GrossWeightKG) * 2.20462).ToString("0.00") + " LBS";
+                airImportDetails.ChargableWeightStr = data.ChargeableWeightKG == "0" ? "" : data.ChargeableWeightKG + " KGS " + (double.Parse(data.ChargeableWeightKG) * 2.20462).ToString("0.00") + " LBS";
+                airImportDetails.MeasurementStr = data.VolumeWeightCBM == "0" ? "" : data.VolumeWeightCBM + " CBM " + (double.Parse(data.VolumeWeightCBM) * 35.315).ToString("0.00") + " CFT";
+                airImportDetails.CurrentDate = DateTime.Now.ToString("MM/dd/yyyy");
                 airImportDetails.LastFreeDay = data.LastFreeDay;
                 airImportDetails.FDestETA = string.Concat(data.FinalETA);
                 airImportDetails.FilingNo = mawb.FilingNo;
