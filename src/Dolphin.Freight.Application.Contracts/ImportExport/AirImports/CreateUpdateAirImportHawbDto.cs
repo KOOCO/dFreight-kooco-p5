@@ -50,6 +50,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public virtual UserData OP { get; set; }
 
         public string FreightLocation { get; set; }
+        public string Notify { get; set; }
+        public string CustomsBroker { get; set; }
         public string FinalDestination { get; set; }
         public DateTime FinalETA { get; set; }
         public String DeliveryLocation { get; set; }

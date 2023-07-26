@@ -44,7 +44,6 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc;
-using Volo.Abp.Users;
 using Wkhtmltopdf.NetCore;
 using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -3246,11 +3245,13 @@ namespace Dolphin.Freight.Web.Controllers
             {
                 var data = new OverSeaAgentAirImport
                 {
+                    Id = overSeaAgent.Value,
                     Name = overSeaAgent.Text
                 };
                 overSeaAgents.Add(data);
             }
 
+            InfoModel.CurrentAgentId = string.Concat(conId);
             InfoModel.CurrentAgent = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(conId)).Select(s => s.Text));
             InfoModel.OverSeaAgents = overSeaAgents;
 
@@ -3270,7 +3271,7 @@ namespace Dolphin.Freight.Web.Controllers
                 var hawb = new HawbNo
                 {
                     HawbNos = item.HawbNo,
-                    OverSeaAgent = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(item.ConsigneeId)).Select(s => s.Text)),
+                    OverSeaAgent = string.Concat(item.ConsigneeId),
                     GrossWeightKG = item.GrossWeightKG,
                     ChargableWeightKG = item.ChargeableWeightKG,
                     VolumeWeightKG = item.VolumeWeightKG,
@@ -3284,13 +3285,19 @@ namespace Dolphin.Freight.Web.Controllers
             airImportDetails.ChargableWeightStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.ChargableWeightKG))) + " KGS " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.ChargableWeightKG)) * 2.20462).ToString("0.00") + " LBS";
             airImportDetails.GrossWeightStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.GrossWeightKG))) + " KGS " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.GrossWeightKG)) * 2.20462).ToString("0.00") + " LBS";
             airImportDetails.VolumeWeightStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.VolumeWeightKG))) + " KGS " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.VolumeWeightKG)) * 2.20462).ToString("0.00") + " LBS";
-            airImportDetails.MeasurementStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => double.Parse(s.MeasurementWeight))) + " CBM " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => double.Parse(s.MeasurementWeight) * 35.315)).ToString("0.00") + " CFT";
+            airImportDetails.MeasurementStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent)
+                                                                   .Where(w => !string.IsNullOrEmpty(w.MeasurementWeight) && double.TryParse(w.MeasurementWeight, out _))
+                                                                   .Sum(s => double.Parse(s.MeasurementWeight)))
+                                                                   + " CBM " + 
+                                                                   (hawbNos.Where(w => w.OverSeaAgent == agent)
+                                                                   .Where(w => !string.IsNullOrEmpty(w.MeasurementWeight) && double.TryParse(w.MeasurementWeight, out _))
+                                                                   .Sum(s => double.Parse(s.MeasurementWeight) * 35.315)).ToString("0.00") + " CFT";
             airImportDetails.HawbString = "Hawb Nos:- "+string.Join(", ", hawbNos.Where(w => w.OverSeaAgent == agent).Select(s => s.HawbNos));
             airImportDetails.Hawb_Nos = JsonConvert.SerializeObject(hawbNos);
-            airImportDetails.CurrentAgent = agent;
+            airImportDetails.CurrentAgent = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(agent)).Select(s => s.Text));
             airImportDetails.ShipperName = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data[0].ShipperId)).Select(s => s.Text));
             airImportDetails.NotifyName = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data[0].Notify)).Select(s => s.Text));
-            airImportDetails.CustomBroker = data[0].CustomsBroker;
+            airImportDetails.CustomBroker = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data[0].CustomsBroker)).Select(s => s.Text));
 
             return View(airImportDetails);
         }
@@ -3303,6 +3310,25 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> ArrivalNoticeAirImportHawb(Guid id, FreightPageType pageType)
+        {
+            var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);
+
+            airImportDetails.GrossWeightStr = airImportDetails.GrossWeightKg == 0 ? "" : string.Concat(airImportDetails.GrossWeightKg) + " KGS " + (double.Parse(string.Concat(airImportDetails.GrossWeightKg)) * 2.20462).ToString("0.00") + " LBS";
+            airImportDetails.ChargableWeightStr = airImportDetails.ChargeableWeightKg == 0 ? "" : string.Concat(airImportDetails.ChargeableWeightKg) + " KGS " + (double.Parse(string.Concat(airImportDetails.ChargeableWeightKg)) * 2.20462).ToString("0.00") + " LBS";
+            airImportDetails.VolumeWeightStr = airImportDetails.VolumeWeightKg == 0 ? "" : string.Concat(airImportDetails.VolumeWeightKg) + " KGS " + (double.Parse(string.Concat(airImportDetails.VolumeWeightKg)) * 2.20462).ToString("0.00") + " LBS";
+            airImportDetails.MeasurementStr = airImportDetails.VolumeWeightCbm == 0 ? "" : string.Concat(airImportDetails.VolumeWeightCbm) + " CBM " + (double.Parse(string.Concat(airImportDetails.VolumeWeightCbm)) * 35.315).ToString("0.00") + " CFT";
+
+            return View(airImportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ArrivalNoticeAirImportHawb(AirImportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/ArrivalNoticeAirImportHawb.cshtml", model);
+        }
+
         public async Task<IActionResult> HawbAuthority(Guid id, FreightPageType pageType)
         {
             var data = await GetAirImportDetailsByPageType(id, pageType);

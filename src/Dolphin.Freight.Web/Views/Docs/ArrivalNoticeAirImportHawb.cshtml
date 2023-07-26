@@ -198,24 +198,29 @@ table td {
     <input type="hidden" asp-for="@Model.MawbNo" />
     <input type="hidden" asp-for="@Model.PageType" />
     <input type="hidden" asp-for="@Model.HawbNo" />
-    <input type="hidden" asp-for="@Model.FilingNo" />
+    <input type="hidden" asp-for="@Model.DocNumber" />
     <input type="hidden" asp-for="@Model.FlightNo" />
     <input type="hidden" asp-for="@Model.DepatureName" />
     <input type="hidden" asp-for="@Model.DepatureDate" />
     <input type="hidden" asp-for="@Model.ArrivalDate" />
     <input type="hidden" asp-for="@Model.DestinationAirportName" />
-    <input type="hidden" asp-for="@Model.FreightLocationName" />
+    <input type="hidden" asp-for="@Model.MFreightLocationName" />
     <input type="hidden" asp-for="@Model.ShipperName" />
     <input type="hidden" asp-for="@Model.ConsigneeName" />
     <input type="hidden" asp-for="@Model.NotifyName" />
-    <input type="hidden" asp-for="@Model.CustomBroker" />
-    <input type="hidden" asp-for="@Model.CurrentAgent" />
+    <input type="hidden" asp-for="@Model.CustomBrokerName" />
     <input type="hidden" asp-for="@Model.HawbString" />
     <input type="hidden" asp-for="@Model.GrossWeightStr" />
     <input type="hidden" asp-for="@Model.ChargableWeightStr" />
     <input type="hidden" asp-for="@Model.VolumeWeightStr" />
     <input type="hidden" asp-for="@Model.MeasurementStr" />
     <input type="hidden" asp-for="@Model.PackagesStr" />
+    <input type="hidden" asp-for="@Model.HItNo" />
+    <input type="hidden" asp-for="@Model.HItLocation" />
+    <input type="hidden" asp-for="@Model.HItDate" />
+    <input type="hidden" asp-for="@Model.FinalDestination" />
+    <input type="hidden" asp-for="@Model.FDestETA" />
+    <input type="hidden" asp-for="@Model.LastFreeDay" />
     
     <div id="main" class="edit">
 
@@ -306,7 +311,7 @@ table td {
                                     <div class="title">CONSIGNEE</div>
                                     <div class="data">
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <textarea name="consignee_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_consignee_area">@Model.CurrentAgent</textarea>
+                                            <textarea name="consignee_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_consignee_area">@Model.ConsigneeName</textarea>
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 3px; left: 315px;"></span><!---->
 
                                         </hc-input-template></div>
@@ -336,7 +341,7 @@ table td {
                                     <div class="title">CUSTOMS BROKER</div>
                                     <div class="data">
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <textarea name="customs_broker_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_customs_broker_area">@Model.CustomBroker</textarea>
+                                            <textarea name="customs_broker_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_customs_broker_area">@Model.CustomBrokerName</textarea>
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 3px; left: 315px;"></span><!---->
 
                                         </hc-input-template></div>
@@ -360,7 +365,7 @@ table td {
                                     <div class="title">HAWB NO.</div>
                                     <div class="data data--highlight">
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <input type="text" name="HBL_NO" value="SEE REMARK" id="id_HBL_NO" class="ng-isolate-scope">
+                                            <input type="text" name="HawbNo" value="@Model.HawbNo" id="id_HBL_NO" class="ng-isolate-scope">
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 3px; left: 138px;"></span><!---->
 
                                         </hc-input-template></div>
@@ -372,10 +377,11 @@ table td {
                                     <div class="title">FILE NO.</div>
                                     <div class="data">
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <input type="text" name="FilingNo" value="@Model.FilingNo" id="id_filing_no" class="ng-isolate-scope">
+                                            <input type="text" name="DocNumber" value="@Model.DocNumber" id="id_filing_no" class="ng-isolate-scope">
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 138px;"></span><!---->
 
                                         </hc-input-template>
+                                        </div>
                                     </div>
                                 </td>
                                 <td class="w-2">&nbsp;</td>
@@ -406,7 +412,7 @@ table td {
                                     <div class="title">SUB AWB NO.</div>
                                     <div class="data">
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <input type="text" name="sub_bl_no" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.sub_bl_no" id="id_sub_bl_no" class="ng-isolate-scope">
+                                            <input type="text" name="sub_bl_no" id="id_sub_bl_no" class="ng-isolate-scope">
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 138px;"></span><!---->
 
                                         </hc-input-template></div>
@@ -427,15 +433,9 @@ table td {
                                         </select>
                                     </div>
                                     <div class="data">
-                                        
-                                            <!-- ngIf: vm.flightNoOrder==='F' --><div ng-if="vm.flightNoOrder==='F'" class="item-edit ng-scope hover-toggle-icon-text-template"><input type="text" name="FlightNo" value="@Model.FlightNo" id="id_flight_no" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 313px;"></span><!---->
+                                        <div ng-if="vm.flightNoOrder==='F'" class="item-edit ng-scope hover-toggle-icon-text-template"><input type="text" name="FlightNo" value="@Model.FlightNo" id="id_flight_no" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 313px;"></span><!---->
 
-                                            </hc-input-template></div><!-- end ngIf: vm.flightNoOrder==='F' -->
-                                        
-                                        
-                                            <!-- ngIf: vm.flightNoOrder==='L' -->
-                                            <!-- ngIf: vm.flightNoOrder==='L' -->
-                                        
+                                        </hc-input-template></div>
                                     </div>
                                 </td>
                             </tr>
@@ -454,7 +454,7 @@ table td {
                                 <td class="td border-b w-28 border-r">
                                     <div class="title">ETD</div>
                                     <div class="data">
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="DepatureDate" value="@Model.DepatureDate" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.ETD_datetime" id="id_ETD_datetime" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 66px;"></span><!---->
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="DepatureDate" value="@Model.DepatureDate" id="id_ETD_datetime" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 66px;"></span><!---->
 
                                         </hc-input-template></div>
                                     </div>
@@ -464,7 +464,7 @@ table td {
                                 <td class="td border-b border-l">
                                     <div class="title">FIRST PORT OF ENTRY</div>
                                     <div class="data">
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="first_port_with_custom_code" value="" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.first_port_with_custom_code" id="id_first_port_with_custom_code" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 210px;"></span><!---->
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="first_port_with_custom_code" value="@Model.DepatureDate" id="id_first_port_with_custom_code" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 210px;"></span><!---->
 
                                         </hc-input-template></div>
                                     </div>
@@ -473,7 +473,7 @@ table td {
                                 <td class="td border-b border-r">
                                     <div class="title">ETA</div>
                                     <div class="data">
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ArrivalDate" value="@Model.ArrivalDate" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.AFP_ETA_datetime" id="id_AFP_ETA_datetime" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 66px;"></span><!---->
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ArrivalDate" value="@Model.ArrivalDate" id="id_AFP_ETA_datetime" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 66px;"></span><!---->
 
                                         </hc-input-template></div>
                                     </div>
@@ -483,7 +483,7 @@ table td {
                                 <td class="td border-b border-l">
                                     <div class="title">DESTINATION PORT</div>
                                     <div class="data">
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="DestinationAirportName" value="@Model.DestinationAirportName" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.APOD" id="id_APOD" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 210px;"></span><!---->
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="DestinationAirportName" value="@Model.DestinationAirportName" id="id_APOD" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 210px;"></span><!---->
 
                                         </hc-input-template></div>
                                     </div>
@@ -492,7 +492,7 @@ table td {
                                 <td class="td border-b border-r">
                                     <div class="title">DEST PORT ETA</div>
                                     <div class="data">
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="" value="" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.ETA_datetime" id="id_ETA_datetime" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 66px;"></span><!---->
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ArrivalDate" value="@Model.ArrivalDate" id="id_ETA_datetime" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 66px;"></span><!---->
 
                                         </hc-input-template></div>
                                     </div>
@@ -502,7 +502,7 @@ table td {
                                 <td class="td border-b border-l">
                                     <div class="title">FINAL DESTINATION</div>
                                     <div class="data">
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="" value="" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.FDEST" id="id_FDEST" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 210px;"></span><!---->
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="FinalDestination" value="@Model.FinalDestination" id="id_FDEST" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 210px;"></span><!---->
 
                                         </hc-input-template></div>
                                     </div>
@@ -511,10 +511,9 @@ table td {
                                 <td class="td border-b border-r">
                                     <div class="title">F.DEST ETA</div>
                                     <div class="data">
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="" value="" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.FETA_datetime" id="id_FETA_datetime" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 66px;"></span><!---->
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="FDestETA" value="@Model.FDestETA" id="id_FETA_datetime" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 66px;"></span><!---->
 
                                         </hc-input-template></div>
-                                        <div class="item-pdf"><small class="text-10"></small></div>
                                     </div>
                                 </td>
                             </tr>
@@ -522,7 +521,7 @@ table td {
                                 <td class="td border-b border-l">
                                     <div class="title">I.T. NO. &amp; PLACE</div>
                                     <div class="data">
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.it_no_and_issue_location" id="id_it_no_and_issue_location" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 210px;"></span><!---->
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="" value="@Model.HItNo / @Model.HItLocation" id="id_it_no_and_issue_location" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 210px;"></span><!---->
 
                                         </hc-input-template></div>
                                     </div>
@@ -531,7 +530,7 @@ table td {
                                 <td class="td border-b border-r">
                                     <div class="title">I.T. DATE</div>
                                     <div class="data">
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.it_date" id="id_it_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 66px;"></span><!---->
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="HItDate" value="@Model.HItDate" id="id_it_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 66px;"></span><!---->
 
                                         </hc-input-template></div>
                                     </div>
@@ -548,9 +547,9 @@ table td {
                                     </div>
                                     <div class="data">
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <input type="text" name="FreightLocationName" value="@Model.FreightLocationName" id="id_freight_location" class="ng-isolate-scope">
+                                            <input type="text" name="FreightLocationName" value="@Model.MFreightLocationName" id="id_freight_location" class="ng-isolate-scope">
                                             <div ng-show="vm.showFreightLocationAddress" class="hover-toggle-icon-text-template ng-hide">
-                                                <textarea name="freight_location_address" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.freight_location_address" id="id_freight_location_address"></textarea>
+                                                <textarea name="freight_location_address" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope" id="id_freight_location_address"></textarea>
                                             <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: -19px;"></span><!---->
 
                                             </hc-input-template></div>
@@ -566,7 +565,7 @@ table td {
                                 <td class="td border-b border-l w-40">
                                     <div class="title">FIRMS CODE</div>
                                     <div class="data">
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="freight_location_firm_code" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.freight_location_firm_code" id="id_freight_location_firm_code" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 107px;"></span><!---->
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="freight_location_firm_code" id="id_freight_location_firm_code" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 107px;"></span><!---->
 
                                         </hc-input-template></div>
                                     </div>
@@ -575,7 +574,7 @@ table td {
                                 <td class="td border-b w-28">
                                     <div class="title">AVAILABLE DATE</div>
                                     <div class="data">
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="available_date" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.available_date" id="id_available_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 66px;"></span><!---->
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="available_date" id="id_available_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 66px;"></span><!---->
 
                                         </hc-input-template></div>
                                     </div>
@@ -584,7 +583,7 @@ table td {
                                 <td class="td border-b border-r w-28">
                                     <div class="title">LAST FREE DAY</div>
                                     <div class="data">
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="last_free_date" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.last_free_date" id="id_last_free_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 66px;"></span><!---->
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="LastFreeDay" value="@Model.LastFreeDay" id="id_last_free_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 66px;"></span><!---->
 
                                         </hc-input-template></div>
                                     </div>
@@ -614,19 +613,19 @@ table td {
                 </tr>
                 <tr>
                     <td class="td td-item border-r" rowspan="4">
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="14" class="text-scroll ng-isolate-scope" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.mark" id="id_mark"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 156px;"></span><!---->
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="14" class="text-scroll ng-isolate-scope" id="id_mark"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 156px;"></span><!---->
 
                         </hc-input-template></div>
                     </td>
                     <td class="td td-item border-r text-right" rowspan="4">
                         <div class="auto-font-size __col-pkg">
                             <span>
-                                @Model.PackagesStr
+                                @Model.TotalPackage
                             </span>
                         </div>
                     </td>
                     <td class="td td-item border-r" rowspan="4">
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="14" class="text-scroll ng-isolate-scope" template-id="8062605fba5b8db472df0cce844742c60b5bc609e3016c06cd8f6709a1126ba2:Form.good_items" id="id_good_items"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 192px;"></span><!---->
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="14" class="text-scroll ng-isolate-scope" id="id_good_items"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 192px;"></span><!---->
 
                         </hc-input-template></div>
                     </td>
@@ -703,7 +702,7 @@ table td {
                             <tbody><tr>
                                 <td class="border-b text-center w-100">
                                     <div class="form-radio text-blue">
-                                        <input type="checkbox" name="show_freight" ng-model="vm.showFreight" ng-change="vm.onShowFreightChange()" ng-disabled="!vm.P.SHIPMENT_ACT_FORM_VISIBLE" id="id_show_freight" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                                        <input type="checkbox" name="show_freight" id="id_show_freight" class="ng-pristine ng-untouched ng-valid ng-not-empty">
                                         SHOW FREIGHT
                                     </div>
                                 </td>
@@ -714,20 +713,15 @@ table td {
                                 <td class="w-55 border-b">
                                     <div class="remark_no">INVOICE NO. :
                                         <div class="text-red auto-font-size __invoice-no">
-                                            
-                                                <span ng-show="vm.isShowFreight()" class="">&nbsp;</span>
-
-                                                <!-- For edit mode better appearance -->
-                                                <span class="item-edit ng-hide" ng-show="!vm.isShowFreight()">&nbsp;</span>
-                                            
+                                            <span ng-show="vm.isShowFreight()" class="">&nbsp;</span>
+                                            <!-- For edit mode better appearance -->
+                                            <span class="item-edit ng-hide" ng-show="!vm.isShowFreight()">&nbsp;</span>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="w-45 border-b">
                                     <div class="remark_no">DUE DATE :
-                                        
-                                            <span class="text-red" ng-show="vm.isShowFreight()"></span>
-                                        
+                                        <span class="text-red" ng-show="vm.isShowFreight()"></span>
                                     </div>
                                 </td>
                             </tr>
@@ -739,9 +733,6 @@ table td {
                                     <td class="w-25 text-right border-b"><div class="remark_title">PREPAID</div></td>
                                     <td class="w-25 text-right border-b"><div class="remark_title">COLLECT</div></td>
                                 </tr>
-                                
-                                    
-                                
                             </tbody></table>
                         </div>
 
@@ -768,16 +759,12 @@ table td {
                                 <td class="w-50 border-r"><div class="remark_total">TOTAL AMOUNT</div></td>
                                 <td class="w-25 text-right border-r">
                                     <div class="remark_total auto-font-size __freight-total" ng-show="vm.isShowFreight()">
-                                        
-                                            <span>0.00</span>
-                                        
+                                        <span>0.00</span>
                                     </div>
                                 </td>
                                 <td class="w-25 text-right">
                                     <div class="remark_total auto-font-size __freight-total" ng-show="vm.isShowFreight()">
-                                        
-                                            <span>0.00</span>
-                                        
+                                        <span>0.00</span>
                                     </div>
                                 </td>
                             </tr>
@@ -786,10 +773,6 @@ table td {
                 </tr>
             </tbody></table>
         </div>
-
-
-        
     </div>
-
     </div>
 </form>

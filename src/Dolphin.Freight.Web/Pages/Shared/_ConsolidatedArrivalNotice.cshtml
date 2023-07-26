@@ -19,11 +19,11 @@
                 <label class="mx-1" style="color: black">Oversea Agent: </label>
                 <div class="col-md-6">
                     <select id="overSeaAgentsList" name="overSeaAgentsList">
-                        <option value="@Model.CurrentAgent" id="agent" selected>@Model.CurrentAgent</option>
+                        <option value="@Model.CurrentAgentId" id="agent" selected>@Model.CurrentAgent</option>
                         @foreach (var item in Model.OverSeaAgents)
                         {
                             var index = Model.OverSeaAgents.IndexOf(item);
-                            <option value="@item.Name" id="item_@index">@item.Name</option>
+                            <option value="@item.Id" id="item_@index">@item.Name</option>
                         }
                     </select>
                 </div>
@@ -67,9 +67,9 @@
             type: 'GET',
             data: { mawbId: mawbId, agent: $('#overSeaAgentsList').val(), pageType: 'AIMBL' },
             success: function (res) {
-                var agent = $('#overSeaAgentsList').val();
+                var overseaagent = $('#overSeaAgentsList').val();
                 var pageType = 'AIMBL';
-                var Url = abp.appPath + 'Docs/ConsolidatedArrivalNoticeAirImport?mawbId=' + mawbId + '&agent=' + agent + '&pageType=' + pageType
+                var Url = abp.appPath + 'Docs/ConsolidatedArrivalNoticeAirImport?mawbId=' + mawbId + '&agent=' + overseaagent + '&pageType=' + pageType
                 var myWindows = window.open(Url, 'Empty', 'width=1200,height=800');
                 myWindows.focus();
             }

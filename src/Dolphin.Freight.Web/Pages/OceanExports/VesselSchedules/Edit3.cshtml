@@ -6,6 +6,8 @@
 @inject IStringLocalizer<FreightResource> L
 @section scripts
     {
+         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
     <script type="text/javascript">
         $(document).ready(function () {
             initAttments();
@@ -42,14 +44,33 @@
         function initAttments() {
             dolphin.freight.importExport.attachments.attachment.queryList({ queryType: 9, queryId: '@Model.Id' }).done(function (result) {
                 if (result != null && result.length > 0) {
+                    var l = abp.localization.getResource('Freight');
+                    var trhtml=""
                     for (var index = 0; index < result.length; index++) {
-                        var trhtml = trhtml + "<tr><td><a href='Edit3?handler=Download&filename=" + result[index].fileName + "' > " + result[index].fileName + "</a></td><td>" + result[index].creationTime.substring(0, 10) + "</td> <td>" + result[index].size + "KB </td></tr> ";
-
+                         trhtml = trhtml + "<tr><td><a href='Edit3?handler=Download&filename=" + result[index].fileName + "' > " + result[index].fileName + "</a></td><td>" + result[index].creationTime.substring(0, 10) + "</td> <td>" + result[index].size + "KB </td><td> ";
+                         trhtml = trhtml + "<div class='btn-group dropdown'><button class='btn btn-secondary dropdown-toggle'  type='button' id='ActionDrop_" + index + "' data-bs-toggle='dropdown'>";
+                        trhtml = trhtml + l('Display:Function');
+                        trhtml = trhtml + "</button><div class='dropdown-menu ' aria-labelledby='dropdownMenuButton1' id='ActionDrop_div_" + index + "'>";
+                        trhtml = trhtml + "<a class='dropdown-item' href = '?handler=Download&filename=" + result[index].fileName + "'  ><li class='fa fa-file'></li>";
+                        trhtml = trhtml + l('Btn:Download');
+                        trhtml = trhtml + "</a><a class='dropdown-item' href='javascript:void(0)' onclick='deleteFile(" + index + ",\"" + result[index].id + "\"," + index + ")' ><i class='fa fa-trash'></i> "
+                        trhtml = trhtml + l('Btn:Delete');
+                        trhtml = trhtml + "</a></div></div></td></tr > ";
                     }
                     $("#ftbody").html(trhtml);
                     $("#uploadFile").val("");
                 }
             });
+        }
+           function deleteFile(index, id, tindex) {
+
+            dolphin.freight.importExport.attachments.attachment.delete(id)
+                .then(function () {
+                    var l = abp.localization.getResource('Freight');
+                    abp.message.success(l('SuccessfullyDeleted'));
+                    initAttments();
+
+                });
         }
     </script>
 }
@@ -86,7 +107,7 @@
                     </abp-card-title>
 
 
-                    <!--
+             @*       <!--
                     <div class="btn-group dropdown">
                         <button class="btn btn-secondary dropdown-toggle"  type="button" id="ActionDrop" data-bs-toggle="dropdown">
                             請選擇
@@ -104,12 +125,11 @@
                     </a>
 
                         </div>
-                    </div>
+                    </div>*@
 
-                    <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="false" aria-controls="mblDiv">
-                        <i class="fas fa-minus"></i>
-                    </button>
-                     -->
+                      <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
+                        </button>
+                     
                 </abp-card-header>
                 <abp-card-body class="collapse show" id="mblDiv">
 
