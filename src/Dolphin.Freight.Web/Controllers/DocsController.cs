@@ -3354,6 +3354,42 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/HawbAuthority.cshtml", model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> BatchPrintingPartialView(Guid mawbId) 
+        {
+            AirImportDetails airImportDetails = new AirImportDetails();
+
+            var tradePartners = _dropdownService.TradePartnerLookupList;
+            var hawb = await _airImportHawbAppService.GetHawbCardsByMawbId(mawbId);
+
+            var hawbLists = new List<HawbNo>();
+
+            foreach (var item in hawb)
+            {
+
+                hawbLists.Add(new HawbNo()
+                {
+                    HawbNos = item.HawbNo,
+                    Consignee = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.ConsigneeId)).Select(s => s.Text)),
+                    Notify = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.Notify)).Select(s => s.Text)),
+                    Customer = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.Customer)).Select(s => s.Text))
+                });
+
+
+                //var hawbs = new HawbNo
+                //{
+                //    HawbNos = item.HawbNo,
+                //    Consignee = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.ConsigneeId)).Select(s => s.Text)),
+                //    Notify = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.Notify)).Select(s => s.Text)),
+                //    Customer = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.Customer)).Select(s => s.Text))
+                //};
+                //hawbLists.Add(hawbs);
+            }
+
+            airImportDetails.HawbNos = hawbLists;
+
+            return PartialView("Pages/Shared/_BatchPrinting.cshtml", airImportDetails);
+        }
 
         #region Private Functions
 

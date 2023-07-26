@@ -467,6 +467,27 @@
             }
         }
 
+        function getBatchPrintingPopup(){
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+
+            if (mawbId == null) {
+                var url = window.location.href;
+                var mawbId = url.split('/')[url.split('/').length - 1];
+            }
+
+
+            $.ajax({
+                url: abp.appPath + 'Docs/BatchPrintingPartialView?mawbId=' + '@Model.MawbModel.Id',
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('.modal-content').html(res);
+                    $('.modal').modal('show');
+                }
+            });
+        }
+
     </script>
 
     <script id="commodityTemplate" type="text/x-jQuery-tmpl">
@@ -551,7 +572,7 @@
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="deleteMawbAirImport()">
                                         <i class="fa fa-trash"></i> @L["Btn:Delete"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getBatchPrintingPopup()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Batch Printing"]
                                     </a>
                                     <p class="dropdown-divider"></p>

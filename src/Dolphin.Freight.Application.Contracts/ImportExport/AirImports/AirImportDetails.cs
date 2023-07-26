@@ -4,6 +4,7 @@ using Dolphin.Freight.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection.Emit;
 using System.Security.Permissions;
 using System.Text;
 
@@ -330,5 +331,10 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string VolumeWeightKG { get; set; }
         public string MeasurementWeight { get; set; }
         public string Packages { get; set; }
+        public string Consignee { get; set; }
+        public string Customer { get; set; }
+        public string Notify { get; set; }
+
+        
     }
 }
