@@ -121,13 +121,8 @@
         dataTable.ajax.reload();
     });
 
-    createModal.onOpen(function () {
-        initializeDropdownSearch('CarrierId')
-    })
-
     $('#NewAwbNoRangeButton').click(function (e) {
         e.preventDefault();
-        debugger;
         createModal.open();
     });
 
