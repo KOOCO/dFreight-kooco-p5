@@ -65,6 +65,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string OPName { get; set; }
         public string HItNo { get; set; }
         public string HItDate { get; set; }
+        public string CurrentDate { get; set; }
         public string HItLocation { get; set; }
         public string HMark { get; set; }
         /// <summary>
@@ -316,6 +317,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string ITNo { get; set; }
         public string ReleasedBy { get; set; }
         public string FinalDestination { get; set; }
+        public string DeliveryLocationName { get; set; }
         public string FDestETA { get; set; }
         public DateTime LastFreeDay { get; set; }
         public string Remark { get; set; }
