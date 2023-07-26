@@ -316,6 +316,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string ITNo { get; set; }
         public string ReleasedBy { get; set; }
         public string FinalDestination { get; set; }
+        public string FDestETA { get; set; }
         public DateTime LastFreeDay { get; set; }
         public string Remark { get; set; }
         public string SubHawbJson { get; set; }

@@ -317,6 +317,9 @@ namespace Dolphin.Freight.ImportExport.AirImports
 
                 subHawbs = JsonConvert.DeserializeObject<List<SubHawbs>>(Convert.ToString(subHawbsStr));
 
+                airImportDetails.LastFreeDay = data.LastFreeDay;
+                airImportDetails.FDestETA = string.Concat(data.FinalETA);
+                airImportDetails.FilingNo = mawb.FilingNo;
                 airImportDetails.HItNo = data.ITNo;
                 airImportDetails.HItDate = string.Concat(data.ITDate);
                 airImportDetails.HItLocation = data.ITIssuedLocation;
