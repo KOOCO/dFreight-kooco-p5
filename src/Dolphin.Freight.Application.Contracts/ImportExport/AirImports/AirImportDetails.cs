@@ -305,6 +305,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public FreightPageType PageType { get; set; }
         public List<OverSeaAgentAirImport> OverSeaAgents { get; set; }
         public List<HawbNo> HawbNos { get; set; }
+        public List<Hawb> HawbList { get; set; }
         public string ITNo { get; set; }
         public string ReleasedBy { get; set; }
         public string FinalDestination { get; set; }
@@ -315,6 +316,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string Trucker { get; set; }
         public DateTime ITDate { get; set; }
         public string ITIssuedLocation { get; set; }
+
+        public string CurrentDate { get; set; }
     }
     public class OverSeaAgentAirImport
     {
@@ -322,6 +325,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
     }
     public class HawbNo
     {
+        public string Id { get; set; }
         public string HawbNos { get; set; }
         public string OverSeaAgent { get; set; }
         public string GrossWeightKG { get; set; }
@@ -334,7 +338,10 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string Consignee { get; set; }
         public string Customer { get; set; }
         public string Notify { get; set; }
-
-        
+    }
+    public class Hawb
+    {
+        public string Id { get; set; }
+        public string HawbNo { get; set; }
     }
 }

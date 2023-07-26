@@ -3355,7 +3355,7 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> BatchPrintingPartialView(Guid mawbId) 
+        public async Task<IActionResult> BatchPrintingPartialView(Guid mawbId, Guid hawbId) 
         {
             AirImportDetails airImportDetails = new AirImportDetails();
 
@@ -3369,26 +3369,52 @@ namespace Dolphin.Freight.Web.Controllers
 
                 hawbLists.Add(new HawbNo()
                 {
+                    Id = string.Concat(item.Id),
                     HawbNos = item.HawbNo,
                     Consignee = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.ConsigneeId)).Select(s => s.Text)),
                     Notify = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.Notify)).Select(s => s.Text)),
                     Customer = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.Customer)).Select(s => s.Text))
                 });
-
-
-                //var hawbs = new HawbNo
-                //{
-                //    HawbNos = item.HawbNo,
-                //    Consignee = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.ConsigneeId)).Select(s => s.Text)),
-                //    Notify = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.Notify)).Select(s => s.Text)),
-                //    Customer = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.Customer)).Select(s => s.Text))
-                //};
-                //hawbLists.Add(hawbs);
             }
 
+            airImportDetails.HawbId = hawbId;
             airImportDetails.HawbNos = hawbLists;
 
             return PartialView("Pages/Shared/_BatchPrinting.cshtml", airImportDetails);
+        }
+        [HttpGet]
+        public async Task<IActionResult> BatchPrintingAirImport(Guid mawbId, FreightPageType pageType, Guid hawbId, string hawbIdJson) 
+        {
+            var airImportDetails = await GetAirImportDetailsByPageType(hawbId, pageType);
+
+            var  ids = JsonConvert.DeserializeObject<List<string>>(hawbIdJson);
+            var hawbsList = new List<HawbNo>();
+
+            foreach(var item in ids)
+            {
+                var hawbs = new HawbNo
+                {
+                    Id = item
+                };
+                hawbsList.Add(hawbs);
+            }
+
+            var newHawbs = new List<Hawb>();
+
+            foreach (var hawb in hawbsList)
+            {
+                var data = await _airImportHawbAppService.GetHawbCardById(Guid.Parse(hawb.Id));
+                var newHawb = new Hawb
+                {
+                    Id = string.Concat(data.Id),
+                    HawbNo = data.HawbNo
+                };
+                newHawbs.Add(newHawb);
+            }
+
+            airImportDetails.HawbList = newHawbs;
+            
+            return View(airImportDetails);
         }
 
         #region Private Functions

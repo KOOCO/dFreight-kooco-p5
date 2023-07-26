@@ -430,7 +430,7 @@
                 });
         }
 
-        document.addEventListener('DOMContentLoaded', function(){
+        document.addEventListener('DOMContentLoaded', function () {
             var url = new URL(window.location.href);
             var mawbId = url.searchParams.get('Id');
 
@@ -467,7 +467,7 @@
             }
         }
 
-        function getBatchPrintingPopup(){
+        function getBatchPrintingPopup() {
             var url = new URL(window.location.href);
             var mawbId = url.searchParams.get('Id');
 
@@ -476,16 +476,35 @@
                 var mawbId = url.split('/')[url.split('/').length - 1];
             }
 
+            dolphin.freight.importExport.airImports.airImportHawb.getHawbCardById($('#Id').val())
+                .then(function (res) {                    
+                    var hawbId = res.id;
 
-            $.ajax({
-                url: abp.appPath + 'Docs/BatchPrintingPartialView?mawbId=' + '@Model.MawbModel.Id',
-                type: 'GET',
-                dataType: "html",
-                success: function (res) {
-                    $('.modal-content').html(res);
-                    $('.modal').modal('show');
-                }
-            });
+                    $.ajax({
+                        url: abp.appPath + 'Docs/BatchPrintingPartialView?hawbId=' + hawbId + '&mawbId=' + mawbId,
+                        type: 'GET',
+                        dataType: "html",
+                        success: function (res) {
+                            $('.modal-content').html(res);
+                            $('.modal').modal('show');
+                            $(document).on('show.bs.modal', '#batchPrintingModel', function () {
+                                $('.modal-dialog').addClass('modal-lg');
+
+                                $('#checkAll').on('click', function () {
+                                    $('.childCheckbox').prop('checked', $(this).prop('checked'));
+                                });
+
+                                $('.childCheckbox').on('click', function () {
+                                    if ($('.childCheckbox:not(:checked)').length === 0) {
+                                        $('#checkAll').prop('checked', true);
+                                    } else {
+                                        $('#checkAll').prop('checked', false);
+                                    }
+                                });
+                            })
+                        }
+                    });
+                });
         }
 
     </script>
