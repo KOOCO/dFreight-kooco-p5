@@ -598,6 +598,7 @@ public class FreightDbContext :
                 FreightConsts.DbSchema);
             b.ConfigureByConvention();
             b.Property(x => x.Code).IsRequired().HasMaxLength(16);
+            b.Property(x=>x.IsPayroll).HasDefaultValue(false);
         });
         builder.Entity<CurrencyTable>(b =>
         {

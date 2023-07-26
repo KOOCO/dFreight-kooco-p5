@@ -1,11 +1,21 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
+
+    var getQueryfilter = function () {
+        return {
+            code: $("#Code").val(),
+            name: $("#Name").val(),
+            glCode: $("#GlCode").val(),
+            glDescription: $("#GlDescription").val()
+        };
+    };
+
     var dataTable = $('#BillingCodesTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
             paging: true,
             order: [[2, "asc"]],
-            searching: true,
+            searching: false,
             scrollX: true,
             responsive: {
                 details: {
@@ -13,7 +23,7 @@
                 }
             },
             autoWidth: true,
-            ajax: abp.libs.datatables.createAjax(dolphin.freight.accountingSettings.billingCodes.billingCode.queryList),
+            ajax: abp.libs.datatables.createAjax(dolphin.freight.accountingSettings.billingCodes.billingCode.queryList, getQueryfilter),
             columnDefs: [
                 {
                     className: 'dtr-control',
@@ -237,8 +247,11 @@
         })
     );
 
-    $('[type=search]').on('keyup', function () {
-        dataTable.search(this.value).draw();
+    //$('[type=search]').on('keyup', function () {
+    //    dataTable.search(this.value).draw();
+    //});
+    $('#SearchButton').click(function (e) {
+        dataTable.ajax.reload();
     });
  
     var createModal = new abp.ModalManager(abp.appPath + 'AccountingSettings/BillingCodes/CreateModal');
