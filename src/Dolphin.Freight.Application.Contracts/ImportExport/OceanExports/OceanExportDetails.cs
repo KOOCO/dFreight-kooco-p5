@@ -34,53 +34,33 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string ItnNo { get; set; }
         public string AmsNo { get; set; }
         public Guid? MblCarrierId { get; set; }
-
-        [ForeignKey("MblCarrierId")]
-        public virtual Dolphin.Freight.TradePartners.TradePartnerDto MblCarrier { get; set; }
-        public string MblCarrierName { get { if (MblCarrier != null) { return string.Concat(MblCarrier?.TPName, "/", MblCarrier?.TPCode); } else return string.Empty; } }
+        public string MblCarrierName { get; set; }
 
         public string MblCarrierContent { get; set; }
         public Guid? BlAcctCarrierId { get; set; }
-        [ForeignKey("BlAcctCarrierId")]
-        public virtual Dolphin.Freight.TradePartners.TradePartnerDto BlAcctCarrier { get; set; }
-        public string BlAcctCarrierName { get { return string.Concat(BlAcctCarrier?.TPName, "/", BlAcctCarrier?.TPCode); } }
+        public string BlAcctCarrierName { get; set; }
         public string BlAcctCarrierContent { get; set; }
         public Guid? ShippingAgentId { get; set; }
-
-        [ForeignKey("ShippingAgentId")]
-        public virtual Dolphin.Freight.TradePartners.TradePartnerDto ShippingAgent { get; set; }
-        public string ShippingAgentName { get { return string.Concat(ShippingAgent?.TPName, "/", ShippingAgent?.TPCode); } }
+        public string ShippingAgentName { get; set; }
 
         public string ShippingAgentContent { get; set; }
         public Guid? MblOverseaAgentId { get; set; }
-    
-        [ForeignKey("MblOverseaAgentId")]
-        public virtual Dolphin.Freight.TradePartners.TradePartnerDto MblOverseaAgent { get; set; }
-        public string MblOverseaAgentName { get { return string.Concat(MblOverseaAgent?.TPName, "/", MblOverseaAgent?.TPCode); } }
+        public string MblOverseaAgentName { get; set; }
 
         public string MblOverseaAgentContent { get; set; }
         
         public Guid? MblNotifyId { get; set; }
-       
-        [ForeignKey("MblNotifyId")]
-        public virtual Dolphin.Freight.TradePartners.TradePartnerDto MblNotify { get; set; }
-        public string MblNotifyName { get { return string.Concat(MblNotify?.TPName, "/", MblNotify?.TPCode); } }
+        public string MblNotifyName { get; set; }
 
         public string MblNotifyContent { get; set; }
       
         public Guid? ForwardingAgentId { get; set; }
-       
-        [ForeignKey("ForwardingAgentId")]
-        public virtual Dolphin.Freight.TradePartners.TradePartnerDto ForwardingAgent { get; set; }
-        public string ForwardingAgentName { get { return string.Concat(ForwardingAgent?.TPName, "/", ForwardingAgent?.TPCode); } }
+        public string ForwardingAgentName { get; set; }
 
         public string ForwardingAgentContent { get; set; }
        
         public Guid? CoLoaderId { get; set; }
-        
-        [ForeignKey("CoLoaderId")]
-        public virtual Dolphin.Freight.TradePartners.TradePartnerDto CoLoader { get; set; }
-        public string CoLoaderName { get { return string.Concat(CoLoader?.TPName, "/", CoLoader?.TPCode); } }
+        public string CoLoaderName { get; set; }
 
         public string CoLoaderContent { get; set; }
     
@@ -107,10 +87,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string CustomerRefNo { get; set; }
        
         public Guid? MblCustomerId { get; set; }
-       
-        [ForeignKey("MblCustomerId")]
-        public virtual Dolphin.Freight.TradePartners.TradePartnerDto MblCustomer { get; set; }
-        public string MblCustomerName { get { return string.Concat(MblCustomer?.TPName, "/", MblCustomer?.TPCode)?.TrimStart('/'); } }
+        public string MblCustomerName { get; set; }
         /// <summary>
         /// 客戶報表上顯示的資訊
         /// </summary>
@@ -122,9 +99,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 收票人ID
         /// </summary>
-        [ForeignKey("MblBillToId")]
-        public virtual Dolphin.Freight.TradePartners.TradePartnerDto MblBillTo { get; set; }
-        public string MblBillToName { get { return string.Concat(MblBillTo?.TPName, "/", MblBillTo?.TPCode)?.TrimStart('/'); } }
+        public string MblBillToName { get; set; }
         /// <summary>
         /// 收票人報表上顯示的資訊
         /// </summary>
@@ -136,9 +111,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 收貨人
         /// </summary>
-        [ForeignKey("MblConsigneeId")]
-        public virtual Dolphin.Freight.TradePartners.TradePartnerDto MblConsignee { get; set; }
-        public string MblConsigneeName { get { return string.Concat(MblConsignee?.TPName, "/", MblConsignee?.TPCode)?.TrimStart('/'); } }
+        public string MblConsigneeName { get; set; }
         /// <summary>
         /// 收貨人報表上顯示的資訊
         /// </summary>
@@ -164,9 +137,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 貨物類別
         /// </summary>
-        [ForeignKey("CargoTypeId")]
-        public virtual SysCodeDto CargoType { get; set; }
-        public string CargoTypeName { get { return CargoType?.ShowName; } }
+        public string CargoTypeName { get; set; }
         /// <summary>
         /// 業務員ID
         /// </summary>
@@ -174,9 +145,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 業務員
         /// </summary>
-        [ForeignKey("MblSaleId")]
-        public virtual UserData MblSale { get; set; }
-        public string MblSaleName { get { return string.Concat(MblSale?.Name, "/", MblSale?.Surname)?.TrimStart('/'); } }
+        public string MblSaleName { get; set; }
         /// <summary>
         /// 船名
         /// </summary>
@@ -192,9 +161,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 收貨地(POR)
         /// </summary>
-        [ForeignKey("PorId")]
-        public virtual PortsManagementDTO Por { get; set; }
-        public string PorName { get { return Por?.PortName; } }
+        public string PorName { get; set; }
         /// <summary>
         /// 收貨地(POR) ETD
         /// </summary>
@@ -206,9 +173,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 裝貨港(POL)
         /// </summary>
-        [ForeignKey("PolId")]
-        public virtual PortsManagementDTO Pol { get; set; }
-        public string PolName { get { return Pol?.PortName; } }
+        public string PolName { get; set; }
         /// <summary>
         /// 裝貨港(POL) ETD
         /// </summary>
@@ -220,9 +185,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 卸貨港(POD)
         /// </summary>
-        [ForeignKey("PodId")]
-        public virtual PortsManagementDTO Pod { get; set; }
-        public string PodName { get { return Pod?.PortName; } }
+        public string PodName { get; set; }
         /// <summary>
         /// 卸貨港(POD) ETA
         /// </summary>
@@ -234,9 +197,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 交貨地(DEL)
         /// </summary>
-        [ForeignKey("DelId")]
-        public virtual PortsManagementDTO Del { get; set; }
-        public string DelName { get { return Del?.PortName; } }
+        public string DelName { get; set; }
         /// <summary>
         /// 交貨地(DEL) ETA
         /// </summary>
@@ -248,9 +209,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 最終目的地
         /// </summary>
-        [ForeignKey("FdestId")]
-        public virtual PortsManagementDTO Fdest { get; set; }
-        public string FdestName { get { return Fdest?.PortName; } }
+        public string FdestName { get; set; }
         /// <summary>
         /// 最終目的地ETA
         /// </summary>
@@ -262,12 +221,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 提空櫃地點
         /// </summary>
-        [ForeignKey("EmptyPickupId")]
-        public virtual Dolphin.Freight.TradePartners.TradePartnerDto EmptyPickup { get; set; }
-        public string EmptyPickupName { get { return string.Concat(EmptyPickup?.TPName, "/", EmptyPickup?.TPCode)?.TrimStart('/'); } }
-        /// <summary>
-        /// 提空櫃地點報表上顯示的資訊
-        /// </summary>
+        public string EmptyPickupName { get; set; }
         public string EmptyPickupContent { get; set; }
         /// <summary>
         /// 卡車交貨地ID
@@ -276,9 +230,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 卡車交貨地
         /// </summary>
-        [ForeignKey("DeliveryToId")]
-        public virtual Dolphin.Freight.TradePartners.TradePartnerDto DeliveryTo { get; set; }
-        public string DeliveryToName { get { return string.Concat(DeliveryTo?.TPName, "/", DeliveryTo?.TPCode)?.TrimStart('/'); } }
+        public string DeliveryToName { get; set; }
         /// <summary>
         /// 卡車交貨地報表上顯示的資訊
         /// </summary>
@@ -290,9 +242,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 前期運輸由(名稱)
         /// </summary>
-        [ForeignKey("PreCarriageVesselNameId")]
-        public virtual SysCodeDto PreCarriageVesselName { get; set; }
-        public string PreCarriageVesselNameValue { get { return PreCarriageVesselName?.ShowName; } }
+        public string PreCarriageVesselNameValue { get; set; }
         /// <summary>
         /// 前期運輸由(航程)
         /// </summary>
@@ -304,9 +254,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 運費
         /// </summary>
-        [ForeignKey("FreightTermId")]
-        public virtual SysCodeDto FreightTerm { get; set; }
-        public string FreightTermName { get { return FreightTerm?.ShowName; } }
+        public string FreightTermName { get; set; }
         /// <summary>
         /// 運輸模式ID
         /// </summary>
@@ -314,9 +262,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 運輸模式
         /// </summary>
-        [ForeignKey("ShipModeId")]
-        public virtual SysCodeDto ShipMode { get; set; }
-        public string ShipModeName { get { return ShipMode?.ShowName; } }
+        public string ShipModeName { get; set; }
         /// <summary>
         /// 運輸條款FronID
         /// </summary>
@@ -324,9 +270,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 運輸條款Fron
         /// </summary>
-        [ForeignKey("SvcTermFromId")]
-        public virtual SysCodeDto SvcTermFrom { get; set; }
-        public string SvcTermFromName { get { return SvcTermFrom?.ShowName; } }
+        public string SvcTermFromName { get; set; }
         /// <summary>
         /// 運輸條款ToID
         /// </summary>
@@ -334,9 +278,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 運輸條款To
         /// </summary>
-        [ForeignKey("SvcTermToId")]
-        public virtual SysCodeDto SvcTermTo { get; set; }
-        public string SvcTermToName { get { return SvcTermTo?.ShowName; } }
+        public string SvcTermToName { get; set; }
         /// <summary>
         /// 櫃型數量
         /// </summary>
@@ -348,9 +290,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// OB/L類別
         /// </summary>
-        [ForeignKey("OblTypeId")]
-        public virtual SysCodeDto OblType { get; set; }
-        public string OblTypeName { get { return OblType?.ShowName; } }
+        public string OblTypeName { get; set; }
         /// <summary>
         /// 文件結關日
         /// </summary>
@@ -395,9 +335,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 業務推廣人
         /// </summary>
-        [ForeignKey("MblReferralById")]
-        public virtual Dolphin.Freight.TradePartners.TradePartnerDto MblReferralBy { get; set; }
-        public string MblReferralByName { get { return string.Concat(MblReferralBy?.TPName, "/", MblReferralBy?.TPCode); } }
+        public string MblReferralByName { get; set; }
         /// <summary>
         /// 業務推廣人報表上顯示的資訊
         /// </summary>
@@ -421,8 +359,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 放貨人
         /// </summary>
-        [ForeignKey("ReleaseById")]
-        public virtual UserData ReleaseBy { get; set; }
+        public string ReleaseBy { get; set; }
         /// <summary>
         /// 裝船日期
         /// </summary>
@@ -446,9 +383,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 中轉港 
         /// </summary>
-        [ForeignKey("TransPort1Id")]
-        public virtual PortsManagementDTO TransPort1 { get; set; }
-        public string TransPort1Name { get { return TransPort1?.PortName; } }
+        public string TransPort1Name { get; set; }
         /// <summary>
         /// 中轉港ETA
         /// </summary>
@@ -495,9 +430,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 集裝箱的包裝種類
         /// </summary>
-        [ForeignKey("PackageCategoryId")]
-        public virtual SysCodeDto PackageCategory { get; set; }
-        public string PackageCategoryName { get { return PackageCategory?.ShowName; } }
+        public string PackageCategoryName { get; set; }
         /// <summary>
         /// 集裝箱的包裝重量單位 ID
         /// </summary>
@@ -505,9 +438,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 集裝箱的包裝重量單位
         /// </summary>
-        [ForeignKey("PackageWeightId")]
-        public virtual SysCodeDto PackageWeight { get; set; }
-        public string PackageWeightName { get { return PackageWeight?.ShowName; } }
+        public string PackageWeightName { get; set; }
         /// <summary>
         /// 集裝箱的包裝材積 ID
         /// </summary>

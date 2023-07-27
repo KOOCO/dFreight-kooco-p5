@@ -3442,6 +3442,21 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/ReleaseOrderAirImportHawb.cshtml", model);
         }
 
+        public async Task<IActionResult> MBLPackageLabelOceanExportMBL(Guid id, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+
+            return View(oceanExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> MBLPackageLabelOceanExportMBL(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/MBLPackageLabelOceanExportMBL.cshtml", model);
+        }
+
+
         #region Private Functions
 
         private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
