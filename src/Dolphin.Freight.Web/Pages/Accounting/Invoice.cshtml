@@ -483,7 +483,32 @@
             }
             window.open(url);
         }
-
+        function CopyFromSpecification(){
+            var id='@Model.Mid';
+            var hid='@Model.Hid';
+            if(hid==null||hid=="")
+            {
+           
+           dolphin.freight.importExport.oceanExports.oceanExportMbl.getCreateUpdateOceanExportMblDtoById(id).done(function (result) {
+          var data=result;
+          $("#Memorandum").val(data.description);
+          
+           });
+            }
+            else{
+            
+               dolphin.freight.importExport.oceanExports.oceanExportHbl.get(hid).done(function (result) {
+          var data=result;
+          $("#Memorandum").val(data.description);
+            debugger;
+              
+          
+           });
+            
+            
+            }
+       
+        }
     </script>
 }
 <div class="page-header">
@@ -808,7 +833,7 @@
                         <abp-row>
                             <abp-column size-md="_6">
                                 <label for="Memorandum" class="form-label">@L["Memorandum"]</label>
-                                <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="Btn:CopyFromSpecification()">@L["Btn:CopyFromSpecification"]</abp-button>
+                                <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="CopyFromSpecification()">@L["Btn:CopyFromSpecification"]</abp-button>
                                 <textarea name="InvoiceDto.Memorandum" id="Memorandum" class="form-control"></textarea>
                             </abp-column>
                             <abp-column size-md="_3">

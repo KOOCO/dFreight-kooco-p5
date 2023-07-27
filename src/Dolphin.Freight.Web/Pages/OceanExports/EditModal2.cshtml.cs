@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Settinngs.SysCodes;
+using System.Linq;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
 {
@@ -93,6 +94,29 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            if (Hid != Guid.Empty)
+            {
+                QueryHblDto queryHbl = new QueryHblDto();
+                queryHbl.Id = Hid;
+                var OceanExportHb2 = await _oceanExportHblAppService.GetHblById(queryHbl);
+                
+                OceanExportHb2.Mark = OceanExportHbl.Mark;
+                OceanExportHb2.Description = OceanExportHbl.Description;
+                OceanExportHb2.DomesticInstructions = OceanExportHbl.DomesticInstructions;
+                await _oceanExportHblAppService.UpdateAsync(Hid, OceanExportHb2);
+                //await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMbl);
+                //await _oceanExportHblAppService.UpdateAsync(Hid, OceanExportHbl);
+                QueryContainerDto query1 = new QueryContainerDto() { QueryId = Hid };
+                var rs1 = await _containerAppService.DeleteByMblIdAsync(query1);
+                foreach (var dto in CreateUpdateContainerDtos)
+                {
+                    var a = dto.IsDeleted;
+                    if (dto.Status == 0) await _containerAppService.CreateAsync(dto);
+                }
+
+
+            }
+
             var OceanExportMb2 = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
             OceanExportMb2.Mark = OceanExportMbl.Mark;
             OceanExportMb2.Description = OceanExportMbl.Description;
