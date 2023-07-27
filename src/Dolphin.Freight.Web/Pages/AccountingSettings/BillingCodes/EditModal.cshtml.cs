@@ -26,9 +26,10 @@ namespace Dolphin.Freight.Web.Pages.AccountingSettings.BillingCodes
         public List<SelectItems> GiCodes { get; set; }
 
 
-        public EditModalModel(IBillingCodeAppService billingCodeAppService)
+        public EditModalModel(IBillingCodeAppService billingCodeAppService, IGlCodeAppService glCodeAppService)
         {
             _billingCodeAppService = billingCodeAppService;
+            _glCodeAppService = glCodeAppService;
             GiCodes = new List<SelectItems>();
         }
         public async Task OnGetAsync()
