@@ -270,9 +270,18 @@
         dataTable.ajax.reload();
     });
 
+    //createModal.onOpen(function () {
+    //    initselect.initializeDropdownSearch('RevenueId');
+    //})
+
+    //editModal.onOpen(function () {
+    //    initselect.initializeDropdownSearch('RevenueId');
+    //})
+
     editModal.onResult(function () {
         dataTable.ajax.reload();
     });
+
     $('#NewBillingCodeButton').click(function (e) {
         e.preventDefault();
         createModal.open();

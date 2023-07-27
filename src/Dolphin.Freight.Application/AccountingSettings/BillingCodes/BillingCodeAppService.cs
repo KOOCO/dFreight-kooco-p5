@@ -117,7 +117,7 @@ namespace Dolphin.Freight.AccountingSettings.BillingCodes
                                      .WhereIf(!string.IsNullOrWhiteSpace(query.Name), x=>x.BillingName.ToLower()
                                      .Contains(query.Name.ToLower()) || x.LocalName.Contains(query.Name.ToLower()))
                                      .WhereIf(!string.IsNullOrWhiteSpace(query.Remark), x=>x.Revenue.Remark.ToLower()
-                                     .Contains(query.Remark))
+                                     .Contains(query.Remark.ToLower()))
                                      .WhereIf(!string.IsNullOrEmpty(query.GlCode), x=> glCodesKeys.Contains(x.RevenueId.ToString()) || 
                                      glCodesKeys.Contains(x.DeitId.ToString()) ||
                                      glCodesKeys.Contains(x.CostId.ToString()) ||
@@ -128,7 +128,7 @@ namespace Dolphin.Freight.AccountingSettings.BillingCodes
             if (query != null )
             {
                 if (query.IsUsed != null && query.IsUsed.Value) rs = rs.Where(x => x.IsUsed == true).ToList();
-                if (!string.IsNullOrWhiteSpace(query.Code)) rs = rs.Where(x => x.Code.Equals(query.Code)).ToList();
+                //if (!string.IsNullOrWhiteSpace(query.Code)) rs = rs.Where(x => x.Code.Equals(query.Code)).ToList();
                 if (query.BillType != null) {
                     switch (query.BillType.Value) 
                     {

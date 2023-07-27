@@ -9,6 +9,8 @@ namespace Dolphin.Freight.TradePartners
     {
         public new Guid? Id { get; set; }
         public Guid TradePartnerId { get; set; }
+        [Required(ErrorMessage = "Subject is Required")]
+        [Display(Name = "Display:Memo:THead:Title")]
         public string Title { get; set; }
         public string Memo { get; set; }
     }

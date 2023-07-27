@@ -240,8 +240,8 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Telephone Release"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:MBL Packaging Label"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("MBLPackageLabelOceanExportMBL", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:MBL Package Label"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AllHblPackageLabelOceanExportMBL", "Docs", new { mblId = Model.OceanExportMbl.Id })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:All HBL Package Labels"]
@@ -317,6 +317,7 @@
                         </abp-card-body>
                     </abp-card>
                     <br />
+
                     <abp-card class="card board-item @Model.OceanExportHbl.CardColorValue " id="hblCard">
                         <abp-card-header id="hblCardHeader" class="card-header active ">
 
@@ -490,17 +491,17 @@
                             <abp-row>
                                 <abp-column size-md="_6">
                                     <label for="t1">@L["Display:Mark"]</label>
-                                    <textarea id="t1" name="OceanExportMbl.Mark" class="form-control">@Model.OceanExportMbl.Mark</textarea>
+                                    <textarea id="t1" name="OceanExportHbl.Mark" class="form-control">@Model.OceanExportHbl.Mark</textarea>
                                 </abp-column>
                                 <abp-column size-md="_6">
                                     <label for="t2">@L["Display:DeionOfGoods"]</label>
-                                    <textarea id="t2" name="OceanExportMbl.Description" class="form-control">@Model.OceanExportMbl.Description</textarea>
+                                    <textarea id="t2" name="OceanExportHbl.Description" class="form-control">@Model.OceanExportHbl.Description</textarea>
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-collum>
                                     <label for="t3">@L["Display:Ot"]</label>
-                                    <textarea id="t3" name="OceanExportMbl.DomesticInstructions" class="form-control">@Model.OceanExportMbl.DomesticInstructions</textarea>
+                                    <textarea id="t3" name="OceanExportHbl.DomesticInstructions" class="form-control">@Model.OceanExportHbl.DomesticInstructions</textarea>
                                 </abp-collum>
                             </abp-row>
                         </abp-card-body>

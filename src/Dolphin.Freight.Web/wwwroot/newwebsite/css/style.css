@@ -4949,3 +4949,26 @@ table .btn-lock {
 .select2-container .select2-selection--single{
     height: 31px !important;
 }
+
+.form-select.pr-4 {
+    padding-right: 2rem !important;
+}
+.customForm .form-label {
+    height: 31px;
+}
+.customForm div[class*="col-"] .abp-widget-wrapper > .dropdown.form-control {
+    height: 31px;
+}
+hr:not([size]) {
+    height: 0px;
+}
+
+/* Responsive CSS*/
+
+@media (max-width: 1550px) and (min-width: 768px) {
+    .customForm .form-label{
+        margin-right: 5px !important;
+        display: block;
+        padding-top: 5px !important;
+    }
+}
