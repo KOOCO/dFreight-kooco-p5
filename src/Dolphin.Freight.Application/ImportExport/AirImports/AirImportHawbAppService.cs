@@ -334,7 +334,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.HItNo = data.ITNo;
                 airImportDetails.HItDate = string.Concat(data.ITDate);
                 airImportDetails.HItLocation = data.ITIssuedLocation;
-                airImportDetails.TotalPackage = string.Concat(airImportDetails.Package) + " " + airImportDetails.HPackageUnitName;
+                airImportDetails.TotalPackage = string.Concat(data.Package) + " " + airImportDetails.HPackageUnitName;
                 airImportDetails.HMark = data.Mark;
                 airImportDetails.AirWayBillNo = data.HawbNo;
                 airImportDetails.MawbNo = airImportDetails.MawbNo;

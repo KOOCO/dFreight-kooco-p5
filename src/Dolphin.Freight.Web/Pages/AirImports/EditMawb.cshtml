@@ -591,7 +591,7 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label asp-for="MawbModel.MawbNo" class="redStar form-label">@L["Display:Air:MawbNo"]</label>
-                                    <input asp-for="MawbModel.MawbNo" class="form-control" size="Small" />
+                                    <input asp-for="MawbModel.MawbNo" class="form-control form-control-sm" size="Small" />
                                     <span asp-validation-for="MawbModel.MawbNo" class="text-danger"></span>
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -600,7 +600,7 @@
                                     <span asp-validation-for="MawbModel.OfficeId" class="text-danger"></span>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.AwbType" size="Small" />
+                                    <abp-select asp-for="MawbModel.AwbType" class="form-control form-control-sm" size="Small" />
                                 </abp-column>
                             </abp-row>
                             <!--第2列-->
@@ -609,7 +609,7 @@
                                     <abp-input asp-for="MawbModel.PostDate" size="Small" readonly="true" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.OverseaAgentId" size="Small">
+                                    <abp-select asp-for="MawbModel.OverseaAgentId" class="form-control form-control-sm" size="Small">
                                         <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                                     </abp-select>
                                 </abp-column>
@@ -626,7 +626,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.CoLoaderId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.CoLoaderId, IsShowLabel = true, FieldName = @L["CoLoaderId"] })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.OPId" size="Small" disabled="true">
+                                    <abp-select asp-for="MawbModel.OPId" class="form-control form-control-sm" size="Small" disabled="true">
                                         <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
                                     </abp-select>
                                 </abp-column>
@@ -645,7 +645,7 @@
 
                             </abp-row>
                             <!--第5列-->
-                            <br />
+                           
                             <!--第6列-->
                             <abp-row>
                                 <abp-column size-md="_3">
@@ -671,11 +671,11 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label asp-for="MawbModel.ArrivalDate" class="redStar form-label">@L["Display:Air:ArrivalDate"]</label>
-                                    <input asp-for="MawbModel.ArrivalDate" class="form-control" />
+                                    <input asp-for="MawbModel.ArrivalDate" class="form-control form-control-sm" />
                                     <span asp-validation-for="MawbModel.ArrivalDate" class="text-danger"></span>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.FreightLocationId" size="Small">
+                                    <abp-select asp-for="MawbModel.FreightLocationId" class="form-control form-control-sm" size="Small">
                                         <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                                     </abp-select>
                                 </abp-column>
@@ -683,9 +683,9 @@
                                     <abp-input asp-for="MawbModel.StorageStartDate" size="Small" />
                                 </abp-column>
                             </abp-row>
-                            <br />
+                            
                             <!--Route區塊-->
-                            <abp-row>
+                            <abp-row class="mt-0">
                                 <div class="collapse" id="collapseRoute">
                                     <div class="card card-body">
                                         <h3>Route</h3>
@@ -778,9 +778,9 @@
                                     </div>
                                 </div>
                             </abp-row>
-                            <br />
+                            
                             <!--第八列 Package, Weight Settings Area-->
-                            <abp-row>
+                            <abp-row class="mt-0">
                                 <div class="container">
                                     <div class="row">
                                         <div class="col">
@@ -796,9 +796,9 @@
                                                 <tbody>
                                                     <tr>
                                                         <th>@L["Package"]</th>
-                                                        <td><input asp-for="MawbModel.Package" class="form-control" /></td>
+                                                        <td><input asp-for="MawbModel.Package" class="form-control form-control-sm" /></td>
                                                         <td colspan="3">
-                                                            <select asp-for="MawbModel.MawbPackageUnitId" class="form-select">
+                                                            <select asp-for="MawbModel.MawbPackageUnitId" class="form-select form-control form-control-sm">
                                                                 <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                                                                 @foreach (var packageUnit in Model.PackageUnitLookupList)
                                                                 {
@@ -809,10 +809,10 @@
                                                     </tr>
                                                     <tr>
                                                         <th>@L["VolumeWeight"]</th>
-                                                        <td><input asp-for="MawbModel.VolumeWeightKg" class="form-control" /></td>
+                                                        <td><input asp-for="MawbModel.VolumeWeightKg" class="form-control form-control-sm" /></td>
                                                         <td>@L["KG"]</td>
                                                         <td>
-                                                            <input asp-for="MawbModel.VolumeWeightCbm" class="form-control" />
+                                                            <input asp-for="MawbModel.VolumeWeightCbm" class="form-control form-control-sm" />
                                                         </td>
                                                         <td>CBM</td>
                                                     </tr>
@@ -835,13 +835,13 @@
                                                 <tbody>
                                                     <tr>
                                                         <th>@L["GrossWeight"]</th>
-                                                        <td><input asp-for="MawbModel.GrossWeightKg" class="form-control" id="GrossWeightKg" /></td>
-                                                        <td><input asp-for="MawbModel.GrossWeightLb" class="form-control" id="GrossWeightLb" /></td>
+                                                        <td><input asp-for="MawbModel.GrossWeightKg" class="form-control form-control-sm" id="GrossWeightKg" /></td>
+                                                        <td><input asp-for="MawbModel.GrossWeightLb" class="form-control form-control-sm" id="GrossWeightLb" /></td>
                                                     </tr>
                                                     <tr>
                                                         <th>@L["ChargeableWeight"]</th>
-                                                        <td><input asp-for="MawbModel.ChargeableWeightKg" class="form-control" id="ChargeableWeightKg" /></td>
-                                                        <td><input asp-for="MawbModel.ChargeableWeightLb" class="form-control" id="ChargeableWeightLb" /></td>
+                                                        <td><input asp-for="MawbModel.ChargeableWeightKg" class="form-control form-control-sm" id="ChargeableWeightKg" /></td>
+                                                        <td><input asp-for="MawbModel.ChargeableWeightLb" class="form-control form-control-sm" id="ChargeableWeightLb" /></td>
                                                     </tr>
                                                     <tr>
                                                         <th></th>
