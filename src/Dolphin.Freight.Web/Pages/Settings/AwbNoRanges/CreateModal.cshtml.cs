@@ -29,8 +29,11 @@ namespace Dolphin.Freight.Web.Pages.AwbNoRanges
         public async Task<IActionResult> OnPostAsync()
         {
             AwbNoRange.CompanyId = CarrierId;
-            await _AwbNoRangeAppService.CreateAsync(AwbNoRange);
-            return NoContent();
+          
+                await _AwbNoRangeAppService.CreateAsync(AwbNoRange);
+                return NoContent();
+           
+            
         }
     }
 }
