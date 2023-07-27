@@ -25,10 +25,10 @@
             <input name="CreateUpdateTradePartnerMemoDto.tradePartnerId" type="hidden" value="@Model.TradePartnerId" />
 
             @*<label class="form-label">@L["Display:Memo:THead:Title"] *</label>*@
-            <abp-input asp-for="@Model.MemoTitle" />
+            <abp-input asp-for="@Model.CreateUpdateTradePartnerMemoDto.Title" />
             @*<input type="text" name="CreateUpdateTradePartnerMemoDto.title" value="@Model.MemoTitle" class="form-control valid" id="title"/>*@
             <label class="form-label">@L["Display:Memo:THead:Content"]</label>
-            <textarea name="CreateUpdateTradePartnerMemoDto.memo" class="form-control">@Model.MemoContent</textarea>
+            <textarea name="CreateUpdateTradePartnerMemoDto.memo" class="form-control">@Model.CreateUpdateTradePartnerMemoDto.Memo</textarea>
 
         </abp-modal-body>
         <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)"></abp-modal-footer>
