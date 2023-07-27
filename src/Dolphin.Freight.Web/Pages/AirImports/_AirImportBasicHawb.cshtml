@@ -1,6 +1,7 @@
 ﻿@using Dolphin.Freight.AirExports;
 @using Dolphin.Freight.AirImports;
 @using Dolphin.Freight.Web.Pages.Components;
+@using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Microsoft.AspNetCore.Mvc.Localization;
 @using Microsoft.Extensions.Localization;
 @using Dolphin.Freight.Localization
@@ -440,6 +441,18 @@
                 <abp-input asp-for="@Model.Id" type="hidden" />
                 <abp-input asp-for="HawbModel.ExtraProperties" value="@Json.Serialize(Model.HawbModel.ExtraProperties)" type="hidden" />
                 <abp-input asp-for="@Model.HawbModel.Id" type="hidden" />
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column>
+                <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                    @L["Title:Memo"]
+                </abp-card-header>
+                <abp-card>
+                    <abp-card-body>
+                        <partial name="Memos/_Memo" model="new _MemoModel(Model.HawbModel.Id, Dolphin.Freight.Common.FreightPageType.AIMBL)" />
+                    </abp-card-body>
+                </abp-card>
             </abp-column>
         </abp-row>
     </abp-card-body>
