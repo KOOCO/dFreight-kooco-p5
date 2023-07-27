@@ -19,7 +19,7 @@
         </abp-row>
         <abp-row>
             <abp-column>
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "GlTypeId", FieldName = "GlTypeId",DefaultValue="", IsShowLabel = true , IsRequired = false  })
+                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "GlTypeId", FieldName = "GlTypeId",DefaultValue="", IsShowLabel = true , IsRequired = false, htmlAttributes = new { id = "glTypeSelect" }  })
             </abp-column>
         </abp-row>
 

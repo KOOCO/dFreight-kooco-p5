@@ -49,9 +49,23 @@ namespace Dolphin.Freight.AccountingSettings.GlCodes
             }
             var rs = await _repository.GetListAsync();
             List<GlCodeDto> list = new List<GlCodeDto>(); 
-            if (query != null && query.Code != null)
+            if (query != null && query.Code != null&&query.Code!="" || query != null && query.Remark != null && query.Remark != "")
             {
-                rs = rs.Where(x => x.Code.Equals(query.Code)).ToList();
+                if (query.Remark != null && query.Remark != "" && query.Code != null && query.Code != "")
+                { 
+                    rs = rs.Where(x => x.Code.Equals(query.Code) && x.Remark.Equals(query.Remark)).ToList(); 
+                }
+                else {
+                    if (query.Code != null && query.Code != "")
+                    {
+                        rs = rs.Where(x => x.Code.Equals(query.Code)).ToList();
+                    }
+                    if (query.Remark != null && query.Remark != "")
+                    {
+                        rs = rs.Where(x => x.Remark.Equals(query.Remark)).ToList();
+                    }
+                }
+                
             }
 
             if (rs != null && rs.Count > 0)

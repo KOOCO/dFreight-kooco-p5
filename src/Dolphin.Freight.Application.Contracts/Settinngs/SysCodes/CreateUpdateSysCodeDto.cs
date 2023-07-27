@@ -23,5 +23,7 @@ namespace Dolphin.Freight.Settinngs.SysCodes
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+
+        public Guid? ParentId { get; set; }
     }
 }

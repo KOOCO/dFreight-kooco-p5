@@ -435,6 +435,7 @@ public class FreightDbContext :
             b.Property(x => x.CodeValue).IsRequired().HasMaxLength(50);
             b.Property(x => x.CodeType).IsRequired().HasMaxLength(50);
             b.Property(x => x.ShowName).IsRequired().HasMaxLength(50);
+            b.Property(x => x.ParentId).HasColumnName(nameof(SysCode.ParentId));
 
         });
         builder.Entity<Office>(b =>
