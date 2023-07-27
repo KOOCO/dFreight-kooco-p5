@@ -177,6 +177,9 @@ table tr {
             }
         }
 
+        setTimeout( () => $('#hawbsList').trigger('change'), 100);
+        
+
         $('#hawbsList').on('change', function() {
             var selectedOption = $(this).find('option:selected');
             var subHawbs = selectedOption.attr('data-SubHawb');
@@ -237,11 +240,12 @@ table tr {
             </li>
             <li>
                 
-              <select disabled>
-                    <option value="en">English</option>
-                    <option value="zh-hans">简体中文 (Simplified Chinese)</option>
-                    <option value="zh-hant">繁體中文 (Traditional Chinese)</option>
-            </select>
+               <select id="hawbsList" name="hawbsList">
+                   @foreach (var hawb in Model.HawbList)
+                   {
+                       <option value="@hawb.HawbNo" data-SubHawb="@hawb.SubHawbJson" id="@hawb.Id">@hawb.HawbNo</option>
+                   }
+                </select>
                 
             </li><!-- end ngIf: vm.canSelectLanguage -->
 
@@ -255,14 +259,14 @@ table tr {
                </div>
        </div>
 
-       <div style="display:flex;justify-content: center;" class="item-left">
+       @*<div style="display:flex;justify-content: center;" class="item-left">
            <select id="hawbsList" name="hawbsList">
                @foreach (var hawb in Model.HawbList)
                {
                    <option value="@hawb.HawbNo" data-SubHawb="@hawb.SubHawbJson" id="@hawb.Id">@hawb.HawbNo</option>
                }
            </select>
-       </div>
+       </div>*@
 
     </div>
 }
@@ -613,7 +617,7 @@ table tr {
                 </tbody></table>
 
             
-               <select name="content_table_type" class="item-edit select margin-t-sm ng-pristine ng-untouched ng-valid ng-not-empty" id="id_content_table_type">
+               <select disabled name="content_table_type" class="item-edit select margin-t-sm ng-pristine ng-untouched ng-valid ng-not-empty" id="id_content_table_type">
                    <option value="MARK_DESCRIPTION">Mark &amp; Description</option>
                    
                    <option value="SUB_HAWB" selected="">SubHAWB</option>
