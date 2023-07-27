@@ -224,7 +224,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 抵達日期
         /// </summary>
         [DataType(DataType.Date)]
-        public DateTime ArrivalDate { get; set; }
+        public DateTime? ArrivalDate { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -326,6 +326,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string Trucker { get; set; }
         public DateTime ITDate { get; set; }
         public string ITIssuedLocation { get; set; }
+        public string ClassOfEntry { get; set; }
     }
     public class OverSeaAgentAirImport
     {

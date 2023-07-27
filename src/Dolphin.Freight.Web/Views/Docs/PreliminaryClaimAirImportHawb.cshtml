@@ -343,7 +343,7 @@ table td {
                                 <tr>
                                     <td>ETD / ETA :</td>
                                     <td>
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="etd_and_eta" value="@(Model.DepatureDate?.ToString("MM/dd/yyyy") ?? "") / @(Model.ArrivalDate.ToString("MM/dd/yyyy") ?? "")" id="id_etd_and_eta" class="ng-isolate-scope"></div>
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="etd_and_eta" value="@(Model.DepatureDate?.ToString("MM/dd/yyyy") ?? "") / @(Model.ArrivalDate?.ToString("MM/dd/yyyy") ?? "")" id="id_etd_and_eta" class="ng-isolate-scope"></div>
                                     </td>
                                 </tr>
                             </tbody></table>

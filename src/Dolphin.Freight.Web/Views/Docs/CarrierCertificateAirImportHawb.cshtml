@@ -279,7 +279,7 @@ table td {
                     </td>
                     <td>&nbsp;</td>
                     <td class="border-b col-padding-double text-bold">
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ArrivalDate" value="@Model.ArrivalDate.ToShortDateString()" id="id_ETA_carrier_certificate" class="ng-isolate-scope"></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ArrivalDate" value="@Model.ArrivalDate?.ToShortDateString()" id="id_ETA_carrier_certificate" class="ng-isolate-scope"></div>
                     </td>
                 </tr>
                 <tr class="text-center">
@@ -409,7 +409,7 @@ table td {
                         <td>Date of Arrival:</td>
                         <td class="text-bold">
                             <div class="item-edit hover-toggle-icon-text-template">
-                                <input type="text" name="ArrivalDate" value="@Model.ArrivalDate.ToShortDateString()" id="id_date_of_arrival" class="ng-isolate-scope">
+                                <input type="text" name="ArrivalDate" value="@Model.ArrivalDate?.ToShortDateString()" id="id_date_of_arrival" class="ng-isolate-scope">
                             </div>
                         </td>
                     </tr>
@@ -469,7 +469,7 @@ table td {
                     <td>&nbsp;</td>
                     <td class="border-b col-padding-double text-bold">
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <input type="text" name="ArrivalDate" value="@Model.ArrivalDate.ToShortDateString()" id="id_ETA_release_order" class="ng-isolate-scope">
+                            <input type="text" name="ArrivalDate" value="@Model.ArrivalDate?.ToShortDateString()" id="id_ETA_release_order" class="ng-isolate-scope">
                         </div>
                     </td>
                 </tr>
