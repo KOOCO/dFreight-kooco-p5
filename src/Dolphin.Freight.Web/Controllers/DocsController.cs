@@ -3428,6 +3428,45 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/CarrierCertificateAirImportHawb.cshtml", model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ITTE(Guid id, FreightPageType pageType)
+        {
+            var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);
+
+            var iTTEViewModel = new ITTEViewModel()
+            {
+                Port = airImportDetails.ITIssuedLocation,
+                EntryNo = airImportDetails.ITNo,
+                ClassOfEntry = airImportDetails.ClassOfEntry,
+                PortOfLoading = airImportDetails.DestinationAirportName,
+                PortOf = airImportDetails.DestinationAirportName,
+                CustomPort = airImportDetails.DestinationAirportName,
+                ForeignPort = airImportDetails.DepatureName,
+                AWBNo = airImportDetails.MawbNo,
+                DateOfSailing = airImportDetails.DepatureDate?.ToShortDateString(),
+                VesselOrCarrier = airImportDetails.CarrierTPName,
+                DateImported = airImportDetails.ArrivalDate?.ToShortDateString(),
+                ExportedOn = airImportDetails.DepatureDate?.ToShortDateString(),
+                GoodsNowAt = airImportDetails.AwbAcctCarrierName,
+                Consignee = airImportDetails.ConsigneeName,
+                ForeignDestination = airImportDetails.FinalDestination,
+                Package = Convert.ToString(airImportDetails.Package),
+                WeightKG = ( airImportDetails.GrossWeightKg + airImportDetails.ChargeableWeightKg ),
+                WeightLG = ( airImportDetails.GrossWeightLb + airImportDetails.ChargeableWeightLb ),
+                MawbNo = airImportDetails.MawbNo,
+                HawbNo = airImportDetails?.HawbNo,
+            };
+
+            return View(iTTEViewModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ITTE(ITTEViewModel model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/ITTE.cshtml", model);
+        }
+
         #region Private Functions
 
         private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
