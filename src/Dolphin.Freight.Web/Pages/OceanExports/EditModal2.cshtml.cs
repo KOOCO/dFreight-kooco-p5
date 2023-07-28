@@ -94,7 +94,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            if (Hid != Guid.Empty)
+            if (Hid != Guid.Empty )
             {
                 QueryHblDto queryHbl = new QueryHblDto();
                 queryHbl.Id = Hid;
