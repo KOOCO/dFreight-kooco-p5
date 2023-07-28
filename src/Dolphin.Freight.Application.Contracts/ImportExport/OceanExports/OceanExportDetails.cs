@@ -20,6 +20,10 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string ShipmentNo { get; set; }
         public string FilingNo { get; set; }
         public string MblNo { get; set; }
+        public string HblNo { get; set; }
+        public string LCNo { get; set; }
+        public string LCIssueBankName { get; set; }
+        public string ETD { get; set; }
         public Guid? OfficeId { get; set; }
         public virtual SubstationDto Office { get; set; }
         public Guid? BlTypeId { get; set; }
@@ -51,6 +55,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         
         public Guid? MblNotifyId { get; set; }
         public string MblNotifyName { get; set; }
+        public string HblNotifyName { get; set; }
 
         public string MblNotifyContent { get; set; }
       
@@ -112,6 +117,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 收貨人
         /// </summary>
         public string MblConsigneeName { get; set; }
+        public string HblConsigneeName { get; set; }
         /// <summary>
         /// 收貨人報表上顯示的資訊
         /// </summary>
@@ -178,6 +184,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 裝貨港(POL) ETD
         /// </summary>
         public DateTime? PolEtd { get; set; }
+        public string FlightNo { get; set; }
         /// <summary>
         /// 卸貨港(POD)ID
         /// </summary>
