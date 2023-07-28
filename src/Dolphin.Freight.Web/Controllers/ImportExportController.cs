@@ -291,12 +291,14 @@ namespace Dolphin.Freight.Web.Controllers
                      switch (dto.InvoiceType)
                     {
                         default:
+                            break;
+                        case 0:
                             model.h0invoiceDtos.Add(dto);
                             break;
-                        case 4:
+                        case 1:
                             model.h1invoiceDtos.Add(dto);
                             break;
-                        case 3:
+                        case 2:
                             model.h2invoiceDtos.Add(dto);
                             break;
                     }
