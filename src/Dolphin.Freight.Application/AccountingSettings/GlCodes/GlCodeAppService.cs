@@ -51,7 +51,7 @@ namespace Dolphin.Freight.AccountingSettings.GlCodes
             List<GlCodeDto> list = new List<GlCodeDto>();
             
             rs= rs.WhereIf(!string.IsNullOrWhiteSpace(query.Code), e => e.Code.Contains(query.Code))
-            .WhereIf(!string.IsNullOrWhiteSpace(query.Remark), e => e.Remark.Contains(query.Remark)).ToList();
+            .WhereIf(!string.IsNullOrWhiteSpace(query.Remark), e => e.Remark.ToLower().Contains(query.Remark.ToLower())).ToList();
 
             //if (query != null && query.Code != null&&query.Code!="" || query != null && query.Remark != null && query.Remark != "")
             //{

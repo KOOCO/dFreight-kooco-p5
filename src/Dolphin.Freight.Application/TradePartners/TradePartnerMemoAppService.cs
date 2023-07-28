@@ -1,5 +1,4 @@
-﻿using Dolphin.Freight.Settings.Countries;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -7,7 +6,6 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
-using Volo.Abp.ObjectMapping;
 
 namespace Dolphin.Freight.TradePartners
 {
