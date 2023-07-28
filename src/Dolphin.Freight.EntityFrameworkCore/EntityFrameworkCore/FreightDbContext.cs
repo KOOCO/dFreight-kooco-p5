@@ -270,7 +270,7 @@ public class FreightDbContext :
             b.ToTable(FreightConsts.DbTablePrefix + "TradePartnerMemo", FreightConsts.DbSchema);
             b.ConfigureByConvention();
             b.Property(b => b.Title).IsRequired().HasMaxLength(100);
-            b.Property(b => b.Memo).IsRequired().HasMaxLength(2048);
+            b.Property(b => b.Memo).HasMaxLength(2048);
         }); 
         builder.Entity<DefaultFreightAP>(b =>
         {

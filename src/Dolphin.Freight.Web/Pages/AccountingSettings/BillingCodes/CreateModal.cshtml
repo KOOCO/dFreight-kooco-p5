@@ -32,26 +32,22 @@
         </abp-row>
         <abp-row>
             <abp-column>
-                @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "RevenueId", FieldName = "RevenueId",DefaultValue="", IsShowLabel = true , IsRequired = false  })*@
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "RevenueId", AspItems = Model.GiCodes, ShowFiledContentValue = @Model.BillingCode.RevenueId.ToString(), IsShowLabel = true, FieldName = @L["RevenueId"] })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "RevenueId", AspItems = _dropdown.GiCodeLookupList, ShowFiledContentValue = @Model.BillingCode.RevenueId.ToString(), IsShowLabel = true, FieldName = @L["RevenueId"] })
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column>
-                @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CostId", FieldName = "CostId",DefaultValue="", IsShowLabel = true , IsRequired = false  })*@
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CostId", AspItems = Model.GiCodes, ShowFiledContentValue = @Model.BillingCode.RevenueId.ToString(), IsShowLabel = true, FieldName = @L["CostId"] })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CostId", AspItems = _dropdown.GiCodeLookupList, ShowFiledContentValue = @Model.BillingCode.RevenueId.ToString(), IsShowLabel = true, FieldName = @L["CostId"] })
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column>
-                @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CreditId", FieldName = "CreditId",DefaultValue="", IsShowLabel = true , IsRequired = false  })*@
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CreditId", AspItems = Model.GiCodes, ShowFiledContentValue = @Model.BillingCode.RevenueId.ToString(), IsShowLabel = true, FieldName = @L["CreditId"] })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CreditId", AspItems = _dropdown.GiCodeLookupList, ShowFiledContentValue = @Model.BillingCode.RevenueId.ToString(), IsShowLabel = true, FieldName = @L["CreditId"] })
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column>
-                @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "DeitId", FieldName = "DeitId",DefaultValue="", IsShowLabel = true , IsRequired = false  })*@
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "DeitId", AspItems = Model.GiCodes, ShowFiledContentValue = @Model.BillingCode.RevenueId.ToString(), IsShowLabel = true, FieldName = @L["DeitId"] })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "DeitId", AspItems = _dropdown.GiCodeLookupList, ShowFiledContentValue = @Model.BillingCode.RevenueId.ToString(), IsShowLabel = true, FieldName = @L["DeitId"] })
             </abp-column>
         </abp-row>
         <abp-row>
