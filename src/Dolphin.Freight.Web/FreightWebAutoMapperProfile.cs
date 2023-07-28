@@ -77,7 +77,7 @@ public class FreightWebAutoMapperProfile : Profile
         CreateMap<Invoice, CreateUpdateInvoiceDto>();
         CreateMap<InvoiceBillDto, CreateUpdateInvoiceBillDto>();
         CreateMap<VesselScheduleDto, CreateUpdateVesselScheduleDto>();
-
+        CreateMap<OceanExportHblDto, CreateUpdateOceanExportHblDto>();
 		//Accounting
         CreateMap<CustomerPayment, CustomerPaymentDto>();
         CreateMap<CreateUpdateCustomerPaymentDto, CustomerPayment>();        
@@ -95,7 +95,7 @@ public class FreightWebAutoMapperProfile : Profile
         // 發票
         CreateMap<CreateUpdateOceanExportMblDto, InvoiceMblDto>();
         CreateMap<CreateUpdateOceanImportMblDto, InvoiceMblDto>();
-
+        CreateMap<CreateUpdateOceanExportHblDto, InvoiceMblDto>();
         CreateMap<OceanExportMblDto, InvoiceMblDto>();
 
         // 國家管理
