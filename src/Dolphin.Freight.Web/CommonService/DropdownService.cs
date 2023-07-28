@@ -1,16 +1,13 @@
-﻿using Dolphin.Freight.Accounting.Invoices;
+﻿using Dolphin.Freight.AccountingSettings.GlCodes;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.AirExports;
-using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
 using Dolphin.Freight.Settings.Countries;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settinngs.ContainerSizes;
 using Dolphin.Freight.Settinngs.PackageUnits;
-using Dolphin.Freight.Settinngs.Ports;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
-using NPOI.POIFS.Storage;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,15 +27,17 @@ namespace Dolphin.Freight.Web.CommonService
         private readonly IPortsManagementAppService _portsManagementAppService;
         private readonly IContainerSizeAppService _containerAppService;
         private readonly ICountryAppService _countryAppService;
-        public DropdownService(ITradePartnerAppService tradePartnerAppService, 
+        private readonly IGlCodeAppService _glCodeAppService;
+        public DropdownService(ITradePartnerAppService tradePartnerAppService,
                                ISubstationAppService substationAppService,
-                               IAirportAppService airportAppService, 
-                               IPackageUnitAppService packageUnitAppService, 
-                               ISysCodeAppService sysCodeAppService, 
-                               IAjaxDropdownAppService ajaxDropdownAppService, 
+                               IAirportAppService airportAppService,
+                               IPackageUnitAppService packageUnitAppService,
+                               ISysCodeAppService sysCodeAppService,
+                               IAjaxDropdownAppService ajaxDropdownAppService,
                                IPortsManagementAppService portsManagementAppService,
                                IContainerSizeAppService containerAppService,
-                               ICountryAppService countryAppService)
+                               ICountryAppService countryAppService,
+                               IGlCodeAppService glCodeAppService)
         {
             _tradePartnerAppService = tradePartnerAppService;
             _substationAppService = substationAppService;
@@ -49,6 +48,7 @@ namespace Dolphin.Freight.Web.CommonService
             _ajaxDropdownAppService = ajaxDropdownAppService;
             _containerAppService = containerAppService;
             _countryAppService = countryAppService;
+            _glCodeAppService = glCodeAppService;
         }
         public List<SelectItems> TradePartnerLookupList => FillTradePartnerAsync().Result;
 
@@ -89,6 +89,7 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> CountryLookupList => FillCountryAsync().Result;
 
         public List<SelectItems> PreCarriageVesselLookupList => FillPreCarriageVesselTypeAsync().Result;
+        public List<SelectItems> GiCodeLookupList => FillGiCodesAsync().Result;
 
         #region FillTradePartnerAsync()
         private async Task<List<SelectItems>> FillTradePartnerAsync()
@@ -313,5 +314,15 @@ namespace Dolphin.Freight.Web.CommonService
         }
 
         #endregion
+
+        #region FillCountryAsync()
+        private async Task<List<SelectItems>> FillGiCodesAsync()
+        {
+            var lookup = await _glCodeAppService.GetGlCodesAsync(new Common.QueryDto());
+
+            return lookup.Select(x => new SelectListItem(x.Code, x.Id.ToString(), false)).ToList();
+        }
+        #endregion
     }
 }
+
