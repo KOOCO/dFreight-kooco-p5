@@ -205,7 +205,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     dictionary.Add(syscode.Id, syscode.CodeValue);
                 }
             }
-            var oceanExportHbl = await _repository.GetAsync(query.Id.Value);
+            var oceanExportHbl = await _repository.GetAsync(query.Id.GetValueOrDefault());
             var rs = ObjectMapper.Map<OceanExportHbl, CreateUpdateOceanExportHblDto>(oceanExportHbl);
             if (rs.CardColorId != null) rs.CardColorValue = dictionary[rs.CardColorId.Value];
             return rs;

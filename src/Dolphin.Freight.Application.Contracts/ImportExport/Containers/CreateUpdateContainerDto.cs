@@ -35,11 +35,11 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// <summary>
         /// 包裝重量
         /// </summary>
-        public double PackageWeight { get; set; }
+        public double? PackageWeight { get; set; }
         /// <summary>
         /// 包裝材積
         /// </summary>
-        public double PackageMeasure { get; set; }
+        public double? PackageMeasure { get; set; }
         /// <summary>
         /// 封條號碼2
         /// </summary>
@@ -146,5 +146,9 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// </summary>
         public bool IsDeleted { get; set; }
         public int Status { get; set; }
+        public Guid? HblId { get; set; }
+        public Guid? PackageUnitId { get; set; }
+        public string PackageWeightUnit { get; set; }
+        public string PackageMeasureUnit { get; set; }
     }
 }

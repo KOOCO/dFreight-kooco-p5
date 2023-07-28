@@ -10,6 +10,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Settinngs.SysCodes;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
 {
@@ -26,6 +27,17 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         public CreateUpdateOceanExportHblDto OceanExportHbl { get; set; }
         [BindProperty]
         public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
+
+        [BindProperty]
+        public CreateUpdateContainerDto CreateUpdateContainerHawb { get; set; }
+
+        [BindProperty]
+        public List<ManifestCommodity> Commodities { get; set; }
+
+        public List<SelectListItem> RateUnitTypeLookupList { get; set; }
+        public List<SelectListItem> UnitTypeLookupList { get; set; }
+
+
         [BindProperty(SupportsGet = true)]
         public int NewHbl { get; set; } = 0;
         public string CardClass { get; set; }
@@ -48,6 +60,19 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             QueryHblDto query = new QueryHblDto() { MblId = Id };
             OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
             QueryHblDto queryHbl = new QueryHblDto();
+            CreateUpdateContainerHawb = new CreateUpdateContainerDto() { Id = Guid.Empty };
+            RateUnitTypeLookupList = new List<SelectListItem>
+            {
+                new SelectListItem() { Text = "KG", Value = "KG" },
+                new SelectListItem() { Text = "LG", Value = "LG" }
+            };
+            UnitTypeLookupList = new List<SelectListItem>
+            {
+                new SelectListItem() { Text = "CBM", Value = "CBM" },
+                new SelectListItem() { Text = "CFT", Value = "CFT" }
+            };
+            Commodities = new List<ManifestCommodity>();
+
             if (Hid == Guid.Empty)
             {
                 if (NewHbl == 1)
@@ -78,6 +103,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                     {
                         OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(OceanExportHbls[0]);
                         Hid = OceanExportHbl.Id;
+                        CreateUpdateContainerHawb = await _containerAppService.GetContainerByHblId(Hid);
                         IsShowHbl = true;
                     }
                 }
@@ -89,30 +115,65 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                 OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
                 IsShowHbl = true;
 
+                if(OceanExportHbl.ExtraProperties != null && OceanExportHbl.ExtraProperties.Any())
+                {
+                    Commodities = (List<ManifestCommodity>)OceanExportHbl.ExtraProperties.GetValueOrDefault("Commodities");
+                }
 
             }
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            if (Hid != Guid.Empty )
+
+            if (OceanExportHbl.Id != Guid.Empty)
             {
                 QueryHblDto queryHbl = new QueryHblDto();
-                queryHbl.Id = Hid;
+                queryHbl.Id = OceanExportHbl.Id;
                 var OceanExportHb2 = await _oceanExportHblAppService.GetHblById(queryHbl);
-                
+
                 OceanExportHb2.Mark = OceanExportHbl.Mark;
                 OceanExportHb2.Description = OceanExportHbl.Description;
                 OceanExportHb2.DomesticInstructions = OceanExportHbl.DomesticInstructions;
-                await _oceanExportHblAppService.UpdateAsync(Hid, OceanExportHb2);
+
+                if (OceanExportHb2.ExtraProperties == null)
+                {
+                    OceanExportHb2.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                }
+
+                if (Commodities != null && Commodities.Any())
+                {
+                    OceanExportHb2.ExtraProperties.Remove("Commodities");
+                    OceanExportHb2.ExtraProperties.Add("Commodities", Commodities);
+                }
+
+
+                await _oceanExportHblAppService.UpdateAsync(OceanExportHbl.Id, OceanExportHb2);
+
+                if (CreateUpdateContainerHawb is not null)
+                {
+                    CreateUpdateContainerHawb.HblId = OceanExportHbl.Id;
+                    if (CreateUpdateContainerHawb.Id != Guid.Empty)
+                    {
+                        await _containerAppService.UpdateAsync(CreateUpdateContainerHawb.Id, CreateUpdateContainerHawb);
+                    }
+                    else
+                    {
+                        await _containerAppService.CreateAsync(CreateUpdateContainerHawb);
+                    }
+
+                }
+
+                
+
                 //await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMbl);
                 //await _oceanExportHblAppService.UpdateAsync(Hid, OceanExportHbl);
-                QueryContainerDto query1 = new QueryContainerDto() { QueryId = Hid };
-                var rs1 = await _containerAppService.DeleteByMblIdAsync(query1);
-                foreach (var dto in CreateUpdateContainerDtos)
-                {
-                    var a = dto.IsDeleted;
-                    if (dto.Status == 0) await _containerAppService.CreateAsync(dto);
-                }
+                //QueryContainerDto query1 = new QueryContainerDto() { QueryId = Hid.Value };
+                //var rs1 = await _containerAppService.DeleteByMblIdAsync(query1);
+                //foreach (var dto in CreateUpdateContainerDtos)
+                //{
+                //    var a = dto.IsDeleted;
+                //    if (dto.Status == 0) await _containerAppService.CreateAsync(dto);
+                //}
 
 
             }
@@ -131,6 +192,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                 var a = dto.IsDeleted;
                 if (dto.Status == 0)await _containerAppService.CreateAsync(dto);
             }
+
+            
+
             return NoContent();
         }
     }
