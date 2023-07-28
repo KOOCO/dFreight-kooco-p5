@@ -1304,7 +1304,9 @@
     // Ocean Export HBL
     "AgentId": "HB/L Agent",
     "HblSaleId": "Sales",
-    "HSvcTermToId": "Svc Term To"
+    "HSvcTermToId": "Svc Term To",
+
+    "PackageUnitAlreadyExist": "Same code {0} already exists in the system."
 
   }
 }

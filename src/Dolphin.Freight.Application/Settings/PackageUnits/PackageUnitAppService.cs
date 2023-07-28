@@ -93,5 +93,13 @@ namespace Dolphin.Freight.Settings.PackageUnits
             return new ListResultDto<PackageUnitLookupDto>(ObjectMapper.Map<List<PackageUnit>, List<PackageUnitLookupDto>>(packageUnits));
         }
 
+        public async Task<bool> IsPackageUnitAlreadyExist(string packageCode, Guid? packageUnitId)
+        {
+            var query = await _repository.GetQueryableAsync();
+            if (packageUnitId != null && packageUnitId != Guid.Empty)
+                return query.Any(x => x.PackageCode == packageCode && x.Id != packageUnitId);
+            else
+                return query.Any(x => x.PackageCode == packageCode);
+        }
     }
 }

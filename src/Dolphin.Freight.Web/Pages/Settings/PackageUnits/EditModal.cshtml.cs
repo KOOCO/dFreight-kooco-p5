@@ -1,8 +1,11 @@
 
+using Dolphin.Freight.Localization;
 using Dolphin.Freight.Settinngs.PackageUnits;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System;
 using System.Threading.Tasks;
+using Volo.Abp;
 
 namespace Dolphin.Freight.Web.Pages.Settings.PackageUnits
 {
@@ -14,18 +17,22 @@ namespace Dolphin.Freight.Web.Pages.Settings.PackageUnits
         [BindProperty]
         public CreateUpdatePackageUnitDto PackageUnit { get; set; }
         private readonly IPackageUnitAppService _packageUnitAppService;
-        public EditModalModel(IPackageUnitAppService packageUnitAppService)
+        private readonly IStringLocalizer<FreightResource> _localizer;
+        public EditModalModel(IPackageUnitAppService packageUnitAppService, IStringLocalizer<FreightResource> localizer)
         {
             _packageUnitAppService = packageUnitAppService;
+            _localizer = localizer;
         }
         public async Task OnGetAsync()
         {
             var packageUnit = await _packageUnitAppService.GetAsync(Id);
             PackageUnit = ObjectMapper.Map<PackageUnitDto, CreateUpdatePackageUnitDto>(packageUnit);
-            var a = 1;
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            bool isPackageUnitAlreadyExist = await _packageUnitAppService.IsPackageUnitAlreadyExist(PackageUnit.PackageCode, Id);
+            if (isPackageUnitAlreadyExist)
+                throw new UserFriendlyException(string.Format(_localizer["PackageUnitAlreadyExist"].ToString(), PackageUnit.PackageCode));
             await _packageUnitAppService.UpdateAsync(Id, PackageUnit);
             return NoContent();
         }

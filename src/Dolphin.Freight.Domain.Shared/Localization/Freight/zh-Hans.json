@@ -998,6 +998,8 @@
     "Manifest:CARRIER": "船公司",
     "Manifest:ReportType": "报表类别",
     "Manifest:BY_CONTAINER": "依集装箱显示",
-    "Manifest:BY_MBL": "依MBL显示"
+    "Manifest:BY_MBL": "依MBL显示",
+
+    "PackageUnitAlreadyExist": "相同的代码 {0} 已存在于系统中."
   }
 }
