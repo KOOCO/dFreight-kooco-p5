@@ -14,6 +14,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
     {
         public bool IsPDF { get; set; }
         public string AirWayBillNo { get; set; }
+        public string TotalPackage { get; set; }
         public Guid? HawbId { get; set; }
         public Guid MawbId { get; set; }
         public string HawbNo { get; set; }
@@ -63,6 +64,11 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? OPId { get; set; }
         public string OPName { get; set; }
+        public string HItNo { get; set; }
+        public string HItDate { get; set; }
+        public string CurrentDate { get; set; }
+        public string HItLocation { get; set; }
+        public string HMark { get; set; }
         /// <summary>
         /// 是否直單
         /// </summary>
@@ -88,6 +94,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public Guid? CustomerId { get; set; }
         public string CustomerName { get; set; }
         public string CustomBroker { get; set; }
+        public string CustomBrokerName { get; set; }
+        public string HPackageUnitName { get; set; }
         /// <summary>
         ///  
         /// </summary>
@@ -107,13 +115,13 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string DepatureAirportName { get; set; }
         /// <summary>
         /// 出發日期
-        /// </summary>
+        /// </summary>    
         [DataType(DataType.Date)]
         public DateTime? DepatureDate { get; set; }
         /// <summary>
         /// 航班號碼
         /// </summary>
-        public string FlightNo { get; set; }
+        public string FlightNo { get; set; } 
         public string HTruckerName { get; set; }
         /// <summary>
         ///  中轉航班1-Id
@@ -217,12 +225,13 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 抵達日期
         /// </summary>
         [DataType(DataType.Date)]
-        public DateTime ArrivalDate { get; set; }
+        public DateTime? ArrivalDate { get; set; }
         /// <summary>
         /// 
         /// </summary>
         public Guid? FreightLocationId { get; set; }
         public string FreightLocationName { get; set; }
+        public string MFreightLocationName { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -300,6 +309,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string GrossWeightStr { get; set; }
         public string VolumeWeightStr { get; set; }
         public string MeasurementStr { get; set; }
+        public string CurrentAgentId { get; set; }
         public string CurrentAgent { get; set; }
         public string PackagesStr { get; set; }
         public FreightPageType PageType { get; set; }
@@ -309,6 +319,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string ITNo { get; set; }
         public string ReleasedBy { get; set; }
         public string FinalDestination { get; set; }
+        public string DeliveryLocationName { get; set; }
+        public string FDestETA { get; set; }
         public DateTime LastFreeDay { get; set; }
         public string Remark { get; set; }
         public string SubHawbJson { get; set; }
@@ -316,11 +328,11 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string Trucker { get; set; }
         public DateTime ITDate { get; set; }
         public string ITIssuedLocation { get; set; }
-
-        public string CurrentDate { get; set; }
+        public string ClassOfEntry { get; set; }
     }
     public class OverSeaAgentAirImport
     {
+        public string Id { get; set; }
         public string Name { get; set; }
     }
     public class HawbNo

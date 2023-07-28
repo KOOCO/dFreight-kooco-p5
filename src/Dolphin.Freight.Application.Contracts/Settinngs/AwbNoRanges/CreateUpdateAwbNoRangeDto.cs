@@ -14,6 +14,8 @@ namespace Dolphin.Freight.Settings.AwbNoRanges
         /// <summary>
         /// 起始號碼
         /// </summary>
+        [Required]
+        [DisplayName("Carrier")]
         public Guid? CompanyId { get; set; }
         /// <summary>
         /// 起始號碼

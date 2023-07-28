@@ -1,11 +1,21 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
+
+    var getQueryfilter = function () {
+        return {
+            code: $("#Code").val(),
+            name: $("#Name").val(),
+            glCode: $("#GlCode").val(),
+            remark: $("#GlDescription").val()
+        };
+    };
+
     var dataTable = $('#BillingCodesTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
             paging: true,
             order: [[2, "asc"]],
-            searching: true,
+            searching: false,
             scrollX: true,
             responsive: {
                 details: {
@@ -13,7 +23,7 @@
                 }
             },
             autoWidth: true,
-            ajax: abp.libs.datatables.createAjax(dolphin.freight.accountingSettings.billingCodes.billingCode.queryList),
+            ajax: abp.libs.datatables.createAjax(dolphin.freight.accountingSettings.billingCodes.billingCode.queryList, getQueryfilter),
             columnDefs: [
                 {
                     className: 'dtr-control',
@@ -110,6 +120,15 @@
                     title: l('IsDC'),
                     data: function (row, type, set) {
                         if (row.isDC) return "V";
+                        else return "";
+
+                    }
+                },
+                {
+                    //GA
+                    title: l('IsPayroll'),
+                    data: function (row, type, set) {
+                        if (row.isPayroll) return "V";
                         else return "";
 
                     }
@@ -237,8 +256,11 @@
         })
     );
 
-    $('[type=search]').on('keyup', function () {
-        dataTable.search(this.value).draw();
+    //$('[type=search]').on('keyup', function () {
+    //    dataTable.search(this.value).draw();
+    //});
+    $('#SearchButton').click(function (e) {
+        dataTable.ajax.reload();
     });
  
     var createModal = new abp.ModalManager(abp.appPath + 'AccountingSettings/BillingCodes/CreateModal');
@@ -248,9 +270,18 @@
         dataTable.ajax.reload();
     });
 
+    //createModal.onOpen(function () {
+    //    initselect.initializeDropdownSearch('RevenueId');
+    //})
+
+    //editModal.onOpen(function () {
+    //    initselect.initializeDropdownSearch('RevenueId');
+    //})
+
     editModal.onResult(function () {
         dataTable.ajax.reload();
     });
+
     $('#NewBillingCodeButton').click(function (e) {
         e.preventDefault();
         createModal.open();

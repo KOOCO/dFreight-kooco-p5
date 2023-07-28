@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace Dolphin.Freight.AccountingSettings.BillingCodes
@@ -102,6 +103,9 @@ namespace Dolphin.Freight.AccountingSettings.BillingCodes
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+
+        [DisplayName("Payroll")]
+        public bool IsPayroll { get; set; }
     }
 }
 

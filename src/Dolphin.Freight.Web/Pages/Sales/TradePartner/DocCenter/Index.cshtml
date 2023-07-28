@@ -88,7 +88,7 @@
         function initAttments(tindex, qid) {
             dolphin.freight.importExport.attachments.attachment.queryList({ queryType: 2, queryId: qid }).done(function (result) {
                 if (result != null && result.length > 0) {
-                    debugger;
+                
                     var l = abp.localization.getResource('Freight');
                     var trhtml = "";
                     for (var index = 0; index < result.length; index++) {

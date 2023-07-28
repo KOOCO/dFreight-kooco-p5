@@ -435,6 +435,7 @@ public class FreightDbContext :
             b.Property(x => x.CodeValue).IsRequired().HasMaxLength(50);
             b.Property(x => x.CodeType).IsRequired().HasMaxLength(50);
             b.Property(x => x.ShowName).IsRequired().HasMaxLength(50);
+            b.Property(x => x.ParentId).HasColumnName(nameof(SysCode.ParentId));
 
         });
         builder.Entity<Office>(b =>
@@ -598,6 +599,7 @@ public class FreightDbContext :
                 FreightConsts.DbSchema);
             b.ConfigureByConvention();
             b.Property(x => x.Code).IsRequired().HasMaxLength(16);
+            b.Property(x=>x.IsPayroll).HasDefaultValue(false);
         });
         builder.Entity<CurrencyTable>(b =>
         {

@@ -44,7 +44,6 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc;
-using Volo.Abp.Users;
 using Wkhtmltopdf.NetCore;
 using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -3243,15 +3242,17 @@ namespace Dolphin.Freight.Web.Controllers
             var tradePartners = _dropdownService.TradePartnerLookupList;
             var overSeaAgents = new List<OverSeaAgentAirImport>();
 
-            foreach(var overSeaAgent in tradePartners)
+            foreach (var overSeaAgent in tradePartners)
             {
                 var data = new OverSeaAgentAirImport
                 {
+                    Id = overSeaAgent.Value,
                     Name = overSeaAgent.Text
                 };
                 overSeaAgents.Add(data);
             }
 
+            InfoModel.CurrentAgentId = string.Concat(conId);
             InfoModel.CurrentAgent = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(conId)).Select(s => s.Text));
             InfoModel.OverSeaAgents = overSeaAgents;
 
@@ -3271,7 +3272,7 @@ namespace Dolphin.Freight.Web.Controllers
                 var hawb = new HawbNo
                 {
                     HawbNos = item.HawbNo,
-                    OverSeaAgent = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(item.ConsigneeId)).Select(s => s.Text)),
+                    OverSeaAgent = string.Concat(item.ConsigneeId),
                     GrossWeightKG = item.GrossWeightKG,
                     ChargableWeightKG = item.ChargeableWeightKG,
                     VolumeWeightKG = item.VolumeWeightKG,
@@ -3285,13 +3286,19 @@ namespace Dolphin.Freight.Web.Controllers
             airImportDetails.ChargableWeightStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.ChargableWeightKG))) + " KGS " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.ChargableWeightKG)) * 2.20462).ToString("0.00") + " LBS";
             airImportDetails.GrossWeightStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.GrossWeightKG))) + " KGS " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.GrossWeightKG)) * 2.20462).ToString("0.00") + " LBS";
             airImportDetails.VolumeWeightStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.VolumeWeightKG))) + " KGS " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => Convert.ToInt64(s.VolumeWeightKG)) * 2.20462).ToString("0.00") + " LBS";
-            airImportDetails.MeasurementStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => double.Parse(s.MeasurementWeight))) + " CBM " + (hawbNos.Where(w => w.OverSeaAgent == agent).Sum(s => double.Parse(s.MeasurementWeight) * 35.315)).ToString("0.00") + " CFT";
-            airImportDetails.HawbString = "Hawb Nos:- "+string.Join(", ", hawbNos.Where(w => w.OverSeaAgent == agent).Select(s => s.HawbNos));
+            airImportDetails.MeasurementStr = string.Concat(hawbNos.Where(w => w.OverSeaAgent == agent)
+                                                                   .Where(w => !string.IsNullOrEmpty(w.MeasurementWeight) && double.TryParse(w.MeasurementWeight, out _))
+                                                                   .Sum(s => double.Parse(s.MeasurementWeight)))
+                                                                   + " CBM " +
+                                                                   (hawbNos.Where(w => w.OverSeaAgent == agent)
+                                                                   .Where(w => !string.IsNullOrEmpty(w.MeasurementWeight) && double.TryParse(w.MeasurementWeight, out _))
+                                                                   .Sum(s => double.Parse(s.MeasurementWeight) * 35.315)).ToString("0.00") + " CFT";
+            airImportDetails.HawbString = "Hawb Nos:- " + string.Join(", ", hawbNos.Where(w => w.OverSeaAgent == agent).Select(s => s.HawbNos));
             airImportDetails.Hawb_Nos = JsonConvert.SerializeObject(hawbNos);
-            airImportDetails.CurrentAgent = agent;
+            airImportDetails.CurrentAgent = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(agent)).Select(s => s.Text));
             airImportDetails.ShipperName = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data[0].ShipperId)).Select(s => s.Text));
             airImportDetails.NotifyName = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data[0].Notify)).Select(s => s.Text));
-            airImportDetails.CustomBroker = data[0].CustomsBroker;
+            airImportDetails.CustomBroker = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(data[0].CustomsBroker)).Select(s => s.Text));
 
             return View(airImportDetails);
         }
@@ -3304,6 +3311,25 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> ArrivalNoticeAirImportHawb(Guid id, FreightPageType pageType)
+        {
+            var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);
+
+            airImportDetails.GrossWeightStr = airImportDetails.GrossWeightKg == 0 ? "" : string.Concat(airImportDetails.GrossWeightKg) + " KGS " + (double.Parse(string.Concat(airImportDetails.GrossWeightKg)) * 2.20462).ToString("0.00") + " LBS";
+            airImportDetails.ChargableWeightStr = airImportDetails.ChargeableWeightKg == 0 ? "" : string.Concat(airImportDetails.ChargeableWeightKg) + " KGS " + (double.Parse(string.Concat(airImportDetails.ChargeableWeightKg)) * 2.20462).ToString("0.00") + " LBS";
+            airImportDetails.VolumeWeightStr = airImportDetails.VolumeWeightKg == 0 ? "" : string.Concat(airImportDetails.VolumeWeightKg) + " KGS " + (double.Parse(string.Concat(airImportDetails.VolumeWeightKg)) * 2.20462).ToString("0.00") + " LBS";
+            airImportDetails.MeasurementStr = airImportDetails.VolumeWeightCbm == 0 ? "" : string.Concat(airImportDetails.VolumeWeightCbm) + " CBM " + (double.Parse(string.Concat(airImportDetails.VolumeWeightCbm)) * 35.315).ToString("0.00") + " CFT";
+
+            return View(airImportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ArrivalNoticeAirImportHawb(AirImportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/ArrivalNoticeAirImportHawb.cshtml", model);
+        }
+
         public async Task<IActionResult> HawbAuthority(Guid id, FreightPageType pageType)
         {
             var data = await GetAirImportDetailsByPageType(id, pageType);
@@ -3330,7 +3356,7 @@ namespace Dolphin.Freight.Web.Controllers
                 FrightLoc = data.FreightLocationName,
                 ITNO = data.ITNo,
                 ITDate = string.Concat(data.ITDate),
-                ITIssuePlace=data.ITIssuedLocation,
+                ITIssuePlace = data.ITIssuedLocation,
                 LastFreeDay = data.LastFreeDay,
                 MerchandiseImportedAt = data.DestinationAirportName,
                 NotifyParty = data.NotifyName,
@@ -3338,12 +3364,18 @@ namespace Dolphin.Freight.Web.Controllers
                 PCS = data.Package,
                 Remark = data.Remark,
                 Shipper = data.ShipperName,
-                SubHawb = string.Join(",", data.SubHawbs?.Select(s => s.SubHAWB)),
+                //SubHawb = string.Join(",", data.SubHawbs?.Select(s => s.SubHAWB)),
                 Trucker = data.HTruckerName,
-                Amount = data.SubHawbs?.Sum(s => Convert.ToDouble(s.Amount)),
-                VIA = data.CarrierTPName,
+                //Amount = data.SubHawbs?.Sum(s => Convert.ToDouble(s.Amount)),
+                VIA = data.DeliveryLocationName,
                 PrepBy = data.OPName
             };
+
+            if (data.SubHawbs != null && data.SubHawbs.Any())
+            {
+                viewModel.SubHawb = string.Join(",", data.SubHawbs?.Select(s => s.SubHAWB));
+                viewModel.Amount = data.SubHawbs?.Sum(s => Convert.ToDouble(s.Amount));
+            }
 
             return View(viewModel);
         }
@@ -3430,6 +3462,128 @@ namespace Dolphin.Freight.Web.Controllers
 
             return await _generatePdf.GetPdf("Views/Docs/BatchPrintingAirImport.cshtml", model);
         }
+        public async Task<IActionResult> DeliveryOrderAirImportHawb(Guid id, FreightPageType pageType)
+        {
+            var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);
+
+            return View(airImportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeliveryOrderAirImportHawb(AirImportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/DeliveryOrderAirImportHawb.cshtml", model);
+        }
+
+        public async Task<IActionResult> PreliminaryClaimAirImportHawb(Guid id, FreightPageType pageType)
+        {
+            var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);
+
+            return View(airImportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> PreliminaryClaimAirImportHawb(AirImportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/PreliminaryClaimAirImportHawb.cshtml", model);
+        }
+
+        public async Task<IActionResult> CarrierCertificateAirImportHawb(Guid id, FreightPageType pageType)
+        {
+            var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);
+
+            return View(airImportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CarrierCertificateAirImportHawb(AirImportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/CarrierCertificateAirImportHawb.cshtml", model);
+        }
+
+        public async Task<IActionResult> ReleaseOrderAirImportHawb(Guid id, FreightPageType pageType)
+        {
+            var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);
+
+            return View(airImportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ReleaseOrderAirImportHawb(AirImportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/ReleaseOrderAirImportHawb.cshtml", model);
+        }
+
+        public async Task<IActionResult> MBLPackageLabelOceanExportMBL(Guid id, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+
+            return View(oceanExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> MBLPackageLabelOceanExportMBL(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/MBLPackageLabelOceanExportMBL.cshtml", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ITTE(Guid id, FreightPageType pageType)
+        {
+            var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);
+
+            var iTTEViewModel = new ITTEViewModel()
+            {
+                Port = airImportDetails.ITIssuedLocation,
+                EntryNo = airImportDetails.ITNo,
+                ClassOfEntry = airImportDetails.ClassOfEntry,
+                PortOfLoading = airImportDetails.DestinationAirportName,
+                PortOf = airImportDetails.DestinationAirportName,
+                CustomPort = airImportDetails.DestinationAirportName,
+                ForeignPort = airImportDetails.DepatureName,
+                AWBNo = airImportDetails.MawbNo,
+                DateOfSailing = airImportDetails.DepatureDate?.ToShortDateString(),
+                VesselOrCarrier = airImportDetails.CarrierTPName,
+                DateImported = airImportDetails.ArrivalDate?.ToShortDateString(),
+                ExportedOn = airImportDetails.DepatureDate?.ToShortDateString(),
+                GoodsNowAt = airImportDetails.AwbAcctCarrierName,
+                Consignee = airImportDetails.ConsigneeName,
+                ForeignDestination = airImportDetails.FinalDestination,
+                Package = Convert.ToString(airImportDetails.Package),
+                WeightKG = (airImportDetails.GrossWeightKg + airImportDetails.ChargeableWeightKg),
+                WeightLG = (airImportDetails.GrossWeightLb + airImportDetails.ChargeableWeightLb),
+                MawbNo = airImportDetails.MawbNo,
+                HawbNo = airImportDetails?.HawbNo,
+            };
+
+            return View(iTTEViewModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ITTE(ITTEViewModel model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/ITTE.cshtml", model);
+        }
+
+        public async Task<IActionResult> HBLPackingListOceanExport(Guid id, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+
+            return View(oceanExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> HBLPackingListOceanExport(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/HBLPackingListOceanExport.cshtml", model);
+        }
 
         #region Private Functions
 
@@ -3475,7 +3629,7 @@ namespace Dolphin.Freight.Web.Controllers
             return data;
         }
 
-        private async Task<OceanExportDetails> GetOceanExportDetailsByPageType(Guid Id, FreightPageType pageType = FreightPageType.OEMBL, bool isIncludeInvoices = false)
+        private async Task<OceanExportDetails> GetOceanExportDetailsByPageType(Guid Id, FreightPageType pageType, bool isIncludeInvoices = false)
         {
             var data = new OceanExportDetails();
 
@@ -3483,6 +3637,9 @@ namespace Dolphin.Freight.Web.Controllers
             {
                 case FreightPageType.OEMBL:
                     data = await _oceanExportMblAppService.GetOceanExportDetailsById(Id);
+                    break;
+                case FreightPageType.OEHBL:
+                    data = await _oceanExportHblAppService.GetOceanExportDetailsById(Id);
                     break;
                 default:
                     break;

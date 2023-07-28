@@ -117,9 +117,17 @@
         dataTable.ajax.reload();
     });
 
+    createModal.onOpen(function () {
+        initializeDropdownSearch('CarrierId');
+    })
+
     editModal.onResult(function () {
         dataTable.ajax.reload();
     });
+
+    editModal.onOpen(function () {
+        initializeDropdownSearch('CarrierId');
+    })
 
     $('#NewAwbNoRangeButton').click(function (e) {
         e.preventDefault();

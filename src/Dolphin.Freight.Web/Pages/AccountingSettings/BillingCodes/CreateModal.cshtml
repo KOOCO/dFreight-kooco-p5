@@ -1,13 +1,16 @@
 ﻿@page
 @using Dolphin.Freight.Localization
+@using Dolphin.Freight.Web.CommonService;
 @using Dolphin.Freight.Web.Pages.Components
 @using Microsoft.Extensions.Localization
 @using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
 @model Dolphin.Freight.Web.Pages.AccountingSettings.BillingCodes.CreateModalModel
 @inject IStringLocalizer<FreightResource> L
+@inject IDropdownService _dropdown
 @{
     Layout = null;
     <abp-script src="/Pages/AccountingSettings/BillingCodes/init.js" />
+    <abp-script src="/Pages/components/dropdowncomponent/initselect.js" />
 }
 <abp-modal>
     <abp-modal-header title="@L["Create"].Value"></abp-modal-header>
@@ -29,33 +32,40 @@
         </abp-row>
         <abp-row>
             <abp-column>
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "RevenueId", FieldName = "RevenueId",DefaultValue="", IsShowLabel = true , IsRequired = false  })
+                @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "RevenueId", FieldName = "RevenueId",DefaultValue="", IsShowLabel = true , IsRequired = false  })*@
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "RevenueId", AspItems = Model.GiCodes, ShowFiledContentValue = @Model.BillingCode.RevenueId.ToString(), IsShowLabel = true, FieldName = @L["RevenueId"] })
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column>
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CostId", FieldName = "CostId",DefaultValue="", IsShowLabel = true , IsRequired = false  })
+                @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CostId", FieldName = "CostId",DefaultValue="", IsShowLabel = true , IsRequired = false  })*@
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CostId", AspItems = Model.GiCodes, ShowFiledContentValue = @Model.BillingCode.RevenueId.ToString(), IsShowLabel = true, FieldName = @L["CostId"] })
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column>
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CreditId", FieldName = "CreditId",DefaultValue="", IsShowLabel = true , IsRequired = false  })
+                @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CreditId", FieldName = "CreditId",DefaultValue="", IsShowLabel = true , IsRequired = false  })*@
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CreditId", AspItems = Model.GiCodes, ShowFiledContentValue = @Model.BillingCode.RevenueId.ToString(), IsShowLabel = true, FieldName = @L["CreditId"] })
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column>
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "DeitId", FieldName = "DeitId",DefaultValue="", IsShowLabel = true , IsRequired = false  })
+                @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "DeitId", FieldName = "DeitId",DefaultValue="", IsShowLabel = true , IsRequired = false  })*@
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "DeitId", AspItems = Model.GiCodes, ShowFiledContentValue = @Model.BillingCode.RevenueId.ToString(), IsShowLabel = true, FieldName = @L["DeitId"] })
             </abp-column>
         </abp-row>
         <abp-row>
-            <abp-column size-md="_3">
+            <abp-column size-md="_2">
                 <abp-input asp-for="BillingCode.IsAR" />
             </abp-column>
-            <abp-column size-md="_3">
+            <abp-column size-md="_2">
                 <abp-input asp-for="BillingCode.IsAP"  />
             </abp-column>
-            <abp-column size-md="_3">
+            <abp-column size-md="_2">
                 <abp-input asp-for="BillingCode.IsDC" />
+            </abp-column>
+            <abp-column size-md="_3">
+                <abp-input asp-for="BillingCode.IsPayroll" />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="BillingCode.IsGA" />
@@ -124,6 +134,7 @@
             <input type="hidden" name="IsAR" id="formIsAR" />
             <input type="hidden" name="IsAP" id="formIsAP" />
             <input type="hidden" name="IsDC" id="formIsDC" />
+            <input type="hidden" name="IsPayroll" id="formIsPayroll" />
             <input type="hidden" name="IsGA" id="formIsGA" />
             <input type="hidden" name="IsOceanImportMbl" id="formIsOceanImportMbl" />
             <input type="hidden" name="IsOceanImportHbl" id="formIsOceanImportHbl" />
@@ -141,3 +152,34 @@
         </form>
     </abp-modal-footer>
 </abp-modal>
+<script>
+    $(document).ready(function () {
+        initializeDropdownSearch('RevenueId');
+        initializeDropdownSearch('CostId');
+        initializeDropdownSearch('CreditId');
+        initializeDropdownSearch('DeitId');
+    });
+</script>
+<style>
+
+    .select2-dropdown.select2-dropdown {
+        width: 466.4px !important
+    }
+
+    .select2-results__options{
+        width: 466.4px !important
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 36px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 36px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        top: 6px !important
+    }
+
+</style>
