@@ -1,6 +1,7 @@
 (function ($) {
     $(".password-visibility-button").click(function (e) {
         let button = $(this);
+        debugger
         let passwordInput = button.parent().find("input");
         if (!passwordInput) {
             return;
