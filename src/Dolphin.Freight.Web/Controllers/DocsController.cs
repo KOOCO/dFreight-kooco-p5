@@ -826,44 +826,45 @@ namespace Dolphin.Freight.Web.Controllers
 
             QueryHblDto queryHbl = new QueryHblDto();
             queryHbl.Id = Guid.Parse(id);
-            var OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
+            var OceanExportHbl = await _oceanExportHblAppService.GetOceanExportDetailsById(Guid.Parse(id));
+            //var shipper=await 
 
             #region
             //https://eval-asia.gofreight.co/ocean/export/shipment/OEX-23030002/?hbl=47120&hide_mbl=false
-            InfoViewModel.SHIPPER_EXPORTER = "123" + Environment.NewLine + "3 FL., NO. 215, SEC. 1, FU XING S. RD., TAIPEI, TAIWAN" + Environment.NewLine + "TEL : 02-87721111" + Environment.NewLine + "FAX : 02-87732222" + Environment.NewLine + "TAIWAN";
-            InfoViewModel.CONSIGNEE = "CHIYODA";
-            InfoViewModel.NOTIFY = "1231231" + Environment.NewLine + "ATTN: SDSDSD";
-            InfoViewModel.DOCUMENT_NO = "CMS/E/HPG118814";
-            InfoViewModel.BL_NO = "SINHPH23030002";
-            InfoViewModel.EXPORT_FILE_NO = "BOOKING # SINHPH23030002";
-            InfoViewModel.FORWARDING_AGENT = "EVA AIRWAYS CORPORATION (BR)" + Environment.NewLine + "200 NORTH SEPULVEDA BLVD., SUITE 1600" + Environment.NewLine + "UNITED STATES";
+            InfoViewModel.SHIPPER_EXPORTER = OceanExportHbl.ShippingAgentName + Environment.NewLine + OceanExportHbl.ShippingAgentContent; /*"3 FL., NO. 215, SEC. 1, FU XING S. RD., TAIPEI, TAIWAN" + Environment.NewLine + OceanExportHbl. + Environment.NewLine + "FAX : 02-87732222" + Environment.NewLine + "TAIWAN";*/
+            InfoViewModel.CONSIGNEE = OceanExportHbl.HblConsigneeName;
+            InfoViewModel.NOTIFY = OceanExportHbl.HblNotifyName + Environment.NewLine ;
+            InfoViewModel.DOCUMENT_NO = OceanExportHbl.DocNo;
+            InfoViewModel.BL_NO = OceanExportHbl.SubBlNo;
+            InfoViewModel.EXPORT_FILE_NO = OceanExportHbl.FilingNo;
+            InfoViewModel.FORWARDING_AGENT = OceanExportHbl.ForwardingAgentName + Environment.NewLine + OceanExportHbl.ForwardingAgentContent /*+ Environment.NewLine + "UNITED STATES"*/;
             InfoViewModel.POINT_AND_COUNTRY_OF_ORIGIN = "";
-            InfoViewModel.EXPORT_CARRIER = "XIN WEN ZHOU / 149E";
-            InfoViewModel.PORT_OF_LOADING = "SINGAPORE (SINGAPORE)";
-            InfoViewModel.PORT_OF_DISCHARGE = "HAIPHONG (VIETNAM)";
-            InfoViewModel.PLACE_OF_DELIVERY = "";
+            InfoViewModel.EXPORT_CARRIER = OceanExportHbl.VesselName;
+            InfoViewModel.PORT_OF_LOADING = OceanExportHbl.PolName;
+            InfoViewModel.PORT_OF_DISCHARGE = OceanExportHbl.PodName;
+            InfoViewModel.PLACE_OF_DELIVERY = OceanExportHbl.MblDel;
 
-            InfoViewModel.SHIPPING_MARKS = "CONTAINER NO./SEAL NO./P.O. NO." + Environment.NewLine + " /  / " + Environment.NewLine + Environment.NewLine + Environment.NewLine + "SHIEHN HAIPHONG PTE";
-            InfoViewModel.QTY = "3 PALLET(S)";
-            InfoViewModel.DESCRIPTION_OF_GOODS = "ELECTRONIC COMPONENT" + Environment.NewLine + "20 CARTONS";
-            InfoViewModel.WEIGHT_G = "300.00 KGS" + Environment.NewLine + Environment.NewLine + "661.39 LBS";
+            InfoViewModel.SHIPPING_MARKS =OceanExportHbl.Mark; /*"CONTAINER NO./SEAL NO./P.O. NO." + Environment.NewLine + " /  / " + Environment.NewLine + Environment.NewLine + Environment.NewLine + "SHIEHN HAIPHONG PTE";*/
+            InfoViewModel.QTY = OceanExportHbl.TotalPackage.ToString();
+            InfoViewModel.DESCRIPTION_OF_GOODS = OceanExportHbl.Description; /*"ELECTRONIC COMPONENT" + Environment.NewLine + "20 CARTONS";*/
+            InfoViewModel.WEIGHT_G = OceanExportHbl.TotalWeight + "" + OceanExportHbl.PackageWeightName; /* "300.00 KGS" + Environment.NewLine + Environment.NewLine + "661.39 LBS";*/
             InfoViewModel.WEIGHT_C = "";
-            InfoViewModel.MEASUREMENT = "4.50 CBM" + Environment.NewLine + Environment.NewLine + "158.92 CFT";
-            InfoViewModel.Show_Container_Information = "true";
+            InfoViewModel.MEASUREMENT = OceanExportHbl.TotalMeasure + "" + OceanExportHbl.PackageMeasure; /*"4.50 CBM" + Environment.NewLine + Environment.NewLine + "158.92 CFT";*/
+            InfoViewModel.Show_Container_Information = "True";
             InfoViewModel.CONTAINER_NO = "";
             InfoViewModel.TYPE = "";
-            InfoViewModel.SEAL_NO = "";
-            InfoViewModel.PKG = "3 PALLET(S)";
-            InfoViewModel.KG_LB = "300.00 / 661.39";
-            InfoViewModel.CBM_CFT = "4.50 / 158.92";
-            InfoViewModel.bl_date = "03-27-2023";
-            InfoViewModel.sworn_date = "MARCH 27, 2023";
+            InfoViewModel.SEAL_NO =  "";
+            InfoViewModel.PKG = OceanExportHbl.TotalPackage.ToString();
+            InfoViewModel.KG_LB = OceanExportHbl.TotalWeight.ToString();
+            InfoViewModel.CBM_CFT = OceanExportHbl.TotalMeasure.ToString();
+            InfoViewModel.bl_date = OceanExportHbl.OnBoardDate?.ToString("dd/mm/yyyy");
+            InfoViewModel.sworn_date = OceanExportHbl.OnBoardDate?.ToString("MMMM/dd/yyyy"); ;
 
-            InfoViewModel.name_of_chamber = "REGIONAL";
+            InfoViewModel.name_of_chamber =  "REGIONAL";
             InfoViewModel.state_of_chamber = "CA";
             InfoViewModel.name_of_country = "UNITED STATES";
 
-            InfoViewModel.ReportId = OceanExportHbl.Id;
+            InfoViewModel.ReportId = OceanExportHbl.MblId;
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
