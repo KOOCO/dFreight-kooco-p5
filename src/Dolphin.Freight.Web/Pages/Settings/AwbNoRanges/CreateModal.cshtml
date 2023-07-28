@@ -17,7 +17,7 @@
         <abp-modal-body>
         <abp-row>
             <abp-column>
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CarrierId", AspItems = _dropdown.TradePartnerLookupList, ShowFiledContentValue = @Model.CarrierId.ToString(), IsShowLabel = true, FieldName = @L["CarrierId"] })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CarrierId", AspItems = _dropdown.TradePartnerLookupList, ShowFiledContentValue = @Model.CarrierId.ToString(), IsShowLabel = true, FieldName = @L["CarrierId"]+".*" })
             </abp-column>
         </abp-row>
         <abp-row>

@@ -324,9 +324,9 @@ namespace Dolphin.Freight.ImportExport.AirImports
 
                 subHawbs = JsonConvert.DeserializeObject<List<SubHawbs>>(Convert.ToString(subHawbsStr));
 
-                airImportDetails.GrossWeightStr = data.GrossWeightKG == "0" ? "" : data.GrossWeightKG + " KGS " + (double.Parse(data.GrossWeightKG) * 2.20462).ToString("0.00") + " LBS";
-                airImportDetails.ChargableWeightStr = data.ChargeableWeightKG == "0" ? "" : data.ChargeableWeightKG + " KGS " + (double.Parse(data.ChargeableWeightKG) * 2.20462).ToString("0.00") + " LBS";
-                airImportDetails.MeasurementStr = data.VolumeWeightCBM == "0" ? "" : data.VolumeWeightCBM + " CBM " + (double.Parse(data.VolumeWeightCBM) * 35.315).ToString("0.00") + " CFT";
+                airImportDetails.GrossWeightStr = data.GrossWeightKG == null ? "" : data.GrossWeightKG + " KGS " + (double.Parse(data.GrossWeightKG) * 2.20462).ToString("0.00") + " LBS";
+                airImportDetails.ChargableWeightStr = data.ChargeableWeightKG == null ? "" : data.ChargeableWeightKG + " KGS " + (double.Parse(data.ChargeableWeightKG) * 2.20462).ToString("0.00") + " LBS";
+                airImportDetails.MeasurementStr = data.VolumeWeightCBM == null ? "" : data.VolumeWeightCBM + " CBM " + (double.Parse(data.VolumeWeightCBM) * 35.315).ToString("0.00") + " CFT";
                 airImportDetails.CurrentDate = DateTime.Now.ToString("MM/dd/yyyy");
                 airImportDetails.LastFreeDay = data.LastFreeDay;
                 airImportDetails.FDestETA = string.Concat(data.FinalETA);
@@ -334,7 +334,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.HItNo = data.ITNo;
                 airImportDetails.HItDate = string.Concat(data.ITDate);
                 airImportDetails.HItLocation = data.ITIssuedLocation;
-                airImportDetails.TotalPackage = string.Concat(airImportDetails.Package) + " " + airImportDetails.HPackageUnitName;
+                airImportDetails.TotalPackage = string.Concat(data.Package) + " " + airImportDetails.HPackageUnitName;
                 airImportDetails.HMark = data.Mark;
                 airImportDetails.AirWayBillNo = data.HawbNo;
                 airImportDetails.MawbNo = airImportDetails.MawbNo;

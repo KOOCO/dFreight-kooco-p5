@@ -42,7 +42,6 @@ function changeDropdownValue(tagName, tagValue, showCode) {
 }
 function doSubmit()
 {
-    debugger
     $("#formCode").val($("#BillingCode_Code").val());
     $("#formBillingName").val($("#BillingCode_BillingName").val());
     $("#formLocalName").val($("#BillingCode_LocalName").val());

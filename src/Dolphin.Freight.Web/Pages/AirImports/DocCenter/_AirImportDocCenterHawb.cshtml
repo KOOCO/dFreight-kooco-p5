@@ -28,7 +28,7 @@
 
         <div class="btn-group dropdown">
             <button class="btn btn-secondary dropdown-toggle" style="position: relative;" type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                @L["Display:Function"]
+                @L["Display:Function"] 
             </button>
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
                 <a class='dropdown-item' href='#'>
@@ -44,16 +44,16 @@
                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("DeliveryOrderAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ITTE", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL})')">
                     <i class="fa fa-file-text-o"></i> @L["I.T/T.E"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ReleaseOrderAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
                 </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PreliminaryClaimAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void()' onclick="OpenWindow('@Url.Action("CarrierCertificateAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
                 </a>
                 <p class="dropdown-divider"></p>

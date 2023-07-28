@@ -9,6 +9,8 @@ namespace Dolphin.Freight.Settinngs.PackageUnits
     {
         [MaxLength(3)]
         [Required]
+        [MinLength(1)]
+        [RegularExpression("^[0-9]*$", ErrorMessage = "Code must be numeric")]
         /// <summary>
         /// 代碼
         /// </summary>

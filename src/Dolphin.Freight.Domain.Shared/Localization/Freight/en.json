@@ -415,6 +415,7 @@
     "IsAP": "A/P",
     "IsDC": "D/C",
     "IsGA": "G&A",
+    "IsPayroll": "Payroll",
     "IsOceanImportMbl": "Ocean Import Mbl",
     "IsOceanImportHbl": "Ocean Import Hbl",
     "IsOceanExportMbl": "Ocean Export Mbl",
@@ -1303,7 +1304,9 @@
     // Ocean Export HBL
     "AgentId": "HB/L Agent",
     "HblSaleId": "Sales",
-    "HSvcTermToId": "Svc Term To"
+    "HSvcTermToId": "Svc Term To",
+
+    "PackageUnitAlreadyExist": "Same code {0} already exists in the system."
 
   }
 }

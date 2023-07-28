@@ -17,7 +17,7 @@ namespace Dolphin.Freight.Web.Pages.AccountingSettings.GlCodes
             _glCodesAppService = glCodesAppService;
 
         }
-        public void OnGet()
+        public void OnGetAsync()
         {
         }
         public async Task<IActionResult> OnPostAsync()

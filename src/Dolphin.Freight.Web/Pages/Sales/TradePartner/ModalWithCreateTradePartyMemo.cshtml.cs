@@ -21,9 +21,6 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
         [BindProperty(SupportsGet = true)]
         public Guid TradePartnerId { get; set; }
 
-        public string MemoTitle { get; set; }
-        public string MemoContent { get; set; }
-
         public ILogger<ModalWithCreateTradePartyMemoModel> Logger { get; set; }
 
         [BindProperty]
@@ -35,6 +32,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
         {
             _tradePartnerMemoAppService = tradePartnerMemoAppService;
             Logger = NullLogger<ModalWithCreateTradePartyMemoModel>.Instance;
+            CreateUpdateTradePartnerMemoDto = new CreateUpdateTradePartnerMemoDto();
         }
         
         public async Task OnGetAsync()
@@ -42,8 +40,8 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
             if (Id != null)
             {
                 TradePartnerMemoDto dto = await _tradePartnerMemoAppService.GetAsync(Id.Value);
-                MemoTitle = dto.Title;
-                MemoContent = dto.Memo;
+                CreateUpdateTradePartnerMemoDto.Title = dto.Title;
+                CreateUpdateTradePartnerMemoDto.Memo = dto.Memo;
             }
         }
 

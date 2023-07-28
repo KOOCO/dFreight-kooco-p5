@@ -195,210 +195,320 @@ table td {
 }
 
 <form id="myForm" name="myForm" method="POST">
-    <input type="hidden" asp-for="@Model.FlightNo" />
-    <input type="hidden" asp-for="@Model.HawbNo" />
     <input type="hidden" asp-for="@Model.DocNumber" />
-    <input type="hidden" asp-for="@Model.DepatureName" />
-    <input type="hidden" asp-for="@Model.DestinationAirportName" />
-    <input type="hidden" asp-for="@Model.DepatureDate" />
-    <input type="hidden" asp-for="@Model.ArrivalDate" />
-    <input type="hidden" asp-for="@Model.GrossWeightStr" />
-    <input type="hidden" asp-for="@Model.ChargableWeightStr" />
-    <input type="hidden" asp-for="@Model.MeasurementStr" />
-    <input type="hidden" asp-for="@Model.Package" />
-    <input type="hidden" asp-for="@Model.HPackageUnitName" />
+    <input type="hidden" asp-for="@Model.HawbNo" />
     <input type="hidden" asp-for="@Model.MawbNo" />
-    <input type="hidden" asp-for="@Model.OverseaAgentTPName" />
-    <input type="hidden" asp-for="@Model.CurrentDate" />
-    <input type="hidden" asp-for="@Model.DeliveryLocationName" />
+    <input type="hidden" asp-for="@Model.TotalPackage" />
+    <input type="hidden" asp-for="@Model.DepatureName" />
+    <input type="hidden" asp-for="@Model.DepatureDate" />
+    <input type="hidden" asp-for="@Model.HItLocation" />
+    <input type="hidden" asp-for="@Model.HItDate" />
+    <input type="hidden" asp-for="@Model.FreightLocationName" />
 
     <div id="main" class="edit">
-        <div class="wrap ai-preliminary">
-        <div class="header header-normal margin-b-md">
+
+        <div class="wrap ai-carrier-certificate">
+        <div class="header _padding-0 margin-b-md">
             <table>
+                <colgroup>
+                    <col class="w-25">
+                    <col class="w-50">
+                    <col class="w-25">
+                </colgroup>
                 <tbody><tr>
-                    <td class="w-15 logo">
-                        <img src="/img/hardcore-tech-logo.png">
+                    <td>
+                        Customs Form 7529<br>
+                        TREASURY DEPARTMENT
                     </td>
-                    <td class="w-48">
-                        <h1 class="auto-font-size office-name"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h1>
-                        <div class="auto-font-size office-des">
-                            <span>
-                                77792 COBB CAPE<br>
-                                TRISTANCHESTER, NE 47478<br>
-                                TEL: 08417606080 FAX: 08417606080<br>
-                                EMAIL: hanjun.lin@dolphin-gp.com
-                                
-                                    <br><strong>Prepared by Hanjun Lin 07-26-2023 18:58 (CST)</strong>
-                                
-                            </span>
-                        </div>
+                    <td>&nbsp;</td>
+                    <td>
+                        Form Approved<br>
+                        Budget Bureau No. 48-R256.4
                     </td>
-                    <td class="w-2">&nbsp;</td>
-                    <td class="w-35 title border-deep-blue">
-                        <div class="item-edit text-center"><select name="title" class="select w-80" id="id_title">
-                          <option value="Preliminary Claim Acknowledgement">Preliminary Claim Acknowledgement</option>
-                        
-                          <option value="Preliminary Claim" selected="">Preliminary Claim</option>
-                        
-                        </select></div>
+                </tr>
+            </tbody></table>
+            <div class="text-blue-deep text-center">
+                <h3>CARRIER'S CERTIFICATE AND RELEASE ORDER<br>BUREAU OF CUSTOMS</h3>
+            </div>
+            <table>
+                <colgroup>
+                    <col class="w-12">
+                    <col class="w-63">
+                    <col class="w-8">
+                    <col class="w-17">
+                </colgroup>
+                <tbody><tr>
+                    <td>Reference No. :</td>
+                    <td class="text-md">@Model.DocNumber</td>
+                    <td colspan="2">Use of Customs Only</td>
+                </tr>
+                <tr>
+                    <td>H AWB No. :</td>
+                    <td class="text-16 text-bold">@Model.HawbNo</td>
+                    <td>Entry No. :</td>
+                    <td class="text-16 text-bold">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="entry_no" id="id_entry_no" class="ng-isolate-scope"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>M AWB No. :</td>
+                    <td class="text-16 text-bold">@Model.MawbNo</td>
+                    <td>Date:</td>
+                    <td class="text-16 text-bold">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="entry_date" id="id_entry_date" class="ng-isolate-scope"></div>
                     </td>
                 </tr>
             </tbody></table>
         </div>
-        <div class="header header-horizontal-logo margin-b-md">
-            <table>
+        <div class="con">
+            <div class="border bg-light text-center text-bold text-md col-padding-double margin-b-xs">CARRIER'S CERTIFICATE</div>
+            <table class="margin-b-md">
+                <colgroup>
+                    <col class="w-25">
+                    <col class="w-50">
+                    <col class="w-25">
+                </colgroup>
                 <tbody><tr>
-                    <td class="w-75">
-                        <div>
-                            <div class="item-edit">
-                                <select name="title" class="select select2-lg select w-80" id="id_title">
-                                  <option value="Preliminary Claim Acknowledgement">Preliminary Claim Acknowledgement</option>
-                                
-                                  <option value="Preliminary Claim" selected="">Preliminary Claim</option>
-                                
-                                </select>
-                            </div>
-                        </div>
-                        <h2 class="auto-font-size office-name"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h2>
-                        <div class="auto-font-size office-des">
-                            <span>
-                                77792 COBB CAPE TRISTANCHESTER, NE 47478<br>
-                                TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
-                                
-                                    <br><strong>Prepared by Hanjun Lin 07-26-2023 18:58 (CST)</strong>
-                                
-                            </span>
-                        </div>
+                    <td>To The District Director of Customs,</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="border-b col-padding-double text-bold">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="DestinationAirportName" value="@Model.DestinationAirportName" id="id_POD_carrier_certificate" class="ng-isolate-scope"></div>
                     </td>
-                    <td class="w-2">&nbsp;</td>
-                    <td class="w-22 logo">
-                        <img src="/img/hardcore-tech-logo.png">
+                    <td>&nbsp;</td>
+                    <td class="border-b col-padding-double text-bold">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ArrivalDate" value="@Model.ArrivalDate?.ToShortDateString()" id="id_ETA_carrier_certificate" class="ng-isolate-scope"></div>
                     </td>
                 </tr>
+                <tr class="text-center">
+                    <td>(Port of Entry)</td>
+                    <td>&nbsp;</td>
+                    <td>(Date)</td>
+                </tr>
             </tbody></table>
-        </div>
-        <div class="space_area">&nbsp;</div>
-        <div class="con text-12">
-            <div class="highlight-block col-padding-double">
+            <div class="text-center _margin-auto w-50">
+                The Undersigned carrier, to whom or upon whose order the articles described below or in the attached document must be released, hereby certifies
+            </div>
+            <div class="_margin-auto w-50 margin-t">
                 <table class="table-padding">
+                    <colgroup>
+                        <col class="w-18">
+                        <col class="w-82">
+                    </colgroup>
                     <tbody><tr>
-                        <td class="td w-5"><strong>TO :</strong></td>
-                        <td class="td w-90">
-                            <div class="item-edit hover-toggle-icon-text-template">
-                                <input type="text" name="CurrentDate" value="@Model.CurrentDate" id="id_claim_date" class="ng-isolate-scope"></div>
+                        <td>that (name)</td>
+                        <td>
+                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ConsigneeName" value="@Model.ConsigneeName" id="id_consignee_carrier_certificate" class="ng-isolate-scope"></div>
                         </td>
-                        <td class="w-5">&nbsp;</td>
                     </tr>
                     <tr>
-                        <td><strong>&nbsp;</strong></td>
+                        <td>of (address)</td>
                         <td>
-                            <div class="item-edit hover-toggle-icon-text-template">
-                                <textarea name="consignee_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_consignee_area">@Model.OverseaAgentTPName</textarea></div>
+                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="consignee_addr_carrier_certificate" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope" id="id_consignee_addr_carrier_certificate"></textarea></div>
                         </td>
-                        <td>&nbsp;</td>
                     </tr>
                 </tbody></table>
             </div>
-            <div class="highlight-block col-padding-double margin-t-md">
+            <div class="text-center col-padding-double">is the owner of the consignee of such articles within the purview of section 484 (h), Tariff Act of 1930.</div>
+            <table class="border-b table-valign-top table-padding-double margin-t-sm margin-b-sm">
+                <colgroup>
+                    <col class="w-30 border-r">
+                    <col class="w-10 border-r">
+                    <col class="w-25 border-r">
+                    <col class="w-10 border-r">
+                    <col class="w-25">
+                </colgroup>
+                <tbody><tr class="border-b border-t">
+                    <th class="bg-light col-padding-double text-left">MARKS &amp; NOS.</th>
+                    <th class="bg-light col-padding-double text-right">NO. OF PKGS.</th>
+                    <th class="bg-light col-padding-double text-left">DESCRIPTION OF PACKAGES AND GOODS</th>
+                    <th class="bg-light col-padding-double text-right">WEIGHT</th>
+                    <th class="bg-light col-padding-double text-left">
+                        PORT OF LOADING<br>DATE OF SAILING
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_mark"></textarea></div>
+                    </td>
+                    <td class="text-right">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="package_area" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_package_area">@Model.TotalPackage</textarea></div>
+                    </td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_good_items"></textarea></div>
+                    </td>
+                    <td class="text-right">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="chargeable_weight" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_chargeable_weight">@Model.ChargableWeightStr</textarea>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="APOL_ETD" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_APOL_ETD">@Model.DepatureName@Environment.NewLine@(Model.DepatureDate?.ToString("MM/dd/yyyy") ?? "")</textarea>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="border-t">
+                    <td colspan="5" class="_padding-0">
+                        <table>
+                            <colgroup>
+                                <col class="w-10">
+                                <col class="w-55">
+                                <col class="w-8">
+                                <col class="w-27">
+                            </colgroup>
+                            <tbody><tr>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>IT No. :</td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="HItNo" value="@Model.HItNo" id="id_it_no" class="ng-isolate-scope">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Last Free Day:</td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="LastFreeDay" value="@Model.LastFreeDay.ToShortDateString()" id="id_last_free_date" class="ng-isolate-scope">
+                                    </div>
+                                </td>
+                                <td>Place Date:</td>
+                                <td class="text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <input type="text" name="place_date" value="@Model.HItLocation / @Convert.ToDateTime(Model.HItDate).ToShortDateString()" id="id_place_date" class="ng-isolate-scope">
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+            </tbody></table>
+            <div class="w-49 inline-block td">
                 <table class="table-padding">
+                    <colgroup>
+                        <col class="w-20">
+                        <col class="w-80">
+                    </colgroup>
                     <tbody><tr>
-                        <td class="w-5 td"><strong>RE :</strong></td>
-                        <td class="w-43 td">
-                            <table>
-                                <tbody><tr>
-                                    <td class="w-32">Vessel :</td>
-                                    <td class="w-68">
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="DeliveryLocationName" value="@Model.DeliveryLocationName" id="id_carrier" class="ng-isolate-scope"></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="valign-top" style="font-size: 14px;">Voyage/Flight :</td>
-                                    <td>
-                                        <select name="flight_no_choices" class="item-edit select w-50 normal-style _text-13 text-light ng-untouched ng-valid ng-dirty ng-not-empty" hc-user-preference="ai_flight_no_order" ng-model="vm.flightNoOrder" id="id_flight_no_choices">
-                                          <option value="F">First Flight</option>
-                                        
-                                          <option value="L">Last Flight</option>
-                                        
-                                        </select>
-                                    <div class="item-edit ng-scope hover-toggle-icon-text-template"><input type="text" name="FlightNo" value="@Model.FlightNo" id="id_flight_no" class="ng-isolate-scope"></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>HAWB :</td>
-                                    <td><div class="auto-font-size __width-md"><span>@Model.HawbNo</span></div></td>
-                                </tr>
-                                <tr>
-                                    <td style="font-size: 14px;">Your Ref No. :</td>
-                                    <td>
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="DocNumber" value="@Model.DocNumber" id="id_filing_no" class="ng-isolate-scope"></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="font-size: 12px;">From / Via / To :</td>
-                                    <td>
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="from_via_to" value="@Model.DepatureName / @Model.DestinationAirportName" id="id_from_via_to" class="ng-isolate-scope"></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>ETD / ETA :</td>
-                                    <td>
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="etd_and_eta" value="@(Model.DepatureDate?.ToString("MM/dd/yyyy") ?? "") / @(Model.ArrivalDate?.ToString("MM/dd/yyyy") ?? "")" id="id_etd_and_eta" class="ng-isolate-scope"></div>
-                                    </td>
-                                </tr>
-                            </tbody></table>
+                        <td class="valign-top">Flight No. : </td>
+                        <td class="text-bold">
+                            <select name="flight_no_choices" class="item-edit select w-40 normal-style _text-13 text-light ng-untouched ng-valid ng-dirty ng-not-empty" id="id_flight_no_choices">
+                                <option value="F">First Flight</option>
+                                
+                                <option value="L">Last Flight</option>
+                            
+                            </select>
+                            <div class="item-edit ng-scope hover-toggle-icon-text-template">
+                                <input type="text" name="FlightNo" value="@Model.FlightNo" id="id_flight_no" class="ng-isolate-scope">
+                            </div>
+                         </td>
+                    </tr>
+                    <tr>
+                        <td>Date of Arrival:</td>
+                        <td class="text-bold">
+                            <div class="item-edit hover-toggle-icon-text-template">
+                                <input type="text" name="ArrivalDate" value="@Model.ArrivalDate?.ToShortDateString()" id="id_date_of_arrival" class="ng-isolate-scope">
+                            </div>
                         </td>
-                        <td class="w-2">&nbsp;</td>
-                        <td class="w-50 td">
-                            <table>
-                                <tbody><tr>
-                                    <td class="w-32">Piece Count :</td>
-                                    <td class="w-68"><div class="auto-font-size __width-lg"><span>@Model.Package @Model.HPackageUnitName</span></div></td>
-                                </tr>
-                                <tr>
-                                    <td>Weight (G) :</td>
-                                    <td><div class="auto-font-size __width-lg"><span>@Model.GrossWeightStr</span></div></td>
-                                </tr>
-                                <tr>
-                                    <td>Weight (C) :</td>
-                                    <td><div class="auto-font-size __width-lg"><span>@Model.ChargableWeightStr</span></div></td>
-                                </tr>
-                                <tr>
-                                    <td>Measurement :</td>
-                                    <td>
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="MeasurementStr" value="@Model.MeasurementStr" id="id_measure" class="ng-isolate-scope"></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>MAWB :</td>
-                                    <td><div class="auto-font-size __width-lg"><span>@Model.MawbNo</span></div></td>
-                                </tr>
-                            </tbody></table>
+                    </tr>
+                    <tr>
+                        <td class="td">Cargo Location</td>
+                        <td class="text-bold">
+                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="cargo_location" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_cargo_location">@Model.FreightLocationName</textarea>
+                            </div>
                         </td>
                     </tr>
                 </tbody></table>
             </div>
-            <div class="margin-t-sm">Dear <strong>Sir or Madam</strong></div>
-                <div class="margin-t-sm">
-                This is to inform you that our client suffered <strong>shortage/damage</strong> to the shipment referenced above.
-                <br>Preliminary investigation reveals the following <strong>shortage/damage</strong> :
+            <div class="w-50 inline-block td">
+                <table class="table-padding">
+                    <colgroup>
+                        <col class="w-22">
+                        <col class="w-78">
+                    </colgroup>
+                    <tbody><tr>
+                        <td>Name of Carrier: </td>
+                        <td class="text-bold">
+                            <div class="item-edit hover-toggle-icon-text-template">
+                                <input type="text" name="CarrierTPName" value="@Model.CarrierTPName" id="id_carrier_name" class="ng-isolate-scope">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-bold border-b" colspan="2">
+                            <div class="item-edit hover-toggle-icon-text-template">
+                                <input type="text" name="agent" value="HARD CORE TECHNOLOGY" id="id_agent" class="ng-isolate-scope">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="text-center">(Agent)</td>
+                    </tr>
+                </tbody></table>
             </div>
-            <div class="margin-t-sm">
+            <div class="border bg-light text-center text-bold text-md col-padding-double margin-b-xs margin-t">RELEASE ORDER</div>
+            <table class="margin-b-md">
+                <colgroup>
+                    <col class="w-25">
+                    <col class="w-50">
+                    <col class="w-25">
+                </colgroup>
+                <tbody><tr>
+                    <td>To The District Director of Customs,</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="border-b col-padding-double text-bold">
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <input type="text" name="DestinationAirportName" value="@Model.DestinationAirportName" id="id_POD_release_order" class="ng-isolate-scope">
+                        </div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td class="border-b col-padding-double text-bold">
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <input type="text" name="ArrivalDate" value="@Model.ArrivalDate?.ToShortDateString()" id="id_ETA_release_order" class="ng-isolate-scope">
+                        </div>
+                    </td>
+                </tr>
+                <tr class="text-center">
+                    <td>(Port of Entry)</td>
+                    <td>&nbsp;</td>
+                    <td>(Date)</td>
+                </tr>
+            </tbody></table>
+            <div class="text-center _margin-auto w-50 border-b">
+                In Accordance with the provisions of section 484(j) Tariff Act of 1930, authority is hereby given to release the articles covered by the above carrier's certificate to :
                 <div class="item-edit hover-toggle-icon-text-template">
-                    <textarea name="shortage_damage" cols="40" rows="20" class="text-scroll no-adjustment ng-isolate-scope" id="id_shortage_damage"></textarea>
+                    <input type="text" name="ConsigneeName" value="@Model.ConsigneeName" id="id_consignee_release_order" class="ng-isolate-scope">
                 </div>
             </div>
-            <div class="margin-t-sm">
-                We are holding you responsible and our formal claim statement will follow once complete details of the shortage/damage are
-                ascertained. Not dealing with this claim in detail at this stage is not to be construed as a waiver of our rights.<br><br>
-                This is a preliminary notice of claim and may be amended. Please acknowledge receipt of this claim notification.<br><br>
-                Thank you for your cooperation.<br><br>
-                Sincerely,
-            </div>
+            <table class="table-padding margin-t-sm">
+                <tbody><tr>
+                    <td class="w-45 border-b">
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <input type="text" name="CarrierTPName" value="@Model.CarrierTPName" id="id_footer_carrier_name" class="ng-isolate-scope">
+                        </div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td class="w-45 border-b">
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <input type="text" name="footer_agent" value="HARD CORE TECHNOLOGY" id="id_footer_agent" class="ng-isolate-scope">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center">(Name of Carrier)</td>
+                    <td>&nbsp;</td>
+                    <td class="text-center">(Agent)</td>
+                </tr>
+            </tbody></table>
+
+            
         </div>
     </div>
 
     </div>
 </form>
-
-

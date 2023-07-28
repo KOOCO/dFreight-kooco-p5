@@ -1,17 +1,25 @@
 ﻿using AutoMapper.Internal.Mappers;
 using Dolphin.Freight.Permissions;
 using Dolphin.Freight.Settings.Ports;
+using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
+using Dolphin.Freight.Settinngs.Substations;
+using Dolphin.Freight.Settinngs.SysCodes;
+using Dolphin.Freight.TradePartners;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Identity;
 using Volo.Abp.ObjectMapping;
+using Volo.Abp.Users;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -29,8 +37,9 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         private readonly IRepository<SysCode, Guid> _sysCodeRepository;
         private readonly IRepository<Substation, Guid> _substationRepository;
         private readonly IRepository<Port, Guid> _portRepository;
+        private readonly IRepository<PortsManagement, Guid> _portsManagementRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
-        public OceanExportHblAppService(IRepository<OceanExportHbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanExportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid>  portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository)
+        public OceanExportHblAppService(IRepository<OceanExportHbl, Guid> repository, IRepository<PortsManagement, Guid> portsManagementRepository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanExportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid>  portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository)
             : base(repository)
         {
             _repository = repository;
@@ -39,6 +48,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             _substationRepository = substationRepository;
             _portRepository = portRepository;
             _tradePartnerRepository = tradePartnerRepository;
+            _portsManagementRepository = portsManagementRepository;
             /*
             GetPolicyName = OceanExportPermissions.OceanExportHbls.Default;
             GetListPolicyName = OceanExportPermissions.OceanExportHbls.Default;
@@ -245,6 +255,76 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }
 
             return new OceanExportHblDto();
+        }
+
+        public async Task<OceanExportDetails> GetOceanExportDetailsById(Guid Id)
+        {
+            var oceanExportDetails = new OceanExportDetails();
+            var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
+            var portMangements = ObjectMapper.Map<List<PortsManagement>, List<PortsManagementDTO>>(await _portsManagementRepository.GetListAsync());
+            var sysCodes = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(await _sysCodeRepository.GetListAsync());
+            var substations = ObjectMapper.Map<List<Substation>, List<SubstationDto>>(await _substationRepository.GetListAsync());
+
+            var data = await Repository.GetAsync(Id);
+
+            if (data != null)
+            {
+                oceanExportDetails = ObjectMapper.Map<OceanExportHbl, OceanExportDetails>(data);
+
+                var mbl = await _mblRepository.GetAsync(data.MblId.GetValueOrDefault());
+
+                if (data.HblShipperId != null)
+                {
+                    var shipper = tradePartners.Where(w => w.Id == data.HblShipperId).FirstOrDefault();
+                    oceanExportDetails.ShippingAgentName = string.Concat(shipper.TPName, "/", shipper.TPCode);
+                }
+
+                if (data.HblConsigneeId != null)
+                {
+                    var consignee = tradePartners.Where(w => w.Id == data.HblConsigneeId).FirstOrDefault();
+                    oceanExportDetails.HblConsigneeName = string.Concat(consignee.TPName, "/", consignee.TPCode);
+                }
+
+                if (data.HblNotifyId != null)
+                {
+                    var notify = tradePartners.Where(w => w.Id == data.HblNotifyId).FirstOrDefault();
+                    oceanExportDetails.HblNotifyName = string.Concat(notify.TPName, "/", notify.TPCode);
+                }
+
+                if (data.FdestId != null)
+                {
+                    var FDest = portMangements.Where(w => w.Id == data.FdestId).FirstOrDefault();
+                    oceanExportDetails.FdestName = FDest?.PortName;
+                }
+                
+                if (data.PorId != null)
+                {
+                    var por = portMangements.Where(w => w.Id == data.PorId).FirstOrDefault();
+                    oceanExportDetails.PorName = por?.PortName;
+                }
+
+                if (mbl.PolId != null)
+                {
+                    var pol = portMangements.Where(w => w.Id == mbl.PolId).FirstOrDefault();
+                    oceanExportDetails.PolName = pol?.PortName;
+                }
+
+                if (mbl.FreightTermId != null)
+                {
+                    var freightTerm = sysCodes.Where(w => w.Id == mbl.FreightTermId).FirstOrDefault();
+                    oceanExportDetails.FreightTermName = freightTerm?.ShowName;
+                }
+
+                oceanExportDetails.HblNo = data.HblNo;
+                oceanExportDetails.LCNo = data.LcNo;
+                oceanExportDetails.LCIssueBankName = data.LcIssueBank;
+                oceanExportDetails.PolEtd = mbl.PolEtd;
+                oceanExportDetails.VesselName = mbl.VesselName;
+                oceanExportDetails.Voyage = mbl.Voyage;
+                oceanExportDetails.Mark = data.Mark;
+            }
+
+            return oceanExportDetails;
         }
     }
 }

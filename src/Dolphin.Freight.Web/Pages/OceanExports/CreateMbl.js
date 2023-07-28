@@ -259,7 +259,7 @@
     $('#createForm').on('abp-ajax-success', function (result, rs) {
         debugger;
         event.preventDefault();
-        location.href = 'EditModal?ShowMsg=true&Id=' + rs.responseText.id 
+        location.href = 'EditModal?ShowMsg=true&Id=' + rs.responseText.id + '&Hid=' + rs.responseText.HId 
         
     });
     
