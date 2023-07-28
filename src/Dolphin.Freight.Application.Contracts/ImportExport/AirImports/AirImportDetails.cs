@@ -24,6 +24,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// Mawb號碼
         /// </summary> 
         public string MawbNo { get; set; }       
+        public string Hawb_No { get; set; }       
         public string Hawb_Nos { get; set; }
         /// <summary>
         /// 分站ID
@@ -316,6 +317,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public List<OverSeaAgentAirImport> OverSeaAgents { get; set; }
         public List<HawbNo> HawbNos { get; set; }
         public List<Hawb> HawbList { get; set; }
+        public string HawbListJson { get; set; }
+        public string Hawb_Id { get; set; }
         public string ITNo { get; set; }
         public string ReleasedBy { get; set; }
         public string FinalDestination { get; set; }
@@ -355,6 +358,16 @@ namespace Dolphin.Freight.ImportExport.AirImports
     {
         public string Id { get; set; }
         public string HawbNo { get; set; }
+        public string Shipper { get; set; }
+        public string Consignee { get; set; }
+        public string Notify { get; set; }
+        public string FinalDestName { get; set; }
+        public string FDestETA { get; set; }
+        public DateTime? LastFreeDay { get; set; }
+        public string FreightLocation { get; set; }
+        public string ITNo { get; set; }
+        public string ITIssuePlace { get; set; }
+        public string ITDate { get; set; }
         public string SubHawbJson { get; set; }
         public List<SubHawbs> SubHawbs { get; set; }
     }

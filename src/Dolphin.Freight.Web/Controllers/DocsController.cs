@@ -3399,7 +3399,6 @@ namespace Dolphin.Freight.Web.Controllers
 
             foreach (var item in hawb)
             {
-
                 hawbLists.Add(new HawbNo()
                 {
                     Id = string.Concat(item.Id),
@@ -3445,20 +3444,36 @@ namespace Dolphin.Freight.Web.Controllers
 
                 var airImportSubHawbs = await GetAirImportDetailsByPageType(Guid.Parse(hawb.Id), pageType);
 
+                newHawb.Shipper = airImportSubHawbs.ShipperName;
+                newHawb.Consignee = airImportSubHawbs.ConsigneeName;
+                newHawb.Notify = airImportSubHawbs.NotifyName;
+                newHawb.FinalDestName = airImportSubHawbs.FinalDestination;
+                newHawb.FDestETA = airImportSubHawbs.FDestETA;
+                newHawb.LastFreeDay = airImportSubHawbs.LastFreeDay;
+                newHawb.FreightLocation = airImportSubHawbs.FreightLocationName;
+                newHawb.ITNo = airImportSubHawbs.HItNo;
+                newHawb.ITIssuePlace = airImportSubHawbs.HItLocation;
+                newHawb.ITDate = airImportSubHawbs.HItDate;
                 newHawb.SubHawbJson = JsonConvert.SerializeObject(airImportSubHawbs.SubHawbs);
 
                 newHawbs.Add(newHawb);
             }
 
             airImportDetails.HawbList = newHawbs;
-            
+            airImportDetails.HawbListJson = JsonConvert.SerializeObject(newHawbs);
+
             return View(airImportDetails);
         }
 
         [HttpPost]
         public async Task<IActionResult> BatchPrintingAirImport(AirImportDetails model)
         {
+            var data = await _airImportHawbAppService.GetHawbCardById(Guid.Parse(model.Hawb_Id));
+
             model.IsPDF = true;
+            model.HawbList = JsonConvert.DeserializeObject<List<Hawb>>(model.HawbListJson);
+            model.SubHawbs = JsonConvert.DeserializeObject<List<SubHawbs>>(model.HawbList.FirstOrDefault(f => f.Id == model.Hawb_Id)?.SubHawbJson);
+            model.Hawb_No = data.HawbNo;
 
             return await _generatePdf.GetPdf("Views/Docs/BatchPrintingAirImport.cshtml", model);
         }

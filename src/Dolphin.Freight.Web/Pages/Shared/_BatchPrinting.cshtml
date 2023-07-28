@@ -18,9 +18,7 @@
             $('.childCheckbox').prop('checked', $(this).prop('checked'));
         });
 
-        // Click event for child checkboxes
         $('.childCheckbox').on('click', function () {
-            // Check if all child checkboxes are checked
             if ($('.childCheckbox:not(:checked)').length === 0) {
                 $('#checkAll').prop('checked', true);
             } else {
@@ -128,10 +126,14 @@
                 var pageType = 'AIHBL';
                 var Url = abp.appPath + 'Docs/BatchPrintingAirImport?mawbId=' + mawbId + '&pageType=' + pageType + '&hawbId=' + hawbId + '&hawbIdJson=' + jsonData 
                 var myWindows = window.open(Url, 'Empty', 'width=1200,height=800');
-                $('#batchPrintingModel').modal('hide');
+                $('.modal').modal('hide');
                 myWindows.focus();
             }
         });
+
+        //$('#batchPrintingModel').on('hidden.bs.modal', function (e) {
+        //    $('.modal-backdrop').remove();
+        //});
     }
 
     function ManifestCancel() {

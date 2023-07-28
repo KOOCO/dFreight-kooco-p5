@@ -179,9 +179,64 @@ table tr {
 
         setTimeout( () => $('#hawbsList').trigger('change'), 100);
         
-
         $('#hawbsList').on('change', function() {
             var selectedOption = $(this).find('option:selected');
+            var id = selectedOption.data('id');
+                          $('#Hawb_Id').val('');
+                          $('#Hawb_Id').val(id);
+            var hawbNo = selectedOption.data('hawbno');
+                          $('[name=HawbNo]').val('');
+                          $('[name=HawbNo]').val(hawbNo);
+            var shipper = selectedOption.data('shipper');
+                          $('[name=ShipperName]').text('');
+                          $('[name=ShipperName]').text(shipper);
+                          $('[name=ShipperName]').val('');
+                          $('[name=ShipperName]').val(shipper);
+            var consignee = selectedOption.data('consignee');
+                          $('[name=ConsigneeName]').text('');
+                          $('[name=ConsigneeName]').text(consignee);
+                          $('[name=ConsigneeName]').val('');
+                          $('[name=ConsigneeName]').val(consignee);
+            var notify = selectedOption.data('notify');
+                          $('[name=NotifyName]').text('');
+                          $('[name=NotifyName]').text(notify);
+                          $('[name=NotifyName]').val('');
+                          $('[name=NotifyName]').val(notify);
+            var finalDestName = selectedOption.data('finaldestName');
+                          $('[name=FinalDestination]').text('');
+                          $('[name=FinalDestination]').text(finalDestName);
+                          $('[name=FinalDestination]').val('');
+                          $('[name=FinalDestination]').val(finalDestName);
+            var fDestETA = selectedOption.data('fdesteta');
+                          $('[name=ArrivalDate]').text('');
+                          $('[name=ArrivalDate]').text(fDestETA);
+                          $('[name=ArrivalDate]').val('');
+                          $('[name=ArrivalDate]').val(fDestETA);
+            var lastFreeDay = selectedOption.data('lastfreeday');
+                          $('[name=LastFreeDay]').text('');
+                          $('[name=LastFreeDay]').text(lastFreeDay);
+                          $('[name=LastFreeDay]').val('');
+                          $('[name=LastFreeDay]').val(lastFreeDay);
+            var freightLocation = selectedOption.data('freightlocation');
+                          $('[name=FreightLocationName]').text('');
+                          $('[name=FreightLocationName]').text(freightLocation);
+                          $('[name=FreightLocationName]').val('');
+                          $('[name=FreightLocationName]').val(freightLocation);
+            var iTNo = selectedOption.data('itno');
+                          $('[name=HItNo]').text('');
+                          $('[name=HItNo]').text(iTNo);
+                          $('[name=HItNo]').val('');
+                          $('[name=HItNo]').val(iTNo);
+            var iTIssuePlace = selectedOption.data('itissueplace');
+                          $('[name=HItLocation]').text('');
+                          $('[name=HItLocation]').text(iTIssuePlace);
+                          $('[name=HItLocation]').val('');
+                          $('[name=HItLocation]').val(iTIssuePlace);
+            var ITDate = selectedOption.data('itdate');
+                          $('[name=HItDate]').text('');
+                          $('[name=HItDate]').text(ITDate);
+                          $('[name=HItDate]').val('');
+                          $('[name=HItDate]').val(ITDate);
             var subHawbs = selectedOption.attr('data-SubHawb');
             var subHawbsArray = JSON.parse(subHawbs);
             var tableBody = $('#subHawbsTable');
@@ -221,7 +276,6 @@ table tr {
                 tableBody.append(row);
             }
         });
-        
     });
 
     function print()
@@ -234,69 +288,58 @@ table tr {
 @if (!Model.IsPDF)
 {
     <div class="nav">
-       <ul>
+        <ul>
             <li>
                 <button type="button" style="width:120px; color:white" onclick="print()"><i class="fa fa-print">儲存PDF或列印</i></button>
             </li>
             <li>
-                
-               <select id="hawbsList" name="hawbsList">
-                   @foreach (var hawb in Model.HawbList)
-                   {
-                       <option value="@hawb.HawbNo" data-SubHawb="@hawb.SubHawbJson" id="@hawb.Id">@hawb.HawbNo</option>
-                   }
+                <select id="hawbsList" name="hawbsList">
+                    @foreach (var hawb in Model.HawbList)
+                    {
+                        <option value="@hawb.HawbNo" data-Id="@hawb.Id" data-HawbNo="@hawb.HawbNo" data-Shipper="@hawb.Shipper" data-Consignee="@hawb.Consignee" data-Notify="@hawb.Notify" data-FinalDestName="@hawb.FinalDestName" data-FDestETA="@hawb.FDestETA" data-LastFreeDay="@hawb.LastFreeDay" data-FreightLocation="@hawb.FreightLocation" data-ITNo="@hawb.ITNo" data-ITIssuePlace="@hawb.ITIssuePlace" data-ITDate="@hawb.ITDate" data-SubHawb="@hawb.SubHawbJson" id="@hawb.Id">@hawb.HawbNo</option>
+                    }
                 </select>
-                
-            </li><!-- end ngIf: vm.canSelectLanguage -->
-
-       </ul>
-       <div class="view-setting">
-               <div class="btn-group">
-                   <button class="button btn-sm" title="Zoom Out" id="zout" disabled="disabled"><i class="fa fa-search-minus"></i>
-                   </button>
-                   <button class="button btn-sm" title="Zoom In" id="zin"><i class="fa fa-search-plus"></i>
-                   </button>
-               </div>
-       </div>
-
-       @*<div style="display:flex;justify-content: center;" class="item-left">
-           <select id="hawbsList" name="hawbsList">
-               @foreach (var hawb in Model.HawbList)
-               {
-                   <option value="@hawb.HawbNo" data-SubHawb="@hawb.SubHawbJson" id="@hawb.Id">@hawb.HawbNo</option>
-               }
-           </select>
-       </div>*@
-
+            </li>
+        </ul>
+        <div class="view-setting">
+            <div class="btn-group">
+                <button class="button btn-sm" title="Zoom Out" id="zout" disabled="disabled"><i class="fa fa-search-minus"></i>
+                </button>
+                <button class="button btn-sm" title="Zoom In" id="zin"><i class="fa fa-search-plus"></i>
+                </button>
+            </div>
+        </div>
     </div>
 }
 
     <form id="myForm" method="post">
         <input type="hidden" autocomplete="off">
+        <input type="hidden" asp-for="@Model.Hawb_Id" />
+        <input type="hidden" asp-for="@Model.HawbListJson" />            
         <input type="hidden" asp-for="@Model.PageType" />            
-        <input type="hidden" asp-for="@Model.DocNumber" />
+        <input type="hidden" asp-for="@Model.CurrentDate" />            
+        <input type="hidden" asp-for="@Model.OPName" />
+        <input type="hidden" asp-for="@Model.ArrivalDate" />
         <input type="hidden" asp-for="@Model.MawbNo" />
         <input type="hidden" asp-for="@Model.HawbNo" />        
         <input type="hidden" asp-for="@Model.ShipperName" />       
         <input type="hidden" asp-for="@Model.ConsigneeName" />
-        <input type="hidden" asp-for="@Model.NotifyName" />   
-        <input type="hidden" asp-for="@Model.MawbNo" />
-        <input type="hidden" asp-for="@Model.DepatureAirportName" />      
-        <input type="hidden" asp-for="@Model.HawbNo" />
-        <input type="hidden" asp-for="@Model.DepatureAirportName" />
+        <input type="hidden" asp-for="@Model.NotifyName" />
+        <input type="hidden" asp-for="@Model.DepatureName" />      
+        <input type="hidden" asp-for="@Model.DepatureDate" />
+        <input type="hidden" asp-for="@Model.DestinationAirportName" />
         <input type="hidden" asp-for="@Model.FlightNo" />       
         <input type="hidden" asp-for="@Model.FinalDestination" />       
         <input type="hidden" asp-for="@Model.LastFreeDay" />
         <input type="hidden" asp-for="@Model.FreightLocationName" />
-        <input type="hidden" asp-for="@Model.ITNo" /> 
-        <input type="hidden" asp-for="@Model.ITIssuedLocation" />   
-        <input type="hidden" asp-for="@Model.ITDate" />       
+        <input type="hidden" asp-for="@Model.HItNo" /> 
+        <input type="hidden" asp-for="@Model.HItLocation" />   
+        <input type="hidden" asp-for="@Model.HItDate" />       
         <input type="hidden" asp-for="@Model.SubHawbs" />   
         <input type="hidden" asp-for="@Model.Remark" />
         <input type="hidden" asp-for="@Model.CustomBroker" />       
         <input type="hidden" asp-for="@Model.Trucker" />     
         <input type="hidden" asp-for="@Model.IsPDF" />    
-      
 
         <div id="main" class="edit">
                <div class="wrap _ai-authority">
@@ -304,7 +347,7 @@ table tr {
                         <table>
                             <tbody><tr>
                                 <td class="w-15 logo">
-                                  @*  <img src="/api/office/logo/1/">*@
+                                  <img src="/img/hardcore-tech-logo.png">
                                 </td>
                                 <td class="w-48">
                                     <h1 class="auto-font-size office-name"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h1>
@@ -358,21 +401,21 @@ table tr {
                     <td class="w-30 td highlight-block">
                         <div class="title">SHIPPER :</div>
                         <div class="data">
-                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="shipper_area" cols="40" rows="5" class="w-100 text-scroll no-adjustment " id="id_shipper_area">@Model.ShipperName</textarea></div>                            
+                            <div class="item-edit hover-toggle-icon-text-template"><textarea cols="40" rows="5" class="w-100 text-scroll no-adjustment" asp-for="@Model.ShipperName">@Model.ShipperName</textarea></div>                            
                         </div>
                     </td>
                     <td class="w-2"></td>
                     <td class="w-30 td highlight-block">
                         <div class="title">CONSIGNEE :</div>
                         <div class="data">
-                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="consignee_area" cols="40" rows="5" class="w-100 text-scroll no-adjustment " id="id_consignee_area"></textarea></div>                           
+                            <div class="item-edit hover-toggle-icon-text-template"><textarea cols="40" rows="5" class="w-100 text-scroll no-adjustment" asp-for="@Model.ConsigneeName"></textarea></div>                           
                         </div>
                     </td>
                     <td class="w-2"></td>
                     <td class="w-36 td highlight-block">
                         <div class="title">NOTIFY PARTY :</div>
                         <div class="data">
-                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="notify_area" cols="40" rows="5" class="w-100 text-scroll no-adjustment ng-isolate-scope" id="id_notify_area">@Model.NotifyName</textarea></div>                            
+                            <div class="item-edit hover-toggle-icon-text-template"><textarea cols="40" rows="5" class="w-100 text-scroll no-adjustment ng-isolate-scope" asp-for="@Model.NotifyName">@Model.NotifyName</textarea></div>                            
                         </div>
                     </td>
                 </tr>
@@ -424,7 +467,7 @@ table tr {
                             <tr>
                                 <td class="text-bold">HAWB NO. : </td>
                                 <td class="text-bold _text-14">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="HBL_NO" value="@Model.HawbNo" id="id_HBL_NO" ></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" asp-for="@Model.HawbNo" value="@Model.HawbNo"></div>
                                     
                                 </td>
                             </tr>
@@ -443,9 +486,7 @@ table tr {
                                       <option value="L">Last Flight</option>
                                     
                                     </select>
-                                        <div ng-if="vm.flightNoOrder==='F'" class="item-pdf auto-font-size __width-sm ng-scope"><span>ZARA</span></div>
-                                        <div ng-if="vm.flightNoOrder==='F'" class="item-edit ng-scope hover-toggle-icon-text-template"><input type="text" name="flight_no" value="@Model.FlightNo" id="id_flight_no"></div>
-                                    
+                                        <div class="item-edit ng-scope hover-toggle-icon-text-template"><input type="text" name="flight_no" value="@Model.FlightNo" id="id_flight_no"></div>
                                 </td>
                             </tr>
                         </tbody></table>
@@ -491,7 +532,7 @@ table tr {
                             <tr>
                                 <td>FINAL DEST. : </td>
                                 <td class="text-bold">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="FDEST" value="@Model.FinalDestination"></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" asp-for="@Model.FinalDestination" value="@Model.FinalDestination"></div>
                                    
                                 </td>
                             </tr>
@@ -500,7 +541,7 @@ table tr {
                             <tbody><tr>
                                 <td class="w-20">LAST FREE DAY: </td>
                                 <td class="w-80 text-bold">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="last_free_date" value="@Model.LastFreeDay" id="id_last_free_date"></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" asp-for="@Model.LastFreeDay" value="@Model.LastFreeDay"></div>
                                    
                                 </td>
                             </tr>
@@ -547,7 +588,7 @@ table tr {
                             <tr>
                                 <td>ETA: </td>
                                 <td class="text-bold">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="FETA_date" value="@Model.ArrivalDate" id="id_FETA_date"></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" asp-for="@Model.ArrivalDate" value="@Model.ArrivalDate" id="id_FETA_date"></div>
                                 </td>
                             </tr>
                         </tbody></table>
@@ -561,7 +602,7 @@ table tr {
                                 <tbody><tr>
                                     <td class="w-25">FREIGHT LOC. : </td>
                                     <td class="w-75 text-bold">                                   
-                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="freight_location" value="@Model.FreightLocationName"  id="id_freight_location"></div>
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" asp-for="@Model.FreightLocationName" value="@Model.FreightLocationName"></div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -596,19 +637,19 @@ table tr {
                             <tbody><tr>
                                 <td class="w-25">I.T. NO. : </td>
                                 <td class="w-75 text-bold">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="it_no" value="@Model.ITNo" id="id_it_no"></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" asp-for="@Model.HItNo" value="@Model.HItNo"></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>I.T. ISSUE PLACE: </td>
                                 <td class="text-bold">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="it_issue_location" value="@Model.ITIssuedLocation" id="id_it_issue_location"></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" asp-for="@Model.HItLocation" value="@Model.HItLocation"></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>I.T. DATE: </td>
                                 <td class="text-bold">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="it_date" value="@Model.ITDate" id="id_it_date"></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" asp-for="@Model.HItDate" value="@Model.HItDate"></div>
                                 </td>
                             </tr>
                         </tbody></table>
@@ -643,7 +684,56 @@ table tr {
                             <th class="col-padding-double text-right">Amount</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    @if (Model.IsPDF && Model.SubHawbs != null)
+                    {
+                        <tbody>
+                            @foreach (var item in Model.SubHawbs)
+                            {
+                                <tr>
+                                    <td class="td0 text-bold">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="HBL_NO" value="@Model.Hawb_No" id="id_HBL_NO"></div>
+                                    </td>
+                                    <td class="td1">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_sub_hawb" value="@item.SubHAWB"></div>
+                                    </td>
+                                    <td class="td2">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_description" value="@item.DescriptionITNo"></div>
+                                    </td>
+                                    <td class="td3 text-right">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_pcs_package_unit" value="@item.PCS" class="text-right"></div>
+                                    </td>
+                                    <td class="td4 text-right">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_amount" value="@item.Amount" class="text-right"></div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    }
+                    else if (Model.IsPDF && Model.SubHawbs == null)
+                    {
+                        <tbody>
+                            <tr>
+                                <td class="td0 text-bold">
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="HBL_NO" value="@Model.Hawb_No" id="id_HBL_NO"></div>
+                                </td>
+                                <td class="td1">
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_sub_hawb" value=""></div>
+                                </td>
+                                <td class="td2">
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_description" value=""></div>
+                                </td>
+                                <td class="td3 text-right">
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_pcs_package_unit" value="" class="text-right"></div>
+                                </td>
+                                <td class="td4 text-right">
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="sub_hawb_amount" value="" class="text-right"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    }
+                    else
+                    {
+                        <tbody>
                             <tr>
                                 <td class="td0 text-bold">
                                         
@@ -662,7 +752,9 @@ table tr {
                                     
                                 </td>
                             </tr>
-                    </tbody></table>
+                        </tbody>
+                    }
+                </table>
             
 
             <table class="border text-sm">

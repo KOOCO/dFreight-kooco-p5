@@ -248,6 +248,46 @@
             }
         }
 
+        function getBatchPrintingPopup() {
+            debugger;
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+
+            if (mawbId == null) {
+                var url = window.location.href;
+                var mawbId = url.split('/')[url.split('/').length - 1];
+            }
+
+            dolphin.freight.importExport.airImports.airImportHawb.getHawbCardById($('#AirImportHawbDto_Id').val())
+                .then(function (res) {
+                    var hawbId = res.id;
+
+                    $.ajax({
+                        url: abp.appPath + 'Docs/BatchPrintingPartialView?hawbId=' + hawbId + '&mawbId=' + mawbId,
+                        type: 'GET',
+                        dataType: "html",
+                        success: function (res) {
+                            $('.modal-content').html(res);
+                            $('.modal').modal('show');
+                            $(document).on('show.bs.modal', '#batchPrintingModel', function () {
+                                $('.modal-dialog').addClass('modal-lg');
+
+                                $('#checkAll').on('click', function () {
+                                    $('.childCheckbox').prop('checked', $(this).prop('checked'));
+                                });
+
+                                $('.childCheckbox').on('click', function () {
+                                    if ($('.childCheckbox:not(:checked)').length === 0) {
+                                        $('#checkAll').prop('checked', true);
+                                    } else {
+                                        $('#checkAll').prop('checked', false);
+                                    }
+                                });
+                            })
+                        }
+                    });
+                });
+        }
 
     </script>
 }
@@ -299,6 +339,9 @@
                                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                    </a>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getBatchPrintingPopup()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Batch Printing"]
                                     </a>
                                     <p class="dropdown-divider"></p>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ManifestAirImport", "Docs", new { id = Model.AirImportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIMBL })')">
