@@ -147,7 +147,7 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<OceanExportHbl, OceanExportHblDto>();
         CreateMap<OceanExportHbl, CreateUpdateOceanExportHblDto>();
         CreateMap<CreateUpdateOceanExportHblDto, OceanExportHbl>();
-        CreateMap< OceanExportHblDto, CreateUpdateOceanExportHblDto > ();
+        CreateMap<OceanExportHblDto, CreateUpdateOceanExportHblDto> ();
         CreateMap<SysCode, SysCodeDto>();
         CreateMap<PackageUnit, PackageUnitDto>();
         CreateMap<CreateUpdatePackageUnitDto, PackageUnit>();

@@ -146,10 +146,15 @@
         e.preventDefault();
         createModal.open();
     });
-    $('#SearchGICode').click(function (e) {
+    $('#GlCode').on('input', function (e) {
+        // Place your existing code here
         debugger;
         dataTable.ajax.reload();
     });
-
+    $('#Remark').on('input', function (e) {
+        // Place your existing code here
+        debugger;
+        dataTable.ajax.reload();
+    });
 
 });
