@@ -62,6 +62,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using System.Configuration;
 using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.AirImports;
+using Dolphin.Freight.ImportExport;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -826,44 +827,45 @@ namespace Dolphin.Freight.Web.Controllers
 
             QueryHblDto queryHbl = new QueryHblDto();
             queryHbl.Id = Guid.Parse(id);
-            var OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
+            var OceanExportHbl = await _oceanExportHblAppService.GetOceanExportDetailsById(Guid.Parse(id));
+            //var shipper=await 
 
             #region
             //https://eval-asia.gofreight.co/ocean/export/shipment/OEX-23030002/?hbl=47120&hide_mbl=false
-            InfoViewModel.SHIPPER_EXPORTER = "123" + Environment.NewLine + "3 FL., NO. 215, SEC. 1, FU XING S. RD., TAIPEI, TAIWAN" + Environment.NewLine + "TEL : 02-87721111" + Environment.NewLine + "FAX : 02-87732222" + Environment.NewLine + "TAIWAN";
-            InfoViewModel.CONSIGNEE = "CHIYODA";
-            InfoViewModel.NOTIFY = "1231231" + Environment.NewLine + "ATTN: SDSDSD";
-            InfoViewModel.DOCUMENT_NO = "CMS/E/HPG118814";
-            InfoViewModel.BL_NO = "SINHPH23030002";
-            InfoViewModel.EXPORT_FILE_NO = "BOOKING # SINHPH23030002";
-            InfoViewModel.FORWARDING_AGENT = "EVA AIRWAYS CORPORATION (BR)" + Environment.NewLine + "200 NORTH SEPULVEDA BLVD., SUITE 1600" + Environment.NewLine + "UNITED STATES";
+            InfoViewModel.SHIPPER_EXPORTER = OceanExportHbl.ShippingAgentName + Environment.NewLine + OceanExportHbl.ShippingAgentContent; /*"3 FL., NO. 215, SEC. 1, FU XING S. RD., TAIPEI, TAIWAN" + Environment.NewLine + OceanExportHbl. + Environment.NewLine + "FAX : 02-87732222" + Environment.NewLine + "TAIWAN";*/
+            InfoViewModel.CONSIGNEE = OceanExportHbl.HblConsigneeName;
+            InfoViewModel.NOTIFY = OceanExportHbl.HblNotifyName + Environment.NewLine ;
+            InfoViewModel.DOCUMENT_NO = OceanExportHbl.DocNo;
+            InfoViewModel.BL_NO = OceanExportHbl.SubBlNo;
+            InfoViewModel.EXPORT_FILE_NO = OceanExportHbl.FilingNo;
+            InfoViewModel.FORWARDING_AGENT = OceanExportHbl.ForwardingAgentName + Environment.NewLine + OceanExportHbl.ForwardingAgentContent /*+ Environment.NewLine + "UNITED STATES"*/;
             InfoViewModel.POINT_AND_COUNTRY_OF_ORIGIN = "";
-            InfoViewModel.EXPORT_CARRIER = "XIN WEN ZHOU / 149E";
-            InfoViewModel.PORT_OF_LOADING = "SINGAPORE (SINGAPORE)";
-            InfoViewModel.PORT_OF_DISCHARGE = "HAIPHONG (VIETNAM)";
-            InfoViewModel.PLACE_OF_DELIVERY = "";
+            InfoViewModel.EXPORT_CARRIER = OceanExportHbl.VesselName;
+            InfoViewModel.PORT_OF_LOADING = OceanExportHbl.PolName;
+            InfoViewModel.PORT_OF_DISCHARGE = OceanExportHbl.PodName;
+            InfoViewModel.PLACE_OF_DELIVERY = OceanExportHbl.MblDel;
 
-            InfoViewModel.SHIPPING_MARKS = "CONTAINER NO./SEAL NO./P.O. NO." + Environment.NewLine + " /  / " + Environment.NewLine + Environment.NewLine + Environment.NewLine + "SHIEHN HAIPHONG PTE";
-            InfoViewModel.QTY = "3 PALLET(S)";
-            InfoViewModel.DESCRIPTION_OF_GOODS = "ELECTRONIC COMPONENT" + Environment.NewLine + "20 CARTONS";
-            InfoViewModel.WEIGHT_G = "300.00 KGS" + Environment.NewLine + Environment.NewLine + "661.39 LBS";
+            InfoViewModel.SHIPPING_MARKS =OceanExportHbl.Mark; /*"CONTAINER NO./SEAL NO./P.O. NO." + Environment.NewLine + " /  / " + Environment.NewLine + Environment.NewLine + Environment.NewLine + "SHIEHN HAIPHONG PTE";*/
+            InfoViewModel.QTY = OceanExportHbl.TotalPackage.ToString();
+            InfoViewModel.DESCRIPTION_OF_GOODS = OceanExportHbl.Description; /*"ELECTRONIC COMPONENT" + Environment.NewLine + "20 CARTONS";*/
+            InfoViewModel.WEIGHT_G = OceanExportHbl.TotalWeight + "" + OceanExportHbl.PackageWeightName; /* "300.00 KGS" + Environment.NewLine + Environment.NewLine + "661.39 LBS";*/
             InfoViewModel.WEIGHT_C = "";
-            InfoViewModel.MEASUREMENT = "4.50 CBM" + Environment.NewLine + Environment.NewLine + "158.92 CFT";
-            InfoViewModel.Show_Container_Information = "true";
+            InfoViewModel.MEASUREMENT = OceanExportHbl.TotalMeasure + "" + OceanExportHbl.PackageMeasure; /*"4.50 CBM" + Environment.NewLine + Environment.NewLine + "158.92 CFT";*/
+            InfoViewModel.Show_Container_Information = "True";
             InfoViewModel.CONTAINER_NO = "";
             InfoViewModel.TYPE = "";
-            InfoViewModel.SEAL_NO = "";
-            InfoViewModel.PKG = "3 PALLET(S)";
-            InfoViewModel.KG_LB = "300.00 / 661.39";
-            InfoViewModel.CBM_CFT = "4.50 / 158.92";
-            InfoViewModel.bl_date = "03-27-2023";
-            InfoViewModel.sworn_date = "MARCH 27, 2023";
+            InfoViewModel.SEAL_NO =  "";
+            InfoViewModel.PKG = OceanExportHbl.TotalPackage.ToString();
+            InfoViewModel.KG_LB = OceanExportHbl.TotalWeight.ToString();
+            InfoViewModel.CBM_CFT = OceanExportHbl.TotalMeasure.ToString();
+            InfoViewModel.bl_date = OceanExportHbl.OnBoardDate?.ToString("dd/mm/yyyy");
+            InfoViewModel.sworn_date = OceanExportHbl.OnBoardDate?.ToString("MMMM/dd/yyyy"); ;
 
-            InfoViewModel.name_of_chamber = "REGIONAL";
+            InfoViewModel.name_of_chamber =  "REGIONAL";
             InfoViewModel.state_of_chamber = "CA";
             InfoViewModel.name_of_country = "UNITED STATES";
 
-            InfoViewModel.ReportId = OceanExportHbl.Id;
+            InfoViewModel.ReportId = OceanExportHbl.MblId;
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
@@ -3386,6 +3388,96 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/HawbAuthority.cshtml", model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> BatchPrintingPartialView(Guid mawbId, Guid hawbId) 
+        {
+            AirImportDetails airImportDetails = new AirImportDetails();
+
+            var tradePartners = _dropdownService.TradePartnerLookupList;
+            var hawb = await _airImportHawbAppService.GetHawbCardsByMawbId(mawbId);
+
+            var hawbLists = new List<HawbNo>();
+
+            foreach (var item in hawb)
+            {
+                hawbLists.Add(new HawbNo()
+                {
+                    Id = string.Concat(item.Id),
+                    HawbNos = item.HawbNo,
+                    Consignee = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.ConsigneeId)).Select(s => s.Text)),
+                    Notify = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.Notify)).Select(s => s.Text)),
+                    Customer = string.Concat(tradePartners.Where(w => w.Value == Convert.ToString(item.Customer)).Select(s => s.Text))
+                });
+            }
+
+            airImportDetails.HawbId = hawbId;
+            airImportDetails.HawbNos = hawbLists;
+
+            return PartialView("Pages/Shared/_BatchPrinting.cshtml", airImportDetails);
+        }
+        [HttpGet]
+        public async Task<IActionResult> BatchPrintingAirImport(Guid mawbId, FreightPageType pageType, Guid hawbId, string hawbIdJson) 
+        {
+            var airImportDetails = await GetAirImportDetailsByPageType(hawbId, pageType);
+
+            var ids = JsonConvert.DeserializeObject<List<string>>(hawbIdJson);
+            var hawbsList = new List<HawbNo>();
+
+            foreach(var item in ids)
+            {
+                var hawbs = new HawbNo
+                {
+                    Id = item
+                };
+                hawbsList.Add(hawbs);
+            }
+
+            var newHawbs = new List<Hawb>();
+
+            foreach (var hawb in hawbsList)
+            {
+                var data = await _airImportHawbAppService.GetHawbCardById(Guid.Parse(hawb.Id));
+                var newHawb = new Hawb
+                {
+                    Id = string.Concat(data.Id),
+                    HawbNo = data.HawbNo
+                };
+
+                var airImportSubHawbs = await GetAirImportDetailsByPageType(Guid.Parse(hawb.Id), pageType);
+
+                newHawb.Shipper = airImportSubHawbs.ShipperName;
+                newHawb.Consignee = airImportSubHawbs.ConsigneeName;
+                newHawb.Notify = airImportSubHawbs.NotifyName;
+                newHawb.FinalDestName = airImportSubHawbs.FinalDestination;
+                newHawb.FDestETA = airImportSubHawbs.FDestETA;
+                newHawb.LastFreeDay = airImportSubHawbs.LastFreeDay;
+                newHawb.FreightLocation = airImportSubHawbs.FreightLocationName;
+                newHawb.ITNo = airImportSubHawbs.HItNo;
+                newHawb.ITIssuePlace = airImportSubHawbs.HItLocation;
+                newHawb.ITDate = airImportSubHawbs.HItDate;
+                newHawb.SubHawbJson = JsonConvert.SerializeObject(airImportSubHawbs.SubHawbs);
+
+                newHawbs.Add(newHawb);
+            }
+
+            airImportDetails.HawbList = newHawbs;
+            airImportDetails.HawbListJson = JsonConvert.SerializeObject(newHawbs);
+
+            return View(airImportDetails);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BatchPrintingAirImport(AirImportDetails model)
+        {
+            var data = await _airImportHawbAppService.GetHawbCardById(Guid.Parse(model.Hawb_Id));
+
+            model.IsPDF = true;
+            model.HawbList = JsonConvert.DeserializeObject<List<Hawb>>(model.HawbListJson);
+            model.SubHawbs = JsonConvert.DeserializeObject<List<SubHawbs>>(model.HawbList.FirstOrDefault(f => f.Id == model.Hawb_Id)?.SubHawbJson);
+            model.Hawb_No = data.HawbNo;
+
+            return await _generatePdf.GetPdf("Views/Docs/BatchPrintingAirImport.cshtml", model);
+        }
         public async Task<IActionResult> DeliveryOrderAirImportHawb(Guid id, FreightPageType pageType)
         {
             var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);

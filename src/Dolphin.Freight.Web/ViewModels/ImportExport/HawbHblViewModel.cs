@@ -26,6 +26,7 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
         public OceanExportHblDto OceanExportHbl { get; set; }
         public OceanImportHblDto OceanImportHbl { get; set; }
         public AirExportHawbDto AirExportHawbDto { get; set; }
+        [BindProperty(SupportsGet = true)]
         public Guid Hid { get; set; }
         [BindProperty(SupportsGet = true)]
         public List<AttachmentDto> FileList { get; set; }

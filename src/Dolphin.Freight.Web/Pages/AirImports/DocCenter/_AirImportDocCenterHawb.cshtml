@@ -25,7 +25,7 @@
         <abp-card-title>
             HAWB - @Model.AirImportHawbDto.HawbNo
         </abp-card-title>
-
+        <input type="hidden" asp-for="@Model.AirImportHawbDto.Id" />
         <div class="btn-group dropdown">
             <button class="btn btn-secondary dropdown-toggle" style="position: relative;" type="button" id="ActionDrop" data-bs-toggle="dropdown">
                 @L["Display:Function"] 
