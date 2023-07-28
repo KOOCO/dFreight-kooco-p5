@@ -219,6 +219,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                 InvoiceMblDto = ObjectMapper.Map<CreateUpdateOceanExportMblDto, InvoiceMblDto>(createUpdateOceanExportMblDto);
 
                 backUrl = "/OceanExports/EditModal3?Id=" + Mid;
+                
             }
             else {
 
@@ -227,6 +228,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                 InvoiceMblDto = ObjectMapper.Map<CreateUpdateOceanExportHblDto, InvoiceMblDto>(oceanExportHbl);
 
                 backUrl = "/OceanExports/EditModal3?Id=" + oceanExportHbl.MblId;
+                Mid = oceanExportHbl.MblId;
             }
         }
         private async Task InitOceanImport()
