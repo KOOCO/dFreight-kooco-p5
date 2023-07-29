@@ -140,6 +140,12 @@
                 myWindow.focus();
             });
         }
+        function getCertificateOfOrigin() {
+            var idNo = $('#OceanExportHbl_Id').val();;
+            debugger;
+            myWindow = window.open("@Url.Action("CertificateOfOrigin", "Docs")" + "?id=" + idNo, 'CertificateOfOrigin', 'width=1200,height=800');
+            myWindow.focus()
+        }
     </script>
 }
 <div class="page-header">
@@ -158,7 +164,7 @@
                 <a href="javascript:void(0)">@L["Tab:Container"]</a>
             </li>
             <li class="menu-item ">
-                <a href="EditModal3?Id=@Model.Id">@L["Tab:Accounting"]</a>
+                <a href="EditModal3?Id=@Model.Id&Hid=@Model.Hid">@L["Tab:Accounting"]</a>
             </li>
             <li class="menu-item ">
                 <a href="EditModal4?Id=@Model.Id">@L["Tab:Doc"]</a>
@@ -323,6 +329,7 @@
 
                             <abp-card-title>
                                 HB/L @Model.OceanExportHbl.HblNo
+                                 <input type="hidden" name="OceanExportHbl.Id" id="OceanExportHbl_Id" value="@Model.OceanExportHbl.Id" />
                             </abp-card-title>
 
                             <div class="btn-group dropdown">
@@ -355,7 +362,7 @@
         <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HBLPackingListOceanExport", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
             <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
         </a>
-        <a class='dropdown-item' href='#'>
+        <a class='dropdown-item'  href='javascript:void(0)' onclick="getCertificateOfOrigin()">
             <i class="fa fa-file-text-o"></i> @L["Btn:Certificate of Origin"]
         </a>
         <a class='dropdown-item' href='#'>

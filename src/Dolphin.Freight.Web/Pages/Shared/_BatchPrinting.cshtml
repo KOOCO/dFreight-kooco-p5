@@ -1,0 +1,142 @@
+﻿@using Dolphin.Freight.Localization;
+@using Microsoft.Extensions.Localization;
+@model Dolphin.Freight.ImportExport.AirImports.AirImportDetails
+@inject IStringLocalizer<FreightResource> L
+<style>
+    .sortable-list__item {
+        padding: 5px 22px 5px 7px;
+        color: #fff;
+        margin-bottom: 5px;
+        background: #AAAAAA url(data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjEwIiB2aWV3Qm94PSIwIDAgNyAxMCIgd2lkdGg9IjciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0ibTggMTdjLjU1MjI4NDc1IDAgMSAuNDQ3NzE1MyAxIDFzLS40NDc3MTUyNSAxLTEgMS0xLS40NDc3MTUzLTEtMSAuNDQ3NzE1MjUtMSAxLTF6bTUgMGMuNTUyMjg0NyAwIDEgLjQ0NzcxNTMgMSAxcy0uNDQ3NzE1MyAxLTEgMS0xLS40NDc3MTUzLTEtMSAuNDQ3NzE1My0xIDEtMXptLTUtNGMuNTUyMjg0NzUgMCAxIC40NDc3MTUzIDEgMXMtLjQ0NzcxNTI1IDEtMSAxLTEtLjQ0NzcxNTMtMS0xIC40NDc3MTUyNS0xIDEtMXptNSAwYy41NTIyODQ3IDAgMSAuNDQ3NzE1MyAxIDFzLS40NDc3MTUzIDEtMSAxLTEtLjQ0NzcxNTMtMS0xIC40NDc3MTUzLTEgMS0xem0tNS00Yy41NTIyODQ3NSAwIDEgLjQ0NzcxNTI1IDEgMSAwIC41NTIyODQ3LS40NDc3MTUyNSAxLTEgMXMtMS0uNDQ3NzE1My0xLTFjMC0uNTUyMjg0NzUuNDQ3NzE1MjUtMSAxLTF6bTUgMGMuNTUyMjg0NyAwIDEgLjQ0NzcxNTI1IDEgMSAwIC41NTIyODQ3LS40NDc3MTUzIDEtMSAxcy0xLS40NDc3MTUzLTEtMWMwLS41NTIyODQ3NS40NDc3MTUzLTEgMS0xeiIgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBvcGFjaXR5PSIuNTAzOTMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC03IC05KSIvPjwvc3ZnPg==) calc(100% - 8px) 10px no-repeat;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('.modal-dialog').addClass('modal-lg');
+                
+        $('#checkAll').on('click', function () {
+            $('.childCheckbox').prop('checked', $(this).prop('checked'));
+        });
+
+        $('.childCheckbox').on('click', function () {
+            if ($('.childCheckbox:not(:checked)').length === 0) {
+                $('#checkAll').prop('checked', true);
+            } else {
+                $('#checkAll').prop('checked', false);
+            }
+        });
+
+    });
+</script>
+<form id="frmManifest" data-check-form-on-close="false">
+    <abp-modal id="batchPrintingModel">
+        <h5 class="modal-title mx-3" style="color: black;">Batch Printing</h5>
+        <abp-modal-body class="overflow-auto modal-lg" style="height:200px;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-scroll-10">
+                        <div class="table-scroll-head">
+                            <table class="table table-bordered table-striped table-hover" id="hawbDetails">
+                                <colgroup>
+                                    <col class="td-3per"><!--chk-->
+                                    <col class="td-22per"><!--HB/L No. / HAWB No.-->
+                                    <col class="td-25per"><!--Consignee-->
+                                    <col class="td-25per"><!--Customer-->
+                                    <col class="td-25per"><!--Trucker-->
+                                </colgroup>
+                                <thead class="th-bg">
+                                    <tr>
+                                        <th class="text-center"><div class="checker"><span><input type="checkbox" id="checkAll"></span></div></th>
+                                        <th class="ng-binding">HAWB No.</th>
+                                        <th class="ng-binding">Consignee</th>
+                                        <th class="ng-binding">Customer</th>
+                                        <th class="ng-binding">Notify</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.HawbNos)
+                                    {
+                                        <tr ng-repeat="hbl in vm.hbls" class="ng-scope" style="">
+                                            <td class="text-center">
+                                                <div class="checker"><span><input type="checkbox" class="childCheckbox" name="checkAllHawb" id="@item.Id"></span></div>
+                                            </td>
+                                            <td class="ng-binding" id="@item.Id">@item.HawbNos</td>
+                                            <td class="ng-binding" id="@item.Id">@item.Consignee</td>
+                                            <td class="ng-binding" id="@item.Id">@item.Customer</td>
+                                            <td class="ng-binding" id="@item.Id">@item.Notify</td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </abp-modal-body>
+        <abp-modal-footer>
+            <abp-button id="btnManifestCancel"
+                        text="Cancel"
+                        button-type="Default"
+                        onclick="ManifestCancel()" />
+            <abp-button id="btnManifestSave"
+                        text="Save"
+                        button-type="Primary"
+                        onclick="ManifestSave()" />
+        </abp-modal-footer>
+
+    </abp-modal>
+</form>
+
+
+<script>
+    $(document).ready(function () {
+        $('#btnManifestCancel').on('click', function () {
+
+        })
+        $('#btnManifestSave').on('click', function () {
+
+        })
+    })
+
+    function ManifestSave() {
+        var url = new URL(window.location.href);
+        var mawbId = url.searchParams.get('Id');
+        var hawbId = '@Model.HawbId';
+        if (mawbId == null) {
+            var url = window.location.href;
+            var mawbId = url.split('/')[url.split('/').length - 1];
+        }
+
+        const checkedValues = [];
+
+        $('td > .checker > span > input[type="checkbox"]:checked').each(function() {
+            const checkboxId = $(this).attr('id');
+            checkedValues.push(checkboxId);
+        });
+
+        const jsonData = JSON.stringify(checkedValues);
+
+        $.ajax({
+            url: abp.appPath + 'Docs/BatchPrintingAirImport',
+            type: 'GET',
+            data: { mawbId: mawbId, agent: $('#overSeaAgentsList').val(), pageType: 'AIHBL', hawbId: hawbId, hawbIdJson: jsonData },
+            success: function (res) {
+                var agent = $('#overSeaAgentsList').val();
+                var pageType = 'AIHBL';
+                var Url = abp.appPath + 'Docs/BatchPrintingAirImport?mawbId=' + mawbId + '&pageType=' + pageType + '&hawbId=' + hawbId + '&hawbIdJson=' + jsonData 
+                var myWindows = window.open(Url, 'Empty', 'width=1200,height=800');
+                $('.modal').modal('hide');
+                myWindows.focus();
+            }
+        });
+
+        //$('#batchPrintingModel').on('hidden.bs.modal', function (e) {
+        //    $('.modal-backdrop').remove();
+        //});
+    }
+
+    function ManifestCancel() {
+        $('.modal').modal('hide');
+    }
+</script>

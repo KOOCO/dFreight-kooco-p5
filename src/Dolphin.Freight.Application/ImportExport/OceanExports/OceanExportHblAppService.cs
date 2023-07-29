@@ -316,6 +316,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 }
 
                 oceanExportDetails.HblNo = data.HblNo;
+                oceanExportDetails.DocNo = mbl.FilingNo;
+                oceanExportDetails.MblDel = mbl.Del?.PortName;
                 oceanExportDetails.LCNo = data.LcNo;
                 oceanExportDetails.LCIssueBankName = data.LcIssueBank;
                 oceanExportDetails.PolEtd = mbl.PolEtd;

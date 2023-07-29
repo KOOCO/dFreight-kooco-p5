@@ -20,6 +20,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string ShipmentNo { get; set; }
         public string FilingNo { get; set; }
         public string MblNo { get; set; }
+        public string DocNo { get; set; }
         public string HblNo { get; set; }
         public string LCNo { get; set; }
         public string LCIssueBankName { get; set; }
@@ -27,7 +28,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public Guid? OfficeId { get; set; }
         public virtual SubstationDto Office { get; set; }
         public Guid? BlTypeId { get; set; }
-
+        public string MblDel { get; set; }
         [ForeignKey("BlTypeId")]
         public virtual SysCodeDto BlType { get; set; }
 
