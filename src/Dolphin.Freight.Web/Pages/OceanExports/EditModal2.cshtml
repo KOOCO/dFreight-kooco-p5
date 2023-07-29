@@ -34,8 +34,7 @@
                 }
             });
             var IsShowHbl = '@Model.IsShowHbl';
-            if (IsShowHbl == 'True') 
-            {
+            if (IsShowHbl == 'True') {
                 $("#hblCard").show();
                 onSetCommodity();
             }
@@ -412,88 +411,88 @@
                         <abp-card-header id="hblCardHeader" class="card-header active ">
                             <abp-card-title>
                                 HB/L @Model.OceanExportHbl.HblNo
-                                 <input type="hidden" name="OceanExportHbl.Id" id="OceanExportHbl_Id" value="@Model.OceanExportHbl.Id" />
+                                <input type="hidden" name="OceanExportHbl.Id" id="OceanExportHbl_Id" value="@Model.OceanExportHbl.Id" />
                             </abp-card-title>
 
                             <div class="btn-group dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
                                     @L["Display:Function"]
-   </button>
-            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-files-o"></i> @L["Btn:File Package"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Print Car Documents"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Print HB/L"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Print OB/L"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Bill of Lading Terms"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Certificate of Origin"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Dock Receipt"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Dispatch List"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:S/O Confirmation"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Packaging Label"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Pre-Alert"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:USDA Heat Treatment"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods Declaration"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Shipping Advice"]
-        </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
-        </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()" style="color: #4B77BE; font-weight: 500;">
-            <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
-        </a>
-        </div>
-        </div>
+                                </button>
+                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-files-o"></i> @L["Btn:File Package"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Print Car Documents"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Print HB/L"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Print OB/L"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Bill of Lading Terms"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Certificate of Origin"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Dock Receipt"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Dispatch List"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:S/O Confirmation"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Packaging Label"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Pre-Alert"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:USDA Heat Treatment"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods Declaration"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Shipping Advice"]
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()" style="color: #4B77BE; font-weight: 500;">
+                                        <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
+                                    </a>
+                                </div>
+                            </div>
 
                             <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="true" aria-controls="hblDiv">
                             </button>
@@ -521,21 +520,21 @@
                                         <tr ng-form="hbl.__form2" class="ng-valid ng-dirty ng-valid-parse" style="">
                                             <th width="5%" class="text-center">#</th>
                                             <th width="10%" style="white-space: nowrap">Container No.</th>
-                                            <th width="15%">PKG<br>
+                                            <th width="15%">
+                                                @L["PKG"]<br>
                                                 <abp-select asp-for="@Model.CreateUpdateContainerHawb.PackageUnitId" suppress-label="true" asp-items="_DropdownService.PackageUnitLookupList"></abp-select>
                                             </th>
                                             <th width="15%">
-                                                Weight<br>
+                                                @L["Weight"]<br>
                                                 <abp-select asp-for="@Model.CreateUpdateContainerHawb.PackageWeightUnit" suppress-label="true" asp-items="@Model.RateUnitTypeLookupList"></abp-select>
                                             </th>
                                             <th width="15%">
-                                                Measurement<br>
+                                                @L["Measurement"]<br>
                                                 <abp-select asp-for="@Model.CreateUpdateContainerHawb.PackageMeasureUnit" suppress-label="true" asp-items="@Model.UnitTypeLookupList"></abp-select>
                                             </th>
                                             <th style="white-space: nowrap">P.O. No.</th>
                                         </tr>
                                         <tbody id="htrtbody">
-                                            
                                         </tbody>
                                         <tfoot>
                                             <tr>
@@ -587,19 +586,29 @@
                                     </abp-table>
                                 </abp-column>
                             </abp-row>
-                            <abp-row>
+                            <abp-row class="mt-3">
                                 <abp-column size-md="_6">
                                     <label for="t1">@L["Display:Mark"]</label>
                                     <textarea id="t1" name="OceanExportHbl.Mark" class="form-control">@Model.OceanExportHbl.Mark</textarea>
                                 </abp-column>
                                 <abp-column size-md="_6">
-                                    <label for="t2">@L["Display:DeionOfGoods"]</label>
+                                    <div>
+                                        <div class="pull-left"><h7 class="form-section">Description</h7></div>
+                                        <div class="pull-right">
+                                            <div class="_font-12 inline-block">Copy: </div>
+                                            <div class="btn-group">
+                                                <abp-button size="Small" abp-border="Bottom_Primary" disabled="true">@L["P.O"]</abp-button>
+                                                <abp-button size="Small" abp-border="Bottom_Primary" disabled="true">@L["Commodity"]</abp-button>
+                                                <abp-button size="Small" abp-border="Bottom_Primary" disabled="true">@L["CommodityAndHTS"]</abp-button>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <textarea id="t2" name="OceanExportHbl.Description" class="form-control">@Model.OceanExportHbl.Description</textarea>
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-collum>
-                                    <label for="t3">@L["Display:Ot"]</label>
+                                    <label for="t3">@L["BookingRemark"]</label>
                                     <textarea id="t3" name="OceanExportHbl.DomesticInstructions" class="form-control">@Model.OceanExportHbl.DomesticInstructions</textarea>
                                 </abp-collum>
                             </abp-row>
