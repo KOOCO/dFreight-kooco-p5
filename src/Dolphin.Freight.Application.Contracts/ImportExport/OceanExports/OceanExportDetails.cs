@@ -11,6 +11,7 @@ using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.ImportExport.Containers;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -468,10 +469,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 總重
         /// </summary>
         public double TotalWeight { get; set; }
+        public string TotalWeightStr { get; set; }
         /// <summary>
         /// 總材積
         /// </summary>
         public double TotalMeasure { get; set; }
+        public string TotalMeasureStr { get; set; }
 
         /// <summary>
         /// 是否鎖定
@@ -494,5 +497,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public double APTotal { get; set; }
         public double Total { get; set; }
         public bool IsCustomerRef { get; set; }
+        public string CreateUpdateContainerDtosJson { get; set; }
+        public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
     }
 }

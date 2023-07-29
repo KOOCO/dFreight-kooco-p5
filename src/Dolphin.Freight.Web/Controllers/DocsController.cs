@@ -63,6 +63,8 @@ using System.Configuration;
 using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.AirImports;
 using Dolphin.Freight.ImportExport;
+using Dolphin.Freight.ImportExport.Containers;
+using Volo.Abp.Domain.Repositories;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -82,6 +84,7 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IAirImportMawbAppService _airImportMawbAppService;
         private readonly IAirImportHawbAppService _airImportHawbAppService;
         private readonly IInvoiceAppService _invoiceAppService;
+        private readonly ContainerAppService _containerRepository;
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
@@ -91,7 +94,8 @@ namespace Dolphin.Freight.Web.Controllers
           IAirExportHawbAppService airExportHawbAppService,
           IInvoiceAppService invoiceAppService,
           IAirImportMawbAppService airImportMawbAppService,
-          IAirImportHawbAppService airImportHawbAppService)
+          IAirImportHawbAppService airImportHawbAppService,
+          ContainerAppService containerAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -107,6 +111,7 @@ namespace Dolphin.Freight.Web.Controllers
             _invoiceAppService = invoiceAppService;
             _airImportMawbAppService = airImportMawbAppService;
             _airImportHawbAppService = airImportHawbAppService;
+            _containerRepository = containerAppService;
 
             ReportLog = new ReportLog.ReportLogDto();
         }
@@ -3599,6 +3604,54 @@ namespace Dolphin.Freight.Web.Controllers
             model.IsPDF = true;
 
             return await _generatePdf.GetPdf("Views/Docs/HBLPackingListOceanExport.cshtml", model);
+        }
+
+        public async Task<IActionResult> PrintMBLInstruction(Guid id, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+            var containerName = _dropdownService.ContainerLookupList;
+
+            QueryContainerDto query = new QueryContainerDto() { QueryId = id };
+            var containers = await _containerRepository.QueryListAsync(query);
+
+            var list = new List<CreateUpdateContainerDto>();
+
+            double totalPackageWeight = 0;
+            double totalPackageMeasure = 0;
+
+            foreach (var item in containers)
+            {
+                var containerSizeName = string.Concat(containerName.Where(w => w.Value == string.Concat(item.ContainerSizeId)).Select(s => s.Text));
+
+                var items = new CreateUpdateContainerDto
+                {
+                    ContainerNo = item.ContainerNo,
+                    SealNo = item.SealNo,
+                    ContainerSizeName = containerSizeName,
+                    PackageWeight = item.PackageWeight,
+                    PackageMeasure = item.PackageMeasure
+                };
+
+                totalPackageWeight += item.PackageWeight;
+                totalPackageMeasure += item.PackageMeasure;
+
+                list.Add(items);
+            }
+
+            oceanExportDetails.TotalWeightStr = string.Concat(totalPackageWeight + " KGS " + Math.Round(totalPackageWeight * 2.20462, 2) + " LBS");
+            oceanExportDetails.TotalMeasureStr = string.Concat(totalPackageMeasure + " CBM " + Math.Round(totalPackageMeasure * 35.315, 2) + " CFT");
+            oceanExportDetails.CreateUpdateContainerDtos = list;
+            oceanExportDetails.CreateUpdateContainerDtosJson = JsonConvert.SerializeObject(list);
+
+            return View(oceanExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> PrintMBLInstruction(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+            model.CreateUpdateContainerDtos = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(model.CreateUpdateContainerDtosJson);
+
+            return await _generatePdf.GetPdf("Views/Docs/PrintMBLInstruction.cshtml", model);
         }
 
         #region Private Functions

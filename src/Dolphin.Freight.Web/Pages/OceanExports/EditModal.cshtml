@@ -508,7 +508,7 @@
                                     <a class='dropdown-item' href='javascript:void(0)'>
                                         <i class="fa fa-files-o"></i> @L["Btn:File Package"]
                                     </a>
-                                    <a class='dropdown-item' href='javascript:void(0)'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PrintMBLInstruction", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Print MB/L | B/L Instruction"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrder()">

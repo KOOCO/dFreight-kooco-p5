@@ -1,6 +1,7 @@
 ﻿using AutoMapper.Internal.Mappers;
 using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Common;
+using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.Permissions;
 using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.PortsManagement;
@@ -9,6 +10,7 @@ using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
@@ -40,10 +42,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IIdentityUserAppService _identityUserAppService;
         private readonly IRepository<OceanExportHbl, Guid> _oceanExportHblRepository;
-        private readonly IInvoiceAppService _invoiceAppService;
+        private readonly IInvoiceAppService _invoiceAppService; 
+        private readonly ContainerAppService _containerRepository;
         public OceanExportMblAppService(IRepository<OceanExportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository, PortsManagementAppService portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
             IIdentityUserAppService identityUserAppService, IRepository<OceanExportHbl, Guid> oceanExportHblRepository,
-            IInvoiceAppService invoiceAppService)
+            IInvoiceAppService invoiceAppService,
+            ContainerAppService containerRepository)
             : base(repository)
         {
             _repository = repository;
@@ -54,6 +58,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             _identityUserAppService = identityUserAppService;
             _oceanExportHblRepository = oceanExportHblRepository;
             _invoiceAppService = invoiceAppService;
+            _containerRepository = containerRepository;
             /*
             GetPolicyName = OceanExportPermissions.OceanExportMbls.Default;
             GetListPolicyName = OceanExportPermissions.OceanExportMbls.Default;
@@ -364,10 +369,14 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var TransPort1 = portMangements.Where(w => w.Id == data.TransPort1Id).FirstOrDefault();
                     oceanExportDetails.TransPort1Name = TransPort1?.PortName;
                 }
-            }
 
-            oceanExportDetails.MblNo = data.MblNo;
-            oceanExportDetails.SoNo = data.SoNo;
+                oceanExportDetails.MblNo = data.MblNo;
+                oceanExportDetails.SoNo = data.SoNo;
+                oceanExportDetails.DocNo = data.FilingNo;
+                oceanExportDetails.Mark = data.Mark;
+                oceanExportDetails.Description = data.Description;
+                oceanExportDetails.DomesticInstructions = data.DomesticInstructions;
+            }
 
             return oceanExportDetails;
         }
