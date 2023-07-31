@@ -1773,21 +1773,24 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.trucker_area = "";
             InfoViewModel.empty_pickup_area =OceanExportMbl.EmptyPickupName;
             InfoViewModel.issue_at = OceanExportMbl.PostDate.ToString("dd-mm-yyyy");/* "05-09-2023";*/
-            InfoViewModel.issue_by = OceanExportMbl.ReleaseBy;
+            InfoViewModel.issue_by = OceanExportMbl.MblOperatorName;
             InfoViewModel.MBL_NO = OceanExportMbl.MblNo;
             InfoViewModel.carrier = OceanExportMbl.MblCarrierName;
-            InfoViewModel.VESSEL_INFO =OceanExportMbl.VesselName;
+            InfoViewModel.VESSEL_INFO =OceanExportMbl.VesselName + OceanExportMbl.Voyage;
+            InfoViewModel.POR_location = OceanExportMbl.PorName;
+            InfoViewModel.POR_location_ETD = OceanExportMbl.PorEtd?.ToString("dd-MM-yyyy");
             InfoViewModel.POL_location = OceanExportMbl.PolName;
-            InfoViewModel.POL_location_ETD = OceanExportMbl.PolEtd?.ToString("dd-mm-yyyy");
+            InfoViewModel.POL_location_ETD = OceanExportMbl.PolEtd?.ToString("dd-MM-yyyy");
             InfoViewModel.POD_location = OceanExportMbl.PodName;
-            InfoViewModel.POD_location_ETD = OceanExportMbl.PodEta?.ToString("dd-mm-yyyy") /*"04-03-2023"*/;
+            InfoViewModel.POD_location_ETD = OceanExportMbl.PodEta?.ToString("dd-MM-yyyy") /*"04-03-2023"*/;
             InfoViewModel.total_packages_count = OceanExportMbl.TotalPackage.ToString();
             InfoViewModel.gross_weight_kgs = OceanExportMbl.TotalWeight.ToString();
             InfoViewModel.gross_weight_lbs = "0.00";
             InfoViewModel.measurement_cbm = OceanExportMbl.TotalMeasure.ToString();
             InfoViewModel.measurement_cft = "0.00";
             InfoViewModel.COMMODITY = OceanExportMbl.Commodity?.ToString();
-           
+            InfoViewModel.carrier_bkg_no = OceanExportMbl.SoNo;
+            InfoViewModel.delivery_to_area = OceanExportMbl.DeliveryToName;
             InfoViewModel.billing_to_area = OceanExportMbl.MblBillToName + "\r\n" + OceanExportMbl.MblBillToContent; /*"HARD CORE TECHNOLOGY\r\n198 PEARSON GATEWAY APT. 555\r\nNORTH JAMES, KY 98809-9933\r\nWALNUT, CA 91789, UNITED STATES\r\nATTN: JENNIFER JIMENEZ TEL: 585.592.4848 FAX: 649-277-5122"*/;
             InfoViewModel.ContainerList = new List<PickupDeliveryOrderContainerList>();
             foreach(var container in containers)
