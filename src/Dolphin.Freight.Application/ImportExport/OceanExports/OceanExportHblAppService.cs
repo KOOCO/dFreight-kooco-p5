@@ -303,10 +303,16 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.PorName = por?.PortName;
                 }
 
-                if (mbl.PolId != null)
+                if (data.PolId != null)
                 {
-                    var pol = portMangements.Where(w => w.Id == mbl.PolId).FirstOrDefault();
+                    var pol = portMangements.Where(w => w.Id == data.PolId).FirstOrDefault();
                     oceanExportDetails.PolName = pol?.PortName;
+                }
+
+                if (data.DelId != null)
+                {
+                    var del = portMangements.Where(w => w.Id == data.DelId).FirstOrDefault();
+                    oceanExportDetails.DelName = del?.PortName;
                 }
 
                 if (mbl.FreightTermId != null)
@@ -333,6 +339,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.SvcTermFromName = svcTo?.ShowName;
                 }
 
+                if (data.AgentId != null)
+                {
+                    var agent = tradePartners.Where(w => w.Id == data.AgentId).FirstOrDefault();
+                    oceanExportDetails.HblAgentName = string.Concat(agent.TPName, "/", agent.TPCode);
+                }
+
 
                 oceanExportDetails.HblNo = data.HblNo;
                 oceanExportDetails.DocNo = mbl.FilingNo;
@@ -344,6 +356,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 oceanExportDetails.Voyage = mbl.Voyage;
                 oceanExportDetails.Mark = data.Mark;
                 oceanExportDetails.MblNo = mbl.MblNo;
+                oceanExportDetails.DelEta = data.DelEta;
             }
 
             return oceanExportDetails;

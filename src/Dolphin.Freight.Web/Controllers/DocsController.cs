@@ -3643,7 +3643,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             var profitReport = new ProfitReportViewModel()
             {
-                AgentName = oceanExportDetails.MblOverseaAgentName,
+                AgentName = oceanExportDetails.HblAgentName,
                 Consignee = oceanExportDetails.HblConsigneeName,
                 Currency = "USD",
                 Customer = oceanExportDetails.MblCustomerName,
@@ -3651,6 +3651,8 @@ namespace Dolphin.Freight.Web.Controllers
                 Measurement = string.Concat(totalPackageMeasure + " CBM " + Math.Round(totalPackageMeasure * 35.315, 2) + " CFT"),
                 PolEtd = string.Concat(oceanExportDetails.PolName, "/", oceanExportDetails.PolEtd).TrimStart('/'),
                 PodEtd = string.Concat(oceanExportDetails.PodName, "/", oceanExportDetails.PodEta).TrimStart('/'),
+                PorEtd = string.Concat(oceanExportDetails.PorName, "/", oceanExportDetails.PorEtd).TrimStart('/'),
+                Del = string.Concat(oceanExportDetails.DelName, "/", oceanExportDetails.DelEta).TrimStart('/'),
                 Sales = oceanExportDetails.MblSaleName,
                 Shipper = oceanExportDetails.ShippingAgentName,
                 MawbNo = oceanExportDetails.MblNo,
@@ -3661,7 +3663,8 @@ namespace Dolphin.Freight.Web.Controllers
                 HawbNo = oceanExportDetails.HblNo,
                 SvcTermToName = Convert.ToString(oceanExportDetails.SvcTermToName),
                 SvcTermFromName = Convert.ToString(oceanExportDetails.SvcTermFromName),
-                SalesType = oceanExportDetails.MblSalesTypeName
+                SalesType = oceanExportDetails.MblSalesTypeName,
+               
             };
 
             if (pageType == FreightPageType.OEHBL)

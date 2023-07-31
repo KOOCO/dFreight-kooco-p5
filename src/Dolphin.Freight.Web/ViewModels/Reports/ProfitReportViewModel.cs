@@ -14,8 +14,10 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public string Customer { get; set; }
         public string AgentName { get; set; }
         public string PolEtd { get; set; }
+        public string PorEtd { get; set; }
         public string Shipper { get; set; }
         public string PodEtd { get; set; }
+        public string Del { get; set; }
         public string Consignee { get; set; }
         public string Operator { get; set; }
         public string FileNo { get; set; }

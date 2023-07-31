@@ -90,6 +90,8 @@
         <input type="hidden" asp-for="@Model.AgentName" />
         <input type="hidden" asp-for="@Model.PodEtd" />
         <input type="hidden" asp-for="@Model.PolEtd" />
+        <input type="hidden" asp-for="@Model.Del" />
+        <input type="hidden" asp-for="@Model.PorEtd" />
         <input type="hidden" asp-for="@Model.PostDate" />
         <input type="hidden" asp-for="@Model.Operator" />
         <input type="hidden" asp-for="@Model.FileNo" />
@@ -148,7 +150,7 @@
                             <td class="col-padding"></td>
 
                             <td class="w-12 col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">P.O.R:</font></font></td>
-                            <td class="w-38 col-padding"></td>
+                            <td class="w-38 col-padding">@Model.PorEtd</td>
                         </tr>
                         <tr>
                             <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">AGENT NAME:</font></font></td>
@@ -166,7 +168,7 @@
                             <td class="col-padding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CONSIGNEE:</font></font></td>
                             <td class="col-padding">@Model.Consignee</td>
                             <td class="col-padding">D.E.L:</td>
-                            <td class="col-padding"></td>
+                            <td class="col-padding">@Model.Del</td>
                         </tr>
                         <tr>
 
