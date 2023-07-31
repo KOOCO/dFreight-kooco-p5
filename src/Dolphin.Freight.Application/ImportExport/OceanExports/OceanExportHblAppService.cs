@@ -303,9 +303,9 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.PorName = por?.PortName;
                 }
 
-                if (mbl.PolId != null)
+                if (data.PolId != null)
                 {
-                    var pol = portMangements.Where(w => w.Id == mbl.PolId).FirstOrDefault();
+                    var pol = portMangements.Where(w => w.Id == data.PolId).FirstOrDefault();
                     oceanExportDetails.PolName = pol?.PortName;
                 }
 
@@ -321,6 +321,24 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.FreightTermName = freightTerm?.ShowName;
                 }
 
+                if (mbl.MblOverseaAgentId != null)
+                {
+                    var overSeaAgent = tradePartners.Where(w => w.Id == mbl.MblOverseaAgentId).FirstOrDefault();
+                    oceanExportDetails.MblOverseaAgentName = string.Concat(overSeaAgent.TPName, "/", overSeaAgent.TPCode);
+                }
+
+                if (data.SvcTermToId != null)
+                {
+                    var svcTo = sysCodes.Where(w => w.Id == mbl.SvcTermToId).FirstOrDefault();
+                    oceanExportDetails.SvcTermToName = svcTo?.ShowName;
+                }
+
+                if (data.SvcTermFromId != null)
+                {
+                    var svcTo = sysCodes.Where(w => w.Id == mbl.SvcTermFromId).FirstOrDefault();
+                    oceanExportDetails.SvcTermFromName = svcTo?.ShowName;
+                }
+
                 if (mbl.MblCarrierId != null)
                 {
                     var carrier = tradePartners.Where(w => w.Id == mbl.MblCarrierId).FirstOrDefault();
@@ -333,7 +351,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.PodName = pod?.PortName;
                 }
 
-                oceanExportDetails.MblNo = mbl.MblNo;
                 oceanExportDetails.HblNo = data.HblNo;
                 oceanExportDetails.DocNo = mbl.FilingNo;
                 oceanExportDetails.ItnNo = data.ItnNo;
@@ -347,7 +364,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 oceanExportDetails.VesselName = mbl.VesselName;
                 oceanExportDetails.Voyage = mbl.Voyage;
                 oceanExportDetails.Mark = data.Mark;
-                oceanExportDetails.CurrentDate = Convert.ToDateTime(DateTime.Now.ToShortDateString());
+                oceanExportDetails.MblNo = mbl.MblNo;
             }
 
             return oceanExportDetails;

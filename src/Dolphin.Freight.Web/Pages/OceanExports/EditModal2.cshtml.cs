@@ -114,12 +114,6 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                 queryHbl.Id = Hid;
                 OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
                 IsShowHbl = true;
-
-                if(OceanExportHbl.ExtraProperties != null && OceanExportHbl.ExtraProperties.Any())
-                {
-                    Commodities = (List<ManifestCommodity>)OceanExportHbl.ExtraProperties.GetValueOrDefault("Commodities");
-                }
-
             }
         }
         public async Task<IActionResult> OnPostAsync()
@@ -162,29 +156,14 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                     }
 
                 }
-
-                
-
-                //await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMbl);
-                //await _oceanExportHblAppService.UpdateAsync(Hid, OceanExportHbl);
-                //QueryContainerDto query1 = new QueryContainerDto() { QueryId = Hid.Value };
-                //var rs1 = await _containerAppService.DeleteByMblIdAsync(query1);
-                //foreach (var dto in CreateUpdateContainerDtos)
-                //{
-                //    var a = dto.IsDeleted;
-                //    if (dto.Status == 0) await _containerAppService.CreateAsync(dto);
-                //}
-
-
             }
 
-            var OceanExportMb2 = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
+            var OceanExportMb2 = ObjectMapper.Map<OceanExportMblDto, CreateUpdateOceanExportMblDto>(await _oceanExportMblAppService.GetAsync(Id));
             OceanExportMb2.Mark = OceanExportMbl.Mark;
             OceanExportMb2.Description = OceanExportMbl.Description;
             OceanExportMb2.DomesticInstructions = OceanExportMbl.DomesticInstructions;
-            await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMb2) ;
-            //await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMbl);
-            //await _oceanExportHblAppService.UpdateAsync(Hid, OceanExportHbl);
+            await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMb2);
+
             QueryContainerDto query = new QueryContainerDto() { QueryId=Id };
             var rs = await _containerAppService.DeleteByMblIdAsync(query); 
             foreach (var dto in CreateUpdateContainerDtos) 
