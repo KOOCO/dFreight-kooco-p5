@@ -221,7 +221,8 @@
             myWindow.focus()
         }
         function getCommercialInvoice() {
-            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")", 'CommercialInvoice', 'width=1200,height=800');
+             var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")"+"?Id="+idNo, 'CommercialInvoice', 'width=1200,height=800');
             myWindow.focus()
         }
         function getPickupDeliveryOrder() {
