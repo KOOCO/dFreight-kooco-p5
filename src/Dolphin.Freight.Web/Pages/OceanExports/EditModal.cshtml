@@ -226,9 +226,9 @@
             myWindow.focus()
         }
         function getPickupDeliveryOrder() {
-            //var idNo = $('#OceanExportHbl_Id').val();
-            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")" + "?id=" + idNo, 'PickupDeliveryOrder', 'width=1200,height=800');
-            myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            var idNo = $('#OceanExportMbl_Id').val();
+            myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")" + "?id=" + idNo, 'PickupDeliveryOrder', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
         function getBookingPackingList() {
