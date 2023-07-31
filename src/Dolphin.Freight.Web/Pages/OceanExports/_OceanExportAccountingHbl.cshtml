@@ -132,9 +132,9 @@
                                     </a>
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder cargo receipt"]
-                                    </a>                                  
-                                    <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
+                                    </a>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("DangerousGoodsOceanExportHBL", "Docs", new { id = Model.OceanExportHblDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
                                     </a>
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
@@ -146,7 +146,7 @@
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Shipping Advice"]
                                     </a>
                                     <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanExportProfitReport", "Docs", new { id = Model.OceanExportHblDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanExportProfitReport", "Docs", new { id = Model.OceanExportHblDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                                     </a>
                                     <li class="dropdown-divider"></li>

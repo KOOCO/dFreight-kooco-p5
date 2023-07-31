@@ -327,6 +327,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.MblCarrierName = carrier.TPName + "/" + carrier.TPCode;
                 }
 
+                if (data.PodId != null)
+                {
+                    var pod = portMangements.Where(w => w.Id.Equals(data.PodId)).FirstOrDefault();
+                    oceanExportDetails.PodName = pod?.PortName;
+                }
+
                 oceanExportDetails.MblNo = mbl.MblNo;
                 oceanExportDetails.HblNo = data.HblNo;
                 oceanExportDetails.DocNo = mbl.FilingNo;

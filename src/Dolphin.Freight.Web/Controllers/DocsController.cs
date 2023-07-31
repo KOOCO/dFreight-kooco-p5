@@ -3792,6 +3792,13 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(oceanExportDetails);
         }
+        [HttpPost]
+        public async Task<IActionResult> DangerousGoodsOceanExportHBL(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/DangerousGoodsOceanExportHBL.cshtml", model);
+        }
 
         #region Private Functions
 
