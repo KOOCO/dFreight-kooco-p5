@@ -114,12 +114,6 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                 queryHbl.Id = Hid;
                 OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
                 IsShowHbl = true;
-
-                if(OceanExportHbl.ExtraProperties != null && OceanExportHbl.ExtraProperties.Any())
-                {
-                    Commodities = (List<ManifestCommodity>)OceanExportHbl.ExtraProperties.GetValueOrDefault("Commodities");
-                }
-
             }
         }
         public async Task<IActionResult> OnPostAsync()
