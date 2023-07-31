@@ -3601,6 +3601,21 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/HBLPackingListOceanExport.cshtml", model);
         }
 
+        public async Task<IActionResult> ExamHoldNoticeOceanExportHBL(Guid id, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+            oceanExportDetails.HblOperatorName = _currentUser.Name + " " + _currentUser.SurName;
+
+            return View(oceanExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ExamHoldNoticeOceanExportHBL(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/ExamHoldNoticeOceanExportHBL.cshtml", model);
+        }
+
         #region Private Functions
 
         private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)

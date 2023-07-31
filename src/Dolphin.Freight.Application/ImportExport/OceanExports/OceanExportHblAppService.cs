@@ -309,21 +309,33 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.PolName = pol?.PortName;
                 }
 
+                if (data.DelId != null)
+                {
+                    var del = portMangements.Where(w => w.Id == data.DelId).FirstOrDefault();
+                    oceanExportDetails.DelName = del?.PortName;
+                }
+
                 if (mbl.FreightTermId != null)
                 {
                     var freightTerm = sysCodes.Where(w => w.Id == mbl.FreightTermId).FirstOrDefault();
                     oceanExportDetails.FreightTermName = freightTerm?.ShowName;
                 }
 
+                oceanExportDetails.MblNo = mbl.MblNo;
                 oceanExportDetails.HblNo = data.HblNo;
                 oceanExportDetails.DocNo = mbl.FilingNo;
+                oceanExportDetails.ItnNo = data.ItnNo;
                 oceanExportDetails.MblDel = mbl.Del?.PortName;
                 oceanExportDetails.LCNo = data.LcNo;
                 oceanExportDetails.LCIssueBankName = data.LcIssueBank;
+                oceanExportDetails.FdestEta = data.FdestEta;
                 oceanExportDetails.PolEtd = mbl.PolEtd;
+                oceanExportDetails.PorEtd = data.PorEtd;
+                oceanExportDetails.DelEta = data.DelEta;
                 oceanExportDetails.VesselName = mbl.VesselName;
                 oceanExportDetails.Voyage = mbl.Voyage;
                 oceanExportDetails.Mark = data.Mark;
+                oceanExportDetails.CurrentDate = Convert.ToDateTime(DateTime.Now.ToShortDateString());
             }
 
             return oceanExportDetails;

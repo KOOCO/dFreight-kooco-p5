@@ -423,6 +423,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 嘜頭
         /// </summary>
         public string Mark { get; set; }
+        public string HblOperatorName { get; set; }
+        public DateTime? CurrentDate { get; set; }
         /// <summary>
         /// 貨描
         /// </summary>
