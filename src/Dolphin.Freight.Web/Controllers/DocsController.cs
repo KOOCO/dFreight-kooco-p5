@@ -3786,6 +3786,13 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf(returnUrl, model);
         }
 
+        public async Task<IActionResult> DangerousGoodsOceanExportHBL(Guid id, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+
+            return View(oceanExportDetails);
+        }
+
         #region Private Functions
 
         private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)

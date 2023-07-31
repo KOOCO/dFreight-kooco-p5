@@ -321,6 +321,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.FreightTermName = freightTerm?.ShowName;
                 }
 
+                if (mbl.MblCarrierId != null)
+                {
+                    var carrier = tradePartners.Where(w => w.Id == mbl.MblCarrierId).FirstOrDefault();
+                    oceanExportDetails.MblCarrierName = carrier.TPName + "/" + carrier.TPCode;
+                }
+
                 oceanExportDetails.MblNo = mbl.MblNo;
                 oceanExportDetails.HblNo = data.HblNo;
                 oceanExportDetails.DocNo = mbl.FilingNo;
