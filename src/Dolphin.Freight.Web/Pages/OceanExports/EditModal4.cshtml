@@ -263,8 +263,10 @@
             });
         }
         }
-        function getPickupDeliveryOrder() {
-            myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+               function getPickupDeliveryOrder() {
+            var idNo = $('#OceanExportMbl_Id').val();
+            myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")" + "?id=" + idNo, 'PickupDeliveryOrder', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
         function getManifest() {
@@ -312,7 +314,7 @@
            
                 <abp-card class="card board-item">
                     <abp-card-header style="background:#555555;color:#FFFFFF;">
-
+                          <input type="hidden" name="OceanExportMbl.Id" id="OceanExportMbl_Id" value="@Model.OceanExportMbl?.Id" />
                         <abp-card-title>
                             MB/L
                             <span id="title0">@Model.OceanExportMbl.MblNo </span>

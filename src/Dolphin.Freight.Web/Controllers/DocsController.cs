@@ -63,6 +63,7 @@ using System.Configuration;
 using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.AirImports;
 using Dolphin.Freight.ImportExport;
+using Dolphin.Freight.ImportExport.Containers;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -82,7 +83,7 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IAirImportMawbAppService _airImportMawbAppService;
         private readonly IAirImportHawbAppService _airImportHawbAppService;
         private readonly IInvoiceAppService _invoiceAppService;
-
+        private readonly IContainerAppService  _containerAppService;
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
         public DocsController(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService, IGeneratePdf generatePdf, IAjaxDropdownAppService ajaxDropdownAppService, IReportLogAppService reportLogAppService,
@@ -91,7 +92,8 @@ namespace Dolphin.Freight.Web.Controllers
           IAirExportHawbAppService airExportHawbAppService,
           IInvoiceAppService invoiceAppService,
           IAirImportMawbAppService airImportMawbAppService,
-          IAirImportHawbAppService airImportHawbAppService)
+          IAirImportHawbAppService airImportHawbAppService,
+          IContainerAppService containerAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -107,6 +109,7 @@ namespace Dolphin.Freight.Web.Controllers
             _invoiceAppService = invoiceAppService;
             _airImportMawbAppService = airImportMawbAppService;
             _airImportHawbAppService = airImportHawbAppService;
+            _containerAppService = containerAppService;
 
             ReportLog = new ReportLog.ReportLogDto();
         }
@@ -1744,52 +1747,62 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> PickupDeliveryOrder(/*string id*/)
+        public async Task<IActionResult> PickupDeliveryOrder(string id)
         {
             PickupDeliveryOrderIndexViewModel InfoViewModel = new PickupDeliveryOrderIndexViewModel();
 
             //QueryHblDto queryHbl = new QueryHblDto();
             //queryHbl.Id = Guid.Parse(id);
-            //var OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
+            QueryContainerDto query = new QueryContainerDto() { QueryId = Guid.Parse(id), MaxResultCount = 1000 };
+            var OceanExportMbl = await _oceanExportMblAppService.GetOceanExportDetailsById(Guid.Parse(id));
+            var containers = await _containerAppService.QueryListAsync(query);
 
             #region
             //https://eval-asia.gofreight.co/ocean/export/shipment/OEX-23030003/?hbl=47125&hide_mbl=false
-            InfoViewModel.Office = "Dolphin Logistics Taipei Office";
+            InfoViewModel.Office = OceanExportMbl.Office.AbbreviationName;
             InfoViewModel.Address = "";
             InfoViewModel.Tel = "+886-2-2545-9900#8671";
             InfoViewModel.Fax = "";
-            InfoViewModel.Email = "it@dolphin-gp.com";
-            InfoViewModel.FirstName = "萬泰";
-            InfoViewModel.LastName = "資訊部";
-            InfoViewModel.DateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            InfoViewModel.Email ="it@dolphin-gp.com";
+            InfoViewModel.FirstName = OceanExportMbl.MblCustomerName; /*"萬泰"*/;
+            InfoViewModel.LastName ="" /*"資訊部"*/;
+            InfoViewModel.DateTime =  DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
 
             InfoViewModel.trucker_area = "";
-            InfoViewModel.empty_pickup_area = "NIPPON CARGO AIRLINES";
-            InfoViewModel.issue_at = "05-09-2023";
-            InfoViewModel.issue_by = "HANJUN LIN";
-            InfoViewModel.MBL_NO = "OEX-23030003";
-            InfoViewModel.carrier = "ALPINE AVIATION INC.";
-            InfoViewModel.VESSEL_INFO = "ASIATIC BAY N097";
-            InfoViewModel.POL_location = "SINGAPORE (SINGAPORE)";
-            InfoViewModel.POL_location_ETD = "03-30-2023";
-            InfoViewModel.POD_location = "BANGKOK (THAILAND)";
-            InfoViewModel.POD_location_ETD = "04-03-2023";
-            InfoViewModel.total_packages_count = "6";
-            InfoViewModel.gross_weight_kgs = "1,000.00";
+            InfoViewModel.empty_pickup_area =OceanExportMbl.EmptyPickupName;
+            InfoViewModel.issue_at = OceanExportMbl.PostDate.ToString("dd-mm-yyyy");/* "05-09-2023";*/
+            InfoViewModel.issue_by = OceanExportMbl.ReleaseBy;
+            InfoViewModel.MBL_NO = OceanExportMbl.MblNo;
+            InfoViewModel.carrier = OceanExportMbl.MblCarrierName;
+            InfoViewModel.VESSEL_INFO =OceanExportMbl.VesselName;
+            InfoViewModel.POL_location = OceanExportMbl.PolName;
+            InfoViewModel.POL_location_ETD = OceanExportMbl.PolEtd?.ToString("dd-mm-yyyy");
+            InfoViewModel.POD_location = OceanExportMbl.PodName;
+            InfoViewModel.POD_location_ETD = OceanExportMbl.PodEta?.ToString("dd-mm-yyyy") /*"04-03-2023"*/;
+            InfoViewModel.total_packages_count = OceanExportMbl.TotalPackage.ToString();
+            InfoViewModel.gross_weight_kgs = OceanExportMbl.TotalWeight.ToString();
             InfoViewModel.gross_weight_lbs = "0.00";
-            InfoViewModel.measurement_cbm = "4.50";
+            InfoViewModel.measurement_cbm = OceanExportMbl.TotalMeasure.ToString();
             InfoViewModel.measurement_cft = "0.00";
-            InfoViewModel.COMMODITY = "ELECTRONIC COMPONENT";
-            InfoViewModel.billing_to_area = "HARD CORE TECHNOLOGY\r\n198 PEARSON GATEWAY APT. 555\r\nNORTH JAMES, KY 98809-9933\r\nWALNUT, CA 91789, UNITED STATES\r\nATTN: JENNIFER JIMENEZ TEL: 585.592.4848 FAX: 649-277-5122";
-            InfoViewModel.ContainerList = new List<PickupDeliveryOrderContainerList>()
+            InfoViewModel.COMMODITY = OceanExportMbl.Commodity?.ToString();
+           
+            InfoViewModel.billing_to_area = OceanExportMbl.MblBillToName + "\r\n" + OceanExportMbl.MblBillToContent; /*"HARD CORE TECHNOLOGY\r\n198 PEARSON GATEWAY APT. 555\r\nNORTH JAMES, KY 98809-9933\r\nWALNUT, CA 91789, UNITED STATES\r\nATTN: JENNIFER JIMENEZ TEL: 585.592.4848 FAX: 649-277-5122"*/;
+            InfoViewModel.ContainerList = new List<PickupDeliveryOrderContainerList>();
+            foreach(var container in containers)
             {
-                new
-                PickupDeliveryOrderContainerList
+                var con = new
+                  PickupDeliveryOrderContainerList
                 {
-                    PACKAGE = "6 PALLET(S)",
-                    WEIGHT = "1,000.00 KGS / 0.00 LBS"
-                }
+                    PACKAGE = container.PackageNum.ToString(),
+                    WEIGHT = container.PackageWeight + " " + container.PackageWeightUnit,
+                    CONTAINER_NO = container.ContainerNo,
+                    PICKUP_NO = container.PicupNo,
+                    SEAL_NO = container.SealNo,
+                    LFD = container.LastFreeDate.ToString(),
+                
+                };
+                InfoViewModel.ContainerList.Add(con);
             };
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
