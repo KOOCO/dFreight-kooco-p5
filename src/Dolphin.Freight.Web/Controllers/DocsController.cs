@@ -831,6 +831,7 @@ namespace Dolphin.Freight.Web.Controllers
             QueryHblDto queryHbl = new QueryHblDto();
             queryHbl.Id = Guid.Parse(id);
             var OceanExportHbl = await _oceanExportHblAppService.GetOceanExportDetailsById(Guid.Parse(id));
+            var OceanExportMbl = await _oceanExportMblAppService.GetOceanExportDetailsById(OceanExportHbl.MblId);
             //var shipper=await 
 
             #region
@@ -843,10 +844,10 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.EXPORT_FILE_NO = OceanExportHbl.FilingNo;
             InfoViewModel.FORWARDING_AGENT = OceanExportHbl.ForwardingAgentName + Environment.NewLine + OceanExportHbl.ForwardingAgentContent /*+ Environment.NewLine + "UNITED STATES"*/;
             InfoViewModel.POINT_AND_COUNTRY_OF_ORIGIN = "";
-            InfoViewModel.EXPORT_CARRIER = OceanExportHbl.VesselName;
-            InfoViewModel.PORT_OF_LOADING = OceanExportHbl.PolName;
-            InfoViewModel.PORT_OF_DISCHARGE = OceanExportHbl.PodName;
-            InfoViewModel.PLACE_OF_DELIVERY = OceanExportHbl.MblDel;
+            InfoViewModel.EXPORT_CARRIER = OceanExportHbl.VesselName + OceanExportHbl.Voyage;
+            InfoViewModel.PORT_OF_LOADING = OceanExportMbl.PolName;
+            InfoViewModel.PORT_OF_DISCHARGE = OceanExportMbl.PodName;
+            InfoViewModel.PLACE_OF_DELIVERY = OceanExportMbl.DelName;
 
             InfoViewModel.SHIPPING_MARKS =OceanExportHbl.Mark; /*"CONTAINER NO./SEAL NO./P.O. NO." + Environment.NewLine + " /  / " + Environment.NewLine + Environment.NewLine + Environment.NewLine + "SHIEHN HAIPHONG PTE";*/
             InfoViewModel.QTY = OceanExportHbl.TotalPackage.ToString();
@@ -861,7 +862,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.PKG = OceanExportHbl.TotalPackage.ToString();
             InfoViewModel.KG_LB = OceanExportHbl.TotalWeight.ToString();
             InfoViewModel.CBM_CFT = OceanExportHbl.TotalMeasure.ToString();
-            InfoViewModel.bl_date = OceanExportHbl.OnBoardDate?.ToString("dd/mm/yyyy");
+            InfoViewModel.bl_date = OceanExportHbl.OnBoardDate?.ToString("dd/MM/yyyy");
             InfoViewModel.sworn_date = OceanExportHbl.OnBoardDate?.ToString("MMMM/dd/yyyy"); ;
 
             InfoViewModel.name_of_chamber =  "REGIONAL";
@@ -1771,7 +1772,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             InfoViewModel.trucker_area = "";
             InfoViewModel.empty_pickup_area =OceanExportMbl.EmptyPickupName;
-            InfoViewModel.issue_at = OceanExportMbl.PostDate.ToString("dd-mm-yyyy");/* "05-09-2023";*/
+            InfoViewModel.issue_at = OceanExportMbl.PostDate.ToString("dd-MM-yyyy");/* "05-09-2023";*/
             InfoViewModel.issue_by = OceanExportMbl.MblOperatorName;
             InfoViewModel.MBL_NO = OceanExportMbl.MblNo;
             InfoViewModel.carrier = OceanExportMbl.MblCarrierName;
