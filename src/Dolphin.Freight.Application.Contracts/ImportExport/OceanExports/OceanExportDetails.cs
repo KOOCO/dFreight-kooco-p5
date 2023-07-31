@@ -53,7 +53,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string MblOverseaAgentName { get; set; }
 
         public string MblOverseaAgentContent { get; set; }
-        
+        public List<ManifestCommodity> Commodity { get; set; }
         public Guid? MblNotifyId { get; set; }
         public string MblNotifyName { get; set; }
         public string HblNotifyName { get; set; }
@@ -423,6 +423,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 嘜頭
         /// </summary>
         public string Mark { get; set; }
+        public string HblOperatorName { get; set; }
+        public DateTime? CurrentDate { get; set; }
         /// <summary>
         /// 貨描
         /// </summary>

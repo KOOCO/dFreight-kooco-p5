@@ -31,7 +31,7 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// <summary>
         /// 包裝種類數量
         /// </summary>
-        public int PackageNum { get; set; }
+        public int? PackageNum { get; set; }
         /// <summary>
         /// 包裝重量
         /// </summary>
