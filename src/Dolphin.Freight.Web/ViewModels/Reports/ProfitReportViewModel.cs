@@ -38,5 +38,6 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public string AWbNo { get; set; }
         public string SvcTermToName { get; set; }
         public string SvcTermFromName { get; set; }
+        public bool IsCustomerRef { get; set; }
     }
 }

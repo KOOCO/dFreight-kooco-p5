@@ -23,5 +23,6 @@ namespace Dolphin.Freight.ImportExport.Containers
         Task SwitchCTF(Guid id);
 
         Task<CreateUpdateContainerDto> GetContainerByHblId(Guid id);
+        Task<List<ContainerDto>> QueryListHblAsync(Guid hblId);
     }
 }
