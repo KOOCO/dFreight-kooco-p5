@@ -63,6 +63,7 @@ using System.Configuration;
 using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.AirImports;
 using Dolphin.Freight.ImportExport;
+using Dolphin.Freight.ImportExport.Containers;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -82,6 +83,7 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IAirImportMawbAppService _airImportMawbAppService;
         private readonly IAirImportHawbAppService _airImportHawbAppService;
         private readonly IInvoiceAppService _invoiceAppService;
+        private readonly IContainerAppService _containerAppService;
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
@@ -91,7 +93,8 @@ namespace Dolphin.Freight.Web.Controllers
           IAirExportHawbAppService airExportHawbAppService,
           IInvoiceAppService invoiceAppService,
           IAirImportMawbAppService airImportMawbAppService,
-          IAirImportHawbAppService airImportHawbAppService)
+          IAirImportHawbAppService airImportHawbAppService,
+          IContainerAppService containerAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -107,6 +110,7 @@ namespace Dolphin.Freight.Web.Controllers
             _invoiceAppService = invoiceAppService;
             _airImportMawbAppService = airImportMawbAppService;
             _airImportHawbAppService = airImportHawbAppService;
+            _containerAppService = containerAppService;
 
             ReportLog = new ReportLog.ReportLogDto();
         }
@@ -3599,6 +3603,170 @@ namespace Dolphin.Freight.Web.Controllers
             model.IsPDF = true;
 
             return await _generatePdf.GetPdf("Views/Docs/HBLPackingListOceanExport.cshtml", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> OceanExportProfitReport(Guid id, FreightPageType pageType, string reportType)
+        {
+            string returnUrl = string.Empty;
+
+            QueryInvoiceDto queryDto = new QueryInvoiceDto();
+
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+
+            var containers = await _containerAppService.QueryListHblAsync(id);
+
+            var list = new List<CreateUpdateContainerDto>();
+
+            double totalPackageWeight = 0;
+            double totalPackageMeasure = 0;
+
+            foreach (var item in containers)
+            {
+                var items = new CreateUpdateContainerDto
+                {
+                    ContainerNo = item.ContainerNo,
+                    SealNo = item.SealNo,
+                    PackageWeight = item.PackageWeight,
+                    PackageMeasure = item.PackageMeasure
+                };
+
+                totalPackageWeight += item.PackageWeight;
+                totalPackageMeasure += item.PackageMeasure;
+
+                list.Add(items);
+            }
+
+            var measurement = Convert.ToDouble(oceanExportDetails.TotalWeight) * 35.315;
+
+            var profitReport = new ProfitReportViewModel()
+            {
+                AgentName = oceanExportDetails.MblOverseaAgentName,
+                Consignee = oceanExportDetails.HblConsigneeName,
+                Currency = "USD",
+                Customer = oceanExportDetails.MblCustomerName,
+                Operator = oceanExportDetails.MblOperatorName,
+                Measurement = string.Concat(totalPackageMeasure + " CBM " + Math.Round(totalPackageMeasure * 35.315, 2) + " CFT"),
+                PolEtd = string.Concat(oceanExportDetails.PolName, "/", oceanExportDetails.PolEtd).TrimStart('/'),
+                PodEtd = string.Concat(oceanExportDetails.PodName, "/", oceanExportDetails.PodEta).TrimStart('/'),
+                Sales = oceanExportDetails.MblSaleName,
+                Shipper = oceanExportDetails.ShippingAgentName,
+                MawbNo = oceanExportDetails.MblNo,
+                ChargableWeight = string.Concat(totalPackageWeight + " KGS " + Math.Round(totalPackageWeight * 2.20462, 2) + " LBS"),
+                PageType = pageType,
+                ReportType = reportType,
+                FileNo = oceanExportDetails.FilingNo,
+                HawbNo = oceanExportDetails.HblNo,
+                SvcTermToName = Convert.ToString(oceanExportDetails.SvcTermToName),
+                SvcTermFromName = Convert.ToString(oceanExportDetails.SvcTermFromName),
+                SalesType = oceanExportDetails.MblSalesTypeName
+            };
+
+            if (pageType == FreightPageType.OEHBL)
+            {
+
+                // hbl invoices
+                queryDto = new QueryInvoiceDto() { QueryType = 1, ParentId = id };
+
+                profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+
+                // Mbl invoices
+                queryDto = new QueryInvoiceDto() { QueryType = 3, ParentId = oceanExportDetails.MblId };
+
+                var mawbInvoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+
+                if (mawbInvoices != null && mawbInvoices.Any())
+                {
+                    profitReport.Invoices ??= new List<InvoiceDto>();
+
+                    foreach (var mawbInvoice in mawbInvoices)
+                    {
+                        profitReport.Invoices.Add(mawbInvoice);
+                    }
+                }
+
+            }
+            else
+            {
+                queryDto = new QueryInvoiceDto() { QueryType = 3, ParentId = id };
+
+                profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+            }
+
+            profitReport.AR = new List<InvoiceDto>();
+            profitReport.AP = new List<InvoiceDto>();
+            profitReport.DC = new List<InvoiceDto>();
+
+            if (profitReport.Invoices != null && profitReport.Invoices.Count > 0)
+            {
+                foreach (var dto in profitReport.Invoices)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            profitReport.AR.Add(dto);
+                            break;
+                        case 1:
+                            profitReport.DC.Add(dto);
+                            break;
+                        case 2:
+                            profitReport.AP.Add(dto);
+                            break;
+                    }
+                }
+                profitReport.InvoicesJson = JsonConvert.SerializeObject(profitReport.Invoices);
+            }
+
+            if (profitReport.AR.Any())
+            {
+                double arTotal = 0;
+                foreach (var ar in profitReport.AR)
+                {
+                    arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                }
+                profitReport.ARTotal = arTotal;
+            }
+            if (profitReport.AP.Any())
+            {
+                double apTotal = 0;
+                foreach (var ap in profitReport.AP)
+                {
+                    apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                }
+
+                profitReport.APTotal = apTotal;
+            }
+            if (profitReport.DC.Any())
+            {
+                double dcTotal = 0;
+                foreach (var dc in profitReport.DC)
+                {
+                    dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                }
+                profitReport.DCTotal = dcTotal;
+            }
+
+            profitReport.Total = profitReport.ARTotal - profitReport.APTotal + profitReport.DCTotal;
+
+            returnUrl = pageType == FreightPageType.OIMBL
+                ? (reportType == "Summary") ? "Views/Docs/MblProfitReportSummary.cshtml" : "Views/Docs/MblProfitReportDetailed.cshtml"
+                : "Views/Docs/HblProfitReport.cshtml";
+
+            return View(returnUrl, profitReport);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> OceanExportProfitReport(ProfitReportViewModel model)
+        {
+            string returnUrl = model.PageType == FreightPageType.AIMBL
+                ? (model.ReportType == "Summary") ? "Views/Docs/MblProfitReportSummary.cshtml" : "Views/Docs/MblProfitReportDetailed.cshtml"
+                : "Views/Docs/HblProfitReport.cshtml";
+
+            model.IsPDF = true;
+
+            model.Invoices = JsonConvert.DeserializeObject<IList<InvoiceDto>>(model.InvoicesJson);
+
+            return await _generatePdf.GetPdf(returnUrl, model);
         }
 
         #region Private Functions

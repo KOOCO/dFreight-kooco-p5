@@ -43,6 +43,19 @@ namespace Dolphin.Freight.ImportExport.Containers
             var list = ObjectMapper.Map<List<Container>, List<ContainerDto>>(Containers.ToList());
             return list;
         }
+
+        public async Task<List<ContainerDto>> QueryListHblAsync(Guid hblId)
+        {
+            var Containers = await _repository.GetListAsync();
+
+            if (hblId != Guid.Empty)
+            {
+                Containers = Containers.Where(x => x.HblId == hblId).ToList();
+            }
+            var list = ObjectMapper.Map<List<Container>, List<ContainerDto>>(Containers.ToList());
+            return list;
+        }
+
         public async Task<int> DeleteByMblIdAsync(QueryContainerDto query) 
         {
             var list = await this.QueryListAsync(query);
