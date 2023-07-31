@@ -78,7 +78,7 @@
                         <a class='dropdown-item' href='javascript:void(0)' onclick="getReportHblClauses()">
                             <i class="fa fa-file-text-o"></i> @L["Btn:Bill of Lading Terms"]
                         </a>
-                        <a class='dropdown-item' href='javascript:void(0)'>
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="getCommercialInvoice()" >
                             <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
                         </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HBLPackingListOceanExport", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
