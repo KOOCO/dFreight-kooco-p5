@@ -247,8 +247,21 @@
             myWindow.focus()
         }
         function getCommercialInvoice() {
-            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")", 'CommercialInvoice', 'width=1200,height=800');
+             var idNo = $('#OceanExportHbl_Id').val();
+             debugger
+               if (idNo != '00000000-0000-0000-0000-000000000000') {
+          
+            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")" + "?id=" + idNo, 'CommercialInvoice', 'width=1200,height=800');
             myWindow.focus()
+               }
+                          else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
+        }
         }
         function getPickupDeliveryOrder() {
             myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');

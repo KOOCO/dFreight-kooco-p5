@@ -1705,31 +1705,33 @@ namespace Dolphin.Freight.Web.Controllers
 
 
         [HttpGet]
-        public IActionResult CommercialInvoice()
+        public async Task<IActionResult> CommercialInvoice(string id)
         {
             CommercialInvoiceIndexViewModel InfoViewModel = new CommercialInvoiceIndexViewModel();
-
+            QueryHblDto queryHbl = new QueryHblDto();
+            queryHbl.Id = Guid.Parse(id);
+            var OceanExportHbl = await _oceanExportHblAppService.GetOceanExportDetailsById(Guid.Parse(id));
             #region
             //https://dlihq.gofreight.co/ocean/export/shipment/container/OE-23020004/?hbl=56
-            InfoViewModel.shipper_area = "123" + Environment.NewLine + "3 FL., NO. 215, SEC. 1, FU XING S. RD., TAIPEI, TAIWAN" + Environment.NewLine + "TEL : 02-87721111" + Environment.NewLine + "FAX : 02-87732222" + Environment.NewLine + "TAIWAN";
-            InfoViewModel.consignee_area = "CHIYODA";
-            InfoViewModel.notify_area = "1231231" + Environment.NewLine + "ATTN: SDSDSD";
-            InfoViewModel.invoice_no_and_date = "";
-            InfoViewModel.LC_NO = "";
-            InfoViewModel.LC_issue_bank = "";
-            InfoViewModel.ETD_date = "03-27-2023";
-            InfoViewModel.POR_location = "";
-            InfoViewModel.POL_location = "SINGAPORE (SINGAPORE)";
-            InfoViewModel.FDEST_location = "";
-            InfoViewModel.vessel_voyage = "XIN WEN ZHOU / 149E";
-            InfoViewModel.freight_term = "FREIGHT PREPAID";
+            InfoViewModel.shipper_area = OceanExportHbl.ShippingAgentName+ Environment.NewLine + OceanExportHbl.ShippingAgentContent /*+ Environment.NewLine + "TEL : 02-87721111" + Environment.NewLine + "FAX : 02-87732222" + Environment.NewLine + "TAIWAN"*/;
+            InfoViewModel.consignee_area = OceanExportHbl.HblConsigneeName;
+            InfoViewModel.notify_area = OceanExportHbl.HblNotifyName;
+            InfoViewModel.invoice_no_and_date ="";
+            InfoViewModel.LC_NO = OceanExportHbl.LCNo;
+            InfoViewModel.LC_issue_bank = OceanExportHbl.LCIssueBankName;
+            InfoViewModel.ETD_date = OceanExportHbl.DelEta?.ToString("dd/mm/yyyy");
+            InfoViewModel.POR_location = OceanExportHbl.PorName;
+            InfoViewModel.POL_location = OceanExportHbl.PolName;
+            InfoViewModel.FDEST_location = OceanExportHbl.FdestName;
+            InfoViewModel.vessel_voyage = OceanExportHbl.VesselName;
+            InfoViewModel.freight_term = OceanExportHbl.FreightTermName;
 
-            InfoViewModel.shipping_marks = "CONTAINER NO./SEAL NO./P.O. NO." + Environment.NewLine + " /  / " + Environment.NewLine + Environment.NewLine + Environment.NewLine + "SHIEHN HAIPHONG PTE";
-            InfoViewModel.packages = "3 PALLET(S)";
-            InfoViewModel.good_items = "ELECTRONIC COMPONENT" + Environment.NewLine + "20 CARTONS";
+            InfoViewModel.shipping_marks = OceanExportHbl.Mark /*+ Environment.NewLine + " /  / " + Environment.NewLine + Environment.NewLine + Environment.NewLine + "SHIEHN HAIPHONG PTE"*/;
+            InfoViewModel.packages = OceanExportHbl.TotalPackage.ToString();
+            InfoViewModel.good_items = OceanExportHbl.Description;
             InfoViewModel.unit_price = "";
             InfoViewModel.total_amount = "";
-            InfoViewModel.shipper_name = "123";
+            InfoViewModel.shipper_name = OceanExportHbl.ShippingAgentName;
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion

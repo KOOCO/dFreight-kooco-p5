@@ -101,7 +101,7 @@
                                         return l('AirOtherChargeDeletionConfirmationMessage', data.record.startNo, data.record.endNo);
                                     },
                                     action: function (data) {
-                                        dolphin.freight.settings.AirOtherCharge.AirOtherCharge
+                                        dolphin.freight.settings.airOtherCharge.airOtherCharge
                                             .delete(data.record.id)
                                             .then(function () {
                                                 abp.notify.info(l('SuccessfullyDeleted'));

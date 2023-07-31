@@ -57,6 +57,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         }
         public async Task OnGetAsync()
         {
+            ViewData["HAVEHBL"] = "N";
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
 
             QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 3, ParentId = Id };
@@ -84,7 +85,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             }
             ImportExport.OceanExports.QueryHblDto query = new ImportExport.OceanExports.QueryHblDto() { MblId = Id };
             query.Id = Hid;
-            OceanExportHbl = new();
+            //OceanExportHbl = new();
         }
         public async Task<IActionResult> OnPostAsync()
         {
