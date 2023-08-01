@@ -656,7 +656,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             QueryHblDto queryHbl = new QueryHblDto();
             queryHbl.Id = Guid.Parse(id);
-            var OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
+            var OceanExportHbl = await _oceanExportHblAppService.GetOceanExportDetailsById(Guid.Parse(id));
 
             #region 取貿易夥伴
             List<SelectListItem> GentlemenList = new List<SelectListItem>();
@@ -679,18 +679,18 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.Amount = ".00";
             InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
             InfoViewModel.AtSight = "AT SIGHT";
-            InfoViewModel.ShipperName = "LONG BEACH CONTAINER PIER F";
-            InfoViewModel.DrawnDocCredit = "\"DRAWN UNDER DOCUMENTARY CREDIT NO. : OOO";
-            InfoViewModel.IssueDate = "04-18-2023";
-            InfoViewModel.LCIssueBank = "PPP";
-            InfoViewModel.ToLCIssueBank = "PPP";
+            InfoViewModel.ShipperName = OceanExportHbl.ShippingAgentName;
+            InfoViewModel.DrawnDocCredit = "\"DRAWN UNDER DOCUMENTARY CREDIT NO. : "+OceanExportHbl.LCNo;
+            InfoViewModel.IssueDate = OceanExportHbl.LCIssueDate?.ToString("dd-MM-yyyy");
+            InfoViewModel.LCIssueBank = OceanExportHbl.LCIssueBankName; /*"PPP";*/
+            InfoViewModel.ToLCIssueBank = OceanExportHbl.LCIssueBankName;
             InfoViewModel.ToTradePartnerLoadFrom = "CONSIGNEE"; //NOTIFY
-            InfoViewModel.Consignee = "GALLAGHER-CANNON";
-            InfoViewModel.NotifyParty = "RAMIREZ-LEWIS";
-            InfoViewModel.ToTradePartnerName = "GALLAGHER-CANNON";
+            InfoViewModel.Consignee = OceanExportHbl.HblConsigneeName;
+            InfoViewModel.NotifyParty = OceanExportHbl.HblNotifyName;
+            InfoViewModel.ToTradePartnerName = OceanExportHbl.HblConsigneeName; /*OceanExportHbl.mbl;*/
             InfoViewModel.DraftNo = "";
             InfoViewModel.BankPreference = "";
-            InfoViewModel.ShipperName2 = "LONG BEACH CONTAINER PIER F";
+            InfoViewModel.ShipperName2 =OceanExportHbl.ShippingAgentName ;
             InfoViewModel.Gentlemen = "";
             InfoViewModel.GentlemenNameAddress = "";
             InfoViewModel.EncloseDate = DateTime.Now.ToString("yyyy-MM-dd");
@@ -716,7 +716,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.PresentOnArrival = "";
             InfoViewModel.AdviseNonPaymentBy = "";
             InfoViewModel.AdvisePaymentBy = "";
-            InfoViewModel.ReferToName = "HARD CORE TECHNOLOGY(GST/VAT)";
+            InfoViewModel.ReferToName = "HARD CORE TECHNOLOGY(GST/ VAT)";
             InfoViewModel.ReferToAddress = "";
             InfoViewModel.ToActFullyOnOurBehalf = "";
             InfoViewModel.ToAssistNotToAlter = "";
@@ -724,15 +724,15 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.ReferQuestionTo = "";
             InfoViewModel.ReferQuestionName = "HARD CORE TECHNOLOGY(GST/VAT)";
             InfoViewModel.ReferQuestionPhone = "TEL: " + "08417606080";
-            InfoViewModel.ReferQuestionShipperName = "LONG BEACH CONTAINER PIER F";
+            InfoViewModel.ReferQuestionShipperName = OceanExportHbl.ShippingAgentName;
             InfoViewModel.ReferQuestionShipperPhone = "TEL: " + "(358)459-8430";
-            InfoViewModel.ReferQuestionFreightForwarderName = "HARD CORE TECHNOLOGY(GST/VAT)";
+            InfoViewModel.ReferQuestionFreightForwarderName =  "HARD CORE TECHNOLOGY(GST/VAT)";
             InfoViewModel.ReferQuestionFreightForwarderPhone = "TEL: " + "08417606080";
-            InfoViewModel.ShipperName3 = "LONG BEACH CONTAINER PIER F";
+            InfoViewModel.ShipperName3 = OceanExportHbl.ShippingAgentName;
             InfoViewModel.AuthorizedSignatureInput = "";
             InfoViewModel.UserCompany = "HANJUN LIN" + " / " + "HARD CORE TECHNOLOGY(GST/VAT)";
-
-            InfoViewModel.ReportId = OceanExportHbl.Id;
+            
+            InfoViewModel.ReportId = Guid.Parse(id);
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
