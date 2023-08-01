@@ -1487,7 +1487,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.VSLVOV = OceanExportHbl.VesselName+""+OceanExportHbl.Voyage;
             InfoViewModel.POR = OceanExportHbl.PorName;
             InfoViewModel.POL = OceanExportMbl.PolName;
-            InfoViewModel.ETD = OceanExportMbl.ETD;
+            InfoViewModel.ETD = OceanExportMbl.PodEta?.ToString("dd-MM-yyyy");
             InfoViewModel._2NDVV = "";
             InfoViewModel.ETDKAO = "";
             InfoViewModel.POD = OceanExportMbl.PodName;
@@ -1504,6 +1504,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.RMK = "";
             InfoViewModel.BookingNo = OceanExportMbl.SoNo;
             InfoViewModel.Xtn = OceanExportHbl.SoNo;
+            InfoViewModel.SteamShip = OceanExportMbl.MblCarrierName;
             InfoViewModel.PlaceOfLoading = OceanExportHbl.CargoPickUp?.TPName;
             InfoViewModel.PolAddress = OceanExportHbl.CargoPickUp?.TPLocalAddress + "," + OceanExportHbl.CargoPickUp?.CityCode + "," + OceanExportHbl.CargoPickUp?.CountryName;
             InfoViewModel.ReportId =Guid.Parse(id);
