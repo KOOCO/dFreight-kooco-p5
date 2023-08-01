@@ -66,6 +66,56 @@
             });
         }
         }
+          function getPreAlert(id) {
+               var idNo = id;
+                if (idNo != '00000000-0000-0000-0000-000000000000') {
+              
+            myWindow = window.open("@Url.Action("PreAlert", "Docs")" + "?id=" + idNo, 'PreAlert', 'width=1200,height=800');
+            myWindow.focus()
+             }
+                  else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
+        }
+
+        }
+         function getReportBankDraft(id) {
+              var idNo = id;
+             if (idNo != '00000000-0000-0000-0000-000000000000') {
+              
+            myWindow = window.open("@Url.Action("BankDraft", "Docs")" + "?id=" + idNo, 'BankDraft', 'width=1500,height=800');
+            myWindow.focus()
+                      }
+                  else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
+        }
+        }
+           function getUsdaHeatTreatment(id) {
+                var idNo = id;
+         if (idNo != '00000000-0000-0000-0000-000000000000') {
+              
+            myWindow = window.open("@Url.Action("UsdaHeatTreatment", "Docs")" + "?id=" + idNo, 'UsdaHeatTreatment', 'width=1200,height=800');
+            myWindow.focus()
+              }
+                  else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
+        }
+        }
+
 </script>
 
 
@@ -117,17 +167,17 @@
                                      <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
                                     </a>
-                                     <a class='dropdown-item' href='#'>
+                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getReportBankDraft('@Model.OceanExportHblDto.Id')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
                                     </a>
                                      <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Package Label"]
                                     </a>
        
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getPreAlert('@Model.OceanExportHblDto.Id')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Pre-Alert"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getUsdaHeatTreatment('@Model.OceanExportHblDto.Id')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:USDA Heat Treatment"]
                                     </a>
                                     <a class='dropdown-item' href='#'>

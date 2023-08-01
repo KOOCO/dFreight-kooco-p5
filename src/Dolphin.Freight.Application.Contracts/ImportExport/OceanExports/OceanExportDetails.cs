@@ -495,7 +495,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
-
+       public DateTime? LCIssueDate { get; set; }
         public FreightPageType PageType { get; set; }
         public List<InvoiceDto> Invoices { get; set; }
         public string InvoicesJson { get; set; }

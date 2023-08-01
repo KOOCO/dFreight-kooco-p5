@@ -128,6 +128,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                 OceanExportHb2.Mark = OceanExportHbl.Mark;
                 OceanExportHb2.Description = OceanExportHbl.Description;
                 OceanExportHb2.DomesticInstructions = OceanExportHbl.DomesticInstructions;
+                OceanExportHb2.PoNo = OceanExportHbl.PoNo;
 
                 if (OceanExportHb2.ExtraProperties == null)
                 {
@@ -141,7 +142,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                 }
 
 
-                await _oceanExportHblAppService.UpdateAsync(OceanExportHbl.Id, OceanExportHb2);
+                await _oceanExportHblAppService.UpdateAsync(OceanExportHb2.Id, OceanExportHb2);
 
                 if (CreateUpdateContainerHawb is not null)
                 {

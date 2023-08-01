@@ -142,7 +142,8 @@
         
 
         function getReportTelexrelease() {
-            myWindow = window.open("@Url.Action("Telexrelease", "Docs")", 'Telexrelease', 'width=1200,height=800');
+                   var idNo = $('#OceanExportMbl_Id').val();
+            myWindow = window.open("@Url.Action("Telexrelease", "Docs")" + "?id=" + idNo, 'Telexrelease', 'width=1200,height=800');
             myWindow.focus()
         }
         function gotoReport(rindex) {
@@ -206,6 +207,7 @@
         }
 
         function getReportBankDraft() {
+            debugger;
             var idNo = $('#OceanExportHbl_Id').val();
             myWindow = window.open("@Url.Action("BankDraft", "Docs")" + "?id=" + idNo, 'BankDraft', 'width=1500,height=800');
             myWindow.focus()
@@ -482,7 +484,7 @@
                                  <a class='dropdown-item' href='javascript:void(0)' onclick="getReportBookingConfirmation()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
                                 </a>
-                                 <a class='dropdown-item' href='javascript:void(0)' onclck="getReportBankDraft()">
+                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getReportBankDraft()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
                                 </a>
                                  <a class='dropdown-item' href='javascript:void(0)' onclick="getReportPackageLabel()">
