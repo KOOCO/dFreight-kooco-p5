@@ -114,12 +114,6 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                 queryHbl.Id = Hid;
                 OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
                 IsShowHbl = true;
-
-                if(OceanExportHbl.ExtraProperties != null && OceanExportHbl.ExtraProperties.Any())
-                {
-                    Commodities = (List<ManifestCommodity>)OceanExportHbl.ExtraProperties.GetValueOrDefault("Commodities");
-                }
-
             }
         }
         public async Task<IActionResult> OnPostAsync()
@@ -134,6 +128,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                 OceanExportHb2.Mark = OceanExportHbl.Mark;
                 OceanExportHb2.Description = OceanExportHbl.Description;
                 OceanExportHb2.DomesticInstructions = OceanExportHbl.DomesticInstructions;
+                OceanExportHb2.PoNo = OceanExportHbl.PoNo;
 
                 if (OceanExportHb2.ExtraProperties == null)
                 {
@@ -147,7 +142,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                 }
 
 
-                await _oceanExportHblAppService.UpdateAsync(OceanExportHbl.Id, OceanExportHb2);
+                await _oceanExportHblAppService.UpdateAsync(OceanExportHb2.Id, OceanExportHb2);
 
                 if (CreateUpdateContainerHawb is not null)
                 {
@@ -162,29 +157,14 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                     }
 
                 }
-
-                
-
-                //await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMbl);
-                //await _oceanExportHblAppService.UpdateAsync(Hid, OceanExportHbl);
-                //QueryContainerDto query1 = new QueryContainerDto() { QueryId = Hid.Value };
-                //var rs1 = await _containerAppService.DeleteByMblIdAsync(query1);
-                //foreach (var dto in CreateUpdateContainerDtos)
-                //{
-                //    var a = dto.IsDeleted;
-                //    if (dto.Status == 0) await _containerAppService.CreateAsync(dto);
-                //}
-
-
             }
 
-            var OceanExportMb2 = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
+            var OceanExportMb2 = ObjectMapper.Map<OceanExportMblDto, CreateUpdateOceanExportMblDto>(await _oceanExportMblAppService.GetAsync(Id));
             OceanExportMb2.Mark = OceanExportMbl.Mark;
             OceanExportMb2.Description = OceanExportMbl.Description;
             OceanExportMb2.DomesticInstructions = OceanExportMbl.DomesticInstructions;
-            await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMb2) ;
-            //await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMbl);
-            //await _oceanExportHblAppService.UpdateAsync(Hid, OceanExportHbl);
+            await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMb2);
+
             QueryContainerDto query = new QueryContainerDto() { QueryId=Id };
             var rs = await _containerAppService.DeleteByMblIdAsync(query); 
             foreach (var dto in CreateUpdateContainerDtos) 

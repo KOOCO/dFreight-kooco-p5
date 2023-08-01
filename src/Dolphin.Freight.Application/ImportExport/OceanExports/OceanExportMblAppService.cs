@@ -17,6 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
 using Volo.Abp.ObjectMapping;
@@ -271,9 +272,9 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var MblNotify = tradePartners.Where(w => w.Id == data.MblNotifyId).FirstOrDefault();
                     oceanExportDetails.MblNotifyName = string.Concat(MblNotify?.TPName, "/", MblNotify?.TPCode);
                 }
-                if (data.MblOperatorId != null)
+                if (data.MblOperatorId != null||data.CreatorId!=null)
                 {
-                    oceanExportDetails.MblOperator = ObjectMapper.Map<IdentityUserDto, UserData>(await _identityUserAppService.GetAsync(data.MblOperatorId.GetValueOrDefault()));
+                    oceanExportDetails.MblOperator = ObjectMapper.Map<IdentityUserDto, UserData>(await _identityUserAppService.GetAsync(data.MblOperatorId!=null? data.MblOperatorId.GetValueOrDefault():data.CreatorId.GetValueOrDefault()));
                     oceanExportDetails.MblOperatorName = string.Concat(oceanExportDetails.MblOperator.UserName, " ", oceanExportDetails.MblOperator.Surname);
                 }
                 if (data.MblOverseaAgentId != null)
@@ -365,7 +366,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.TransPort1Name = TransPort1?.PortName;
                 }
             }
-
+            
+            oceanExportDetails.Commodity = data.GetProperty<List<ManifestCommodity>>("Commodities");
             oceanExportDetails.MblNo = data.MblNo;
             oceanExportDetails.SoNo = data.SoNo;
 

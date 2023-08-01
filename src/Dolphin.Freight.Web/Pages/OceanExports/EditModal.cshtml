@@ -221,13 +221,14 @@
             myWindow.focus()
         }
         function getCommercialInvoice() {
-            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")", 'CommercialInvoice', 'width=1200,height=800');
+             var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")"+"?Id="+idNo, 'CommercialInvoice', 'width=1200,height=800');
             myWindow.focus()
         }
         function getPickupDeliveryOrder() {
-            //var idNo = $('#OceanExportHbl_Id').val();
-            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")" + "?id=" + idNo, 'PickupDeliveryOrder', 'width=1200,height=800');
-            myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            var idNo = $('#OceanExportMbl_Id').val();
+            myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")" + "?id=" + idNo, 'PickupDeliveryOrder', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
         function getBookingPackingList() {
@@ -417,6 +418,22 @@
             myWindow.focus();
         }
 
+        function getManifestPopUp(){
+            var url = new URL(window.location.href);
+            var mblId = url.searchParams.get('Id');
+
+            $.ajax({
+                url: abp.appPath + 'Docs/ManifestOceanExportMBLPartial?mblId=' + mblId,
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('#ManifestModal').html(res);
+                    $('.modal.mymodal').modal('show');
+                    $('#frmManifest').find('.modal.fade').removeClass('modal fade');
+                }
+            });
+        }
+
     </script>
 }
 <div class="page-header">
@@ -484,6 +501,8 @@
                                 }
                             </abp-card-title>
 
+                           
+
                             <div class="btn-group dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
                                     @L["Display:Function"]
@@ -514,14 +533,14 @@
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrder()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Dispatch List"]
                                     </a>
-                                    <a class='dropdown-item' href='javascript:void(0)' onclick="$('#manifestModal').modal('show');">
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:List of Cargo"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getManifestPopUp()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getBookingPackingList(3)">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getReportTelexrelease()">
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Telephone Release List"]
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Telex Release"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("MBLPackageLabelOceanExportMBL", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:MBL Package Label"]
@@ -940,92 +959,10 @@
 <input type="hidden" name="OceanExportMbl.FdestId" id="mFdestId" value="@Model.OceanExportMbl.FdestId" />
 <input type="hidden" name="AddHbl" id="AddHbl" value="0" />
 
-<div class="modal fade" id="manifestModal" tabindex="-1" aria-labelledby="manifestModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="manifestModalLabel">@L["Manifest:CargoManifest"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row" bind-all-uniform="">
-                    <div class="col-xs-12">
-                        <div class="form-group form-full">
-                            <label class="name-sm control-label ng-binding" style="
-                    width: 20%;
-                    vertical-align: top;
-                    padding-top: 5px;
-                    ">@L["Manifest:MBLNo"]</label>
-                            <input type="text" class="form-control value-sm" readonly="" value="" style="
-                        width: 78.8%;
-                        display: inline-block;
-                    ">
-                        </div>
-                    </div>
-                    <div class="col-xs-12">
-                        <div class="form-group form-full">
-                            <label class="name-sm control-label form-textarea-label ng-binding" style="
-                    width: 20%;
-                    vertical-align: top;
-                    padding-top: 5px;
-                    ">@L["Manifest:MasterAgent"]</label>
-                            <textarea rows="6" class="value-sm form-control ng-binding" readonly="" style="
-                        width: 78.8%;
-                        display: inline-block;
-                    "></textarea>
-                        </div>
-                    </div>
-                    <div class="col-xs-12">
-                        <div class="form-group form-full">
-                            <label class="name-sm control-label form-textarea-label ng-binding" style="
-                    width: 20%;
-                    vertical-align: top;
-                    padding-top: 5px;
-                    ">@L["Manifest:Report"]</label>
-
-                            <label class="radio-inline ng-binding" style="
-                        vertical-align: top;
-                        padding-top: 5px;
-                    ">
-                                <input type="radio" name="report" value="MASTER" class="ng-pristine ng-untouched ng-valid ng-not-empty" checked onchange="changeReport(this)">
-                                @L["Manifest:MASTER"]
-                                <input type="radio" name="report" value="SUB_AGENT" class="ng-pristine ng-untouched ng-valid ng-not-empty" disabled>
-                                @L["Manifest:SUB_AGENT"]
-                                <input type="radio" name="report" value="CARRIER" class="ng-pristine ng-untouched ng-valid ng-not-empty" onchange="changeReport(this)">
-                                @L["Manifest:CARRIER"]
-                            </label>
-
-                        </div>
-
-
-                        <div class="form-group form-full reporttype">
-                            <label class="name-sm control-label form-textarea-label ng-binding" style="
-                    width: 20%;
-                    vertical-align: top;
-                    padding-top: 5px;
-                    ">@L["Manifest:ReportType"]</label>
-
-                            <label class="radio-inline ng-binding" style="
-                        vertical-align: top;
-                        padding-top: 5px;
-                    ">
-                                <input type="radio" name="report-type" value="BY_CONTAINER" class="ng-pristine ng-untouched ng-valid ng-not-empty" checked>
-                                @L["Manifest:BY_CONTAINER"]
-                                <input type="radio" name="report-type" value="BY_MBL" class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                                @L["Manifest:BY_MBL"]
-                            </label>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="getManifest()">View</button>
-            </div>
-        </div>
-    </div>
+<div class="modal mymodal" id="ManifestModal" tabindex="-1" role="dialog">
+    
 </div>
+
 <script>
     var changeReport = function (sel) {
         if (sel.value === 'CARRIER')

@@ -63,6 +63,9 @@ using System.Configuration;
 using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.AirImports;
 using Dolphin.Freight.ImportExport;
+using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.Web.Pages.OceanExports;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -82,6 +85,7 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IAirImportMawbAppService _airImportMawbAppService;
         private readonly IAirImportHawbAppService _airImportHawbAppService;
         private readonly IInvoiceAppService _invoiceAppService;
+        private readonly IContainerAppService _containerAppService;
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
@@ -91,7 +95,8 @@ namespace Dolphin.Freight.Web.Controllers
           IAirExportHawbAppService airExportHawbAppService,
           IInvoiceAppService invoiceAppService,
           IAirImportMawbAppService airImportMawbAppService,
-          IAirImportHawbAppService airImportHawbAppService)
+          IAirImportHawbAppService airImportHawbAppService,
+          IContainerAppService containerAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -107,6 +112,7 @@ namespace Dolphin.Freight.Web.Controllers
             _invoiceAppService = invoiceAppService;
             _airImportMawbAppService = airImportMawbAppService;
             _airImportHawbAppService = airImportHawbAppService;
+            _containerAppService = containerAppService;
 
             ReportLog = new ReportLog.ReportLogDto();
         }
@@ -117,48 +123,49 @@ namespace Dolphin.Freight.Web.Controllers
             PreAlertIndexViewModel InfoViewModel = new PreAlertIndexViewModel();
             QueryHblDto queryHbl = new QueryHblDto();
             queryHbl.Id = Guid.Parse(id);
-            var OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
-
+            var OceanExportHbl = await _oceanExportHblAppService.GetOceanExportDetailsById(Guid.Parse(id));
+            var OceanExportMbl = await _oceanExportMblAppService.GetOceanExportDetailsById(OceanExportHbl.MblId);
+            var container = await _containerAppService.GetContainerByHblId(Guid.Parse(id));
             #region
             //https://dlihq.gofreight.co/ocean/export/shipment/container/OE-23020004/?hbl=56
-            InfoViewModel.Office = "Dolphin Logistics Taipei Office";
+            InfoViewModel.Office = OceanExportMbl.Office.AbbreviationName; ;
             InfoViewModel.Address = "";
             InfoViewModel.Tel = "+886-2-2545-9900#8671";
             InfoViewModel.Fax = "";
             InfoViewModel.Email = "it@dolphin-gp.com";
-            InfoViewModel.FirstName = "萬泰";
-            InfoViewModel.LastName = "資訊部";
+            InfoViewModel.FirstName = OceanExportHbl.MblCustomerName;
+            InfoViewModel.LastName = "";
             InfoViewModel.DateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
 
-            InfoViewModel.TO = "AER LINGUS";
-            InfoViewModel.JOBNO = "OE-23020004";
+            InfoViewModel.TO = "";
+            InfoViewModel.JOBNO = OceanExportMbl.DocNo;
             InfoViewModel.ATTN = "";
-            InfoViewModel.MBL = "TEST00000002";
-            InfoViewModel.HBL = "OH-23020009";
-            InfoViewModel.SHPR = "123552133441";
-            InfoViewModel.CNEE = "3891 DELTA PORT 809";
-            InfoViewModel.CARR = "A CUSTOMS BROKERAGE, INC.";
-            InfoViewModel.VSLVOV = ". ABHIJEET / CCC";
-            InfoViewModel.POR = "HERMITAGE, AR (UNITED STATES)";
-            InfoViewModel.POL = "BURLINGTON, KY (UNITED STATES)";
-            InfoViewModel.ETD = "02-16-2023";
+            InfoViewModel.MBL = OceanExportHbl.MblNo;
+            InfoViewModel.HBL = OceanExportHbl.HblNo;
+            InfoViewModel.SHPR = OceanExportHbl.ShippingAgentName;
+            InfoViewModel.CNEE = OceanExportHbl.HblConsigneeName;
+            InfoViewModel.CARR = OceanExportHbl.MblCarrierName;
+            InfoViewModel.VSLVOV = OceanExportHbl.VesselName+""+OceanExportHbl.Voyage;
+            InfoViewModel.POR =OceanExportMbl.PorName;
+            InfoViewModel.POL = OceanExportMbl.PolName;
+            InfoViewModel.ETD = OceanExportMbl.ETD;
             InfoViewModel._2NDVV = "";
             InfoViewModel.ETDKAO = "";
-            InfoViewModel.POD = "SOUTH OGDEN, UT (UNITED STATES)";
-            InfoViewModel.ETA = "03-02-2023";
-            InfoViewModel.DEST = "AMBIA, IN (UNITED STATES)";
-            InfoViewModel.DESTETA = "03-04-2023";
-            InfoViewModel.VOL = "40 X 1, 40FR X 1, 20TK X 1, 48HC X 1, 20 X 1";
-            InfoViewModel.CNTRNO = "2 /  / 48HC" + Environment.NewLine + "4 /  / 40FR" + Environment.NewLine + "5 /  / 40";
+            InfoViewModel.POD = OceanExportMbl.PodName;
+            InfoViewModel.ETA = OceanExportMbl.DelEta?.ToString("dd-MM-yyyy");
+            InfoViewModel.DEST = OceanExportMbl.FdestName;
+            InfoViewModel.DESTETA = OceanExportMbl.FdestEta?.ToString("dd-MM-yyyy");
+            InfoViewModel.VOL ="";
+            InfoViewModel.CNTRNO = container?.ContainerNo;/* "2 /  / 48HC" + Environment.NewLine + "4 /  / 40FR" + Environment.NewLine + "5 /  / 40";*/
             InfoViewModel.COMM = "";
             InfoViewModel.PONBR = "";
-            InfoViewModel.PKGS = "7 CARTON(S)";
-            InfoViewModel.GWT = "7 KGS / 15.43 LBS";
-            InfoViewModel.MSRMT = "7 CBM / 247.2 CFT";
+            InfoViewModel.PKGS =OceanExportHbl.TotalPackage.ToString();
+            InfoViewModel.GWT = OceanExportHbl.TotalWeight.ToString();
+            InfoViewModel.MSRMT = OceanExportHbl.TotalMeasure.ToString(); ;
             InfoViewModel.RMK = "";
 
-            InfoViewModel.ReportId = OceanExportHbl.Id;
+            InfoViewModel.ReportId =Guid.Parse(id);
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
@@ -187,40 +194,40 @@ namespace Dolphin.Freight.Web.Controllers
         {
             TelexreleaseIndexViewModel InfoViewModel = new TelexreleaseIndexViewModel();
 
-            OceanExportMblDto oceanExportMbl = TempData["PrintData"] is not null
-                                                                                ? JsonConvert.DeserializeObject<OceanExportMblDto>(TempData["PrintData"].ToString())
-                                                                                : await _oceanExportMblAppService.GetAsync(oceanExportMblId);
+            OceanExportDetails oceanExportMbl = TempData["PrintData"] is not null
+                                                                                ? JsonConvert.DeserializeObject<OceanExportDetails>(TempData["PrintData"].ToString())
+                                                                                : await _oceanExportMblAppService.GetOceanExportDetailsById(oceanExportMblId);
 
-            if (oceanExportMbl.Id != oceanExportMblId && oceanExportMblId != Guid.Empty)
+            if ( oceanExportMblId != Guid.Empty)
             {
-                oceanExportMbl = await _oceanExportMblAppService.GetAsync(oceanExportMblId);
+                oceanExportMbl = await _oceanExportMblAppService.GetOceanExportDetailsById(oceanExportMblId);
             }
 
-            InfoViewModel.Office = oceanExportMbl.OfficeName;
+            InfoViewModel.Office = oceanExportMbl.Office.AbbreviationName; ;
             InfoViewModel.Address = "地址";
             InfoViewModel.Tel = "電話";
             InfoViewModel.Fax = "傳真";
             InfoViewModel.Email = _currentUser.Email;
             InfoViewModel.Email_U = _currentUser.Email.ToUpper();
-            InfoViewModel.FirstName = _currentUser.Name;
+            InfoViewModel.FirstName = oceanExportMbl.MblOperatorName;
             InfoViewModel.LastName = _currentUser.SurName;
             InfoViewModel.DateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
             InfoViewModel.Date_M = DateTime.Now.ToString("MMMM dd, yyyy", new CultureInfo("en-US"));
-            InfoViewModel.To = Convert.ToString(oceanExportMbl.OfficeName);
+            InfoViewModel.To = "";
             InfoViewModel.Attn = "EXPORT FREIGHT CASHER";
             InfoViewModel.From = "分站名稱";
-            InfoViewModel.Vessel = Convert.ToString(oceanExportMbl.OfficeName);
-            InfoViewModel.Voyage = Convert.ToString(oceanExportMbl.OfficeName);
-            InfoViewModel.Mbl = Convert.ToString(oceanExportMbl.OfficeName);
+            InfoViewModel.Vessel = Convert.ToString(oceanExportMbl.VesselName);
+            InfoViewModel.Voyage = Convert.ToString(oceanExportMbl.Voyage);
+            InfoViewModel.Mbl = Convert.ToString(oceanExportMbl.MblNo);
             InfoViewModel.Pol = oceanExportMbl.PolName;
             InfoViewModel.Pod = oceanExportMbl.PodName;
             InfoViewModel.Cnee = oceanExportMbl.MblCarrierName;
-            InfoViewModel.Consignee = Convert.ToString(oceanExportMbl.MblConsigneeId);
+            InfoViewModel.Consignee = Convert.ToString(oceanExportMbl.MblConsigneeName);
 
-            InfoViewModel.TextArea = InfoViewModel.LastName;
+            InfoViewModel.TextArea = InfoViewModel.FirstName;
 
-            InfoViewModel.ReportId = oceanExportMbl.Id;
+            InfoViewModel.ReportId = oceanExportMblId;
 
             TempData["PrintData"] = JsonConvert.SerializeObject(oceanExportMbl);
 
@@ -651,7 +658,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             QueryHblDto queryHbl = new QueryHblDto();
             queryHbl.Id = Guid.Parse(id);
-            var OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
+            var OceanExportHbl = await _oceanExportHblAppService.GetOceanExportDetailsById(Guid.Parse(id));
 
             #region 取貿易夥伴
             List<SelectListItem> GentlemenList = new List<SelectListItem>();
@@ -674,18 +681,18 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.Amount = ".00";
             InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
             InfoViewModel.AtSight = "AT SIGHT";
-            InfoViewModel.ShipperName = "LONG BEACH CONTAINER PIER F";
-            InfoViewModel.DrawnDocCredit = "\"DRAWN UNDER DOCUMENTARY CREDIT NO. : OOO";
-            InfoViewModel.IssueDate = "04-18-2023";
-            InfoViewModel.LCIssueBank = "PPP";
-            InfoViewModel.ToLCIssueBank = "PPP";
+            InfoViewModel.ShipperName = OceanExportHbl.ShippingAgentName;
+            InfoViewModel.DrawnDocCredit = "\"DRAWN UNDER DOCUMENTARY CREDIT NO. : "+OceanExportHbl.LCNo;
+            InfoViewModel.IssueDate = OceanExportHbl.LCIssueDate?.ToString("dd-MM-yyyy");
+            InfoViewModel.LCIssueBank = OceanExportHbl.LCIssueBankName; /*"PPP";*/
+            InfoViewModel.ToLCIssueBank = OceanExportHbl.LCIssueBankName;
             InfoViewModel.ToTradePartnerLoadFrom = "CONSIGNEE"; //NOTIFY
-            InfoViewModel.Consignee = "GALLAGHER-CANNON";
-            InfoViewModel.NotifyParty = "RAMIREZ-LEWIS";
-            InfoViewModel.ToTradePartnerName = "GALLAGHER-CANNON";
+            InfoViewModel.Consignee = OceanExportHbl.HblConsigneeName;
+            InfoViewModel.NotifyParty = OceanExportHbl.HblNotifyName;
+            InfoViewModel.ToTradePartnerName = OceanExportHbl.HblConsigneeName; /*OceanExportHbl.mbl;*/
             InfoViewModel.DraftNo = "";
             InfoViewModel.BankPreference = "";
-            InfoViewModel.ShipperName2 = "LONG BEACH CONTAINER PIER F";
+            InfoViewModel.ShipperName2 =OceanExportHbl.ShippingAgentName ;
             InfoViewModel.Gentlemen = "";
             InfoViewModel.GentlemenNameAddress = "";
             InfoViewModel.EncloseDate = DateTime.Now.ToString("yyyy-MM-dd");
@@ -711,7 +718,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.PresentOnArrival = "";
             InfoViewModel.AdviseNonPaymentBy = "";
             InfoViewModel.AdvisePaymentBy = "";
-            InfoViewModel.ReferToName = "HARD CORE TECHNOLOGY(GST/VAT)";
+            InfoViewModel.ReferToName = "HARD CORE TECHNOLOGY(GST/ VAT)";
             InfoViewModel.ReferToAddress = "";
             InfoViewModel.ToActFullyOnOurBehalf = "";
             InfoViewModel.ToAssistNotToAlter = "";
@@ -719,15 +726,15 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.ReferQuestionTo = "";
             InfoViewModel.ReferQuestionName = "HARD CORE TECHNOLOGY(GST/VAT)";
             InfoViewModel.ReferQuestionPhone = "TEL: " + "08417606080";
-            InfoViewModel.ReferQuestionShipperName = "LONG BEACH CONTAINER PIER F";
+            InfoViewModel.ReferQuestionShipperName = OceanExportHbl.ShippingAgentName;
             InfoViewModel.ReferQuestionShipperPhone = "TEL: " + "(358)459-8430";
-            InfoViewModel.ReferQuestionFreightForwarderName = "HARD CORE TECHNOLOGY(GST/VAT)";
+            InfoViewModel.ReferQuestionFreightForwarderName =  "HARD CORE TECHNOLOGY(GST/VAT)";
             InfoViewModel.ReferQuestionFreightForwarderPhone = "TEL: " + "08417606080";
-            InfoViewModel.ShipperName3 = "LONG BEACH CONTAINER PIER F";
+            InfoViewModel.ShipperName3 = OceanExportHbl.ShippingAgentName;
             InfoViewModel.AuthorizedSignatureInput = "";
             InfoViewModel.UserCompany = "HANJUN LIN" + " / " + "HARD CORE TECHNOLOGY(GST/VAT)";
-
-            InfoViewModel.ReportId = OceanExportHbl.Id;
+            
+            InfoViewModel.ReportId = Guid.Parse(id);
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
@@ -828,24 +835,25 @@ namespace Dolphin.Freight.Web.Controllers
             QueryHblDto queryHbl = new QueryHblDto();
             queryHbl.Id = Guid.Parse(id);
             var OceanExportHbl = await _oceanExportHblAppService.GetOceanExportDetailsById(Guid.Parse(id));
+            var OceanExportMbl = await _oceanExportMblAppService.GetOceanExportDetailsById(OceanExportHbl.MblId);
             //var shipper=await 
 
             #region
             //https://eval-asia.gofreight.co/ocean/export/shipment/OEX-23030002/?hbl=47120&hide_mbl=false
             InfoViewModel.SHIPPER_EXPORTER = OceanExportHbl.ShippingAgentName + Environment.NewLine + OceanExportHbl.ShippingAgentContent; /*"3 FL., NO. 215, SEC. 1, FU XING S. RD., TAIPEI, TAIWAN" + Environment.NewLine + OceanExportHbl. + Environment.NewLine + "FAX : 02-87732222" + Environment.NewLine + "TAIWAN";*/
             InfoViewModel.CONSIGNEE = OceanExportHbl.HblConsigneeName;
-            InfoViewModel.NOTIFY = OceanExportHbl.HblNotifyName + Environment.NewLine ;
+            InfoViewModel.NOTIFY = OceanExportHbl.HblNotifyName + Environment.NewLine;
             InfoViewModel.DOCUMENT_NO = OceanExportHbl.DocNo;
             InfoViewModel.BL_NO = OceanExportHbl.SubBlNo;
             InfoViewModel.EXPORT_FILE_NO = OceanExportHbl.FilingNo;
             InfoViewModel.FORWARDING_AGENT = OceanExportHbl.ForwardingAgentName + Environment.NewLine + OceanExportHbl.ForwardingAgentContent /*+ Environment.NewLine + "UNITED STATES"*/;
             InfoViewModel.POINT_AND_COUNTRY_OF_ORIGIN = "";
-            InfoViewModel.EXPORT_CARRIER = OceanExportHbl.VesselName;
-            InfoViewModel.PORT_OF_LOADING = OceanExportHbl.PolName;
-            InfoViewModel.PORT_OF_DISCHARGE = OceanExportHbl.PodName;
-            InfoViewModel.PLACE_OF_DELIVERY = OceanExportHbl.MblDel;
+            InfoViewModel.EXPORT_CARRIER = OceanExportHbl.VesselName + OceanExportHbl.Voyage;
+            InfoViewModel.PORT_OF_LOADING = OceanExportMbl.PolName;
+            InfoViewModel.PORT_OF_DISCHARGE = OceanExportMbl.PodName;
+            InfoViewModel.PLACE_OF_DELIVERY = OceanExportMbl.DelName;
 
-            InfoViewModel.SHIPPING_MARKS =OceanExportHbl.Mark; /*"CONTAINER NO./SEAL NO./P.O. NO." + Environment.NewLine + " /  / " + Environment.NewLine + Environment.NewLine + Environment.NewLine + "SHIEHN HAIPHONG PTE";*/
+            InfoViewModel.SHIPPING_MARKS = OceanExportHbl.Mark; /*"CONTAINER NO./SEAL NO./P.O. NO." + Environment.NewLine + " /  / " + Environment.NewLine + Environment.NewLine + Environment.NewLine + "SHIEHN HAIPHONG PTE";*/
             InfoViewModel.QTY = OceanExportHbl.TotalPackage.ToString();
             InfoViewModel.DESCRIPTION_OF_GOODS = OceanExportHbl.Description; /*"ELECTRONIC COMPONENT" + Environment.NewLine + "20 CARTONS";*/
             InfoViewModel.WEIGHT_G = OceanExportHbl.TotalWeight + "" + OceanExportHbl.PackageWeightName; /* "300.00 KGS" + Environment.NewLine + Environment.NewLine + "661.39 LBS";*/
@@ -854,14 +862,14 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.Show_Container_Information = "True";
             InfoViewModel.CONTAINER_NO = "";
             InfoViewModel.TYPE = "";
-            InfoViewModel.SEAL_NO =  "";
+            InfoViewModel.SEAL_NO = "";
             InfoViewModel.PKG = OceanExportHbl.TotalPackage.ToString();
             InfoViewModel.KG_LB = OceanExportHbl.TotalWeight.ToString();
             InfoViewModel.CBM_CFT = OceanExportHbl.TotalMeasure.ToString();
-            InfoViewModel.bl_date = OceanExportHbl.OnBoardDate?.ToString("dd/mm/yyyy");
+            InfoViewModel.bl_date = OceanExportHbl.OnBoardDate?.ToString("dd/MM/yyyy");
             InfoViewModel.sworn_date = OceanExportHbl.OnBoardDate?.ToString("MMMM/dd/yyyy"); ;
 
-            InfoViewModel.name_of_chamber =  "REGIONAL";
+            InfoViewModel.name_of_chamber = "REGIONAL";
             InfoViewModel.state_of_chamber = "CA";
             InfoViewModel.name_of_country = "UNITED STATES";
 
@@ -973,17 +981,17 @@ namespace Dolphin.Freight.Web.Controllers
 
             QueryHblDto queryHbl = new QueryHblDto();
             queryHbl.Id = Guid.Parse(id);
-            var OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
+            var OceanExportHbl = await _oceanExportHblAppService.GetOceanExportDetailsById(Guid.Parse(id));
 
             #region
             //https://eval-asia.gofreight.co/ocean/export/shipment/OEX-23030003/?hbl=47125&hide_mbl=false
-            InfoViewModel.NameAndAddressOfExporte = "CHIYODA" + Environment.NewLine + "PODIUM BUILDING" + Environment.NewLine + "159883, SINGAPORE" + Environment.NewLine + "TEL: 62786666";
-            InfoViewModel.NameAndAddressOfConsignee = "CHIYODA" + Environment.NewLine + "PODIUM BUILDING" + Environment.NewLine + "159883, SINGAPORE" + Environment.NewLine + "TEL: 62786666";
+            InfoViewModel.NameAndAddressOfExporte = OceanExportHbl.ShippingAgentName + Environment.NewLine + OceanExportHbl.ShippingAgentContent; /*"CHIYODA" + Environment.NewLine + "PODIUM BUILDING" + Environment.NewLine + "159883, SINGAPORE" + Environment.NewLine + "TEL: 62786666"*/;
+            InfoViewModel.NameAndAddressOfConsignee = OceanExportHbl.HblConsigneeName;/* + Environment.NewLine + "PODIUM BUILDING" + Environment.NewLine + "159883, SINGAPORE" + Environment.NewLine + "TEL: 62786666";*/
             InfoViewModel.SignatureOfExporter = "";
             InfoViewModel.DescriptionOfConsignment1 = "";
             InfoViewModel.DescriptionOfConsignment2 = "";
 
-            InfoViewModel.ReportId = OceanExportHbl.Id;
+            InfoViewModel.ReportId =Guid.Parse(id);
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
@@ -1455,49 +1463,52 @@ namespace Dolphin.Freight.Web.Controllers
         {
             ShipmentViewModel InfoViewModel = new ShipmentViewModel();
 
-            QueryHblDto queryHbl = new QueryHblDto();
+            ImportExport.OceanExports.QueryHblDto queryHbl = new QueryHblDto();
             queryHbl.Id = Guid.Parse(id);
-            var OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
-
+            var OceanExportHbl = await _oceanExportHblAppService.GetOceanExportDetailsById(Guid.Parse(id));
+            var OceanExportMbl = await _oceanExportMblAppService.GetOceanExportDetailsById(OceanExportHbl.MblId);
             #region
             InfoViewModel.Office = "Dolphin Logistics Taipei Office";
             InfoViewModel.Address = "";
             InfoViewModel.Tel = "+886-2-2545-9900#8671";
             InfoViewModel.Fax = "";
             InfoViewModel.Email = "it@dolphin-gp.com";
-            InfoViewModel.FirstName = "萬泰";
-            InfoViewModel.LastName = "資訊部";
+            InfoViewModel.FirstName = OceanExportHbl.HblOperatorName;
+            InfoViewModel.LastName = "";
             InfoViewModel.DateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
-
-            InfoViewModel.TO = "AER LINGUS";
-            InfoViewModel.JOBNO = "OE-23020004";
+            InfoViewModel.SteamShip = OceanExportMbl.ShippingAgentName;
+            InfoViewModel.TO = "";
+            InfoViewModel.JOBNO = OceanExportHbl.DocNo;
             InfoViewModel.ATTN = "";
-            InfoViewModel.MBL = "TEST00000002";
-            InfoViewModel.HBL = "OH-23020009";
-            InfoViewModel.SHPR = "123552133441";
-            InfoViewModel.CNEE = "3891 DELTA PORT 809";
-            InfoViewModel.CARR = "A CUSTOMS BROKERAGE, INC.";
-            InfoViewModel.VSLVOV = ". ABHIJEET / CCC";
-            InfoViewModel.POR = "HERMITAGE, AR (UNITED STATES)";
-            InfoViewModel.POL = "BURLINGTON, KY (UNITED STATES)";
-            InfoViewModel.ETD = "02-16-2023";
+            InfoViewModel.MBL = OceanExportHbl.MblNo;
+            InfoViewModel.HBL = OceanExportHbl.HblNo;
+            InfoViewModel.SHPR = OceanExportHbl.ShippingAgentName;
+            InfoViewModel.CNEE = OceanExportHbl.HblConsigneeName;
+            InfoViewModel.CARR = OceanExportHbl.MblCarrierName;
+            InfoViewModel.VSLVOV = OceanExportHbl.VesselName+""+OceanExportHbl.Voyage;
+            InfoViewModel.POR = OceanExportHbl.PorName;
+            InfoViewModel.POL = OceanExportMbl.PolName;
+            InfoViewModel.ETD = OceanExportMbl.ETD;
             InfoViewModel._2NDVV = "";
             InfoViewModel.ETDKAO = "";
-            InfoViewModel.POD = "SOUTH OGDEN, UT (UNITED STATES)";
-            InfoViewModel.ETA = "03-02-2023";
-            InfoViewModel.DEST = "AMBIA, IN (UNITED STATES)";
-            InfoViewModel.DESTETA = "03-04-2023";
-            InfoViewModel.VOL = "40 X 1, 40FR X 1, 20TK X 1, 48HC X 1, 20 X 1";
-            InfoViewModel.CNTRNO = "2 /  / 48HC" + Environment.NewLine + "4 /  / 40FR" + Environment.NewLine + "5 /  / 40";
+            InfoViewModel.POD = OceanExportMbl.PodName;
+            InfoViewModel.ETA = OceanExportMbl.PodEta?.ToString("dd-MM-yyyy");
+            InfoViewModel.DEST = OceanExportMbl.FdestName;
+            InfoViewModel.DESTETA = OceanExportMbl.FdestEta?.ToString("dd-MM-yyyy");
+            InfoViewModel.VOL = "";
+            InfoViewModel.CNTRNO = "";
             InfoViewModel.COMM = "";
             InfoViewModel.PONBR = "";
-            InfoViewModel.PKGS = "7 CARTON(S)";
-            InfoViewModel.GWT = "7 KGS / 15.43 LBS";
-            InfoViewModel.MSRMT = "7 CBM / 247.2 CFT";
+            InfoViewModel.PKGS = OceanExportHbl.TotalPackage.ToString();
+            InfoViewModel.GWT = OceanExportHbl.TotalWeight.ToString();
+            InfoViewModel.MSRMT =OceanExportHbl.TotalMeasure.ToString();
             InfoViewModel.RMK = "";
-
-            InfoViewModel.ReportId = OceanExportHbl.Id;
+            InfoViewModel.BookingNo = OceanExportMbl.SoNo;
+            InfoViewModel.Xtn = OceanExportHbl.SoNo;
+            InfoViewModel.PlaceOfLoading = OceanExportHbl.CargoPickUp?.TPName;
+            InfoViewModel.PolAddress = OceanExportHbl.CargoPickUp?.TPLocalAddress + "," + OceanExportHbl.CargoPickUp?.CityCode + "," + OceanExportHbl.CargoPickUp?.CountryName;
+            InfoViewModel.ReportId =Guid.Parse(id);
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
@@ -1701,31 +1712,33 @@ namespace Dolphin.Freight.Web.Controllers
 
 
         [HttpGet]
-        public IActionResult CommercialInvoice()
+        public async Task<IActionResult> CommercialInvoice(string id)
         {
             CommercialInvoiceIndexViewModel InfoViewModel = new CommercialInvoiceIndexViewModel();
-
+            QueryHblDto queryHbl = new QueryHblDto();
+            queryHbl.Id = Guid.Parse(id);
+            var OceanExportHbl = await _oceanExportHblAppService.GetOceanExportDetailsById(Guid.Parse(id));
             #region
             //https://dlihq.gofreight.co/ocean/export/shipment/container/OE-23020004/?hbl=56
-            InfoViewModel.shipper_area = "123" + Environment.NewLine + "3 FL., NO. 215, SEC. 1, FU XING S. RD., TAIPEI, TAIWAN" + Environment.NewLine + "TEL : 02-87721111" + Environment.NewLine + "FAX : 02-87732222" + Environment.NewLine + "TAIWAN";
-            InfoViewModel.consignee_area = "CHIYODA";
-            InfoViewModel.notify_area = "1231231" + Environment.NewLine + "ATTN: SDSDSD";
+            InfoViewModel.shipper_area = OceanExportHbl.ShippingAgentName + Environment.NewLine + OceanExportHbl.ShippingAgentContent /*+ Environment.NewLine + "TEL : 02-87721111" + Environment.NewLine + "FAX : 02-87732222" + Environment.NewLine + "TAIWAN"*/;
+            InfoViewModel.consignee_area = OceanExportHbl.HblConsigneeName;
+            InfoViewModel.notify_area = OceanExportHbl.HblNotifyName;
             InfoViewModel.invoice_no_and_date = "";
-            InfoViewModel.LC_NO = "";
-            InfoViewModel.LC_issue_bank = "";
-            InfoViewModel.ETD_date = "03-27-2023";
-            InfoViewModel.POR_location = "";
-            InfoViewModel.POL_location = "SINGAPORE (SINGAPORE)";
-            InfoViewModel.FDEST_location = "";
-            InfoViewModel.vessel_voyage = "XIN WEN ZHOU / 149E";
-            InfoViewModel.freight_term = "FREIGHT PREPAID";
+            InfoViewModel.LC_NO = OceanExportHbl.LCNo;
+            InfoViewModel.LC_issue_bank = OceanExportHbl.LCIssueBankName;
+            InfoViewModel.ETD_date = OceanExportHbl.DelEta?.ToString("dd/mm/yyyy");
+            InfoViewModel.POR_location = OceanExportHbl.PorName;
+            InfoViewModel.POL_location = OceanExportHbl.PolName;
+            InfoViewModel.FDEST_location = OceanExportHbl.FdestName;
+            InfoViewModel.vessel_voyage = OceanExportHbl.VesselName;
+            InfoViewModel.freight_term = OceanExportHbl.FreightTermName;
 
-            InfoViewModel.shipping_marks = "CONTAINER NO./SEAL NO./P.O. NO." + Environment.NewLine + " /  / " + Environment.NewLine + Environment.NewLine + Environment.NewLine + "SHIEHN HAIPHONG PTE";
-            InfoViewModel.packages = "3 PALLET(S)";
-            InfoViewModel.good_items = "ELECTRONIC COMPONENT" + Environment.NewLine + "20 CARTONS";
+            InfoViewModel.shipping_marks = OceanExportHbl.Mark /*+ Environment.NewLine + " /  / " + Environment.NewLine + Environment.NewLine + Environment.NewLine + "SHIEHN HAIPHONG PTE"*/;
+            InfoViewModel.packages = OceanExportHbl.TotalPackage.ToString();
+            InfoViewModel.good_items = OceanExportHbl.Description;
             InfoViewModel.unit_price = "";
             InfoViewModel.total_amount = "";
-            InfoViewModel.shipper_name = "123";
+            InfoViewModel.shipper_name = OceanExportHbl.ShippingAgentName;
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
@@ -1742,52 +1755,65 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> PickupDeliveryOrder(/*string id*/)
+        public async Task<IActionResult> PickupDeliveryOrder(string id)
         {
             PickupDeliveryOrderIndexViewModel InfoViewModel = new PickupDeliveryOrderIndexViewModel();
 
             //QueryHblDto queryHbl = new QueryHblDto();
             //queryHbl.Id = Guid.Parse(id);
-            //var OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
+            QueryContainerDto query = new QueryContainerDto() { QueryId = Guid.Parse(id), MaxResultCount = 1000 };
+            var OceanExportMbl = await _oceanExportMblAppService.GetOceanExportDetailsById(Guid.Parse(id));
+            var containers = await _containerAppService.QueryListAsync(query);
 
             #region
             //https://eval-asia.gofreight.co/ocean/export/shipment/OEX-23030003/?hbl=47125&hide_mbl=false
-            InfoViewModel.Office = "Dolphin Logistics Taipei Office";
+            InfoViewModel.Office = OceanExportMbl.Office.AbbreviationName;
             InfoViewModel.Address = "";
             InfoViewModel.Tel = "+886-2-2545-9900#8671";
             InfoViewModel.Fax = "";
             InfoViewModel.Email = "it@dolphin-gp.com";
-            InfoViewModel.FirstName = "萬泰";
-            InfoViewModel.LastName = "資訊部";
+            InfoViewModel.FirstName = OceanExportMbl.MblCustomerName; /*"萬泰"*/;
+            InfoViewModel.LastName = "" /*"資訊部"*/;
             InfoViewModel.DateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
 
             InfoViewModel.trucker_area = "";
-            InfoViewModel.empty_pickup_area = "NIPPON CARGO AIRLINES";
-            InfoViewModel.issue_at = "05-09-2023";
-            InfoViewModel.issue_by = "HANJUN LIN";
-            InfoViewModel.MBL_NO = "OEX-23030003";
-            InfoViewModel.carrier = "ALPINE AVIATION INC.";
-            InfoViewModel.VESSEL_INFO = "ASIATIC BAY N097";
-            InfoViewModel.POL_location = "SINGAPORE (SINGAPORE)";
-            InfoViewModel.POL_location_ETD = "03-30-2023";
-            InfoViewModel.POD_location = "BANGKOK (THAILAND)";
-            InfoViewModel.POD_location_ETD = "04-03-2023";
-            InfoViewModel.total_packages_count = "6";
-            InfoViewModel.gross_weight_kgs = "1,000.00";
+            InfoViewModel.empty_pickup_area =OceanExportMbl.EmptyPickupName;
+            InfoViewModel.issue_at = OceanExportMbl.PostDate.ToString("dd-MM-yyyy");/* "05-09-2023";*/
+            InfoViewModel.issue_by = OceanExportMbl.MblOperatorName;
+            InfoViewModel.MBL_NO = OceanExportMbl.MblNo;
+            InfoViewModel.carrier = OceanExportMbl.MblCarrierName;
+            InfoViewModel.VESSEL_INFO =OceanExportMbl.VesselName + OceanExportMbl.Voyage;
+            InfoViewModel.POR_location = OceanExportMbl.PorName;
+            InfoViewModel.POR_location_ETD = OceanExportMbl.PorEtd?.ToString("dd-MM-yyyy");
+            InfoViewModel.POL_location = OceanExportMbl.PolName;
+            InfoViewModel.POL_location_ETD = OceanExportMbl.PolEtd?.ToString("dd-MM-yyyy");
+            InfoViewModel.POD_location = OceanExportMbl.PodName;
+            InfoViewModel.POD_location_ETD = OceanExportMbl.PodEta?.ToString("dd-MM-yyyy") /*"04-03-2023"*/;
+            InfoViewModel.total_packages_count = OceanExportMbl.TotalPackage.ToString();
+            InfoViewModel.gross_weight_kgs = OceanExportMbl.TotalWeight.ToString();
             InfoViewModel.gross_weight_lbs = "0.00";
-            InfoViewModel.measurement_cbm = "4.50";
+            InfoViewModel.measurement_cbm = OceanExportMbl.TotalMeasure.ToString();
             InfoViewModel.measurement_cft = "0.00";
-            InfoViewModel.COMMODITY = "ELECTRONIC COMPONENT";
-            InfoViewModel.billing_to_area = "HARD CORE TECHNOLOGY\r\n198 PEARSON GATEWAY APT. 555\r\nNORTH JAMES, KY 98809-9933\r\nWALNUT, CA 91789, UNITED STATES\r\nATTN: JENNIFER JIMENEZ TEL: 585.592.4848 FAX: 649-277-5122";
-            InfoViewModel.ContainerList = new List<PickupDeliveryOrderContainerList>()
+            InfoViewModel.COMMODITY = OceanExportMbl.Commodity?.ToString();
+            InfoViewModel.carrier_bkg_no = OceanExportMbl.SoNo;
+            InfoViewModel.delivery_to_area = OceanExportMbl.DeliveryToName;
+            InfoViewModel.billing_to_area = OceanExportMbl.MblBillToName + "\r\n" + OceanExportMbl.MblBillToContent; /*"HARD CORE TECHNOLOGY\r\n198 PEARSON GATEWAY APT. 555\r\nNORTH JAMES, KY 98809-9933\r\nWALNUT, CA 91789, UNITED STATES\r\nATTN: JENNIFER JIMENEZ TEL: 585.592.4848 FAX: 649-277-5122"*/;
+            InfoViewModel.ContainerList = new List<PickupDeliveryOrderContainerList>();
+            foreach (var container in containers)
             {
-                new
-                PickupDeliveryOrderContainerList
+                var con = new
+                  PickupDeliveryOrderContainerList
                 {
-                    PACKAGE = "6 PALLET(S)",
-                    WEIGHT = "1,000.00 KGS / 0.00 LBS"
-                }
+                    PACKAGE = container.PackageNum.ToString(),
+                    WEIGHT = container.PackageWeight + " " + container.PackageWeightUnit,
+                    CONTAINER_NO = container.ContainerNo,
+                    PICKUP_NO = container.PicupNo,
+                    SEAL_NO = container.SealNo,
+                    LFD = container.LastFreeDate.ToString(),
+
+                };
+                InfoViewModel.ContainerList.Add(con);
             };
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
@@ -3389,7 +3415,7 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> BatchPrintingPartialView(Guid mawbId, Guid hawbId) 
+        public async Task<IActionResult> BatchPrintingPartialView(Guid mawbId, Guid hawbId)
         {
             AirImportDetails airImportDetails = new AirImportDetails();
 
@@ -3416,14 +3442,14 @@ namespace Dolphin.Freight.Web.Controllers
             return PartialView("Pages/Shared/_BatchPrinting.cshtml", airImportDetails);
         }
         [HttpGet]
-        public async Task<IActionResult> BatchPrintingAirImport(Guid mawbId, FreightPageType pageType, Guid hawbId, string hawbIdJson) 
+        public async Task<IActionResult> BatchPrintingAirImport(Guid mawbId, FreightPageType pageType, Guid hawbId, string hawbIdJson)
         {
             var airImportDetails = await GetAirImportDetailsByPageType(hawbId, pageType);
 
             var ids = JsonConvert.DeserializeObject<List<string>>(hawbIdJson);
             var hawbsList = new List<HawbNo>();
 
-            foreach(var item in ids)
+            foreach (var item in ids)
             {
                 var hawbs = new HawbNo
                 {
@@ -3599,6 +3625,394 @@ namespace Dolphin.Freight.Web.Controllers
             model.IsPDF = true;
 
             return await _generatePdf.GetPdf("Views/Docs/HBLPackingListOceanExport.cshtml", model);
+        }
+
+        public async Task<IActionResult> ExamHoldNoticeOceanExportHBL(Guid id, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+            oceanExportDetails.HblOperatorName = _currentUser.Name + " " + _currentUser.SurName;
+
+            return View(oceanExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ExamHoldNoticeOceanExportHBL(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/ExamHoldNoticeOceanExportHBL.cshtml", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> OceanExportProfitReport(Guid id, FreightPageType pageType, string reportType)
+        {
+            string returnUrl = string.Empty;
+
+            QueryInvoiceDto queryDto = new QueryInvoiceDto();
+
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+
+            var containers = await _containerAppService.QueryListHblAsync(id);
+
+            var list = new List<CreateUpdateContainerDto>();
+
+            double totalPackageWeight = 0;
+            double totalPackageMeasure = 0;
+
+            foreach (var item in containers)     
+            {
+                var items = new CreateUpdateContainerDto
+                {
+                    ContainerNo = item.ContainerNo,
+                    SealNo = item.SealNo,
+                    PackageWeight = item.PackageWeight,
+                    PackageMeasure = item.PackageMeasure
+                };
+
+                totalPackageWeight += item.PackageWeight;
+                totalPackageMeasure += item.PackageMeasure;
+
+                list.Add(items);
+            }
+
+            var measurement = Convert.ToDouble(oceanExportDetails.TotalWeight) * 35.315;
+
+            var profitReport = new ProfitReportViewModel()
+            {
+                AgentName = oceanExportDetails.HblAgentName,
+                Consignee = oceanExportDetails.HblConsigneeName,
+                Currency = "USD",
+                Customer = oceanExportDetails.MblCustomerName,
+                Operator = oceanExportDetails.MblOperatorName,
+                Measurement = string.Concat(totalPackageMeasure + " CBM " + Math.Round(totalPackageMeasure * 35.315, 2) + " CFT"),
+                PolEtd = string.Concat(oceanExportDetails.PolName, "/", oceanExportDetails.PolEtd).TrimStart('/'),
+                PodEtd = string.Concat(oceanExportDetails.PodName, "/", oceanExportDetails.PodEta).TrimStart('/'),
+                PorEtd = string.Concat(oceanExportDetails.PorName, "/", oceanExportDetails.PorEtd).TrimStart('/'),
+                Del = string.Concat(oceanExportDetails.DelName, "/", oceanExportDetails.DelEta).TrimStart('/'),
+                Sales = oceanExportDetails.MblSaleName,
+                Shipper = oceanExportDetails.ShippingAgentName,
+                MawbNo = oceanExportDetails.MblNo,
+                ChargableWeight = string.Concat(totalPackageWeight + " KGS " + Math.Round(totalPackageWeight * 2.20462, 2) + " LBS"),
+                PageType = pageType,
+                ReportType = reportType,
+                FileNo = oceanExportDetails.FilingNo,
+                HawbNo = oceanExportDetails.HblNo,
+                SvcTermToName = Convert.ToString(oceanExportDetails.SvcTermToName),
+                SvcTermFromName = Convert.ToString(oceanExportDetails.SvcTermFromName),
+                SalesType = oceanExportDetails.MblSalesTypeName,
+
+            };
+
+            if (pageType == FreightPageType.OEHBL)
+            {
+
+                // hbl invoices
+                queryDto = new QueryInvoiceDto() { QueryType = 1, ParentId = id };
+
+                profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+
+                // Mbl invoices
+                queryDto = new QueryInvoiceDto() { QueryType = 3, ParentId = oceanExportDetails.MblId };
+
+                var mawbInvoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+
+                if (mawbInvoices != null && mawbInvoices.Any())
+                {
+                    profitReport.Invoices ??= new List<InvoiceDto>();
+
+                    foreach (var mawbInvoice in mawbInvoices)
+                    {
+                        profitReport.Invoices.Add(mawbInvoice);
+                    }
+                }
+
+            }
+            else
+            {
+                queryDto = new QueryInvoiceDto() { QueryType = 3, ParentId = id };
+
+                profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
+            }
+
+            profitReport.AR = new List<InvoiceDto>();
+            profitReport.AP = new List<InvoiceDto>();
+            profitReport.DC = new List<InvoiceDto>();
+
+            if (profitReport.Invoices != null && profitReport.Invoices.Count > 0)
+            {
+                foreach (var dto in profitReport.Invoices)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            profitReport.AR.Add(dto);
+                            break;
+                        case 1:
+                            profitReport.DC.Add(dto);
+                            break;
+                        case 2:
+                            profitReport.AP.Add(dto);
+                            break;
+                    }
+                }
+                profitReport.InvoicesJson = JsonConvert.SerializeObject(profitReport.Invoices);
+            }
+
+            if (profitReport.AR.Any())
+            {
+                double arTotal = 0;
+                foreach (var ar in profitReport.AR)
+                {
+                    arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                }
+                profitReport.ARTotal = arTotal;
+            }
+            if (profitReport.AP.Any())
+            {
+                double apTotal = 0;
+                foreach (var ap in profitReport.AP)
+                {
+                    apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                }
+
+                profitReport.APTotal = apTotal;
+            }
+            if (profitReport.DC.Any())
+            {
+                double dcTotal = 0;
+                foreach (var dc in profitReport.DC)
+                {
+                    dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                }
+                profitReport.DCTotal = dcTotal;
+            }
+
+            profitReport.Total = profitReport.ARTotal - profitReport.APTotal + profitReport.DCTotal;
+
+            returnUrl = pageType == FreightPageType.OIMBL
+                ? (reportType == "Summary") ? "Views/Docs/MblProfitReportSummary.cshtml" : "Views/Docs/MblProfitReportDetailed.cshtml"
+                : "Views/Docs/HblProfitReport.cshtml";
+
+            return View(returnUrl, profitReport);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> OceanExportProfitReport(ProfitReportViewModel model)
+        {
+            string returnUrl = model.PageType == FreightPageType.AIMBL
+                ? (model.ReportType == "Summary") ? "Views/Docs/MblProfitReportSummary.cshtml" : "Views/Docs/MblProfitReportDetailed.cshtml"
+                : "Views/Docs/HblProfitReport.cshtml";
+
+            model.IsPDF = true;
+
+            model.Invoices = JsonConvert.DeserializeObject<IList<InvoiceDto>>(model.InvoicesJson);
+
+            return await _generatePdf.GetPdf(returnUrl, model);
+        }
+
+        public async Task<IActionResult> DangerousGoodsOceanExportHBL(Guid id, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+
+            return View(oceanExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DangerousGoodsOceanExportHBL(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/DangerousGoodsOceanExportHBL.cshtml", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ManifestOceanExportMBLPartial(Guid mblId)
+        {
+            var data = await _oceanExportMblAppService.GetAsync(mblId);
+            var tradePartners = _dropdownService.TradePartnerLookupList;
+
+            OceanExportDetails oceanExportDetails = new();
+
+            oceanExportDetails.MblNo = data.MblNo;
+            oceanExportDetails.MblOverseaAgentName = string.Concat(tradePartners.Where(w => w.Value.Equals(Convert.ToString(data.MblOverseaAgentId))).Select(s => s.Text));
+
+            return PartialView("Pages/Shared/_ManifestOceanExportMBL.cshtml", oceanExportDetails);
+        }
+
+        public async Task<IActionResult> ManifestOceanExportMBL(Guid mblId, string agent, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(mblId, pageType);
+            var containerName = _dropdownService.ContainerLookupList;
+
+            QueryContainerDto query = new QueryContainerDto() { QueryId = mblId };
+            var containers = await _containerAppService.QueryListAsync(query);
+
+            var list = new List<CreateUpdateContainerDto>();
+
+            foreach (var item in containers)
+            {
+                var containerSizeName = string.Concat(containerName.Where(w => w.Value == string.Concat(item.ContainerSizeId)).Select(s => s.Text));
+
+                var items = new CreateUpdateContainerDto
+                {
+                    ContainerNo = item.ContainerNo,
+                    SealNo = item.SealNo,
+                    ContainerSizeName = containerSizeName,
+                    PackageNum = item.PackageNum,
+                    PackageWeightStr = $"{item.PackageWeight} KGS",
+                    PackageWeightStrLBS = $"{item.PackageWeight * 2.20462:F2} LBS",
+                    PackageMeasureStr = $"{item.PackageMeasure} CBM",
+                    PackageMeasureStrLBS = $"{item.PackageMeasure * 35.315:F2} CFT"
+                };
+                list.Add(items);
+            }
+
+            oceanExportDetails.CreateUpdateContainer = list;
+            oceanExportDetails.CreateUpdateContainerJson = JsonConvert.SerializeObject(list);
+
+            return View(oceanExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ManifestOceanExportMBL(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            model.CreateUpdateContainer = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(model.CreateUpdateContainerJson);
+
+            return await _generatePdf.GetPdf("Views/Docs/ManifestOceanExportMBL.cshtml", model);
+        }
+
+        public async Task<IActionResult> ManifestOceanExportContainer(Guid mblId, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(mblId, pageType);
+            var containerName = _dropdownService.ContainerLookupList;
+
+            QueryContainerDto query = new QueryContainerDto() { QueryId = mblId };
+            var containers = await _containerAppService.QueryListAsync(query);
+
+            var list = new List<CreateUpdateContainerDto>();
+
+            foreach (var item in containers)
+            {
+                var containerSizeName = string.Concat(containerName.Where(w => w.Value == string.Concat(item.ContainerSizeId)).Select(s => s.Text));
+
+                var items = new CreateUpdateContainerDto
+                {
+                    Id = item.Id,
+                    ContainerNo = item.ContainerNo,
+                    SealNo = item.SealNo,
+                    ContainerSizeName = containerSizeName
+                };
+                list.Add(items);
+            }
+
+            oceanExportDetails.CreateUpdateContainer = list;
+            oceanExportDetails.CreateUpdateContainerJson = JsonConvert.SerializeObject(list);
+
+            return View(oceanExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ManifestOceanExportContainer(OceanExportDetails models)
+        {
+            models.IsPDF = true;
+
+            models.CreateUpdateContainer = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(models.CreateUpdateContainerJson);
+
+            return await _generatePdf.GetPdf("Views/Docs/ManifestOceanExportContainer.cshtml", models);
+        }
+
+        public async Task<IActionResult> ManifestOceanExportCarrier(Guid mblId, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(mblId, pageType);
+            var containerName = _dropdownService.ContainerLookupList;
+
+            QueryContainerDto query = new QueryContainerDto() { QueryId = mblId };
+            var containers = await _containerAppService.QueryListAsync(query);
+
+            var list = new List<CreateUpdateContainerDto>();
+
+            foreach (var item in containers)
+            {
+                var containerSizeName = string.Concat(containerName.Where(w => w.Value == string.Concat(item.ContainerSizeId)).Select(s => s.Text));
+
+                var items = new CreateUpdateContainerDto
+                {
+                    Id = item.Id,
+                    ContainerNo = item.ContainerNo,
+                    SealNo = item.SealNo,
+                    ContainerSizeName = containerSizeName
+                };
+                list.Add(items);
+            }
+
+            oceanExportDetails.CreateUpdateContainer = list;
+            oceanExportDetails.CreateUpdateContainerJson = JsonConvert.SerializeObject(list);
+
+            return View(oceanExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ManifestOceanExportCarrier(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            model.CreateUpdateContainer = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(model.CreateUpdateContainerJson);
+
+            return await _generatePdf.GetPdf("Views/Docs/ManifestOceanExportCarrier.cshtml", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HBLPrintOceanExport(Guid id, FreightPageType pageType)
+        {
+            var oceanExportPrintDetails = await GetOceanExportDetailsByPageType(id, pageType);
+
+            QueryInvoiceDto queryDto = new QueryInvoiceDto();
+
+            var containers = await _containerAppService.QueryListHblAsync(id);
+            //var container = await _containerAppService.GetContainerByHblId(Guid.Parse(id));
+
+            var list = new List<CreateUpdateContainerDto>();
+
+            if (containers != null && containers.Any())
+            {
+                int totalPKGs = 0;
+                double totalPackageWeight = 0;
+                double totalPackageMeasure = 0;
+                string packageUnitName = _dropdownService.PackageUnitLookupList.Where(w => w.Value == Convert.ToString(containers[0].PackageUnitId)).FirstOrDefault().Text;
+                foreach (var item in containers)
+                {
+                    var items = new CreateUpdateContainerDto
+                    {
+                        ContainerNo = item.ContainerNo,
+                        PackageNum = item.PackageNum,
+                        PackageWeight = item.PackageWeight,
+                        PackageMeasure = item.PackageMeasure
+                    };
+
+                    totalPackageWeight += item.PackageWeight;
+                    totalPackageMeasure += item.PackageMeasure;
+                    totalPKGs += item.PackageNum;
+
+                    list.Add(items);
+                }
+                oceanExportPrintDetails.TotalWeight = totalPackageWeight;
+                oceanExportPrintDetails.TotalMeasure = totalPackageMeasure;
+                oceanExportPrintDetails.TotalPackage = containers[0].PackageNum;
+                oceanExportPrintDetails.PackageWeightName = containers[0].PackageWeightUnit;
+                oceanExportPrintDetails.PackageMeasureName = containers[0].PackageMeasureUnit;
+                oceanExportPrintDetails.ContainerNo = containers[0].ContainerNo;
+                oceanExportPrintDetails.Mark = containers[0].SealNo;
+                oceanExportPrintDetails.PackagpackageUnitName= packageUnitName;
+            }
+
+            oceanExportPrintDetails.DisplayUnit = "KGBM";
+
+            return View(oceanExportPrintDetails);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> HBLPrintOceanExport(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/HBLPrintOceanExport.cshtml", model);
         }
 
         #region Private Functions

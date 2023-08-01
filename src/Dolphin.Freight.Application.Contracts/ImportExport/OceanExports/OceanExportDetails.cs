@@ -11,6 +11,8 @@ using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.TradePartners;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -20,6 +22,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string ShipmentNo { get; set; }
         public string FilingNo { get; set; }
         public string MblNo { get; set; }
+        public string PoNo { get; set; }
         public string DocNo { get; set; }
         public string HblNo { get; set; }
         public string LCNo { get; set; }
@@ -53,7 +56,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string MblOverseaAgentName { get; set; }
 
         public string MblOverseaAgentContent { get; set; }
-        
+        public List<ManifestCommodity> Commodity { get; set; }
         public Guid? MblNotifyId { get; set; }
         public string MblNotifyName { get; set; }
         public string HblNotifyName { get; set; }
@@ -165,14 +168,17 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 收貨地(POR)ID
         /// </summary>
         public Guid? PorId { get; set; }
+        public Guid? MPorId { get; set; }
         /// <summary>
         /// 收貨地(POR)
         /// </summary>
         public string PorName { get; set; }
+        public string MPorName { get; set; }
         /// <summary>
         /// 收貨地(POR) ETD
         /// </summary>
         public DateTime? PorEtd { get; set; }
+        public DateTime? MPorEtd { get; set; }
         /// <summary>
         /// 裝貨港(POL)ID
         /// </summary>
@@ -190,14 +196,17 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 卸貨港(POD)ID
         /// </summary>
         public Guid? PodId { get; set; }
+        public Guid? MPodId { get; set; }
         /// <summary>
         /// 卸貨港(POD)
         /// </summary>
         public string PodName { get; set; }
+        public string MPodName { get; set; }
         /// <summary>
         /// 卸貨港(POD) ETA
         /// </summary>
         public DateTime? PodEta { get; set; }
+        public DateTime? MPodEta { get; set; }
         /// <summary>
         /// 交貨地(DEL)ID
         /// </summary>
@@ -423,6 +432,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 嘜頭
         /// </summary>
         public string Mark { get; set; }
+        public string HblOperatorName { get; set; }
+        public DateTime? CurrentDate { get; set; }
         /// <summary>
         /// 貨描
         /// </summary>
@@ -451,6 +462,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 集裝箱的包裝材積 ID
         /// </summary>
         public Guid? PackageMeasureId { get; set; }
+        public string PackageMeasureName { get; set; }
         /// <summary>
         /// 集裝箱的包裝材積
         /// </summary>
@@ -468,10 +480,14 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 總重
         /// </summary>
         public double TotalWeight { get; set; }
+        public string TotalWeightStr { get; set; }
+        public string TotalWeightStrLBS { get; set; }
         /// <summary>
         /// 總材積
         /// </summary>
         public double TotalMeasure { get; set; }
+        public string TotalMeasureStr { get; set; }
+        public string TotalMeasureStrLBS { get; set; }
 
         /// <summary>
         /// 是否鎖定
@@ -481,7 +497,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
-
+       public DateTime? LCIssueDate { get; set; }
         public FreightPageType PageType { get; set; }
         public List<InvoiceDto> Invoices { get; set; }
         public string InvoicesJson { get; set; }
@@ -494,5 +510,16 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public double APTotal { get; set; }
         public double Total { get; set; }
         public bool IsCustomerRef { get; set; }
+        public string HblAgentName { get; set; }
+        public List<CreateUpdateContainerDto> list { get; set; }
+        public string BillOfLanding { get; set; }
+        public string DisplayUnit { get; set; }
+        public string ContainerNo { get; set; }
+        public string MblFdestName { get; set; }
+        public string PackagpackageUnitName { get; set; }
+        
+        public TradePartnerDto CargoPickUp { get; set; }
+        public string CreateUpdateContainerJson { get; set; }
+        public List<CreateUpdateContainerDto> CreateUpdateContainer { get; set; }
     }
 }

@@ -142,7 +142,8 @@
         
 
         function getReportTelexrelease() {
-            myWindow = window.open("@Url.Action("Telexrelease", "Docs")", 'Telexrelease', 'width=1200,height=800');
+                   var idNo = $('#OceanExportMbl_Id').val();
+            myWindow = window.open("@Url.Action("Telexrelease", "Docs")" + "?id=" + idNo, 'Telexrelease', 'width=1200,height=800');
             myWindow.focus()
         }
         function gotoReport(rindex) {
@@ -206,6 +207,7 @@
         }
 
         function getReportBankDraft() {
+            debugger;
             var idNo = $('#OceanExportHbl_Id').val();
             myWindow = window.open("@Url.Action("BankDraft", "Docs")" + "?id=" + idNo, 'BankDraft', 'width=1500,height=800');
             myWindow.focus()
@@ -247,11 +249,26 @@
             myWindow.focus()
         }
         function getCommercialInvoice() {
-            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")", 'CommercialInvoice', 'width=1200,height=800');
+             var idNo = $('#OceanExportHbl_Id').val();
+             debugger
+               if (idNo != '00000000-0000-0000-0000-000000000000') {
+          
+            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")" + "?id=" + idNo, 'CommercialInvoice', 'width=1200,height=800');
             myWindow.focus()
+               }
+                          else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
         }
-        function getPickupDeliveryOrder() {
-            myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+        }
+               function getPickupDeliveryOrder() {
+            var idNo = $('#OceanExportMbl_Id').val();
+            myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")" + "?id=" + idNo, 'PickupDeliveryOrder', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
         function getManifest() {
@@ -264,6 +281,22 @@
             dolphin.freight.importExport.oceanExports.oceanExportMbl.get(mblId).done(function (res) {
                 myWindow = window.open('https://www.track-trace.com/bol#' + res.mblNo, '_blank', 'width=1200, height=1000');
                 myWindow.focus();
+            });
+        }
+
+        function getManifestPopUp() {
+            var url = new URL(window.location.href);
+            var mblId = url.searchParams.get('Id');
+
+            $.ajax({
+                url: abp.appPath + 'Docs/ManifestOceanExportMBLPartial?mblId=' + mblId,
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('#ManifestModal').html(res);
+                    $('.modal.mymodal').modal('show');
+                    $('#frmManifest').find('.modal.fade').removeClass('modal fade');
+                }
             });
         }
     </script>
@@ -299,7 +332,7 @@
            
                 <abp-card class="card board-item">
                     <abp-card-header style="background:#555555;color:#FFFFFF;">
-
+                          <input type="hidden" name="OceanExportMbl.Id" id="OceanExportMbl_Id" value="@Model.OceanExportMbl?.Id" />
                         <abp-card-title>
                             MB/L
                             <span id="title0">@Model.OceanExportMbl.MblNo </span>
@@ -351,7 +384,7 @@
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrder()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="getManifest()">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getManifestPopUp()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
                                 </a>
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getBookingPackingList(3)">
@@ -421,10 +454,10 @@
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport()">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(6)">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Print Automobile Documents"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="getHbl()">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HBLPrintOceanExport", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Print HB/L"]
                                 </a>
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(7)">
@@ -451,7 +484,7 @@
                                  <a class='dropdown-item' href='javascript:void(0)' onclick="getReportBookingConfirmation()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
                                 </a>
-                                 <a class='dropdown-item' href='javascript:void(0)' onclck="getReportBankDraft()">
+                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getReportBankDraft()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
                                 </a>
                                  <a class='dropdown-item' href='javascript:void(0)' onclick="getReportPackageLabel()">
@@ -466,20 +499,20 @@
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getForwarderCargoReceipt()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder cargo receipt"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("DangerousGoodsOceanExportHBL", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
                                 </a>
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ExamHoldNoticeOceanExportHBL", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
                                 </a>
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Shipping Advice"]
                                 </a>
                                 <li class="dropdown-divider"></li>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(5)">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanExportProfitReport", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                                 </a>
 
@@ -597,5 +630,9 @@
             </div>
         </abp-column>
     </abp-row>
+
+<div class="modal mymodal" id="ManifestModal" tabindex="-1" role="dialog">
+</div>
+
     </div>
 </div>

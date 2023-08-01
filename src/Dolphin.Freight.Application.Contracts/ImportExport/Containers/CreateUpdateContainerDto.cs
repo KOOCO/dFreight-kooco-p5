@@ -28,18 +28,23 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// 封條號碼
         /// </summary>
         public string SealNo { get; set; }
+        public string ContainerSizeName { get; set; }
         /// <summary>
         /// 包裝種類數量
         /// </summary>
-        public int PackageNum { get; set; }
+        public int? PackageNum { get; set; }
         /// <summary>
         /// 包裝重量
         /// </summary>
         public double? PackageWeight { get; set; }
+        public string PackageWeightStr { get; set; }
+        public string PackageWeightStrLBS { get; set; }
         /// <summary>
         /// 包裝材積
         /// </summary>
         public double? PackageMeasure { get; set; }
+        public string PackageMeasureStr { get; set; }
+        public string PackageMeasureStrLBS{ get; set; }
         /// <summary>
         /// 封條號碼2
         /// </summary>
