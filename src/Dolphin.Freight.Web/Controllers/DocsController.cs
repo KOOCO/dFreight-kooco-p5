@@ -192,40 +192,40 @@ namespace Dolphin.Freight.Web.Controllers
         {
             TelexreleaseIndexViewModel InfoViewModel = new TelexreleaseIndexViewModel();
 
-            OceanExportMblDto oceanExportMbl = TempData["PrintData"] is not null
-                                                                                ? JsonConvert.DeserializeObject<OceanExportMblDto>(TempData["PrintData"].ToString())
-                                                                                : await _oceanExportMblAppService.GetAsync(oceanExportMblId);
+            OceanExportDetails oceanExportMbl = TempData["PrintData"] is not null
+                                                                                ? JsonConvert.DeserializeObject<OceanExportDetails>(TempData["PrintData"].ToString())
+                                                                                : await _oceanExportMblAppService.GetOceanExportDetailsById(oceanExportMblId);
 
-            if (oceanExportMbl.Id != oceanExportMblId && oceanExportMblId != Guid.Empty)
+            if ( oceanExportMblId != Guid.Empty)
             {
-                oceanExportMbl = await _oceanExportMblAppService.GetAsync(oceanExportMblId);
+                oceanExportMbl = await _oceanExportMblAppService.GetOceanExportDetailsById(oceanExportMblId);
             }
 
-            InfoViewModel.Office = oceanExportMbl.OfficeName;
+            InfoViewModel.Office = oceanExportMbl.Office.AbbreviationName; ;
             InfoViewModel.Address = "地址";
             InfoViewModel.Tel = "電話";
             InfoViewModel.Fax = "傳真";
             InfoViewModel.Email = _currentUser.Email;
             InfoViewModel.Email_U = _currentUser.Email.ToUpper();
-            InfoViewModel.FirstName = _currentUser.Name;
+            InfoViewModel.FirstName = oceanExportMbl.MblOperatorName;
             InfoViewModel.LastName = _currentUser.SurName;
             InfoViewModel.DateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
             InfoViewModel.Date_M = DateTime.Now.ToString("MMMM dd, yyyy", new CultureInfo("en-US"));
-            InfoViewModel.To = Convert.ToString(oceanExportMbl.OfficeName);
+            InfoViewModel.To = "";
             InfoViewModel.Attn = "EXPORT FREIGHT CASHER";
             InfoViewModel.From = "分站名稱";
-            InfoViewModel.Vessel = Convert.ToString(oceanExportMbl.OfficeName);
-            InfoViewModel.Voyage = Convert.ToString(oceanExportMbl.OfficeName);
-            InfoViewModel.Mbl = Convert.ToString(oceanExportMbl.OfficeName);
+            InfoViewModel.Vessel = Convert.ToString(oceanExportMbl.VesselName);
+            InfoViewModel.Voyage = Convert.ToString(oceanExportMbl.Voyage);
+            InfoViewModel.Mbl = Convert.ToString(oceanExportMbl.MblNo);
             InfoViewModel.Pol = oceanExportMbl.PolName;
             InfoViewModel.Pod = oceanExportMbl.PodName;
             InfoViewModel.Cnee = oceanExportMbl.MblCarrierName;
-            InfoViewModel.Consignee = Convert.ToString(oceanExportMbl.MblConsigneeId);
+            InfoViewModel.Consignee = Convert.ToString(oceanExportMbl.MblConsigneeName);
 
-            InfoViewModel.TextArea = InfoViewModel.LastName;
+            InfoViewModel.TextArea = InfoViewModel.FirstName;
 
-            InfoViewModel.ReportId = oceanExportMbl.Id;
+            InfoViewModel.ReportId = oceanExportMblId;
 
             TempData["PrintData"] = JsonConvert.SerializeObject(oceanExportMbl);
 
