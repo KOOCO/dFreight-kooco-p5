@@ -36,7 +36,8 @@
             var IsShowHbl = '@Model.IsShowHbl';
             if (IsShowHbl == 'True') {
                 $("#hblCard").show();
-                onSetCommodity();
+                onSetCommodity();            
+                setPoValue();
             }
             else $("#hblCard").hide();
 
@@ -78,7 +79,9 @@
                 $('[name="OceanExportMbl.Description"]:eq(1)').val($('[name="OceanExportMbl.Description"]:eq(0)').val());
                 $('[name="OceanExportMbl.DomesticInstructions"]:eq(1)').val($('[name="OceanExportMbl.DomesticInstructions"]:eq(0)').val());
             })
-            $("#PoNoTag").tagsInit();
+
+            
+
         });
 
         function addTr() {
@@ -163,6 +166,8 @@
             chkIndex += 1;
 
             resetCommodityIndex();
+
+            $('#btnCommodity').removeAttr('disabled');
         }
         function onRemoveCommodity() {
             $('[name="chk_commodity"]:checked').each(function (i, elem) {
@@ -170,9 +175,12 @@
             });
 
             resetCommodityIndex();
+
+            if (!$('[name="chk_commodity"]:checked').length){
+                $('#btnCommodity').attr('disabled', 'disabled');
+            }
         }
         function onSetCommodity() {
-            debugger;
             var extraProperties = '@Html.Raw(Json.Serialize(Model.OceanExportHbl.ExtraProperties))';
 
             if (extraProperties && extraProperties != 'null' && extraProperties != '{}') {
@@ -204,10 +212,49 @@
                 })
             })
         }
-            function getCommercialInvoice() {
-             var idNo = $('#OceanExportHbl_Id').val();
-            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")"+"?Id="+idNo, 'CommercialInvoice', 'width=1200,height=800');
+        function getCommercialInvoice() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")" + "?Id=" + idNo, 'CommercialInvoice', 'width=1200,height=800');
             myWindow.focus()
+        }
+        function setPoValue(){
+            var tagOptions = {};
+
+            tagOptions.onDel = function () { setTimeout(() => {
+                var tags = $('#PoNoTag').tagsStr();
+                $('#OceanExportHbl_PoNo').val(tags);
+                if(!tags){
+                    $('#btnPO').attr('disabled', 'disabled');
+                }
+            }, 100) }
+
+            $("#PoNoTag").tagsInit(tagOptions);
+
+            var poNos = '@Model.OceanExportHbl?.PoNo';
+
+            if (poNos) {
+                poNos.split(',').forEach((poNo) => $("#PoNoTag").tagsAdd(poNo, poNo));
+                $('#btnPO').removeAttr('disabled');
+            }
+
+            $('#PoNoTag_tag_input').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    $('#OceanExportHbl_PoNo').val($('#PoNoTag').tagsStr());
+                    $('#btnPO').removeAttr('disabled');
+                }
+            });
+        }
+        function addPONumberForDescription()
+        {
+            var val = $('#oceanExportHblDescription').val() || '';
+            var tagValue = $('#PoNoTag').tagsStr();
+
+            $('#oceanExportHblDescription').val((val.concat('PO NO.\n' + tagValue + '\n')));
+
+            var rows = parseInt($('#oceanExportHblDescription').attr('rows'));
+            rows = rows + 1
+            $('#oceanExportHblDescription').attr('rows', rows);
         }
     </script>
 
@@ -422,82 +469,82 @@
                             <div class="btn-group dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
                                     @L["Display:Function"]
-   </button>
-            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-files-o"></i> @L["Btn:File Package"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Print Car Documents"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Print HB/L"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Print OB/L"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Bill of Lading Terms"]
-        </a>
-        <a class='dropdown-item'  href='javascript:void(0)' onclick="getCommercialInvoice()">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
-        </a>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HBLPackingListOceanExport", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
-        </a>
-        <a class='dropdown-item'  href='javascript:void(0)' onclick="getCertificateOfOrigin()">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Certificate of Origin"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Dock Receipt"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Dispatch List"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:S/O Confirmation"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Packaging Label"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Pre-Alert"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:USDA Heat Treatment"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods Declaration"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
-        </a>
-        <a class='dropdown-item' href='#'>
-            <i class="fa fa-file-text-o"></i> @L["Btn:Shipping Advice"]
-        </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanExportProfitReport", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
-            <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
-        </a>
-        <li class="dropdown-divider"></li>
-        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()" style="color: #4B77BE; font-weight: 500;">
-            <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
-        </a>
-        </div>
-        </div>
+                                </button>
+                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-files-o"></i> @L["Btn:File Package"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Print Car Documents"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Print HB/L"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Print OB/L"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Bill of Lading Terms"]
+                                    </a>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getCommercialInvoice()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
+                                    </a>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HBLPackingListOceanExport", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
+                                    </a>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getCertificateOfOrigin()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Certificate of Origin"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Dock Receipt"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Dispatch List"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:S/O Confirmation"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Packaging Label"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Pre-Alert"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:USDA Heat Treatment"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods Declaration"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
+                                    </a>
+                                    <a class='dropdown-item' href='#'>
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Shipping Advice"]
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanExportProfitReport", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()" style="color: #4B77BE; font-weight: 500;">
+                                        <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
+                                    </a>
+                                </div>
+                            </div>
 
                             <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="true" aria-controls="hblDiv">
                             </button>
@@ -514,6 +561,7 @@
                             <abp-row>
                                 <abp-column>
                                     <div id="PoNoTag" tagname="PoNoTag"></div>
+                                    <abp-input type="hidden" suppress-label="true" asp-for="@Model.OceanExportHbl.PoNo" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -602,13 +650,13 @@
                                         <div class="pull-right">
                                             <div class="_font-12 inline-block">Copy: </div>
                                             <div class="btn-group">
-                                                <abp-button size="Small" abp-border="Bottom_Primary" disabled="true">@L["P.O"]</abp-button>
-                                                <abp-button size="Small" abp-border="Bottom_Primary" disabled="true">@L["Commodity"]</abp-button>
-                                                <abp-button size="Small" abp-border="Bottom_Primary" disabled="true">@L["CommodityAndHTS"]</abp-button>
+                                                <abp-button id="btnPO" onclick="addPONumberForDescription()" size="Small" abp-border="Default"  disabled="true">@L["P.O"]</abp-button>
+                                                <abp-button id="btnCommodity" size="Small" abp-border="Default" disabled="true">@L["Commodity"]</abp-button>
+                                                <abp-button id="btnCommodityHTS" size="Small" abp-border="Default" disabled="true">@L["CommodityAndHTS"]</abp-button>
                                             </div>
                                         </div>
                                     </div>
-                                    <textarea id="t2" name="OceanExportHbl.Description" class="form-control">@Model.OceanExportHbl.Description</textarea>
+                                    <textarea id="oceanExportHblDescription" rows="2" name="OceanExportHbl.Description" class="form-control">@Model.OceanExportHbl.Description</textarea>
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -621,7 +669,6 @@
                     </abp-card>
                     <abp-row>
                         <abp-column>
-                            <input type="hidden" name="OceanExportHbl.PoNo" id="mPoNo" value="@Model.OceanExportHbl.PoNo" />
                             <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
                         </abp-column>
                     </abp-row>
@@ -669,7 +716,7 @@
                                 </div>
                             </fieldset>
 
-                            <button type="submit" class="btn btn-dark btn-block btn-update">
+                            <button type="button" class="btn btn-dark btn-block btn-update">
                                 <i class="fa-solid fa-arrows-rotate"></i>更新
                             </button>
                         </div>
