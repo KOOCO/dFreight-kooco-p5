@@ -212,7 +212,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.DateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
             InfoViewModel.Date_M = DateTime.Now.ToString("MMMM dd, yyyy", new CultureInfo("en-US"));
-            InfoViewModel.To = "";
+            InfoViewModel.To = oceanExportMbl.MblCarrierName;
             InfoViewModel.Attn = "EXPORT FREIGHT CASHER";
             InfoViewModel.From = "分站名稱";
             InfoViewModel.Vessel = Convert.ToString(oceanExportMbl.VesselName);
@@ -220,8 +220,8 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.Mbl = Convert.ToString(oceanExportMbl.MblNo);
             InfoViewModel.Pol = oceanExportMbl.PolName;
             InfoViewModel.Pod = oceanExportMbl.PodName;
-            InfoViewModel.Cnee = oceanExportMbl.MblCarrierName;
-            InfoViewModel.Consignee = Convert.ToString(oceanExportMbl.MblConsigneeName);
+            InfoViewModel.Cnee = oceanExportMbl.MblOverseaAgentName;
+            InfoViewModel.Consignee = Convert.ToString(oceanExportMbl.MblOverseaAgentName);
 
             InfoViewModel.TextArea = InfoViewModel.FirstName;
 
