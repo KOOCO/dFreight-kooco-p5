@@ -11,6 +11,7 @@ using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.TradePartners;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -497,5 +498,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public double Total { get; set; }
         public bool IsCustomerRef { get; set; }
         public string HblAgentName { get; set; }
+        public TradePartnerDto CargoPickUp { get; set; }
     }
 }

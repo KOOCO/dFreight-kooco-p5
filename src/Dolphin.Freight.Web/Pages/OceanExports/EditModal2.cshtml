@@ -327,6 +327,13 @@
             myWindow = window.open("@Url.Action("Telexrelease", "Docs")" + "?id=" + idNo, 'Telexrelease', 'width=1200,height=800');
             myWindow.focus()
         }
+        function getReportCarDocument()
+        {
+          var idNo = $('#OceanExportHbl_Id').val();
+                    
+           myWindow = window.open("@Url.Action("Shipment", "Docs")"+ "?id=" + idNo, 'Shipment', 'width=1200,height=800');
+            myWindow.focus()
+        }
     </script>
 
     <script id="commodityTemplate" type="text/x-jQuery-tmpl">
@@ -550,7 +557,7 @@
         <a class='dropdown-item' href='#'>
             <i class="fa fa-files-o"></i> @L["Btn:File Package"]
         </a>
-        <a class='dropdown-item' href='#'>
+        <a class='dropdown-item' href='javascript:void(0)' onclick="getReportCarDocument()">
             <i class="fa fa-file-text-o"></i> @L["Btn:Print Car Documents"]
         </a>
         <a class='dropdown-item' href='#'>
