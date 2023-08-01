@@ -370,6 +370,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             oceanExportDetails.Commodity = data.GetProperty<List<ManifestCommodity>>("Commodities");
             oceanExportDetails.MblNo = data.MblNo;
             oceanExportDetails.SoNo = data.SoNo;
+            oceanExportDetails.PodEta = data.PodEta;
 
             return oceanExportDetails;
         }
