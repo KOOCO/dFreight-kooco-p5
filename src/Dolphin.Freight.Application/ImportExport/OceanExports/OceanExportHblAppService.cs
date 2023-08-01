@@ -303,6 +303,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.PorName = por?.PortName;
                 }
 
+                if (mbl.PorId != null)
+                {
+                    var por = portMangements.Where(w => w.Id == mbl.PorId).FirstOrDefault();
+                    oceanExportDetails.MPorName = por?.PortName;
+                }
+
                 if (data.PolId != null)
                 {
                     var pol = portMangements.Where(w => w.Id == data.PolId).FirstOrDefault();
@@ -350,8 +356,15 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var pod = portMangements.Where(w => w.Id.Equals(data.PodId)).FirstOrDefault();
                     oceanExportDetails.PodName = pod?.PortName;
                 }
+                
+                if (mbl.PodId != null)
+                {
+                    var pod = portMangements.Where(w => w.Id.Equals(mbl.PodId)).FirstOrDefault();
+                    oceanExportDetails.MPodName = pod?.PortName;
+                }
 
                 oceanExportDetails.HblNo = data.HblNo;
+                oceanExportDetails.SoNo = mbl.SoNo;
                 oceanExportDetails.DocNo = mbl.FilingNo;
                 oceanExportDetails.ItnNo = data.ItnNo;
                 oceanExportDetails.MblDel = mbl.Del?.PortName;
@@ -360,6 +373,9 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 oceanExportDetails.FdestEta = data.FdestEta;
                 oceanExportDetails.PolEtd = mbl.PolEtd;
                 oceanExportDetails.PorEtd = data.PorEtd;
+                oceanExportDetails.MPorEtd = mbl.PorEtd;
+                oceanExportDetails.PodEta = data.PodEta;
+                oceanExportDetails.MPodEta = mbl.PodEta;
                 oceanExportDetails.DelEta = data.DelEta;
                 oceanExportDetails.VesselName = mbl.VesselName;
                 oceanExportDetails.Voyage = mbl.Voyage;

@@ -11,6 +11,7 @@ using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.ImportExport.Containers;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -20,6 +21,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string ShipmentNo { get; set; }
         public string FilingNo { get; set; }
         public string MblNo { get; set; }
+        public string PoNo { get; set; }
         public string DocNo { get; set; }
         public string HblNo { get; set; }
         public string LCNo { get; set; }
@@ -165,14 +167,17 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 收貨地(POR)ID
         /// </summary>
         public Guid? PorId { get; set; }
+        public Guid? MPorId { get; set; }
         /// <summary>
         /// 收貨地(POR)
         /// </summary>
         public string PorName { get; set; }
+        public string MPorName { get; set; }
         /// <summary>
         /// 收貨地(POR) ETD
         /// </summary>
         public DateTime? PorEtd { get; set; }
+        public DateTime? MPorEtd { get; set; }
         /// <summary>
         /// 裝貨港(POL)ID
         /// </summary>
@@ -190,14 +195,17 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 卸貨港(POD)ID
         /// </summary>
         public Guid? PodId { get; set; }
+        public Guid? MPodId { get; set; }
         /// <summary>
         /// 卸貨港(POD)
         /// </summary>
         public string PodName { get; set; }
+        public string MPodName { get; set; }
         /// <summary>
         /// 卸貨港(POD) ETA
         /// </summary>
         public DateTime? PodEta { get; set; }
+        public DateTime? MPodEta { get; set; }
         /// <summary>
         /// 交貨地(DEL)ID
         /// </summary>
@@ -470,10 +478,14 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 總重
         /// </summary>
         public double TotalWeight { get; set; }
+        public string TotalWeightStr { get; set; }
+        public string TotalWeightStrLBS { get; set; }
         /// <summary>
         /// 總材積
         /// </summary>
         public double TotalMeasure { get; set; }
+        public string TotalMeasureStr { get; set; }
+        public string TotalMeasureStrLBS { get; set; }
 
         /// <summary>
         /// 是否鎖定
@@ -497,5 +509,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public double Total { get; set; }
         public bool IsCustomerRef { get; set; }
         public string HblAgentName { get; set; }
+        public string CreateUpdateContainerJson { get; set; }
+        public List<CreateUpdateContainerDto> CreateUpdateContainer { get; set; }
     }
 }

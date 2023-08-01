@@ -201,6 +201,23 @@
             //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
+
+        function getManifestPopUp() {
+            var url = new URL(window.location.href);
+            var mblId = url.searchParams.get('Id');
+
+            $.ajax({
+                url: abp.appPath + 'Docs/ManifestOceanExportMBLPartial?mblId=' + mblId,
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('#ManifestModal').html(res);
+                    $('.modal.mymodal').modal('show');
+                    $('#frmManifest').find('.modal.fade').removeClass('modal fade');
+                }
+            });
+        }
+
     </script>
 }
 <div class="page-header">
@@ -288,9 +305,9 @@
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrder()">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
-                                    </a>
+                            <a class='dropdown-item' href='javascript:void(0)' onclick="getManifestPopUp()">
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
+                            </a>
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
                                     </a>
@@ -582,5 +599,9 @@
         </abp-column>
     </abp-row>
         </form>
+
+<div class="modal mymodal" id="ManifestModal" tabindex="-1" role="dialog">
+</div>
+
     </div>
 </div>
