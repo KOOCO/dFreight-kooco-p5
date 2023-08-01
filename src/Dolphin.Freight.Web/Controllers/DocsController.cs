@@ -979,17 +979,17 @@ namespace Dolphin.Freight.Web.Controllers
 
             QueryHblDto queryHbl = new QueryHblDto();
             queryHbl.Id = Guid.Parse(id);
-            var OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
+            var OceanExportHbl = await _oceanExportHblAppService.GetOceanExportDetailsById(Guid.Parse(id));
 
             #region
             //https://eval-asia.gofreight.co/ocean/export/shipment/OEX-23030003/?hbl=47125&hide_mbl=false
-            InfoViewModel.NameAndAddressOfExporte = "CHIYODA" + Environment.NewLine + "PODIUM BUILDING" + Environment.NewLine + "159883, SINGAPORE" + Environment.NewLine + "TEL: 62786666";
-            InfoViewModel.NameAndAddressOfConsignee = "CHIYODA" + Environment.NewLine + "PODIUM BUILDING" + Environment.NewLine + "159883, SINGAPORE" + Environment.NewLine + "TEL: 62786666";
+            InfoViewModel.NameAndAddressOfExporte = OceanExportHbl.ShippingAgentName + Environment.NewLine + OceanExportHbl.ShippingAgentContent; /*"CHIYODA" + Environment.NewLine + "PODIUM BUILDING" + Environment.NewLine + "159883, SINGAPORE" + Environment.NewLine + "TEL: 62786666"*/;
+            InfoViewModel.NameAndAddressOfConsignee = OceanExportHbl.HblConsigneeName;/* + Environment.NewLine + "PODIUM BUILDING" + Environment.NewLine + "159883, SINGAPORE" + Environment.NewLine + "TEL: 62786666";*/
             InfoViewModel.SignatureOfExporter = "";
             InfoViewModel.DescriptionOfConsignment1 = "";
             InfoViewModel.DescriptionOfConsignment2 = "";
 
-            InfoViewModel.ReportId = OceanExportHbl.Id;
+            InfoViewModel.ReportId =Guid.Parse(id);
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
