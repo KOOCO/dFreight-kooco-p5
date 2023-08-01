@@ -272,9 +272,9 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var MblNotify = tradePartners.Where(w => w.Id == data.MblNotifyId).FirstOrDefault();
                     oceanExportDetails.MblNotifyName = string.Concat(MblNotify?.TPName, "/", MblNotify?.TPCode);
                 }
-                if (data.MblOperatorId != null)
+                if (data.MblOperatorId != null||data.CreatorId!=null)
                 {
-                    oceanExportDetails.MblOperator = ObjectMapper.Map<IdentityUserDto, UserData>(await _identityUserAppService.GetAsync(data.MblOperatorId.GetValueOrDefault()));
+                    oceanExportDetails.MblOperator = ObjectMapper.Map<IdentityUserDto, UserData>(await _identityUserAppService.GetAsync(data.MblOperatorId!=null? data.MblOperatorId.GetValueOrDefault():data.CreatorId.GetValueOrDefault()));
                     oceanExportDetails.MblOperatorName = string.Concat(oceanExportDetails.MblOperator.UserName, " ", oceanExportDetails.MblOperator.Surname);
                 }
                 if (data.MblOverseaAgentId != null)

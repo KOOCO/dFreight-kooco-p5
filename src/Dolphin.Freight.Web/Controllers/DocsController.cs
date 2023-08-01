@@ -121,48 +121,49 @@ namespace Dolphin.Freight.Web.Controllers
             PreAlertIndexViewModel InfoViewModel = new PreAlertIndexViewModel();
             QueryHblDto queryHbl = new QueryHblDto();
             queryHbl.Id = Guid.Parse(id);
-            var OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
-
+            var OceanExportHbl = await _oceanExportHblAppService.GetOceanExportDetailsById(Guid.Parse(id));
+            var OceanExportMbl = await _oceanExportMblAppService.GetOceanExportDetailsById(OceanExportHbl.MblId);
+            var container = await _containerAppService.GetContainerByHblId(Guid.Parse(id));
             #region
             //https://dlihq.gofreight.co/ocean/export/shipment/container/OE-23020004/?hbl=56
-            InfoViewModel.Office = "Dolphin Logistics Taipei Office";
+            InfoViewModel.Office = OceanExportMbl.Office.AbbreviationName; ;
             InfoViewModel.Address = "";
             InfoViewModel.Tel = "+886-2-2545-9900#8671";
             InfoViewModel.Fax = "";
             InfoViewModel.Email = "it@dolphin-gp.com";
-            InfoViewModel.FirstName = "萬泰";
-            InfoViewModel.LastName = "資訊部";
+            InfoViewModel.FirstName = OceanExportHbl.MblCustomerName;
+            InfoViewModel.LastName = "";
             InfoViewModel.DateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
 
-            InfoViewModel.TO = "AER LINGUS";
-            InfoViewModel.JOBNO = "OE-23020004";
+            InfoViewModel.TO = "";
+            InfoViewModel.JOBNO = OceanExportMbl.DocNo;
             InfoViewModel.ATTN = "";
-            InfoViewModel.MBL = "TEST00000002";
-            InfoViewModel.HBL = "OH-23020009";
-            InfoViewModel.SHPR = "123552133441";
-            InfoViewModel.CNEE = "3891 DELTA PORT 809";
-            InfoViewModel.CARR = "A CUSTOMS BROKERAGE, INC.";
-            InfoViewModel.VSLVOV = ". ABHIJEET / CCC";
-            InfoViewModel.POR = "HERMITAGE, AR (UNITED STATES)";
-            InfoViewModel.POL = "BURLINGTON, KY (UNITED STATES)";
-            InfoViewModel.ETD = "02-16-2023";
+            InfoViewModel.MBL = OceanExportHbl.MblNo;
+            InfoViewModel.HBL = OceanExportHbl.HblNo;
+            InfoViewModel.SHPR = OceanExportHbl.ShippingAgentName;
+            InfoViewModel.CNEE = OceanExportHbl.HblConsigneeName;
+            InfoViewModel.CARR = OceanExportHbl.MblCarrierName;
+            InfoViewModel.VSLVOV = OceanExportHbl.VesselName+""+OceanExportHbl.Voyage;
+            InfoViewModel.POR =OceanExportHbl.PorName;
+            InfoViewModel.POL = OceanExportHbl.PolName;
+            InfoViewModel.ETD = OceanExportHbl.ETD;
             InfoViewModel._2NDVV = "";
             InfoViewModel.ETDKAO = "";
-            InfoViewModel.POD = "SOUTH OGDEN, UT (UNITED STATES)";
-            InfoViewModel.ETA = "03-02-2023";
-            InfoViewModel.DEST = "AMBIA, IN (UNITED STATES)";
-            InfoViewModel.DESTETA = "03-04-2023";
-            InfoViewModel.VOL = "40 X 1, 40FR X 1, 20TK X 1, 48HC X 1, 20 X 1";
-            InfoViewModel.CNTRNO = "2 /  / 48HC" + Environment.NewLine + "4 /  / 40FR" + Environment.NewLine + "5 /  / 40";
+            InfoViewModel.POD = OceanExportHbl.PodName;
+            InfoViewModel.ETA = OceanExportHbl.DelEta?.ToString("dd-MM-yyyy");
+            InfoViewModel.DEST = OceanExportHbl.FdestName;
+            InfoViewModel.DESTETA = OceanExportHbl.FdestEta?.ToString("dd-MM-yyyy");
+            InfoViewModel.VOL ="";
+            InfoViewModel.CNTRNO = container?.ContainerNo;/* "2 /  / 48HC" + Environment.NewLine + "4 /  / 40FR" + Environment.NewLine + "5 /  / 40";*/
             InfoViewModel.COMM = "";
             InfoViewModel.PONBR = "";
-            InfoViewModel.PKGS = "7 CARTON(S)";
-            InfoViewModel.GWT = "7 KGS / 15.43 LBS";
-            InfoViewModel.MSRMT = "7 CBM / 247.2 CFT";
+            InfoViewModel.PKGS =OceanExportHbl.TotalPackage.ToString();
+            InfoViewModel.GWT = OceanExportHbl.TotalWeight.ToString();
+            InfoViewModel.MSRMT = OceanExportHbl.TotalMeasure.ToString(); ;
             InfoViewModel.RMK = "";
 
-            InfoViewModel.ReportId = OceanExportHbl.Id;
+            InfoViewModel.ReportId =Guid.Parse(id);
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
