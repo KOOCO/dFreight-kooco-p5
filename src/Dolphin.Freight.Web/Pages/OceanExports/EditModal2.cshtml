@@ -168,6 +168,7 @@
             resetCommodityIndex();
 
             $('#btnCommodity').removeAttr('disabled');
+            $('#btnCommodityHTS').removeAttr('disabled');
         }
         function onRemoveCommodity() {
             $('[name="chk_commodity"]:checked').each(function (i, elem) {
@@ -178,6 +179,7 @@
 
             if (!$('[name="chk_commodity"]:checked').length){
                 $('#btnCommodity').attr('disabled', 'disabled');
+                $('#btnCommodityHTS').attr('disabled', 'disabled');
             }
         }
         function onSetCommodity() {
@@ -195,7 +197,10 @@
                         $('#commodityBody').append(newRow);
 
                         commodityIndex += 1;
-                    })
+                    });
+
+                    $('#btnCommodity').removeAttr('disabled');
+                    $('#btnCommodityHTS').removeAttr('disabled');
                 }
             }
         }
@@ -252,9 +257,49 @@
 
             $('#oceanExportHblDescription').val((val.concat('PO NO.\n' + tagValue + '\n')));
 
-            var rows = parseInt($('#oceanExportHblDescription').attr('rows'));
-            rows = rows + 1
-            $('#oceanExportHblDescription').attr('rows', rows);
+            $('#oceanExportHblDescription').attr('style', 'height: ' + document.getElementById('oceanExportHblDescription').scrollHeight + 'px !important');
+        }
+        function addCommodityForDescription()
+        {
+            var val = $('#oceanExportHblDescription').val() || '';
+            var tagValue = $('#PoNoTag').tagsStr();
+
+            var trLength = $('#commodityBody tr').length;
+
+            if(trLength){
+                var frm = $('#edit2Form').serializeFormToObject();
+
+                for(var i=0; i<trLength; i++)
+                {
+                    val = $('#oceanExportHblDescription').val();
+                    $('#oceanExportHblDescription').val((val.concat(frm['commodities['+i+']'].description + '\n')));  
+                }
+            }
+            $('#oceanExportHblDescription').attr('style', 'height: ' + document.getElementById('oceanExportHblDescription').scrollHeight + 'px !important');
+        }
+
+        function addCommodityHTSForDescription() {
+            var val = $('#oceanExportHblDescription').val() || '';
+            var tagValue = $('#PoNoTag').tagsStr();
+
+            var trLength = $('#commodityBody tr').length;
+
+            if (trLength) {
+                var frm = $('#edit2Form').serializeFormToObject();
+
+                for (var i = 0; i < trLength; i++) {
+                    val = $('#oceanExportHblDescription').val();
+                    $('#oceanExportHblDescription').val((val.concat(frm['commodities[' + i + ']'].description + ' ' + frm['commodities[' + i + ']'].hTSCode + '\n')));
+                }
+            }
+            $('#oceanExportHblDescription').attr('style', 'height: ' + document.getElementById('oceanExportHblDescription').scrollHeight + 'px !important');
+        }
+
+        function onHblDescriptionChange()
+        {
+            setTimeout(function(){
+                $('#oceanExportHblDescription').attr('style', 'height: ' + document.getElementById('oceanExportHblDescription').scrollHeight + 'px !important');
+            }, 100)
         }
     </script>
 
@@ -651,12 +696,12 @@
                                             <div class="_font-12 inline-block">Copy: </div>
                                             <div class="btn-group">
                                                 <abp-button id="btnPO" onclick="addPONumberForDescription()" size="Small" abp-border="Default"  disabled="true">@L["P.O"]</abp-button>
-                                                <abp-button id="btnCommodity" size="Small" abp-border="Default" disabled="true">@L["Commodity"]</abp-button>
-                                                <abp-button id="btnCommodityHTS" size="Small" abp-border="Default" disabled="true">@L["CommodityAndHTS"]</abp-button>
+                                                <abp-button id="btnCommodity" onclick="addCommodityForDescription()" size="Small" abp-border="Default" disabled="true">@L["Commodity"]</abp-button>
+                                                <abp-button id="btnCommodityHTS" onclick="addCommodityHTSForDescription()" size="Small" abp-border="Default" disabled="true">@L["CommodityAndHTS"]</abp-button>
                                             </div>
                                         </div>
                                     </div>
-                                    <textarea id="oceanExportHblDescription" rows="2" name="OceanExportHbl.Description" class="form-control">@Model.OceanExportHbl.Description</textarea>
+                                    <textarea id="oceanExportHblDescription" onkeyup="onHblDescriptionChange()" name="OceanExportHbl.Description" class="form-control">@Model.OceanExportHbl.Description</textarea>
                                 </abp-column>
                             </abp-row>
                             <abp-row>
