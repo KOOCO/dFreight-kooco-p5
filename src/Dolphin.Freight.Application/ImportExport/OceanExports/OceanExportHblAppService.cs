@@ -296,6 +296,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var FDest = portMangements.Where(w => w.Id == data.FdestId).FirstOrDefault();
                     oceanExportDetails.FdestName = FDest?.PortName;
                 }
+
+                 if (mbl.FdestId != null)
+                {
+                    var FDest = portMangements.Where(w => w.Id == mbl.FdestId).FirstOrDefault();
+                    oceanExportDetails.MblFdestName = FDest?.PortName;
+                }
                 
                 if (data.PorId != null)
                 {

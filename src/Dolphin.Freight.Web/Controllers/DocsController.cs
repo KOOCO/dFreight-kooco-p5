@@ -65,6 +65,7 @@ using Dolphin.Freight.AirImports;
 using Dolphin.Freight.ImportExport;
 using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.Web.Pages.OceanExports;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -3657,7 +3658,7 @@ namespace Dolphin.Freight.Web.Controllers
             double totalPackageWeight = 0;
             double totalPackageMeasure = 0;
 
-            foreach (var item in containers)
+            foreach (var item in containers)     
             {
                 var items = new CreateUpdateContainerDto
                 {
@@ -3955,6 +3956,63 @@ namespace Dolphin.Freight.Web.Controllers
             model.CreateUpdateContainer = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(model.CreateUpdateContainerJson);
 
             return await _generatePdf.GetPdf("Views/Docs/ManifestOceanExportCarrier.cshtml", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HBLPrintOceanExport(Guid id, FreightPageType pageType)
+        {
+            var oceanExportPrintDetails = await GetOceanExportDetailsByPageType(id, pageType);
+
+            QueryInvoiceDto queryDto = new QueryInvoiceDto();
+
+            var containers = await _containerAppService.QueryListHblAsync(id);
+            //var container = await _containerAppService.GetContainerByHblId(Guid.Parse(id));
+
+            var list = new List<CreateUpdateContainerDto>();
+
+            if (containers != null && containers.Any())
+            {
+                int totalPKGs = 0;
+                double totalPackageWeight = 0;
+                double totalPackageMeasure = 0;
+                string packageUnitName = _dropdownService.PackageUnitLookupList.Where(w => w.Value == Convert.ToString(containers[0].PackageUnitId)).FirstOrDefault().Text;
+                foreach (var item in containers)
+                {
+                    var items = new CreateUpdateContainerDto
+                    {
+                        ContainerNo = item.ContainerNo,
+                        PackageNum = item.PackageNum,
+                        PackageWeight = item.PackageWeight,
+                        PackageMeasure = item.PackageMeasure
+                    };
+
+                    totalPackageWeight += item.PackageWeight;
+                    totalPackageMeasure += item.PackageMeasure;
+                    totalPKGs += item.PackageNum;
+
+                    list.Add(items);
+                }
+                oceanExportPrintDetails.TotalWeight = totalPackageWeight;
+                oceanExportPrintDetails.TotalMeasure = totalPackageMeasure;
+                oceanExportPrintDetails.TotalPackage = containers[0].PackageNum;
+                oceanExportPrintDetails.PackageWeightName = containers[0].PackageWeightUnit;
+                oceanExportPrintDetails.PackageMeasureName = containers[0].PackageMeasureUnit;
+                oceanExportPrintDetails.ContainerNo = containers[0].ContainerNo;
+                oceanExportPrintDetails.Mark = containers[0].SealNo;
+                oceanExportPrintDetails.PackagpackageUnitName= packageUnitName;
+            }
+
+            oceanExportPrintDetails.DisplayUnit = "KGBM";
+
+            return View(oceanExportPrintDetails);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> HBLPrintOceanExport(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/HBLPrintOceanExport.cshtml", model);
         }
 
         #region Private Functions

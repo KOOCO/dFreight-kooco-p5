@@ -457,7 +457,7 @@
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(6)">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Print Automobile Documents"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="getHbl()">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HBLPrintOceanExport", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Print HB/L"]
                                 </a>
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(7)">
