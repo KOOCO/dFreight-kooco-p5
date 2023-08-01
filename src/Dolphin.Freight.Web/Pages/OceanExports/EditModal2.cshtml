@@ -435,8 +435,8 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Print OB/L"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Bill of Lading Terms"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getReportHblClauses()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:B/L Clauses"]
                                     </a>
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
@@ -711,3 +711,9 @@
         <input type="hidden" name="CreateUpdateContainerHawb.Id" value="@Model.CreateUpdateContainerHawb?.Id" />
     </form>
 </div>
+<script>
+      function getReportHblClauses() {
+            myWindow = window.open("@Url.Action("HblClauses", "Docs")", 'HblClauses', 'width=1500,height=800');
+            myWindow.focus()
+        }
+</script>
