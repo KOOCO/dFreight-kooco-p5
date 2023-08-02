@@ -3527,6 +3527,28 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(airImportDetails);
         }
+        public async Task<IActionResult> PreliminaryClaimOceanExport(Guid id, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+            var oceanExportMbl = await _oceanExportMblAppService.GetOceanExportDetailsById(oceanExportDetails.MblId);
+            var container = await _containerAppService.GetContainerByHblId(id);
+            oceanExportDetails.PackageMeasureName = container?.PackageMeasure.ToString();
+            oceanExportDetails.PackageMeasureName = container?.PackageMeasureUnit=="CBM"? container?.PackageMeasure+" CBM/"+(container?.PackageMeasure * 35.315)+" CFT": container?.PackageMeasure * 0.0283 + " CBM/" +container?.PackageMeasure + " CFT";
+            oceanExportDetails.PackageWeightName = container?.PackageWeightUnit=="KG"? container?.PackageWeight+" KGS/"+(container?.PackageWeight * 2.20462)+" LBS": container?.PackageWeight* 0.453592 + " KGS/" + (container?.PackageWeight ) + " LBS";
+            oceanExportDetails.TotalMeasure = (double)container?.PackageMeasure;
+            oceanExportDetails.TotalWeight = (double)container?.PackageWeight;
+            oceanExportDetails.TotalPackage = (int)container?.PackageNum;
+            oceanExportDetails.VesselName = oceanExportMbl.VesselName;
+            
+            oceanExportDetails.Voyage = oceanExportMbl.Voyage;
+            oceanExportDetails.DocNo = oceanExportMbl.DocNo;
+            oceanExportDetails.PolName = oceanExportMbl.PolName;
+            oceanExportDetails.PodName = oceanExportMbl.PodName;
+            oceanExportDetails.PolEtd = oceanExportMbl.PolEtd;
+            oceanExportDetails.PodEta = oceanExportMbl.PodEta;
+            oceanExportDetails.ContainerNo = container.ContainerNo;
+            return View(oceanExportDetails);
+        }
         [HttpPost]
         public async Task<IActionResult> PreliminaryClaimAirImportHawb(AirImportDetails model)
         {
