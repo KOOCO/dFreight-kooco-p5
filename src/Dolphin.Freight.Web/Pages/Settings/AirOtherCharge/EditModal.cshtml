@@ -12,6 +12,7 @@
     <abp-modal>
         <abp-modal-header title="@L["Update"].Value"></abp-modal-header>
         <abp-modal-body>
+            <abp-form-content />
             <abp-input asp-for="Id" />
             <abp-select asp-for="@Model.AirOtherCharge.companyType" asp-items="@Model.CompanyType" label="@L["companyType"].Value" display-required-symbol="true" />
             <abp-select asp-for="@Model.AirOtherCharge.paymentType" asp-items="@Model.PaymentList" label="@L["paymentType"].Value" display-required-symbol />

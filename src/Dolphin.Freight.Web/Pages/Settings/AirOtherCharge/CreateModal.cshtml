@@ -13,6 +13,7 @@
     <abp-modal>
         <abp-modal-header title="@L["Create"].Value"></abp-modal-header>
         <abp-modal-body>
+            <abp-form-content />
             <abp-select asp-for="@Model.AirOtherCharge.companyType" asp-items="@Model.CompanyType" label="@L["companyType"].Value" display-required-symbol="true" />
             <abp-select asp-for="@Model.AirOtherCharge.paymentType" asp-items="@Model.PaymentList" label="@L["paymentType"].Value" display-required-symbol />
             <abp-input asp-for="@Model.AirOtherCharge.showOnMAWB" label="MAWB" />

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -215,7 +216,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     dictionary.Add(syscode.Id, syscode.CodeValue);
                 }
             }
-            var oceanExportHbl = await _repository.GetAsync(query.Id.Value);
+            var oceanExportHbl = await _repository.GetAsync(query.Id.GetValueOrDefault());
             var rs = ObjectMapper.Map<OceanExportHbl, CreateUpdateOceanExportHblDto>(oceanExportHbl);
             if (rs.CardColorId != null) rs.CardColorValue = dictionary[rs.CardColorId.Value];
             return rs;
@@ -296,6 +297,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var FDest = portMangements.Where(w => w.Id == data.FdestId).FirstOrDefault();
                     oceanExportDetails.FdestName = FDest?.PortName;
                 }
+
+                 if (mbl.FdestId != null)
+                {
+                    var FDest = portMangements.Where(w => w.Id == mbl.FdestId).FirstOrDefault();
+                    oceanExportDetails.MblFdestName = FDest?.PortName;
+                }
                 
                 if (data.PorId != null)
                 {
@@ -303,27 +310,103 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.PorName = por?.PortName;
                 }
 
-                if (mbl.PolId != null)
+                if (mbl.PorId != null)
                 {
-                    var pol = portMangements.Where(w => w.Id == mbl.PolId).FirstOrDefault();
+                    var por = portMangements.Where(w => w.Id == mbl.PorId).FirstOrDefault();
+                    oceanExportDetails.MPorName = por?.PortName;
+                }
+
+                if (data.PolId != null)
+                {
+                    var pol = portMangements.Where(w => w.Id == data.PolId).FirstOrDefault();
                     oceanExportDetails.PolName = pol?.PortName;
                 }
 
+                if (data.DelId != null)
+                {
+                    var del = portMangements.Where(w => w.Id == data.DelId).FirstOrDefault();
+                    oceanExportDetails.DelName = del?.PortName;
+                }
+                if (data.CargoPickupId != null)
+                {
+                    oceanExportDetails.CargoPickUp = new TradePartnerDto();
+                    var del = tradePartners.Where(w => w.Id == data.CargoPickupId).FirstOrDefault();
+                    oceanExportDetails.CargoPickUp = del;
+                }
                 if (mbl.FreightTermId != null)
                 {
                     var freightTerm = sysCodes.Where(w => w.Id == mbl.FreightTermId).FirstOrDefault();
                     oceanExportDetails.FreightTermName = freightTerm?.ShowName;
                 }
 
+                if (mbl.MblOverseaAgentId != null)
+                {
+                    var overSeaAgent = tradePartners.Where(w => w.Id == mbl.MblOverseaAgentId).FirstOrDefault();
+                    oceanExportDetails.MblOverseaAgentName = string.Concat(overSeaAgent.TPName, "/", overSeaAgent.TPCode);
+                }
+
+                if (data.SvcTermToId != null)
+                {
+                    var svcTo = sysCodes.Where(w => w.Id == mbl.SvcTermToId).FirstOrDefault();
+                    oceanExportDetails.SvcTermToName = svcTo?.ShowName;
+                }
+
+                if (data.SvcTermFromId != null)
+                {
+                    var svcTo = sysCodes.Where(w => w.Id == mbl.SvcTermFromId).FirstOrDefault();
+                    oceanExportDetails.SvcTermFromName = svcTo?.ShowName;
+                }
+
+                if (mbl.MblCarrierId != null)
+                {
+                    var carrier = tradePartners.Where(w => w.Id == mbl.MblCarrierId).FirstOrDefault();
+                    oceanExportDetails.MblCarrierName = carrier.TPName + "/" + carrier.TPCode;
+                }
+
+                if (data.PodId != null)
+                {
+                    var pod = portMangements.Where(w => w.Id.Equals(data.PodId)).FirstOrDefault();
+                    oceanExportDetails.PodName = pod?.PortName;
+                }
+                
+                if (mbl.PodId != null)
+                {
+                    var pod = portMangements.Where(w => w.Id.Equals(mbl.PodId)).FirstOrDefault();
+                    oceanExportDetails.MPodName = pod?.PortName;
+                }
+
+                if (mbl.ForwardingAgentId != null)
+                {
+                    var ForwardingAgent = tradePartners.Where(w => w.Id.Equals(mbl.ForwardingAgentId)).FirstOrDefault();
+                    oceanExportDetails.ForwardingAgentName = ForwardingAgent.TPName + "/" + ForwardingAgent.TPCode;
+                }
+
+                if (mbl.MblCarrierId != null)
+                {
+                    var MblCarrier = tradePartners.Where(w => w.Id.Equals(mbl.MblCarrierId)).FirstOrDefault();
+                    oceanExportDetails.MblCarrierName = MblCarrier.TPName + "/" + MblCarrier.TPCode;
+                }
+
                 oceanExportDetails.HblNo = data.HblNo;
+                oceanExportDetails.SoNo = mbl.SoNo;
                 oceanExportDetails.DocNo = mbl.FilingNo;
+                oceanExportDetails.ItnNo = data.ItnNo;
                 oceanExportDetails.MblDel = mbl.Del?.PortName;
                 oceanExportDetails.LCNo = data.LcNo;
                 oceanExportDetails.LCIssueBankName = data.LcIssueBank;
+                oceanExportDetails.LCIssueDate = data.LcIssueDate;
+                oceanExportDetails.FdestEta = data.FdestEta;
                 oceanExportDetails.PolEtd = mbl.PolEtd;
+                oceanExportDetails.PorEtd = data.PorEtd;
+                oceanExportDetails.MPorEtd = mbl.PorEtd;
+                oceanExportDetails.PodEta = data.PodEta;
+                oceanExportDetails.MPodEta = mbl.PodEta;
+                oceanExportDetails.DelEta = data.DelEta;
                 oceanExportDetails.VesselName = mbl.VesselName;
                 oceanExportDetails.Voyage = mbl.Voyage;
                 oceanExportDetails.Mark = data.Mark;
+                oceanExportDetails.MblNo = mbl.MblNo;
+                oceanExportDetails.MblPostDate = mbl.PostDate;
             }
 
             return oceanExportDetails;

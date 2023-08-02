@@ -153,6 +153,7 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<CreateUpdatePackageUnitDto, PackageUnit>();
         CreateMap<OceanExportMbl, OceanExportDetails>();
         CreateMap<OceanExportHbl, OceanExportDetails>();
+        CreateMap<Container, CreateUpdateContainerDto>();
 
         // ContactPerson
         CreateMap<ContactPerson, ContactPersonDto>();

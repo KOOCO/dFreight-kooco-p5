@@ -82,7 +82,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
 
         public async Task OnGetAsync()
         {
-            ViewData["HAVEHBL"] = "N";
+           
+             ViewData["HAVEHBL"] = "N";
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
             QueryHblDto query = new QueryHblDto() { MblId = Id };
         }
