@@ -40,7 +40,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         private readonly IRepository<Port, Guid> _portRepository;
         private readonly IRepository<PortsManagement, Guid> _portsManagementRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
-        public OceanExportHblAppService(IRepository<OceanExportHbl, Guid> repository, IRepository<PortsManagement, Guid> portsManagementRepository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanExportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid>  portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository)
+        private readonly ICurrentUser _currentUser;
+        public OceanExportHblAppService(IRepository<OceanExportHbl, Guid> repository, ICurrentUser currentUser, IRepository<PortsManagement, Guid> portsManagementRepository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanExportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid>  portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository)
             : base(repository)
         {
             _repository = repository;
@@ -50,6 +51,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             _portRepository = portRepository;
             _tradePartnerRepository = tradePartnerRepository;
             _portsManagementRepository = portsManagementRepository;
+            _currentUser = currentUser;
             /*
             GetPolicyName = OceanExportPermissions.OceanExportHbls.Default;
             GetListPolicyName = OceanExportPermissions.OceanExportHbls.Default;
@@ -387,6 +389,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.MblCarrierName = MblCarrier.TPName + "/" + MblCarrier.TPCode;
                 }
 
+                oceanExportDetails.HblOperatorName = _currentUser.Name + " " + _currentUser.SurName;
+                oceanExportDetails.CurrentDate = DateTime.Now;
                 oceanExportDetails.HblNo = data.HblNo;
                 oceanExportDetails.SoNo = mbl.SoNo;
                 oceanExportDetails.DocNo = mbl.FilingNo;
@@ -407,6 +411,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 oceanExportDetails.Mark = data.Mark;
                 oceanExportDetails.MblNo = mbl.MblNo;
                 oceanExportDetails.MblPostDate = mbl.PostDate;
+                oceanExportDetails.Description = data.Description;
             }
 
             return oceanExportDetails;
