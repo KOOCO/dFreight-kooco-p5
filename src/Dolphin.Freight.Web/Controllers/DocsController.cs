@@ -68,6 +68,7 @@ using Dolphin.Freight.Web.Pages.OceanExports;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using NPOI.SS.Formula.Functions;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -4146,6 +4147,45 @@ namespace Dolphin.Freight.Web.Controllers
             model.IsPDF = true;
 
             return await _generatePdf.GetPdf("Views/Docs/HBLPrintOceanExport.cshtml", model);
+        }
+
+        public async Task<IActionResult> ForwarderCargoReceiptOceanExportHBL(Guid id, FreightPageType pageType)
+        {
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+            var packageName = _dropdownService.PackageUnitLookupList;
+            var containers = await _containerAppService.QueryListHblAsync(id);
+
+            var containerlists = new List<CreateUpdateContainerDto>();
+
+            foreach (var item in containers)
+            {
+                var containerSizeName = string.Concat(packageName.Where(w => w.Value == string.Concat(item.PackageUnitId)).Select(s => s.Text));
+
+                var container = new CreateUpdateContainerDto()
+                {
+                    PackageNum = item.PackageNum,
+                    PackageUnitName = containerSizeName,
+                    PackageWeightStr = string.Concat(item.PackageWeight) + " KGS",
+                    PackageWeightStrLBS = string.Concat(Math.Round(item.PackageWeight * 2.204, 2)) + " LBS",
+                    PackageMeasureStr = string.Concat(item.PackageMeasure) + " CBM",
+                    PackageMeasureStrLBS = string.Concat(Math.Round(item.PackageMeasure * 35.315, 2)) + " CFT"
+                };
+                containerlists.Add(container);
+            }
+
+            oceanExportDetails.CreateUpdateContainer = containerlists;
+            oceanExportDetails.CreateUpdateContainerJson = JsonConvert.SerializeObject(containerlists);
+
+            return View(oceanExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ForwarderCargoReceiptOceanExportHBL(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            model.CreateUpdateContainer = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(model.CreateUpdateContainerJson);
+
+            return await _generatePdf.GetPdf("Views/Docs/ForwarderCargoReceiptOceanExportHBL.cshtml", model);
         }
 
         #region Private Functions
