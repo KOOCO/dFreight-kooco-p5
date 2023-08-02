@@ -527,6 +527,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public List<CreateUpdateContainerDto> CreateUpdateContainer { get; set; }
          public DateTime? MblPostDate { get; set; }
         public List<Hbl> Hbls { get; set; }
+        public string BillOfLandingMaster { get; set; }
     }
 
     public class Hbl

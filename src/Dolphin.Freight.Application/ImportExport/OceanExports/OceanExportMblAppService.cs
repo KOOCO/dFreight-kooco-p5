@@ -376,11 +376,10 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             oceanExportDetails.MblNo = data.MblNo;
             oceanExportDetails.SoNo = data.SoNo;
             oceanExportDetails.PodEta = data.PodEta;
-                oceanExportDetails.DocNo = data.FilingNo;
-                oceanExportDetails.Mark = data.Mark;
-                oceanExportDetails.Description = data.Description;
-                oceanExportDetails.DomesticInstructions = data.DomesticInstructions;
-            }
+            oceanExportDetails.DocNo = data.FilingNo;
+            oceanExportDetails.Mark = data.Mark;
+            oceanExportDetails.Description = data.Description;
+            oceanExportDetails.DomesticInstructions = data.DomesticInstructions;
 
             return oceanExportDetails;
         }

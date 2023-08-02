@@ -29,7 +29,6 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// 封條號碼
         /// </summary>
         public string SealNo { get; set; }
-        public string ContainerSizeName { get; set; }
         /// <summary>
         /// 包裝種類數量
         /// </summary>
