@@ -80,26 +80,33 @@
 
             $('#DisplayMblContainerSizeQtyInfo').val('');
             $('#DisplayMblContainerSizeQtyInfo').val($('#containerData').text());
+            debugger;
+            let rows = document.querySelectorAll("#hblContainerTable tbody tr.hblsdata");
 
-            let rows = document.querySelectorAll("#hblContainerTable tbody tr");
-
+            let totalPkgs = 0;
             let totalWeight = 0;
             let totalMeasure = 0;
-            
-            for (let i = 0; i < rows.length - 1; i++) { 
+            debugger;
+            for (let i = 0; i < rows.length; i++) { 
                 let weightCell = rows[i].children[1];
                 let weightStr = weightCell.innerText.split('\n')[0];
                 let weight = parseFloat(weightStr);
+                let pkgsCell = rows[i].children[0];
+                let pkgsStr = pkgsCell.innerText.split('/ ')[1];
+                let pkgs = parseFloat(pkgsStr);
                 let measureCell = rows[i].children[1];
                 let measureStr = measureCell.innerText.split('LBS')[1];
                 let measure = parseFloat(measureStr);
                 
                 if (!isNaN(weight)) { 
                     totalWeight += weight;
+                    totalPkgs += pkgs;
                     totalMeasure += measure;
                 }
             }
 
+            $('#totalPKGS').text('');
+            $('#totalPKGS').text(totalPkgs);
             $('#totalWeightKG').text('');
             $('#totalWeightKG').text(totalWeight);
             $('#totalWeightLBS').text('');
@@ -109,6 +116,8 @@
             $('#totalMeasureCFT').text('');
             $('#totalMeasureCFT').text(parseFloat(totalMeasure * 35.315).toFixed(2));
             
+            $('#Total').val('');
+            $('#Total').val($('#totalPKGS').text());
             $('#TotalWeightStr').val('');
             $('#TotalWeightStr').val($('#totalWeightKG').text());
             $('#TotalWeightStrLBS').val('');
@@ -117,9 +126,9 @@
             $('#TotalMeasureStr').val($('#totalMeasureCBM').text());
             $('#TotalMeasureStrLBS').val('');
             $('#TotalMeasureStrLBS').val($('#totalMeasureCFT').text());
-
+            debugger;
             $('#totalBL').text('');
-            $('#totalBL').text(rows.length-1);
+            $('#totalBL').text(rows.length);
             $('#TotalPackage').val('');
             $('#TotalPackage').val($('#totalBL').text());
         });
@@ -172,6 +181,7 @@
     <input type="hidden" asp-for="@Model.TotalMeasureStr" />
     <input type="hidden" asp-for="@Model.TotalMeasureStrLBS" />
     <input type="hidden" asp-for="@Model.TotalPackage" />
+    <input type="hidden" asp-for="@Model.Total" />
 
     <div id="main" class="edit">
 
@@ -362,7 +372,7 @@
                         {
                             var index = 0;
                             index++;
-                            <tr>
+                            <tr class="hblsData">
                         <td>
                             @item.HblNo / @item.HblPcs
                             @*<input type="checkbox" name="is_show_info_86064" class="item-edit ng-pristine ng-untouched ng-valid ng-not-empty" id="id_is_show_info_86064" checked="">*@
@@ -414,7 +424,7 @@
                 <tr class="border-t border-b bg-light">
                     <td colspan="2">
                         <strong>Total
-                            <span class="item-edit ng-binding"> 0 </span>
+                            <span class="item-edit ng-binding" id="totalPKGS">@Model.Total</span>
                         </strong>
                     </td>
                     <td>

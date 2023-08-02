@@ -532,6 +532,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string Description { get; set; }
         public string extraProperty { get; set; }
         public string CommodityDesc { get; set; }
+        public string Remark { get; set; }
     }
 
     public class ExtraProperty

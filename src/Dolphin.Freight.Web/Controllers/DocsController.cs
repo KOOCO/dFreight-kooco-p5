@@ -66,6 +66,7 @@ using Dolphin.Freight.ImportExport;
 using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.Web.Pages.OceanExports;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -3993,7 +3994,59 @@ namespace Dolphin.Freight.Web.Controllers
                 };
                 list.Add(items);
             }
+            var hblsList = await _oceanExportHblAppService.GetHblCardsById(mblId);
 
+            var hbllists = new List<Hbl>();
+
+            foreach (var item in hblsList)
+            {
+                var abc = item.Id;
+                var hblcontainers = await _containerAppService.QueryListHblAsync(item.Id);
+                var hblData = await GetOceanExportDetailsByPageType(item.Id, FreightPageType.OEHBL);
+                var test = hblcontainers.Where(w => w.HblId == abc).Select(s => s.PackageWeight).FirstOrDefault();
+                var weight = hblcontainers.Where(w => w.HblId == abc).Select(s => s.PackageWeight).FirstOrDefault();
+                var res = Convert.ToDouble(weight) * 2.204;
+                var measurement = hblcontainers.Where(w => w.HblId == abc).Select(s => s.PackageMeasure).FirstOrDefault();
+                var ress = Convert.ToDouble(measurement) * 35.315;
+                var containerid = Convert.ToString(hblcontainers.Where(w => w.HblId == abc).Select(s => s.PackageUnitId).FirstOrDefault());
+                string commodityDesc = string.Empty;
+
+                object commodities;
+                item.ExtraProperties.TryGetValue("Commodities", out commodities);
+
+                List<Commodity> commoditiesList = new List<Commodity>();
+
+                if (commodities != null)
+                {
+                    commoditiesList = JsonConvert.DeserializeObject<List<Commodity>>(Convert.ToString(commodities));
+
+                    if (commoditiesList != null && commoditiesList.Any())
+                        commodityDesc = string.Join("\n", commoditiesList.Select(s => s.Description));
+                }
+
+
+                var Hbl = new Hbl
+                {
+                    HblNo = item.HblNo,
+                    HblPcs = string.Concat(hblcontainers.Where(w => w.HblId == abc).Select(s => s.PackageNum)) + " " + string.Concat(containerName.Where(w => w.Value == containerid).Select(s => s.Text)),
+                    Weight = weight + " KGS",
+                    WeightLBS = res.ToString("0.00") + " LBS",
+                    Measurement = measurement + " CBM",
+                    MeasurementLBS = ress.ToString("0.00") + " CFT",
+                    Shipper = hblData.ShippingAgentName,
+                    Consignee = hblData.HblConsigneeName,
+                    Mark = hblData.Mark,
+                    Description = hblData.Description,
+                    CommodityDesc = commodityDesc,
+                    Remark = hblData.DomesticInstructions
+                };
+
+
+                hbllists.Add(Hbl);
+            }
+
+            oceanExportDetails.Hbls = hbllists;
+            oceanExportDetails.HblsJson = JsonConvert.SerializeObject(hbllists);
             oceanExportDetails.CreateUpdateContainer = list;
             oceanExportDetails.CreateUpdateContainerJson = JsonConvert.SerializeObject(list);
 
@@ -4005,6 +4058,8 @@ namespace Dolphin.Freight.Web.Controllers
             model.IsPDF = true;
 
             model.CreateUpdateContainer = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(model.CreateUpdateContainerJson);
+            
+            model.Hbls = JsonConvert.DeserializeObject<List<Hbl>>(model.HblsJson);
 
             return await _generatePdf.GetPdf("Views/Docs/ManifestOceanExportCarrier.cshtml", model);
         }
