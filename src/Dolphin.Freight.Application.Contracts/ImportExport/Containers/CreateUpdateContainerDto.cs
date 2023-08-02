@@ -23,12 +23,12 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// 櫃型/尺寸ID
         /// </summary>
         public Guid ContainerSizeId { get; set; }
+        public string ContainerSizeName { get; set; }
 
         /// <summary>
         /// 封條號碼
         /// </summary>
         public string SealNo { get; set; }
-        public string ContainerSizeName { get; set; }
         /// <summary>
         /// 包裝種類數量
         /// </summary>

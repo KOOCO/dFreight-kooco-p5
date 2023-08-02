@@ -513,6 +513,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public double Total { get; set; }
         public string TotalStr { get; set; }
         public bool IsCustomerRef { get; set; }
+        public string CreateUpdateContainerDtosJson { get; set; }
+        public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
         public string HblAgentName { get; set; }
         public List<CreateUpdateContainerDto> list { get; set; }
         public string BillOfLanding { get; set; }
@@ -527,6 +529,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public List<CreateUpdateContainerDto> CreateUpdateContainer { get; set; }
          public DateTime? MblPostDate { get; set; }
         public List<Hbl> Hbls { get; set; }
+        public string BillOfLandingMaster { get; set; }
     }
 
     public class Hbl
@@ -552,5 +555,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
     {
         public string CommodityNo { get; set; }
        
+        
     }
 }
