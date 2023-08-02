@@ -72,6 +72,7 @@ namespace Dolphin.Freight.Web.Controllers
     public class DocsController : AbpController
     {
         private readonly IOceanExportHblAppService _oceanExportHblAppService;
+        private readonly ImportExport.OceanImports.IOceanImportHblAppService _oceanImportHblAppService;
         private readonly IOceanExportMblAppService _oceanExportMblAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
         private readonly IGeneratePdf _generatePdf;
@@ -96,7 +97,8 @@ namespace Dolphin.Freight.Web.Controllers
           IInvoiceAppService invoiceAppService,
           IAirImportMawbAppService airImportMawbAppService,
           IAirImportHawbAppService airImportHawbAppService,
-          IContainerAppService containerAppService)
+          IContainerAppService containerAppService,
+          ImportExport.OceanImports.IOceanImportHblAppService oceanImportHblAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -113,7 +115,7 @@ namespace Dolphin.Freight.Web.Controllers
             _airImportMawbAppService = airImportMawbAppService;
             _airImportHawbAppService = airImportHawbAppService;
             _containerAppService = containerAppService;
-
+            _oceanImportHblAppService = oceanImportHblAppService;
             ReportLog = new ReportLog.ReportLogDto();
         }
 
@@ -4071,6 +4073,9 @@ namespace Dolphin.Freight.Web.Controllers
                     break;
                 case FreightPageType.OEHBL:
                     data = await _oceanExportHblAppService.GetOceanExportDetailsById(Id);
+                    break;
+                case FreightPageType.OIHBL:
+                   data = await _oceanImportHblAppService.GetOceanImportDetailsById(Id);
                     break;
                 default:
                     break;

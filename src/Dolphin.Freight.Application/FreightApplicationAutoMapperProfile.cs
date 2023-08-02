@@ -170,6 +170,7 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<OceanImportHbl, OceanImportHblDto>();
         CreateMap<OceanImportHbl, CreateUpdateOceanImportHblDto>();
         CreateMap<CreateUpdateOceanImportHblDto, OceanImportHbl>();
+        CreateMap<OceanImportHbl, OceanExportDetails>();
 
         // Substation
         CreateMap<Substation, SubstationLookupDto>();
