@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -82,11 +83,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
                     sysdictionary.Add(sysCode.Id, sysCode.ShowName);
                 }
             }
-            var ExportBookings = await _repository.GetListAsync();
-            List<ExportBooking> rs = ExportBookings;
+            var ExportBookings = (await _repository.GetQueryableAsync())
+                                    .WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.HblNo.Contains(query.Search));
+            List<ExportBooking> rs = ExportBookings.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<ExportBookingDto> list = new List<ExportBookingDto>();
 
-            if (rs != null && rs.Count > 0)
+            if (rs.Any())
             {
 
                 foreach (var pu in rs)
@@ -113,7 +115,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
             }
             PagedResultDto<ExportBookingDto> listDto = new PagedResultDto<ExportBookingDto>();
             listDto.Items = list;
-            listDto.TotalCount = list.Count;
+            listDto.TotalCount = ExportBookings.Count();
             return listDto;
         }
 
