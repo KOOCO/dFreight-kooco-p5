@@ -477,6 +477,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 包裹數量
         /// </summary>
         public int TotalPackage { get; set; }
+        public string TotalPackageStr { get; set; }
         /// <summary>
         /// 總重
         /// </summary>
@@ -510,6 +511,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public double DCTotal { get; set; }
         public double APTotal { get; set; }
         public double Total { get; set; }
+        public string TotalStr { get; set; }
         public bool IsCustomerRef { get; set; }
         public string HblAgentName { get; set; }
         public List<CreateUpdateContainerDto> list { get; set; }
