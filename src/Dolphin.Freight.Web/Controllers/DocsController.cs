@@ -1487,7 +1487,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.VSLVOV = OceanExportHbl.VesselName+""+OceanExportHbl.Voyage;
             InfoViewModel.POR = OceanExportHbl.PorName;
             InfoViewModel.POL = OceanExportMbl.PolName;
-            InfoViewModel.ETD = OceanExportMbl.PodEta?.ToString("dd-MM-yyyy");
+            InfoViewModel.ETD = OceanExportMbl.PolEtd?.ToString("dd-MM-yyyy");
             InfoViewModel._2NDVV = "";
             InfoViewModel.ETDKAO = "";
             InfoViewModel.POD = OceanExportMbl.PodName;
