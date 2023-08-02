@@ -1,19 +1,26 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
+    var _changeInterval = null;
+    var queryListFilter = function () {
+        return {
+            filter: $("input[name='Search'").val()
+        };
+    };
 
     var dataTable = $('#CurrencySetting').DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
             paging: true,
             order: [[1, "asc"]],
-            searching: true,
+            searching: false,
             scrollX: true,
+            processing: true,
             responsive: {
                 details: {
                     type: 'column'
                 }
             },
-            ajax: abp.libs.datatables.createAjax(dolphin.freight.settings.currencySetting.currencySetting.getList),
+            ajax: abp.libs.datatables.createAjax(dolphin.freight.settings.currencySetting.currencySetting.getList, queryListFilter),
             columnDefs: [
                 {
                     title: l('Actions'),
@@ -86,8 +93,12 @@
         })
     );
 
-    $('[type=search]').on('keyup', function () {
-        dataTable.search(this.value).draw();
+    $('#Search').keyup(function () {
+        clearInterval(_changeInterval)
+        _changeInterval = setInterval(function () {
+            dataTable.ajax.reload();
+            clearInterval(_changeInterval)
+        }, 1000);
     });
 
     var createModal = new abp.ModalManager(abp.appPath + 'Settings/CurrencySetting/CreateModal');

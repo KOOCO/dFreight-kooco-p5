@@ -12,8 +12,8 @@ namespace Dolphin.Freight.Settinngs.Ports
     public interface IPortAppService :
         ICrudAppService< 
         PortDto, 
-        Guid, 
-        PagedAndSortedResultRequestDto, 
+        Guid,
+        QueryDto, 
         CreateUpdatePortDto>  
     {
         Task<PagedResultDto<PortDto>> QueryListAsync(QueryDto query);
