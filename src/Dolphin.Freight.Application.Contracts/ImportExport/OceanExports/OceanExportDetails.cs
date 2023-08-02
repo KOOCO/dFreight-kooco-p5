@@ -73,7 +73,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string CoLoaderName { get; set; }
 
         public string CoLoaderContent { get; set; }
-    
+        public DateTime? EarlyReturnDateTime { get; set; }
         public bool IsUsedCareOf { get; set; }
       
         public Guid? CareOfId { get; set; }
@@ -464,6 +464,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// </summary>
         public Guid? PackageMeasureId { get; set; }
         public string PackageMeasureName { get; set; }
+        public Guid? TruckerId { get; set; }
+        public string TruckerName { get; set; }
         /// <summary>
         /// 集裝箱的包裝材積
         /// </summary>
