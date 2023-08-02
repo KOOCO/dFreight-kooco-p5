@@ -47,6 +47,10 @@
          flex:1;
         }
 
+        .d-none{
+            display: none !important;
+        }
+
     .w-10, .w-20, .w-100, .text-right, .text-center, .auto-font-size, textarea {
         font-size:10px;
     }
@@ -177,6 +181,8 @@ table tr {
                 document.getElementById('zout').disabled = true;
             }
         }
+
+        $('#ddlDisplayUnit').trigger('change');
     });
 
     function print()
@@ -190,7 +196,29 @@ table tr {
     }
 
     function onDisplayUnitChange(){
-        $('#DisplayUnit').val($('#ddlDisplayUnit > option:selected').val());
+        var selected = $('#ddlDisplayUnit > option:selected').val();
+        $('#DisplayUnit').val(selected);
+        var totalVal = '';
+        var measure = '';
+        if(selected == "KGBM")
+        {
+            totalVal  = '@Model.TotalWeight KG';
+            measure = '@Model.TotalMeasure @Model.PackageMeasureName';
+             $('#TotalWeightStr').val(totalVal); 
+        }
+        else if(selected == "LBFT")
+        {
+            var val = '@(Math.Round(Model.TotalWeight * 2.20462, 2)) LB';
+            measure = '@(Math.Round(Model.TotalMeasure * 35.3147, 2)) CFT';
+             $('#TotalWeightStr').val(val); 
+        }
+        else {
+            totalVal = '@Model.TotalWeight KG' + '\n @(Math.Round(Model.TotalWeight * 2.20462, 2)) LB';
+            measure = '@Model.TotalMeasure @Model.PackageMeasureName' + '\n @(Math.Round(Model.TotalMeasure * 35.3147, 2)) CFT';
+             $('#TotalWeightStr').val(totalVal); 
+        }
+       
+        $('#TotalMeasureStr').val(measure);
     }
 </script>
 
@@ -243,6 +271,12 @@ table tr {
         <input type="hidden" asp-for="@Model.DelName" />
         <input type="hidden" asp-for="@Model.BillOfLanding" />        
         <input type="hidden" asp-for="@Model.DisplayUnit" />
+        <input type="hidden" asp-for="@Model.MblCarrierName" />
+        <input type="hidden" asp-for="@Model.ContainerNo" />
+        <input type="hidden" asp-for="@Model.Mark" />
+        <input type="hidden" asp-for="@Model.TotalPackage" />
+        <input type="hidden" asp-for="@Model.PackageUnitName" />
+        <input type="hidden" asp-for="@Model.Description" />
 
 <div id="main" class="edit">              
    <div class="wrap border-blue oe-old-hbl">
@@ -573,7 +607,7 @@ table tr {
                                     <span>@Model.DisplayUnit</span>
                                 }
                                 else{
-                            <select name="display_unit" class="select ng-untouched ng-valid ng-dirty ng-not-empty" hc-user-preference="oe_hbl_print_display_unit_choice" ng-model="vm.displayUnitChoice" onchange="onDisplayUnitChange()" id="ddlDisplayUnit">
+                            <select name="display_unit" class="select ng-untouched ng-valid ng-dirty ng-not-empty" onchange="onDisplayUnitChange()" id="ddlDisplayUnit">
                           <option value="KGBM">Show KG / CBM</option>
                           <option value="LBFT">Show LB / CFT</option>
                           <option value="BOTH">Show Both</option>
@@ -606,7 +640,7 @@ table tr {
                 <tr>
                     <td class="td td-item border-r" rowspan="2">
                         <div class="item-edit hover-toggle-icon-text-template" ng-class="vm.getTextModeClass()">
-                            <textarea name="container_no_area" cols="40" rows="17" class="text-scroll ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"   ng-model="vm.container_no_area" id="id_container_no_area">@Model.ContainerNo / @Model.Mark</textarea>
+                            <textarea name="container_no_area" cols="40" rows="17" class="text-scroll ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"   ng-model="vm.container_no_area" id="id_container_no_area">@string.Concat(@Model.ContainerNo, "/ ", @Model.Mark).TrimStart('/')</textarea>
                          </div>
                             <div class="container-table">
                                 <div class="text-bold item-edit margin-b-xs">
@@ -650,32 +684,22 @@ table tr {
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="auto-font-size __w-pkg">
-                                                        <span>@Model.TotalPackage @Model.PackagpackageUnitName</span>
+                                                        <span>@Model.TotalPackage @Model.PackageUnitName</span>
                                                     </div>
                                                 </td>
                                                 <td class="text-right">
                                                     <div class="auto-font-size __w-kg">
-                                                        
-                                                            <!-- ngIf: vm.displayUnitChoice === 'KGBM' -->
-                                                        
-                                                        
-                                                            <!-- ngIf: vm.displayUnitChoice === 'LBFT' -->
-                                                        
-                                                        
-                                                            <!-- ngIf: vm.displayUnitChoice === 'BOTH' --><span ng-if="vm.displayUnitChoice === 'BOTH'" class="ng-scope">@Model.TotalWeight @Model.PackageWeightName</span><!-- end ngIf: vm.displayUnitChoice === 'BOTH' -->
+                                                      <span ng-if="vm.displayUnitChoice === 'BOTH'" class="ng-scope">
+                                                          @Model.TotalWeight @Model.PackageWeightName / @(Math.Round(Model.TotalWeight * 2.20462, 2)) LG
+                                                      </span>
                                                         
                                                     </div>
                                                 </td>
                                                 <td class="text-right">
                                                     <div class="auto-font-size __w-cbm">
-                                                        
-                                                            <!-- ngIf: vm.displayUnitChoice === 'KGBM' -->
-                                                        
-                                                        
-                                                            <!-- ngIf: vm.displayUnitChoice === 'LBFT' -->
-                                                        
-                                                        
-                                                            <!-- ngIf: vm.displayUnitChoice === 'BOTH' --><span ng-if="vm.displayUnitChoice === 'BOTH'" class="ng-scope">@Model.TotalMeasure @Model.PackageMeasureName</span><!-- end ngIf: vm.displayUnitChoice === 'BOTH' -->
+                                                     <span ng-if="vm.displayUnitChoice === 'BOTH'" class="ng-scope">
+                                                         @Model.TotalMeasure @Model.PackageMeasureName / @(Math.Round(Model.TotalMeasure * 35.3147, 2)) CFT
+                                                     </span>
                                                         
                                                     </div>
                                                 </td>
@@ -689,22 +713,22 @@ table tr {
                     <td class="td td-item border-r text-right" rowspan="2">
                         
                         <div class="item-edit hover-toggle-icon-text-template __col-pkg" ng-class="[vm.getTextModeClass(), vm.showContainerInfo ? '__col-pkg-s' : '__col-pkg']">
-                            <textarea name="packages" cols="40" rows="17" class="text-right text-scroll ng-isolate-scope"   id="id_packages">@Model.TotalPackage @Model.PackagpackageUnitName</textarea>
+                            <textarea name="packages" cols="40" rows="17" class="text-right text-scroll ng-isolate-scope"   id="id_packages">@Model.TotalPackage @Model.PackageUnitName</textarea>
                          </div>
                     </td>
                     <td class="td td-item border-r" rowspan="2">
                         <div class="item-edit hover-toggle-icon-text-template" ng-class="vm.getTextModeClass()">
-                            <textarea name="good_items" cols="40" rows="17" class="text-scroll ng-isolate-scope"   id="id_good_items"></textarea>
+                            <textarea name="good_items" cols="40" rows="17" class="text-scroll" asp-for="@Model.Description">@Model.Description</textarea>
                          </div>
                     </td>
                     <td class="td td-item border-r text-right">
                         <div class="item-edit hover-toggle-icon-text-template" ng-class="vm.getTextModeClass()">
-                            <textarea name="gross_weight" cols="40" rows="10" class="text-right">@Model.TotalWeight @Model.PackageWeightName</textarea>
+                            <textarea asp-for="@Model.TotalWeightStr" cols="40" rows="10" class="text-right">@Model.TotalWeight @Model.PackageWeightName</textarea>
                          </div>
                     </td>
                     <td class="td td-item text-right">
                         <div class="item-edit hover-toggle-icon-text-template" ng-class="vm.getTextModeClass()">
-                            <textarea name="measure" cols="40" rows="10" class="text-right text-scroll no-adjustment ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"   ng-model="vm.measurement" id="id_measure">@Model.TotalMeasure @Model.PackageMeasureName</textarea>
+                            <textarea name="TotalMeasureStr" cols="40" rows="10" class="text-right text-scroll"  asp-for="@Model.TotalMeasureStr">@Model.TotalMeasure @Model.PackageMeasureName</textarea>
                          </div>
                     </td>
                 </tr>
@@ -712,7 +736,7 @@ table tr {
                     <td class="border-r col-padding text-sm">
                         <div class="item-edit hover-toggle-icon-text-template">
                             <input type="checkbox" name="show_on_board_watermark" id="id_show_on_board_watermark" checked="">
-                            <textarea name="on_board_watermark" cols="40" rows="8" class="edit-seal text-scroll no-adjustment ng-isolate-scope"   id="id_on_board_watermark">06-06-2023 ====== AMBIA, IN</textarea>
+                            <textarea name="on_board_watermark" cols="40" rows="8" class="edit-seal text-scroll no-adjustment ng-isolate-scope"   id="id_on_board_watermark">@Model.MblPostDate?.ToShortDateString()</textarea>
                          </div>
                     </td>
                 </tr>
@@ -1024,7 +1048,7 @@ table tr {
                                 </tbody>
                                 
                                 
-                                <tbody ng-show="!vm.showFreight" class="ng-hide">
+                                <tbody ng-show="!vm.showFreight" class="d-none">
                                     <tr>
                                         <td colspan="3">&nbsp;</td>
                                     </tr>
@@ -1144,7 +1168,7 @@ table tr {
                                 </td>
                                <td class="w-58">
                                    <div class="item-edit hover-toggle-icon-text-template">
-                                       <textarea name="by_who" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope"   id="id_by_who">AS AGENT FOR, THE CARRIER, 123</textarea>
+                                       <textarea asp-for="@Model.MblCarrierName" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope">@Model.MblCarrierName</textarea>
                                     </div>
                                </td>
                             </tr>
@@ -1154,7 +1178,7 @@ table tr {
                                <td class="w-10 text-center">By</td>
                                <td class="w-65 text-right">DATE</td>
                                <td class="w-25 text-11 text-center">
-                               <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="issue_date" value="06-06-2023"   id="id_issue_date" class="ng-isolate-scope"> </div>
+                               <div class="item-edit hover-toggle-icon-text-template"><input type="text" asp-for="@Model.MblPostDate" value="@Model.MblPostDate?.ToShortDateString()" class="ng-isolate-scope"> </div>
                                 </td>
                             </tr>
                         </tbody></table>
@@ -1246,69 +1270,22 @@ table tr {
         </tr>
         
             <tr>
-                <td class="td td-item border-r">657</td>
-                <td class="td td-item text-center border-r">40FR</td>
-                <td class="td td-item border-r">88</td>
+                <td class="td td-item border-r">@Model.ContainerNo</td>
+                <td class="td td-item text-center border-r"></td>
+                <td class="td td-item border-r">@Model.Mark</td>
                 <td class="td td-item border-r"></td>
-                <td class="td td-item text-center border-r"></td>
-                <td class="td td-item text-center border-r"></td>
-                <td class="td td-item text-right border-r">
-                    
-                        <!-- ngIf: vm.displayUnitChoice === 'KGBM' -->
-                    
-                    
-                        <!-- ngIf: vm.displayUnitChoice === 'LBFT' -->
-                    
-                    
-                        <!-- ngIf: vm.displayUnitChoice === 'BOTH' --><span ng-if="vm.displayUnitChoice === 'BOTH'" class="ng-scope"></span><!-- end ngIf: vm.displayUnitChoice === 'BOTH' -->
-                    
-                </td>
-                <td class="td td-item text-right">
-                    
-                        <!-- ngIf: vm.displayUnitChoice === 'KGBM' -->
-                    
-                    
-                        <!-- ngIf: vm.displayUnitChoice === 'LBFT' -->
-                    
-                    
-                        <!-- ngIf: vm.displayUnitChoice === 'BOTH' --><span ng-if="vm.displayUnitChoice === 'BOTH'" class="ng-scope"></span><!-- end ngIf: vm.displayUnitChoice === 'BOTH' -->
-                    
-                </td>
+                <td class="td td-item text-center border-r">@Model.TotalPackage</td>
+                <td class="td td-item text-center border-r">@Model.PackageUnitName</td>
+                <td class="td td-item text-right border-r"><span ng-if="vm.displayUnitChoice === 'BOTH'" class="ng-scope">@Model.TotalWeight @Model.PackageWeightName</span></td>
+                <td class="td td-item text-right"><span ng-if="vm.displayUnitChoice === 'BOTH'" class="ng-scope">@Model.TotalMeasure @Model.PackageMeasureName</span></td>
             </tr>
         
-
-        
-
-        
-
-        
-
         <tr class="border-t border-b text-bold">
             <td class="td td-item border-r text-center" colspan="4">TOTAL</td>
-            <td class="td td-item text-center border-r">21.0</td>
-            <td class="td td-item text-center border-r">BALL</td>
-            <td class="td td-item text-right border-r">
-                
-                    <!-- ngIf: vm.displayUnitChoice === 'KGBM' -->
-                
-                
-                    <!-- ngIf: vm.displayUnitChoice === 'LBFT' -->
-                
-                
-                    <!-- ngIf: vm.displayUnitChoice === 'BOTH' --><span ng-if="vm.displayUnitChoice === 'BOTH'" class="ng-scope">23.00 / 50.71</span><!-- end ngIf: vm.displayUnitChoice === 'BOTH' -->
-                
-            </td>
-            <td class="td td-item text-right">
-                
-                    <!-- ngIf: vm.displayUnitChoice === 'KGBM' -->
-                
-                
-                    <!-- ngIf: vm.displayUnitChoice === 'LBFT' -->
-                
-                
-                    <!-- ngIf: vm.displayUnitChoice === 'BOTH' --><span ng-if="vm.displayUnitChoice === 'BOTH'" class="ng-scope">23.00 / 812.24</span><!-- end ngIf: vm.displayUnitChoice === 'BOTH' -->
-                
-            </td>
+            <td class="td td-item text-center border-r">@Model.TotalPackage</td>
+            <td class="td td-item text-center border-r">@Model.PackageUnitName</td>
+            <td class="td td-item text-right border-r"><span ng-if="vm.displayUnitChoice === 'BOTH'" class="ng-scope">@Model.TotalWeight @Model.PackageWeightName</span></td>
+            <td class="td td-item text-right"><span ng-if="vm.displayUnitChoice === 'BOTH'" class="ng-scope">@Model.TotalMeasure @Model.PackageMeasureName</span></td>
         </tr>
     </tbody></table>
 </div>

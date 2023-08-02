@@ -3972,9 +3972,9 @@ namespace Dolphin.Freight.Web.Controllers
 
             if (containers != null && containers.Any())
             {
-                int totalPKGs = 0;
-                double totalPackageWeight = 0;
-                double totalPackageMeasure = 0;
+                //int totalPKGs = 0;
+                //double totalPackageWeight = 0;
+                //double totalPackageMeasure = 0;
                 string packageUnitName = _dropdownService.PackageUnitLookupList.Where(w => w.Value == Convert.ToString(containers[0].PackageUnitId)).FirstOrDefault().Text;
                 foreach (var item in containers)
                 {
@@ -3986,20 +3986,20 @@ namespace Dolphin.Freight.Web.Controllers
                         PackageMeasure = item.PackageMeasure
                     };
 
-                    totalPackageWeight += item.PackageWeight;
-                    totalPackageMeasure += item.PackageMeasure;
-                    totalPKGs += item.PackageNum;
+                    //totalPackageWeight += item.PackageWeight;
+                    //totalPackageMeasure += item.PackageMeasure;
+                    //totalPKGs += item.PackageNum;
 
                     list.Add(items);
                 }
-                oceanExportPrintDetails.TotalWeight = totalPackageWeight;
-                oceanExportPrintDetails.TotalMeasure = totalPackageMeasure;
+                oceanExportPrintDetails.TotalWeight = containers[0].PackageWeight;
+                oceanExportPrintDetails.TotalMeasure = containers[0].PackageMeasure;
                 oceanExportPrintDetails.TotalPackage = containers[0].PackageNum;
                 oceanExportPrintDetails.PackageWeightName = containers[0].PackageWeightUnit;
                 oceanExportPrintDetails.PackageMeasureName = containers[0].PackageMeasureUnit;
                 oceanExportPrintDetails.ContainerNo = containers[0].ContainerNo;
                 oceanExportPrintDetails.Mark = containers[0].SealNo;
-                oceanExportPrintDetails.PackagpackageUnitName= packageUnitName;
+                oceanExportPrintDetails.PackageUnitName= packageUnitName;
             }
 
             oceanExportPrintDetails.DisplayUnit = "KGBM";

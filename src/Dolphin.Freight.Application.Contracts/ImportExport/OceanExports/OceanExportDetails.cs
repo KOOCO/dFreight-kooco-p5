@@ -516,10 +516,11 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string DisplayUnit { get; set; }
         public string ContainerNo { get; set; }
         public string MblFdestName { get; set; }
-        public string PackagpackageUnitName { get; set; }
+        public string PackageUnitName { get; set; }
         
         public TradePartnerDto CargoPickUp { get; set; }
         public string CreateUpdateContainerJson { get; set; }
         public List<CreateUpdateContainerDto> CreateUpdateContainer { get; set; }
+        public DateTime? MblPostDate { get; set; }
     }
 }

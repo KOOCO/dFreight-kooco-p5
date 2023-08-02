@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -374,6 +375,18 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.MPodName = pod?.PortName;
                 }
 
+                if (mbl.ForwardingAgentId != null)
+                {
+                    var ForwardingAgent = tradePartners.Where(w => w.Id.Equals(mbl.ForwardingAgentId)).FirstOrDefault();
+                    oceanExportDetails.ForwardingAgentName = ForwardingAgent.TPName + "/" + ForwardingAgent.TPCode;
+                }
+
+                if (mbl.MblCarrierId != null)
+                {
+                    var MblCarrier = tradePartners.Where(w => w.Id.Equals(mbl.MblCarrierId)).FirstOrDefault();
+                    oceanExportDetails.MblCarrierName = MblCarrier.TPName + "/" + MblCarrier.TPCode;
+                }
+
                 oceanExportDetails.HblNo = data.HblNo;
                 oceanExportDetails.SoNo = mbl.SoNo;
                 oceanExportDetails.DocNo = mbl.FilingNo;
@@ -393,7 +406,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 oceanExportDetails.Voyage = mbl.Voyage;
                 oceanExportDetails.Mark = data.Mark;
                 oceanExportDetails.MblNo = mbl.MblNo;
-                
+                oceanExportDetails.MblPostDate = mbl.PostDate;
             }
 
             return oceanExportDetails;
