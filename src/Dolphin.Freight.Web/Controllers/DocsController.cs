@@ -70,6 +70,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using NPOI.SS.Formula.Functions;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Uow;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -3740,6 +3741,27 @@ namespace Dolphin.Freight.Web.Controllers
             model.CreateUpdateContainer = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(model.CreateUpdateContainerJson);
 
             return await _generatePdf.GetPdf("Views/Docs/ForwarderCargoReceiptOceanExportHBL.cshtml", model);
+        }
+
+        public async Task<IActionResult> PackagingListOceanExportMBL(Guid id, FreightPageType pageType)
+        {
+            var hblLists = await _oceanExportHblAppService.GetHblCardsById(id);
+
+            var extraPropertyList = new List<ExtraProperty>();
+
+            foreach (var item in hblLists)
+            {
+                if(item.ExtraProperties != null)
+                {
+                    
+                }
+            }
+
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+
+
+
+            return View(oceanExportDetails);
         }
 
         #region Private Functions

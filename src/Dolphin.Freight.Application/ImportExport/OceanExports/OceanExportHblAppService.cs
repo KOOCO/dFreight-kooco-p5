@@ -393,6 +393,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 oceanExportDetails.CurrentDate = DateTime.Now;
                 oceanExportDetails.HblNo = data.HblNo;
                 oceanExportDetails.SoNo = mbl.SoNo;
+                oceanExportDetails.HblSoNo = data.SoNo;
                 oceanExportDetails.DocNo = mbl.FilingNo;
                 oceanExportDetails.ItnNo = data.ItnNo;
                 oceanExportDetails.MblDel = mbl.Del?.PortName;
