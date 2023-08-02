@@ -238,7 +238,7 @@
                             <span>HARD CORE TECHNOLOGY</span>
                         </div>
                         <div class="item-edit">
-                            <input type="text" name="container_loading_location_name" value="HARD CORE TECHNOLOGY" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.container_loading_location_name" id="id_container_loading_location_name">
+                            <input type="text" name="container_loading_location_name" asp-for="@Model.POL" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.container_loading_location_name" id="id_container_loading_location_name">
                         </div>
                     </td>
                 </tr>
@@ -249,7 +249,7 @@
                             <span>198 PEARSON GATEWAY APT. 555 NORTH JAMES, KY 98809-9933</span>
                         </div>
                         <div class="item-edit">
-                            <input type="text" name="container_loading_location_address" value="198 PEARSON GATEWAY APT. 555 NORTH JAMES, KY 98809-9933" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.container_loading_location_address" id="id_container_loading_location_address">
+                            <input type="text" name="container_loading_location_address" asp-for="@Model.Address" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.container_loading_location_address" id="id_container_loading_location_address">
                         </div>
                     </td>
                 </tr>
@@ -290,7 +290,7 @@
                                 on-changed="vm.updateExporterInfo(info, address, cityName, stateCode, zipCode, phone, fax)"
                             ></hc-form-trade-partner-info-picker>
 
-                            <input type="text" name="exporter_name" value="COOL CONTAINERS" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.exporter_name" class="w-50" id="id_exporter_name">
+                            <input type="text" name="exporter_name" asp-for="@Model.SHPR" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.exporter_name" class="w-50" id="id_exporter_name">
                         </div>
                     </td>
                 </tr>
@@ -540,7 +540,7 @@
                             <span>ABC112</span>
                         </div>
                         <div class="item-edit">
-                            <input type="text" name="carrier_bkg_no" value="ABC112" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.carrier_bkg_no" id="id_carrier_bkg_no">
+                            <input type="text" name="carrier_bkg_no" asp-for="@Model.BookingNo" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.carrier_bkg_no" id="id_carrier_bkg_no">
                         </div>
                     </td>
                     <td>Vessel Name & Voyage#</td>
@@ -550,7 +550,7 @@
                             <span>. AARYA / V222</span>
                         </div>
                         <div class="item-edit">
-                            <input type="text" name="vessel_voyage" value=". AARYA / V222" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.vessel_voyage" id="id_vessel_voyage">
+                            <input type="text" name="vessel_voyage" asp-for="@Model.VSLVOV" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.vessel_voyage" id="id_vessel_voyage">
                         </div>
                     </td>
                 </tr>
@@ -562,7 +562,7 @@
                             11-22-2022
                         </div>
                         <div class="item-edit">
-                            <input type="text" name="ETD_date" value="11-22-2022" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.ETD_date" id="id_ETD_date">
+                            <input type="text" name="ETD_date" asp-for="@Model.ETD" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.ETD_date" id="id_ETD_date">
                         </div>
                     </td>
                     <td>U.S. Port of Export</td>
@@ -572,7 +572,7 @@
                             <span>SHENZHENWAN (CHINA)</span>
                         </div>
                         <div class="item-edit">
-                            <input type="text" name="POL_location" value="SHENZHENWAN (CHINA)" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.POL_location" id="id_POL_location">
+                            <input type="text" name="POL_location" asp-for="@Model.POL" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.POL_location" id="id_POL_location">
                         </div>
                     </td>
                 </tr>
@@ -594,7 +594,7 @@
                             <span>BOW CITY, AB (CANADA)</span>
                         </div>
                         <div class="item-edit">
-                            <input type="text" name="FDEST_location" value="BOW CITY, AB (CANADA)" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.FDEST_location" id="id_FDEST_location">
+                            <input type="text" name="FDEST_location" asp-for="@Model.DEST" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.FDEST_location" id="id_FDEST_location">
                         </div>
                     </td>
                     <td>Port of Unloading</td>
@@ -604,7 +604,7 @@
                             <span>LOS ANGELES, CA (UNITED STATES)</span>
                         </div>
                         <div class="item-edit">
-                            <input type="text" name="POD_location" value="LOS ANGELES, CA (UNITED STATES)" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.POD_location" id="id_POD_location">
+                            <input type="text" name="POD_location" asp-for="@Model.POD" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.POD_location" id="id_POD_location">
                         </div>
                     </td>
                 </tr>
@@ -629,7 +629,7 @@
                             <span>MACK PLC</span>
                         </div>
                         <div class="item-edit">
-                            <input type="text" name="steamship_line" value="MACK PLC" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.steamship_line" id="id_steamship_line">
+                            <input type="text" name="steamship_line" asp-for="@Model.SteamShip" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.steamship_line" id="id_steamship_line">
                         </div>
                     </td>
                     <td>Terminal</td>
@@ -691,7 +691,7 @@
                             SZWBC222110003
                         </div>
                         <div class="item-edit">
-                            <input type="text" name="xtn" value="SZWBC222110003" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.xtn" id="id_xtn">
+                            <input type="text" name="xtn" asp-for="@Model.Xtn" template-id="a26a0873eb4186b69eadf1cb62d93dce6f96805c22277c386da56ddd869b336a:Form.xtn" id="id_xtn">
                         </div>
                     </td>
                     <td class="text-right">ITN#</td>

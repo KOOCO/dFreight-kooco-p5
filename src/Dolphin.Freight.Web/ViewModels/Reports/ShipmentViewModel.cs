@@ -42,7 +42,11 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public string GWT { get; set; }
         public string MSRMT { get; set; }
         public string RMK { get; set; }
-
+        public string SteamShip { get; set; }
+        public string Xtn { get; set; }
+        public string BookingNo { get; set; }
+        public string PlaceOfLoading { get; set; }
+        public string PolAddress { get; set; }
         //ReportLog
         public Guid ReportId { get; set; }
     }

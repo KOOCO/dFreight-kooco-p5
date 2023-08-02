@@ -13,6 +13,7 @@ using Dolphin.Freight.Common;
 using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.ImportExport.Containers;
 using Volo.Abp.Data;
+using Dolphin.Freight.TradePartners;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -462,6 +463,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 集裝箱的包裝材積 ID
         /// </summary>
         public Guid? PackageMeasureId { get; set; }
+        public string PackageMeasureName { get; set; }
         /// <summary>
         /// 集裝箱的包裝材積
         /// </summary>
@@ -510,6 +512,14 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public double Total { get; set; }
         public bool IsCustomerRef { get; set; }
         public string HblAgentName { get; set; }
+        public List<CreateUpdateContainerDto> list { get; set; }
+        public string BillOfLanding { get; set; }
+        public string DisplayUnit { get; set; }
+        public string ContainerNo { get; set; }
+        public string MblFdestName { get; set; }
+        public string PackagpackageUnitName { get; set; }
+        
+        public TradePartnerDto CargoPickUp { get; set; }
         public string CreateUpdateContainerJson { get; set; }
         public string HblsJson { get; set; }
         public List<CreateUpdateContainerDto> CreateUpdateContainer { get; set; }
