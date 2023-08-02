@@ -80,6 +80,28 @@
 
             $('#DisplayMblContainerSizeQtyInfo').val('');
             $('#DisplayMblContainerSizeQtyInfo').val($('#containerData').text());
+
+            let rows = document.querySelectorAll("#hblContainerTable tbody tr");
+
+            let package = 0;
+            
+            for (let i = 0; i < rows.length - 1; i++) { 
+                let weightCell = rows[i].children[1];
+                let weightStr = weightCell.innerText.split('\n')[0];
+                let weight = parseFloat(weightStr);
+                
+                if (!isNaN(weight)) { 
+                    package += weight;
+                }
+            }
+
+            $('#totalPKGS').text('');
+            $('#totalPKGS').text(package);
+            $('#Total').val($('#totalPKGS').text());
+
+            $('#totalBLS').text('');
+            $('#totalBLS').text(rows.length-1 + 'BL(s)');
+            $('#TotalPackage').val(rows.length-1);
         });
     });
 
@@ -122,9 +144,12 @@
     <input type="hidden" asp-for="@Model.SoNo" />
     <input type="hidden" asp-for="@Model.MblCarrierName" />
     <input type="hidden" asp-for="@Model.PolEtd" />
-    <input type="hidden" asp-for="@Model.MPodEta" />
+    <input type="hidden" asp-for="@Model.HblsJson" />
+    <input type="hidden" asp-for="@Model.PodEta" />
     <input type="hidden" asp-for="@Model.DisplayMblContainerSizeQtyInfo" />
     <input type="hidden" asp-for="@Model.CreateUpdateContainerJson" />
+    <input type="hidden" asp-for="@Model.TotalPackage" />
+    <input type="hidden" asp-for="@Model.Total" />
 
     <div id="main" class="edit">
 
@@ -256,7 +281,7 @@
                             <tr class="border-b">
                                 <td class="bg-light border-r">P.O.D</td>
                                 <td>
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="MPodName" value="@Model.MPodName" id="id_POD_location" class="ng-isolate-scope"></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="PodName" value="@Model.PodName" id="id_POD_location" class="ng-isolate-scope"></div>
                                 </td>
                                 <td class="bg-light border-r border-l">ETA</td>
                                 <td>@Model.PodEta?.ToShortDateString()</td>
@@ -265,7 +290,7 @@
                     </td>
                 </tr>
             </tbody></table>
-            <table class="table-padding-double margin-t-sm">
+            <table class="table-padding-double margin-t-sm" id="hblContainerTable">
                 <colgroup>
                     <col class="w-15">
                     <col class="w-10">
@@ -287,12 +312,40 @@
                     </tr>
                 </thead>
                 
-                <tbody><tr class="border-t border-b bg-light text-bold text-11">
-                    <td>Total 0 BL(S)</td>
-                    <td>0</td>
+                <tbody>
+                    @foreach (var item in Model.Hbls)
+                    {
+                        var index = 0;
+                            index++;
+                        <tr class="border-b-grey">
+                            <td>@item.HblNo</td>
+                            <td>@item.HblPcs</td>
+                            <td class="text-right">@item.Measurement / @item.MeasurementLBS</td>
+                            <td class="text-right"></td>
+                            <td>
+                                
+                                <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items_@index" cols="40" rows="3" class="text-scroll ng-isolate-scope" id="id_good_items_@index">@item.CommodityDesc</textarea></div>
+                                
+                            </td>
+                            <td class="text-center">PP</td>
+                            <td>
+                                
+                                <div class="item-edit hover-toggle-icon-text-template"><textarea name="remark_@index" cols="40" rows="3" class="text-scroll ng-isolate-scope" id="id_remark_@index">@item.Remark</textarea></div>
+
+                                @*<input type="checkbox" name="show_non_stackable_86064" class="item-edit" id="id_show_non_stackable_86064">*@
+                                
+                                    <strong>NON-STACKABLE</strong>
+                                
+                            </td>
+                        </tr>
+                    }
+                
+                <tr class="border-t border-b bg-light text-bold text-11">
+                    <td id="totalBLS">@Model.TotalPackage</td>
+                    <td id="totalPKGS">@Model.Total</td>
                     <td class="text-right"></td>
                     <td class="text-right"></td>
-                    <td colspan="3"><span class="text-blue-deep">CNTR&amp;SEAL NO/SIZE:</span> <span id="containerData">234 &amp; 234 / 40FR</span>
+                    <td colspan="3"><span class="text-blue-deep">CNTR&amp;SEAL NO/SIZE:</span> <span id="containerData">@Model.DisplayMblContainerSizeQtyInfo</span>
                     </td>
                 </tr>
             </tbody></table>

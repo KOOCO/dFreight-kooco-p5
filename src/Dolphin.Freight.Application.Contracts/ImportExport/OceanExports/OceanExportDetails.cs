@@ -12,6 +12,7 @@ using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.ImportExport.Containers;
+using Volo.Abp.Data;
 using Dolphin.Freight.TradePartners;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
@@ -520,7 +521,34 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         
         public TradePartnerDto CargoPickUp { get; set; }
         public string CreateUpdateContainerJson { get; set; }
+        public string HblsJson { get; set; }
         public List<CreateUpdateContainerDto> CreateUpdateContainer { get; set; }
-        public DateTime? MblPostDate { get; set; }
+         public DateTime? MblPostDate { get; set; }
+        public List<Hbl> Hbls { get; set; }
+    }
+
+    public class Hbl
+    {
+        public string HblNo { get; set; }
+        public string HblPcs { get; set; }
+        public string Weight { get; set; }
+        public string WeightLBS { get; set; }
+        public string Measurement { get; set; }
+        public string MeasurementLBS { get; set; }
+        public string Shipper { get; set; }
+        public string Consignee { get; set; }
+        public string NatureOfGoods { get; set; }
+        public string Term { get; set; }
+        public string Mark { get; set; }
+        public string Description { get; set; }
+        public string extraProperty { get; set; }
+        public string CommodityDesc { get; set; }
+        public string Remark { get; set; }
+    }
+
+    public class ExtraProperty
+    {
+        public string CommodityNo { get; set; }
+       
     }
 }

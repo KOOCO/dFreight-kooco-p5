@@ -9,8 +9,11 @@
 @inject IStringLocalizer<FreightResource> L
 
 <script>
+    function getReportHblClauses() {
+        myWindow = window.open("@Url.Action("HblClauses", "Docs")", 'HblClauses', 'width=1500,height=800');
+        myWindow.focus()
+    }
     function gotoInvoiceHBL(Mid, Hid, InvoiceType) {
-        debugger;
         if (Hid != '00000000-0000-0000-0000-000000000000') {
             location.href = '/Accounting/Invoice?MethodType=1&Mid=' + Mid + "&Hid=" + Hid + "&InvoiceType=" + InvoiceType;
         }
@@ -165,7 +168,7 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Print OB/L"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getReportHblClauses()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:B/L Clauses"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getCommercialInvoice('@Model.OceanExportHblDto.Id')">
