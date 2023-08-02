@@ -80,13 +80,13 @@
 
             $('#DisplayMblContainerSizeQtyInfo').val('');
             $('#DisplayMblContainerSizeQtyInfo').val($('#containerData').text());
-            debugger;
+            
             let rows = document.querySelectorAll("#hblContainerTable tbody tr.hblsdata");
 
             let totalPkgs = 0;
             let totalWeight = 0;
             let totalMeasure = 0;
-            debugger;
+
             for (let i = 0; i < rows.length; i++) { 
                 let weightCell = rows[i].children[1];
                 let weightStr = weightCell.innerText.split('\n')[0];
@@ -106,18 +106,18 @@
             }
 
             $('#totalPKGS').text('');
-            $('#totalPKGS').text(totalPkgs);
+            $('#totalPKGS').text(totalPkgs + ' (PCS)');
             $('#totalWeightKG').text('');
-            $('#totalWeightKG').text(totalWeight);
+            $('#totalWeightKG').text(totalWeight + ' KGS');
             $('#totalWeightLBS').text('');
-            $('#totalWeightLBS').text(parseFloat(totalWeight * 2.204).toFixed(2));
+            $('#totalWeightLBS').text(parseFloat(totalWeight * 2.204).toFixed(2) + ' LBS');
             $('#totalMeasureCBM').text('');
-            $('#totalMeasureCBM').text(totalMeasure);
+            $('#totalMeasureCBM').text(totalMeasure + ' CBM');
             $('#totalMeasureCFT').text('');
-            $('#totalMeasureCFT').text(parseFloat(totalMeasure * 35.315).toFixed(2));
+            $('#totalMeasureCFT').text(parseFloat(totalMeasure * 35.315).toFixed(2) + ' CFT');
             
-            $('#Total').val('');
-            $('#Total').val($('#totalPKGS').text());
+            $('#TotalStr').val('');
+            $('#TotalStr').val($('#totalPKGS').text());
             $('#TotalWeightStr').val('');
             $('#TotalWeightStr').val($('#totalWeightKG').text());
             $('#TotalWeightStrLBS').val('');
@@ -126,11 +126,11 @@
             $('#TotalMeasureStr').val($('#totalMeasureCBM').text());
             $('#TotalMeasureStrLBS').val('');
             $('#TotalMeasureStrLBS').val($('#totalMeasureCFT').text());
-            debugger;
+            
             $('#totalBL').text('');
-            $('#totalBL').text(rows.length);
-            $('#TotalPackage').val('');
-            $('#TotalPackage').val($('#totalBL').text());
+            $('#totalBL').text(rows.length + ' BL(s)');
+            $('#TotalPackageStr').val('');
+            $('#TotalPackageStr').val($('#totalBL').text());
         });
     });
 
@@ -180,8 +180,8 @@
     <input type="hidden" asp-for="@Model.TotalWeightStrLBS" />
     <input type="hidden" asp-for="@Model.TotalMeasureStr" />
     <input type="hidden" asp-for="@Model.TotalMeasureStrLBS" />
-    <input type="hidden" asp-for="@Model.TotalPackage" />
-    <input type="hidden" asp-for="@Model.Total" />
+    <input type="hidden" asp-for="@Model.TotalPackageStr" />
+    <input type="hidden" asp-for="@Model.TotalStr" />
 
     <div id="main" class="edit">
 
@@ -424,7 +424,7 @@
                 <tr class="border-t border-b bg-light">
                     <td colspan="2">
                         <strong>Total
-                            <span class="item-edit ng-binding" id="totalPKGS">@Model.Total</span>
+                            <span class="item-edit ng-binding" id="totalPKGS">@Model.TotalStr</span>
                         </strong>
                     </td>
                     <td>
@@ -438,7 +438,7 @@
                             <span class="item-edit ng-binding" id="totalMeasureCFT">@Model.TotalMeasureStrLBS</span>
                     </td>
                     <td class="text-center" colspan="2">
-                        <span class="item-edit ng-binding" id="totalBL">@Model.TotalPackage</span>
+                        <span class="item-edit ng-binding" id="totalBL">@Model.TotalPackageStr</span>
                     </td>
                 </tr>
             </tbody>

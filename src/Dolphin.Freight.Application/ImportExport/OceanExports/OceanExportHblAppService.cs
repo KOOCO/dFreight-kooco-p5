@@ -265,7 +265,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             var portMangements = ObjectMapper.Map<List<PortsManagement>, List<PortsManagementDTO>>(await _portsManagementRepository.GetListAsync());
             var sysCodes = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(await _sysCodeRepository.GetListAsync());
             var substations = ObjectMapper.Map<List<Substation>, List<SubstationDto>>(await _substationRepository.GetListAsync());
-
+            
             var data = await Repository.GetAsync(Id);
 
             if (data != null)

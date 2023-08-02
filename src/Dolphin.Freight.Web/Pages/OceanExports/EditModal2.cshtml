@@ -350,6 +350,12 @@
            myWindow = window.open("@Url.Action("Shipment", "Docs")"+ "?id=" + idNo, 'Shipment', 'width=1200,height=800');
             myWindow.focus()
         }
+         function getPreliminaryClaim() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("PreliminaryClaimOceanExport", "Docs")" + "?id=" + idNo+"&pageType=4", 'PreliminaryClaimOceanExport', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow.focus()
+        }
     </script>
 
     <script id="commodityTemplate" type="text/x-jQuery-tmpl">
@@ -597,6 +603,10 @@
         <a class='dropdown-item' href='#'>
             <i class="fa fa-file-text-o"></i> @L["Btn:Dock Receipt"]
         </a>
+          <a class='dropdown-item' href='javascript:void(0)' onclick="getPreliminaryClaim()">
+            <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+        </a>
+        
         <a class='dropdown-item' href='#'>
             <i class="fa fa-file-text-o"></i> @L["Btn:Dispatch List"]
         </a>

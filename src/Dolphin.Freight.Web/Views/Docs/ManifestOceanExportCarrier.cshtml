@@ -83,25 +83,45 @@
 
             let rows = document.querySelectorAll("#hblContainerTable tbody tr");
 
+            let totalWeight = 0;
+            let totalMeasure = 0;
             let package = 0;
-            
+            debugger;
             for (let i = 0; i < rows.length - 1; i++) { 
                 let weightCell = rows[i].children[1];
                 let weightStr = weightCell.innerText.split('\n')[0];
                 let weight = parseFloat(weightStr);
+
+                let weightCellkg = rows[i].children[3];
+                let weightStrkg = weightCellkg.innerText.split('\n')[0];
+                let weightkg = parseFloat(weightStrkg);
+
+                let measureCell = rows[i].children[2];
+                let measureStr = measureCell.innerText.split('\n')[0];
+                let measure = parseFloat(measureStr);
                 
                 if (!isNaN(weight)) { 
                     package += weight;
+                    totalMeasure += measure;
+                    totalWeight += weightkg;
                 }
             }
 
             $('#totalPKGS').text('');
-            $('#totalPKGS').text(package);
-            $('#Total').val($('#totalPKGS').text());
+            $('#totalPKGS').text(package + ' (PCS)');
+            $('#TotalStr').val($('#totalPKGS').text());
+
+            $('#totalMeasure').text('');
+            $('#totalMeasure').text(totalMeasure + ' CBM/' + parseFloat(totalMeasure * 35.315).toFixed(2) + ' CFT');
+            $('#TotalMeasureStr').val($('#totalMeasure').text());
+
+            $('#totalWeight').text('');
+            $('#totalWeight').text(totalWeight + ' KGS/' + parseFloat(totalWeight * 2.204).toFixed(2) + ' LBS');
+            $('#TotalWeightStr').val($('#totalWeight').text());
 
             $('#totalBLS').text('');
-            $('#totalBLS').text(rows.length-1 + 'BL(s)');
-            $('#TotalPackage').val(rows.length-1);
+            $('#totalBLS').text(rows.length-1 + ' BL(s)');
+            $('#TotalPackageStr').val(rows.length-1);
         });
     });
 
@@ -148,8 +168,12 @@
     <input type="hidden" asp-for="@Model.PodEta" />
     <input type="hidden" asp-for="@Model.DisplayMblContainerSizeQtyInfo" />
     <input type="hidden" asp-for="@Model.CreateUpdateContainerJson" />
-    <input type="hidden" asp-for="@Model.TotalPackage" />
-    <input type="hidden" asp-for="@Model.Total" />
+    <input type="hidden" asp-for="@Model.TotalPackageStr" />
+    <input type="hidden" asp-for="@Model.TotalStr" />
+    <input type="hidden" asp-for="@Model.TotalWeightStr" />
+    <input type="hidden" asp-for="@Model.TotalWeightStrLBS" />
+    <input type="hidden" asp-for="@Model.TotalMeasureStr" />
+    <input type="hidden" asp-for="@Model.TotalMeasureStrLBS" />
 
     <div id="main" class="edit">
 
@@ -321,7 +345,7 @@
                             <td>@item.HblNo</td>
                             <td>@item.HblPcs</td>
                             <td class="text-right">@item.Measurement / @item.MeasurementLBS</td>
-                            <td class="text-right"></td>
+                            <td class="text-right">@item.Weight / @item.WeightLBS</td>
                             <td>
                                 
                                 <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items_@index" cols="40" rows="3" class="text-scroll ng-isolate-scope" id="id_good_items_@index">@item.CommodityDesc</textarea></div>
@@ -341,10 +365,10 @@
                     }
                 
                 <tr class="border-t border-b bg-light text-bold text-11">
-                    <td id="totalBLS">@Model.TotalPackage</td>
-                    <td id="totalPKGS">@Model.Total</td>
-                    <td class="text-right"></td>
-                    <td class="text-right"></td>
+                    <td id="totalBLS">@Model.TotalPackageStr</td>
+                    <td id="totalPKGS">@Model.TotalStr</td>
+                    <td class="text-right" id="totalMeasure">@Model.TotalMeasureStr</td>
+                    <td class="text-right" id="totalWeight">@Model.TotalWeightStr</td>
                     <td colspan="3"><span class="text-blue-deep">CNTR&amp;SEAL NO/SIZE:</span> <span id="containerData">@Model.DisplayMblContainerSizeQtyInfo</span>
                     </td>
                 </tr>

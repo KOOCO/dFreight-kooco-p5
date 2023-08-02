@@ -231,6 +231,12 @@
             //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
+        function getPreliminaryClaim() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("PreliminaryClaimOceanExport", "Docs")" + "?id=" + idNo+"&pageType=4", 'PreliminaryClaimOceanExport', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow.focus()
+        }
         function getBookingPackingList() {
             //var idNo = $('#OceanExportHbl_Id').val();
             //myWindow = window.open("@Url.Action("BookingPackingList", "Docs")" + "?id=" + idNo, 'BookingPackingList', 'width=1200,height=800');
