@@ -481,7 +481,7 @@
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getManifestPopUp()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PackagingListOceanExportMBL", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getReportTelexrelease()">

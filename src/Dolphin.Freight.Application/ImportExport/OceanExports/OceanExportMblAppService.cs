@@ -380,6 +380,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             oceanExportDetails.Mark = data.Mark;
             oceanExportDetails.Description = data.Description;
             oceanExportDetails.DomesticInstructions = data.DomesticInstructions;
+            oceanExportDetails.CurrentDate = DateTime.Now;
 
             return oceanExportDetails;
         }

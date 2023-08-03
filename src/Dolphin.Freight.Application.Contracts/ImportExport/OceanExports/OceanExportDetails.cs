@@ -539,9 +539,10 @@ namespace Dolphin.Freight.ImportExport.OceanExports
          public DateTime? MblPostDate { get; set; }
         public List<Hbl> Hbls { get; set; }
         public string BillOfLandingMaster { get; set; }
-        public List<ExtraProperty> ExtraProperties { get; set; }
         public List<Commodity> Commodities { get; set; }
         public string CommoditiesJson { get; set; }
+        public string Net_weight_unit { get; set; }
+        public string Gross_weight_unit { get; set; }
     }
 
     public class Hbl
@@ -561,18 +562,5 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string extraProperty { get; set; }
         public string CommodityDesc { get; set; }
         public string Remark { get; set; }
-    }
-
-    public class ExtraProperty
-    {
-        public string CommodityDesc { get; set; }
-        public string PackageType { get; set; }
-        public string HTS { get; set; }
-        public string NoOfPCS { get; set; }
-        public string NetWeight { get; set; }
-        public string GrossWeight { get; set; }
-        public string UnitPrice { get; set; }
-        public string Amount { get; set; }
-        public string CommodityDetails { get; set; }
     }
 }
