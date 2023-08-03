@@ -70,6 +70,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using NPOI.SS.Formula.Functions;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Uow;
 using Dolphin.Freight.Settings.PackageUnits;
 
 namespace Dolphin.Freight.Web.Controllers
@@ -4294,6 +4295,55 @@ namespace Dolphin.Freight.Web.Controllers
             model.CreateUpdateContainerDtos = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(model.CreateUpdateContainerDtosJson);
 
             return await _generatePdf.GetPdf("Views/Docs/HblShippingAdvice.cshtml", model);
+        }
+
+        public async Task<IActionResult> PackagingListOceanExportMBL(Guid id, FreightPageType pageType)
+        {
+            var hblLists = await _oceanExportHblAppService.GetHblCardsById(id);
+            List<Commodity> commoditiesList = new List<Commodity>();
+
+            foreach (var item in hblLists)
+            {
+                object commodities;
+                item.ExtraProperties.TryGetValue("Commodities", out commodities);
+
+                if (commodities is not null)
+                {
+                    foreach (var subItem in JsonConvert.DeserializeObject<List<Commodity>>(Convert.ToString(commodities)))
+                    {
+                        var commodity = new Commodity
+                        {
+                            BookingNo = item.SoNo,
+                            PackagingType = subItem.PackagingType,
+                            Description = subItem.Description,
+                            HTSCode = subItem.HTSCode,
+                            NoOfPcs = subItem.NoOfPcs,
+                            NetWeight = subItem.NetWeight,
+                            GrossWeight = subItem.GrossWeight,
+                            UnitPrice = subItem.UnitPrice,
+                            Amount = subItem.Amount
+                        };
+                        commoditiesList.Add(commodity);
+                    }
+                }
+            }
+
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+
+            oceanExportDetails.Commodities = commoditiesList;
+            oceanExportDetails.CommoditiesJson = JsonConvert.SerializeObject(commoditiesList);
+
+            return View(oceanExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> PackagingListOceanExportMBL(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            model.Commodities = JsonConvert.DeserializeObject<List<Commodity>>(model.CommoditiesJson);
+
+
+            return await _generatePdf.GetPdf("Views/Docs/PackagingListOceanExportMBL.cshtml", model);
         }
 
         [HttpGet]
