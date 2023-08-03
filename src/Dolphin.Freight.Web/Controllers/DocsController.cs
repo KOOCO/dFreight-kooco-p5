@@ -70,6 +70,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using NPOI.SS.Formula.Functions;
 using Volo.Abp.Domain.Repositories;
+using Dolphin.Freight.Settings.PackageUnits;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -4293,6 +4294,74 @@ namespace Dolphin.Freight.Web.Controllers
             model.CreateUpdateContainerDtos = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(model.CreateUpdateContainerDtosJson);
 
             return await _generatePdf.GetPdf("Views/Docs/HblShippingAdvice.cshtml", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HBLPrintOceanExportOBL(Guid id, FreightPageType pageType)
+        {
+            var oceanExportPrintDetails = await GetOceanExportDetailsByPageType(id, pageType);
+
+            var packageUnit = _dropdownService.PackageUnitLookupList;
+
+            QueryInvoiceDto queryDto = new QueryInvoiceDto();
+
+            QueryContainerDto query = new QueryContainerDto() { QueryId = oceanExportPrintDetails.MblId };
+            var containers = await _containerAppService.QueryListAsync(query);
+            //var container = await _containerAppService.GetContainerByHblId(Guid.Parse(id));
+
+            var list = new List<CreateUpdateContainerDto>();
+            string packageUnitName = "";
+            if (containers != null && containers.Any())
+            {
+                int totalPKGs = 0;
+                double totalPackageWeight = 0;
+                double totalPackageMeasure = 0;
+                
+                foreach (var item in containers)
+                {
+                    if (item.PackageUnitId != null)
+                    {
+                        packageUnitName = _dropdownService.PackageUnitLookupList.Where(w => w.Value == Convert.ToString(containers[0].PackageUnitId)).FirstOrDefault().Text;
+                    }
+                    var items = new CreateUpdateContainerDto
+                    {
+                        ContainerNo = item.ContainerNo,
+                        SealNo = item.SealNo,
+                        PackageNum = item.PackageNum,
+                        PackageWeight = item.PackageWeight,
+                        PackageMeasure = item.PackageMeasure,
+                        PackageUnitName = item.PackageUnitId == null ? ""
+                                        : string.Concat(packageUnit.Where(w => w.Value == string.Concat(item.PackageUnitId)).Select(s => s.Text))
+                    };
+
+                    totalPackageWeight += item.PackageWeight;
+                    totalPackageMeasure += item.PackageMeasure;
+                    totalPKGs += item.PackageNum;
+
+                    list.Add(items);
+                }
+                oceanExportPrintDetails.TotalWeight = totalPackageWeight;
+                oceanExportPrintDetails.TotalMeasure = totalPackageMeasure;
+                oceanExportPrintDetails.TotalPackage = totalPKGs;
+                oceanExportPrintDetails.PackageWeightName = containers[0].PackageWeightUnit;
+                oceanExportPrintDetails.PackageMeasureName = containers[0].PackageMeasureUnit;
+                oceanExportPrintDetails.ContainerNo = containers[0].ContainerNo;
+                oceanExportPrintDetails.Mark = containers[0].SealNo;
+                oceanExportPrintDetails.PackageUnitName = list[0].PackageUnitName;
+                oceanExportPrintDetails.CreateUpdateContainer = list;
+                oceanExportPrintDetails.CreateUpdateContainerJson = JsonConvert.SerializeObject(list);
+                oceanExportPrintDetails.DisplayUnit = "KGBM";
+            }
+
+            return View(oceanExportPrintDetails);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> HBLPrintOceanExportOBL(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+            model.CreateUpdateContainer = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(model.CreateUpdateContainerJson);
+            return await _generatePdf.GetPdf("Views/Docs/HBLPrintOceanExportOBL.cshtml", model);
         }
 
         #region Private Functions
