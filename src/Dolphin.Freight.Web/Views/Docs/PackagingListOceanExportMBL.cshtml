@@ -3,6 +3,7 @@
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
+@using Newtonsoft.Json;
 @model Dolphin.Freight.ImportExport.OceanExports.OceanExportDetails
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
@@ -163,20 +164,176 @@ table td {
             }
         }
 
-        document.getElementById("reportLink").onclick = function() {
-            document.getElementById("myForm").submit();
-        }
+        $('#id_gross_weight_unit').on('change', function(){
+        var unitName = $('#id_gross_weight_unit').val();
+            CalculateTotals(unitName, 'grossWeight');
+        });
+        
+        $('#id_net_weight_unit').on('change', function(){
+        var unitName = $('#id_net_weight_unit').val();
+            CalculateTotals(unitName, 'netWeight');
+        });
 
-        document.getElementById('chkCustomerRef').addEventListener('change', function(val){ 
-            var display = (this.checked)? 'block' : 'none';
-            document.getElementById('txtCustomerRef').style.display = display;
-            document.getElementById('txtCustomerRef').style.marginLeft='40px';
-        })
+        //CalculateTotals('LB', 'netWeight');
     });
 
     function print()
     {
         document.getElementById("myForm").submit();
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+        CalculateTotals('Both');
+    });
+
+    function CalculateTotals(unit, field){
+        let rows = document.querySelectorAll("#commoditiesTable tbody tr.trCell");
+
+        let totalGrossWeight = 0;
+        let totalNetWeight = 0;
+        let totalPcs = 0;
+        let totalPackageType = 0;
+        let totalAmount = 0;
+        
+        for (let i = 0; i < rows.length; i++) { 
+            let grossCell = rows[i].children[8];
+            let grossStr = grossCell.innerText;
+            let grossWeight = parseFloat(grossStr);
+            let netCell = rows[i].children[7];
+            let netStr = netCell.innerText;
+            let netWeight = parseFloat(netStr);
+            let pcsCell = rows[i].children[6];
+            let pcsStr = pcsCell.innerText;
+            let pcs = parseFloat(pcsStr);
+            let pctyCell = rows[i].children[3];
+            let pctyStr = pctyCell.innerText;
+            let pcty = parseFloat(pctyStr);
+            let amountCell = rows[i].children[10];
+            let amountStr = amountCell.innerText;
+            let amount = parseFloat(amountStr);
+            
+            if (!isNaN(grossWeight)) { 
+                totalGrossWeight += grossWeight;
+            }
+            if (!isNaN(netWeight)) {
+                totalNetWeight += netWeight;
+            }
+            if (!isNaN(pcs)) {
+                totalPcs += pcs;
+            }
+            if (!isNaN(pcty)) {
+                totalPackageType += pcty;
+            }
+            if (!isNaN(amount)) {
+                totalAmount += amount;
+            }
+        }
+
+        $('#totalPCS').text('');
+        $('#totalPCS').text(totalPcs);
+        $('#totalPackageType').text('');
+        $('#totalPackageType').text(totalPackageType);
+        $('#totalAmount').text('');
+        $('#totalAmount').text(totalAmount);
+
+        $('#TotalPCSStr').val($('#totalPCS').text());
+        $('#TotalPackagesStr').val($('#totalPackageType').text());
+        $('#TotalAmountStr').val($('#totalAmount').text());
+
+        let commodities = @Html.Raw(Model.CommoditiesJson);
+
+        switch(unit){
+            case 'KG': 
+                if (field == 'grossWeight'){
+                    var totalGW = 0;
+
+                    debugger;
+                    //let commodities = @Html.Raw(Model.CommoditiesJson);
+
+                    for (let index = 1; index <= $('#commoditiesTable tr.trcell').length; index++) {
+                        let grossWeight = parseInt(commodities[index-1].GrossWeight, 10);
+                        $('#grossWgt_'+ index).text(grossWeight);
+
+                        if (!isNaN(grossWeight)){
+                            totalGW += grossWeight;
+                        }
+                    }
+
+                    $('#totalGrossWeight').text(totalGW);
+                    $('#TotalGrossWeightStr').val($('#totalGrossWeight').text());
+
+                } else if (field == 'netWeight'){
+                    //let commodities = @Html.Raw(Model.CommoditiesJson);
+
+                    var total = 0;
+
+                    for (let index = 1; index <= $('#commoditiesTable tr.trcell').length; index++) {
+                        let netWeight = parseInt(commodities[index-1].NetWeight, 10);
+                        $('#netWgt_'+ index).text(netWeight);
+
+                        if (!isNaN(netWeight)){
+                            total += netWeight;
+                        }
+                    }
+                    
+                    $('#totalNetWeight').text(total);
+                    $('#TotalNetWeightStr').val($('#totalNetWeight').text());
+                }
+            break;
+
+            case 'LB':
+                if (field == 'grossWeight'){
+                    $('#totalNetWeight').text('');
+                    $('#totalNetWeight').text(totalNetWeight);
+                    $('#TotalNetWeightStr').val($('#totalNetWeight').text());
+
+                    $('#totalGrossWeight').text('');
+                    let totalGrossWeightInPounds = parseFloat(totalGrossWeight * 2.20462).toFixed(2);
+                    $('#totalGrossWeight').text(totalGrossWeightInPounds);
+                    $('#TotalGrossWeightStr').val($('#totalGrossWeight').text());
+
+                    for(let index = 1; index <= rows.length; index++){
+                        let totalGrossWeightInPound = parseFloat($('#grossWgt_'+ index).text() * 2.20462).toFixed(2);
+                        $('#grossWgt_'+ index).text(totalGrossWeightInPound);
+                        $('#GrossWLBS_'+ index).val($('#grossWgt_'+ index).text());
+                        //debugger;
+                        //
+                        //    for (var i = Model.Index - 1; i < Model.Index; i++){
+                        //        //Model.Commodities[i].GrossWeight = "54";
+                        //    }
+                        //    Model.Index++;
+                        //}
+                    }
+                } 
+                else if (field == 'netWeight'){
+                    $('#totalGrossWeight').text('');
+                    $('#totalGrossWeight').text(totalGrossWeight);
+                    $('#TotalGrossWeightStr').val($('#totalGrossWeight').text());
+
+                    $('#totalNetWeight').text('');
+                    let totalNetWeightInPounds = parseFloat(totalNetWeight * 2.20462).toFixed(2);
+                    $('#totalNetWeight').text(totalNetWeightInPounds);
+                    $('#TotalNetWeightStr').val($('#totalNetWeight').text());
+
+                    for(let index = 1; index <= rows.length; index++){
+                        let totalNetWeightInPound = parseFloat($('#netWgt_'+ index).text() * 2.20462).toFixed(2);
+                        $('#netWgt_'+ index).text(totalNetWeightInPound);
+                    }
+                }
+            break;
+
+            case 'Both':
+                $('#totalGrossWeight').text('');
+                $('#totalGrossWeight').text(totalGrossWeight);
+                $('#TotalGrossWeightStr').val($('#totalGrossWeight').text());
+                $('#totalNetWeight').text('');
+                $('#totalNetWeight').text(totalNetWeight);
+                $('#TotalNetWeightStr').val($('#totalNetWeight').text());
+            break;    
+        }
+        @{
+            Model.CommoditiesJson = JsonConvert.SerializeObject(Model.Commodities);
+        }
     }
 
 </script>
@@ -201,6 +358,12 @@ table td {
 }
 
 <form id="myForm" name="myForm" method="POST">
+    <input type="hidden" asp-for="@Model.TotalGrossWeightStr" />
+    <input type="hidden" asp-for="@Model.TotalNetWeightStr" />
+    <input type="hidden" asp-for="@Model.TotalPCSStr" />
+    <input type="hidden" asp-for="@Model.TotalPackagesStr" />
+    <input type="hidden" asp-for="@Model.TotalAmountStr" />
+    <input type="hidden" asp-for="@Model.CommoditiesJson" />
 
     <div id="main" class="edit">   
 
@@ -241,18 +404,18 @@ table td {
                     <td>INV.NO</td>
                     <td> <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="inv_no" id="id_inv_no" class="ng-isolate-scope"></div></td>
                     <td>DATE</td>
-                    <td><div class="item-edit hover-toggle-icon-text-template"><input type="text" name="issue_date" value="08-02-2023" id="id_issue_date" class="ng-isolate-scope"></div></td>
+                    <td><div class="item-edit hover-toggle-icon-text-template"><input type="text" name="CurrentDate" value="@Model.CurrentDate?.ToShortDateString()" id="id_issue_date" class="ng-isolate-scope"></div></td>
                 </tr>
                 <tr>
                     <td></td>
                     <td>FROM</td>
-                    <td> <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="POL_location" value="AMBIA, IN (UNITED STATES)" id="id_POL_location" class="ng-isolate-scope"></div></td>
+                    <td> <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="PolName" value="@Model.PolName" id="id_POL_location" class="ng-isolate-scope"></div></td>
                     <td>TO</td>
-                    <td><div class="item-edit hover-toggle-icon-text-template"><input type="text" name="POD_location" value="ADAIR, OK (UNITED STATES)" id="id_POD_location" class="ng-isolate-scope"></div></td>
+                    <td><div class="item-edit hover-toggle-icon-text-template"><input type="text" name="PodName" value="@Model.PodName" id="id_POD_location" class="ng-isolate-scope"></div></td>
                 </tr>
             </tbody>
         </table>
-        <table class="table-padding-double margin-t">
+        <table class="table-padding-double margin-t" id="commoditiesTable">
             <colgroup>
                 <col class="w-2"> 
                 <col class="w-8"> 
@@ -302,166 +465,83 @@ table td {
                     </th>
                 </tr>
 
-                <tr>
-                    <td>
-                        <input type="checkbox" name="item_info_chk_24069" ng-model="vm.itemInfoSet[0].checked" ng-change="vm.updateTotalValue()" id="id_item_info_chk_24069" class="ng-valid ng-dirty ng-valid-parse ng-not-empty ng-touched">
-                    </td>
-                    <td>23060002</td>
-                    <td class="text-right">4</td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-pkg"><span>CARTON(S)</span></div>
-                    </td>
-                    <td>324</td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-hts"><span></span></div>
-                    </td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-pcs"><span>3</span></div>
-                    </td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-weight">
-                            <!-- ngIf: vm.netWeightUnit === 'KG' --><span ng-if="vm.netWeightUnit === 'KG'" class="ng-scope">4.00</span><!-- end ngIf: vm.netWeightUnit === 'KG' -->
-                            <!-- ngIf: vm.netWeightUnit === 'LB' -->
-                        </div>
-                    </td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-weight">
-                            <!-- ngIf: vm.grossWeightUnit === 'KG' --><span ng-if="vm.grossWeightUnit === 'KG'" class="ng-scope">4.00</span><!-- end ngIf: vm.grossWeightUnit === 'KG' -->
-                            <!-- ngIf: vm.grossWeightUnit === 'LB' -->
-                        </div>
-                    </td>
-                    <td class="text-right">34.00</td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-amount"><span>342.00</span></div>
-                    </td>
-                    <td></td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <input type="checkbox" name="item_info_chk_24070" ng-model="vm.itemInfoSet[1].checked" ng-change="vm.updateTotalValue()" id="id_item_info_chk_24070" class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                    </td>
-                    <td>23060002</td>
-                    <td class="text-right"></td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-pkg"><span>CARTON(S)</span></div>
-                    </td>
-                    <td>123</td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-hts"><span></span></div>
-                    </td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-pcs"><span></span></div>
-                    </td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-weight">
-                            <!-- ngIf: vm.netWeightUnit === 'KG' --><span ng-if="vm.netWeightUnit === 'KG'" class="ng-scope">0.00</span><!-- end ngIf: vm.netWeightUnit === 'KG' -->
-                            <!-- ngIf: vm.netWeightUnit === 'LB' -->
-                        </div>
-                    </td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-weight">
-                            <!-- ngIf: vm.grossWeightUnit === 'KG' --><span ng-if="vm.grossWeightUnit === 'KG'" class="ng-scope">0.00</span><!-- end ngIf: vm.grossWeightUnit === 'KG' -->
-                            <!-- ngIf: vm.grossWeightUnit === 'LB' -->
-                        </div>
-                    </td>
-                    <td class="text-right"></td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-amount"><span>0.00</span></div>
-                    </td>
-                    <td></td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <input type="checkbox" name="item_info_chk_24073" ng-model="vm.itemInfoSet[2].checked" ng-change="vm.updateTotalValue()" id="id_item_info_chk_24073" class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                    </td>
-                    <td>23070001</td>
-                    <td class="text-right">1</td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-pkg"><span>CARTON(S)</span></div>
-                    </td>
-                    <td>555</td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-hts"><span>2</span></div>
-                    </td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-pcs"><span>3</span></div>
-                    </td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-weight">
-                            <span ng-if="vm.netWeightUnit === 'KG'" class="ng-scope">4.00</span><!-- end ngIf: vm.netWeightUnit === 'KG' -->
-                            
-                        </div>
-                    </td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-weight">
-                            <span class="ng-scope">5.00</span>
-                        </div>
-                    </td>
-                    <td class="text-right">6.00</td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-amount"><span>7.00</span></div>
-                    </td>
-                    <td></td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <input type="checkbox" name="item_info_chk_24074" id="id_item_info_chk_24074" class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                    </td>
-                    <td>23070001</td>
-                    <td class="text-right">1</td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-pkg"><span>CARTON(S)</span></div>
-                    </td>
-                    <td>444</td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-hts"><span>2</span></div>
-                    </td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-pcs"><span>3</span></div>
-                    </td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-weight">
-                            <span class="ng-scope">4.00</span>
-                        </div>
-                    </td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-weight">
-                            <span class="ng-scope">5.00</span>
-                        </div>
-                    </td>
-                    <td class="text-right">6.00</td>
-                    <td class="text-right">
-                        <div class="auto-font-size __width-amount"><span>7.00</span></div>
-                    </td>
-                    <td></td>
-                </tr>
+                @{
+                    var index = 0;
+                }
+                @foreach (var item in Model.Commodities)
+                {
+                    index++;
+                    <tr class="trCell">
+                        <td>
+                            @*<input type="checkbox" name="item_info_chk_@index" id="id_item_info_chk_@index" class="ng-valid ng-dirty ng-valid-parse ng-not-empty ng-touched">*@
+                        </td>
+                        <td>@item.BookingNo</td>
+                        <td class="text-right"></td>
+                        <td class="text-right">
+                            <div class="auto-font-size __width-pkg"><span>@item.PackagingType</span></div>
+                        </td>
+                        <td>@item.Description</td>
+                        <td class="text-right">
+                            <div class="auto-font-size __width-hts"><span>@item.HTSCode</span></div>
+                        </td>
+                        <td class="text-right">
+                            <div class="auto-font-size __width-pcs"><span>@item.NoOfPcs</span></div>
+                        </td>
+                        <td class="text-right">
+                            <div class="auto-font-size __width-weight">
+                                @if(item.NetWeight == null){
+                                    <span class="ng-scope">0</span>
+                                } else {
+                                    <span class="ng-scope" id="netWgt_@index">@item.NetWeight</span>
+                                }
+                            </div>
+                        </td>
+                        <td class="text-right">
+                            <div class="auto-font-size __width-weight">
+                                @if(item.GrossWeight == null){
+                                    <span class="ng-scope">0</span>
+                                } else {
+                                    <span class="ng-scope" id="grossWgt_@index">@item.GrossWeight</span>
+                                }
+                            </div>
+                        </td>
+                        <td class="text-right">@item.UnitPrice</td>
+                        <td class="text-right">
+                            <div class="auto-font-size __width-amount">
+                                @if(item.Amount == null){
+                                    <span>0</span>
+                                } else {
+                                    <span>@item.Amount</span>
+                                }
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                }
 
                 <tr class="border-t border-b text-bold col-bg-grey">
                     <td colspan="2"></td>
-                    <td class="text-right ng-binding">6</td>
+                    <td class="text-right ng-binding" id="totalPackageType">@Model.TotalPackagesStr</td>
                     <td colspan="3"></td>
                     <td class="text-right">
                         <div class="auto-font-size __width-pcs">
-                            <span class="ng-binding">9</span>
+                            <span class="ng-binding" id="totalPCS">@Model.TotalPCSStr</span>
                         </div>
                     </td>
                     <td class="text-right">
                         <div class="auto-font-size __width-weight">
-                            <span class="ng-binding">12.00</span>
+                            <span class="ng-binding" id="totalNetWeight">@Model.TotalNetWeightStr</span>
                         </div>
                     </td>
                     <td class="text-right">
                         <div class="auto-font-size __width-weight">
-                            <span class="ng-binding">14.00</span>
+                            <span class="ng-binding" id="totalGrossWeight">@Model.TotalGrossWeightStr</span>
                         </div>
                     </td>
                     <td></td>
                     <td class="text-right">
                         <div class="auto-font-size __width-amount">
-                            <span class="ng-binding">356.00</span>
+                            <span class="ng-binding" id="totalAmount">@Model.TotalAmountStr</span>
                         </div>
                     </td>
                     <td></td>

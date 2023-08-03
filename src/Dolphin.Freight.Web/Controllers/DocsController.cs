@@ -3744,26 +3744,6 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/ForwarderCargoReceiptOceanExportHBL.cshtml", model);
         }
 
-        public async Task<IActionResult> PackagingListOceanExportMBL(Guid id, FreightPageType pageType)
-        {
-            var hblLists = await _oceanExportHblAppService.GetHblCardsById(id);
-
-            var extraPropertyList = new List<ExtraProperty>();
-
-            foreach (var item in hblLists)
-            {
-                if(item.ExtraProperties != null)
-                {
-                    
-                }
-            }
-
-            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
-
-
-
-            return View(oceanExportDetails);
-        }
         public async Task<IActionResult> ExamHoldNoticeOceanExportHBL(Guid id, FreightPageType pageType)
         {
             var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
@@ -4258,6 +4238,55 @@ namespace Dolphin.Freight.Web.Controllers
             model.IsPDF = true;
 
             return await _generatePdf.GetPdf("Views/Docs/HBLPrintOceanExport.cshtml", model);
+        }
+
+        public async Task<IActionResult> PackagingListOceanExportMBL(Guid id, FreightPageType pageType)
+        {
+            var hblLists = await _oceanExportHblAppService.GetHblCardsById(id);
+            List<Commodity> commoditiesList = new List<Commodity>();
+
+            foreach (var item in hblLists)
+            {
+                object commodities;
+                item.ExtraProperties.TryGetValue("Commodities", out commodities);
+
+                if (commodities is not null)
+                {
+                    foreach (var subItem in JsonConvert.DeserializeObject<List<Commodity>>(Convert.ToString(commodities)))
+                    {
+                        var commodity = new Commodity
+                        {
+                            BookingNo = item.SoNo,
+                            PackagingType = subItem.PackagingType,
+                            Description = subItem.Description,
+                            HTSCode = subItem.HTSCode,
+                            NoOfPcs = subItem.NoOfPcs,
+                            NetWeight = subItem.NetWeight,
+                            GrossWeight = subItem.GrossWeight,
+                            UnitPrice = subItem.UnitPrice,
+                            Amount = subItem.Amount
+                        };
+                        commoditiesList.Add(commodity);
+                    }
+                }
+            }
+
+            var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+
+            oceanExportDetails.Commodities = commoditiesList;
+            oceanExportDetails.CommoditiesJson = JsonConvert.SerializeObject(commoditiesList);
+
+            return View(oceanExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> PackagingListOceanExportMBL(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+
+            model.Commodities = JsonConvert.DeserializeObject<List<Commodity>>(model.CommoditiesJson);
+
+
+            return await _generatePdf.GetPdf("Views/Docs/PackagingListOceanExportMBL.cshtml", model);
         }
 
         #region Private Functions
