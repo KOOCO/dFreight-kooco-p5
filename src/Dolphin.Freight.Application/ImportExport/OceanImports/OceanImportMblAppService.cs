@@ -30,14 +30,14 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly IRepository<Port, Guid> _portRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IRepository<OceanImportHbl, Guid> _oceanImportHblRepository;
-        public OceanImportMblAppService(IRepository<OceanImportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository, 
-                                        IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository ,
+        public OceanImportMblAppService(IRepository<OceanImportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository,
+                                        IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
                                         IRepository<OceanImportHbl, Guid> oceanImportHblRepository)
             : base(repository)
         {
             _repository = repository;
             _sysCodeRepository = sysCodeRepository;
-            _substationRepository =  substationRepository;
+            _substationRepository = substationRepository;
             _portRepository = portRepository;
             _tradePartnerRepository = tradePartnerRepository;
             _oceanImportHblRepository = oceanImportHblRepository;
@@ -52,9 +52,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         {
             var substations = await _substationRepository.GetListAsync();
             Dictionary<Guid, string> substationsDictionary = new Dictionary<Guid, string>();
-            if (substations != null) 
+            if (substations != null)
             {
-                foreach (var substation in substations) 
+                foreach (var substation in substations)
                 {
                     substationsDictionary.Add(substation.Id, substation.SubstationName + "(" + substation.AbbreviationName + ")");
                 }
@@ -68,20 +68,16 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     dictionary.Add(syscode.Id, syscode.CodeValue);
                 }
             }
-            var OceanImportMbls = await _repository.GetListAsync();
-            List<OceanImportMbl> rs;
+            var OceanImportMbls = await _repository.GetQueryableAsync();
+            OceanImportMbls = OceanImportMbls.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.MblNo
+                                              .Contains(query.Search) || x.Office.SubstationName
+                                              .Contains(query.Search) || x.Office.AbbreviationName
+                                              .Contains(query.Search)).OrderByDescending(x => x.CreationTime);
+            List<OceanImportMbl> rs = OceanImportMbls.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<OceanImportMblDto> list = new List<OceanImportMblDto>();
-            if (query != null && query.QueryKey != null)
-            {
-                rs = OceanImportMbls.OrderByDescending(x=>x.CreationTime ).ToList();
-            }
-            else
-            {
-                rs = OceanImportMbls.OrderByDescending(x => x.CreationTime).ToList();
-            }
-            if (rs != null && rs.Count > 0)
-            {
 
+            if (rs.Any())
+            {
                 foreach (var r in rs)
                 {
                     var item = ObjectMapper.Map<OceanImportMbl, OceanImportMblDto>(r);
@@ -91,17 +87,18 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             }
             PagedResultDto<OceanImportMblDto> listDto = new PagedResultDto<OceanImportMblDto>();
             listDto.Items = list;
-            listDto.TotalCount = list.Count;
+            listDto.TotalCount = OceanImportMbls.Count();
             return listDto;
         }
-        public async void LockedOrUnLockedOceanImportMblAsync(QueryMblDto query) 
+        public async void LockedOrUnLockedOceanImportMblAsync(QueryMblDto query)
         {
             var mbl = await _repository.GetAsync(query.MbId.Value);
             mbl.IsLocked = !mbl.IsLocked;
             await _repository.UpdateAsync(mbl);
         }
-        public async Task<CreateUpdateOceanImportMblDto> GetCreateUpdateOceanImportMblDtoById(Guid Id) {
-            var oceanImportMbl = await _repository.GetAsync(Id,true);
+        public async Task<CreateUpdateOceanImportMblDto> GetCreateUpdateOceanImportMblDtoById(Guid Id)
+        {
+            var oceanImportMbl = await _repository.GetAsync(Id, true);
             var dto = ObjectMapper.Map<OceanImportMbl, CreateUpdateOceanImportMblDto>(oceanImportMbl);
             var ports = await _portRepository.GetListAsync();
             Dictionary<Guid, string> pdictionary = new();
@@ -121,15 +118,15 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     tdictionary.Add(tradePartner.Id, tradePartner.TPName);
                 }
             }
-            if (dto != null) 
+            if (dto != null)
             {
                 if (dto.PodId != null) dto.PodName = pdictionary[dto.PodId.Value];
                 if (dto.PolId != null) dto.PolName = pdictionary[dto.PolId.Value];
                 if (dto.PorId != null) dto.PorName = pdictionary[dto.PorId.Value];
                 if (dto.DelId != null) dto.DelName = pdictionary[dto.DelId.Value];
                 if (dto.FdestId != null) dto.FdestName = pdictionary[dto.FdestId.Value];
-                if (dto.MblCarrierId != null)dto.MblCarrierName = tdictionary[dto.MblCarrierId.Value];
-                if(dto.MblOverseaAgentId != null)dto.MblOverseaAgentName = tdictionary[dto.MblOverseaAgentId.Value];
+                if (dto.MblCarrierId != null) dto.MblCarrierName = tdictionary[dto.MblCarrierId.Value];
+                if (dto.MblOverseaAgentId != null) dto.MblOverseaAgentName = tdictionary[dto.MblOverseaAgentId.Value];
             }
             return dto;
         }

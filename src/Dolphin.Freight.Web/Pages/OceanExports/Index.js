@@ -55,7 +55,6 @@ var columns = [
 
 $(function () {
     dolphin.freight.web.controllers.configuration.getJsonConfig('OceanExports').done(function (data) {
-        debugger
         data.forEach(function (item) {
 
             if (!item.lock && item.checkable) {

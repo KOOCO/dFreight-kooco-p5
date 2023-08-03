@@ -97,18 +97,16 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     pdictionary.Add(port.Id, port.SubDiv + " " + port.PortName + " ( " + port.Locode + " ) ");
                 }
             }
-            var OceanImportHbls = await _repository.GetListAsync();
-            List<OceanImportHbl> rs;
+            var OceanImportHbls = await _repository.GetQueryableAsync();
+            OceanImportHbls = OceanImportHbls.WhereIf(query.MblId != null && query.MblId.Value != Guid.Empty, x => x.MblId
+                                             .Equals(query.MblId))
+                                             .WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.HblNo
+                                             .Contains(query.Search) || x.Mbl.Office.SubstationName
+                                             .Contains(query.Search));       
+            List<OceanImportHbl> rs = OceanImportHbls.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<OceanImportHblDto> list = new List<OceanImportHblDto>();
-            if (query != null && query.MblId != null)
-            {
-                rs = OceanImportHbls.Where(x => x.MblId.Equals(query.MblId.Value)).ToList();
-            }
-            else
-            {
-                rs = OceanImportHbls;
-            }
-            if (rs != null && rs.Count > 0)
+            
+            if (rs.Any())
             {
 
                 foreach (var pu in rs)
@@ -139,7 +137,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             }
             PagedResultDto<OceanImportHblDto> listDto = new PagedResultDto<OceanImportHblDto>();
             listDto.Items = list;
-            listDto.TotalCount = list.Count;
+            listDto.TotalCount = OceanImportHbls.Count();
             return listDto;
         }
         public async Task<IList<OceanImportHblDto>> QueryListByMidAsync(QueryHblDto query)

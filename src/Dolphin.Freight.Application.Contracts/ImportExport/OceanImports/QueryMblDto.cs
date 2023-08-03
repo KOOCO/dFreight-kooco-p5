@@ -14,5 +14,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public string QueryKey { get; set; }
         public Guid? MbId { get; set; }
+        public string Search { get; set; }
     }
 }
