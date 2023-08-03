@@ -303,7 +303,16 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var FDest = portMangements.Where(w => w.Id == mbl.FdestId).FirstOrDefault();
                     oceanExportDetails.MblFdestName = FDest?.PortName;
                 }
-                
+                if (data.EmptyPickupId != null)
+                {
+                    var EmptyPickup = tradePartners.Where(w => w.Id == data.EmptyPickupId).FirstOrDefault();
+                    oceanExportDetails.EmptyPickupName = string.Concat(EmptyPickup?.TPName, "/", EmptyPickup?.TPCode)?.TrimStart('/');
+                }
+                if (data.DeliveryToId != null)
+                {
+                    var DeliveryTo = tradePartners.Where(w => w.Id == data.DeliveryToId).FirstOrDefault();
+                    oceanExportDetails.DeliveryToName = string.Concat(DeliveryTo?.TPName, "/", DeliveryTo?.TPCode)?.TrimStart('/');
+                }
                 if (data.PorId != null)
                 {
                     var por = portMangements.Where(w => w.Id == data.PorId).FirstOrDefault();
@@ -380,7 +389,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var ForwardingAgent = tradePartners.Where(w => w.Id.Equals(mbl.ForwardingAgentId)).FirstOrDefault();
                     oceanExportDetails.ForwardingAgentName = ForwardingAgent.TPName + "/" + ForwardingAgent.TPCode;
                 }
-
+                
                 if (mbl.MblCarrierId != null)
                 {
                     var MblCarrier = tradePartners.Where(w => w.Id.Equals(mbl.MblCarrierId)).FirstOrDefault();
