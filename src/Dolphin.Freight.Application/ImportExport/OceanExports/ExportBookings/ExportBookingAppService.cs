@@ -1,15 +1,13 @@
-﻿using Dolphin.Freight.Settings.Ports;
-using Dolphin.Freight.Settings.PortsManagement;
+﻿using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using System.Linq.Dynamic.Core;
 using Volo.Abp.Domain.Repositories;
 
 namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
@@ -84,7 +82,17 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
                 }
             }
             var ExportBookings = (await _repository.GetQueryableAsync())
-                                    .WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.HblNo.Contains(query.Search));
+                                    .WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.HblNo
+                                    .Contains(query.Search) || x.SoNo
+                                    .Contains(query.Search) || x.HblNo
+                                    .Contains(query.Search) || x.Shipper.TPName
+                                    .Contains(query.Search) || x.Office.SubstationName
+                                    .Contains(query.Search) || x.Office.AbbreviationName
+                                    .Contains(query.Search) || x.CarrierBkgNo
+                                    .Contains(query.Search) || x.HblAgent.TPName
+                                    .Contains(query.Search) || x.VesselName
+                                    .Contains(query.Search) || x.Voyage
+                                    .Contains(query.Search));
             List<ExportBooking> rs = ExportBookings.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<ExportBookingDto> list = new List<ExportBookingDto>();
 

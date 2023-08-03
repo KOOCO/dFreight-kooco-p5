@@ -1,26 +1,19 @@
-﻿using AutoMapper.Internal.Mappers;
-using Dolphin.Freight.Permissions;
-using Dolphin.Freight.Settings.Ports;
+﻿using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
-using Volo.Abp.Identity;
-using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
+using System.Linq.Dynamic.Core;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -111,6 +104,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }
             var OceanExportHbls = (await _repository.GetQueryableAsync())
                                     .WhereIf(!string.IsNullOrWhiteSpace(query.Search), x=>x.ItnNo
+                                    .Contains(query.Search) || x.HblNo
+                                    .Contains(query.Search) || x.Mbl.SoNo
+                                    .Contains(query.Search) || x.Mbl.Office.SubstationName
+                                    .Contains(query.Search) || x.Mbl.Office.AbbreviationName
+                                    .Contains(query.Search) || x.HblShipper.TPName
+                                    .Contains(query.Search) || x.HblConsignee.TPName
                                     .Contains(query.Search))
                                     .WhereIf(query.MblId != null && query.MblId == Guid.Empty, x=>x.MblId.Value
                                     .Equals(query.MblId));
