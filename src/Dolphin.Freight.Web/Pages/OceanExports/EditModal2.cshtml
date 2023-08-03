@@ -327,6 +327,11 @@
             myWindow = window.open("@Url.Action("Telexrelease", "Docs")" + "?id=" + idNo, 'Telexrelease', 'width=1200,height=800');
             myWindow.focus()
         }
+             function getReportBookingConfirmation() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("BookingConfirmation", "Docs")" + "?id=" + idNo, 'BookingConfirmation', 'width=1200,height=800');
+            myWindow.focus()
+        }
 
         function getManifestPopUp() {
             var url = new URL(window.location.href);
@@ -610,7 +615,7 @@
         <a class='dropdown-item' href='#'>
             <i class="fa fa-file-text-o"></i> @L["Btn:Dispatch List"]
         </a>
-        <a class='dropdown-item' href='#'>
+        <a class='dropdown-item'  href='javascript:void(0)' onclick="getReportBookingConfirmation()">
             <i class="fa fa-file-text-o"></i> @L["Btn:S/O Confirmation"]
         </a>
         <a class='dropdown-item'  href='javascript:void(0)' onclick="getReportBankDraft()">
