@@ -348,5 +348,38 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public string ATD { get; set; }
+        public string ATA { get; set; }
+        public string VesselScheduleNo { get; set; }
+        public string ContainerNo { get; set; }
+        public string OverseaAgentName { get; set; }
+        public string HBLNo { get; set; }
+        public string CT { get; set; }
+        public int ContainerQty  { get; set; }
+        public string ARBalance { get; set; }
+        public string APBalance { get; set; }
+        public string DCBalance { get; set; }
+        public int? Package { get; set; }
+        public string PKGUnit { get; set; }
+        public string Weight { get; set; }
+        public string Measurement { get; set; }
+        public string Sales { get; set; }
+        public string BlAcctCarrierName { get; set; }
+        public string ShippingAgentName { get; set; }
+        public string ReleaseByName { get; set; }
+        public string OblTypeName { get; set; }
+        public string ReferralByName { get; set; }
+        public string OperatorName { get; set; }
+        public string NotifyName { get; set; }
+        public string CustomerName { get; set; }
+        public string ConsigneeName { get; set; }
+        public string BillToName { get; set; }
+        public string FreightTermName { get; set; }
+        public string ForwardingAgentName { get; set; }
+        public string FdestName { get; set; }
+        public string EmptyPickupName { get; set; }
+        public string DeliveryToName { get; set; }
+        public string CargoTypeName { get; set; }
+        public string CoLoaderName { get; set; }
     }
 }
