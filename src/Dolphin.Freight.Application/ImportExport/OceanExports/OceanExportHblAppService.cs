@@ -389,6 +389,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.MblCarrierName = MblCarrier.TPName + "/" + MblCarrier.TPCode;
                 }
 
+                if (data.AgentId != null)
+                {
+                    var agent = tradePartners.Where(w => w.Id.Equals(data.AgentId)).FirstOrDefault();
+                    oceanExportDetails.HblAgentName = agent.TPName + "/" + agent.TPCode;
+                }
+
                 oceanExportDetails.HblOperatorName = _currentUser.Name + " " + _currentUser.SurName;
                 oceanExportDetails.CurrentDate = DateTime.Now;
                 oceanExportDetails.HblNo = data.HblNo;
@@ -412,7 +418,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 oceanExportDetails.MblNo = mbl.MblNo;
                 oceanExportDetails.MblPostDate = mbl.PostDate;
                 oceanExportDetails.Description = data.Description;
-            }
+            }  
 
             return oceanExportDetails;
         }

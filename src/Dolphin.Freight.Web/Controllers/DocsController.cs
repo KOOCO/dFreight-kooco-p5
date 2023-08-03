@@ -3742,6 +3742,63 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/ForwarderCargoReceiptOceanExportHBL.cshtml", model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> HblShippingAdvice(Guid id, FreightPageType pageType)
+        {
+            var data = await GetOceanExportDetailsByPageType(id, pageType);
+            var packageUnit = _dropdownService.PackageUnitLookupList;
+
+            var containers = await _containerAppService.QueryListHblAsync(id)
+;
+            var list = new List<CreateUpdateContainerDto>();
+
+            double totalPackageWeight = 0;
+            double totalPackageMeasure = 0;
+            double totalPackage = 0;
+
+            foreach (var item in containers)
+            {
+
+                var items = new CreateUpdateContainerDto
+                {
+                    PackageNum = item.PackageNum,
+                    ContainerNo = item.ContainerNo,
+                    SealNo = item.SealNo,
+                    PackageWeight = item.PackageWeight,
+                    PackageMeasure = item.PackageMeasure,
+                    PackageUnitName = item.PackageUnitId == null ? ""
+                                        : string.Concat(packageUnit.Where(w => w.Value == string.Concat(item.PackageUnitId)).Select(s => s.Text))
+                };
+
+                totalPackage += item.PackageNum;
+                totalPackageWeight += item.PackageWeight;
+                totalPackageMeasure += item.PackageMeasure;
+
+                list.Add(items);
+            }
+
+            data.TotalPackage = (int)totalPackage;
+            data.PackageUnitName = list[0].PackageUnitName;
+            data.TotalWeight = totalPackageWeight;
+            data.TotalMeasure = totalPackageMeasure;
+            data.TotalWeightStr = (Convert.ToDouble(data.TotalWeight) * 2.20).ToString("0.00");
+            data.TotalMeasureStr = (Convert.ToDouble(data.TotalMeasure) * 35.31).ToString("0.00");
+            data.CreateUpdateContainerDtos = list;
+            data.CreateUpdateContainerDtosJson = JsonConvert.SerializeObject(list);
+
+            return View(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> HblShippingAdvice(OceanExportDetails model)
+        {
+            model.IsPDF = true;
+            model.CreateUpdateContainerDtos = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(model.CreateUpdateContainerDtosJson);
+
+            return await _generatePdf.GetPdf("Views/Docs/HblShippingAdvice.cshtml", model);
+        }
+
+
         #region Private Functions
 
         private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
