@@ -69,6 +69,26 @@
             });
         }
         }
+            function getPreliminaryClaim(id) {
+                var idNo = id;
+            
+            if (idNo != '00000000-0000-0000-0000-000000000000') {
+           
+            myWindow = window.open("@Url.Action("PreliminaryClaimOceanExport", "Docs")" + "?id=" + idNo+"&pageType=4", 'PreliminaryClaimOceanExport', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow.focus()
+             }
+                  else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
+        }
+        }
+
+
           function getPreAlert(id) {
                var idNo = id;
                 if (idNo != '00000000-0000-0000-0000-000000000000') {
@@ -137,13 +157,12 @@
             });
         }
         }
-              function getPreliminaryClaim(id) {
+              function getReportBookingConfirmation(id) {
              var idNo = id;
          if (idNo != '00000000-0000-0000-0000-000000000000') {
               
          
-            myWindow = window.open("@Url.Action("PreliminaryClaimOceanExport", "Docs")" + "?id=" + idNo+"&pageType=4", 'PreliminaryClaimOceanExport', 'width=1200,height=800');
-            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow = window.open("@Url.Action("BookingConfirmation", "Docs")" + "?id=" + idNo, 'BookingConfirmation', 'width=1200,height=800');
             myWindow.focus()
             }
             else {
@@ -203,7 +222,7 @@
                                     <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
                                     </a>
-                                     <a class='dropdown-item' href='#'>
+                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getReportBookingConfirmation('@Model.OceanExportHblDto.Id')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
                                     </a>
                                      <a class='dropdown-item' href='javascript:void(0)' onclick="getReportBankDraft('@Model.OceanExportHblDto.Id')">
