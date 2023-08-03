@@ -46,12 +46,17 @@ var columns = [
                     }
                 }
             ]
-    }
-}]
+        }
+
+    },
+ 
+]
 
 $(function () {
 
     dolphin.freight.web.controllers.configuration.getJsonConfig('OceanExports').done(function (data) {
+        debugger;
+       
         data.forEach(function (item) {
 
             if (!item.lock && item.checkable) {
@@ -60,7 +65,7 @@ $(function () {
                 if (item.text.toLowerCase().includes('islocked')) {
                     column = {
                         //是否鎖定
-                        title: l('IsLocked'),
+                        title: l('Status'),
                         orderable: false,
                         render: function (data, type, row, meta) {
                             if (row.isLocked)
