@@ -434,6 +434,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var OblType = sysCodes.Where(w => w.Id == data.OblTypeId).FirstOrDefault();
                     oceanExportDetails.OblTypeName = OblType?.ShowName;
                 }
+
                 if (data.OfficeId != null)
                 {
                     var Office = substations.Where(w => w.Id == data.OfficeId).FirstOrDefault();

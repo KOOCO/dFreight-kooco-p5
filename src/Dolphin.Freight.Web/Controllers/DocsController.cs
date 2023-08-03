@@ -626,7 +626,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.LC = true;
             InfoViewModel.PKG = container?.PackageNum.ToString();
             InfoViewModel.Stackable = true;
-            InfoViewModel.CargoDeliveryLocation_1 = OceanExportMbl.DeliveryToName;
+            InfoViewModel.CargoDeliveryLocation_1 = OceanExportHbl.DeliveryToName;
             InfoViewModel.CargoDeliveryLocation_2 = "AERO TRANSCOLOMBIANA DE CARGA";
             InfoViewModel.Port_Cutoff_Date = OceanExportHbl.PortCutOffTime?.ToString("dd-MM-yyyy"); 
             InfoViewModel.Rail_Cutoff_Date = OceanExportHbl.RailCutOffTime?.ToString("dd-MM-yyyy");
@@ -634,8 +634,8 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.Doc_Cutoff_Date = OceanExportHbl.DocCutOffTime?.ToString("dd-MM-yyyy");
             InfoViewModel.EmptyPickUp = OceanExportHbl.EmptyPickupName;
             InfoViewModel.CargoPickUp =OceanExportHbl.CargoPickUp?.TPName;
-            InfoViewModel.Trucker =  OceanExportMbl.TruckerName;
-            InfoViewModel.Remark = "";
+            InfoViewModel.Trucker =  OceanExportHbl.TruckerName;
+            InfoViewModel.Remark = OceanExportHbl.ColorRemarkName;
 
             InfoViewModel.ReportId = Guid.Parse(id);
 
