@@ -64,8 +64,9 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         }
         public async Task<PagedResultDto<OceanExportMblDto>> QueryListAsync(QueryMblDto query)
         {
-            var substations = await _substationRepository.GetListAsync();
+            var dataQuery = await _repository.GetQueryableAsync();
 
+            var substations = await _substationRepository.GetListAsync();
             Dictionary<Guid, string> substationsDictionary = new Dictionary<Guid, string>();
             if (substations != null)
             {
@@ -75,7 +76,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 }
             }
 
-            dataQuery = dataQuery.WhereIf(!string.IsNullOrWhiteSpace(query.Search),x=>x.CarrierContractNo
+            dataQuery = dataQuery.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.CarrierContractNo
                                           .Contains(query.Search) || x.MblNo
                                           .Contains(query.Search) || x.Office.SubstationName
                                           .Contains(query.Search) || x.Office.AbbreviationName
@@ -117,30 +118,16 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 
             List<OceanExportMbl> rs = dataQuery.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<OceanExportMblDto> list = new List<OceanExportMblDto>();
-            if (query != null && query.QueryKey != null)
-            {
-                rs = OceanExportMbls.OrderByDescending(x=>x.CreationTime ).ToList();
-            }
-            else
-            {
-                rs = OceanExportMbls.OrderByDescending(x => x.CreationTime).ToList();
-            }
-            if (rs != null && rs.Count > 0)
-            {
 
-                foreach (var r in rs)
-                {
-                    var item = ObjectMapper.Map<OceanExportMbl, OceanExportMblDto>(r);
-                    item.OfficeName = substationsDictionary[r.OfficeId.Value];
-                    list.Add(item);
-                }
-            }
+            var result = ObjectMapper.Map<List<OceanExportMbl>, List<OceanExportMblDto>>(rs);
+            if (result.Any())
+                result.ForEach(x => x.OfficeName = substationsDictionary[x.OfficeId.Value]);
+
             PagedResultDto<OceanExportMblDto> listDto = new PagedResultDto<OceanExportMblDto>();
-            listDto.Items = list;
-            listDto.TotalCount = list.Count;
+            listDto.Items = result;
+            listDto.TotalCount = dataQuery.Count();
             return listDto;
-            }
-
+        }
         public async void LockedOrUnLockedOceanExportMblAsync(QueryMblDto query) 
         {
             var mbl = await _repository.GetAsync(query.MbId.Value);
