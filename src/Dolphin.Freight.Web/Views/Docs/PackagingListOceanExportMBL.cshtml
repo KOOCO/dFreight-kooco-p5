@@ -166,11 +166,13 @@ table td {
 
         $('#id_gross_weight_unit').on('change', function(){
         var unitName = $('#id_gross_weight_unit').val();
+        $('#Gross_weight_unit').val(unitName);
             CalculateTotals(unitName, 'grossWeight');
         });
         
         $('#id_net_weight_unit').on('change', function(){
         var unitName = $('#id_net_weight_unit').val();
+        $('#Net_weight_unit').val(unitName);
             CalculateTotals(unitName, 'netWeight');
         });
 
@@ -323,6 +325,8 @@ table td {
             break;
 
             case 'Both':
+                $('#Gross_weight_unit').val('KG');
+                $('#Net_weight_unit').val('KG');
                 $('#totalGrossWeight').text('');
                 $('#totalGrossWeight').text(totalGrossWeight);
                 $('#TotalGrossWeightStr').val($('#totalGrossWeight').text());
@@ -343,7 +347,7 @@ table td {
 <div class="nav">
    <ul>
         <li>
-            <button type="button" style="width:120px; color:white" onclick="print()"><i class="fa fa-print">儲存PDF或列印</i></button>
+            <button type="button" style="width:120px; color:white" onclick="print()"><i class="fa fa-file-excel-o">Excel</i></button>
         </li>
     </ul>
     <div class="view-setting">
@@ -364,6 +368,8 @@ table td {
     <input type="hidden" asp-for="@Model.TotalPackagesStr" />
     <input type="hidden" asp-for="@Model.TotalAmountStr" />
     <input type="hidden" asp-for="@Model.CommoditiesJson" />
+    <input type="hidden" asp-for="@Model.Net_weight_unit" />
+    <input type="hidden" asp-for="@Model.Gross_weight_unit" />
 
     <div id="main" class="edit">   
 

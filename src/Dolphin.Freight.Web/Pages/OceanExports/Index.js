@@ -44,14 +44,17 @@ var columns = [
                                         }
                                     });
 
-                            } else {
-                                abp.message.warn("鎖定不能刪除")
-                            }
+                        } else {
+                            abp.message.warn("鎖定不能刪除")
                         }
                     }
-                ]
+                }
+            ]
         }
-    }]
+
+    },
+ 
+]
 
 $(function () {
     dolphin.freight.web.controllers.configuration.getJsonConfig('OceanExports').done(function (data) {
@@ -63,7 +66,7 @@ $(function () {
                 if (item.text.toLowerCase().includes('islocked')) {
                     column = {
                         //是否鎖定
-                        title: l('IsLocked'),
+                        title: l('Status'),
                         orderable: false,
                         render: function (data, type, row, meta) {
                             if (row.isLocked)
