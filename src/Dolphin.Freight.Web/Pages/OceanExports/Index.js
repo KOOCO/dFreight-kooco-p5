@@ -3,7 +3,7 @@ var dataTable;
 var _changeInterval = null;
 var queryListFilter = function () {
     return {
-        search: $("input[name='Search'").val()
+        filter: $("input[name='Search'").val()
     };
 };
 

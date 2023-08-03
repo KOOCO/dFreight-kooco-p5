@@ -1,6 +1,14 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
 
+    var _changeInterval = null;
+    var queryListFilter = function () {
+        return {
+            search: $("input[name='Search'").val()
+        };
+    };
+
+
     var dataTable = $('#TPListTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
@@ -8,9 +16,9 @@
             order: [[1, "asc"]],
             searching: false,
             scrollX: true,
+            processing: true,
             
-            
-            ajax: abp.libs.datatables.createAjax(dolphin.freight.tradePartners.tradePartner.getList),
+            ajax: abp.libs.datatables.createAjax(dolphin.freight.tradePartners.tradePartner.getList, queryListFilter ),
             columnDefs: [
                 {
                     title: l('Actions'),
@@ -182,7 +190,13 @@
     );
 
    
-
+    $('#Search').keyup(function () {
+        clearInterval(_changeInterval)
+        _changeInterval = setInterval(function () {
+            dataTable.ajax.reload();
+            clearInterval(_changeInterval)
+        }, 1000);
+    });
     
 
     $('#AddTradePartnerButton').click(function (e) {

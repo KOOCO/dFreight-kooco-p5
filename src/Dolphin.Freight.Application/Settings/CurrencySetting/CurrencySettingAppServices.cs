@@ -38,7 +38,9 @@ namespace Dolphin.Freight.Settings.CurrencySetting
             PagedResultDto<CurrencySettingDTO> listDto = new PagedResultDto<CurrencySettingDTO>();
             var query = await _repository.GetQueryableAsync();
             query = query.WhereIf(!string.IsNullOrEmpty(input.Filter), x => x.CurrencyDepartment
-                                   .Contains(input.Filter) || x.CustomerShortCode
+                                   .Contains(input.Filter) || x.StartingCurrency
+                                   .Contains(input.Filter) || x.EndCurrency
+                                   .Contains(input.Filter) || x.ExChangeRate.ToString()
                                    .Contains(input.Filter)).OrderBy(input.Sorting);
 
             var result = query.Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
