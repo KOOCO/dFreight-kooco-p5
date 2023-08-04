@@ -2,6 +2,7 @@
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Permissions;
 using Dolphin.Freight.Settings.Ports;
+using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using System;
@@ -27,11 +28,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly IRepository<OceanImportMbl, Guid> _repository;
         private readonly IRepository<SysCode, Guid> _sysCodeRepository;
         private readonly IRepository<Substation, Guid> _substationRepository;
-        private readonly IRepository<Port, Guid> _portRepository;
+        private readonly IRepository<PortsManagement, Guid> _portRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IRepository<OceanImportHbl, Guid> _oceanImportHblRepository;
         public OceanImportMblAppService(IRepository<OceanImportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository,
-                                        IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
+                                        IRepository<PortsManagement, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
                                         IRepository<OceanImportHbl, Guid> oceanImportHblRepository)
             : base(repository)
         {

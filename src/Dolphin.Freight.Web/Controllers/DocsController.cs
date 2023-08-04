@@ -2226,7 +2226,7 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> DangerousGoods(Guid hawbId)
+        public async Task<ActionResult> DangerousGoods(Guid hawbId) 
         {
             var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
 
