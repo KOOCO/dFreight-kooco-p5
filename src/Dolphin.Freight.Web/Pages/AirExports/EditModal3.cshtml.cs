@@ -36,7 +36,14 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         
         [BindProperty(SupportsGet = true)]
         public IList<InvoiceDto> m2invoiceDtos { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public IList<InvoiceDto> h0invoiceDtos { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public IList<InvoiceDto> h1invoiceDtos { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public IList<InvoiceDto> h2invoiceDtos { get; set; }
         [BindProperty(SupportsGet = true)]
         public int NewHbl { get; set; } = 0;
         
@@ -87,7 +94,36 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                     }
                 }
             }
+            if (Hid != null)
+            {
 
+                QueryInvoiceDto q1idto = new QueryInvoiceDto() { QueryType = 4, ParentId = Hid };
+                var invoiceDtos1 = await _invoiceAppService.QueryInvoicesAsync(q1idto);
+                h0invoiceDtos = new List<InvoiceDto>();
+                h1invoiceDtos = new List<InvoiceDto>();
+                h2invoiceDtos = new List<InvoiceDto>();
+                if (invoiceDtos1 != null && invoiceDtos1.Count > 0)
+                {
+                    foreach (var dto in invoiceDtos1)
+                    {
+                        switch (dto.InvoiceType)
+                        {
+                            default:
+                                h0invoiceDtos.Add(dto);
+                                break;
+                            case 1:
+                                h1invoiceDtos.Add(dto);
+                                break;
+                            case 2:
+                                h2invoiceDtos.Add(dto);
+                                break;
+                        }
+                    }
+                }
+
+
+
+            }
             AirExportHawbDto = await _airExportHawbAppService.GetHawbCardById(Hid);
 
             AirExportHawbDtos = await _airExportHawbAppService.GetHblCardsById(Id);

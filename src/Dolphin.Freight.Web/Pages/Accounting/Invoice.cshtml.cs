@@ -2,6 +2,7 @@ using Dolphin.Freight.Accounting.InvoiceBills;
 using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.AccountingSettings.BillingCodes;
 using Dolphin.Freight.Common;
+using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ImportExport.OceanImports;
 using Dolphin.Freight.Settings.CurrencySetting;
@@ -84,6 +85,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
         private readonly ISubstationAppService _substationAppService;
         private readonly ITradePartnerAppService _tradePartnerAppService;
         private readonly IPortAppService _portAppService;
+        private readonly IAirExportHawbAppService _airExportHawbAppService;
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly ICurrencySettingAppService _currencySettingAppService;
         public InvoiceModel(ITradePartnerAppService tradePartnerAppService,
@@ -96,7 +98,8 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                             OceanImportHblAppService oceanImportHblAppService,
                             OceanImportMblAppService oceanImportMblAppService,
                             IAjaxDropdownAppService ajaxDropdownAppService,
-                            ICurrencySettingAppService currencySettingAppService
+                            ICurrencySettingAppService currencySettingAppService,
+                            IAirExportHawbAppService airExportHawbAppService
                             )
         {
             _invoiceAppService = invoiceAppService;
@@ -110,6 +113,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
             _portAppService = portAppService;
             _ajaxDropdownAppService = ajaxDropdownAppService;
             _currencySettingAppService = currencySettingAppService;
+            _airExportHawbAppService = airExportHawbAppService;
         }
         public async Task OnGetAsync()
         {
@@ -269,8 +273,18 @@ namespace Dolphin.Freight.Web.Pages.Accounting
             QueryInvoiceDto query = new QueryInvoiceDto() { QueryInvoiceType = InvoiceType };
             var oceanExportMbl = new OceanExportMblDto();
             InvoiceMblDto = ObjectMapper.Map<OceanExportMblDto, InvoiceMblDto>(oceanExportMbl);
+            if (MawbId != null)
+            {
+                backUrl = "/AirExports/EditModal3?Id=" + MawbId + "&Hid=" + HawbId;
+            }
+            else {
 
-            backUrl = "/AirExports/EditModal3?Id=" + Mid;
+                var airexportHawb = await _airExportHawbAppService.GetAsync((Guid)HawbId);
+                backUrl = "/AirExports/EditModal3?Id=" + airexportHawb.MawbId + "&Hid=" + HawbId;
+                MawbId = airexportHawb.MawbId;
+
+            }
+            
         }
         private async Task InitExportBooking() 
         {
