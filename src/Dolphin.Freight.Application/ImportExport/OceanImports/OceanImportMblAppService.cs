@@ -36,13 +36,13 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly IRepository<SysCode, Guid> _sysCodeRepository;
         private readonly IRepository<Substation, Guid> _substationRepository;
         private readonly PortsManagementAppService _portRepository1;
-        private readonly IRepository<Port, Guid> _portRepository;
+        private readonly IRepository<PortsManagement, Guid> _portRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IRepository<OceanImportHbl, Guid> _oceanImportHblRepository;
         private readonly IIdentityUserAppService _identityUserAppService;
         public OceanImportMblAppService(IRepository<OceanImportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository,
                                          PortsManagementAppService portRepository1, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
-                                        IRepository<OceanImportHbl, Guid> oceanImportHblRepository, IIdentityUserAppService identityUserAppService, IRepository<Port, Guid> portRepository)
+                                        IRepository<OceanImportHbl, Guid> oceanImportHblRepository, IIdentityUserAppService identityUserAppService, IRepository<PortsManagement, Guid> portRepository)
             : base(repository)
         {
             _repository = repository;
