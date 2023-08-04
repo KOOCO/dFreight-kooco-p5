@@ -72,6 +72,8 @@ using NPOI.SS.Formula.Functions;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Uow;
 using Dolphin.Freight.Settings.PackageUnits;
+using Dolphin.Freight.ImportExport.OceanImports;
+using QueryHblDto = Dolphin.Freight.ImportExport.OceanExports.QueryHblDto;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -92,6 +94,8 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IAirImportHawbAppService _airImportHawbAppService;
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly IContainerAppService _containerAppService;
+        private readonly IOceanImportHblAppService _oceanImportHblAppService;
+        private readonly IOceanImportMblAppService _oceanImportMblAppService;
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
@@ -102,7 +106,9 @@ namespace Dolphin.Freight.Web.Controllers
           IInvoiceAppService invoiceAppService,
           IAirImportMawbAppService airImportMawbAppService,
           IAirImportHawbAppService airImportHawbAppService,
-          IContainerAppService containerAppService)
+          IContainerAppService containerAppService,
+          IOceanImportHblAppService oceanImportHblAppService,
+          IOceanImportMblAppService oceanImportMblAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -119,6 +125,8 @@ namespace Dolphin.Freight.Web.Controllers
             _airImportMawbAppService = airImportMawbAppService;
             _airImportHawbAppService = airImportHawbAppService;
             _containerAppService = containerAppService;
+            _oceanImportHblAppService = oceanImportHblAppService;
+            _oceanImportMblAppService = oceanImportMblAppService;
 
             ReportLog = new ReportLog.ReportLogDto();
             
@@ -3555,6 +3563,30 @@ namespace Dolphin.Freight.Web.Controllers
             oceanExportDetails.ContainerNo = container.ContainerNo;
             return View(oceanExportDetails);
         }
+        public async Task<IActionResult> PreliminaryClaimOceanImport(Guid id, FreightPageType pageType)
+        {
+            var oceanImportDetails = await GetOceanImportDetailsByPageType(id, pageType);
+            var oceanExportMbl = await _oceanImportMblAppService.GetOceanImportDetailsById(oceanImportDetails.MblId);
+            var container = await _containerAppService.GetContainerByHblId(id);
+            oceanImportDetails.PackageMeasureName = container?.PackageMeasure.ToString();
+            oceanImportDetails.PackageMeasureName = container?.PackageMeasureUnit == "CBM" ? container?.PackageMeasure + " CBM/" + (container?.PackageMeasure * 35.315) + " CFT" : container?.PackageMeasure * 0.0283 + " CBM/" + container?.PackageMeasure + " CFT";
+            oceanImportDetails.PackageWeightName = container?.PackageWeightUnit == "KG" ? container?.PackageWeight + " KGS/" + (container?.PackageWeight * 2.20462) + " LBS" : container?.PackageWeight * 0.453592 + " KGS/" + (container?.PackageWeight) + " LBS";
+            oceanImportDetails.TotalMeasure = container?.PackageMeasure!=null?(double)container?.PackageMeasure:0;
+            oceanImportDetails.TotalWeight = container?.PackageMeasure != null ? (double)container?.PackageWeight:0;
+            oceanImportDetails.TotalPackage = container?.PackageMeasure != null ? (int)container?.PackageNum:0;
+            oceanImportDetails.VesselName = oceanExportMbl.VesselName;
+
+            oceanImportDetails.Voyage = oceanExportMbl.Voyage;
+            oceanImportDetails.DocNo = oceanExportMbl.DocNo;
+            oceanImportDetails.PolName = oceanExportMbl.PolName;
+            oceanImportDetails.PodName = oceanExportMbl.PodName;
+            oceanImportDetails.PolEtd = oceanExportMbl.PolEtd;
+            oceanImportDetails.PodEta = oceanExportMbl.PodEta;
+            oceanImportDetails.ContainerNo = container?.ContainerNo;
+            return View(oceanImportDetails);
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> PreliminaryClaimAirImportHawb(AirImportDetails model)
         {
@@ -4613,6 +4645,94 @@ namespace Dolphin.Freight.Web.Controllers
 
             return data;
         }
+        private async Task<OceanImportDetails> GetOceanImportDetailsByPageType(Guid Id, FreightPageType pageType, bool isIncludeInvoices = false)
+        {
+            var data = new OceanImportDetails();
+
+            switch (pageType)
+            {
+                case FreightPageType.OIMBL:
+                    data = await _oceanImportMblAppService.GetOceanImportDetailsById(Id);
+                    break;
+                case FreightPageType.OIHBL:
+                    data = await _oceanImportHblAppService.GetOceanImportDetailsById(Id);
+                    break;
+                default:
+                    break;
+            }
+
+            if (data != null && isIncludeInvoices)
+            {
+                var queryType = pageType == FreightPageType.OEMBL ? 3 : 1;
+
+                QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = Id };
+
+                data.Invoices = (await _invoiceAppService.QueryInvoicesAsync(queryDto)).ToList();
+
+                if (data.Invoices != null && data.Invoices.Count > 0)
+                {
+                    data.AR = new List<InvoiceDto>();
+                    data.DC = new List<InvoiceDto>();
+                    data.AP = new List<InvoiceDto>();
+                    foreach (var dto in data.Invoices)
+                    {
+                        switch (dto.InvoiceType)
+                        {
+                            default:
+                                data.AR.Add(dto);
+                                break;
+                            case 1:
+                                data.DC.Add(dto);
+                                break;
+                            case 2:
+                                data.AP.Add(dto);
+                                break;
+                        }
+                    }
+
+                    if (data.AR.Any())
+                    {
+                        double arTotal = 0;
+                        foreach (var ar in data.AR)
+                        {
+                            arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                        }
+                        data.ARTotal = arTotal;
+                    }
+                    if (data.AP.Any())
+                    {
+                        double apTotal = 0;
+                        foreach (var ap in data.AP)
+                        {
+                            apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                        }
+
+                        data.APTotal = apTotal;
+                    }
+                    if (data.DC.Any())
+                    {
+                        double dcTotal = 0;
+                        foreach (var dc in data.DC)
+                        {
+                            dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                        }
+                        data.DCTotal = dcTotal;
+                    }
+
+                    data.Total = data.ARTotal - data.APTotal + data.DCTotal;
+
+                    data.InvoicesJson = JsonConvert.SerializeObject(data.Invoices);
+                }
+            }
+
+            data.PageType = pageType;
+
+            if (string.IsNullOrEmpty(data.MblOperatorName)) data.MblOperatorName = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
+
+            return data;
+        }
+
+
         private async Task<List<AllHawbList>> GetAllHawbLists(Guid mawbId)
         {
             var data = await _airExportHawbAppService.GetHblCardsById(mawbId);

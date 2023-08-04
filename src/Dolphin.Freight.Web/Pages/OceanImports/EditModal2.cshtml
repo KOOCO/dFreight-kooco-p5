@@ -158,6 +158,12 @@
                 myWindow.focus();
             });   
         }
+           function getPreliminaryClaim() {
+            var idNo = $('#OceanImportHbl_Id').val();
+            myWindow = window.open("@Url.Action("PreliminaryClaimOceanImport", "Docs")" + "?id=" + idNo+"&pageType=2", 'PreliminaryClaimOceanExport', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow.focus()
+        }
     </script>
 }
 <div class="page-header">
@@ -336,6 +342,7 @@
                         <abp-card-header id="hblCardHeader" class="@Model.OceanImportHbl.CardColorValue">
                             <abp-row>
                                 <abp-column size-md="_9">
+                                    <input hidden name="@Model.OceanImportHbl.Id" asp-for="@Model.OceanImportHbl.Id" />
                                     <abp-card-title>
                                         HB/L @Model.OceanImportHbl.HblNo
                                     </abp-card-title>
@@ -364,7 +371,7 @@
                                             <a class='dropdown-item' href='#'>
                                                 <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
                                             </a>
-                                            <a class='dropdown-item' href='#'>
+                                            <a class='dropdown-item' href='javascript:void(0)' onclick="getPreliminaryClaim()">
                                                 <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
                                             </a>
                                             <a class='dropdown-item' href='#'>
