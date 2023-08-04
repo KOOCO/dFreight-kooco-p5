@@ -4336,76 +4336,82 @@ namespace Dolphin.Freight.Web.Controllers
             return View(oceanExportDetails);
         }
         [HttpPost]
-        public async Task<IActionResult> PackagingListOceanExportMBL(OceanExportDetails InfoModel)
+        public IActionResult PackagingListOceanExportMBL(OceanExportDetails InfoModel)
         {
-            var reportTemplatePath = Path.Combine("Views/Docs/Booking_packing_list.xlsx");
-
-            var file = new FileInfo(reportTemplatePath);
-
-            using (var excel = new ExcelPackage(file))
+            try
             {
-                var sheet = excel.Workbook.Worksheets.First();
-
-                //sheet.Cells[2, 1].Value = InfoModel.ShippingAgentName ?? "";
-                //sheet.Cells[3, 1].Value = InfoModel.shipper_address ?? "";
-                //sheet.Cells[4, 2].Value = InfoModel.MblConsigneeName ?? "";
-                //sheet.Cells[5, 2].Value = InfoModel.consignee_address ?? "";
-                //sheet.Cells[4, 8].Value = InfoModel.inv_no ?? "";
-                sheet.Cells[5, 8].Value = InfoModel.CurrentDate?.ToShortDateString() ?? "";
-                sheet.Cells[6, 2].Value = InfoModel.PolName ?? "";
-                sheet.Cells[6, 8].Value = InfoModel.PodName ?? "";
-
-                sheet.Cells[7, 7].Value = "Net Weight (" + (InfoModel.Net_weight_unit ?? "") + ")";
-                sheet.Cells[7, 8].Value = "Gross Weight (" + (InfoModel.Gross_weight_unit ?? "") + ")";
-
-                InfoModel.Commodities = JsonConvert.DeserializeObject<List<Commodity>>(InfoModel.CommoditiesJson);
-
-                var rowIndex = 8;
-                if (InfoModel.Commodities != null)
+                var reportTemplatePath = Path.Combine("Views/Docs/Booking_packing_list1.xlsx");
+                if (System.IO.File.Exists(reportTemplatePath))
                 {
-                    foreach (var item in InfoModel.Commodities)
+                    var file = new FileInfo(reportTemplatePath);
+
+                    using (var excel = new ExcelPackage(file))
                     {
-                        sheet.Cells[rowIndex, 1].Value = item.BookingNo ?? "";
-                        sheet.Cells[rowIndex, 2].Value = item.PackagingType ?? "";
-                        sheet.Cells[rowIndex, 3].Value = "";
-                        sheet.Cells[rowIndex, 4].Value = item.Description ?? "";
-                        sheet.Cells[rowIndex, 5].Value = item.HTSCode ?? "";
-                        sheet.Cells[rowIndex, 6].Value = item.NoOfPcs ?? "";
-                        var netweight = string.Empty;
-                        if (item.NetWeight != null)
-                          netweight = InfoModel.Net_weight_unit == "LB" ? (double.Parse(item.NetWeight) * 2.20462).ToString("0.00") : item.NetWeight ?? "";
-                        sheet.Cells[rowIndex, 7].Value = netweight;
-                        var grossweight = string.Empty;
-                        if (item.GrossWeight != null)
-                          grossweight = InfoModel.Gross_weight_unit == "LB" ? (double.Parse(item.GrossWeight) * 2.20462).ToString("0.00") : item.GrossWeight ?? "";
-                        sheet.Cells[rowIndex, 8].Value = grossweight;
-                        sheet.Cells[rowIndex, 9].Value = item.UnitPrice ?? "";
-                        sheet.Cells[rowIndex, 10].Value = item.Amount ?? "";
-                        sheet.Cells[rowIndex, 11].Value = item.Details ?? "";
-                        rowIndex++;
+                        
+                        var sheet = excel.Workbook.Worksheets.First();
+
+                        sheet.Cells[5, 8].Value = InfoModel?.CurrentDate?.ToShortDateString() ?? "";
+                        sheet.Cells[6, 2].Value = InfoModel?.PolName ?? "";
+                        sheet.Cells[6, 8].Value = InfoModel?.PodName ?? "";
+
+                        sheet.Cells[7, 7].Value = "Net Weight (" + (InfoModel?.Net_weight_unit ?? "") + ")";
+                        sheet.Cells[7, 8].Value = "Gross Weight (" + (InfoModel?.Gross_weight_unit ?? "") + ")";
+
+                        InfoModel.Commodities = JsonConvert.DeserializeObject<List<Commodity>>(InfoModel.CommoditiesJson);
+
+                        var rowIndex = 8;
+                        if (InfoModel?.Commodities != null && InfoModel.Commodities.Any())
+                        {
+                            foreach (var item in InfoModel.Commodities)
+                            {
+                                sheet.Cells[rowIndex, 1].Value = item.BookingNo ?? "";
+                                sheet.Cells[rowIndex, 2].Value = item.PackagingType ?? "";
+                                sheet.Cells[rowIndex, 3].Value = "";
+                                sheet.Cells[rowIndex, 4].Value = item.Description ?? "";
+                                sheet.Cells[rowIndex, 5].Value = item.HTSCode ?? "";
+                                sheet.Cells[rowIndex, 6].Value = item.NoOfPcs ?? "";
+                                var netweight = string.Empty;
+                                if (item.NetWeight != null)
+                                    netweight = InfoModel.Net_weight_unit == "LB" ? (double.Parse(item.NetWeight) * 2.20462).ToString("0.00") : item.NetWeight ?? "";
+                                sheet.Cells[rowIndex, 7].Value = netweight;
+                                var grossweight = string.Empty;
+                                if (item.GrossWeight != null)
+                                    grossweight = InfoModel.Gross_weight_unit == "LB" ? (double.Parse(item.GrossWeight) * 2.20462).ToString("0.00") : item.GrossWeight ?? "";
+                                sheet.Cells[rowIndex, 8].Value = grossweight;
+                                sheet.Cells[rowIndex, 9].Value = item.UnitPrice ?? "";
+                                sheet.Cells[rowIndex, 10].Value = item.Amount ?? "";
+                                sheet.Cells[rowIndex, 11].Value = item.Details ?? "";
+                                rowIndex++;
+                            }
+                        }
+
+                        sheet.Cells[rowIndex, 2].Value = InfoModel.TotalPackagesStr ?? "";
+                        sheet.Cells[rowIndex, 6].Value = InfoModel.TotalPCSStr ?? "";
+                        sheet.Cells[rowIndex, 7].Value = InfoModel.TotalNetWeightStr ?? "";
+                        sheet.Cells[rowIndex, 8].Value = InfoModel.TotalGrossWeightStr ?? "";
+                        sheet.Cells[rowIndex, 10].Value = InfoModel.TotalAmountStr ?? "";
+
+                        sheet.Cells[8, 2, rowIndex, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                        sheet.Cells[8, 5, rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                        sheet.Cells[8, 1, rowIndex, 11].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                        sheet.Cells[8, 1, rowIndex, 11].Style.Font.Name = "Helvetica";
+                        sheet.Cells[8, 1, rowIndex, 11].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        sheet.Cells[8, 1, rowIndex, 11].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        sheet.Cells[8, 1, rowIndex, 11].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        sheet.Cells[8, 1, rowIndex, 11].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        sheet.Cells[rowIndex, 1, rowIndex, 11].Style.Font.Bold = true;
+
+                        var filecontent = excel.GetAsByteArray();
+
+                        return File(filecontent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "booking_packing_list_" + DateTime.Now.ToString("MM-dd-yyyy") + ".xlsx");
                     }
                 }
-
-                sheet.Cells[rowIndex, 2].Value = InfoModel.TotalPackagesStr ?? "";
-                sheet.Cells[rowIndex, 6].Value = InfoModel.TotalPCSStr ?? "";
-                sheet.Cells[rowIndex, 7].Value = InfoModel.TotalNetWeightStr ?? "";
-                sheet.Cells[rowIndex, 8].Value = InfoModel.TotalGrossWeightStr ?? "";
-                sheet.Cells[rowIndex, 10].Value = InfoModel.TotalAmountStr ?? "";
-
-                sheet.Cells[8, 2, rowIndex, 3].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
-                sheet.Cells[8, 5, rowIndex, 10].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
-                sheet.Cells[8, 1, rowIndex, 11].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-                sheet.Cells[8, 1, rowIndex, 11].Style.Font.Name = "Helvetica";
-                sheet.Cells[8, 1, rowIndex, 11].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                sheet.Cells[8, 1, rowIndex, 11].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                sheet.Cells[8, 1, rowIndex, 11].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                sheet.Cells[8, 1, rowIndex, 11].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                sheet.Cells[rowIndex, 1, rowIndex, 11].Style.Font.Bold = true;
-
-                var filecontent = excel.GetAsByteArray();
-
-                return File(filecontent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "booking_packing_list_" + DateTime.Now.ToString("MM-dd-yyyy") + ".xlsx");
             }
+            catch (Exception ex)
+            {
+                return Ok(ex);
+            }
+            return Ok("File not found");
         }
 
         [HttpGet]
