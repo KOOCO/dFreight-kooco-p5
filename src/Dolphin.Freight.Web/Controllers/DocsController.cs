@@ -4412,23 +4412,22 @@ namespace Dolphin.Freight.Web.Controllers
         public async Task<IActionResult> HBLPrintOceanExportOBL(Guid id, FreightPageType pageType)
         {
             var oceanExportPrintDetails = await GetOceanExportDetailsByPageType(id, pageType);
-
+            var list = new List<CreateUpdateContainerDto>();
             var packageUnit = _dropdownService.PackageUnitLookupList;
 
             QueryInvoiceDto queryDto = new QueryInvoiceDto();
 
             QueryContainerDto query = new QueryContainerDto() { QueryId = oceanExportPrintDetails.MblId };
             var containers = await _containerAppService.QueryListAsync(query);
-            //var container = await _containerAppService.GetContainerByHblId(Guid.Parse(id));
 
-            var list = new List<CreateUpdateContainerDto>();
-            string packageUnitName = "";
             if (containers != null && containers.Any())
             {
+                string packageUnitName = "";
+
                 int totalPKGs = 0;
                 double totalPackageWeight = 0;
                 double totalPackageMeasure = 0;
-                
+
                 foreach (var item in containers)
                 {
                     if (item.PackageUnitId != null)
@@ -4460,10 +4459,12 @@ namespace Dolphin.Freight.Web.Controllers
                 oceanExportPrintDetails.ContainerNo = containers[0].ContainerNo;
                 oceanExportPrintDetails.Mark = containers[0].SealNo;
                 oceanExportPrintDetails.PackageUnitName = list[0].PackageUnitName;
-                oceanExportPrintDetails.CreateUpdateContainer = list;
-                oceanExportPrintDetails.CreateUpdateContainerJson = JsonConvert.SerializeObject(list);
-                oceanExportPrintDetails.DisplayUnit = "KGBM";
             }
+
+            oceanExportPrintDetails.CreateUpdateContainer = list;
+            oceanExportPrintDetails.CreateUpdateContainerJson = JsonConvert.SerializeObject(list);
+            oceanExportPrintDetails.DisplayUnit = "KGBM";
+
 
             return View(oceanExportPrintDetails);
         }
