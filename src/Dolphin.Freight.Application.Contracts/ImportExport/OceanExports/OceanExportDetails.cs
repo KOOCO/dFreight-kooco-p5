@@ -543,6 +543,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string CommoditiesJson { get; set; }
         public string Net_weight_unit { get; set; }
         public string Gross_weight_unit { get; set; }
+        public bool showContainerRider { get; set; } = true;
     }
 
     public class Hbl

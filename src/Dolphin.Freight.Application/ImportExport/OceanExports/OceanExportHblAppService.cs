@@ -404,6 +404,13 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.HblAgentName = agent.TPName + "/" + agent.TPCode;
                 }
 
+                if (data.ForwardingAgentId != null)
+                {
+                    var ForwardingAgent = tradePartners.Where(w => w.Id.Equals(data.ForwardingAgentId)).FirstOrDefault();
+                    oceanExportDetails.ForwardingAgentName = ForwardingAgent.TPName + "/" + ForwardingAgent.TPCode;
+                }
+                
+
                 oceanExportDetails.HblOperatorName = _currentUser.Name + " " + _currentUser.SurName;
                 oceanExportDetails.CurrentDate = DateTime.Now;
                 oceanExportDetails.HblNo = data.HblNo;

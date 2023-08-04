@@ -218,7 +218,7 @@
             }
         });
 
-        $('#isShowContainerRider').hide();
+        //$('#isShowContainerRider').hide();
         $('#id_show_container_rider').change(function () {
             if ($('#id_show_container_rider').prop('checked')) {
                 $('#isShowContainerRider').show();
@@ -230,6 +230,10 @@
     });
 
     function print() {
+        debugger;
+        if(!($('#id_show_container_rider').prop('checked'))){
+            $('#showContainerRider').val('False');
+        }
         document.getElementById("myForm").submit();
     }
 
@@ -321,6 +325,7 @@
     <input type="hidden" asp-for="@Model.PackageUnitName" />
     <input type="hidden" asp-for="@Model.Description" />
     <input type="hidden" asp-for="@Model.CreateUpdateContainerJson" />
+    <input type="hidden" asp-for="@Model.showContainerRider" />
 
     <div id="main" class="edit">
         <div class="wrap border-blue oe-old-hbl">
@@ -389,7 +394,7 @@
                     </script>
                 </div>
                 <div class="topbar-block">
-                    <input type="checkbox" name="show_container_rider" hc-user-preference="oe_hbl_print_cnt_rider" ng-model="vm.containerRiderService.isShowContainerRider" id="id_show_container_rider" class="ng-pristine ng-untouched ng-valid ng-not-empty"> Show Container Rider
+                    <input type="checkbox" name="show_container_rider" hc-user-preference="oe_hbl_print_cnt_rider" ng-model="vm.containerRiderService.isShowContainerRider" id="id_show_container_rider" class="ng-pristine" checked="true"> Show Container Rider
                 </div>
                 <div class="topbar-block">
                     <input type="checkbox" name="include_bl_clause" hc-user-preference="oe_hbl_print_bl_clause" ng-model="vm.isIncludeBLClause" id="id_include_bl_clause" checked="" class="ng-untouched ng-valid ng-dirty ng-not-empty">
@@ -1297,17 +1302,8 @@
             </div>
 
             <!--******* Rider *******-->
-
-
-
-
-
-
-
-
-            <div id="isShowContainerRider" class="next-page edit-preview-rider ng-scope" ng-controller="containerRiderController as ctvm" ng-show="ctvm.containerRiderService.isShowContainerRider">
-
-
+            @if(Model.showContainerRider){
+                <div id="isShowContainerRider" class="next-page edit-preview-rider ng-scope" ng-controller="containerRiderController as ctvm" ng-show="ctvm.containerRiderService.isShowContainerRider">
                 <table>
                     <tbody>
                         <tr>
@@ -1342,15 +1338,8 @@
                             <th class="w-16 text-blue-deep border-r text-center col-padding-double">
                                 UNIT
                             </th>
-
-                            <!-- ngIf: vm.displayUnitChoice === 'KGBM' -->
-                            <!-- ngIf: vm.displayUnitChoice === 'KGBM' -->
-                            <!-- ngIf: vm.displayUnitChoice === 'LBFT' -->
-                            <!-- ngIf: vm.displayUnitChoice === 'LBFT' -->
-                            <!-- ngIf: vm.displayUnitChoice === 'BOTH' -->
-                            <th class="w-15 text-blue-deep border-r text-right col-padding-double ng-scope" ng-if="vm.displayUnitChoice === 'BOTH'">WEIGHT (KGS/LBS)</th><!-- end ngIf: vm.displayUnitChoice === 'BOTH' -->
-                            <!-- ngIf: vm.displayUnitChoice === 'BOTH' -->
-                            <th class="w-15 text-blue-deep text-right col-padding-double ng-scope" ng-if="vm.displayUnitChoice === 'BOTH'">MEASUREMENT (CBM/CFT)</th><!-- end ngIf: vm.displayUnitChoice === 'BOTH' -->
+                            <th class="w-15 text-blue-deep border-r text-right col-padding-double ng-scope" ng-if="vm.displayUnitChoice === 'BOTH'">WEIGHT (KGS/LBS)</th>
+                            <th class="w-15 text-blue-deep text-right col-padding-double ng-scope" ng-if="vm.displayUnitChoice === 'BOTH'">MEASUREMENT (CBM/CFT)</th>
 
                         </tr>
                         @foreach(var item in Model.CreateUpdateContainer){
@@ -1377,7 +1366,7 @@
                     </tbody>
                 </table>
             </div>
-
+            }
         </div>
     </div>
 </form>
