@@ -4340,7 +4340,7 @@ namespace Dolphin.Freight.Web.Controllers
         {
             try
             {
-                var reportTemplatePath = Path.Combine("Views/Docs/Booking_packing_list1.xlsx");
+                var reportTemplatePath = Path.Combine("Views/Docs/Booking_packing_list.xlsx");
                 if (System.IO.File.Exists(reportTemplatePath))
                 {
                     var file = new FileInfo(reportTemplatePath);
