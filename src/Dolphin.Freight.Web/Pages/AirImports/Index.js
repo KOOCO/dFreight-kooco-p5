@@ -87,7 +87,7 @@
                 serverSide: true,
                 paging: true,
                 order: col,
-                searching: true,
+                searching: false,
                 scrollX: true,
                 processing: true,
                 ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.airImports.airImportMawb.getList, queryListFilter),

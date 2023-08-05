@@ -151,18 +151,15 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     pdictionary.Add(port.Id, port.SubDiv + " " + port.PortName + " ( " + port.Locode + " ) ");
                 }
             }
-            var airImportHawbs = await _repository.GetListAsync();
-            List<AirImportHawb> rs;
+            var airImportHawbs = await _repository.GetQueryableAsync();
+            airImportHawbs = airImportHawbs.WhereIf(query.MblId != null && query.MblId != Guid.Empty, x=>x.Id
+                                           .Equals(query.MblId))
+                                           .WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.HawbNo
+                                           .Contains(query.Search) || x.MawbId.ToString()
+                                           .Contains(query.Search));
+            List<AirImportHawb> rs = airImportHawbs.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<AirImportHawbDto> list = new List<AirImportHawbDto>();
-            if (query != null && query.MblId != null)
-            {
-                rs = airImportHawbs.Where(x => x.Id.Equals(query.MblId.Value)).ToList();
-            }
-            else
-            {
-                rs = airImportHawbs;
-            }
-            if (rs != null && rs.Count > 0)
+            if (rs.Any())
             {
 
                 foreach (var pu in rs)
@@ -193,7 +190,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
             }
             PagedResultDto<AirImportHawbDto> listDto = new PagedResultDto<AirImportHawbDto>();
             listDto.Items = list;
-            listDto.TotalCount = list.Count;
+            listDto.TotalCount = airImportHawbs.Count();
             return listDto;
         }
 

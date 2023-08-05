@@ -1,19 +1,26 @@
 ﻿var l = abp.localization.getResource('Freight');
 var dataTable;
+var _changeInterval = null;
+var queryListFilter = function () {
+    return {
+        search: $("input[name='Search'").val()
+    };
+};
 $(function () {
     dataTable = $('#HawbListTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
             paging: true,
             order: [[2, "asc"]],
-            searching: true,
+            searching: false,
+            processing: true,
             scrollX: true,
             responsive: {
                 details: {
                     type: 'column'
                 }
             },
-            ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.airImports.airImportHawb.queryList),
+            ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.airImports.airImportHawb.queryList, queryListFilter),
             columnDefs: [
                 //{
                 //    className: 'dtr-control',
@@ -162,8 +169,12 @@ $(function () {
         })
     );
 
-    $('[type=search]').on('keyup', function () {
-        dataTable.search(this.value).draw();
+    $('#Search').keyup(function () {
+        clearInterval(_changeInterval)
+        _changeInterval = setInterval(function () {
+            dataTable.ajax.reload();
+            clearInterval(_changeInterval)
+        }, 1000);
     });
 });
 

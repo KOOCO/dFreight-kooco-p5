@@ -21,7 +21,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
             AirImportMawb,
             AirImportMawbDto,
             Guid,
-            PagedAndSortedResultRequestDto,
+            QueryDto,
             CreateUpdateAirImportMawbDto>,
         IAirImportMawbAppService
     {
@@ -46,7 +46,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
             _airImportHawbAppService = airImportHawbAppService;
         }
 
-        public override async Task<PagedResultDto<AirImportMawbDto>> GetListAsync(PagedAndSortedResultRequestDto input)
+        public override async Task<PagedResultDto<AirImportMawbDto>> GetListAsync(QueryDto input)
         {
             // port management
             Dictionary<Guid, string> portManagementDictionary = new Dictionary<Guid, string>();
@@ -71,6 +71,9 @@ namespace Dolphin.Freight.ImportExport.AirImports
             }
 
             var queryable = await Repository.GetQueryableAsync();
+            queryable = queryable.WhereIf(!string.IsNullOrWhiteSpace(input.Search), x => x.MawbNo
+                                 .Contains(input.Search) || x.FilingNo
+                                 .Contains(input.Search));
             var query = queryable
                 .OrderBy(x=>x.CreationTime)
                 .Skip(input.SkipCount)
@@ -120,7 +123,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
             }
 
             //Get the total count with another query
-            var totalCount = await Repository.GetCountAsync();
+            var totalCount = queryable.Count();
 
             return new PagedResultDto<AirImportMawbDto>(
                 totalCount,
