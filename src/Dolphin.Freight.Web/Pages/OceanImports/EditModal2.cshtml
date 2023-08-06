@@ -13,9 +13,11 @@
     <script type="text/javascript">
         var trindex = 0;
         var containerSizes = [];
+        var packageUnitsName = [];
         $(document).ready(function () {
             var isLocked = '@Model.OceanImportMbl.IsLocked';
             if (isLocked == 'True') abp.message.warn("此項已經被鎖定，若需修改請小心！\n您作的變更可能導致會計報表不一致！");
+            
             dolphin.freight.settings.containerSizes.containerSize.queryAllList({}).done(function (result) {
                 if (result != null && result.length > 0) {
                     containerSizes = result;
@@ -34,16 +36,21 @@
                                 addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9);
 
                             }
+                            addPackageUnitNameddl();
                         }
                     });
                 }
             });
+
             var IsShowHbl = '@Model.IsShowHbl';
             if (IsShowHbl == 'True') $("#hblCard").show();
             else $("#hblCard").hide();
 
             $("#addBtn").click(function () {
-                addTr()
+                addTr();
+                if ($('#packageTypeSelect > .select2-container--default').length === 0){
+                    addPackageUnitNameddl();
+                }
             })
             $("#add5Btn").click(function () {
                 for (var i = 0; i < 5; i++) {
@@ -62,6 +69,7 @@
                     $("#did_" + tid).val("1");
                     $("#tr_" + $(this).val()).hide();
                 })
+                $('#packageTypeSelect > .select2-container--default').remove();
             })
             $("#saveBtn").click(function () {
                 $("#mPoNo").val($("#PoNoTag").tagsStr());
@@ -113,6 +121,21 @@
             });
         });
 
+        function addPackageUnitNameddl(){
+            dolphin.freight.settings.packageUnits.packageUnit.getPackageUnitsLookup({}).done(function (res) {
+                if (res.items != null && res.items.length > 0) {
+                    packageUnitsName = res.items;
+                    var selectHtml = "<select id='PackagingUnit' name='PackagingUnit' class='form-control select-search' >";
+                    for (var i = 0; i < packageUnitsName.length; i++) {
+                        selectHtml = selectHtml + "<option value='" + packageUnitsName[i].id + "' ";
+                        selectHtml = selectHtml + ">" + packageUnitsName[i].packageName + "</option>"
+                    }
+                    selectHtml = selectHtml + "</select>";
+                    $('#packageTypeSelect').append(selectHtml).find('.select-search').select2();
+                }
+            });
+        }
+
         function addTr() {
             addTrTag("", "", "", "", "", "");
         }
@@ -126,7 +149,7 @@
             trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' id='f5_" + trindex + "' class='form-control' value='" + value5 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
             trhtml = trhtml + "</tr>"
             trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
@@ -163,6 +186,26 @@
             myWindow = window.open("@Url.Action("PreliminaryClaimOceanImport", "Docs")" + "?id=" + idNo+"&pageType=2", 'PreliminaryClaimOceanExport', 'width=1200,height=800');
             //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
+        }
+
+        function convertUnit(value) {
+            if (value === 'LB'){
+                for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
+                    $('#f5_' + i).val(parseFloat($('#f5_' + i).val() * 2.20462).toFixed(2));
+                }
+            } else if (value === 'KG'){
+                for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
+                    $('#f5_' + i).val(parseFloat($('#f5_' + i).val() / 2.20462).toFixed(2));
+                }
+            } else if (value === 'CFT'){
+                for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
+                    $('#f6_' + i).val(parseFloat($('#f6_' + i).val() * 35.315).toFixed(2));
+                }
+            } else if (value === 'CBM'){
+                for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
+                    $('#f6_' + i).val(parseFloat($('#f6_' + i).val() / 35.315).toFixed(2));
+                }
+            }
         }
     </script>
 }
@@ -303,13 +346,20 @@
                                             <th width="20%">@L["Display:PackageNo"]</th>
                                             <th width="15%">@L["Display:PackageSize"]</th>
                                             <th width="15%">@L["Display:SmallSeal"]</th>
-                                            <th width="15%">@L["Display:PackageType"]</th>
-                                            <th width="15%">@L["Display:Weight"]</th>
-                                            <th width="15%">@L["Display:Volume"]</th>
+                                            <th width="15%" id="packageTypeSelect">@L["Display:PackageType"]</th>
+                                            <th width="15%">@L["Display:Weight"]<select id="selectWeight" onchange="convertUnit($(this).val())" name="selectWeight"><option value="KG" id="wkg">KG</option><option value="LB" id="wlb">LB</option></select></th>
+                                            <th width="15%">@L["Display:Volume"]<select id="selectMeasurement" onchange="convertUnit($(this).val())" name="selectMeasurement"><option value="CBM" id="mcbm">CBM</option><option value="CFT" id="mcft">CFT</option></select></th>
                                         </tr>
                                         <tbody id="trtbody">
                                         </tbody>
-
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="6" align="right"><strong>Total:</strong></td>
+                                                <td id="totalPackageType"></td>
+                                                <td id="totalWeight"></td>
+                                                <td id="totalVolume"></td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
 
                                 </abp-column>
@@ -325,7 +375,7 @@
                                     <textarea id="t1" name="OceanImportMbl.Mark" class="form-control">@Model.OceanImportMbl.Mark</textarea>
                                 </abp-column>
                                 <abp-column size-md="_6">
-                                    <label for="t2">@L["Display:DeionOfGoods"]</label>
+                                    <label for="t2">@L["Display:Description"]</label>
                                     <textarea id="t2" name="OceanImportMbl.Description" class="form-control">@Model.OceanImportMbl.Description</textarea>
                                 </abp-column>
                             </abp-row>
@@ -429,7 +479,7 @@
                                             <th width="20%">@L["Display:PackageNo"]</th>
                                             <th width="15%">@L["Display:PackageType"]</th>
                                             <th width="15%">@L["Display:Weight"]</th>
-                                            <th width="15%">@L["Display:Volume"]</th>
+                                            <th width="15%">@L["Measurement"]</th>
                                             <th width="30%">@L["Title:PoNo"]</th>
                                         </tr>
                                         <tbody id="htrtbody">
@@ -490,7 +540,7 @@
                                     <textarea id="t1" name="OceanImportMbl.Mark" class="form-control">@Model.OceanImportMbl.Mark</textarea>
                                 </abp-column>
                                 <abp-column size-md="_6">
-                                    <label for="t2">@L["Display:DeionOfGoods"]</label>
+                                    <label for="t2">@L["Display:Description"]</label>
                                     <textarea id="t2" name="OceanImportMbl.Description" class="form-control">@Model.OceanImportMbl.Description</textarea>
                                 </abp-column>
                             </abp-row>
