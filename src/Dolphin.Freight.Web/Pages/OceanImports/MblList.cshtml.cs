@@ -5,6 +5,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
 {
     public class MblListModel : PageModel
     {
+        public string Search { get; set; }
         public void OnGet()
         {
         }

@@ -156,5 +156,9 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public Guid? HblId { get; set; }
+        public Guid? PackageUnitId { get; set; }
+        public string PackageWeightUnit { get; set; }
+        public string PackageMeasureUnit { get; set; }
     }
 }

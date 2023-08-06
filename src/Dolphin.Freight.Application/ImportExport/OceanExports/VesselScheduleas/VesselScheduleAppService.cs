@@ -1,5 +1,4 @@
-﻿using AutoMapper.Internal.Mappers;
-using Dolphin.Freight.Settings.Ports;
+﻿using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
@@ -7,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using System.Linq.Dynamic.Core;
 
 namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
 {
@@ -77,8 +76,13 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
                 }
             }
 
-            var VesselSchedules = await _repository.GetListAsync();
-            List<VesselSchedule> rs = VesselSchedules;
+            var VesselSchedules = (await _repository.GetQueryableAsync())
+                                   .WhereIf(!string.IsNullOrWhiteSpace(query.Search), x=>x.ReferenceNo
+                                   .Contains(query.Search) || x.VesselName
+                                   .Contains(query.Search) || x.Office.SubstationName
+                                   .Contains(query.Search) || x.Voyage
+                                   .Contains(query.Search));
+            List<VesselSchedule> rs = VesselSchedules.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<VesselScheduleDto> list = new List<VesselScheduleDto>();
 
             if (rs != null && rs.Count > 0)
@@ -98,7 +102,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
             }
             PagedResultDto<VesselScheduleDto> listDto = new PagedResultDto<VesselScheduleDto>();
             listDto.Items = list;
-            listDto.TotalCount = list.Count;
+            listDto.TotalCount = VesselSchedules.Count();
             return listDto;
         }
         [ApiExplorerSettings(IgnoreApi = true)]

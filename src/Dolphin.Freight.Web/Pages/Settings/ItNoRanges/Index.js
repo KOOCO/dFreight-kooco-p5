@@ -6,7 +6,7 @@
             serverSide: true,
             paging: true,
             order: [[1, "asc"]],
-            searching: true,
+            searching: false,
             scrollX: true,
             responsive: {
                 details: {

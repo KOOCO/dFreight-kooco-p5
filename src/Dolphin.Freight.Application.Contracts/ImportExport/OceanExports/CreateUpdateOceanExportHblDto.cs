@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 using Volo.Abp.Users;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
@@ -386,5 +387,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

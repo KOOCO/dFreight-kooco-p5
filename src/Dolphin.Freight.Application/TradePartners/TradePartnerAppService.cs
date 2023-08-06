@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Internal.Mappers;
+using Dolphin.Freight.Common;
 using Dolphin.Freight.Settings.Countries;
 using Dolphin.Freight.Settings.Currencies;
 using Dolphin.Freight.TradePartner;
@@ -22,7 +23,7 @@ namespace Dolphin.Freight.TradePartners
             TradePartner,
             TradePartnerDto, // show
             Guid, // primary key
-            PagedAndSortedResultRequestDto, // for paging & sorting
+            QueryDto, // for paging & sorting
             CreateUpdateTradePartnerDto>,
         ITradePartnerAppService
     {
@@ -250,14 +251,25 @@ namespace Dolphin.Freight.TradePartners
             );
         }
 
-        public override async Task<PagedResultDto<TradePartnerDto>> GetListAsync(PagedAndSortedResultRequestDto input) 
+        public override async Task<PagedResultDto<TradePartnerDto>> GetListAsync(QueryDto input) 
         {
             var queryable = await Repository.GetQueryableAsync();
+
+            queryable = queryable.WhereIf(!string.IsNullOrWhiteSpace(input.Search), x => x.TPCode
+                                .Contains(input.Search) || x.TPName
+                                .Contains(input.Search) || x.TPAliasName
+                                .Contains(input.Search) || x.TPNameLocal
+                                .Contains(input.Search) || x.ScacCode
+                                .Contains(input.Search) || x.IataCode
+                                .Contains(input.Search) || x.TPPrintAddress
+                                .Contains(input.Search));
 
             // join tradepartner and country
             var query = from tradePartner in queryable
                         join country in await _countryRepository.GetQueryableAsync() on tradePartner.CountryCode equals country.Id.ToString()
                         select new { tradePartner, country };
+
+           
 
             // paging
             query = query

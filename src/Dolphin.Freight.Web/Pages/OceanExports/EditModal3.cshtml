@@ -195,7 +195,38 @@
                 myWindow.focus();
             });
         }
-  
+            function getPickupDeliveryOrder() {
+            var idNo = $('#OceanExportMbl_Id').val();
+            myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")" + "?id=" + idNo, 'PickupDeliveryOrder', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow.focus()
+        }
+             function getReportTelexrelease() {
+                 var idNo = $('#OceanExportMbl_Id').val();
+            myWindow = window.open("@Url.Action("Telexrelease", "Docs")" + "?id=" + idNo, 'Telexrelease', 'width=1200,height=800');
+            myWindow.focus()
+        }
+
+        function getManifestPopUp() {
+            var url = new URL(window.location.href);
+            var mblId = url.searchParams.get('Id');
+
+            $.ajax({
+                url: abp.appPath + 'Docs/ManifestOceanExportMBLPartial?mblId=' + mblId,
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('#ManifestModal').html(res);
+                    $('.modal.mymodal').modal('show');
+                    $('#frmManifest').find('.modal.fade').removeClass('modal fade');
+                }
+            });
+        }
+
+         function getReportHblClauses() {
+            myWindow = window.open("@Url.Action("HblClauses", "Docs")", 'HblClauses', 'width=1500,height=800');
+            myWindow.focus()
+        }
     </script>
 }
 <div class="page-header">
@@ -213,11 +244,11 @@
             <li class="menu-item ">
                 <a class="nav-link  " href="EditModal2?Id=@Model.Id&Hid=@Model.Hid">@L["Tab:Container"]</a>
             </li>
-            <li class="menu-item active">
+            <li class="menu-item active">  
                 <a class="nav-link" href="javascript:void(0)">@L["Tab:Accounting"]</a>
             </li>
             <li class="menu-item ">
-                <a class="nav-link  " href="EditModal4?Id=@Model.Id&Hid=@Model.Hid">@L["Tab:Doc"]</a>
+                <a class="nav-link  " href="EditModal4?Id=@Model.Id&Hid=@Model.OceanExportHblDto?.Id">@L["Tab:Doc"]</a>
             </li>
         </ol>
     </nav>
@@ -225,6 +256,7 @@
 <div class="page-content-area">
     <div class="board-wrap">
         <input type="hidden" name="OceanExportHbl.Id" id="OceanExportHbl_Id" value="@Model.OceanExportHbl?.Id" />
+         <input type="hidden" name="OceanExportMbl.Id" id="OceanExportMbl_Id" value="@Model.OceanExportMbl?.Id" />
         <form submit-button="true" data-ajaxForm="true" id="editForm">
             <abp-row>
                 <abp-column size-md="_9" id="parentCard">
@@ -276,19 +308,19 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PrintMBLInstruction", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Print MB/L | B/L Instruction"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrder()">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
+                            <a class='dropdown-item' href='javascript:void(0)' onclick="getManifestPopUp()">
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
+                            </a>
+                            <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PackagingListOceanExportMBL", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
+                            </a>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getReportTelexrelease()">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:Telex Release"]
                                     </a>
                             <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("MBLPackageLabelOceanExportMBL", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
@@ -316,7 +348,7 @@
                             
                     </abp-card-header>
                     <abp-card-body class="collapse show" id="mawbDiv">
-
+                           <abp-input type="hidden" asp-for="OceanExportHbl.Id" />
                         <abp-row>
 
                             <abp-column size-md="_12">
@@ -576,5 +608,9 @@
         </abp-column>
     </abp-row>
         </form>
+
+<div class="modal mymodal" id="ManifestModal" tabindex="-1" role="dialog">
+</div>
+
     </div>
 </div>

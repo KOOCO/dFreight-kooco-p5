@@ -8,6 +8,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
     public class QueryHblDto : PagedAndSortedResultRequestDto
     {
         public string QueryType { get; set; }
+        public string Search { get; set; }
         public string QueryName { get; set; }
         /// <summary>
         /// 關鍵字

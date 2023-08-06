@@ -1,26 +1,24 @@
-﻿using AutoMapper.Internal.Mappers;
-using Dolphin.Freight.Accounting.Invoices;
-using Dolphin.Freight.Common;
-using Dolphin.Freight.Permissions;
-using Dolphin.Freight.Settings.Ports;
+﻿using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
+using Newtonsoft.Json;
+using NPOI.POIFS.Crypt.Dsig;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Printing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
-using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
+using static Dolphin.Freight.Permissions.AccountingPermissions;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -41,19 +39,22 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         private readonly IIdentityUserAppService _identityUserAppService;
         private readonly IRepository<OceanExportHbl, Guid> _oceanExportHblRepository;
         private readonly IInvoiceAppService _invoiceAppService;
+        private readonly ContainerAppService _containerRepository;
         public OceanExportMblAppService(IRepository<OceanExportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository, PortsManagementAppService portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
             IIdentityUserAppService identityUserAppService, IRepository<OceanExportHbl, Guid> oceanExportHblRepository,
-            IInvoiceAppService invoiceAppService)
+            IInvoiceAppService invoiceAppService,
+            ContainerAppService containerRepository)
             : base(repository)
         {
             _repository = repository;
             _sysCodeRepository = sysCodeRepository;
-            _substationRepository =  substationRepository;
+            _substationRepository = substationRepository;
             _portRepository = portRepository;
             _tradePartnerRepository = tradePartnerRepository;
             _identityUserAppService = identityUserAppService;
             _oceanExportHblRepository = oceanExportHblRepository;
             _invoiceAppService = invoiceAppService;
+            _containerRepository = containerRepository;
             /*
             GetPolicyName = OceanExportPermissions.OceanExportMbls.Default;
             GetListPolicyName = OceanExportPermissions.OceanExportMbls.Default;
@@ -63,48 +64,68 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         }
         public async Task<PagedResultDto<OceanExportMblDto>> QueryListAsync(QueryMblDto query)
         {
+            var dataQuery = await _repository.GetQueryableAsync();
+
             var substations = await _substationRepository.GetListAsync();
             Dictionary<Guid, string> substationsDictionary = new Dictionary<Guid, string>();
-            if (substations != null) 
+            if (substations != null)
             {
-                foreach (var substation in substations) 
+                foreach (var substation in substations)
                 {
                     substationsDictionary.Add(substation.Id, substation.SubstationName + "(" + substation.AbbreviationName + ")");
                 }
             }
-            var SysCodes = await _sysCodeRepository.GetListAsync();
-            Dictionary<Guid, string> dictionary = new Dictionary<Guid, string>();
-            if (SysCodes != null)
-            {
-                foreach (var syscode in SysCodes)
-                {
-                    dictionary.Add(syscode.Id, syscode.CodeValue);
-                }
-            }
-            var OceanExportMbls = await _repository.GetListAsync();
-            List<OceanExportMbl> rs;
-            List<OceanExportMblDto> list = new List<OceanExportMblDto>();
-            if (query != null && query.QueryKey != null)
-            {
-                rs = OceanExportMbls.OrderByDescending(x=>x.CreationTime ).ToList();
-            }
-            else
-            {
-                rs = OceanExportMbls.OrderByDescending(x => x.CreationTime).ToList();
-            }
-            if (rs != null && rs.Count > 0)
-            {
 
-                foreach (var r in rs)
-                {
-                    var item = ObjectMapper.Map<OceanExportMbl, OceanExportMblDto>(r);
-                    item.OfficeName = substationsDictionary[r.OfficeId.Value];
-                    list.Add(item);
-                }
-            }
+            dataQuery = dataQuery.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.CarrierContractNo
+                                          .Contains(query.Search) || x.MblNo
+                                          .Contains(query.Search) || x.Office.SubstationName
+                                          .Contains(query.Search) || x.Office.AbbreviationName
+                                          .Contains(query.Search) || x.SoNo
+                                          .Contains(query.Search))
+                                          .OrderByDescending(x => x.CreationTime);
+
+
+            //var SysCodes = await _sysCodeRepository.GetListAsync();
+            //Dictionary<Guid, string> dictionary = new Dictionary<Guid, string>();
+            //if (SysCodes != null)
+            //{
+            //    foreach (var syscode in SysCodes)
+            //    {
+            //        dictionary.Add(syscode.Id, syscode.CodeValue);
+            //    }
+            //}
+            //var OceanExportMbls = await _repository.GetListAsync();
+            //List<OceanExportMbl> rs;
+            //List<OceanExportMblDto> list = new List<OceanExportMblDto>();
+            //if (query != null && query.QueryKey != null)
+            //{
+            //    rs = OceanExportMbls.OrderByDescending(x=>x.CreationTime ).ToList();
+            //}
+            //else
+            //{
+            //    rs = OceanExportMbls.OrderByDescending(x => x.CreationTime).ToList();
+            //}
+            //if (rs != null && rs.Count > 0)
+            //{
+
+            //    foreach (var r in rs)
+            //    {
+            //        var item = ObjectMapper.Map<OceanExportMbl, OceanExportMblDto>(r);
+            //        item.OfficeName = substationsDictionary[r.OfficeId.Value];
+            //        list.Add(item);
+            //    }
+            //}
+
+            List<OceanExportMbl> rs = dataQuery.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
+            List<OceanExportMblDto> list = new List<OceanExportMblDto>();
+
+            var result = ObjectMapper.Map<List<OceanExportMbl>, List<OceanExportMblDto>>(rs);
+            if (result.Any())
+                result.ForEach(x => x.OfficeName = substationsDictionary[x.OfficeId.Value]);
+
             PagedResultDto<OceanExportMblDto> listDto = new PagedResultDto<OceanExportMblDto>();
-            listDto.Items = list;
-            listDto.TotalCount = list.Count;
+            listDto.Items = result;
+            listDto.TotalCount = dataQuery.Count();
             return listDto;
         }
         public async void LockedOrUnLockedOceanExportMblAsync(QueryMblDto query) 
@@ -271,9 +292,9 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var MblNotify = tradePartners.Where(w => w.Id == data.MblNotifyId).FirstOrDefault();
                     oceanExportDetails.MblNotifyName = string.Concat(MblNotify?.TPName, "/", MblNotify?.TPCode);
                 }
-                if (data.MblOperatorId != null)
+                if (data.MblOperatorId != null||data.CreatorId!=null)
                 {
-                    oceanExportDetails.MblOperator = ObjectMapper.Map<IdentityUserDto, UserData>(await _identityUserAppService.GetAsync(data.MblOperatorId.GetValueOrDefault()));
+                    oceanExportDetails.MblOperator = ObjectMapper.Map<IdentityUserDto, UserData>(await _identityUserAppService.GetAsync(data.MblOperatorId!=null? data.MblOperatorId.GetValueOrDefault():data.CreatorId.GetValueOrDefault()));
                     oceanExportDetails.MblOperatorName = string.Concat(oceanExportDetails.MblOperator.UserName, " ", oceanExportDetails.MblOperator.Surname);
                 }
                 if (data.MblOverseaAgentId != null)
@@ -296,6 +317,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var OblType = sysCodes.Where(w => w.Id == data.OblTypeId).FirstOrDefault();
                     oceanExportDetails.OblTypeName = OblType?.ShowName;
                 }
+
                 if (data.OfficeId != null)
                 {
                     var Office = substations.Where(w => w.Id == data.OfficeId).FirstOrDefault();
@@ -365,9 +387,16 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     oceanExportDetails.TransPort1Name = TransPort1?.PortName;
                 }
             }
-
+            
+            oceanExportDetails.Commodity = data.GetProperty<List<ManifestCommodity>>("Commodities");
             oceanExportDetails.MblNo = data.MblNo;
             oceanExportDetails.SoNo = data.SoNo;
+            oceanExportDetails.PodEta = data.PodEta;
+            oceanExportDetails.DocNo = data.FilingNo;
+            oceanExportDetails.Mark = data.Mark;
+            oceanExportDetails.Description = data.Description;
+            oceanExportDetails.DomesticInstructions = data.DomesticInstructions;
+            oceanExportDetails.CurrentDate = DateTime.Now;
 
             return oceanExportDetails;
         }

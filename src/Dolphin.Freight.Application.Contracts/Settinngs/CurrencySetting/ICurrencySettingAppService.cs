@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dolphin.Freight.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace Dolphin.Freight.Settings.CurrencySetting
         ICrudAppService< //Defines CRUD methods
         CurrencySettingDTO,  //顯示IT號碼管理用
         Guid,  //Primary key of the book entity
-        PagedAndSortedResultRequestDto, //Used for paging/sorting
+        QueryDto, //Used for paging/sorting
         CreateUpdateCurrencySettingDTO //新增修改IT號碼管理用
         >
     {

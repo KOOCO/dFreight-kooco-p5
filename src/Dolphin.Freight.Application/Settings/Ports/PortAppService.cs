@@ -1,13 +1,10 @@
-﻿using AutoMapper.Internal.Mappers;
-using Dolphin.Freight.Common;
-using Dolphin.Freight.Permissions;
-using Dolphin.Freight.Settings.Ports;
+﻿using Dolphin.Freight.Common;
 using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.Ports;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -20,7 +17,7 @@ namespace Dolphin.Freight.Settings.Ports
             Port, //IT號碼管理entity
             PortDto, //顯示IT號碼管理用
             Guid, //Primary key of the book entity
-            PagedAndSortedResultRequestDto, //Used for paging/sorting
+            QueryDto, //Used for paging/sorting
             CreateUpdatePortDto>, //新增修改IT號碼管理用
         IPortAppService //實作IPortAppService
     {
@@ -31,6 +28,20 @@ namespace Dolphin.Freight.Settings.Ports
         {
             _repository = repository;
             _sysCodeRepository = sysCodeRepository;
+        }
+
+        public override async Task<PagedResultDto<PortDto>> GetListAsync(QueryDto input)
+        {
+            PagedResultDto<PortDto> listDto = new PagedResultDto<PortDto>();
+            var query = await _repository.GetQueryableAsync();
+            query = query.WhereIf(!string.IsNullOrEmpty(input.Filter), x=>x.PortName
+                                   .Contains(input.Filter) || x.SubDiv
+                                   .Contains(input.Filter)).OrderBy(input.Sorting);
+
+            var result = query.Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
+            listDto.Items = ObjectMapper.Map<List<Port>, List<PortDto>>(result);
+            listDto.TotalCount = query.Count();
+            return listDto;
         }
         public async Task<PagedResultDto<PortDto>> QueryListAsync(QueryDto query)
         {

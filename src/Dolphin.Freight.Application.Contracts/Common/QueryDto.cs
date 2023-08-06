@@ -17,5 +17,6 @@ namespace Dolphin.Freight.Common
         public string QueryKey { get; set; }
         public string Filter { get; set; }
         public bool? Active { get; set; }
+        public string Search { get; set; }
     }
 }

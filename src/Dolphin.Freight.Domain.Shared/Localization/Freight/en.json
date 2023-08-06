@@ -189,7 +189,7 @@
     "Btn:Mawb Package Label": "Mawb Package Label",
     "Btn:Pickup / Delivery Order": "Pickup / Delivery Order",
     "Btn:Packing List": "Packing List",
-    "Btn:Telephone Release": "Telephone Release",
+    "Btn:Telex Release": "Telex Release",
     "Btn:Package Label": "Package Label",
     "Btn:MBL Packaging Label": "MBL Packaging Label",
     "Btn:Profit Report - Details": "Profit Report - Details",
@@ -1306,7 +1306,12 @@
     "HblSaleId": "Sales",
     "HSvcTermToId": "Svc Term To",
 
-    "PackageUnitAlreadyExist": "Same code {0} already exists in the system."
+    "PackageUnitAlreadyExist": "Same code {0} already exists in the system.",
+    "PKG": "PKG",
+    "Weight": "Weight",
+    "P.O": "P.O",
+    "CommodityAndHTS": "Commodity & HTS",
+    "BookingRemark":  "Booking Remarks"
 
   }
 }

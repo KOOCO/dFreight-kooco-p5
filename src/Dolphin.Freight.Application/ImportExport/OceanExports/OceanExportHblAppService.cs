@@ -1,25 +1,19 @@
-﻿using AutoMapper.Internal.Mappers;
-using Dolphin.Freight.Permissions;
-using Dolphin.Freight.Settings.Ports;
+﻿using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
-using Volo.Abp.Identity;
-using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
+using System.Linq.Dynamic.Core;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -39,7 +33,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         private readonly IRepository<Port, Guid> _portRepository;
         private readonly IRepository<PortsManagement, Guid> _portsManagementRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
-        public OceanExportHblAppService(IRepository<OceanExportHbl, Guid> repository, IRepository<PortsManagement, Guid> portsManagementRepository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanExportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid>  portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository)
+        private readonly ICurrentUser _currentUser;
+        public OceanExportHblAppService(IRepository<OceanExportHbl, Guid> repository, ICurrentUser currentUser, IRepository<PortsManagement, Guid> portsManagementRepository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanExportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid>  portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository)
             : base(repository)
         {
             _repository = repository;
@@ -49,6 +44,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             _portRepository = portRepository;
             _tradePartnerRepository = tradePartnerRepository;
             _portsManagementRepository = portsManagementRepository;
+            _currentUser = currentUser;
             /*
             GetPolicyName = OceanExportPermissions.OceanExportHbls.Default;
             GetListPolicyName = OceanExportPermissions.OceanExportHbls.Default;
@@ -106,17 +102,19 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     pdictionary.Add(port.Id, port.SubDiv + " " + port.PortName + " ( " + port.Locode + " ) ");
                 }
             }
-            var OceanExportHbls = await _repository.GetListAsync();
-            List<OceanExportHbl> rs;
+            var OceanExportHbls = (await _repository.GetQueryableAsync())
+                                    .WhereIf(!string.IsNullOrWhiteSpace(query.Search), x=>x.ItnNo
+                                    .Contains(query.Search) || x.HblNo
+                                    .Contains(query.Search) || x.Mbl.SoNo
+                                    .Contains(query.Search) || x.Mbl.Office.SubstationName
+                                    //.Contains(query.Search) || x.Mbl.Office.AbbreviationName
+                                    .Contains(query.Search) || x.HblShipper.TPName
+                                    .Contains(query.Search) || x.HblConsignee.TPName
+                                    .Contains(query.Search))
+                                    .WhereIf(query.MblId != null && query.MblId == Guid.Empty, x=>x.MblId.Value
+                                    .Equals(query.MblId));
+            List<OceanExportHbl> rs = OceanExportHbls.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<OceanExportHblDto> list = new List<OceanExportHblDto>();
-            if (query != null && query.MblId != null)
-            {
-                rs = OceanExportHbls.Where(x=>x.MblId.Equals(query.MblId.Value)).ToList();
-            }
-            else
-            {
-                rs = OceanExportHbls;
-            }
             if (rs != null && rs.Count > 0)
             {
 
@@ -166,7 +164,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }
             PagedResultDto<OceanExportHblDto> listDto = new PagedResultDto<OceanExportHblDto>();
             listDto.Items = list;
-            listDto.TotalCount = list.Count;
+            listDto.TotalCount = OceanExportHbls.Count();
             return listDto;
         }
         public async Task<IList<OceanExportHblDto>> QueryListByMidAsync(QueryHblDto query) {
@@ -215,7 +213,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     dictionary.Add(syscode.Id, syscode.CodeValue);
                 }
             }
-            var oceanExportHbl = await _repository.GetAsync(query.Id.Value);
+            var oceanExportHbl = await _repository.GetAsync(query.Id.GetValueOrDefault());
             var rs = ObjectMapper.Map<OceanExportHbl, CreateUpdateOceanExportHblDto>(oceanExportHbl);
             if (rs.CardColorId != null) rs.CardColorValue = dictionary[rs.CardColorId.Value];
             return rs;
@@ -264,7 +262,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             var portMangements = ObjectMapper.Map<List<PortsManagement>, List<PortsManagementDTO>>(await _portsManagementRepository.GetListAsync());
             var sysCodes = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(await _sysCodeRepository.GetListAsync());
             var substations = ObjectMapper.Map<List<Substation>, List<SubstationDto>>(await _substationRepository.GetListAsync());
-
+            
             var data = await Repository.GetAsync(Id);
 
             if (data != null)
@@ -296,35 +294,151 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var FDest = portMangements.Where(w => w.Id == data.FdestId).FirstOrDefault();
                     oceanExportDetails.FdestName = FDest?.PortName;
                 }
-                
+
+                 if (mbl.FdestId != null)
+                {
+                    var FDest = portMangements.Where(w => w.Id == mbl.FdestId).FirstOrDefault();
+                    oceanExportDetails.MblFdestName = FDest?.PortName;
+                }
+                if (data.EmptyPickupId != null)
+                {
+                    var EmptyPickup = tradePartners.Where(w => w.Id == data.EmptyPickupId).FirstOrDefault();
+                    oceanExportDetails.EmptyPickupName = string.Concat(EmptyPickup?.TPName, "/", EmptyPickup?.TPCode)?.TrimStart('/');
+                }
+                if (data.DeliveryToId != null)
+                {
+                    var DeliveryTo = tradePartners.Where(w => w.Id == data.DeliveryToId).FirstOrDefault();
+                    oceanExportDetails.DeliveryToName = string.Concat(DeliveryTo?.TPName, "/", DeliveryTo?.TPCode)?.TrimStart('/');
+                }
                 if (data.PorId != null)
                 {
                     var por = portMangements.Where(w => w.Id == data.PorId).FirstOrDefault();
                     oceanExportDetails.PorName = por?.PortName;
                 }
 
-                if (mbl.PolId != null)
+                if (mbl.PorId != null)
                 {
-                    var pol = portMangements.Where(w => w.Id == mbl.PolId).FirstOrDefault();
+                    var por = portMangements.Where(w => w.Id == mbl.PorId).FirstOrDefault();
+                    oceanExportDetails.MPorName = por?.PortName;
+                }
+
+                if (data.PolId != null)
+                {
+                    var pol = portMangements.Where(w => w.Id == data.PolId).FirstOrDefault();
                     oceanExportDetails.PolName = pol?.PortName;
                 }
 
+                if (data.DelId != null)
+                {
+                    var del = portMangements.Where(w => w.Id == data.DelId).FirstOrDefault();
+                    oceanExportDetails.DelName = del?.PortName;
+                }
+                if (data.CargoPickupId != null)
+                {
+                    oceanExportDetails.CargoPickUp = new TradePartnerDto();
+                    var del = tradePartners.Where(w => w.Id == data.CargoPickupId).FirstOrDefault();
+                    oceanExportDetails.CargoPickUp = del;
+                }
                 if (mbl.FreightTermId != null)
                 {
                     var freightTerm = sysCodes.Where(w => w.Id == mbl.FreightTermId).FirstOrDefault();
                     oceanExportDetails.FreightTermName = freightTerm?.ShowName;
                 }
 
+                if (mbl.MblOverseaAgentId != null)
+                {
+                    var overSeaAgent = tradePartners.Where(w => w.Id == mbl.MblOverseaAgentId).FirstOrDefault();
+                    oceanExportDetails.MblOverseaAgentName = string.Concat(overSeaAgent.TPName, "/", overSeaAgent.TPCode);
+                }
+
+                if (data.SvcTermToId != null)
+                {
+                    var svcTo = sysCodes.Where(w => w.Id == mbl.SvcTermToId).FirstOrDefault();
+                    oceanExportDetails.SvcTermToName = svcTo?.ShowName;
+                }
+
+                if (data.SvcTermFromId != null)
+                {
+                    var svcTo = sysCodes.Where(w => w.Id == mbl.SvcTermFromId).FirstOrDefault();
+                    oceanExportDetails.SvcTermFromName = svcTo?.ShowName;
+                }
+
+                if (mbl.MblCarrierId != null)
+                {
+                    var carrier = tradePartners.Where(w => w.Id == mbl.MblCarrierId).FirstOrDefault();
+                    oceanExportDetails.MblCarrierName = carrier.TPName + "/" + carrier.TPCode;
+                }
+
+                if (data.PodId != null)
+                {
+                    var pod = portMangements.Where(w => w.Id.Equals(data.PodId)).FirstOrDefault();
+                    oceanExportDetails.PodName = pod?.PortName;
+                }
+                
+                if (mbl.PodId != null)
+                {
+                    var pod = portMangements.Where(w => w.Id.Equals(mbl.PodId)).FirstOrDefault();
+                    oceanExportDetails.MPodName = pod?.PortName;
+                }
+
+                if (mbl.ForwardingAgentId != null)
+                {
+                    var ForwardingAgent = tradePartners.Where(w => w.Id.Equals(mbl.ForwardingAgentId)).FirstOrDefault();
+                    oceanExportDetails.ForwardingAgentName = ForwardingAgent.TPName + "/" + ForwardingAgent.TPCode;
+                }
+                
+                if (mbl.MblCarrierId != null)
+                {
+                    var MblCarrier = tradePartners.Where(w => w.Id.Equals(mbl.MblCarrierId)).FirstOrDefault();
+                    oceanExportDetails.MblCarrierName = MblCarrier.TPName + "/" + MblCarrier.TPCode;
+                }
+                if (data.TruckerId != null)
+                {
+                    var trucker = tradePartners.Where(w => w.Id.Equals(data.TruckerId)).FirstOrDefault();
+                    oceanExportDetails.TruckerName = trucker.TPName + "/" + trucker.TPCode;
+                }
+
+                if (data.AgentId != null)
+                {
+                    var agent = tradePartners.Where(w => w.Id.Equals(data.AgentId)).FirstOrDefault();
+                    oceanExportDetails.HblAgentName = agent.TPName + "/" + agent.TPCode;
+                }
+
+                if (data.ForwardingAgentId != null)
+                {
+                    var ForwardingAgent = tradePartners.Where(w => w.Id.Equals(data.ForwardingAgentId)).FirstOrDefault();
+                    oceanExportDetails.ForwardingAgentName = ForwardingAgent.TPName + "/" + ForwardingAgent.TPCode;
+                }
+                
+
+                oceanExportDetails.HblOperatorName = _currentUser.Name + " " + _currentUser.SurName;
+                oceanExportDetails.CurrentDate = DateTime.Now;
                 oceanExportDetails.HblNo = data.HblNo;
+                oceanExportDetails.SoNo = mbl.SoNo;
+                oceanExportDetails.HblSoNo = data.SoNo;
                 oceanExportDetails.DocNo = mbl.FilingNo;
+                oceanExportDetails.ItnNo = data.ItnNo;
                 oceanExportDetails.MblDel = mbl.Del?.PortName;
                 oceanExportDetails.LCNo = data.LcNo;
                 oceanExportDetails.LCIssueBankName = data.LcIssueBank;
+                oceanExportDetails.LCIssueDate = data.LcIssueDate;
+                oceanExportDetails.FdestEta = data.FdestEta;
                 oceanExportDetails.PolEtd = mbl.PolEtd;
+                oceanExportDetails.PorEtd = data.PorEtd;
+                oceanExportDetails.MPorEtd = mbl.PorEtd;
+                oceanExportDetails.PodEta = data.PodEta;
+                oceanExportDetails.MPodEta = mbl.PodEta;
+                oceanExportDetails.DelEta = data.DelEta;
                 oceanExportDetails.VesselName = mbl.VesselName;
                 oceanExportDetails.Voyage = mbl.Voyage;
                 oceanExportDetails.Mark = data.Mark;
-            }
+                oceanExportDetails.MblNo = mbl.MblNo;
+                oceanExportDetails.MblPostDate = mbl.PostDate;
+
+                oceanExportDetails.EarlyReturnDateTime= data.EarlyReturnDateTime;
+
+                oceanExportDetails.Description = data.Description;
+            }  
 
             return oceanExportDetails;
         }
