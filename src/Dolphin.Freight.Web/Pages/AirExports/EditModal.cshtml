@@ -833,9 +833,9 @@
                             <!--Route區塊-->
                             <abp-row>
                                 <div class="collapse" id="collapseRoute">
-                                    <div class="card card-body customForm">
+                                    <div class="card card-body table-responsive">
                                         <h3>Route</h3>
-                                        <abp-table class="nowrap" class="table table-bordered table-responsive">
+                                        <abp-table class="nowrap" class="table table-bordered">
                                             <thead>
                                                 <tr>
                                                     <th></th>
@@ -849,14 +849,8 @@
                                             <tbody>
                                                 <tr>
                                                     <th>Trans1</th>
-                                                    <td>
-                                                        <select asp-for="@Model.AirExportMawbDto.RouteTrans1Id" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans1Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans1Id) })
                                                     </td>
                                                     <td>
                                                         <input asp-for="@Model.AirExportMawbDto.RouteTrans1ArrivalDate" size="Small" />
@@ -873,14 +867,8 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Trans2</th>
-                                                    <td>
-                                                        <select asp-for="@Model.AirExportMawbDto.RouteTrans2Id" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans2Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans1Id) })
                                                     </td>
                                                     <td>
                                                         <input asp-for="@Model.AirExportMawbDto.RouteTrans2ArrivalDate" size="Small" />
@@ -897,14 +885,8 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Trans3</th>
-                                                    <td>
-                                                        <select asp-for="@Model.AirExportMawbDto.RouteTrans3Id" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans3Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans1Id) })
                                                     </td>
                                                     <td>
                                                         <input asp-for="@Model.AirExportMawbDto.RouteTrans3ArrivalDate" size="Small" />
