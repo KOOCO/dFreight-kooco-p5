@@ -305,6 +305,18 @@
                 }
             });
         }
+        function getDocPackagePopUp() {
+
+            $.ajax({
+                url: abp.appPath + 'Docs/DocumentPackageHBLPopupPartial?id=@Model.OceanExportHbl.Id',
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('#documentPackageModal').html(res);
+                    $('#documentPackageModal').modal('show');
+                }
+            });
+        }
     </script>
 }
 <div class="page-header">
@@ -457,7 +469,7 @@
                     <i class="fa fa-lock"></i> @L["Btn:Lock"]
                                 </a>
                                 <li class="dropdown-divider"></li>
-                                <a class='dropdown-item' href='#'>
+        <a class='dropdown-item' href='javascript:void(0)' onclick="getDocPackagePopUp()">
                                     <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                                 </a>
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(6)">
@@ -641,4 +653,7 @@
 </div>
 
     </div>
+</div>
+
+<div class="modal" id="documentPackageModal">
 </div>
