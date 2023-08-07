@@ -79,7 +79,16 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public IActionResult OnPostAsync()
         {
             var updateItem = ObjectMapper.Map<AirExportMawbDto, CreateUpdateAirExportMawbDto>(AirExportMawbDto);
+            if (updateItem.ExtraProperties == null)
+            {
+                updateItem.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+            }
+            if (AirExportMawbDto.MoreInformation != null)
+            {
+                updateItem.ExtraProperties.Remove("MoreInformation");
+                updateItem.ExtraProperties.Add("MoreInformation", AirExportMawbDto.MoreInformation);
 
+            }
             _airExportMawbAppService.UpdateAsync(AirExportMawbDto.Id, updateItem).Wait();
 
             if (AirExportHawbDto is not null)
@@ -97,6 +106,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                     updateHawb.ExtraProperties.Remove("Commodites");
                     updateHawb.ExtraProperties.Add("Commodities", AirExportHawbDto.Commodities);
                 }
+                
 
                 if (AirExportHawbDto.OtherCharges != null)
                 {

@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -152,5 +153,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
         
         public String BusinessReferredId { get; set; }
         public bool IsECom { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

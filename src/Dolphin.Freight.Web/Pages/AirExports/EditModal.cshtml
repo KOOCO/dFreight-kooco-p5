@@ -146,6 +146,32 @@
             })
         }
 
+             function onSetMoreInformation() {
+            var extraProperties = '@Html.Raw(Json.Serialize(Model.AirExportMawbDto.ExtraProperties))';
+
+            if (extraProperties && extraProperties != 'null' && extraProperties != '{}') {
+                var moreInformation = JSON.parse(extraProperties).MoreInformation;
+
+                if (moreInformation && moreInformation.length) {
+                    var commodityIndex = 0;
+                    moreInformation.forEach(function (information) {
+                        information.chkIndex = informationIndex;
+
+                        var newRow = $('#moreInformationTemplate').tmpl(information);
+                        $('#moreInformationBody').append(newRow);
+
+                        informationIndex += 1;
+                    });
+
+                
+                }
+            }
+        }
+
+
+
+
+
         function onSetCommodity(){
 
             var extraProperties = $('#AirExportHawbDto_ExtraProperties').val();
@@ -566,6 +592,7 @@
             });
         }
     </script>
+
 }
 
 <div class="page-header">
