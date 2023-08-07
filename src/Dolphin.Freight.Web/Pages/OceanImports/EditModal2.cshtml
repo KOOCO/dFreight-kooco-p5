@@ -112,6 +112,11 @@
                 $('#exampleModal').click();
             });
 
+            $('#btn-close').click(function () {
+                $('#exampleModal').modal('hide');
+                $('#exampleModal').click();
+            });
+
             $('#save-ctf').click(function () {
                 $(this).prop('disabled', true);
 
@@ -126,6 +131,16 @@
                     $(this).prop('disabled', false);
                 });
             });
+
+            $('#cancel-ctf').click(function () {
+                $('#exampleModal2').modal('hide');
+                $('#exampleModal2').click();
+            });
+
+            $('#btn-close1').click(function (){
+                $('#exampleModal2').modal('hide');
+                $('#exampleModal2').click();
+            })
         });
 
         function addPackageUnitNameddl(){
@@ -708,7 +723,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">新增</h5>
-                <button aria-label="關閉" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                <button aria-label="關閉" class="btn-close" id="btn-close" data-bs-dismiss="modal" type="button"></button>
             </div>
             <div class="modal-body">
                 <input name="CreateUpdateTradePartnerMemoDto.tradePartnerId" type="hidden" value="32863847-4984-cc8a-3f35-3a0ae2817f56">
@@ -738,7 +753,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">新增</h5>
-                <button aria-label="關閉" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                <button aria-label="關閉" class="btn-close" id="btn-close1" data-bs-dismiss="modal" type="button"></button>
             </div>
             <div class="modal-body">
                 <input name="CreateUpdateTradePartnerMemoDto.tradePartnerId" type="hidden" value="32863847-4984-cc8a-3f35-3a0ae2817f56">
@@ -756,7 +771,7 @@
 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal" id="cancel-ctf" type="button">取消</button>
                 <button class="btn btn-primary" data-busy-text="保存中..." type="button" id="save-ctf"><i class="fa fa-check"></i> <span>保存</span></button>
             </div>
         </div>
