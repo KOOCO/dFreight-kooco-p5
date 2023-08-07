@@ -114,9 +114,9 @@ namespace Dolphin.Freight.Web.CommonService
         #region FillAirportAsync()
         private async Task<List<SelectItems>> FillAirportAsync()
         {
-            var airportLookup = await _airportAppService.GetAirportLookupAsync();
+            var airportLookup = await _countryAppService.GetCountryLookupAsync();
             return airportLookup.Items
-                                    .Select(x => new SelectListItem(x.AirportIataCode + " " + x.AirportName, x.Id.ToString(), false))
+                                    .Select(x => new SelectListItem(x.Code + " " + x.CountryName, x.Id.ToString(), false))
                                     .ToList();
         }
         #endregion

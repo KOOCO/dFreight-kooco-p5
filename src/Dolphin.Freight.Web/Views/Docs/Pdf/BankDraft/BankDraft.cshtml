@@ -8,7 +8,60 @@
 @{
     Layout = null;
 }
-<div style="display: flex;justify-content:center;">
+
+<form id="myForm" method="post">
+    <input type="hidden" name="reportType" value="BankDraft" />
+    <input type="hidden" asp-for="@Model.Amount" />
+    <input type="hidden" asp-for="@Model.Amount.Length" />
+    <input type="hidden" asp-for="@Model.Date" />
+    <input type="hidden" asp-for="@Model.AtSight" />
+    <input type="hidden" asp-for="@Model.ShipperName" />
+    <input type="hidden" asp-for="@Model.ShipperName3" />
+    <input type="hidden" asp-for="@Model.ShipperName2" />
+    <input type="hidden" asp-for="@Model.AmountToString" />
+    <input type="hidden" asp-for="@Model.DrawnDocCredit" />
+    <input type="hidden" asp-for="@Model.IssueDate" />
+    <input type="hidden" asp-for="@Model.LCIssueBank" />
+    <input type="hidden" asp-for="@Model.ToTradePartnerName" />
+    <input type="hidden" asp-for="@Model.ToLCIssueBank" />
+    <input type="hidden" asp-for="@Model.DraftNo" />
+    <input type="hidden" asp-for="@Model.BankPreference" />
+    <input type="hidden" asp-for="@Model.Gentlemen" />
+    <input type="hidden" asp-for="@Model.EncloseDate" />
+    <input type="hidden" asp-for="@Model.EncloseDraftNo" />
+    <input type="hidden" asp-for="@Model.EncloseForCollection" />
+    <input type="hidden" asp-for="@Model.EncloseForOther" />
+    <input type="hidden" asp-for="@Model.EncloseForOtherInput" />
+    <input type="hidden" asp-for="@Model.EncloseForPayment" />
+    <input type="hidden" asp-for="@Model.ExtraBl" />
+    <input type="hidden" asp-for="@Model.ExtraBlCopy" />
+    <input type="hidden" asp-for="@Model.ExtraCommInv" />
+    <input type="hidden" asp-for="@Model.ExtraInsCtf" />
+    <input type="hidden" asp-for="@Model.ExtraConsInv" />
+    <input type="hidden" asp-for="@Model.ExtraPkngList" />
+    <input type="hidden" asp-for="@Model.ExtraWgtCtf" />
+    <input type="hidden" asp-for="@Model.DeliverInOneMailing" />
+    <input type="hidden" asp-for="@Model.DeliverInTwoMailing" />
+    <input type="hidden" asp-for="@Model.DeliverIfDraft" />
+    <input type="hidden" asp-for="@Model.AllChargesForAccount" />
+    <input type="hidden" asp-for="@Model.DoNotWaiveCharges" />
+    <input type="hidden" asp-for="@Model.ProtestForNonPayment" />
+    <input type="hidden" asp-for="@Model.DoNotProtest" />
+    <input type="hidden" asp-for="@Model.PresentOnArrival" />
+    <input type="hidden" asp-for="@Model.AdviseNonPaymentBy" />
+    <input type="hidden" asp-for="@Model.AdvisePaymentBy" />
+    <input type="hidden" asp-for="@Model.ReferToName" />
+    <input type="hidden" asp-for="@Model.ReferToAddress" />
+    <input type="hidden" asp-for="@Model.ToActFullyOnOurBehalf" />
+    <input type="hidden" asp-for="@Model.ToAssistNotToAlter" />
+    <input type="hidden" asp-for="@Model.OtherInstructions" />
+    <input type="hidden" asp-for="@Model.ReferQuestionTo" />
+    <input type="hidden" asp-for="@Model.ReferQuestionName" />
+    <input type="hidden" asp-for="@Model.ReferQuestionPhone" />
+    <input type="hidden" asp-for="@Model.AuthorizedSignatureInput" />
+    <input type="hidden" asp-for="@Model.UserCompany" />
+
+    <div style="display: flex;justify-content:center;">
     <div style="background-color:white;">
         <div>&nbsp;</div>
         <div style="display:inline-block;width:10px">&nbsp;</div>
@@ -1361,3 +1414,4 @@
         </div>
     </div>
 </div>
+</form>

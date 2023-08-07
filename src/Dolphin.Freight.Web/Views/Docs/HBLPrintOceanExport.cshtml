@@ -187,6 +187,7 @@ table tr {
 
     function print()
     {
+        debugger;
         document.getElementById("myForm").submit();
     }
 
@@ -222,40 +223,39 @@ table tr {
     }
 </script>
 
- @if (!Model.IsPDF)
-    {
-        <div class="nav">
-           <ul>
+ @if (!Model.IsPDF && !Model.IsPartialView)
+ {
+    <div class="nav">
+        <ul>
+            <li>
+                <button type="button" style="width:120px; color:white" onclick="print()"><i class="fa fa-print">儲存PDF或列印</i></button>
+            </li>
+            <li>
         
-        <li>
-            <button type="button" style="width:120px; color:white" onclick="print()"><i class="fa fa-print">儲存PDF或列印</i></button>
-        </li>
-       
-    
-    <li>
+                <select disabled>
+                    <option value="en">English</option>
+                    <option value="zh-hans">简体中文 (Simplified Chinese)</option>
+                    <option value="zh-hant">繁體中文 (Traditional Chinese)</option>
+                </select>
         
-      <select disabled>
-            <option value="en">English</option>
-            <option value="zh-hans">简体中文 (Simplified Chinese)</option>
-            <option value="zh-hant">繁體中文 (Traditional Chinese)</option>
-    </select>
-        
-    </li><!-- end ngIf: vm.canSelectLanguage -->
+            </li><!-- end ngIf: vm.canSelectLanguage -->
 
-    </ul>
+        </ul>
 
         <div class="view-setting">
-                <div class="btn-group">
-                    <button class="button btn-sm" title="Zoom Out" id="zout" disabled="disabled"><i class="fa fa-search-minus"></i>
-                    </button>
-                    <button class="button btn-sm" title="Zoom In" id="zin"><i class="fa fa-search-plus"></i>
-                    </button>
-                </div>
+            <div class="btn-group">
+                <button class="button btn-sm" title="Zoom Out" id="zout" disabled="disabled"><i class="fa fa-search-minus"></i>
+                </button>
+                <button class="button btn-sm" title="Zoom In" id="zin"><i class="fa fa-search-plus"></i>
+                </button>
             </div>
+        </div>
+
     </div>
-    }
+ }
 
     <form id="myForm" method="post">
+        <input type="hidden" name="reportType" value="HBLPrint" />
         <input type="hidden" autocomplete="off">
         <input type="hidden" asp-for="@Model.VesselName" />       
         <input type="hidden" asp-for="@Model.Voyage" />

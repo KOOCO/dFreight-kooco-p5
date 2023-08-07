@@ -1,6 +1,11 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
-
+    var _changeInterval = null;
+    var queryListFilter = function () {
+        return {
+            search: $("input[name='Search'").val()
+        };
+    };
     var columns = [{
         title: l('Actions'),
         rowAction: {
@@ -96,18 +101,23 @@
                 serverSide: true,
                 paging: true,
                 order: col,
-                searching: true,
+                searching: false,
                 scrollX: true,
                 processing: true,
-                ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.airExports.airExportMawb.queryList),
+                ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.airExports.airExportMawb.queryList, queryListFilter),
                 columnDefs: columns
             })
         );
     })
 
-    $('[type=search]').on('keyup', function () {
-        dataTable.search(this.value).draw();
+    $('#Search').keyup(function () {
+        clearInterval(_changeInterval)
+        _changeInterval = setInterval(function () {
+            dataTable.ajax.reload();
+            clearInterval(_changeInterval)
+        }, 1000);
     });
+
 
     $('#NewMblButton').click(function (e) {
         location.href = 'CreateMawb';

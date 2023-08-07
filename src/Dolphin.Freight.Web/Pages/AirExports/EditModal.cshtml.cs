@@ -37,6 +37,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         private readonly IAirExportMawbAppService _airExportMawbAppService;
         private readonly IAirExportHawbAppService _airExportHawbAppService;
         private readonly ICountryDisplayNameAppService _countryDisplayNameAppService;
+        private readonly ICountryAppService _countryAppService;
 
         public EditModalModel(ITradePartnerAppService tradePartnerAppService,
             ISubstationAppService substationAppService,
@@ -44,7 +45,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             IPackageUnitAppService packageUnitAppService,
             IAirExportMawbAppService airExportMawbAppService,
             IAirExportHawbAppService airExportHawbAppService,
-            ICountryDisplayNameAppService countryDisplayNameAppService
+            ICountryDisplayNameAppService countryDisplayNameAppService,
+            ICountryAppService countryAppService
             )
         {
             Logger = NullLogger<CreateMawbModel>.Instance;
@@ -55,6 +57,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             _airExportMawbAppService = airExportMawbAppService;
             _airExportHawbAppService = airExportHawbAppService;
             _countryDisplayNameAppService = countryDisplayNameAppService;
+            _countryAppService = countryAppService;
         }
 
         [HiddenInput]
@@ -165,9 +168,9 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         #region FillAirportAsync()
         private async Task FillAirportAsync()
         {
-            var airportLookup = await _airportAppService.GetAirportLookupAsync();
+            var airportLookup = await _countryAppService.GetCountryLookupAsync();
             AirportLookupList = airportLookup.Items
-                                                .Select(x => new SelectListItem(x.AirportIataCode + " " + x.AirportName, x.Id.ToString(), false))
+                                                .Select(x => new SelectListItem(x.Code + " " + x.CountryName, x.Id.ToString(), false))
                                                 .ToList();
         }
         #endregion

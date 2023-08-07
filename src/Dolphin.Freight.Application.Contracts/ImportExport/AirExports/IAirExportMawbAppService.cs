@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.Common;
+using Dolphin.Freight.ImportExport.OceanExports;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,7 +13,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         ICrudAppService<
             AirExportMawbDto,
             Guid,
-            PagedAndSortedResultRequestDto,
+            QueryHblDto,
             CreateUpdateAirExportMawbDto
         >
     {
