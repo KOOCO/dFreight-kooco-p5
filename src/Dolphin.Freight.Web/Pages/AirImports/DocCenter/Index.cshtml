@@ -48,30 +48,33 @@
         });
 
         var cardIndex = 0;
+          $("#addHBtn").click(function () {
+                var url = "/AirImports/EditMawb?Id=@Model.Id";
+                location.href = url;
+            })
+        //$('#addHBtn').on('click', function () {
+        //    debugger;
+        //    if ($('#mawbDiv')[0].classList.contains('show')) {
+        //        $('#btnMawbCollapse').click();
+        //    }
 
-        $('#addHBtn').on('click', function () {
-            debugger;
-            if ($('#mawbDiv')[0].classList.contains('show')) {
-                $('#btnMawbCollapse').click();
-            }
+        //    if ($('#btnHawbCardCollapse_0').length) {
+        //        showAlert(alertConfirmation2, 'Store');
+        //    }
+        //    else {
 
-            if ($('#btnHawbCardCollapse_0').length) {
-                showAlert(alertConfirmation2, 'Store');
-            }
-            else {
+        //        let hawbcard = createHawbCard();
 
-                let hawbcard = createHawbCard();
+        //        let index = $('.hbl_sm_area').find('.card').length;
+        //        hawbcard = setHawbCardValues(hawbcard, '00000000-0000-0000-0000-000000000000', '0', index);
 
-                let index = $('.hbl_sm_area').find('.card').length;
-                hawbcard = setHawbCardValues(hawbcard, '00000000-0000-0000-0000-000000000000', '0', index);
+        //        $('#hblCards').append(hawbcard);
 
-                $('#hblCards').append(hawbcard);
-
-                setTimeout(() => {
-                    $('.hblCardTitle')[index].click();
-                }, 500);
-            }
-        })
+        //        setTimeout(() => {
+        //            $('.hblCardTitle')[index].click();
+        //        }, 500);
+        //    }
+        //})
 
         $('#editForm').on('abp-ajax-success', function (result, rs) {
             console.log("enter here");

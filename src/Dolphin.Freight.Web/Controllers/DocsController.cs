@@ -74,6 +74,14 @@ using Volo.Abp.Uow;
 using Dolphin.Freight.Settings.PackageUnits;
 using Dolphin.Freight.ImportExport.OceanImports;
 using QueryHblDto = Dolphin.Freight.ImportExport.OceanExports.QueryHblDto;
+using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System.Text;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -755,7 +763,7 @@ namespace Dolphin.Freight.Web.Controllers
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
 
-            return View(InfoViewModel);
+            return View("Views/Docs/Pdf/BankDraft/BankDraft.cshtml", InfoViewModel);
         }
 
         [HttpPost]
@@ -894,7 +902,7 @@ namespace Dolphin.Freight.Web.Controllers
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
 
-            return View(InfoViewModel);
+            return View("Views/Docs/Pdf/CertificateOfOrigin/Default.cshtml", InfoViewModel);
         }
 
         [HttpPost]
@@ -1760,7 +1768,7 @@ namespace Dolphin.Freight.Web.Controllers
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
 
-            return View(InfoViewModel);
+            return View("Views/Docs/CommercialInvoice.cshtml", InfoViewModel);
         }
 
         [HttpPost]
@@ -3676,11 +3684,12 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/ITTE.cshtml", model);
         }
 
-        public async Task<IActionResult> HBLPackingListOceanExport(Guid id, FreightPageType pageType)
+        public async Task<IActionResult> HBLPackingListOceanExport(Guid id, FreightPageType pageType, bool isPartialView = false)
         {
             var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+            oceanExportDetails.IsPartialView = isPartialView;
 
-            return View(oceanExportDetails);
+            return View("Views/Docs/HBLPackingListOceanExport.cshtml",oceanExportDetails);
         }
         [HttpPost]
         public async Task<IActionResult> HBLPackingListOceanExport(OceanExportDetails model)
@@ -4217,8 +4226,9 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> HBLPrintOceanExport(Guid id, FreightPageType pageType)
+        public async Task<IActionResult> HBLPrintOceanExport(Guid id, FreightPageType pageType, bool isPartialView = false)
         {
+
             var oceanExportPrintDetails = await GetOceanExportDetailsByPageType(id, pageType);
 
             QueryInvoiceDto queryDto = new QueryInvoiceDto();
@@ -4261,8 +4271,10 @@ namespace Dolphin.Freight.Web.Controllers
             }
 
             oceanExportPrintDetails.DisplayUnit = "KGBM";
+            oceanExportPrintDetails.IsPartialView = isPartialView;
 
-            return View(oceanExportPrintDetails);
+            return View("Views/Docs/HBLPrintOceanExport.cshtml", oceanExportPrintDetails);
+
         }
 
         [HttpPost]
@@ -4515,6 +4527,61 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/HBLPrintOceanExportOBL.cshtml", model);
         }
 
+        [HttpGet]
+        public IActionResult DocumentPackageHBLPopupPartial(Guid id)
+        {
+            OceanExportDetails oceanExportDetails = new OceanExportDetails() {HblId = id };
+
+            return PartialView("Pages/Shared/_HBLDocumentPackagePopup.cshtml", oceanExportDetails);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HBLDocumentPackageOceanExport(Guid id, FreightPageType pageType, string reportType)
+        {
+           
+            OceanExportDetails oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+            oceanExportDetails.DDLItems = reportType.Split(',').ToList();
+            oceanExportDetails.HblId = id;
+
+            return View(oceanExportDetails);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDocPKGReportPartial(Guid id, FreightPageType pageType, string reportType)
+        {
+            switch (reportType)
+            {
+                case "HBLPrint":
+                    return await HBLPrintOceanExport(id,pageType,true);
+                case "CommercialInvoice":
+                    return await CommercialInvoice(id.ToString());
+                case "PackingList":
+                  return await HBLPackingListOceanExport(id,pageType,true);
+                case "CertificateOfOrigin":
+                    return await CertificateOfOrigin(id.ToString());
+                default:
+                    return await BankDraft(id.ToString());
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> HBLDocumentPackageOceanExport(string reportType, OceanExportDetails model, CommercialInvoiceIndexViewModel InfoModel
+            , CertificateOfOriginIndexViewModel certiModel, BankDraftIndexViewModel BDModel)
+        {
+            switch (reportType)
+            {
+                case "HBLPrint":
+                    return await HBLPrintOceanExport(model);
+                case "CommercialInvoice":
+                    return await CommercialInvoice(InfoModel);
+                case "PackingList":
+                  return await HBLPackingListOceanExport(model);
+                case "CertificateOfOrigin":
+                    return await CertificateOfOrigin(certiModel);
+                default:
+                    return await BankDraft(BDModel);
+            }
+        }
+
         #region Private Functions
 
         private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
@@ -4537,7 +4604,6 @@ namespace Dolphin.Freight.Web.Controllers
 
             return data;
         }
-
         private async Task<AirImportDetails> GetAirImportDetailsByPageType(Guid Id, FreightPageType pageType)
         {
             var data = new AirImportDetails();
@@ -4558,7 +4624,6 @@ namespace Dolphin.Freight.Web.Controllers
 
             return data;
         }
-
         private async Task<OceanExportDetails> GetOceanExportDetailsByPageType(Guid Id, FreightPageType pageType, bool isIncludeInvoices = false)
         {
             var data = new OceanExportDetails();
@@ -4778,7 +4843,6 @@ namespace Dolphin.Freight.Web.Controllers
 
             return allHblLists;
         }
-
         private string GetViewUrlByPageType(FreightPageType pageType, string reportType)
         {
             string viewUrl = string.Empty;
@@ -4789,7 +4853,6 @@ namespace Dolphin.Freight.Web.Controllers
 
             return viewUrl;
         }
-
         private async Task<List<AllHawbListAirImport>> GetAllHawbListsAirImport(Guid mawbId)
         {
             var data = await _airImportHawbAppService.GetHawbCardsByMawbId(mawbId);
@@ -4813,7 +4876,6 @@ namespace Dolphin.Freight.Web.Controllers
 
             return allHawbLists;
         }
-
         private async Task<AirImportMawbDto> GetAirImportMawbDetailsByPageType(Guid id, FreightPageType pageType)
         {
             var data = new AirImportMawbDto();
@@ -4836,4 +4898,5 @@ namespace Dolphin.Freight.Web.Controllers
 
         #endregion
     }
+    
 }

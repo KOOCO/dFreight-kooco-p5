@@ -175,7 +175,7 @@ table td {
     });
 </script>
 
-@if (!Model.IsPDF)
+@if (!Model.IsPDF && !Model.IsPartialView)
 {
 <div class="nav">
    <ul>
@@ -195,6 +195,7 @@ table td {
 }
 
 <form id="myForm" name="myForm" method="POST">
+    <input type="hidden" name="reportType" value="PackingList" />
     <input type="hidden" asp-for="@Model.VesselName" />
     <input type="hidden" asp-for="@Model.Voyage" />
     <input type="hidden" asp-for="@Model.HblNotifyName" />

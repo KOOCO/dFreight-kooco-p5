@@ -43,6 +43,42 @@
 </style>
 <link href="/Pages/Reports/Reports.css" rel="stylesheet">
 
+<form id="myForm" name="myForm" method="post">
+    <input type="hidden" name="reportType" value="CertificateOfOrigin" />
+    <input type="hidden" asp-for="@Model.SHIPPER_EXPORTER" />
+    <input type="hidden" asp-for="@Model.CONSIGNEE" />
+    <input type="hidden" asp-for="@Model.NOTIFY" />
+    <input type="hidden" asp-for="@Model.DOCUMENT_NO" />
+    <input type="hidden" asp-for="@Model.BL_NO_CHECK" />
+    <input type="hidden" asp-for="@Model.BL_NO" />
+    <input type="hidden" asp-for="@Model.EXPORT_FILE_NO" />
+    <input type="hidden" asp-for="@Model.FORWARDING_AGENT" />
+    <input type="hidden" asp-for="@Model.POINT_AND_COUNTRY_OF_ORIGIN" />
+    <input type="hidden" asp-for="@Model.EXPORT_CARRIER" />
+    <input type="hidden" asp-for="@Model.PORT_OF_DISCHARGE" />
+    <input type="hidden" asp-for="@Model.PORT_OF_LOADING" />
+    <input type="hidden" asp-for="@Model.PLACE_OF_DELIVERY" />
+    <input type="hidden" asp-for="@Model.SHIPPING_MARKS" />
+    <input type="hidden" asp-for="@Model.Show_Container_Information" />
+    <input type="hidden" asp-for="@Model.CONTAINER_NO" />
+    <input type="hidden" asp-for="@Model.TYPE" />
+    <input type="hidden" asp-for="@Model.SEAL_NO" />
+    <input type="hidden" asp-for="@Model.PKG" />
+    <input type="hidden" asp-for="@Model.KG_LB" />
+    <input type="hidden" asp-for="@Model.CBM_CFT" />
+    <input type="hidden" asp-for="@Model.QTY" />
+    <input type="hidden" asp-for="@Model.DESCRIPTION_OF_GOODS" />
+    <input type="hidden" asp-for="@Model.WEIGHT_G" />
+    <input type="hidden" asp-for="@Model.WEIGHT_C" />
+    <input type="hidden" asp-for="@Model.MEASUREMENT" />
+    <input type="hidden" asp-for="@Model.bl_date" />
+    <input type="hidden" asp-for="@Model.sworn_date" />
+    <input type="hidden" asp-for="@Model.name_of_chamber" />
+    <input type="hidden" asp-for="@Model.state_of_chamber" />
+    <input type="hidden" asp-for="@Model.name_of_country" />
+
+
+
    <div style="background-color:black;display: flex;justify-content:center;">
       <div style="width:900px;background-color:white;" id="form" name = "form" class="edit">
 
@@ -462,3 +498,4 @@
          </div>
       </div>
    </div>
+</form>

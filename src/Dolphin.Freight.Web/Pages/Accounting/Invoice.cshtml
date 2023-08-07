@@ -47,17 +47,17 @@
             dolphin.freight.settings.currencySetting.currencySetting.getList({}).done(function(result){
                 CurrencyItems = result.items.map(m => m.startingCurrency);
             });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'IncotermsId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "IncotermsId", $("#mIncotermsId").val())
-                }
-            });
+            //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'IncotermsId' }).done(function (result) {
+            //    if (result != null && result.length > 0) {
+            //        initSysCodeTag(result, "IncotermsId", $("#mIncotermsId").val())
+            //    }
+            //});
 
-            dolphin.freight.common.ajaxDropdown.getAllTradePartners({}).done(function (result) {
-                var selectItems = result;
-                initTradePartnerSelect(selectItems, "InvoiceCompanyId", $("#mInvoiceCompanyId").val());
-                initTradePartnerSelect(selectItems, "ShipToId", $("#mShipToId").val());
-            });
+            //dolphin.freight.common.ajaxDropdown.getAllTradePartners({}).done(function (result) {
+            //    var selectItems = result;
+            //    initTradePartnerSelect(selectItems, "InvoiceCompanyId", $("#mInvoiceCompanyId").val());
+            //    initTradePartnerSelect(selectItems, "ShipToId", $("#mShipToId").val());
+            //});
 
             dolphin.freight.accountingSettings.billingCodes.billingCode.queryListForTag({
                 IsUsed: true, BillType: @Model.InvoiceType, MethodType: @Model.MethodType
@@ -67,7 +67,6 @@
                 });
 
             $("#addBtn").click(function () {
-                debugger;
                 addItems();
             });
             $("#add5Btn").click(function () {
@@ -77,7 +76,6 @@
             });
             var formControl = 0;
             $("#saveBtn").click(function () {
-                debugger;
                 formControl = 0;
                 $("#createForm").submit();
             });
@@ -125,7 +123,6 @@
                 })
             })
             $('#createForm').on('abp-ajax-success', function (result) {
-                debugger;
                 event.preventDefault();
 
                 switch (formControl) {
@@ -500,7 +497,6 @@
                dolphin.freight.importExport.oceanExports.oceanExportHbl.get(hid).done(function (result) {
           var data=result;
           $("#Memorandum").val(data.description);
-            debugger;
               
           
            });

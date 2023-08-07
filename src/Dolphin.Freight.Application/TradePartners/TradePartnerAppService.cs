@@ -251,25 +251,25 @@ namespace Dolphin.Freight.TradePartners
             );
         }
 
-        public override async Task<PagedResultDto<TradePartnerDto>> GetListAsync(QueryDto input) 
+        public override async Task<PagedResultDto<TradePartnerDto>> GetListAsync(QueryDto input)
         {
             var queryable = await Repository.GetQueryableAsync();
-
-            queryable = queryable.WhereIf(!string.IsNullOrWhiteSpace(input.Search), x => x.TPCode
-                                .Contains(input.Search) || x.TPName
-                                .Contains(input.Search) || x.TPAliasName
-                                .Contains(input.Search) || x.TPNameLocal
-                                .Contains(input.Search) || x.ScacCode
-                                .Contains(input.Search) || x.IataCode
-                                .Contains(input.Search) || x.TPPrintAddress
-                                .Contains(input.Search));
 
             // join tradepartner and country
             var query = from tradePartner in queryable
                         join country in await _countryRepository.GetQueryableAsync() on tradePartner.CountryCode equals country.Id.ToString()
                         select new { tradePartner, country };
 
-           
+            query = query.WhereIf(!string.IsNullOrWhiteSpace(input.Search), x => x.country.CountryName
+                                        .Contains(input.Search) || x.tradePartner.TPCode
+                                .Contains(input.Search) || x.tradePartner.TPName
+                                .Contains(input.Search) || x.tradePartner.TPAliasName
+                                .Contains(input.Search) || x.tradePartner.TPNameLocal
+                                .Contains(input.Search) || x.tradePartner.ScacCode
+                                .Contains(input.Search) || x.tradePartner.IataCode
+                                .Contains(input.Search) || x.tradePartner.TPPrintAddress
+                                .Contains(input.Search)); 
+              
 
             // paging
             query = query
