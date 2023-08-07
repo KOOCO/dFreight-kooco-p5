@@ -142,6 +142,10 @@
                 $('#exampleModal2').modal('hide');
                 $('#exampleModal2').click();
             })
+
+            $('#f1_0').on('keyup', function (){
+
+            });
         });
 
         function addPackageUnitNameddl(){
@@ -479,7 +483,7 @@
                         <abp-card-header id="hblCardHeader" class="@Model.OceanImportHbl.CardColorValue">
                             <abp-row>
                                 <abp-column size-md="_9">
-                                    <input hidden name="@Model.OceanImportHbl.Id" asp-for="@Model.OceanImportHbl.Id" />
+                                    <abp-input type="hidden" asp-for="@Model.OceanImportHbl.Id" />
                                     <abp-card-title>
                                         HB/L @Model.OceanImportHbl.HblNo
                                     </abp-card-title>
@@ -624,17 +628,17 @@
                             <abp-row>
                                 <abp-column size-md="_6">
                                     <label for="t1">@L["Display:Mark"]</label>
-                                    <textarea id="t1" name="OceanImportMbl.Mark" class="form-control">@Model.OceanImportMbl.Mark</textarea>
+                                    <textarea asp-for="@Model.OceanImportHbl.Mark" class="form-control">@Model.OceanImportHbl.Mark</textarea>
                                 </abp-column>
                                 <abp-column size-md="_6">
                                     <label for="t2">@L["Display:Description"]</label>
-                                    <textarea id="t2" name="OceanImportMbl.Description" class="form-control">@Model.OceanImportMbl.Description</textarea>
+                                    <textarea asp-for="@Model.OceanImportHbl.Description" class="form-control">@Model.OceanImportHbl.Description</textarea>
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-collum>
                                     <label for="t3">@L["Display:Ot"]</label>
-                                    <textarea id="t3" name="OceanImportMbl.DomesticInstructions" class="form-control">@Model.OceanImportMbl.DomesticInstructions</textarea>
+                                    <textarea asp-for="@Model.OceanImportHbl.DomesticInstructions" class="form-control">@Model.OceanImportHbl.DomesticInstructions</textarea>
                                 </abp-collum>
                             </abp-row>
                         </abp-card-body>

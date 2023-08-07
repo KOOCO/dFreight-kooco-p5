@@ -97,9 +97,13 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             OceanImportMb2.Mark = OceanImportMbl.Mark;
             OceanImportMb2.Description = OceanImportMbl.Description;
             OceanImportMb2.DomesticInstructions = OceanImportMbl.DomesticInstructions;
-            await _oceanImportMblAppService.UpdateAsync(Id, OceanImportMb2) ;
-            //await _oceanImportMblAppService.UpdateAsync(Id, OceanImportMbl);
-            //await _oceanImportHblAppService.UpdateAsync(Hid, OceanImportHbl);
+            await _oceanImportMblAppService.UpdateAsync(Id, OceanImportMb2);
+            QueryHblDto queryHblDto = new QueryHblDto() { Id = OceanImportHbl.Id };
+            var oceanImportHbl = await _oceanImportHblAppService.GetHblById(queryHblDto);
+            oceanImportHbl.Mark = OceanImportHbl.Mark;
+            oceanImportHbl.Description = OceanImportHbl.Description;
+            oceanImportHbl.DomesticInstructions = OceanImportHbl.DomesticInstructions;
+            await _oceanImportHblAppService.UpdateAsync(oceanImportHbl.Id, oceanImportHbl);
             QueryContainerDto query = new QueryContainerDto() { QueryId=Id };
             var rs = await _containerAppService.DeleteByMblIdAsync(query); 
             foreach (var dto in CreateUpdateContainerDtos) 
