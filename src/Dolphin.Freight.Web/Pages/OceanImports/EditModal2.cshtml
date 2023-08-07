@@ -37,6 +37,8 @@
 
                             }
                             addPackageUnitNameddl();
+                            countTotal();
+                            countTotalVolume();
                         }
                     });
                 }
@@ -105,6 +107,11 @@
                 });
             });
 
+            $('#cancel-pp').click(function () {
+                $('#exampleModal').modal('hide');
+                $('#exampleModal').click();
+            });
+
             $('#save-ctf').click(function () {
                 $(this).prop('disabled', true);
 
@@ -149,8 +156,8 @@
             trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
             trhtml = trhtml + "</tr>"
             trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
             trhtml = trhtml + "</tr>"
@@ -193,22 +200,57 @@
                 for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
                     $('#f5_' + i).val(parseFloat($('#f5_' + i).val() * 2.20462).toFixed(2));
                 }
+                countTotal();
             } else if (value === 'KG'){
                 for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
                     $('#f5_' + i).val(parseFloat($('#f5_' + i).val() / 2.20462).toFixed(2));
                 }
+                countTotal();
             } else if (value === 'CFT'){
                 for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
                     $('#f6_' + i).val(parseFloat($('#f6_' + i).val() * 35.315).toFixed(2));
                 }
+                countTotalVolume();
             } else if (value === 'CBM'){
                 for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
                     $('#f6_' + i).val(parseFloat($('#f6_' + i).val() / 35.315).toFixed(2));
                 }
+                countTotalVolume();
             }
+        }
+
+        function countTotal(){
+            var totalWgt = 0;
+
+            for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                var cells = parseFloat($('#f5_'+i).val());
+                if (!isNaN(cells)) {
+                    totalWgt += cells;
+                }
+            }
+
+            $('#totalWeight').text(parseFloat(totalWgt).toFixed(2));
+        }
+
+        function countTotalVolume() {
+            var totalVol = 0;
+
+            for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                var cells = parseFloat($('#f6_' + i).val());
+                if (!isNaN(cells)) {
+                    totalVol += cells;
+                }
+            }
+
+            $('#totalVolume').text(parseFloat(totalVol).toFixed(2));
         }
     </script>
 }
+<style>
+    #packageTypeSelect .select2-container{
+        display: inline !important;
+    }
+</style>
 <div class="page-header">
     <div class="breadcrumb-wrapper">
         <abp-breadcrumb>
@@ -338,24 +380,46 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                                    <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;" id="trttable">
                                         <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
                                             <th width="5%"></th>
                                             <th width="5%">PP</th>
                                             <th width="5%">CTF</th>
-                                            <th width="20%">@L["Display:PackageNo"]</th>
+                                            <th width="20%">@L["Display:ContainerNo"]</th>
                                             <th width="15%">@L["Display:PackageSize"]</th>
-                                            <th width="15%">@L["Display:SmallSeal"]</th>
-                                            <th width="15%" id="packageTypeSelect">@L["Display:PackageType"]</th>
-                                            <th width="15%">@L["Display:Weight"]<select id="selectWeight" onchange="convertUnit($(this).val())" name="selectWeight"><option value="KG" id="wkg">KG</option><option value="LB" id="wlb">LB</option></select></th>
-                                            <th width="15%">@L["Display:Volume"]<select id="selectMeasurement" onchange="convertUnit($(this).val())" name="selectMeasurement"><option value="CBM" id="mcbm">CBM</option><option value="CFT" id="mcft">CFT</option></select></th>
+                                            <th width="15%">@L["Display:Seal No"]</th>
+                                            <th width="15%">@L["Display:PackageType"]</th>
+                                            <th width="15%">@L["Display:Weight"]</th>
+                                            <th width="15%">@L["Measurement"]></th>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td id="packageTypeSelect"></td>
+                                            <td><select id="selectWeight" onchange="convertUnit($(this).val())" name="selectWeight"><option value="KG" id="wkg">KG</option><option value="LB" id="wlb">LB</option></select></td>
+                                            <td><select id="selectMeasurement" onchange="convertUnit($(this).val())" name="selectMeasurement"><option value="CBM" id="mcbm">CBM</option><option value="CFT" id="mcft">CFT</option></select</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                         </tr>
                                         <tbody id="trtbody">
                                         </tbody>
                                         <tfoot>
                                             <tr>
                                                 <td colspan="6" align="right"><strong>Total:</strong></td>
-                                                <td id="totalPackageType"></td>
+                                                <td id="totalPackageType">0</td>
                                                 <td id="totalWeight"></td>
                                                 <td id="totalVolume"></td>
                                             </tr>
@@ -378,12 +442,6 @@
                                     <label for="t2">@L["Display:Description"]</label>
                                     <textarea id="t2" name="OceanImportMbl.Description" class="form-control">@Model.OceanImportMbl.Description</textarea>
                                 </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-collum>
-                                    <label for="t3">@L["Display:Ot"]</label>
-                                    <textarea id="t3" name="OceanImportMbl.DomesticInstructions" class="form-control">@Model.OceanImportMbl.DomesticInstructions</textarea>
-                                </abp-collum>
                             </abp-row>
                         </abp-card-body>
                     </abp-card>
@@ -668,7 +726,7 @@
 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button" id="cancel-pp">取消</button>
                 <button class="btn btn-primary" data-busy-text="保存中..." type="button" id="save-pp"><i class="fa fa-check"></i> <span>保存</span></button>
             </div>
         </div>
@@ -686,7 +744,7 @@
                 <input name="CreateUpdateTradePartnerMemoDto.tradePartnerId" type="hidden" value="32863847-4984-cc8a-3f35-3a0ae2817f56">
 
                 <label class="form-label">@L["Display:Vendor"]</label>
-                <select class="form-select"></select>
+                <select class="form-select"></select>sky
                 <label class="form-label">@L["Display:BillingCode"]</label>
                 <select class="form-select"></select>
                 <label class="form-label">@L["Display:Description"]</label>
