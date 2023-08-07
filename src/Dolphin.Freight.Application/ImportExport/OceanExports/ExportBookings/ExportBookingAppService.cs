@@ -9,6 +9,7 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using System.Linq.Dynamic.Core;
 using Volo.Abp.Domain.Repositories;
+using static Volo.Abp.Identity.IdentityPermissions;
 
 namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
 {
@@ -81,17 +82,23 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
                     sysdictionary.Add(sysCode.Id, sysCode.ShowName);
                 }
             }
-            var ExportBookings = (await _repository.GetQueryableAsync())
-                                    .WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.HblNo
+            var ExportBookings = await _repository.GetQueryableAsync();
+            var c = from jobProfile in ExportBookings
+                    select jobProfile.Carrier;
+            var s = from jobProfile in ExportBookings
+                    select jobProfile.Shipper;
+            var o = from jobProfile in ExportBookings
+                    select jobProfile.Office;
+
+            ExportBookings = ExportBookings.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.HblNo
                                     .Contains(query.Search) || x.SoNo
-                                    .Contains(query.Search) || x.HblNo
-                                    .Contains(query.Search) || x.Shipper.TPName
-                                    .Contains(query.Search) || x.Office.SubstationName
-                                    .Contains(query.Search) || x.Office.AbbreviationName
                                     .Contains(query.Search) || x.CarrierBkgNo
-                                    .Contains(query.Search) || x.HblAgent.TPName
                                     .Contains(query.Search) || x.VesselName
                                     .Contains(query.Search) || x.Voyage
+                                    .Contains(query.Search) || x.Shipper.TPName
+                                    .Contains(query.Search) || x.Office.SubstationName
+                                    .Contains(query.Search) || x.ShippingAgent.TPName
+                                    .Contains(query.Search) || x.Carrier.TPName
                                     .Contains(query.Search));
             List<ExportBooking> rs = ExportBookings.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<ExportBookingDto> list = new List<ExportBookingDto>();

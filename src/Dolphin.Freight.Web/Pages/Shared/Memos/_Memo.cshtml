@@ -94,7 +94,7 @@
 </style>
 <script>
     {
-
+        
         let oldOnload = window.onload;
         let initTable = function () {
             const addButtonId = '@Model.AddButtonId';
@@ -102,7 +102,8 @@
             const memoContentId = '@Model.MemoContentId';
             const fType = '@Model.FType';
             const sourceId = '@Model.SourceId';
-            const l = abp.localization.getResource('Freight');
+
+            let l = abp.localization.getResource('Freight');
 
             let memoDataTable;
 
@@ -234,11 +235,12 @@
         };
 
         window.onload = function () {
-            debugger
-            if (typeof oldOnload == 'function') {
+            if (!typeof oldOnload == 'function') {
                 oldOnload();
             }
-            initTable();
+            initTable();    
         }
+        initTable();
+
     };
 </script>

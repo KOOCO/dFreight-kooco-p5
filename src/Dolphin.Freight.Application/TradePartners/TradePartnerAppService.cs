@@ -255,14 +255,14 @@ namespace Dolphin.Freight.TradePartners
         {
             var queryable = await Repository.GetQueryableAsync();
 
-            queryable = queryable.WhereIf(!string.IsNullOrWhiteSpace(input.Filter), x => x.TPCode
-                                .Contains(input.Filter) || x.TPName
-                                .Contains(input.Filter) || x.TPAliasName
-                                .Contains(input.Filter) || x.TPNameLocal
-                                .Contains(input.Filter) || x.ScacCode
-                                .Contains(input.Filter) || x.IataCode
-                                .Contains(input.Filter) || x.TPPrintAddress
-                                .Contains(input.Filter));
+            queryable = queryable.WhereIf(!string.IsNullOrWhiteSpace(input.Search), x => x.TPCode
+                                .Contains(input.Search) || x.TPName
+                                .Contains(input.Search) || x.TPAliasName
+                                .Contains(input.Search) || x.TPNameLocal
+                                .Contains(input.Search) || x.ScacCode
+                                .Contains(input.Search) || x.IataCode
+                                .Contains(input.Search) || x.TPPrintAddress
+                                .Contains(input.Search));
 
             // join tradepartner and country
             var query = from tradePartner in queryable

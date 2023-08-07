@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dolphin.Freight.Common;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -14,7 +15,7 @@ namespace Dolphin.Freight.Settings.PortsManagement
             ICrudAppService< //Defines CRUD methods
             PortsManagementDTO, //顯示IT號碼管理用
             Guid, //Primary key of the book entity
-            PagedAndSortedResultRequestDto, //Used for paging/sorting
+            QueryDto, //Used for paging/sorting
             CreateUpdatePortsManagementDto> //新增修改IT號碼管理用
     {
         Task<List<PortsManagementDTO>> QueryListAsync();

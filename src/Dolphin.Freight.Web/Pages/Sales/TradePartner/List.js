@@ -121,32 +121,36 @@
                     width: '300px',
                     data: "tpType",
                     render: function (data) {
-                        return l([
-                            "Enum:TPType.AirCarrier",
-                            "Enum:TPType.Bank",
-                            "Enum:TPType.BookingWindow",
-                            "Enum:TPType.CFS",
-                            "Enum:TPType.Consignee",
-                            "Enum:TPType.Customer",
-                            "Enum:TPType.CustomerBroker",
-                            "Enum:TPType.Cy",
-                            "Enum:TPType.Employee",
-                            "Enum:TPType.Forwarder",
-                            "Enum:TPType.Government",
-                            "Enum:TPType.Manufacturer",
-                            "Enum:TPType.OceanCarrier",
-                            "Enum:TPType.OfficeExpense",
-                            "Enum:TPType.Others",
-                            "Enum:TPType.OverseaAgent",
-                            "Enum:TPType.RailCompany",
-                            "Enum:TPType.RampLocation",
-                            "Enum:TPType.ShipperKnown",
-                            "Enum:TPType.ShipperUnknown",
-                            "Enum:TPType.Terminal",
-                            "Enum:TPType.Trucker",
-                            "Enum:TPType.Vendor",
-                            "Enum:TPType.Warehouse",
-                        ][data]);
+                        if (data) {
+                            return l([
+                                "Enum:TPType.AirCarrier",
+                                "Enum:TPType.Bank",
+                                "Enum:TPType.BookingWindow",
+                                "Enum:TPType.CFS",
+                                "Enum:TPType.Consignee",
+                                "Enum:TPType.Customer",
+                                "Enum:TPType.CustomerBroker",
+                                "Enum:TPType.Cy",
+                                "Enum:TPType.Employee",
+                                "Enum:TPType.Forwarder",
+                                "Enum:TPType.Government",
+                                "Enum:TPType.Manufacturer",
+                                "Enum:TPType.OceanCarrier",
+                                "Enum:TPType.OfficeExpense",
+                                "Enum:TPType.Others",
+                                "Enum:TPType.OverseaAgent",
+                                "Enum:TPType.RailCompany",
+                                "Enum:TPType.RampLocation",
+                                "Enum:TPType.ShipperKnown",
+                                "Enum:TPType.ShipperUnknown",
+                                "Enum:TPType.Terminal",
+                                "Enum:TPType.Trucker",
+                                "Enum:TPType.Vendor",
+                                "Enum:TPType.Warehouse",
+                            ][data]);
+                        }
+                        else
+                            return "";
                     }
                 },
                 {

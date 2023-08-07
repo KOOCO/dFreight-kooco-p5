@@ -10,7 +10,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         ICrudAppService<
             AirImportMawbDto,
             Guid,
-            PagedAndSortedResultRequestDto,
+            QueryDto,
             CreateUpdateAirImportMawbDto
         >
     {
