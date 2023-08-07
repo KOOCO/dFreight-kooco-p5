@@ -39,6 +39,7 @@
                             addPackageUnitNameddl();
                             countTotal();
                             countTotalVolume();
+                            countPackageType();
                         }
                     });
                 }
@@ -170,7 +171,7 @@
             trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
             trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
             trhtml = trhtml + "</tr>"
@@ -258,6 +259,19 @@
             }
 
             $('#totalVolume').text(parseFloat(totalVol).toFixed(2));
+        }
+
+        function countPackageType() {
+            var totalPKG = 0;
+
+            for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                var cells = parseFloat($('#f4_' + i).val());
+                if (!isNaN(cells)) {
+                    totalPKG += cells;
+                }
+            }
+
+            $('#totalPackageType').text(parseFloat(totalPKG).toFixed(2));
         }
     </script>
 }
@@ -434,7 +448,7 @@
                                         <tfoot>
                                             <tr>
                                                 <td colspan="6" align="right"><strong>Total:</strong></td>
-                                                <td id="totalPackageType">0</td>
+                                                <td id="totalPackageType"></td>
                                                 <td id="totalWeight"></td>
                                                 <td id="totalVolume"></td>
                                             </tr>
