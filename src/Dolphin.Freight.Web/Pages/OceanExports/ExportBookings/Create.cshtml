@@ -12,7 +12,7 @@
         $(document).ready(function () {
             var l = abp.localization.getResource('Freight');
             $("#ExportBooking_CanceledDate").datepicker({});
-            $("#PoNoTag").tagsInit();
+            setPoValue();
             dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'CancelReason' }).done(function (result) {
                 if (result != null && result.length > 0) {
                     initSysCodeI18nTag(result, "CancelReason", $("#mCancelReason").val())
@@ -319,7 +319,160 @@
                 }
             });
         });
+            var chkIndex = 0;
+        function onAddCommodity() {
+            debugger;
+            var newRowData = {
+                chkIndex: chkIndex
+            };
 
+            var newRow = $('#commodityTemplate').tmpl(newRowData);
+
+            $('#commodityBody').append(newRow);
+
+            chkIndex += 1;
+
+            resetCommodityIndex();
+
+            $('#btnCommodity').removeAttr('disabled');
+            $('#btnCommodityHTS').removeAttr('disabled');
+        }
+        function onRemoveCommodity() {
+            $('[name="chk_commodity"]:checked').each(function (i, elem) {
+                $(elem).closest('tr').remove();
+            });
+
+            resetCommodityIndex();
+
+            if (!$('[name="chk_commodity"]:checked').length){
+                $('#btnCommodity').attr('disabled', 'disabled');
+                $('#btnCommodityHTS').attr('disabled', 'disabled');
+            }
+        }
+        //function onSetCommodity() {
+        //   
+
+        //    if (extraProperties && extraProperties != 'null' && extraProperties != '{}') {
+        //        var commodities = JSON.parse(extraProperties).Commodities;
+
+        //        if (commodities && commodities.length) {
+        //            var commodityIndex = 0;
+        //            commodities.forEach(function (commodity) {
+        //                commodity.chkIndex = commodityIndex;
+
+        //                var newRow = $('#commodityTemplate').tmpl(commodity);
+        //                $('#commodityBody').append(newRow);
+
+        //                commodityIndex += 1;
+        //            });
+
+        //            $('#btnCommodity').removeAttr('disabled');
+        //            $('#btnCommodityHTS').removeAttr('disabled');
+        //        }
+        //    }
+        //}
+        function resetCommodityIndex() {
+            $('#commodityBody > tr').each(function (e, elem) {
+                $(elem).find('td').each(function (a, aelem) {
+                    var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
+
+                    $(aelem).find('input').attr('name', attrName);
+                    if ($(aelem).hasClass('d-none')) {
+                        var aelemVal = $(aelem).find('input').val();
+                        $(aelem).find('input').val(aelemVal.replace(/[0-9]/, e));
+                    }
+                })
+            })
+        }
+               function setPoValue(){
+            var tagOptions = {};
+
+            tagOptions.onDel = function () { setTimeout(() => {
+                var tags = $('#PoNoTag').tagsStr();
+                $('#ExportBooking_PoNo').val(tags);
+                if(!tags){
+                    $('#btnPO').attr('disabled', 'disabled');
+                }
+            }, 100) }
+
+            $("#PoNoTag").tagsInit(tagOptions);
+
+            var poNos = '@Model.ExportBooking?.PoNo';
+
+            if (poNos) {
+                poNos.split(',').forEach((poNo) => $("#PoNoTag").tagsAdd(poNo, poNo));
+                $('#btnPO').removeAttr('disabled');
+            }
+
+            $('#PoNoTag_tag_input').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    $('#ExportBooking_PoNo').val($('#PoNoTag').tagsStr());
+                    $('#btnPO').removeAttr('disabled');
+                }
+            });
+        }
+        function addPONumberForDescription()
+        {
+            var val = $('#ExportBooking_Description').val() || '';
+            var tagValue = $('#PoNoTag').tagsStr();
+
+            $('#ExportBooking_Description').val((val.concat('PO NO.\n' + tagValue + '\n')));
+
+            $('#ExportBooking_Description').attr('style', 'height: ' + document.getElementById('ExportBooking_Description').scrollHeight + 'px !important');
+        }
+        function addCommodityForDescription()
+        {
+            var val = $('#ExportBooking_Description').val() || '';
+            var tagValue = $('#PoNoTag').tagsStr();
+
+            var trLength = $('#commodityBody tr').length;
+
+            if(trLength){
+                var frm = $('#createForm').serializeFormToObject();
+
+                for(var i=0; i<trLength; i++)
+                {
+                    val = $('#ExportBooking_Description').val();
+                    $('#ExportBooking_Description').val((val.concat(frm['commodities['+i+']'].description + '\n')));  
+                }
+            }
+            $('#ExportBooking_Description').attr('style', 'height: ' + document.getElementById('ExportBooking_Description').scrollHeight + 'px !important');
+        }
+
+        function addCommodityHTSForDescription() {
+            var val = $('#ExportBooking_Description').val() || '';
+            var tagValue = $('#PoNoTag').tagsStr();
+
+            var trLength = $('#commodityBody tr').length;
+
+            if (trLength) {
+                var frm = $('#createForm').serializeFormToObject();
+
+                for (var i = 0; i < trLength; i++) {
+                    val = $('#ExportBooking_Description').val();
+                    $('#ExportBooking_Description').val((val.concat(frm['commodities[' + i + ']'].description + ' ' + frm['commodities[' + i + ']'].hTSCode + '\n')));
+                }
+            }
+            $('#ExportBooking_Description').attr('style', 'height: ' + document.getElementById('ExportBooking_Description').scrollHeight + 'px !important');
+        }
+    </script>
+        <script id="commodityTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_commodity" id="Id" />
+          </td>
+          <td><input type="text" name="Commodities[${chkIndex}].Description" value="${Description}" /></td>
+          <td><input type="text" name="Commodities[${chkIndex}].PackagingType" value="${PackagingType}" /></td>
+          <td><input type="text" name="Commodities[${chkIndex}].HTSCode" value="${HTSCode}" /></td>
+          <td><input type="text" name="Commodities[${chkIndex}].NoOfPcs" value="${NoOfPcs}" /></td>
+          <td><input type="text" name="Commodities[${chkIndex}].NetWeight" value="${NetWeight}"  /></td>
+          <td><input type="text" name="Commodities[${chkIndex}].GrossWeight" value="${GrossWeight}" /></td>
+          <td><input type="text" name="Commodities[${chkIndex}].UnitPrice" value="${UnitPrice}" /></td>
+          <td><input type="text" name="Commodities[${chkIndex}].Amount" value="${Amount}"   /></td>
+          <td><input type="text" name="Commodities[${chkIndex}].Details" value="${Details}"  /></td>
+          <td><input type="text" name="Commodities[${chkIndex}].Container" value="${Container}" /></td>
+        </tr>
     </script>
 }
 <div class="page-header">
@@ -812,16 +965,102 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <div id="PoNoTag" tagname="PoNoTag"></div>
+                                                                 <div id="PoNoTag" tagname="PoNoTag"></div>
+                                    <abp-input type="hidden" suppress-label="true" asp-for="@Model.ExportBooking.PoNo" />
                                                 </abp-column>
                                             </abp-row>
+                                     <abp-row>
+
+                                <abp-column size-md="_12">
+                                    <div>
+                                    </div>
+                                    <abp-table width="100%" border="1">
+                                        <tr ng-form="hbl.__form2" class="ng-valid ng-dirty ng-valid-parse" style="">
+                                            <th width="5%" class="text-center">#</th>
+                                            <th width="10%" style="white-space: nowrap">Container No.</th>
+                                            <th width="15%">
+                                                @L["PKG"]<br>
+                                                <abp-select asp-for="@Model.CreateUpdateContainerBooking.PackageUnitId" suppress-label="true" asp-items="_dropdown.PackageUnitLookupList"></abp-select>
+                                            </th>
+                                            <th width="15%">
+                                                @L["Weight"]<br>
+                                                <abp-select asp-for="@Model.CreateUpdateContainerBooking.PackageWeightUnit" suppress-label="true" asp-items="@Model.RateUnitTypeLookupList"></abp-select>
+                                            </th>
+                                            <th width="15%">
+                                                @L["Measurement"]<br>
+                                                <abp-select asp-for="@Model.CreateUpdateContainerBooking.PackageMeasureUnit" suppress-label="true" asp-items="@Model.UnitTypeLookupList"></abp-select>
+                                            </th>
+                                            <th style="white-space: nowrap">P.O. No.</th>
+                                        </tr>
+                                        <tbody id="htrtbody">
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td><input type="radio" name="SurplusType" /></td>
+                                                <td>集裝箱總數</td>
+                                                <td><input type="text" class="form-control" value="" readonly /></td>
+                                                <td><input type="text" class="form-control" value="" readonly /></td>
+                                                <td><input type="text" class="form-control" value="" readonly /></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="align-items:center"><input type="radio" name="SurplusType" checked /></td>
+                                                <td>手動輸入總數</td>
+                                                <td><abp-input type="text" class="form-control" suppress-label="true" asp-for="CreateUpdateContainerBooking.PackageNum" /></td>
+                                                <td><abp-input type="text" class="form-control" suppress-label="true" asp-for="CreateUpdateContainerBooking.PackageWeight" /></td>
+                                                <td><abp-input type="text" class="form-control" suppress-label="true" asp-for="CreateUpdateContainerBooking.PackageMeasure" /></td>
+                                                <td></td>
+
+                                            </tr>
+                                        </tfoot>
+                                    </abp-table>
+
+                                </abp-column>
+                            </abp-row>
+                            <abp-row>
+                                <abp-column size-md="_12" class="table-responsive">
+                                    <div>
+                                        商品 / 艙單商品
+                                        <abp-button class="btn btn-success me-md-2" type="button" id="addCommodityBtn" onclick="onAddCommodity()">+</abp-button>
+                                        <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteCommodityBtn" onclick="onRemoveCommodity()">delete</abp-button>
+                                    </div>
+                                    <abp-table width="100%" border="1">
+                                        <tr>
+                                            <th width="5%"></th>
+                                            <th width="15%">商品描述</th>
+                                            <th width="15%">包裝種類</th>
+                                            <th width="10%">HTS代碼</th>
+                                            <th width="5%">件數</th>
+                                            <th width="5%">淨重</th>
+                                            <th width="5%">毛重</th>
+                                            <th width="10%">單價</th>
+                                            <th width="5%">金額</th>
+                                            <th width="10%">商品詳情</th>
+                                            <th width="15%">集裝箱</th>
+                                        </tr>
+                                        <tbody id="commodityBody">
+                                        </tbody>
+
+                                    </abp-table>
+                                </abp-column>
+                            </abp-row>
                                             <abp-row>
                                                 <abp-column size-md="_6">
                                                     <label for="ExportBooking_Mark">@L["Display:Mark"]</label>
-                                                    <textarea id="ExportBooking_Mark" name="ExportBooking.Mark" class="form-control">@Model.ExportBooking.Mark</textarea>
+                                                    <textarea id="ExportBooking_Mark" onkeyup="onHblDescriptionChange()" name="ExportBooking.Mark" class="form-control">@Model.ExportBooking.Mark</textarea>
                                                 </abp-column>
                                                 <abp-column size-md="_6">
-                                                    <label for="ExportBooking_Description">@L["Display:DeionOfGoods"]</label>
+                                                              <div>
+                                        <div class="pull-left"><h7 class="form-section">Description</h7></div>
+                                        <div class="pull-right">
+                                            <div class="_font-12 inline-block">Copy: </div>
+                                            <div class="btn-group">
+                                                <abp-button id="btnPO" onclick="addPONumberForDescription()" size="Small" abp-border="Default"  disabled="true">@L["P.O"]</abp-button>
+                                                <abp-button id="btnCommodity" onclick="addCommodityForDescription()" size="Small" abp-border="Default" disabled="true">@L["Commodity"]</abp-button>
+                                                <abp-button id="btnCommodityHTS" onclick="addCommodityHTSForDescription()" size="Small" abp-border="Default" disabled="true">@L["CommodityAndHTS"]</abp-button>
+                                            </div>
+                                        </div>
+                                    </div>
                                                     <textarea id="ExportBooking_Description" name="ExportBooking.Description" class="form-control">@Model.ExportBooking.Description</textarea>
                                                 </abp-column>
                                             </abp-row>
@@ -922,7 +1161,7 @@
 
 
                 <input type="hidden" name="ExportBooking.ForwardingAgentId" id="mForwardingAgentId" value="@Model.ExportBooking.ForwardingAgentId" />
-
+                 
 
 
 

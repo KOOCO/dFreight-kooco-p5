@@ -152,6 +152,7 @@ namespace Dolphin.Freight.ImportExport.Containers
         public bool IsDeleted { get; set; }
         public int Status { get; set; }
         public Guid? HblId { get; set; }
+        public Guid? BookingId { get; set; }
         public Guid? PackageUnitId { get; set; }
         public string PackageWeightUnit { get; set; }
         public string PackageMeasureUnit { get; set; }

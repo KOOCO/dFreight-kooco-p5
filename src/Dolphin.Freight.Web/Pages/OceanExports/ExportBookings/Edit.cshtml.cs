@@ -20,6 +20,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using static Dolphin.Freight.Permissions.OceanExportPermissions;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
 {
@@ -58,7 +59,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         public List<SelectListItem> PortsManagementLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> ContainerLookupList { get; set; }
-
+        public List<SelectListItem> RateUnitTypeLookupList { get; set; }
+        public List<SelectListItem> UnitTypeLookupList { get; set; }
         public string CabinateSize { get; set; }
         public int Quantity { get; set; }
         public int Index { get; set; }
@@ -71,7 +73,13 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly IPortsManagementAppService _portsManagementAppService;
         private readonly ISubstationAppService _substationAppService;
-        private readonly IContainerSizeAppService _containerAppService;  
+        private readonly IContainerSizeAppService _containerSizeAppService;
+        private readonly IContainerAppService _containerAppService;
+       
+        [BindProperty]
+        public CreateUpdateContainerDto CreateUpdateContainerBooking { get; set; }
+        [BindProperty]
+        public List<ManifestCommodity> Commodities { get; set; }
         public EditModel(IExportBookingAppService exportBookingAppService,  
                         ISysCodeAppService sysCodeAppService, 
                         IInvoiceAppService invoiceAppService, 
@@ -79,7 +87,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
                         ITradePartnerAppService tradePartnerAppService,
                         IPortsManagementAppService portsManagementAppService,
                         ISubstationAppService substationAppService,
-                        IContainerSizeAppService containerAppService)
+                        IContainerSizeAppService containerSizeAppService,
+                        IContainerAppService containerAppService)
         {
             _exportBookingAppService = exportBookingAppService;
             _sysCodeAppService = sysCodeAppService;
@@ -88,14 +97,27 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
             _tradePartnerAppService = tradePartnerAppService;
             _portsManagementAppService = portsManagementAppService;
             _substationAppService = substationAppService;
+            _containerSizeAppService = containerSizeAppService;
             _containerAppService = containerAppService;
+
         }
         public async Task OnGetAsync()
         {
+            RateUnitTypeLookupList = new List<SelectListItem>
+            {
+                new SelectListItem() { Text = "KG", Value = "KG" },
+                new SelectListItem() { Text = "LG", Value = "LG" }
+            };
+            UnitTypeLookupList = new List<SelectListItem>
+            {
+                new SelectListItem() { Text = "CBM", Value = "CBM" },
+                new SelectListItem() { Text = "CFT", Value = "CFT" }
+            };
             if (CopyId == null)
             {
                 var exportBooking = await _exportBookingAppService.GetAsync(Id);
                 ExportBooking = ObjectMapper.Map<ExportBookingDto, CreateUpdateExportBookingDto>(exportBooking);
+                CreateUpdateContainerBooking = await _containerAppService.GetContainerByBookingId(ExportBooking.Id);
             }
             else 
             {
@@ -115,7 +137,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
                 query.NewParentId = booking.Id;
 
                 Id = booking.Id;
-                
+
 
                 ShowCopyMsg = true;
             }
@@ -134,7 +156,26 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            if (ExportBooking.ExtraProperties == null)
+            {
+                ExportBooking.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+            }
+
+            if (Commodities != null && Commodities.Any())
+            {
+                ExportBooking.ExtraProperties.Remove("Commodities");
+                ExportBooking.ExtraProperties.Add("Commodities", Commodities);
+            }
             await _exportBookingAppService.UpdateAsync(Id, ExportBooking);
+            if (CreateUpdateContainerBooking is not null)
+            {
+                QueryContainerDto query = new QueryContainerDto();
+                query.QueryId = ExportBooking.Id;
+                await _containerAppService.DeleteByBookingIdAsync(query);
+                CreateUpdateContainerBooking.BookingId = ExportBooking.Id;
+                await _containerAppService.CreateAsync(CreateUpdateContainerBooking);
+
+            }
             return NoContent();
         }
 
@@ -251,7 +292,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         #region FillContainerAsync()
         private async Task FillContainerAsync()
         {
-            var containerLookup = await _containerAppService.QueryListAsync(new QueryDto());
+            var containerLookup = await _containerSizeAppService.QueryListAsync(new QueryDto());
 
             ContainerLookupList = containerLookup.Items
                                                  .Select(x => new SelectListItem(x.ContainerCode, x.Id.ToString(), false))

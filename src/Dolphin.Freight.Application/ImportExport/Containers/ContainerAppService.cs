@@ -55,6 +55,27 @@ namespace Dolphin.Freight.ImportExport.Containers
             var list = ObjectMapper.Map<List<Container>, List<ContainerDto>>(Containers.ToList());
             return list;
         }
+        public async Task<List<ContainerDto>> QueryListBookingAsync(Guid bookingId)
+        {
+            var Containers = await _repository.GetListAsync();
+
+            if (bookingId != Guid.Empty)
+            {
+                Containers = Containers.Where(x => x.BookingId == bookingId).ToList();
+            }
+            var list = ObjectMapper.Map<List<Container>, List<ContainerDto>>(Containers.ToList());
+            return list;
+        }
+        public async Task<int> DeleteByBookingIdAsync(QueryContainerDto query)
+        {
+            var list = await this.QueryListBookingAsync(query.QueryId);
+            foreach (var dto in list)
+            {
+                var did = dto.Id;
+                await this.DeleteAsync(did);
+            }
+            return list.Count;
+        }
 
         public async Task<int> DeleteByMblIdAsync(QueryContainerDto query) 
         {
@@ -87,6 +108,14 @@ namespace Dolphin.Freight.ImportExport.Containers
         {
             var list = await Repository.GetListAsync();
             var container = list.Where(w => w.HblId == id).FirstOrDefault();
+            var containerDto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
+
+            return containerDto;
+        }
+        public async Task<CreateUpdateContainerDto> GetContainerByBookingId(Guid id)
+        {
+            var list = await Repository.GetListAsync();
+            var container = list.Where(w => w.BookingId == id).FirstOrDefault();
             var containerDto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
 
             return containerDto;
