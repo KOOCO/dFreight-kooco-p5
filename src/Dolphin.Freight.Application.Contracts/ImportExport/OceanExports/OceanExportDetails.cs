@@ -20,6 +20,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 {
     public class OceanExportDetails
     {
+        public Guid HblId { get; set; }
         public Guid MblId { get; set; }
         public string ShipmentNo { get; set; }
         public string FilingNo { get; set; }
@@ -544,6 +545,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string Net_weight_unit { get; set; }
         public string Gross_weight_unit { get; set; }
         public bool showContainerRider { get; set; } = true;
+        public List<string> DDLItems { get; set; }
+        public bool IsPartialView { get; set; } = false;
     }
 
     public class Hbl

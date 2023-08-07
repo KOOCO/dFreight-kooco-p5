@@ -25,6 +25,25 @@
             myWindow.focus();
         });
     }
+
+    function getDocPackagePopUp() {
+
+        $.ajax({
+            url: abp.appPath + 'Docs/DocumentPackageHBLPopupPartial?id=@Model.OceanExportHbl.Id',
+            type: 'GET',
+            dataType: "html",
+            success: function (res) {
+                $('#documentPackageModal').html(res);
+                $('#documentPackageModal').modal('show');
+            }
+        });
+    }
+
+    
+    
+    
+    
+    
 </script>
 
 <abp-card class="card board-item" id="hblCard">
@@ -63,8 +82,8 @@
                             <i class="fa fa-unlink"></i> @L["Btn:Remove"]
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class='dropdown-item' href='javascript:void(0)'>
-                            <i class="fa fa-files-o"></i> @L["Btn:File Package"]
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="getDocPackagePopUp()">
+                            <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                         </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(6)">
                             <i class="fa fa-file-text-o"></i> @L["Btn:Print Car Documents"]
@@ -420,3 +439,6 @@
     </abp-card-body>
 </abp-card>
 
+<div class="modal" id="documentPackageModal">
+
+</div>
