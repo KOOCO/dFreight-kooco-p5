@@ -31,6 +31,8 @@ namespace Dolphin.Freight.Web.Pages.Components
         public string GetFiledContentName() { 
             return FieldName.Replace("Id","")+ "Content";
         }
+
+        public string CssClass { get; set; }
         /// <summary>
         /// 是否必填
         /// </summary>
