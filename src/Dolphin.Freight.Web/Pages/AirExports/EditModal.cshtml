@@ -64,7 +64,7 @@
                 }
             });
 
-
+            onSetMoreInformation();
             // Calculate Weight Kg to Lb
             $("#GrossWeightKg").on('keyup', function () {
                 $("#GrossWeightLb").val(Math.round($("#GrossWeightKg").val() * 2.2046226218 * 100) / 100);
@@ -145,6 +145,41 @@
                 })
             })
         }
+
+             function onSetMoreInformation() {
+            var extraProperties = '@Html.Raw(Json.Serialize(Model.AirExportMawbDto.ExtraProperties))';
+
+            if (extraProperties && extraProperties != 'null' && extraProperties != '{}') {
+                var moreInformation=JSON.parse(extraProperties).MoreInformation;
+             
+
+                if (moreInformation && moreInformation.length) {
+                  
+                    $('#MoreInformationPrepaid_Valuation').val(moreInformation[0].Valuation);
+                    $('#MoreInformationPrepaid_Tax').val(moreInformation[0].Tax);
+                    $('#MoreInformationPrepaid_CurrencyConversionRate').val(moreInformation[0].CurrencyConversionRate);
+                    $('#MoreInformationPrepaid_CCChargesinDestCurrency').val(moreInformation[0].CCChargesinDestCurrency);
+                      $('#MoreInformationPrepaid_ChargesatDestination').val(moreInformation[0].ChargesatDestination);
+
+                        $('#MoreInformationCollect_Valuation').val(moreInformation[1].Valuation);
+                    $('#MoreInformationCollect_Tax').val(moreInformation[1].Tax);
+                    $('#MoreInformationCollect_CurrencyConversionRate').val(moreInformation[1].CurrencyConversionRate);
+                    $('#MoreInformationCollect_CCChargesinDestCurrency').val(moreInformation[1].CCChargesinDestCurrency);
+                      $('#MoreInformationCollect_ChargesatDestination').val(moreInformation[1].ChargesatDestination);
+                    moreInformation.forEach(function (information) {
+                    
+
+                        
+                    });
+
+                
+                }
+            }
+        }
+
+
+
+
 
         function onSetCommodity(){
 
@@ -566,6 +601,7 @@
             });
         }
     </script>
+
 }
 
 <div class="page-header">
@@ -833,9 +869,9 @@
                             <!--Route區塊-->
                             <abp-row>
                                 <div class="collapse" id="collapseRoute">
-                                    <div class="card card-body customForm">
+                                    <div class="card card-body table-responsive">
                                         <h3>Route</h3>
-                                        <abp-table class="nowrap" class="table table-bordered table-responsive">
+                                        <abp-table class="nowrap" class="table table-bordered">
                                             <thead>
                                                 <tr>
                                                     <th></th>
@@ -849,14 +885,8 @@
                                             <tbody>
                                                 <tr>
                                                     <th>Trans1</th>
-                                                    <td>
-                                                        <select asp-for="@Model.AirExportMawbDto.RouteTrans1Id" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans1Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans1Id) })
                                                     </td>
                                                     <td>
                                                         <input asp-for="@Model.AirExportMawbDto.RouteTrans1ArrivalDate" size="Small" />
@@ -873,14 +903,8 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Trans2</th>
-                                                    <td>
-                                                        <select asp-for="@Model.AirExportMawbDto.RouteTrans2Id" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans2Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans1Id) })
                                                     </td>
                                                     <td>
                                                         <input asp-for="@Model.AirExportMawbDto.RouteTrans2ArrivalDate" size="Small" />
@@ -897,14 +921,8 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Trans3</th>
-                                                    <td>
-                                                        <select asp-for="@Model.AirExportMawbDto.RouteTrans3Id" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans3Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans1Id) })
                                                     </td>
                                                     <td>
                                                         <input asp-for="@Model.AirExportMawbDto.RouteTrans3ArrivalDate" size="Small" />
@@ -1174,19 +1192,19 @@
                                                     <tbody>
                                                         <tr>
                                                             <td>@L["Prepaid"]</td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationPrepaid.Valuation" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationPrepaid.Tax" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationPrepaid.CurrencyConversionRate" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationPrepaid.CCChargesinDestCurrency" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationPrepaid.ChargesatDestination" type="text" /></td>
                                                         </tr>
                                                         <tr>
                                                             <td>@L["Collect"]</td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
+                                                        <td><input asp-for="@Model.MoreInformationCollect.Valuation" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationCollect.Tax" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationCollect.CurrencyConversionRate" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationCollect.CCChargesinDestCurrency" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationCollect.ChargesatDestination" type="text" /></td>
                                                         </tr>
                                                     </tbody>
                                                 </abp-table>

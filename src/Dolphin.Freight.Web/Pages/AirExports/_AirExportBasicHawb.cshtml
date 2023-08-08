@@ -1,4 +1,5 @@
 @using Dolphin.Freight.Web.CommonService;
+@using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Volo.Abp.Users
 @using Dolphin.Freight.AirExports;
 @using Dolphin.Freight.Localization;
@@ -569,6 +570,18 @@
                             </tbody>
                         </abp-table>
                         </div>
+                    </abp-card-body>
+                </abp-card>
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column>
+                <abp-card>
+                    <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                        @L["Title:Memo"]
+                    </abp-card-header>
+                    <abp-card-body>
+                        <partial name="Memos/_memo" model="new _MemoModel(Model.AirExportHawbDto.Id, Dolphin.Freight.Common.FreightPageType.AEHBL)" />
                     </abp-card-body>
                 </abp-card>
             </abp-column>
