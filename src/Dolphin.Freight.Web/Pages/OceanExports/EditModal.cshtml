@@ -29,17 +29,24 @@
             //HB/l dropdown
 
             var isPageLoad = true;
-             
+
             var showMsg = '@Model.ShowMsg';
             if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
             var isLocked = '@Model.OceanExportMbl.IsLocked';
             if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
+            if (isLocked == 'True') {
+                $('#lockButtonMbl').find('i').addClass('fa fa-lock')
+            }
+            else {
+                $('#deleteButtonMbl').toggle();
+                $('#lockButtonMbl').find('i').addClass('fa fa-lock-open')
+            }
 
             console.log('@ViewData["HAVEHBL"]');
             //if ('@ViewData["HAVEHBL"]' !== "Y") {
             //    $("#RP").hide();
             //}
-            if('@Model.OceanExportMbl.IsReleased' == 'True'){
+            if ('@Model.OceanExportMbl.IsReleased' == 'True') {
                 $("#OceanExportMbl_MblReleaseDate").datepicker("setDate", new Date('@Model.OceanExportMbl.MblReleaseDate').toLocaleDateString());
             }
 
@@ -83,7 +90,7 @@
             return todayDate;
         }
 
-        function deleteHbl(){
+        function deleteHbl() {
             abp.message.confirm(l('DeletionConfirmationMessage'))
                 .then(function (confirmed) {
                     if (confirmed) {
@@ -98,15 +105,38 @@
                 });
         }
 
-        function deleteMbl(){
+        function lockUnlockMbl(id) {
+            var isLock = $('#lockButtonMbl').find('i').hasClass('fa-lock');
+            abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+                if (confirmed) {
+                    dolphin.freight.importExport.oceanExports.oceanExportMbl.lockedOrUnLockedOceanExportMbl({ MbId: id })
+                        .done(function () {
+                            if (isLock) {
+                                $('#deleteButtonMbl').toggle();
+                                $('#lockButtonMbl').find('i').toggleClass('fa-lock fa-lock-open')
+                                abp.message.success(l('Message:SuccessUnlock'));
+                            } else {
+                                $('#deleteButtonMbl').toggle();
+                                $('#lockButtonMbl').find('i').toggleClass('fa-lock fa-lock-open')
+                                abp.message.success(l('Message:SuccessLock'));
+                            }
+                        });
+                }
+            });
+        }
+
+        
+
+
+        function deleteMbl() {
             var url = new URL(window.location.href);
             var mblId = url.searchParams.get('Id');
             abp.message.confirm(l('DeletionConfirmationMessage'))
                 .then(function (confirmed) {
-                    if(confirmed) {
+                    if (confirmed) {
                         dolphin.freight.importExport.oceanExports.oceanExportMbl
                             .delete(mblId)
-                            .then(function(){
+                            .then(function () {
                                 abp.message.success(l('SuccessfullyDeleted')).done(function () {
                                     location.href = '/OceanExports/Index';
                                 });
@@ -221,8 +251,8 @@
             myWindow.focus()
         }
         function getCommercialInvoice() {
-             var idNo = $('#OceanExportHbl_Id').val();
-            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")"+"?Id="+idNo, 'CommercialInvoice', 'width=1200,height=800');
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")" + "?Id=" + idNo, 'CommercialInvoice', 'width=1200,height=800');
             myWindow.focus()
         }
         function getPickupDeliveryOrder() {
@@ -233,7 +263,7 @@
         }
         function getPreliminaryClaim() {
             var idNo = $('#OceanExportHbl_Id').val();
-            myWindow = window.open("@Url.Action("PreliminaryClaimOceanExport", "Docs")" + "?id=" + idNo+"&pageType=4", 'PreliminaryClaimOceanExport', 'width=1200,height=800');
+            myWindow = window.open("@Url.Action("PreliminaryClaimOceanExport", "Docs")" + "?id=" + idNo + "&pageType=4", 'PreliminaryClaimOceanExport', 'width=1200,height=800');
             //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
@@ -328,19 +358,19 @@
                             initializeDropdownSearch("OceanExportHbl_HblBillToId");
                             initializeDropdownSearch("OceanExportHbl_HblConsigneeId");
                             initializeDropdownSearch("OceanExportHbl_HblNotifyId", 1);
-                            initializeDropdownSearch("OceanExportHbl_AgentId",1);
-                            initializeDropdownSearch("OceanExportHbl_ForwardingAgentId",1);
-                            initializeDropdownSearch("OceanExportHbl_ReceivingAgentId",1);
-                            initializeDropdownSearch("OceanExportHbl_PorId",1);
-                            initializeDropdownSearch("OceanExportHbl_PolId",1);
-                            initializeDropdownSearch("OceanExportHbl_PodId",1);
-                            initializeDropdownSearch("OceanExportHbl_DelId",1);
-                            initializeDropdownSearch("OceanExportHbl_FdestId",1);
+                            initializeDropdownSearch("OceanExportHbl_AgentId", 1);
+                            initializeDropdownSearch("OceanExportHbl_ForwardingAgentId", 1);
+                            initializeDropdownSearch("OceanExportHbl_ReceivingAgentId", 1);
+                            initializeDropdownSearch("OceanExportHbl_PorId", 1);
+                            initializeDropdownSearch("OceanExportHbl_PolId", 1);
+                            initializeDropdownSearch("OceanExportHbl_PodId", 1);
+                            initializeDropdownSearch("OceanExportHbl_DelId", 1);
+                            initializeDropdownSearch("OceanExportHbl_FdestId", 1);
                             initializeDropdownSearch("OceanExportHbl_EmptyPickupId");
-                            initializeDropdownSearch("OceanExportHbl_TruckerId",1);
-                            initializeDropdownSearch("OceanExportHbl_CustomsBrokerId",1);
+                            initializeDropdownSearch("OceanExportHbl_TruckerId", 1);
+                            initializeDropdownSearch("OceanExportHbl_CustomsBrokerId", 1);
                             initializeDropdownSearch("OceanExportHbl_FbaFcId");
-                            initializeDropdownSearch("OceanExportHbl_DeliveryToId",1);
+                            initializeDropdownSearch("OceanExportHbl_DeliveryToId", 1);
                             initializeDropdownSearch("OceanExportHbl_CargoPickupId");
                             initializeDropdownSearch("OceanExportHbl_FreightTermForBuyerId");
                             initializeDropdownSearch("OceanExportHbl_FreightTermForSalerId");
@@ -424,7 +454,7 @@
             myWindow.focus();
         }
 
-        function getManifestPopUp(){
+        function getManifestPopUp() {
             var url = new URL(window.location.href);
             var mblId = url.searchParams.get('Id');
 
@@ -439,8 +469,27 @@
                 }
             });
         }
+        function lockUnlockHbl(id) {
+            var isLock = $('#lockButtonHbl').find('i').hasClass('fa-lock');
+            abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+                if (confirmed) {
+                    dolphin.freight.importExport.oceanExports.oceanExportHbl.lockedOrUnLockedOceanExportHbl({ HblId: id })
+                        .done(function () {
+                            if (isLock) {
+                                $('#deleteButtonHbl').toggle();
+                                $('#lockButtonHbl').find('i').toggleClass('fa-lock fa-lock-open')
+                                abp.message.success(l('Message:SuccessUnlock'));
+                            } else {
+                                $('#deleteButtonHbl').toggle();
+                                $('#lockButtonHbl').find('i').toggleClass('fa-lock fa-lock-open')
+                                abp.message.success(l('Message:SuccessLock'));
+                            }
+                        });
+                }
+            });
+        }
 
-        
+
     </script>
 }
 <div class="page-header">
@@ -508,20 +557,20 @@
                                 }
                             </abp-card-title>
 
-                           
+
 
                             <div class="btn-group dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
                                     @L["Display:Function"]
                                 </button>
                                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                    <a class='dropdown-item' href='javascript:void(0)'>
-                                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                    <a class='dropdown-item' id="lockButtonMbl" href='javascript:void(0)' onclick="lockUnlockMbl('@Model.OceanExportMbl.Id')">
+                                        <i class=""></i> @L["Btn:Lock"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)'>
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                                     </a>
-                                    <a class='dropdown-item' href='javascript:void(0)' onclick="deleteMbl()">
+                                    <a class='dropdown-item' id="deleteButtonMbl" href='javascript:void(0)' onclick="deleteMbl()" style="display:none">
                                         <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)'>
@@ -643,9 +692,9 @@
                                     <input type="hidden" name="OceanExportMbl.CoLoaderContent" id="mCoLoaderContent" value="@Model.OceanExportMbl.CoLoaderContent" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-row >
+                                    <abp-row>
                                         <abp-column size-md="_5"><label for="CareOfId" class="">C/O <input type="checkbox" name="OceanExportMbl.IsUsedCareOf" id="OceanExportMbl_IsUsedCareOf" value="true" /></label></abp-column>
-                                        <abp-column size-md ="_7">@await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.CareOfId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = false, FieldName = "", SelectType = 1, ShowFiledContentValue = Model.OceanExportMbl.CareOfId.ToString() })</abp-column>
+                                        <abp-column size-md="_7">@await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.CareOfId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = false, FieldName = "", SelectType = 1, ShowFiledContentValue = Model.OceanExportMbl.CareOfId.ToString() })</abp-column>
                                     </abp-row>
                                     <input type="hidden" name="OceanExportMbl.CareOfId" id="mCareOfId" value="@Model.OceanExportMbl.CareOfId" />
                                     <input type="hidden" name="OceanExportMbl.CareOfContent" id="mCareOfContent" value="@Model.OceanExportMbl.CareOfContent" />
@@ -653,14 +702,14 @@
                                 <abp-column size-md="_3">
                                     <abp-row>
                                         <abp-column size-md="_5"> <label class="">@L["OP"]</label></abp-column>
-                                        <abp-column size-md="_7">  
+                                        <abp-column size-md="_7">
                                             <select class="form-control ml-15" asp-for="OceanExportMbl.MblOperatorId" disabled="true">
-                                               <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
-                                          </select>
-                                         </abp-column>
+                                                <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
+                                            </select>
+                                        </abp-column>
                                     </abp-row>
-                                   
-                                 
+
+
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -824,10 +873,11 @@
                                 <abp-column size-md="_3">
                                     <label for="OceanExportMbl_IsBookingAgent" class="">@L["IsBookingAgent"]<input type="checkbox" name="OceanExportMbl.IsBookingAgent" id="OceanExportMbl_IsBookingAgent" value="true" checked="" /></label>
                                 </abp-column>
-                                @if(Model.OceanExportMbl.IsReleased == true){
+                                @if (Model.OceanExportMbl.IsReleased == true)
+                                {
                                     <abp-column size-md="_3">
                                         <label for="CareOfId" class="">@L["IsReleased"]<input type="checkbox" name="OceanExportMbl.IsReleased" id="OceanExportMbl_IsReleased" value="true" @(Model.OceanExportMbl.IsReleased ? "checked" : "") /></label>
-                                        
+
                                     </abp-column>
                                     <abp-row>
 
@@ -852,12 +902,12 @@
                                     <abp-column size-md="_3">
                                         <abp-row>
                                             <abp-column>  <label asp-for="OceanExportMbl.ReleaseById"></label></abp-column>
-                                            <abp-column >
+                                            <abp-column>
                                                 <input id="releasedBy" value="" class="form-control" readonly />
                                             </abp-column>
                                         </abp-row>
-                                      
-                                      
+
+
                                     </abp-column>
                                 }
                             </abp-row>
@@ -967,7 +1017,6 @@
 <input type="hidden" name="AddHbl" id="AddHbl" value="0" />
 
 <div class="modal mymodal" id="ManifestModal" tabindex="-1" role="dialog">
-    
 </div>
 
 <script>

@@ -211,6 +211,7 @@
     "Btn:Tracking": "Tracking",
     "Btn:AddHawb": "Add HAWB",
     "Btn:Lock": "Lock",
+    "Btn:UnLock": "UnLock",
     "Btn:All HAWB Packaging Labels": "All HAWB Package Label",
     "Btn:Print MAWB": "Print MAWB",
     "Btn:Print HAWB": "Print HAWB",
@@ -234,7 +235,6 @@
     "Btn:Print Automobile Documents": "Print Automobile Documents",
     "Btn:All HBL Package Labels": "All HBL Package Labels",
     "Btn:Profit Report - summary": "Profit Report - summary",
-    "Btn:Telex Release": "Telex Release",
     "Btn:Manifest": "Manifest",
     "Btn:MBL Package Label": "MBL Package Label",
     "Btn:CargoRemark": "Cargo Remark",
@@ -1313,7 +1313,7 @@
     "Weight": "Weight",
     "P.O": "P.O",
     "CommodityAndHTS": "Commodity & HTS",
-    "BookingRemark":  "Booking Remarks"
+    "BookingRemark": "Booking Remarks"
 
   }
 }
