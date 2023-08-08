@@ -24,6 +24,7 @@ using System.Security.Cryptography.Xml;
 using Dolphin.Freight.Settings.Countries;
 using Volo.Abp.Uow;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace Dolphin.Freight.Web.Pages.AirExports
 {
@@ -60,6 +61,12 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
+        [BindProperty]
+        public List<MoreInformation> MoreInformations { get; set; }
+        [BindProperty]
+        public MoreInformation MoreInformationPrepaid { get; set; }
+        [BindProperty]
+        public MoreInformation MoreInformationCollect { get; set; }
 
         private static readonly Object lockObject = new object();
         public async Task OnGetAsync(Guid Id)
@@ -67,6 +74,17 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             AirExportMawbDto = await _airExportMawbAppService.GetAsync(Id);
             AirExportHawbDto = new AirExportHawbDto();
             /*AirExportHawbDto = await _airExportHawbAppService.GetHblCardsById(Id);*/
+            //if (AirExportMawbDto.ExtraProperties != null)
+            //{
+                
+
+            //     var extraproperty=AirExportMawbDto.ExtraProperties;
+
+            //    var json = AirExportMawbDto.ExtraProperties.Where(x => x.Key == "MoreInformation").Select(x => x.Value).ToList();
+
+            //    MoreInformations = JsonConvert.DeserializeObject<List<MoreInformation>>(json.ToString());
+
+            //}
 
             await FillTradePartnerAsync();
             await FillSubstationAsync();
@@ -83,10 +101,13 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             {
                 updateItem.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
             }
-            if (AirExportMawbDto.MoreInformation != null)
+            if (MoreInformationPrepaid != null || MoreInformationCollect!=null)
             {
+                MoreInformations.Add(MoreInformationPrepaid);
+                MoreInformations.Add(MoreInformationCollect);
+                
                 updateItem.ExtraProperties.Remove("MoreInformation");
-                updateItem.ExtraProperties.Add("MoreInformation", AirExportMawbDto.MoreInformation);
+                updateItem.ExtraProperties.Add("MoreInformation",MoreInformations);
 
             }
             _airExportMawbAppService.UpdateAsync(AirExportMawbDto.Id, updateItem).Wait();
