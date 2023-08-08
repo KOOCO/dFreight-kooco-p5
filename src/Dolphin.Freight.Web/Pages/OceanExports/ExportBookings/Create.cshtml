@@ -970,14 +970,17 @@
                                                 </abp-column>
                                             </abp-row>
                                      <abp-row>
-
+  <abp-column size-md="_2">
+                                                    @L["Container List"]
+                                                </abp-column>
                                 <abp-column size-md="_12">
+                                      
                                     <div>
                                     </div>
                                     <abp-table width="100%" border="1">
                                         <tr ng-form="hbl.__form2" class="ng-valid ng-dirty ng-valid-parse" style="">
                                             <th width="5%" class="text-center">#</th>
-                                            <th width="10%" style="white-space: nowrap">Container No.</th>
+                                            <th width="10%" style="white-space: nowrap">Total.</th>
                                             <th width="15%">
                                                 @L["PKG"]<br>
                                                 <abp-select asp-for="@Model.CreateUpdateContainerBooking.PackageUnitId" suppress-label="true" asp-items="_dropdown.PackageUnitLookupList"></abp-select>
