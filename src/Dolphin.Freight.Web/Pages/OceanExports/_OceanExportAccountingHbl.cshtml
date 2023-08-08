@@ -9,6 +9,17 @@
 @inject IStringLocalizer<FreightResource> L
 
 <script>
+    $(document).ready(function () {
+        debugger
+        var isHblLocked = '@Model.OceanExportHblDto.IsLocked';
+        if (isHblLocked == 'True') {
+            $('#lockButtonHbl').find('i').addClass('fa fa-lock')
+        }
+        else {
+            $('#deleteButtonHbl').toggle();
+            $('#lockButtonMbl').find('i').addClass('fa fa-lock-open')
+        }
+    });
     function getDocPackagePopUp() {
         $.ajax({
             url: '/Docs/DocumentPackageHBLPopupPartial?id=@Model.OceanExportHblDto.Id',
@@ -199,8 +210,8 @@
                                                 @L["Display:Function"]
                             </button>
                                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop" style="max-height:300px !important;overflow:auto">
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                <a class='dropdown-item' id="lockButtonHbl" href='javascript:void(0)' onclick="lockUnlockHbl('@Model.OceanExportHbl.Id')">
+                                        <i class=""></i> @L["Btn:Lock"]
                                     </a>
                                     <li class="dropdown-divider"></li>
         <a class='dropdown-item' href='javascript:void(0)' onclick="getDocPackagePopUp()">
