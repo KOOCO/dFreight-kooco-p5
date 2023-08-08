@@ -248,7 +248,7 @@
 .inline-block {
     display: inline-block;
 }
-@media (max-width: 1084px) {
+@media (max-width: 1258px) {
     .col-md-9 {
         flex: 0 0 100% !important; /* Override Bootstrap's styling with !important */
         max-width: 100% !important;
@@ -271,3 +271,18 @@
         transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
         margin-left: 10px
     }
+.customForm .mb-3 > .form-label {
+    margin: 0;
+    word-break: break-word !important;
+    padding: 0;
+}
+.btn-sm-custom {
+    padding: 0.1rem !important;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+}
+#OceanExportMbl_PreCarriageVesselNameId {
+
+    padding-right:0.2rem;
+}
