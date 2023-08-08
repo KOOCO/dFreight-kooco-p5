@@ -526,6 +526,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 國內行程 / 出口指示
         /// </summary>
         public string DomesticInstructions { get; set; }
+        public string DomesticInstructionsDelOrder { get; set; }
         /// <summary>
         /// S/O備註
         /// </summary>
