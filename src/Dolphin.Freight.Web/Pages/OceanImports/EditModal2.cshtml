@@ -43,6 +43,7 @@
                             countTotalVolume('HBL');
                             countPackageType('MBL');
                             countPackageType('HBL');
+                            copyContainertoHBL(0);
                         }
                     });
                 }
@@ -159,7 +160,7 @@
                 break;
             }
         }
-
+        
         function addPackageUnitNameddl(){
             dolphin.freight.settings.packageUnits.packageUnit.getPackageUnitsLookup({}).done(function (res) {
                 if (res.items != null && res.items.length > 0) {
@@ -171,6 +172,7 @@
                     }
                     selectHtml = selectHtml + "</select>";
                     $('#packageTypeSelect').append(selectHtml).find('.select-search').select2();
+                    $('#hblPackageTypeddl').append(selectHtml).find('.select-search').select2();
                 }
             });
         }
@@ -290,7 +292,26 @@
                 break;
 
                 case 'HBL':
-                    $('#htotalWeight').text(parseFloat($('#OceanImportHbl_PackageWeight').val()).toFixed(2));
+                    var value = parseFloat($('#OceanImportHbl_PackageWeight').val()).toFixed(2);
+
+                    if(!isNaN(value)){
+                        $('#htotalWeight').text(value);
+                    } else {
+                        $('#htotalWeight').text('0.00');
+                    }
+                break;
+
+                default:
+                    var totalWgt = 0;
+
+                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                        var cells = parseFloat($('#f5_' + i).val());
+                        if (!isNaN(cells)) {
+                            totalWgt += cells;
+                        }
+                    }
+
+                    $('#totalWeight').text(parseFloat(totalWgt).toFixed(2));
                 break;
             }
         }
@@ -311,28 +332,76 @@
                 break;
 
                 case 'HBL':
-                    $('#htotalVolume').text(parseFloat($('#OceanImportHbl_PackageMeasurement').val()).toFixed(2));
+                    var value = parseFloat($('#OceanImportHbl_PackageMeasurement').val()).toFixed(2);
+
+                    if(!isNaN(value)){
+                        $('#htotalVolume').text(value);
+                    } else {
+                        $('#htotalVolume').text('0.00');
+                    }
+                break;
+
+                default:
+                    var totalVol = 0;
+
+                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                        var cells = parseFloat($('#f6_' + i).val());
+                        if (!isNaN(cells)) {
+                            totalVol += cells;
+                        }
+                    }
+
+                    $('#totalVolume').text(parseFloat(totalVol).toFixed(2));
                 break;
             }
         }
 
-        function countPackageType() {
-            var totalPKG = 0;
+        function countPackageType(module) {
+            switch(module){
+                case 'MBL':
+                    var totalPKG = 0;
 
-            for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
-                var cells = parseFloat($('#f4_' + i).val());
-                if (!isNaN(cells)) {
-                    totalPKG += cells;
-                }
+                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                        var cells = parseFloat($('#f4_' + i).val());
+                        if (!isNaN(cells)) {
+                            totalPKG += cells;
+                        }
+                    }
+
+                    $('#totalPackageType').text(parseFloat(totalPKG).toFixed(2));
+                break;
+
+                case 'HBL':
+                    var value = parseFloat($('#oceanImportHbl_PackageType').val()).toFixed(2);
+
+                    if(!isNaN(value)){
+                        $('#htotalPackageType').text(value);
+                    } else { $('#htotalPackageType').text('0.00'); }
+                break;
+
+                default:
+                    var totalPKG = 0;
+
+                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                        var cells = parseFloat($('#f4_' + i).val());
+                        if (!isNaN(cells)) {
+                            totalPKG += cells;
+                        }
+                    }
+
+                    $('#totalPackageType').text(parseFloat(totalPKG).toFixed(2));
+                break;
             }
-
-            $('#totalPackageType').text(parseFloat(totalPKG).toFixed(2));
         }
 
         function copyMBLValues() {
             $('#OceanImportHbl_PackageNo').val($('#f1_0').val());
+            $('#oceanImportHbl_PackageType').val($('#f4_0').val());
             $('#OceanImportHbl_PackageWeight').val($('#f5_0').val());
             $('#OceanImportHbl_PackageMeasurement').val($('#f6_0').val());
+            countTotal('HBL');
+            countTotalVolume('HBL');
+            countPackageType('HBL');
         }
 
         function onHblDescriptionChange() {
@@ -461,6 +530,10 @@
             $('#OceanImportHbl_DomesticInstructions').css('display', 'block');
             $('#OceanImportHbl_DomesticInstructionsDelOrder').css('display', 'none');
         }
+
+        function alert(){
+            alert('fired');
+        }
     </script>
 
     <script id="commodityTemplate" type="text/x-jQuery-tmpl">
@@ -476,6 +549,10 @@
 }
 <style>
     #packageTypeSelect .select2-container{
+        display: inline !important;
+    }
+
+    #hblPackageTypeddl .select2-container{
         display: inline !important;
     }
 </style>
@@ -760,7 +837,7 @@
 
                                 <abp-column size-md="_12">
                                     <div>
-                                        <button class="btn btn-secondary" style="width: 179px;" type="button" onclick="copyMBLValues()" id="copyMBL">
+                                        <button class="btn btn-secondary btn btn-sm p-1" style="margin: 4px;" type="button" onclick="copyMBLValues()" id="copyMBL">
                                             Copy Value from MBL
                                         </button>
                                     </div>
@@ -776,7 +853,7 @@
                                         <tr>
                                             <td></td>
                                             <td></td>
-                                            <td></td>
+                                            <td id="hblPackageTypeddl"></td>
                                             <td><select id="selectWeight" onchange="convertUnit($(this).val(), 'HBL')" name="selectWeight"><option value="KG" id="hkg">KG</option><option value="LB" id="hlb">LB</option></select></td>
                                             <td><select id="hselectMeasurement" onchange="convertUnit($(this).val(), 'HBL')" name="selectMeasurement"><option value="CBM" id="hcbm">CBM</option><option value="CFT" id="hcft">CFT</option></select></td>
                                             <td></td>
@@ -785,18 +862,18 @@
                                             <tr>
                                                 <td style="align-items:center"><input type="radio" name="SurplusType" /></td>
                                                 <td><input asp-for="@Model.OceanImportHbl.PackageNo" type="text" class="form-control" value="@Model.OceanImportHbl.PackageNo" readonly/></td>
-                                                <td><input type="text" class="form-control" value="" /></td>
-                                                <td><input asp-for="@Model.OceanImportHbl.PackageWeight" type="text" class="form-control" value="@Model.OceanImportHbl.PackageWeight" /></td>
-                                                <td><input asp-for="@Model.OceanImportHbl.PackageMeasurement" type="text" class="form-control" value="@Model.OceanImportHbl.PackageMeasurement" /></td>
+                                                <td><input type="text" class="form-control" id="oceanImportHbl_PackageType" onkeyup="countPackageType('HBL')" value="" /></td>
+                                                <td><input asp-for="@Model.OceanImportHbl.PackageWeight" type="text" class="form-control" onkeyup="countTotal('HBL')" value="@Model.OceanImportHbl.PackageWeight" /></td>
+                                                <td><input asp-for="@Model.OceanImportHbl.PackageMeasurement" type="text" class="form-control" onkeyup="countTotalVolume('HBL')" value="@Model.OceanImportHbl.PackageMeasurement" /></td>
                                                 <td></td>
                                             </tr>
                                         </tbody>
                                         <tfoot>
                                             <tr>
                                                 <td colspan="2" align="right"><strong>Total:</strong></td>
-                                                <td id="htotalPackageType"></td>
-                                                <td id="htotalWeight"></td>
-                                                <td id="htotalVolume"></td>
+                                                <td id="htotalPackageType">0.00</td>
+                                                <td id="htotalWeight">0.00</td>
+                                                <td id="htotalVolume">0.00</td>
                                                 <td></td>
                                             </tr>
                                         </tfoot>

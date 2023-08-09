@@ -97,7 +97,15 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             else
             {
                 queryHbl.Id = Hid;
-                OceanImportHbl = new();
+                OceanImportHbl = new CreateUpdateOceanImportHblDto();
+                if (OceanImportHbls != null && OceanImportHbls.Count > 0)
+                {
+                    OceanImportHbl = ObjectMapper.Map<OceanImportHblDto, CreateUpdateOceanImportHblDto>(OceanImportHbls.Where(w => w.Id == Hid).FirstOrDefault());
+                    OceanImportHbl.PackageNo = OceanImportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.PackageNum ?? 0).FirstOrDefault();
+                    OceanImportHbl.PackageWeight = OceanImportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.PackageWeight ?? 0).FirstOrDefault();
+                    OceanImportHbl.PackageMeasurement = OceanImportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.PackageMeasure ?? 0).FirstOrDefault();
+                    OceanImportHbl.ContainerId = OceanImportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.Id ?? Guid.Empty).FirstOrDefault();
+                }
                 IsShowHbl = true;
 
 
