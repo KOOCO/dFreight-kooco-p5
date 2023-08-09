@@ -102,12 +102,11 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     pdictionary.Add(port.Id, port.SubDiv + " " + port.PortName + " ( " + port.Locode + " ) ");
                 }
             }
-            var OceanExportHbls = (await _repository.GetQueryableAsync())
-                                    .WhereIf(!string.IsNullOrWhiteSpace(query.Search), x=>x.ItnNo
+            var OceanExportHbls = await _repository.GetQueryableAsync();
+             OceanExportHbls = OceanExportHbls.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x=>x.ItnNo
                                     .Contains(query.Search) || x.HblNo
                                     .Contains(query.Search) || x.Mbl.SoNo
                                     .Contains(query.Search) || x.Mbl.Office.SubstationName
-                                    //.Contains(query.Search) || x.Mbl.Office.AbbreviationName
                                     .Contains(query.Search) || x.HblShipper.TPName
                                     .Contains(query.Search) || x.HblConsignee.TPName
                                     .Contains(query.Search))

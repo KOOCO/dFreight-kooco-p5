@@ -20,11 +20,18 @@
 
                 })
                 setTimeout(() => {
-                    if (selectedHblNo) {
+                    debugger
+                    var from = url.searchParams.get('from');
+                    if (from == 'NewHawb') {
+                        $('#addHBtn').click();
+                    }
+                    else if (selectedHblNo) {
                         $('#title_' + selectedHblNo).click();
-                    } else {
+                    }
+                    else {
                         $('.hblCardTitle')[0].click();
                     }
+                  
                 }, 500);
             }
         })

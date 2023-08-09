@@ -11,7 +11,7 @@
         function changeHid(id, hid) {
             location.href = '/OceanExports/EditModal4?Id=' + id + "&Hid=" + hid
         }
-        
+        var l = abp.localization.getResource('Freight');
         $(document).ready(function () {
             var isLocked = '@Model.OceanExportMbl.IsLocked';
             if (isLocked == 'True') abp.message.warn("此項已經被鎖定，若需修改請小心！\n您作的變更可能導致會計報表不一致！");
@@ -92,7 +92,57 @@
                     }
                 });
             }
-        })
+            if (isLocked == 'True') {
+                $('#lockButtonMbl').find('i').addClass('fa fa-lock')
+            }
+            else {
+                $('#lockButtonMbl').find('i').addClass('fa fa-lock-open')
+            }
+            var isLockedHbl = '@Model.OceanExportHbl.IsLocked';
+            if (isLockedHbl == 'True') {
+                $('#lockButtonHbl').find('i').addClass('fa fa-lock')
+            }
+            else {
+                $('#lockButtonHbl').find('i').addClass('fa fa-lock-open')
+            }
+        });
+
+        function lockUnlockMbl(id) {
+            var isLock = $('#lockButtonMbl').find('i').hasClass('fa-lock');
+            abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+                if (confirmed) {
+                    dolphin.freight.importExport.oceanExports.oceanExportMbl.lockedOrUnLockedOceanExportMbl({ MbId: id })
+                        .done(function () {
+                            if (isLock) {
+                                $('#lockButtonMbl').find('i').toggleClass('fa-lock fa-lock-open')
+                                abp.message.success(l('Message:SuccessUnlock'));
+                            } else {
+                                $('#lockButtonMbl').find('i').toggleClass('fa-lock fa-lock-open')
+                                abp.message.success(l('Message:SuccessLock'));
+                            }
+                        });
+                }
+            });
+        }
+
+        function lockUnlockHbl(id) {
+            var isLock = $('#lockButtonHbl').find('i').hasClass('fa-lock');
+            abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+                if (confirmed) {
+                    dolphin.freight.importExport.oceanExports.oceanExportHbl.lockedOrUnLockedOceanExportHbl({ HblId: id })
+                        .done(function () {
+                            debugger
+                            if (isLock) {
+                                $('#lockButtonHbl').find('i').toggleClass('fa-lock fa-lock-open')
+                                abp.message.success(l('Message:SuccessUnlock'));
+                            } else {
+                                $('#lockButtonHbl').find('i').toggleClass('fa-lock fa-lock-open')
+                                abp.message.success(l('Message:SuccessLock'));
+                            }
+                        });
+                }
+            });
+        }
         function initAttments(tindex, qid) {
             dolphin.freight.importExport.attachments.attachment.queryList({ queryType: 2, queryId: qid }).done(function (result) {
                 if (result != null && result.length > 0) {
@@ -128,7 +178,7 @@
 
             dolphin.freight.importExport.attachments.attachment.delete(fid)
                 .then(function () {
-                    var l = abp.localization.getResource('Freight');
+                    
                     abp.message.success(l('SuccessfullyDeleted'));
                     if (tindex == 0) {
                         $("#tr_" + index).remove();
@@ -317,6 +367,17 @@
                 }
             });
         }
+        function getMBLDocPackagePopUp() {
+            $.ajax({
+                url: '/Docs/DocumentPackageMBLPopupPartial?id=@Model.OceanExportMbl.Id',
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('#MBLDocumentPackageModal').html(res);
+                    $('#MBLDocumentPackageModal').modal('show');
+                }
+            });
+        }
     </script>
 }
 <div class="page-header">
@@ -389,11 +450,11 @@
                                                 @L["Display:Function"]
                             </button>
                             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                <a class='dropdown-item' id="lockButtonMbl" href='javascript:void(0)' onclick="lockUnlockMbl('@Model.OceanExportMbl.Id')">
+                                    <i class=""></i> @L["Btn:Lock"]
                                 </a>
                                 <li class="dropdown-divider"></li>
-                                <a class='dropdown-item' href='#'>
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="getMBLDocPackagePopUp()">
                                     <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                                 </a>
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PrintMBLInstruction", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
@@ -465,8 +526,8 @@
                                                 @L["Display:Function"]
                             </button>
                             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop" style="max-height:300px;overflow:auto">
-                                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                <a class='dropdown-item' id="lockButtonHbl" href='javascript:void(0)' onclick="lockUnlockHbl('@Model.OceanExportHbl.Id')">
+                    <i class=""></i> @L["Btn:Lock"]
                                 </a>
                                 <li class="dropdown-divider"></li>
         <a class='dropdown-item' href='javascript:void(0)' onclick="getDocPackagePopUp()">
@@ -656,4 +717,7 @@
 </div>
 
 <div class="modal" id="documentPackageModal">
+</div>
+
+<div class="modal" id="MBLDocumentPackageModal">
 </div>

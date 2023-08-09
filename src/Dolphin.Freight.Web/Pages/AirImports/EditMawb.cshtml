@@ -725,12 +725,12 @@
                             </abp-row>
                             
                             <!--Route區塊-->
-                            <abp-row class="mt-0">
+                             <abp-row>
                                 <div class="collapse" id="collapseRoute">
-                                    <div class="card card-body">
+                                    <div class="card card-body table-responsive">
                                         <h3>Route</h3>
-                                        <table class="table table-sm table-bordered table-responsive">
-                                            <thead>
+                                        <abp-table class="nowrap" class="table table-bordered">
+                                          <thead>
                                                 <tr>
                                                     <th></th>
                                                     <th>Airport</th>
@@ -740,17 +740,13 @@
                                                     <th>Carrier</th>
                                                 </tr>
                                             </thead>
+
                                             <tbody>
-                                                <tr>
+                                           <tr>
                                                     <th>Trans1</th>
                                                     <td>
-                                                        <select asp-for="MawbModel.RouteTrans1Id" class="form-select-sm" size="Small">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                          @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans1Id", AspItems = _dropdownService.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans1Id) })
+                                                   
                                                     </td>
                                                     <td>
                                                         <input asp-for="MawbModel.RouteTrans1ArrivalDate" size="Small" />
@@ -768,13 +764,8 @@
                                                 <tr>
                                                     <th>Trans2</th>
                                                     <td>
-                                                        <select asp-for="MawbModel.RouteTrans2Id" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                       @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans2Id", AspItems = _dropdownService.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans2Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans2Id) })
+                                                   
                                                     </td>
                                                     <td>
                                                         <input asp-for="MawbModel.RouteTrans2ArrivalDate" size="Small" />
@@ -792,13 +783,8 @@
                                                 <tr>
                                                     <th>Trans3</th>
                                                     <td>
-                                                        <select asp-for="MawbModel.RouteTrans3Id" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans3Id", AspItems = _dropdownService.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans3Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans3Id) })
+                                                   
                                                     </td>
                                                     <td>
                                                         <input asp-for="MawbModel.RouteTrans3ArrivalDate" size="Small" />
@@ -814,10 +800,22 @@
                                                     </td>
                                                 </tr>
                                             </tbody>
-                                        </table>
+                                        </abp-table>
                                     </div>
                                 </div>
                             </abp-row>
+                        @*    <abp-row class="mt-0">
+                                <div class="collapse" id="collapseRoute">
+                                    <div class="card card-body">
+                                        <h3>Route</h3>
+                                        <table class="table table-sm table-bordered table-responsive">
+                                                                                       <tbody>
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </abp-row>*@
                             
                             <!--第八列 Package, Weight Settings Area-->
                             <hr />

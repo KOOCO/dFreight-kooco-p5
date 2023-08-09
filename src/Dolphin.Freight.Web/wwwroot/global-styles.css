@@ -248,3 +248,44 @@
 .inline-block {
     display: inline-block;
 }
+@media (max-width: 1258px) {
+    .col-md-9 {
+        flex: 0 0 100% !important; /* Override Bootstrap's styling with !important */
+        max-width: 100% !important;
+    }
+}
+
+    .form-control-custom {
+        display: block;
+        width: 72% !important;
+        height: calc(1.5em + 0.75rem + 2px);
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        margin-left: 10px
+    }
+.customForm .mb-3 > .form-label {
+    margin: 0;
+    word-break: break-word !important;
+    padding: 0;
+}
+.btn-sm-custom {
+    padding: 0.1rem !important;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+}
+
+.flex-row > .abp-widget-wrapper {
+    width:55px!important;
+}
+.filteredDropdown > span:first-child {
+    width: 100% !important;
+}

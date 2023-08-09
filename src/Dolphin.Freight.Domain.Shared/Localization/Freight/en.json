@@ -211,6 +211,7 @@
     "Btn:Tracking": "Tracking",
     "Btn:AddHawb": "Add HAWB",
     "Btn:Lock": "Lock",
+    "Btn:UnLock": "UnLock",
     "Btn:All HAWB Packaging Labels": "All HAWB Package Label",
     "Btn:Print MAWB": "Print MAWB",
     "Btn:Print HAWB": "Print HAWB",
@@ -234,7 +235,6 @@
     "Btn:Print Automobile Documents": "Print Automobile Documents",
     "Btn:All HBL Package Labels": "All HBL Package Labels",
     "Btn:Profit Report - summary": "Profit Report - summary",
-    "Btn:Telex Release": "Telex Release",
     "Btn:Manifest": "Manifest",
     "Btn:MBL Package Label": "MBL Package Label",
     "Btn:CargoRemark": "Cargo Remark",
@@ -296,7 +296,7 @@
     "ItnNo": "Itn No",
     "MblCarrierId": "Shipping Company",
     "MblCarrierName": "Shipping Company",
-    "BlAcctCarrierId": "Shipping Company(Finance)",
+    "BlAcctCarrierId": "B/L Acct. Carrier",
     "ShippingAgentId": "Shipping Agent",
     "MblOverseaAgentId": "Oversea Agent",
     "MblOverseaAgentName": "Oversea Agent",
@@ -326,14 +326,14 @@
     "FdestEta": "Final dest ETA",
     "EmptyPickupId": "Empty Pickup",
     "DeliveryToId": "Delivery",
-    "PreCarriageVesselNameId": "PreCarriage Vessel Name",
+    "PreCarriageVesselNameId": "Pre-carriage by",
     "PrepreCarriageVoyage": "Pre Carriage Voyage",
     "FreightTermId": "Freight Term",
     "ShipModeId": "Ship Mode",
     "ShipModeName": "Ship Mode",
     "SvcTermFromId": "Svc Term From",
     "SvcTermToId": "Svc Term To",
-    "DisplayMblContainerSizeQtyInfo": "Display Mbl Container Size Qty Info",
+    "DisplayMblContainerSizeQtyInfo": "Container Size Qty Info",
     "OblTypeId": "OB/L Type",
     "DocCutOffTime": "Doc Cut Off Time",
     "PortCutOffTime": "Port Cut Off Time",
@@ -838,6 +838,7 @@
     "Display:InvoiceNo": "Invoice No",
     "Display:InvoiceNoAP": "Invoice No",
     "Display:PackageNo": "Package No",
+    "Display:ContainerNo": "Container No",
     "Display:PackageSize": "Package Size",
 
     "Display:Vendor": "Vendor",
@@ -848,6 +849,7 @@
 
     "Display:SmallSeal": "Seal",
     "Display:Seal": "Seal",
+    "Display:Seal No": "Seal No",
     "Display:SoNo": "S/O No",
     "Display:PackageType": "Package Type",
     "Display:Weight": "Weight",
@@ -1311,7 +1313,7 @@
     "Weight": "Weight",
     "P.O": "P.O",
     "CommodityAndHTS": "Commodity & HTS",
-    "BookingRemark":  "Booking Remarks"
+    "BookingRemark": "Booking Remarks"
 
   }
 }

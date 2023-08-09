@@ -6,6 +6,7 @@ using System.Text;
 using Volo.Abp.Application.Dtos;
 using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using Volo.Abp.Users;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
 {
@@ -330,5 +331,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

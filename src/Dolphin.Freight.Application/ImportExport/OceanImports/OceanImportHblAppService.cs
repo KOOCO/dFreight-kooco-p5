@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Internal.Mappers;
+using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Permissions;
 using Dolphin.Freight.Settings.Ports;
@@ -38,7 +39,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IRepository<PortsManagement, Guid> _portsManagementRepository;
         private readonly ICurrentUser _currentUser;
-        public OceanImportHblAppService(IRepository<OceanImportHbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanImportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<PortsManagement, Guid> portsManagementRepository, ICurrentUser currentUser)
+        private readonly IRepository<Container, Guid> _containerRepository; 
+        public OceanImportHblAppService(IRepository<OceanImportHbl, Guid> repository, IRepository<Container, Guid> containerRepository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanImportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<PortsManagement, Guid> portsManagementRepository, ICurrentUser currentUser)
             : base(repository)
         {
             _repository = repository;
@@ -49,6 +51,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             _tradePartnerRepository = tradePartnerRepository;
             _portsManagementRepository = portsManagementRepository;
             _currentUser = currentUser;
+            _containerRepository = containerRepository;
             /*
             GetPolicyName = OceanImportPermissions.OceanImportHbls.Default;
             GetListPolicyName = OceanImportPermissions.OceanImportHbls.Default;
@@ -179,6 +182,13 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     var pud = ObjectMapper.Map<OceanImportHbl, OceanImportHblDto>(pu);
                     if (pud.CardColorId != null) pud.CardColorValue = dictionary[pud.CardColorId.Value];
                     if (pud.ColorRemarkId != null) pud.ColorRemarkValue = dictionary[pud.ColorRemarkId.Value];
+
+                    if (await _containerRepository.AnyAsync(a => a.HblId == pud.Id))
+                    {
+                        var container = await _containerRepository.FirstOrDefaultAsync(a => a.HblId == pud.Id);
+                        pud.CreateUpdateHBLContainerDto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
+                    }
+
                     list.Add(pud);
                 }
             }

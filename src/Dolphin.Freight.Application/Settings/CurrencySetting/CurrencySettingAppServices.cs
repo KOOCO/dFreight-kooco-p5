@@ -41,7 +41,7 @@ namespace Dolphin.Freight.Settings.CurrencySetting
                                    .Contains(input.Filter) || x.StartingCurrency
                                    .Contains(input.Filter) || x.EndCurrency
                                    .Contains(input.Filter) || x.ExChangeRate.ToString()
-                                   .Contains(input.Filter)).OrderBy(input.Sorting);
+                                   .Contains(input.Filter));
 
             var result = query.Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
             listDto.Items = ObjectMapper.Map<List<CurrencySetting>, List<CurrencySettingDTO>>(result);

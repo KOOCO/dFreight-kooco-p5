@@ -7,6 +7,7 @@ using System.Text;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Users;
 using Dolphin.Freight.Common;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -356,12 +357,13 @@ namespace Dolphin.Freight.ImportExport.AirExports
 
         public string OfficeName { get; set; }
         public string Shipper { get; set; }
-
+       
         public string OverseaAgentTPName { get; set; }
         public string DepatureAirportName { get; set; }
         public string DestinationAirportName { get; set; }
         public string CarrierTPName { get; set; }
         public string ConsigneeName { get; set; }
         public string NotifyName { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }
