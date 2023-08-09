@@ -4619,7 +4619,7 @@ namespace Dolphin.Freight.Web.Controllers
                 
                 var manifestCommodities = new List<ManifestCommodity>();
                 object com;
-                var commodity = hblLists.Where(w => w.Id == item.Id).Select(s => s.ExtraProperties).FirstOrDefault().TryGetValue("Commodities", out com);
+                var commodity = item.ExtraProperties.TryGetValue("Commodities", out com);
                 manifestCommodities = JsonConvert.DeserializeObject<List<ManifestCommodity>>(Convert.ToString(com));
 
                 var hbl = new Hbl
