@@ -371,7 +371,7 @@
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Batch Printing"]
                                     </a>
                                     <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ManifestOceanImportMBL", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest"]
                                     </a>
                                     <a class='dropdown-item' href='#'>

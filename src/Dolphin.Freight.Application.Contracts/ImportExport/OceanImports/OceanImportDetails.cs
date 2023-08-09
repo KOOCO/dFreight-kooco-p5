@@ -402,6 +402,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 中轉港 
         /// </summary>
         public string TransPort1Name { get; set; }
+        public string CyLocationName { get; set; }
         /// <summary>
         /// 中轉港ETA
         /// </summary>

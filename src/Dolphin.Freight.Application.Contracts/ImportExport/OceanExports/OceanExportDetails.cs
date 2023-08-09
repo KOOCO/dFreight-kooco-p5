@@ -554,11 +554,18 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string HblNo { get; set; }
         public string HblPcs { get; set; }
         public string Weight { get; set; }
+        public double? PackageWeight { get; set; }
+        public double? PackageWeightLBS { get; set; }
+        public double? PackageMeasure { get; set; }
+        public double? PackageMeasureCFT { get; set; }
         public string WeightLBS { get; set; }
         public string Measurement { get; set; }
         public string MeasurementLBS { get; set; }
         public string Shipper { get; set; }
         public string Consignee { get; set; }
+        public string Notify { get; set; }
+        public string FinalDestination { get; set; }
+        public string FDestETA { get; set; }
         public string NatureOfGoods { get; set; }
         public string Term { get; set; }
         public string Mark { get; set; }
@@ -566,5 +573,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string extraProperty { get; set; }
         public string CommodityDesc { get; set; }
         public string Remark { get; set; }
+        public double? Amount { get; set; }
+        public List<ManifestCommodity> ManifestCommodities { get; set; }
     }
 }

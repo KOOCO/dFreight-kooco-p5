@@ -4582,6 +4582,72 @@ namespace Dolphin.Freight.Web.Controllers
             }
         }
 
+        public async Task<IActionResult> ManifestOceanImportMBL(Guid id, FreightPageType pageType)
+        {
+            var oceanImportDetails = await GetOceanImportDetailsByPageType(id, pageType);
+
+            QueryContainerDto query = new QueryContainerDto() { QueryId = id };
+            var containers = await _containerAppService.QueryListAsync(query);
+            var containerName = _dropdownService.ContainerLookupList;
+
+            var list = new List<CreateUpdateContainerDto>();
+
+            foreach (var item in containers)
+            {
+                var containerSizeName = string.Concat(containerName.Where(w => w.Value == string.Concat(item.ContainerSizeId)).Select(s => s.Text));
+
+                var items = new CreateUpdateContainerDto
+                {
+                    Id = item.Id,
+                    ContainerNo = item.ContainerNo,
+                    SealNo = item.SealNo,
+                    ContainerSizeName = containerSizeName
+                };
+                list.Add(items);
+            }
+
+            var hbls = new List<Hbl>();
+            var hblLists = await _oceanImportHblAppService.GetHblCardsById(id);
+            ImportExport.OceanImports.QueryHblDto queryHblDto = new ImportExport.OceanImports.QueryHblDto() { MblId = id };
+            var hblWithContainers = await _oceanImportHblAppService.QueryListByMidAsync(queryHblDto);
+
+            foreach (var item in hblLists)
+            {
+                var hbllist = await GetOceanImportDetailsByPageType(item.Id, FreightPageType.OIHBL, true);
+                double weight = hblWithContainers.Where(w => w.Id == item.Id).Select(s => s.CreateUpdateHBLContainerDto?.PackageWeight ?? 0).FirstOrDefault();
+                double measure = hblWithContainers.Where(w => w.Id == item.Id).Select(s => s.CreateUpdateHBLContainerDto?.PackageMeasure ?? 0).FirstOrDefault();
+                
+                var manifestCommodities = new List<ManifestCommodity>();
+                object com;
+                var commodity = hblLists.Where(w => w.Id == item.Id).Select(s => s.ExtraProperties).FirstOrDefault().TryGetValue("Commodities", out com);
+                manifestCommodities = JsonConvert.DeserializeObject<List<ManifestCommodity>>(Convert.ToString(com));
+
+                var hbl = new Hbl
+                {
+                    HblNo = hbllist.HblNo,
+                    Shipper = hbllist.ShippingAgentName,
+                    Consignee = hbllist.HblConsigneeName,
+                    Notify = hbllist.HblNotifyName,
+                    FinalDestination = hbllist.FdestName,
+                    FDestETA = hbllist.FdestEta?.ToShortDateString(),
+                    PackageWeight = weight,
+                    PackageWeightLBS = Math.Round(weight * 2.20462, 2),
+                    PackageMeasure = measure,
+                    PackageMeasureCFT = Math.Round(measure * 35.315, 2),
+                    Amount = hbllist.ARTotal,
+                    ManifestCommodities = manifestCommodities
+                };
+                hbls.Add(hbl);
+            }
+
+            oceanImportDetails.Hbls = hbls;
+            oceanImportDetails.HblsJson = JsonConvert.SerializeObject(hbls);
+            oceanImportDetails.CreateUpdateContainerDtos = list;
+            oceanImportDetails.CreateUpdateContainerDtosJson = JsonConvert.SerializeObject(list);
+
+            return View(oceanImportDetails);
+        }
+
         #region Private Functions
 
         private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
@@ -4728,7 +4794,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             if (data != null && isIncludeInvoices)
             {
-                var queryType = pageType == FreightPageType.OEMBL ? 3 : 1;
+                var queryType = pageType == FreightPageType.OIMBL ? 3 : 1;
 
                 QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = Id };
 
