@@ -282,14 +282,10 @@
     line-height: 1.5;
     border-radius: 0.2rem;
 }
-#OceanExportMbl_PreCarriageVesselNameId {
 
-    padding-right:0.2rem;
-}
-#OceanExportMbl_PreCarriageVesselNameId{
-    width:3px!important;
-
-}
 .flex-row > .abp-widget-wrapper {
     width:55px!important;
+}
+.filteredDropdown > span:first-child {
+    width: 100% !important;
 }

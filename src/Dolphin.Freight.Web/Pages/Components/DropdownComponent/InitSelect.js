@@ -51,6 +51,6 @@ function initializeDropdownSearch(id, selectType) {
 
 function setWidth(id, selectType) {
     if (selectType == 1) {
-        $('#' + id).parent().find('.select2-container').attr('style', 'width:calc(100% - 50px) !important');
+        $('#' + id).parent().find('.select2-container').attr('style', 'max-width:calc(100%-40px) !important');
     }
 }
