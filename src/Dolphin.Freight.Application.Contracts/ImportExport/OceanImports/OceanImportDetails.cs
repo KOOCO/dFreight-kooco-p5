@@ -37,7 +37,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
 
         [DataType(DataType.Date)]
         public DateTime PostDate { get; set; }
-
+        public Guid? CyLocationId { get; set; }
+        public string CyLocation { get; set; }
         public string SoNo { get; set; }
         public string HblSoNo { get; set; }
         public string ItnNo { get; set; }

@@ -41,6 +41,12 @@
             //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
+           function getOrderDelivery() {
+            var idNo = $('#OceanImportMbl_Id').val();
+            myWindow = window.open("@Url.Action("DeliveryOrderOceanImportMawb", "Docs")" + "?id=" + idNo, 'DeliveryOrderOceanImportMawb', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow.focus()
+        }
     </script>
 }
 <div class="page-header">
@@ -77,6 +83,7 @@
                         <abp-card-title>
                             MB/L
                             <span id="title0">@Model.OceanImportMbl.MblNo </span>
+                            <input type="hidden" name="OceanImportMbl.Id" id="OceanImportMbl_Id" value="@Model.Id" />
                             @if (@Model.OceanImportMbl.PolName != null)
                             {
                                 <span id="title1" style="font-size:0.8em;">@Model.OceanImportMbl.PolName</span>
@@ -122,15 +129,16 @@
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Unpacking/Isolation Instructions"]
                                 </a>
+                                   <a class='dropdown-item' href='javascript:void(0)' onclick="getOrderDelivery()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
+                                    </a>
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
                                 </a>
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
-                                </a>
+                             
                                 <div class="dropdown-divider"></div>
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]

@@ -82,6 +82,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System.Text;
+using Dolphin.Freight.Web.ViewModels.DeliveryOrder;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -137,7 +138,7 @@ namespace Dolphin.Freight.Web.Controllers
             _oceanImportMblAppService = oceanImportMblAppService;
 
             ReportLog = new ReportLog.ReportLogDto();
-            
+
         }
 
         [HttpGet]
@@ -169,8 +170,8 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.SHPR = OceanExportHbl.ShippingAgentName;
             InfoViewModel.CNEE = OceanExportHbl.HblConsigneeName;
             InfoViewModel.CARR = OceanExportHbl.MblCarrierName;
-            InfoViewModel.VSLVOV = OceanExportHbl.VesselName+""+OceanExportHbl.Voyage;
-            InfoViewModel.POR =OceanExportMbl.PorName;
+            InfoViewModel.VSLVOV = OceanExportHbl.VesselName + "" + OceanExportHbl.Voyage;
+            InfoViewModel.POR = OceanExportMbl.PorName;
             InfoViewModel.POL = OceanExportMbl.PolName;
             InfoViewModel.ETD = OceanExportMbl.PolEtd?.ToString("dd-MM-yyyy");
             InfoViewModel._2NDVV = "";
@@ -179,7 +180,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.ETA = OceanExportMbl.PodEta?.ToString("dd-MM-yyyy");
             InfoViewModel.DEST = OceanExportMbl.FdestName;
             InfoViewModel.DESTETA = OceanExportMbl.FdestEta?.ToString("dd-MM-yyyy");
-            InfoViewModel.VOL ="";
+            InfoViewModel.VOL = "";
             InfoViewModel.CNTRNO = container?.ContainerNo;/* "2 /  / 48HC" + Environment.NewLine + "4 /  / 40FR" + Environment.NewLine + "5 /  / 40";*/
             InfoViewModel.COMM = "";
             InfoViewModel.PONBR = "";
@@ -609,17 +610,17 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.CarrierBookingNo = OceanExportMbl.SoNo;
             InfoViewModel.ActualShipper = OceanExportHbl.ShippingAgentName;
             InfoViewModel.Consignee = OceanExportHbl.HblConsigneeName;
-            InfoViewModel.Shipping =OceanExportHbl.ShippingAgentName;
+            InfoViewModel.Shipping = OceanExportHbl.ShippingAgentName;
             InfoViewModel.OverseaAgent = OceanExportHbl.MblOverseaAgentName;
             InfoViewModel.HblNo = OceanExportHbl.HblNo;
             InfoViewModel.OutBookingNo = "";
             InfoViewModel.BookingDate = "";
             InfoViewModel.ExportRefNo = OceanExportHbl.CustomerRefNo;
-            InfoViewModel.PoNo= "";
+            InfoViewModel.PoNo = "";
             InfoViewModel.ItnNo = "";
             InfoViewModel.Agent = "AER LINGUS";
             InfoViewModel.Notify = OceanExportHbl.HblNotifyName;
-            InfoViewModel.Vessel_Voyage =OceanExportHbl.VesselName+""+OceanExportHbl.Voyage;
+            InfoViewModel.Vessel_Voyage = OceanExportHbl.VesselName + "" + OceanExportHbl.Voyage;
             InfoViewModel.Carrier = OceanExportHbl.MblCarrierName;
             InfoViewModel.PlaceOfReceipt = OceanExportHbl.PorName;
             InfoViewModel.PortOfLoading = OceanExportHbl.PolName;
@@ -627,7 +628,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.PortOfTransshipment = OceanExportHbl.TransPort1Name;
             InfoViewModel.TsETA = OceanExportHbl.Trans1Eta?.ToString("dd-MM-yyyy");
             InfoViewModel.PortOfDischarge = OceanExportHbl.PodName;
-            InfoViewModel.PodETA =OceanExportHbl.PodEta?.ToString("dd-MM-yyyy");
+            InfoViewModel.PodETA = OceanExportHbl.PodEta?.ToString("dd-MM-yyyy");
             InfoViewModel.PlaceOfDelivery = OceanExportHbl.DelName; ;
             InfoViewModel.DelETA = OceanExportHbl.DelEta?.ToString("dd-MM-yyyy");
             InfoViewModel.FinalDestination = OceanExportHbl.FdestName;
@@ -636,21 +637,21 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.EarlyReturn = OceanExportHbl.EarlyReturnDateTime?.ToString("dd-MM-yyyy");
             InfoViewModel.Commodity = OceanExportHbl.Commodity?[0].Description;
             InfoViewModel.Container = container?.ContainerNo;
-            InfoViewModel.Weight = container?.PackageWeight+""+container?.PackageWeightUnit;
+            InfoViewModel.Weight = container?.PackageWeight + "" + container?.PackageWeightUnit;
             InfoViewModel.Dangerous = false;
-            InfoViewModel.Measurement = container?.PackageMeasure+""+container?.PackageMeasureUnit;
+            InfoViewModel.Measurement = container?.PackageMeasure + "" + container?.PackageMeasureUnit;
             InfoViewModel.LC = true;
             InfoViewModel.PKG = container?.PackageNum.ToString();
             InfoViewModel.Stackable = true;
             InfoViewModel.CargoDeliveryLocation_1 = OceanExportHbl.DeliveryToName;
             InfoViewModel.CargoDeliveryLocation_2 = "AERO TRANSCOLOMBIANA DE CARGA";
-            InfoViewModel.Port_Cutoff_Date = OceanExportHbl.PortCutOffTime?.ToString("dd-MM-yyyy"); 
+            InfoViewModel.Port_Cutoff_Date = OceanExportHbl.PortCutOffTime?.ToString("dd-MM-yyyy");
             InfoViewModel.Rail_Cutoff_Date = OceanExportHbl.RailCutOffTime?.ToString("dd-MM-yyyy");
             InfoViewModel.Warehouse_Cutoff_Date = OceanExportHbl.VgmCutOffTime?.ToString("dd-MM-yyyy");
             InfoViewModel.Doc_Cutoff_Date = OceanExportHbl.DocCutOffTime?.ToString("dd-MM-yyyy");
             InfoViewModel.EmptyPickUp = OceanExportHbl.EmptyPickupName;
-            InfoViewModel.CargoPickUp =OceanExportHbl.CargoPickUp?.TPName;
-            InfoViewModel.Trucker =  OceanExportHbl.TruckerName;
+            InfoViewModel.CargoPickUp = OceanExportHbl.CargoPickUp?.TPName;
+            InfoViewModel.Trucker = OceanExportHbl.TruckerName;
             InfoViewModel.Remark = OceanExportHbl.ColorRemarkName;
 
             InfoViewModel.ReportId = Guid.Parse(id);
@@ -1510,7 +1511,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.SHPR = OceanExportHbl.ShippingAgentName;
             InfoViewModel.CNEE = OceanExportHbl.HblConsigneeName;
             InfoViewModel.CARR = OceanExportHbl.MblCarrierName;
-            InfoViewModel.VSLVOV = OceanExportHbl.VesselName+""+OceanExportHbl.Voyage;
+            InfoViewModel.VSLVOV = OceanExportHbl.VesselName + "" + OceanExportHbl.Voyage;
             InfoViewModel.POR = OceanExportHbl.PorName;
             InfoViewModel.POL = OceanExportMbl.PolName;
             InfoViewModel.ETD = OceanExportMbl.PolEtd?.ToString("dd-MM-yyyy");
@@ -1526,14 +1527,14 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.PONBR = "";
             InfoViewModel.PKGS = OceanExportHbl.TotalPackage.ToString();
             InfoViewModel.GWT = OceanExportHbl.TotalWeight.ToString();
-            InfoViewModel.MSRMT =OceanExportHbl.TotalMeasure.ToString();
+            InfoViewModel.MSRMT = OceanExportHbl.TotalMeasure.ToString();
             InfoViewModel.RMK = "";
             InfoViewModel.BookingNo = OceanExportMbl.SoNo;
             InfoViewModel.Xtn = OceanExportHbl.SoNo;
             InfoViewModel.SteamShip = OceanExportMbl.MblCarrierName;
             InfoViewModel.PlaceOfLoading = OceanExportHbl.CargoPickUp?.TPName;
             InfoViewModel.PolAddress = OceanExportHbl.CargoPickUp?.TPLocalAddress + "," + OceanExportHbl.CargoPickUp?.CityCode + "," + OceanExportHbl.CargoPickUp?.CountryName;
-            InfoViewModel.ReportId =Guid.Parse(id);
+            InfoViewModel.ReportId = Guid.Parse(id);
 
             //string Input = JsonConvert.SerializeObject(InfoViewModel);
             #endregion
@@ -2242,7 +2243,7 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> DangerousGoods(Guid hawbId) 
+        public async Task<ActionResult> DangerousGoods(Guid hawbId)
         {
             var hawb = await _airExportHawbAppService.GetHawbWithDetailsById(hawbId);
 
@@ -2545,6 +2546,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(InfoModel);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> PickupDeliveryOrderAirExportHawb(PickupDeliveryOrderAirExportHawbModel model)
@@ -3535,6 +3537,76 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(airImportDetails);
         }
+        public async Task<IActionResult> DeliveryOrderOceanImportMawb(Guid id)
+        {
+            DeliveryOrderIndexViewModel InfoViewModel = new DeliveryOrderIndexViewModel();
+
+            //QueryHblDto queryHbl = new QueryHblDto();
+            //queryHbl.Id = Guid.Parse(id);
+            QueryContainerDto query = new QueryContainerDto() { QueryId = id, MaxResultCount = 1000 };
+            var OceanExportMbl = await _oceanImportMblAppService.GetOceanImportDetailsById(id);
+            var containers = await _containerAppService.QueryListAsync(query);
+
+            #region
+            //https://eval-asia.gofreight.co/ocean/export/shipment/OEX-23030003/?hbl=47125&hide_mbl=false
+            InfoViewModel.Office = OceanExportMbl.Office.AbbreviationName;
+            InfoViewModel.Address = "";
+            InfoViewModel.Tel = "+886-2-2545-9900#8671";
+            InfoViewModel.Fax = "";
+            InfoViewModel.Email = "it@dolphin-gp.com";
+            InfoViewModel.FirstName = OceanExportMbl.MblCustomerName; /*"萬泰"*/;
+            InfoViewModel.LastName = "" /*"資訊部"*/;
+            InfoViewModel.DateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
+            InfoViewModel.HBL_LcNo = OceanExportMbl.LCNo;
+            InfoViewModel.trucker_area = "";
+            InfoViewModel.FirstName = OceanExportMbl.MblOperatorName;
+            InfoViewModel.empty_pickup_area = OceanExportMbl.EmptyPickupName;
+            InfoViewModel.issue_at = OceanExportMbl.PostDate.ToString("dd-MM-yyyy");/* "05-09-2023";*/
+            InfoViewModel.issue_by = OceanExportMbl.MblOperatorName;
+            InfoViewModel.MBL_NO = OceanExportMbl.MblNo;
+            InfoViewModel.carrier = OceanExportMbl.MblCarrierName;
+            InfoViewModel.VESSEL_INFO = OceanExportMbl.VesselName + OceanExportMbl.Voyage;
+            InfoViewModel.POR_location = OceanExportMbl.PorName;
+            InfoViewModel.POR_location_ETD = OceanExportMbl.PorEtd?.ToString("dd-MM-yyyy");
+            InfoViewModel.POL_location = OceanExportMbl.PolName;
+            InfoViewModel.POL_location_ETD = OceanExportMbl.PolEtd?.ToString("dd-MM-yyyy");
+            InfoViewModel.POD_location = OceanExportMbl.PodName;
+            InfoViewModel.FdestName = OceanExportMbl.FdestName;
+            InfoViewModel.POD_location_ETD = OceanExportMbl.PodEta?.ToString("dd-MM-yyyy") /*"04-03-2023"*/;
+            InfoViewModel.total_packages_count = OceanExportMbl.TotalPackage.ToString();
+            InfoViewModel.gross_weight_kgs = OceanExportMbl.TotalWeight.ToString();
+            InfoViewModel.gross_weight_lbs = "0.00";
+            InfoViewModel.measurement_cbm = OceanExportMbl.TotalMeasure.ToString();
+            InfoViewModel.measurement_cft = "0.00";
+            InfoViewModel.COMMODITY = OceanExportMbl.Commodity?.ToString();
+            InfoViewModel.LcIssueBank = OceanExportMbl.LCIssueBankName;
+            InfoViewModel.LcIssueDate = OceanExportMbl.LCIssueDate?.ToString("dd-MM-yyyy");
+            InfoViewModel.carrier_bkg_no = OceanExportMbl.SoNo;
+            InfoViewModel.delivery_to_area = OceanExportMbl.DeliveryToName;
+            InfoViewModel.CyLocation = OceanExportMbl.CyLocation;
+            InfoViewModel.delivery_to_date = OceanExportMbl.DelEta?.ToString("dd-MM-yyyy");
+            InfoViewModel.billing_to_area = OceanExportMbl.MblBillToName + "\r\n" + OceanExportMbl.MblBillToContent; /*"HARD CORE TECHNOLOGY\r\n198 PEARSON GATEWAY APT. 555\r\nNORTH JAMES, KY 98809-9933\r\nWALNUT, CA 91789, UNITED STATES\r\nATTN: JENNIFER JIMENEZ TEL: 585.592.4848 FAX: 649-277-5122"*/;
+
+            InfoViewModel.ContainerList = new List<DeliveryOrderContainerList>();
+            foreach (var container in containers)
+            {
+                var con = new
+                  DeliveryOrderContainerList
+                {
+                    PACKAGE = container.PackageNum.ToString(),
+                    WEIGHT = container.PackageWeight + " " + container.PackageWeightUnit,
+                    CONTAINER_NO = container.ContainerNo,
+                    PICKUP_NO = container.PicupNo,
+                    SEAL_NO = container.SealNo,
+                    LFD = container.LastFreeDate.ToString(),
+
+                };
+                InfoViewModel.ContainerList.Add(con);
+            };
+            #endregion
+            return View(InfoViewModel);
+        }
         [HttpPost]
         public async Task<IActionResult> DeliveryOrderAirImportHawb(AirImportDetails model)
         {
@@ -3555,13 +3627,13 @@ namespace Dolphin.Freight.Web.Controllers
             var oceanExportMbl = await _oceanExportMblAppService.GetOceanExportDetailsById(oceanExportDetails.MblId);
             var container = await _containerAppService.GetContainerByHblId(id);
             oceanExportDetails.PackageMeasureName = container?.PackageMeasure.ToString();
-            oceanExportDetails.PackageMeasureName = container?.PackageMeasureUnit=="CBM"? container?.PackageMeasure+" CBM/"+(container?.PackageMeasure * 35.315)+" CFT": container?.PackageMeasure * 0.0283 + " CBM/" +container?.PackageMeasure + " CFT";
-            oceanExportDetails.PackageWeightName = container?.PackageWeightUnit=="KG"? container?.PackageWeight+" KGS/"+(container?.PackageWeight * 2.20462)+" LBS": container?.PackageWeight* 0.453592 + " KGS/" + (container?.PackageWeight ) + " LBS";
+            oceanExportDetails.PackageMeasureName = container?.PackageMeasureUnit == "CBM" ? container?.PackageMeasure + " CBM/" + (container?.PackageMeasure * 35.315) + " CFT" : container?.PackageMeasure * 0.0283 + " CBM/" + container?.PackageMeasure + " CFT";
+            oceanExportDetails.PackageWeightName = container?.PackageWeightUnit == "KG" ? container?.PackageWeight + " KGS/" + (container?.PackageWeight * 2.20462) + " LBS" : container?.PackageWeight * 0.453592 + " KGS/" + (container?.PackageWeight) + " LBS";
             oceanExportDetails.TotalMeasure = (double)container?.PackageMeasure;
             oceanExportDetails.TotalWeight = (double)container?.PackageWeight;
             oceanExportDetails.TotalPackage = (int)container?.PackageNum;
             oceanExportDetails.VesselName = oceanExportMbl.VesselName;
-            
+
             oceanExportDetails.Voyage = oceanExportMbl.Voyage;
             oceanExportDetails.DocNo = oceanExportMbl.DocNo;
             oceanExportDetails.PolName = oceanExportMbl.PolName;
@@ -3579,9 +3651,9 @@ namespace Dolphin.Freight.Web.Controllers
             oceanImportDetails.PackageMeasureName = container?.PackageMeasure.ToString();
             oceanImportDetails.PackageMeasureName = container?.PackageMeasureUnit == "CBM" ? container?.PackageMeasure + " CBM/" + (container?.PackageMeasure * 35.315) + " CFT" : container?.PackageMeasure * 0.0283 + " CBM/" + container?.PackageMeasure + " CFT";
             oceanImportDetails.PackageWeightName = container?.PackageWeightUnit == "KG" ? container?.PackageWeight + " KGS/" + (container?.PackageWeight * 2.20462) + " LBS" : container?.PackageWeight * 0.453592 + " KGS/" + (container?.PackageWeight) + " LBS";
-            oceanImportDetails.TotalMeasure = container?.PackageMeasure!=null?(double)container?.PackageMeasure:0;
-            oceanImportDetails.TotalWeight = container?.PackageMeasure != null ? (double)container?.PackageWeight:0;
-            oceanImportDetails.TotalPackage = container?.PackageMeasure != null ? (int)container?.PackageNum:0;
+            oceanImportDetails.TotalMeasure = container?.PackageMeasure != null ? (double)container?.PackageMeasure : 0;
+            oceanImportDetails.TotalWeight = container?.PackageMeasure != null ? (double)container?.PackageWeight : 0;
+            oceanImportDetails.TotalPackage = container?.PackageMeasure != null ? (int)container?.PackageNum : 0;
             oceanImportDetails.VesselName = oceanExportMbl.VesselName;
 
             oceanImportDetails.Voyage = oceanExportMbl.Voyage;
@@ -3689,7 +3761,7 @@ namespace Dolphin.Freight.Web.Controllers
             var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
             oceanExportDetails.IsPartialView = isPartialView;
 
-            return View("Views/Docs/HBLPackingListOceanExport.cshtml",oceanExportDetails);
+            return View("Views/Docs/HBLPackingListOceanExport.cshtml", oceanExportDetails);
         }
         [HttpPost]
         public async Task<IActionResult> HBLPackingListOceanExport(OceanExportDetails model)
@@ -4394,7 +4466,7 @@ namespace Dolphin.Freight.Web.Controllers
 
                     using (var excel = new ExcelPackage(file))
                     {
-                        
+
                         var sheet = excel.Workbook.Worksheets.First();
 
                         sheet.Cells[5, 8].Value = InfoModel?.CurrentDate?.ToShortDateString() ?? "";
@@ -4533,9 +4605,20 @@ namespace Dolphin.Freight.Web.Controllers
         [HttpGet]
         public IActionResult DocumentPackageHBLPopupPartial(Guid id)
         {
-            OceanExportDetails oceanExportDetails = new OceanExportDetails() {HblId = id };
+            OceanExportDetails oceanExportDetails = new OceanExportDetails() { HblId = id };
 
             return PartialView("Pages/Shared/_HBLDocumentPackagePopup.cshtml", oceanExportDetails);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HBLDocumentPackageOceanExport(Guid id, FreightPageType pageType, string reportType)
+        {
+
+            OceanExportDetails oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+            oceanExportDetails.DDLItems = reportType.Split(',').ToList();
+            oceanExportDetails.HblId = id;
+
+            return View(oceanExportDetails);
         }
 
         [HttpGet]
@@ -4544,11 +4627,11 @@ namespace Dolphin.Freight.Web.Controllers
             switch (reportType)
             {
                 case "HBLPrint":
-                    return await HBLPrintOceanExport(id,pageType,true);
+                    return await HBLPrintOceanExport(id, pageType, true);
                 case "CommercialInvoice":
                     return await CommercialInvoice(id.ToString());
                 case "PackingList":
-                  return await HBLPackingListOceanExport(id,pageType,true);
+                    return await HBLPackingListOceanExport(id, pageType, true);
                 case "CertificateOfOrigin":
                     return await CertificateOfOrigin(id.ToString());
                 default:
@@ -4556,16 +4639,16 @@ namespace Dolphin.Freight.Web.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> HBLDocumentPackageOceanExport(Guid id, FreightPageType pageType, string reportType)
-        {
+        //[HttpGet]
+        //public async Task<IActionResult> HBLDocumentPackageOceanExport(Guid id, FreightPageType pageType, string reportType)
+        //{
            
-            OceanExportDetails oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
-            oceanExportDetails.DDLItems = reportType.Split(',').ToList();
-            oceanExportDetails.HblId = id;
+        //    OceanExportDetails oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+        //    oceanExportDetails.DDLItems = reportType.Split(',').ToList();
+        //    oceanExportDetails.HblId = id;
 
-            return View(oceanExportDetails);
-        }
+        //    return View(oceanExportDetails);
+        //}
         
         [HttpPost]
         public async Task<IActionResult> HBLDocumentPackageOceanExport(string reportType, OceanExportDetails model, CommercialInvoiceIndexViewModel InfoModel
@@ -4578,7 +4661,7 @@ namespace Dolphin.Freight.Web.Controllers
                 case "CommercialInvoice":
                     return await CommercialInvoice(InfoModel);
                 case "PackingList":
-                  return await HBLPackingListOceanExport(model);
+                    return await HBLPackingListOceanExport(model);
                 case "CertificateOfOrigin":
                     return await CertificateOfOrigin(certiModel);
                 default:
@@ -5038,5 +5121,4 @@ namespace Dolphin.Freight.Web.Controllers
 
         #endregion
     }
-    
-}
+} 

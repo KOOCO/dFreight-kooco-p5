@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Dolphin.Freight.Web.ViewModels.PickupDeliveryOrder
+namespace Dolphin.Freight.Web.ViewModels.DeliveryOrder
 {
-    public class PickupDeliveryOrderIndexViewModel
+    public class DeliveryOrderIndexViewModel
     {
+        
         public string BaseUrl { get; set; }
         public string Office { get; set; }
         public string Address { get; set; }
@@ -15,13 +16,13 @@ namespace Dolphin.Freight.Web.ViewModels.PickupDeliveryOrder
         public string LastName { get; set; }
         public string Date { get; set; }
         public string DateTime { get; set; }
-
-
+        public string CurrentDate { get; set; }
+        public bool IsPDF { get; set; }
         public string form_title { get; set; }
         public string issue_at { get; set; }
         public string issue_by { get; set; }
         public string trucker_area { get; set; }
-        public string Hbl_LcNo { get; set; }
+        public string HBL_LcNo { get; set; }
         public string is_show_empty_pickup_area { get; set; }
         public string empty_pickup_area { get; set; }
         public string empty_pickup_ref_no { get; set; }
@@ -51,7 +52,8 @@ namespace Dolphin.Freight.Web.ViewModels.PickupDeliveryOrder
         public string gross_weight_lbs { get; set; }
         public string measurement_cbm { get; set; }
         public string measurement_cft { get; set; }
-
+        public string LcIssueBank { get; set; }
+        public string LcIssueDate { get; set; }
         public string COMMODITY { get; set; }
         public string PO_NO { get; set; }
         public string is_show_bill_to { get; set; }
@@ -64,11 +66,14 @@ namespace Dolphin.Freight.Web.ViewModels.PickupDeliveryOrder
         public string delivery_to_date { get; set; }
         public string delivery_to_time { get; set; }
         public string delivery_to_area { get; set; }
-        public List<PickupDeliveryOrderContainerList> ContainerList { get; set; }
+        public string FdestName { get; set; }
+        public string CyLocation { get; set; }
+        public string PodEta { get; set; }
+        public List<DeliveryOrderContainerList> ContainerList { get; set; }
         //ReportLog
         public Guid ReportId { get; set; }
     }
-    public class PickupDeliveryOrderContainerList
+    public class DeliveryOrderContainerList
     {
         public string chk { get; set; }
         public string CONTAINER_NO { get; set; }
@@ -80,3 +85,4 @@ namespace Dolphin.Freight.Web.ViewModels.PickupDeliveryOrder
         public string LFD { get; set; }
     }
 }
+
