@@ -10,14 +10,14 @@
 
 <script>
     $(document).ready(function () {
-        debugger
         var isHblLocked = '@Model.OceanExportHblDto.IsLocked';
         if (isHblLocked == 'True') {
-            $('#lockButtonHbl').find('i').addClass('fa fa-lock')
+            $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+            $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
         }
         else {
-            $('#deleteButtonHbl').toggle();
-            $('#lockButtonMbl').find('i').addClass('fa fa-lock-open')
+            $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+            $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
         }
     });
     function getDocPackagePopUp() {
@@ -206,12 +206,12 @@
         </abp-card-title>
           <input type="hidden" name="OceanExportHbl.Id" id="OceanExportHbl_Id" value="@Model.OceanExportHblDto.Id" />
           <div class="btn-group dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                                @L["Display:Function"]
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDropHbl" data-bs-toggle="dropdown">
+                                                
                             </button>
-                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop" style="max-height:300px !important;overflow:auto">
+                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDropHbl" style="max-height:300px !important;overflow:auto">
                 <a class='dropdown-item' id="lockButtonHbl" href='javascript:void(0)' onclick="lockUnlockHbl('@Model.OceanExportHblDto.Id')">
-                                        <i class=""></i> @L["Btn:Lock"]
+                                       
                                     </a>
                                     <li class="dropdown-divider"></li>
         <a class='dropdown-item' href='javascript:void(0)' onclick="getDocPackagePopUp()">
