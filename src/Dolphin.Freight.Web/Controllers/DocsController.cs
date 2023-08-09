@@ -3699,7 +3699,7 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/HBLPackingListOceanExport.cshtml", model);
         }
 
-        public async Task<IActionResult> PrintMBLInstruction(Guid id, FreightPageType pageType)
+        public async Task<IActionResult> PrintMBLInstruction(Guid id, FreightPageType pageType, bool isPartialView = false)
         {
             var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
             var containerName = _dropdownService.ContainerLookupList;
@@ -3735,8 +3735,9 @@ namespace Dolphin.Freight.Web.Controllers
             oceanExportDetails.TotalMeasureStr = string.Concat(totalPackageMeasure + " CBM " + Math.Round(totalPackageMeasure * 35.315, 2) + " CFT");
             oceanExportDetails.CreateUpdateContainerDtos = list;
             oceanExportDetails.CreateUpdateContainerDtosJson = JsonConvert.SerializeObject(list);
+            oceanExportDetails.IsPartialView = isPartialView;
 
-            return View(oceanExportDetails);
+            return View("Views/Docs/PrintMBLInstruction.cshtml", oceanExportDetails);
         }
         [HttpPost]
         public async Task<IActionResult> PrintMBLInstruction(OceanExportDetails model)
@@ -3996,7 +3997,7 @@ namespace Dolphin.Freight.Web.Controllers
             return PartialView("Pages/Shared/_ManifestOceanExportMBL.cshtml", oceanExportDetails);
         }
 
-        public async Task<IActionResult> ManifestOceanExportMBL(Guid mblId, string agent, FreightPageType pageType)
+        public async Task<IActionResult> ManifestOceanExportMBL(Guid mblId, string agent, FreightPageType pageType, bool isPartialView = false)
         {
             var oceanExportDetails = await GetOceanExportDetailsByPageType(mblId, pageType);
             var containerName = _dropdownService.ContainerLookupList;
@@ -4026,8 +4027,9 @@ namespace Dolphin.Freight.Web.Controllers
 
             oceanExportDetails.CreateUpdateContainer = list;
             oceanExportDetails.CreateUpdateContainerJson = JsonConvert.SerializeObject(list);
+            oceanExportDetails.IsPartialView = isPartialView;
 
-            return View(oceanExportDetails);
+            return View("Views/Docs/ManifestOceanExportMBL.cshtml",oceanExportDetails);
         }
         [HttpPost]
         public async Task<IActionResult> ManifestOceanExportMBL(OceanExportDetails model)
@@ -4039,7 +4041,7 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/ManifestOceanExportMBL.cshtml", model);
         }
 
-        public async Task<IActionResult> ManifestOceanExportContainer(Guid mblId, FreightPageType pageType)
+        public async Task<IActionResult> ManifestOceanExportContainer(Guid mblId, FreightPageType pageType, bool isPartialView = false)
         {
             var oceanExportDetails = await GetOceanExportDetailsByPageType(mblId, pageType);
             var containerName = _dropdownService.ContainerLookupList;
@@ -4117,8 +4119,9 @@ namespace Dolphin.Freight.Web.Controllers
             oceanExportDetails.HblsJson = JsonConvert.SerializeObject(hbllists);
             oceanExportDetails.CreateUpdateContainer = list;
             oceanExportDetails.CreateUpdateContainerJson = JsonConvert.SerializeObject(list);
+            oceanExportDetails.IsPartialView = isPartialView;
 
-            return View(oceanExportDetails);
+            return View("Views/Docs/ManifestOceanExportContainer.cshtml", oceanExportDetails);
         }
         [HttpPost]
         public async Task<IActionResult> ManifestOceanExportContainer(OceanExportDetails models)
@@ -4536,17 +4539,6 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> HBLDocumentPackageOceanExport(Guid id, FreightPageType pageType, string reportType)
-        {
-           
-            OceanExportDetails oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
-            oceanExportDetails.DDLItems = reportType.Split(',').ToList();
-            oceanExportDetails.HblId = id;
-
-            return View(oceanExportDetails);
-        }
-
-        [HttpGet]
         public async Task<IActionResult> GetDocPKGReportPartial(Guid id, FreightPageType pageType, string reportType)
         {
             switch (reportType)
@@ -4563,6 +4555,18 @@ namespace Dolphin.Freight.Web.Controllers
                     return await BankDraft(id.ToString());
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> HBLDocumentPackageOceanExport(Guid id, FreightPageType pageType, string reportType)
+        {
+           
+            OceanExportDetails oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+            oceanExportDetails.DDLItems = reportType.Split(',').ToList();
+            oceanExportDetails.HblId = id;
+
+            return View(oceanExportDetails);
+        }
+        
         [HttpPost]
         public async Task<IActionResult> HBLDocumentPackageOceanExport(string reportType, OceanExportDetails model, CommercialInvoiceIndexViewModel InfoModel
             , CertificateOfOriginIndexViewModel certiModel, BankDraftIndexViewModel BDModel)
@@ -4579,6 +4583,142 @@ namespace Dolphin.Freight.Web.Controllers
                     return await CertificateOfOrigin(certiModel);
                 default:
                     return await BankDraft(BDModel);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult DocumentPackageMBLPopupPartial(Guid id)
+        {
+            OceanExportDetails oceanExportDetails = new OceanExportDetails() {MblId = id };
+
+            return PartialView("Pages/Shared/_MBLDocumentPackagePopup.cshtml", oceanExportDetails);
+        }
+        [HttpGet]
+        public async Task<IActionResult> MBLDocumentPackageOceanExport(Guid id, FreightPageType pageType, string reportType, string displayBy)
+        {
+           
+            OceanExportDetails oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType);
+
+            QueryContainerDto query = new QueryContainerDto() { QueryId = id };
+            var containers = await _containerAppService.QueryListAsync(query);
+            var hblLists = await _oceanExportHblAppService.GetHblCardsById(id);
+            var containersList = new List<CreateUpdateContainerDto>();
+            var containerList = _dropdownService.ContainerLookupList;
+            var listOfHBL = new List<Hbl>();
+
+            if (containers.Any())
+            {
+                foreach(var item in containers)
+                {
+                    var container = new CreateUpdateContainerDto();
+                    if(item.ContainerSizeId != null)
+                        container.ContainerSizeName = string.Concat(containerList.Where(w => w.Value == Convert.ToString(containers[0].ContainerSizeId)).Select(s => s.Text));
+                    if (item.ContainerNo != null)
+                        container.ContainerNo = item.ContainerNo;
+                    if (item.SealNo != null)
+                        container.SealNo = item.SealNo;
+                     
+                    containersList.Add(container);
+                }
+            }
+
+            foreach (var item in hblLists)
+            {
+                var hbl = new Hbl
+                {
+                    Id = string.Concat(item.Id),
+                    HblNo = item.HblNo
+                };
+                listOfHBL.Add(hbl);      
+            }
+
+            var ddlList = new List<string>();
+            foreach (var item in reportType.Split(','))
+            {
+                if(item == "MBL Export Manifest")
+                {
+                    foreach (var contr in containers)
+                    {
+                        ddlList.Add(item + " - " + contr.ContainerNo);
+                    }
+                }
+                else if ( item == "Print HBL" || item == "Commercial Invoice")
+                {
+                    foreach (var hbl in listOfHBL)
+                    {
+                        ddlList.Add(item + " - " + hbl.HblNo);
+                    }
+                }
+                else 
+                {
+                    ddlList.Add(item);
+                }
+
+            }
+
+            
+
+            oceanExportDetails.Hbls = listOfHBL;
+            oceanExportDetails.HblsJson = JsonConvert.SerializeObject(listOfHBL);
+            oceanExportDetails.DDLItems = ddlList;
+            //oceanExportDetails.DDLItems = reportType.Split(',').ToList();
+            oceanExportDetails.DisplayReportBy = displayBy;
+            oceanExportDetails.MblId = id;
+            oceanExportDetails.CreateUpdateContainer = containersList;
+            oceanExportDetails.CreateUpdateContainerJson = JsonConvert.SerializeObject(containersList);
+
+            return View(oceanExportDetails);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDocPKGReportPartialMBL(Guid id, FreightPageType pageType, string reportType, string displayBy)
+        {
+            //switch (reportType.Split('-')[0].TrimEnd())
+
+            switch (reportType)
+            {
+                case "MBL Export Manifest":
+                    if(displayBy == "Display by container")
+                    {
+                        return await ManifestOceanExportContainer(id,pageType,true);
+                    }
+                    else
+                    {
+                        return await ManifestOceanExportMBL(id,null,pageType,true);
+                    }
+                    
+                case "Print HBL BLInstruction":
+                    return await PrintMBLInstruction(id,pageType, true);
+                case "Print HBL":
+                  return await HBLPrintOceanExport(id,pageType,true);
+                default:
+                    return await CommercialInvoice(id.ToString());
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> MBLDocumentPackageOceanExport(string reportType, string displayBy, string mblSizeQtyInfo, OceanExportDetails model, CommercialInvoiceIndexViewModel InfoModel)
+        {
+            switch (reportType)
+            {
+                case "MBL Export Manifest":
+                    if(displayBy == "Container")
+                    {
+                        model.DisplayMblContainerSizeQtyInfo = mblSizeQtyInfo;
+                        return await ManifestOceanExportContainer(model);
+                    }
+                    else
+                    {
+                        return await ManifestOceanExportMBL(model);
+                    }
+                    
+                case "Print HBL BLInstruction":
+                    return await PrintMBLInstruction(model);
+                case "HBLPrint":
+                  return await HBLPrintOceanExport(model);
+                default:
+                    return await CommercialInvoice(InfoModel);
             }
         }
 

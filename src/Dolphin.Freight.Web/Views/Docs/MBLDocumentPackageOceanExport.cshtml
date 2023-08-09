@@ -1,0 +1,168 @@
+﻿@model Dolphin.Freight.ImportExport.OceanExports.OceanExportDetails
+
+@{
+    Layout = null;
+    var previousDDlItem = @Model.DDLItems[0].Split('-')[0].TrimEnd();
+}
+
+<abp-style src="/Pages/Reports/Reports.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        debugger;
+        $('#previousDDL').val('');
+        getReportPartial($('#ddlReportType option:selected').val().split('-')[0].trim(), 0);
+
+        $("#ddlReportType").on('change', function () {
+
+            debugger;
+
+            var reportType = ($('#ddlReportType').val()).split('-')[0].trim();
+            var selectedIndex = $(this).find('option:selected').index();
+
+            getReportPartial(reportType, selectedIndex);
+            
+        })
+    })
+
+    function getReportPartial(ReportType, selectedIndex) {
+        debugger;
+        if($('#previousDDL').val() == ReportType){
+                var cntrData = @Html.Raw(Model.CreateUpdateContainerJson);
+                var cntrNo = cntrData[selectedIndex].ContainerNo;
+                var sealNo = cntrData[selectedIndex].SealNo;
+                var size = cntrData[selectedIndex].ContainerSizeName;
+                $('#containerData').text(cntrNo + " / " + sealNo + " / " + size);
+                $('#mblSizeQtyInfo').val(cntrNo + " / " + sealNo + " / " + size);
+        }
+        else if(ReportType == 'MBL Export Manifest' && $('#previousDDL').val() != 'MBL Export Manifest'){
+            $('#previousDDL').val('MBL Export Manifest');
+            $.ajax({
+                url: '/Docs/GetDocPKGReportPartialMBL?id=@Model.MblId&pageType=@Dolphin.Freight.Common.FreightPageType.OEMBL&displayBy=@Model.DisplayReportBy&reportType=' + ReportType,
+                type: 'GET',
+                dataType: "html",
+                success: function (reportyBody) {
+                    $('#docPkgMBLBody').html('');
+                    $('#docPkgMBLBody').html(reportyBody);
+                    var cntrData = @Html.Raw(Model.CreateUpdateContainerJson);
+                    var cntrNo = cntrData[selectedIndex].ContainerNo;
+                    var sealNo = cntrData[selectedIndex].SealNo;
+                    var size = cntrData[selectedIndex].ContainerSizeName;
+                    $('#containerData').text(cntrNo + " / " + sealNo + " / " + size);
+                    $('#mblSizeQtyInfo').val(cntrNo + " / " + sealNo + " / " + size);
+                }
+            });
+        }
+        else if(ReportType == 'Print HBL BLInstruction'){
+            $.ajax({
+                url: '/Docs/GetDocPKGReportPartialMBL?id=@Model.MblId&pageType=@Dolphin.Freight.Common.FreightPageType.OEMBL&displayBy=@Model.DisplayReportBy&reportType=' + ReportType,
+                type: 'GET',
+                dataType: "html",
+                success: function (reportyBody) {
+                    $('#docPkgMBLBody').html('');
+                    $('#docPkgMBLBody').html(reportyBody);
+                }
+            });
+        }
+        else{
+            var hblsData = @Html.Raw(Model.HblsJson);
+            var hblId = hblsData[selectedIndex].Id;
+            if (ReportType == 'Print HBL' || ReportType == 'Commercial Invoice'){
+                $('#previousDDL').val('');
+
+                $.ajax({
+                    url: '/Docs/GetDocPKGReportPartialMBL?id=' + hblId + '&pageType=@Dolphin.Freight.Common.FreightPageType.OEHBL&displayBy=@Model.DisplayReportBy&reportType=' + ReportType,
+                    type: 'GET',
+                    dataType: "html",
+                    success: function (reportyBody) {
+                        $('#docPkgMBLBody').html('');
+                        $('#docPkgMBLBody').html(reportyBody);
+                    }
+                });
+            }
+        }
+    }
+
+    function printReport() {
+        document.getElementById("myForm").submit();
+    }
+</script>
+
+<div id="docPkgMBLHeader">
+    @if (!Model.IsPDF)
+    {
+        <div class="nav">
+            <ul>
+                <li>
+                    <button type="button" style="width:120px; color:white" onclick="printReport()"><i class="fa fa-print">儲存PDF或列印</i></button>
+                </li>
+                <li>
+                    @*<select id="ddlReportType">
+                        @for (int i = 0; i < Model.DDLItems.Count; i++)
+                        {
+                            if (i == 0)
+                            {
+                                <option value="@Model.DDLItems[i]" selected>@Model.DDLItems[i]</option>
+                            }
+                            else
+                            {
+                                <option value="@Model.DDLItems[i]">@Model.DDLItems[i]</option>
+                            }
+                        }
+                    </select>*@
+                    <select id="ddlReportType">
+                        @{
+                            var previousGroup = string.Empty;
+                        }
+                        @foreach (var item in Model.DDLItems)
+                        {
+
+                            var parts = item.Split(new[] { " - " }, StringSplitOptions.None);
+                            var groupName = parts[0];
+                            @*var optionValue = parts[1];*@
+
+                            if (groupName != previousGroup)
+                            {
+                                if (!string.IsNullOrEmpty(previousGroup))
+                                {
+                                    @:</optgroup>
+                                }
+            
+                                previousGroup = groupName;
+                                @:<optgroup label="@groupName">
+                            }
+        
+                            <option value="@item">@item</option>
+                        }
+    
+                        @if (!string.IsNullOrEmpty(previousGroup))
+                        {
+                            @:</optgroup>
+                        }
+                    </select>
+                </li><!-- end ngIf: vm.canSelectLanguage -->
+            </ul>
+            <div class="view-setting">
+                <div class="btn-group">
+                    <button class="button btn-sm" title="Zoom Out" id="zout" disabled="disabled">
+                        <i class="fa fa-search-minus"></i>
+                    </button>
+                    <button class="button btn-sm" title="Zoom In" id="zin">
+                        <i class="fa fa-search-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div>
+    <div id="docPkgMBLBody">
+    </div>
+</div>
+
+<form>
+    <input type="hidden" id="previousDDL" />
+</form>
+
+

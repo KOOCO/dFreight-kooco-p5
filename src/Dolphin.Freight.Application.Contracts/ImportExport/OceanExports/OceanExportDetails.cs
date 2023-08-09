@@ -547,10 +547,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public bool showContainerRider { get; set; } = true;
         public List<string> DDLItems { get; set; }
         public bool IsPartialView { get; set; } = false;
+        public string DisplayReportBy { get; set; }
     }
 
     public class Hbl
     {
+        public string Id { get; set; }
         public string HblNo { get; set; }
         public string HblPcs { get; set; }
         public string Weight { get; set; }

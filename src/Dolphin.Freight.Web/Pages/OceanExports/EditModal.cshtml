@@ -531,8 +531,8 @@
                                         <i class="fa fa-file-text-o"></i> @L["GoFreight EDI"]
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <a class='dropdown-item' href='javascript:void(0)'>
-                                        <i class="fa fa-files-o"></i> @L["Btn:File Package"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getMBLDocPackagePopUp()">
+                                        <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PrintMBLInstruction", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Print MB/L | B/L Instruction"]
@@ -970,6 +970,9 @@
     
 </div>
 
+<div class="modal" id="MBLDocumentPackageModal">
+</div>
+
 <script>
     var changeReport = function (sel) {
         if (sel.value === 'CARRIER')
@@ -977,4 +980,17 @@
         else
             $('.reporttype').show();
     }
+
+    function getMBLDocPackagePopUp() {
+        $.ajax({
+            url: '/Docs/DocumentPackageMBLPopupPartial?id=@Model.OceanExportMbl.Id',
+            type: 'GET',
+            dataType: "html",
+            success: function (res) {
+                $('#MBLDocumentPackageModal').html(res);
+                $('#MBLDocumentPackageModal').modal('show');
+            }
+        });
+    }
+
 </script>

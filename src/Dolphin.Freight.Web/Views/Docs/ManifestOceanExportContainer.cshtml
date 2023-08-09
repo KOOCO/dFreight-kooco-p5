@@ -69,6 +69,7 @@
         setTimeout( () => $('#containerList').trigger('change'), 100);
         
         $('#containerList').on('change', function() {
+            debugger;
             var selectedOption = $(this).find('option:selected');
             var id = selectedOption.data('id');
             var containerNo = selectedOption.data('containerno');
@@ -139,7 +140,7 @@
         document.getElementById("myForm").submit();
     }
 </script>
-@if (!Model.IsPDF)
+@if (!Model.IsPDF && !Model.IsPartialView)
 {
     <div class="nav">
         <ul>
@@ -167,6 +168,9 @@
 }
 
 <form id="myForm" method="post">
+    <input type="hidden" name="reportType" value="MBL Export Manifest" />
+    <input type="hidden" name="displayBy" value="Container" />
+    <input type="hidden" id="mblSizeQtyInfo" name="mblSizeQtyInfo" />
     <input type="hidden" asp-for="@Model.MblOverseaAgentName" />
     <input type="hidden" asp-for="@Model.MblNo" />
     <input type="hidden" asp-for="@Model.SoNo" />
