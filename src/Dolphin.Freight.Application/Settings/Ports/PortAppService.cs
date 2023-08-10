@@ -36,7 +36,7 @@ namespace Dolphin.Freight.Settings.Ports
             var query = await _repository.GetQueryableAsync();
             query = query.WhereIf(!string.IsNullOrEmpty(input.Filter), x=>x.PortName
                                    .Contains(input.Filter) || x.SubDiv
-                                   .Contains(input.Filter)).OrderBy(input.Sorting);
+                                   .Contains(input.Filter));
 
             var result = query.Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
             listDto.Items = ObjectMapper.Map<List<Port>, List<PortDto>>(result);
