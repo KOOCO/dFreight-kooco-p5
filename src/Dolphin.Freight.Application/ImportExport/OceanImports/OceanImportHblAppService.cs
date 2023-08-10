@@ -249,7 +249,12 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 oceanImportDetails = ObjectMapper.Map<OceanImportHbl, OceanImportDetails>(data);
 
                 var mbl = await _mblRepository.GetAsync(data.MblId.GetValueOrDefault());
-
+                if (data.HblBillToId != null)
+                {
+                    var billto = tradePartners.Where(w => w.Id == data.HblBillToId).FirstOrDefault();
+                    oceanImportDetails.MblBillToName = string.Concat(billto.TPName, "/", billto.TPCode);
+                    oceanImportDetails.MblBillToContent=billto.TPLocalAddress;
+                }
                 if (data.HblShipperId != null)
                 {
                     var shipper = tradePartners.Where(w => w.Id == data.HblShipperId).FirstOrDefault();
@@ -283,6 +288,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 {
                     var EmptyPickup = tradePartners.Where(w => w.Id == data.EmptyPickupId).FirstOrDefault();
                     oceanImportDetails.EmptyPickupName = string.Concat(EmptyPickup?.TPName, "/", EmptyPickup?.TPCode)?.TrimStart('/');
+                  
                 }
                 if (data.DeliveryToId != null)
                 {
@@ -395,7 +401,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 oceanImportDetails.HblNo = data.HblNo;
                 oceanImportDetails.SoNo = mbl.SoNo;
                 oceanImportDetails.HblSoNo = data.SoNo;
-                oceanImportDetails.DocNo = mbl.FilingNo;
+                oceanImportDetails.MblFillingNo = mbl.FilingNo;
                 //oceanExportDetails.ItnNo = data.ItnNo;
                 oceanImportDetails.MblDel = mbl.Del?.PortName;
                 oceanImportDetails.LCNo = data.LcNo;
@@ -413,7 +419,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 oceanImportDetails.Mark = data.Mark;
                 oceanImportDetails.MblNo = mbl.MblNo;
                 oceanImportDetails.MblPostDate = mbl.PostDate;
-                
+                oceanImportDetails.EmptyPickUpDate = data.CargoArrivalDate;
                 oceanImportDetails.EarlyReturnDateTime = data.EarlyReturnDateTime;
 
                 oceanImportDetails.Description = data.Description;

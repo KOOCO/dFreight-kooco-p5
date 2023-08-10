@@ -3698,7 +3698,19 @@ namespace Dolphin.Freight.Web.Controllers
 
             return await _generatePdf.GetPdf("Views/Docs/CarrierCertificateAirImportHawb.cshtml", model);
         }
+        public async Task<IActionResult> CarrierCertificateOceanImportHbl(Guid id, FreightPageType pageType)
+        {
+            var airImportDetails = await GetOceanImportDetailsByPageType(id, pageType);
 
+            return View(airImportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CarrierCertificateOceanImportHbl(OceanImportDetails model)
+        {
+            model.IsPDF = true;
+
+            return await _generatePdf.GetPdf("Views/Docs/CarrierCertificateOceanImportHbl.cshtml", model);
+        }
         public async Task<IActionResult> ReleaseOrderAirImportHawb(Guid id, FreightPageType pageType)
         {
             var airImportDetails = await GetAirImportDetailsByPageType(id, pageType);

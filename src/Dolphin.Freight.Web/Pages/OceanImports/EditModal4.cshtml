@@ -307,17 +307,17 @@
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Proof of Delivery"]
                                 </a>
                               <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ReleaseOrderOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
-                            <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
-                        </a>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
+                                </a>
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getPreliminaryClaim()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
                                 </a>
                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ExamHoldNoticeOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
-                            <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
-                        </a>
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
-                                </a>
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
+                                    </a>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("CarrierCertificateOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                                     <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
+                                 </a>
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Pickup Delivery Instruction"]
                                 </a>

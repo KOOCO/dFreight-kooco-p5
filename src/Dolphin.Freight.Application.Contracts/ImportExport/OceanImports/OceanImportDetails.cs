@@ -491,6 +491,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string TotalNetWeightStr { get; set; }
         public string TotalPCSStr { get; set; }
         public string TotalPackagesStr { get; set; }
+
         public string TotalAmountStr { get; set; }
         /// <summary>
         /// 總材積
@@ -542,7 +543,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string CommoditiesJson { get; set; }
         public string Net_weight_unit { get; set; }
         public string Gross_weight_unit { get; set; }
+        public DateTime? EmptyPickUpDate { get; set; }
         public List<ContainerList> ContainerList { get; set; }
+        public string MblFillingNo { get; set; }
     }
     public class ContainerList
     {
