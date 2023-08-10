@@ -45,6 +45,7 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public string SvcTermFromName { get; set; }
         public bool IsCustomerRef { get; set; }
         public string ContainerNo { get; set; }
+        public string ContainerCount { get; set; }
         public string MblReferralByName { get; set; }
         public string PackageWeightName { get; set; }
         public string PackageCategoryName { get; set; }

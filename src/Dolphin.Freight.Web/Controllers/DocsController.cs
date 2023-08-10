@@ -4890,6 +4890,37 @@ namespace Dolphin.Freight.Web.Controllers
         {
             var oceanImportDetails = await GetOceanImportDetailsByPageType(id, pageType, true);
 
+            QueryContainerDto query = new QueryContainerDto() { QueryId = id };
+            var containers = _dropdownService.ContainerLookupList;
+            var containersList = await _containerAppService.QueryListAsync(query);
+
+            var containerNums = "";
+            var cntrSizeInfo = "";
+            var cntrSizeOccurence = new Dictionary<string,int>();
+
+            foreach (var item in containersList)
+            {
+                if(item.ContainerSizeId != Guid.Empty)
+                {
+                    containerNums += item.ContainerNo + ", ";
+
+                    var sizeName = string.Concat(containers.Where(w => w.Value == Convert.ToString(item.ContainerSizeId)).Select(s => s.Text));   
+                    if (cntrSizeOccurence.ContainsKey(sizeName))
+                    {
+                        cntrSizeOccurence[sizeName]++;
+                    }
+                    else
+                    {
+                        cntrSizeOccurence[sizeName] = 1;
+                    }
+                }
+            }
+
+            foreach(var kvp in cntrSizeOccurence)
+            {
+                cntrSizeInfo = kvp.Key + " X " + kvp.Value + ", ";
+            }
+
             var profitReport = new ProfitReportViewModel()
             {
                 AgentName = oceanImportDetails.ShippingAgentName,
@@ -4898,13 +4929,14 @@ namespace Dolphin.Freight.Web.Controllers
                 PorName = oceanImportDetails.PorName,
                 ShipModeName = oceanImportDetails.ShipModeName,
                 Del = oceanImportDetails.DelName,
-                ContainerNo = oceanImportDetails.ContainerNo,
-                FileNo =oceanImportDetails.FilingNo,
+                FileNo =oceanImportDetails.DocNo,
                 PackageWeightName = oceanImportDetails.PackageWeightName,
                 PodEtd     = oceanImportDetails.PodEta.ToString(),
                 PolEtd = oceanImportDetails.PolEtd.ToString(),
                 Operator = oceanImportDetails.MblOperatorName,
                 MawbNo = oceanImportDetails.MblNo,
+                ContainerNo = containerNums.TrimEnd(' ', ','),
+                ContainerCount = cntrSizeInfo.TrimEnd(' ', ','),
                 PolName = oceanImportDetails.PolName,
                 PodName = oceanImportDetails.PodName,
                 IsCustomerRef = oceanImportDetails.IsCustomerRef,
@@ -4917,7 +4949,9 @@ namespace Dolphin.Freight.Web.Controllers
                 Consignee = oceanImportDetails.MblConsigneeName,
                 MblReferralByName = oceanImportDetails.MblReferralByName,
                 ReportType = reportType,
-                PageType = pageType
+                PageType = pageType,
+                SvcTermFromName = oceanImportDetails.SvcTermFromName,
+                SvcTermToName = oceanImportDetails.SvcTermToName
             };
             
              string returnUrl = pageType == FreightPageType.OIMBL
@@ -5018,9 +5052,9 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/ManifestOceanImportMBL.cshtml", model);
         }
 
-            #region Private Functions
+        #region Private Functions
 
-            private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
+        private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
         {
             var data = new AirExportDetails();
 
@@ -5173,18 +5207,11 @@ namespace Dolphin.Freight.Web.Controllers
             var containers = new List<ContainerDto>();
             switch (pageType)
             {
-                case FreightPageType.OEMBL:
-                   
-                    break;
-                case FreightPageType.OEHBL:
-                   
-                    break;
                 case FreightPageType.OIMBL:
                     data = await _oceanImportMblAppService.GetOceanImportDetailsById(Id);
                     break;
                 case FreightPageType.OIHBL:
                     data = await _oceanImportHblAppService.GetOceanImportDetailsById(Id);
-                    containers = await _containerAppService.QueryListHblAsync(Id);
                     break;
                 default:
                     break;

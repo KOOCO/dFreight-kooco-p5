@@ -213,6 +213,7 @@ table td {
     <input type="hidden" asp-for="@Model.PolEtd" />
     <input type="hidden" asp-for="@Model.MblReferralByName" />
     <input type="hidden" asp-for="@Model.InvoicesJson" />
+    <input type="hidden" asp-for="@Model.ContainerCount" />
     
     <div id="main" class="edit">
      
@@ -248,7 +249,7 @@ table td {
                     <tbody>
                         <tr>
                             <td class="w-19" style="width: 20% !important">CONTAINER COUNT :</td>
-                            <td class="w-35"></td>
+                            <td class="w-35">@Model.ContainerCount</td>
 
                             <td class="w-12 col-padding">P.O.R:</td>
                             <td class="w-38 col-padding">@Model.PorName</td>
@@ -282,7 +283,7 @@ table td {
                             <td>MASTER B/L NO:</td>
                             <td>@Model.MawbNo</td>
                             <td style="white-space:nowrap">SERVICE TERM:</td>
-                            <td style="padding-left:20px">@string.Concat(@Model.SvcTermToName, "-",  @Model.SvcTermFromName)?.TrimStart('-')</td>
+                            <td style="padding-left:20px">@string.Concat(@Model.SvcTermFromName, "-",  @Model.SvcTermToName)?.TrimStart('-')</td>
                         </tr>
                         <tr>
                             <td>WEIGHT:</td>
