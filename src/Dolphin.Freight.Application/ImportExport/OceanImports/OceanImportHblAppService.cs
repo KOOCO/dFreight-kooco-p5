@@ -241,7 +241,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             var portMangements = ObjectMapper.Map<List<PortsManagement>, List<PortsManagementDTO>>(await _portsManagementRepository.GetListAsync());
             var sysCodes = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(await _sysCodeRepository.GetListAsync());
             var substations = ObjectMapper.Map<List<Substation>, List<SubstationDto>>(await _substationRepository.GetListAsync());
-
+           
             var data = await _repository.GetAsync(Id);
 
             if (data != null)
@@ -288,6 +288,13 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 {
                     var DeliveryTo = tradePartners.Where(w => w.Id == data.DeliveryToId).FirstOrDefault();
                     oceanImportDetails.DeliveryToName = string.Concat(DeliveryTo?.TPName, "/", DeliveryTo?.TPCode)?.TrimStart('/');
+                }
+                if (data.FbaFcId != null)
+                {
+
+                    var Fbafc = tradePartners.Where(w => w.Id == data.FbaFcId).FirstOrDefault();
+                    oceanImportDetails.DeliveryToName = string.Concat(Fbafc?.TPName, "/", Fbafc?.TPCode)?.TrimStart('/');
+
                 }
                 if (data.PorId != null)
                 {
@@ -406,7 +413,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 oceanImportDetails.Mark = data.Mark;
                 oceanImportDetails.MblNo = mbl.MblNo;
                 oceanImportDetails.MblPostDate = mbl.PostDate;
-
+                
                 oceanImportDetails.EarlyReturnDateTime = data.EarlyReturnDateTime;
 
                 oceanImportDetails.Description = data.Description;

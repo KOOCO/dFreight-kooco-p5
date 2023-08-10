@@ -45,7 +45,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string AmsNo { get; set; }
         public Guid? MblCarrierId { get; set; }
         public string MblCarrierName { get; set; }
-
+        public string FbaFC { get; set; }
         public string MblCarrierContent { get; set; }
         public Guid? BlAcctCarrierId { get; set; }
         public string BlAcctCarrierName { get; set; }
