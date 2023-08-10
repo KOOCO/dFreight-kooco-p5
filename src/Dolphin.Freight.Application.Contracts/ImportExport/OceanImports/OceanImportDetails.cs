@@ -37,14 +37,15 @@ namespace Dolphin.Freight.ImportExport.OceanImports
 
         [DataType(DataType.Date)]
         public DateTime PostDate { get; set; }
-
+        public Guid? CyLocationId { get; set; }
+        public string CyLocation { get; set; }
         public string SoNo { get; set; }
         public string HblSoNo { get; set; }
         public string ItnNo { get; set; }
         public string AmsNo { get; set; }
         public Guid? MblCarrierId { get; set; }
         public string MblCarrierName { get; set; }
-
+        public string FbaFC { get; set; }
         public string MblCarrierContent { get; set; }
         public Guid? BlAcctCarrierId { get; set; }
         public string BlAcctCarrierName { get; set; }
@@ -491,6 +492,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string TotalNetWeightStr { get; set; }
         public string TotalPCSStr { get; set; }
         public string TotalPackagesStr { get; set; }
+
         public string TotalAmountStr { get; set; }
         /// <summary>
         /// 總材積
@@ -529,7 +531,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string DisplayUnit { get; set; }
         public string ContainerNo { get; set; }
         public string MblFdestName { get; set; }
-        public string PackageUnitName { get; set; }
+        public string PackagpackageUnitName { get; set; }
 
         public TradePartnerDto CargoPickUp { get; set; }
         public string CreateUpdateContainerJson { get; set; }
@@ -542,6 +544,20 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string CommoditiesJson { get; set; }
         public string Net_weight_unit { get; set; }
         public string Gross_weight_unit { get; set; }
+        public DateTime? EmptyPickUpDate { get; set; }
+        public List<ContainerList> ContainerList { get; set; }
+        public string MblFillingNo { get; set; }
+    }
+    public class ContainerList
+    {
+        public string chk { get; set; }
+        public string CONTAINER_NO { get; set; }
+        public string TYPE { get; set; }
+        public string SEAL_NO { get; set; }
+        public string PACKAGE { get; set; }
+        public string WEIGHT { get; set; }
+        public string PICKUP_NO { get; set; }
+        public string LFD { get; set; }
     }
 
 }
