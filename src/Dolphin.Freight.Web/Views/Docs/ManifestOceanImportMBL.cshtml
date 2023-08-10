@@ -175,6 +175,8 @@ table td {
     });
 
     document.addEventListener('DOMContentLoaded', function(){
+        $('#id_container_no_area').val($('#id_container_no_area').val().trimStart());
+
         let rows = document.querySelectorAll("#table tr.tr1");
         let rows2 = document.querySelectorAll("#table tr.tr2");
 
@@ -402,12 +404,9 @@ table td {
                                 <td class="td col-padding-double td-item">
                                     <div class="item-edit hover-toggle-icon-text-template">
                                         <textarea name="container_no_area" cols="40" rows="6" class="text-scroll ng-isolate-scope" id="id_container_no_area">
-                                            @*@foreach(var item in Model.CreateUpdateContainerDtos)
-                                            {   *@ 
-                                                 @(
-                                                    (string.Join("\n", Model.CreateUpdateContainerDtos.Select(item => $"{item.ContainerNo} / {item.SealNo} / {item.ContainerSizeName}"))).Trim()
-                                                )
-                                           @* }*@
+                                            @(
+                                                (string.Join("\n", Model.CreateUpdateContainerDtos.Where(w => !string.IsNullOrEmpty(w.ContainerNo)).Select(item => string.Concat(item.ContainerNo, "/", item.SealNo, "/", item.ContainerSizeName)))).Trim()
+                                            )
                                         </textarea>
                                     </div>
                                 </td>
