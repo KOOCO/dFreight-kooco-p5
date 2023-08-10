@@ -4900,10 +4900,11 @@ namespace Dolphin.Freight.Web.Controllers
 
             foreach (var item in containersList)
             {
-                if(item.ContainerSizeId != Guid.Empty)
-                {
+                if(item.ContainerNo != null)
                     containerNums += item.ContainerNo + ", ";
 
+                if(item.ContainerSizeId != Guid.Empty)
+                {
                     var sizeName = string.Concat(containers.Where(w => w.Value == Convert.ToString(item.ContainerSizeId)).Select(s => s.Text));   
                     if (cntrSizeOccurence.ContainsKey(sizeName))
                     {
