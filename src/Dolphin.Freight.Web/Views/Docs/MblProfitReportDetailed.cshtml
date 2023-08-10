@@ -283,7 +283,7 @@ table td {
                             <td>MASTER B/L NO:</td>
                             <td>@Model.MawbNo</td>
                             <td style="white-space:nowrap">SERVICE TERM:</td>
-                            <td style="padding-left:20px">@string.Concat(@Model.SvcTermFromName, "-",  @Model.SvcTermToName)?.TrimStart('-')</td>
+                            <td style="padding-left:20px">@string.Concat(@Model.SvcTermToName, "-",  @Model.SvcTermFromName)?.TrimStart('-')</td>
                         </tr>
                         <tr>
                             <td>WEIGHT:</td>

@@ -655,7 +655,7 @@
                                     </a>
                                   
                                     <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanImportProfitReportDetailOrSummry", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL, reportType = "Summary" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanImportProfitReportDetailOrSummry", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL, reportType = "Detail" })')">
