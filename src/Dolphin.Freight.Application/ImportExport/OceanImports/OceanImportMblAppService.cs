@@ -351,6 +351,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             oceanImportDetails.Description = data.Description;
             oceanImportDetails.DomesticInstructions = data.DomesticInstructions;
             oceanImportDetails.CurrentDate = DateTime.Now;
+            oceanImportDetails.AgentRefNo = data.AgentRefNo;
 
             return oceanImportDetails;
         }

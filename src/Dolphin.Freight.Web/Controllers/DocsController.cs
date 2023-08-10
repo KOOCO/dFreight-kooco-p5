@@ -82,6 +82,8 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System.Text;
+using Dolphin.Freight.Settings.ContainerSizes;
+using Dolphin.Freight.Settinngs.ContainerSizes;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -3116,7 +3118,36 @@ namespace Dolphin.Freight.Web.Controllers
         {
             var oceanExportDetails = await GetOceanExportDetailsByPageType(id, pageType, true);
 
-            return View(oceanExportDetails);
+            var profitReport = new ProfitReportViewModel()
+            {
+                AgentName = oceanExportDetails.ShippingAgentName,
+                Invoices = oceanExportDetails.Invoices,
+                Measurement = oceanExportDetails.PackageMeasureId.ToString(),
+                PorName = oceanExportDetails.PorName,
+                ShipModeName = oceanExportDetails.ShipModeName,
+                Del = oceanExportDetails.DelName,
+                ContainerNo = oceanExportDetails.ContainerNo,
+                FileNo =oceanExportDetails.FilingNo,
+                PackageWeightName = oceanExportDetails.PackageWeightName,
+                PodEtd     = oceanExportDetails.PodEta.ToString(),
+                PolEtd = oceanExportDetails.PolEtd.ToString(),
+                Operator = oceanExportDetails.MblOperatorName,
+                MawbNo = oceanExportDetails.MblNo,
+                PolName = oceanExportDetails.PolName,
+                PodName = oceanExportDetails.PodName,
+                IsCustomerRef = oceanExportDetails.IsCustomerRef,
+                Total = oceanExportDetails.Total,
+                ARTotal = oceanExportDetails.ARTotal,
+                APTotal = oceanExportDetails.APTotal,
+                DCTotal = oceanExportDetails.DCTotal,
+                InvoicesJson = oceanExportDetails.InvoicesJson,
+                PackageCategoryName = oceanExportDetails.PackageCategoryName,
+                Consignee = oceanExportDetails.MblConsigneeName,
+                MblReferralByName = oceanExportDetails.MblReferralByName,
+                PageType = pageType
+            };
+
+            return View(profitReport);
         }
 
         [HttpPost]
@@ -3125,6 +3156,7 @@ namespace Dolphin.Freight.Web.Controllers
             model.IsPDF = true;
 
             model.Invoices = JsonConvert.DeserializeObject<List<InvoiceDto>>(model.InvoicesJson);
+
 
             return await _generatePdf.GetPdf("Views/Docs/MblProfitReportDetailed.cshtml", model);
         }
@@ -4696,7 +4728,6 @@ namespace Dolphin.Freight.Web.Controllers
             }
         }
 
-
         [HttpPost]
         public async Task<IActionResult> MBLDocumentPackageOceanExport(string reportType, string displayBy, string mblSizeQtyInfo, OceanExportDetails model, CommercialInvoiceIndexViewModel InfoModel)
         {
@@ -4720,6 +4751,56 @@ namespace Dolphin.Freight.Web.Controllers
                 default:
                     return await CommercialInvoice(InfoModel);
             }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> OceanImportProfitReportDetailOrSummry(Guid id, FreightPageType pageType, string reportType)
+        {
+            var oceanImportDetails = await GetOceanImportDetailsByPageType(id, pageType, true);
+
+            var profitReport = new ProfitReportViewModel()
+            {
+                AgentName = oceanImportDetails.ShippingAgentName,
+                Invoices = oceanImportDetails.Invoices,
+                Measurement = oceanImportDetails.PackageMeasureId.ToString(),
+                PorName = oceanImportDetails.PorName,
+                ShipModeName = oceanImportDetails.ShipModeName,
+                Del = oceanImportDetails.DelName,
+                ContainerNo = oceanImportDetails.ContainerNo,
+                FileNo =oceanImportDetails.FilingNo,
+                PackageWeightName = oceanImportDetails.PackageWeightName,
+                PodEtd     = oceanImportDetails.PodEta.ToString(),
+                PolEtd = oceanImportDetails.PolEtd.ToString(),
+                Operator = oceanImportDetails.MblOperatorName,
+                MawbNo = oceanImportDetails.MblNo,
+                PolName = oceanImportDetails.PolName,
+                PodName = oceanImportDetails.PodName,
+                IsCustomerRef = oceanImportDetails.IsCustomerRef,
+                Total = oceanImportDetails.Total,
+                ARTotal = oceanImportDetails.ARTotal,
+                APTotal = oceanImportDetails.APTotal,
+                DCTotal = oceanImportDetails.DCTotal,
+                InvoicesJson = oceanImportDetails.InvoicesJson,
+                PackageCategoryName = oceanImportDetails.PackageCategoryName,
+                Consignee = oceanImportDetails.MblConsigneeName,
+                MblReferralByName = oceanImportDetails.MblReferralByName,
+                PageType = pageType
+            };
+            
+             string returnUrl = pageType == FreightPageType.OIMBL
+                ? (reportType == "Summary") ? "Views/Docs/MblProfitReportSummary.cshtml" : "Views/Docs/MblProfitReportDetailed.cshtml"
+                : "Views/Docs/HblProfitReport.cshtml";
+
+            return View(returnUrl, profitReport); 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> OceanImportProfitReportDetail(OceanImportDetails model)
+        {
+            model.IsPDF = true;
+           
+            return await _generatePdf.GetPdf("Views/Docs/ProfitReportDetail.cshtml", model);
         }
 
         #region Private Functions
@@ -4868,7 +4949,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             if (data != null && isIncludeInvoices)
             {
-                var queryType = pageType == FreightPageType.OEMBL ? 3 : 1;
+                var queryType = pageType == FreightPageType.OIMBL ? 3 : 1;
 
                 QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = Id };
 
@@ -4936,8 +5017,6 @@ namespace Dolphin.Freight.Web.Controllers
 
             return data;
         }
-
-
         private async Task<List<AllHawbList>> GetAllHawbLists(Guid mawbId)
         {
             var data = await _airExportHawbAppService.GetHblCardsById(mawbId);

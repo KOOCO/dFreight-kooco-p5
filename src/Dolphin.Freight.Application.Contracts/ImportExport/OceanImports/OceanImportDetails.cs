@@ -434,6 +434,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public string Mark { get; set; }
         public string HblOperatorName { get; set; }
+        public string AgentRefNo { get; set; }
         public DateTime? CurrentDate { get; set; }
         /// <summary>
         /// 貨描
