@@ -403,6 +403,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 中轉港 
         /// </summary>
         public string TransPort1Name { get; set; }
+        public string CyLocationName { get; set; }
         /// <summary>
         /// 中轉港ETA
         /// </summary>
@@ -522,6 +523,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public double APTotal { get; set; }
         public double Total { get; set; }
         public string TotalStr { get; set; }
+        public string PPorCC { get; set; }
         public bool IsCustomerRef { get; set; }
         public string CreateUpdateContainerDtosJson { get; set; }
         public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
@@ -531,6 +533,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string DisplayUnit { get; set; }
         public string ContainerNo { get; set; }
         public string MblFdestName { get; set; }
+        public string PackageUnitName { get; set; }
         public string PackagpackageUnitName { get; set; }
 
         public TradePartnerDto CargoPickUp { get; set; }

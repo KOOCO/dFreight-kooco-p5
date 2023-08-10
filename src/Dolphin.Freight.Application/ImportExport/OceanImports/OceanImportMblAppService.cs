@@ -2,6 +2,7 @@
 using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Permissions;
+using Dolphin.Freight.Settings.Countries;
 using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
@@ -39,10 +40,12 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly IRepository<PortsManagement, Guid> _portRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IRepository<OceanImportHbl, Guid> _oceanImportHblRepository;
+        private readonly IRepository<Country, Guid> _countryRepository;
         private readonly IIdentityUserAppService _identityUserAppService;
         public OceanImportMblAppService(IRepository<OceanImportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository,
                                          PortsManagementAppService portRepository1, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
-                                        IRepository<OceanImportHbl, Guid> oceanImportHblRepository, IIdentityUserAppService identityUserAppService, IRepository<PortsManagement, Guid> portRepository)
+                                        IRepository<OceanImportHbl, Guid> oceanImportHblRepository, IIdentityUserAppService identityUserAppService,
+                                        IRepository<Country, Guid> countryRepository, IRepository<PortsManagement, Guid> portRepository)
             : base(repository)
         {
             _repository = repository;
@@ -53,6 +56,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             _oceanImportHblRepository = oceanImportHblRepository;
             _identityUserAppService=identityUserAppService;
             _portRepository = portRepository;
+            _countryRepository = countryRepository;
             /*
             GetPolicyName = OceanImportPermissions.OceanImportMbls.Default;
             GetListPolicyName = OceanImportPermissions.OceanImportMbls.Default;
@@ -157,6 +161,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             var portMangements = await _portRepository1.QueryListAsync();
             var sysCodes = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(await _sysCodeRepository.GetListAsync());
             var substations = ObjectMapper.Map<List<Substation>, List<SubstationDto>>(await _substationRepository.GetListAsync());
+            var countries = await _countryRepository.GetListAsync();
 
             var data = await Repository.GetAsync(Id);
 
@@ -345,6 +350,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     var TransPort1 = portMangements.Where(w => w.Id == data.TransPort1Id).FirstOrDefault();
                     oceanImportDetails.TransPort1Name = TransPort1?.PortName;
                 }
+                if (data.CyLocationId != null)
+                {
+                    var cyLocation = countries.Where(w => w.Id == data.CyLocationId).FirstOrDefault();
+                    oceanImportDetails.CyLocationName = cyLocation?.CountryName;
+                }
             }
 
             oceanImportDetails.Commodity = data.GetProperty<List<ManifestCommodity>>("Commodities");
@@ -356,6 +366,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             oceanImportDetails.Description = data.Description;
             oceanImportDetails.DomesticInstructions = data.DomesticInstructions;
             oceanImportDetails.CurrentDate = DateTime.Now;
+            oceanImportDetails.VesselName = data.VesselName;
+            oceanImportDetails.Voyage = data.Voyage;
             oceanImportDetails.AgentRefNo = data.AgentRefNo;
 
             return oceanImportDetails;

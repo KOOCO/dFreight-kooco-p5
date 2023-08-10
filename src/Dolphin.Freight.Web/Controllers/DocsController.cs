@@ -4940,6 +4940,82 @@ namespace Dolphin.Freight.Web.Controllers
             model.Invoices = JsonConvert.DeserializeObject<IList<InvoiceDto>>(model.InvoicesJson);
 
             return await _generatePdf.GetPdf(returnUrl, model);
+        }        
+
+        public async Task<IActionResult> ManifestOceanImportMBL(Guid id, FreightPageType pageType)
+        {
+            var oceanImportDetails = await GetOceanImportDetailsByPageType(id, pageType);
+
+            QueryContainerDto query = new QueryContainerDto() { QueryId = id };
+            var containers = await _containerAppService.QueryListAsync(query);
+            var containerName = _dropdownService.ContainerLookupList;
+
+            var list = new List<CreateUpdateContainerDto>();
+
+            foreach (var item in containers)
+            {
+                var containerSizeName = string.Concat(containerName.Where(w => w.Value == string.Concat(item.ContainerSizeId)).Select(s => s.Text));
+
+                var items = new CreateUpdateContainerDto
+                {
+                    Id = item.Id,
+                    ContainerNo = item.ContainerNo,
+                    SealNo = item.SealNo,
+                    ContainerSizeName = containerSizeName
+                };
+                list.Add(items);
+            }
+
+            var hbls = new List<Hbl>();
+            var hblLists = await _oceanImportHblAppService.GetHblCardsById(id);
+            ImportExport.OceanImports.QueryHblDto queryHblDto = new ImportExport.OceanImports.QueryHblDto() { MblId = id };
+            var hblWithContainers = await _oceanImportHblAppService.QueryListByMidAsync(queryHblDto);
+
+            foreach (var item in hblLists)
+            {
+                var hbllist = await GetOceanImportDetailsByPageType(item.Id, FreightPageType.OIHBL, true);
+                double weight = hblWithContainers.Where(w => w.Id == item.Id).Select(s => s.CreateUpdateHBLContainerDto?.PackageWeight ?? 0).FirstOrDefault();
+                double measure = hblWithContainers.Where(w => w.Id == item.Id).Select(s => s.CreateUpdateHBLContainerDto?.PackageMeasure ?? 0).FirstOrDefault();
+                
+                var manifestCommodities = new List<ManifestCommodity>();
+                object com;
+                var commodity = item.ExtraProperties.TryGetValue("Commodities", out com);
+                manifestCommodities = JsonConvert.DeserializeObject<List<ManifestCommodity>>(Convert.ToString(com));
+
+                var hbl = new Hbl
+                {
+                    HblNo = hbllist.HblNo,
+                    Shipper = hbllist.ShippingAgentName,
+                    Consignee = hbllist.HblConsigneeName,
+                    Notify = hbllist.HblNotifyName,
+                    FinalDestination = hbllist.FdestName,
+                    FDestETA = hbllist.FdestEta?.ToShortDateString(),
+                    PackageWeight = weight,
+                    PackageWeightLBS = Math.Round(weight * 2.20462, 2),
+                    PackageMeasure = measure,
+                    PackageMeasureCFT = Math.Round(measure * 35.315, 2),
+                    Amount = hbllist.ARTotal,
+                    ManifestCommodities = manifestCommodities,
+                    InvoiceDto = hbllist.Invoices  
+                };
+                hbls.Add(hbl);
+            }
+
+            oceanImportDetails.Hbls = hbls;
+            oceanImportDetails.HblsJson = JsonConvert.SerializeObject(hbls);
+            oceanImportDetails.CreateUpdateContainerDtos = list;
+            oceanImportDetails.CreateUpdateContainerDtosJson = JsonConvert.SerializeObject(list);
+
+            return View(oceanImportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ManifestOceanImportMBL(OceanImportDetails model)
+        {
+            model.IsPDF = true;
+            model.Hbls = JsonConvert.DeserializeObject<List<Hbl>>(model.HblsJson);
+            model.CreateUpdateContainerDtos = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(model.CreateUpdateContainerDtosJson);
+
+            return await _generatePdf.GetPdf("Views/Docs/ManifestOceanImportMBL.cshtml", model);
         }
 
             #region Private Functions
@@ -5161,11 +5237,24 @@ namespace Dolphin.Freight.Web.Controllers
                     if (data.AR.Any())
                     {
                         double arTotal = 0;
+                        var pporcc = Convert.ToString(data.AR.Select(s => s.InvoiceBillDtos.Select(s => s.PPOrCC)).FirstOrDefault());
                         foreach (var ar in data.AR)
                         {
                             arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
                         }
                         data.ARTotal = arTotal;
+                        if (pporcc == "12")
+                        {
+                            data.PPorCC = "pPOrCCTest";
+                        } else if (pporcc == "13")
+                        {
+                            data.PPorCC = "pPOrCCTest2";
+                        } else if (pporcc == "cc") {
+                            data.PPorCC = "到付 Collect";
+                        } else if (pporcc == "pp")
+                        {
+                            data.PPorCC = "預付 Prepaid";
+                        }
                     }
                     if (data.AP.Any())
                     {
