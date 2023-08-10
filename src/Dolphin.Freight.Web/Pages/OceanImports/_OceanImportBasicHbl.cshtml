@@ -76,6 +76,9 @@
                 <a class='dropdown-item' href='#'>
                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                 </a>
+                  <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ExamHoldNoticeOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                            <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
+                        </a>
                 <p class="dropdown-divider"></p>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()" style="color: #4B77BE; font-weight: 500;">
                     <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]

@@ -529,7 +529,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string DisplayUnit { get; set; }
         public string ContainerNo { get; set; }
         public string MblFdestName { get; set; }
-        public string PackageUnitName { get; set; }
+        public string PackagpackageUnitName { get; set; }
 
         public TradePartnerDto CargoPickUp { get; set; }
         public string CreateUpdateContainerJson { get; set; }
@@ -542,6 +542,18 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string CommoditiesJson { get; set; }
         public string Net_weight_unit { get; set; }
         public string Gross_weight_unit { get; set; }
+        public List<ContainerList> ContainerList { get; set; }
+    }
+    public class ContainerList
+    {
+        public string chk { get; set; }
+        public string CONTAINER_NO { get; set; }
+        public string TYPE { get; set; }
+        public string SEAL_NO { get; set; }
+        public string PACKAGE { get; set; }
+        public string WEIGHT { get; set; }
+        public string PICKUP_NO { get; set; }
+        public string LFD { get; set; }
     }
 
 }

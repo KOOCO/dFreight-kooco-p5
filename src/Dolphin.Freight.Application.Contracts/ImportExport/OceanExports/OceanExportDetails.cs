@@ -568,5 +568,17 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string extraProperty { get; set; }
         public string CommodityDesc { get; set; }
         public string Remark { get; set; }
+        public List<ContainerList> ContainerList { get; set; }
+    }
+    public class ContainerList
+    {
+        public string chk { get; set; }
+        public string CONTAINER_NO { get; set; }
+        public string TYPE { get; set; }
+        public string SEAL_NO { get; set; }
+        public string PACKAGE { get; set; }
+        public string WEIGHT { get; set; }
+        public string PICKUP_NO { get; set; }
+        public string LFD { get; set; }
     }
 }
