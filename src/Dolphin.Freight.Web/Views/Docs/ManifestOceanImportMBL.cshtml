@@ -173,6 +173,73 @@ table td {
             document.getElementById('txtCustomerRef').style.marginLeft='40px';
         })
     });
+
+    document.addEventListener('DOMContentLoaded', function(){
+        let rows = document.querySelectorAll("#table tr.tr1");
+        let rows2 = document.querySelectorAll("#table tr.tr2");
+
+        let totalWeight = 0;
+        let totalWeightLBS = 0;
+        let totalMeasure = 0;
+        let totalMeasureCFT = 0;
+        let totalAmount = 0;
+
+        for (let i = 0; i < rows.length; i++) { 
+            let weightCell = rows[i].children[5];
+            let weightStr = weightCell.innerText.split(' ')[0];
+            let weight = parseFloat(weightStr);
+            let measureCell = rows[i].children[6];
+            let measureStr = measureCell.innerText.split(' ')[0];
+            let measure = parseFloat(measureStr);
+            
+            if (!isNaN(weight)) { 
+                totalWeight += weight;
+            }
+            if (!isNaN(measure)){
+                totalMeasure += measure;
+            }
+        }
+
+        for (let i = 0; i < rows2.length; i++){
+            let weightLBSCell = rows2[i].children[5];
+            let weightLBSStr = weightLBSCell.innerText.split(' ')[0];
+            let weightLBS = parseFloat(weightLBSStr);
+            let measureCFTCell = rows2[i].children[6];
+            let measureCFTStr = measureCFTCell.innerText.split(' ')[0];
+            let measureCFT = parseFloat(measureCFTStr);
+            let amountCell = rows2[i].children[7];
+            let amountStr = amountCell.innerText.split(' ')[0];
+            let amount = parseFloat(amountStr);
+
+            if (!isNaN(weightLBS)) {
+                totalWeightLBS += weightLBS;
+            }
+            if(!isNaN(measureCFT)){
+                totalMeasureCFT += measureCFT;
+            }
+            if(!isNaN(amount)){
+                totalAmount += amount;
+            }
+        }
+
+        $('#hbls').text('');
+        $('#hbls').text(rows.length + " HB/L(s)");
+        $('#wKG').text('');
+        $('#wKG').text(totalWeight + " KGS");
+        $('#TotalWeight').val($('#wKG').text());
+        $('#mCBM').text('');
+        $('#mCBM').text(totalMeasure + " LBS");
+        $('#TotalMeasure').text($('#mCBM').text());
+        $('#totalAmount').text('');
+        $('#totalAmount').text(parseFloat(totalAmount).toFixed(2));
+        $('#TotalAmountStr').val($('#totalAmount').text());
+        $('#wLBS').text('');
+        $('#wLBS').text(parseFloat(totalWeightLBS).toFixed(2) + " LBS");
+        $('#TotalWeightStr').val($('#wLBS').text());
+        $('#mCFT').text('');
+        $('#mCFT').text(parseFloat(totalMeasureCFT).toFixed(2) + " CFT");
+        $('#TotalMeasureStr').val($('#mCFT').text());
+    });
 </script>
 
 @if (!Model.IsPDF)
@@ -199,6 +266,12 @@ table td {
     <input type="hidden" asp-for="@Model.PolEtd" />
     <input type="hidden" asp-for="@Model.PodEta" />
     <input type="hidden" asp-for="@Model.CreateUpdateContainerDtosJson" />
+    <input type="hidden" asp-for="@Model.HblsJson" />
+    <input type="hidden" asp-for="@Model.TotalWeight" />
+    <input type="hidden" asp-for="@Model.TotalWeightStr" />
+    <input type="hidden" asp-for="@Model.TotalMeasure" />
+    <input type="hidden" asp-for="@Model.TotalMeasureStr" />
+    <input type="hidden" asp-for="@Model.TotalAmountStr" />
 
     <div id="main" class="edit">
 
@@ -329,17 +402,12 @@ table td {
                                 <td class="td col-padding-double td-item">
                                     <div class="item-edit hover-toggle-icon-text-template">
                                         <textarea name="container_no_area" cols="40" rows="6" class="text-scroll ng-isolate-scope" id="id_container_no_area">
-                                            @{
-                                                var createUpdateContainerDtos = "";
-                                            }
-                                            @foreach(var item in Model.CreateUpdateContainerDtos)
-                                            {                
-                                                var containerNo = item.ContainerNo;
-                                                var sealNo = item.SealNo;
-                                                var containerSizeName = item.ContainerSizeName;
-                                                
-                                                createUpdateContainerDtos = containerNo + "/" + sealNo + "/" + containerSizeName;
-                                            }
+                                            @*@foreach(var item in Model.CreateUpdateContainerDtos)
+                                            {   *@ 
+                                                 @(
+                                                    (string.Join("\n", Model.CreateUpdateContainerDtos.Select(item => $"{item.ContainerNo} / {item.SealNo} / {item.ContainerSizeName}"))).Trim()
+                                                )
+                                           @* }*@
                                         </textarea>
                                     </div>
                                 </td>
@@ -349,7 +417,7 @@ table td {
                 </tr>
             </tbody></table>
             <div class="space_area">&nbsp;</div>
-            <table class="table-padding">
+            <table class="table-padding" id="table">
                 <tbody><tr class="border-t bg-light">
                     <th class="col-padding w-3 text-left">NO.</th>
                     <th class="col-padding w-20 text-left">H B/L NO.</th>
@@ -377,12 +445,10 @@ table td {
                     <th class="col-padding text-right">AMOUNT</th>
                 </tr>
                 
-                @{
-                    var index = 1;
-                }
                 @foreach(var item in Model.Hbls)
                 {
-                    <tr>
+                    var index = 1;
+                    <tr class="tr1">
                         <td> @index </td>
                         <td><strong>@item.HblNo</strong></td>
                         <td>@item.Consignee</td>
@@ -390,17 +456,45 @@ table td {
                         <td class="text-right">
                             <div class="item-edit">
                                 <textarea rows="1" id="commodity_@item.HblNo" name="commodity_@item.HblNo" style="height: 37px;">
-                                    @foreach(var item1 in item.ManifestCommodities){
-                                        @item1.Description
-                                    }
+                                    @if(item.ManifestCommodities != null && item.ManifestCommodities.Any())
+                                    {
+                                         @foreach(var item1 in item.ManifestCommodities){
+                                            @item1.Description
+                                        }       
+                                    }        
                                 </textarea>
                             </div>
                         </td>
                         <td class="text-right">@item.PackageWeight KGS</td>
                         <td class="text-right">@item.PackageMeasure CBM</td>
-                        <td class="text-right">PREPAID</td>
+                        
+                            @if(item.InvoiceDto != null && item.InvoiceDto.Any())
+                            {
+                                @foreach(var invoice in item.InvoiceDto)
+                                {
+                                    @if(invoice.InvoiceBillDtos != null && invoice.InvoiceBillDtos.Any())
+                                    {
+                                        @foreach(var inv in invoice.InvoiceBillDtos)
+                                        {
+                                            @if(inv.PPOrCC == "12")
+                                            {
+                                                <td class="text-right"> pPOrCCTest</td>
+                                            } else if (inv.PPOrCC == "13"){
+                                                <td class="text-right"> pPOrCCTest2</td>
+                                            } else if (inv.PPOrCC == "cc"){
+                                                <td class="text-right"> 到付 Collect</td>
+                                            } else if (inv.PPOrCC == "pp"){
+                                                <td class="text-right"> 預付 Prepaid</td>
+                                            }
+                                        }   
+                                    }
+                                }  
+                            } else{
+                                <td class="text-right"></td>
+                            }
+                        
                     </tr>
-                    <tr class="border-b-grey">
+                    <tr class="border-b-grey tr2">
                         <td></td>
                         <td>
                             <span class="">@item.Shipper</span>
@@ -414,16 +508,26 @@ table td {
                         <td class="text-right">@item.PackageMeasureCFT CFT</td>
                         <td class="text-right">@item.Amount</td>
                     </tr>
+                    index++;
                 }
                 
                 <tr class="border-t border-b bg-light">
                     <td colspan="2"><strong>TOTAL</strong></td>
                     <td></td>
-                    <td class="text-right">3 H B/L(s)</td>
+                    <td class="text-right" id="hbls"></td>
                     <td class="text-right">0 PCS</td>
+                    <td class="text-right" id="wKG">@Model.TotalWeight</td>
+                    <td class="text-right" id="mCBM">@Model.TotalMeasure</td>
+                    <td class="text-right" id="totalAmount">@Model.TotalAmountStr</td>
+                </tr>
+                <tr class="border-t border-b bg-light">
+                    <td colspan="2"></td>
+                    <td></td>
                     <td class="text-right"></td>
-                    <td class="text-right"></td>
-                    <td class="text-right">0.00</td>
+                    <td class="text-right">0</td>
+                    <td class="text-right" id="wLBS">@Model.TotalWeightStr</td>
+                    <td class="text-right" id="mCFT">@Model.TotalMeasureStr</td>
+                    <td></td>
                 </tr>
             </tbody></table>
             

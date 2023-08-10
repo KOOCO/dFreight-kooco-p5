@@ -4635,7 +4635,8 @@ namespace Dolphin.Freight.Web.Controllers
                     PackageMeasure = measure,
                     PackageMeasureCFT = Math.Round(measure * 35.315, 2),
                     Amount = hbllist.ARTotal,
-                    ManifestCommodities = manifestCommodities
+                    ManifestCommodities = manifestCommodities,
+                    InvoiceDto = hbllist.Invoices  
                 };
                 hbls.Add(hbl);
             }
@@ -4824,11 +4825,24 @@ namespace Dolphin.Freight.Web.Controllers
                     if (data.AR.Any())
                     {
                         double arTotal = 0;
+                        var pporcc = Convert.ToString(data.AR.Select(s => s.InvoiceBillDtos.Select(s => s.PPOrCC)).FirstOrDefault());
                         foreach (var ar in data.AR)
                         {
                             arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
                         }
                         data.ARTotal = arTotal;
+                        if (pporcc == "12")
+                        {
+                            data.PPorCC = "pPOrCCTest";
+                        } else if (pporcc == "13")
+                        {
+                            data.PPorCC = "pPOrCCTest2";
+                        } else if (pporcc == "cc") {
+                            data.PPorCC = "到付 Collect";
+                        } else if (pporcc == "pp")
+                        {
+                            data.PPorCC = "預付 Prepaid";
+                        }
                     }
                     if (data.AP.Any())
                     {

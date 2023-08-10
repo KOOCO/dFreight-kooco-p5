@@ -520,6 +520,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public double APTotal { get; set; }
         public double Total { get; set; }
         public string TotalStr { get; set; }
+        public string PPorCC { get; set; }
         public bool IsCustomerRef { get; set; }
         public string CreateUpdateContainerDtosJson { get; set; }
         public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
@@ -530,7 +531,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string ContainerNo { get; set; }
         public string MblFdestName { get; set; }
         public string PackageUnitName { get; set; }
-
         public TradePartnerDto CargoPickUp { get; set; }
         public string CreateUpdateContainerJson { get; set; }
         public string HblsJson { get; set; }

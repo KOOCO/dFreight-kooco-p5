@@ -554,6 +554,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string HblNo { get; set; }
         public string HblPcs { get; set; }
         public string Weight { get; set; }
+        public string PPorCC { get; set; }
         public double? PackageWeight { get; set; }
         public double? PackageWeightLBS { get; set; }
         public double? PackageMeasure { get; set; }
@@ -574,6 +575,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string CommodityDesc { get; set; }
         public string Remark { get; set; }
         public double? Amount { get; set; }
+        public List<InvoiceDto> InvoiceDto { get; set; }
         public List<ManifestCommodity> ManifestCommodities { get; set; }
     }
 }
