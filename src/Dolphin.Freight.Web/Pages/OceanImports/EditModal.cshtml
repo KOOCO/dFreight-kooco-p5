@@ -196,6 +196,7 @@
         }
 
         function createHawbCard() {
+            debugger
             let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
                 ' onclick="onHawbCardClick(event,{{hblCardId}})">{{hblNo}}</h5>' +
                 ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
@@ -274,7 +275,12 @@
                     }
                 })
         }
-
+          function getOrderDelivery() {
+            var idNo = $('#OceanImportMbl_Id').val();
+            myWindow = window.open("@Url.Action("DeliveryOrderOceanImportMawb", "Docs")" + "?id=" + idNo, 'DeliveryOrderOceanImportMawb', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow.focus()
+        }
         function OpenInTrackTrace() {
             var MblNo = $('#OceanImportMbl_MblNo').val();
             myWindow = window.open('https://www.track-trace.com/bol#' + MblNo, '_blank', 'width=1200,height=1000');
@@ -286,6 +292,7 @@
             //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
+        
     </script>
 }
 <div class="page-header">
@@ -370,9 +377,13 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Batch Printing"]
                                     </a>
+                                     
                                     <li class="dropdown-divider"></li>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ManifestOceanImportMBL", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
+                                    </a>
+                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getOrderDelivery()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
                                     </a>
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
@@ -381,7 +392,7 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                            <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanImportProfitReportDetailOrSummry", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL, reportType = "Detail" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                                     </a>
                                     <li class="dropdown-divider"></li>

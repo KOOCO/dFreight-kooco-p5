@@ -3,7 +3,7 @@
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
-@model Dolphin.Freight.ImportExport.OceanExports.OceanExportDetails
+@model Dolphin.Freight.ImportExport.OceanImports.OceanImportDetails
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
 @{
@@ -195,292 +195,291 @@ table td {
 }
 
 <form id="myForm" name="myForm" method="POST">
-    <input type="hidden" asp-for="@Model.PolEtd" />
-    <input type="hidden" asp-for="@Model.PodEta" />
-    <input type="hidden" asp-for="@Model.DelEta" />
-    <input type="hidden" asp-for="@Model.FdestEta" />
+    <input type="hidden" asp-for="@Model.FilingNo" />
     <input type="hidden" asp-for="@Model.MblNo" />
     <input type="hidden" asp-for="@Model.HblNo" />
+    <input type="hidden" asp-for="@Model.CyLocation" />
+    <input type="hidden" asp-for="@Model.TotalNetWeightStr" />
+    <input type="hidden" asp-for="@Model.TotalMeasureStr" />
+    <input type="hidden" asp-for="@Model.HblConsigneeName" />
+    <input type="hidden" asp-for="@Model.TotalPackage" />
+    <input type="hidden" asp-for="@Model.PolName" />
+    <input type="hidden" asp-for="@Model.PolEtd" />" />
 
     <div id="main" class="edit">
-        <div class="wrap oi-exam-hold-notice">
-        <div class="header margin-b-md header-normal">
+
+        <div class="wrap">
+        <div class="header margin-b-md">
             <table>
                 <tbody><tr>
-                    <td class="w-15 logo">
-                        <img src="/img/hardcore-tech-logo.png">
-                    </td>
-                    <td class="w-48">
-                        <h1 class="auto-font-size office-name"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h1>
-                        <div class="auto-font-size office-des">
-                            <span>
-                                77792 COBB CAPE<br>
-                               TRISTANCHESTER, NE 47478<br>
-                               TEL: 08417606080 FAX: 08417606080<br>
-                               EMAIL: hanjun.lin@dolphin-gp.com
-                                
-                                    <br><strong>Prepared by Hanjun Lin 07-31-2023 13:59 (CST)</strong>
-                                
-                            </span>
+                    <td class="w-57">
+                        <h1 class="auto-font-size office-name _no-logo"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h1>
+                        <div class="auto-font-size office-des _no-logo">
+                            <span>77792 COBB CAPE<br>
+                            TRISTANCHESTER, NE 47478<br>
+                            TEL: 08417606080 FAX: 08417606080<br>
+                            EMAIL: hanjun.lin@dolphin-gp.com</span>
                         </div>
                     </td>
                     <td class="w-2">&nbsp;</td>
-                    <td class="w-35 title border-deep-blue text-center">
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="title" value="EXAM HOLD NOTICE" to-upper-case="" id="id_title" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"></div>
+                    <td class="w-40 title border-deep-blue">
+                        <div class="item-edit text-center">
+                            <select name="title" class="select w-80" id="id_title">
+                              <option value="RELEASE ORDER/TURNOVER" selected="">RELEASE ORDER/TURNOVER</option>
+                            
+                              <option value="BANK RELEASE REQUIRED">BANK RELEASE REQUIRED</option>
+                            
+                              <option value="FAX LIEFERSCHEIN">FAX LIEFERSCHEIN</option>
+                            
+                              <option value="PICKUP NUMBER NOTICE">PICKUP NUMBER NOTICE</option>
+                            
+                            </select>
+                        </div>
                     </td>
                 </tr>
             </tbody></table>
             <table class="text-10 margin-t table-padding-double">
                 <tbody><tr>
                     <td class="w-52">&nbsp;</td>
-                    <td class="w-6 border-l border-t border-b"><strong>DATE :</strong></td>
+                    <td class="w-12 border-t border-b border-l"><strong>RELEASE DATE :</strong></td>
                     <td class="w-10 border-t border-b border-r">
-                        
                         <div class="item-edit hover-toggle-icon-text-template">
                             <input type="text" name="CurrentDate" value="@Model.CurrentDate"  id="id_current_date" class="ng-isolate-scope">
                         </div>
                     </td>
-                    <td class="w-5 border-t border-b"><strong>BY :</strong></td>
-                    <td class="w-27 border-t border-b border-r">
-                        
+                    <td class="w-9 border-t border-b"><strong>PRINT BY :</strong></td>
+                    <td class="w-17 border-t border-b border-r">
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <input type="text" name="HblOperatorName" value="@Model.HblOperatorName"  id="id_current_user_name" class="ng-isolate-scope">
+                            <input type="text" name="OPName" value="@Model.HblOperatorName"  id="id_print_by" class="ng-isolate-scope">
                         </div>
                     </td>
                 </tr>
             </tbody></table>
         </div>
-        <div class="header header-horizontal-logo margin-b-md">
+        <div class="con ai-release-order">
+            <div class="border-t padding-t-sm padding-b-sm text-center text-bold">
+                Please retain this copy until cargo is released. If any problems occur or if you have any questions, please contact us.
+            </div>
             <table>
                 <tbody><tr>
-                    <td class="w-75">
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="title" value="EXAM HOLD NOTICE"  ng-model="vm.title" ng-change="vm.syncTitle()" to-upper-case="" id="id_title" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"></div>
-                        <h2 class="auto-font-size office-name"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h2>
-                        <div class="auto-font-size office-des">
-                            <span>
-                                77792 COBB CAPE TRISTANCHESTER, NE 47478<br>
-                                TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
-                                
-                                    <br><strong>Prepared by Hanjun Lin 07-31-2023 13:59 (CST)</strong>
-                                
-                            </span>
+                    <td class="w-49 td highlight-block">
+                        <div class="title">
+                            <div class="item-edit">
+                                <table>
+                                    <tbody><tr>
+                                        <td class="w-50">To :</td>
+                                        <td class="w-50 data">
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </div>
                         </div>
-                    </td>
-                    <td class="w-2">&nbsp;</td>
-                    <td class="w-22 logo">
-                        <img src="/img/hardcore-tech-logo.png">
-                    </td>
-                </tr>
-            </tbody></table>
-            <table class="text-10 margin-t">
-                <tbody><tr>
-                    <td class="w-9"><strong>DATE :</strong></td>
-                    <td class="w-10">
-                        
-                        <div class="item-edit hover-toggle-icon-text-template">
-                            <input type="text" name="CurrentDate" value="@Model.CurrentDate"  id="id_current_date" class="ng-isolate-scope">
-                        </div>
-                    </td>
-                    <td class="w-9"><strong>BY :</strong></td>
-                    <td class="w-72">
-                        
-                        <div class="item-edit w-30 hover-toggle-icon-text-template">
-                            <input type="text" name="HblOperatorName" value="@Model.HblOperatorName"  id="id_current_user_name" class="ng-isolate-scope">
-                        </div>
-                    </td>
-                </tr>
-            </tbody></table>
-        </div>
-        <div class="con">
-            <table class="text-12">
-                <tbody><tr>
-                    <td class="td w-45 highlight-block">
-                        <div class="title">TO :</div>
                         <div class="data">
                             <div class="item-edit hover-toggle-icon-text-template">
-                                <textarea asp-for="@Model.ShippingAgentName" cols="40" rows="8" class="text-scroll no-adjustment ng-isolate-scope">@Model.ShippingAgentName</textarea>
+                                <textarea name="hbl_freight_location_area" cols="40" rows="6" class="w-100 text-scroll no-adjustment ng-isolate-scope"  id="id_hbl_freight_location_area">@Model.FbaFC</textarea>
                             </div>
                         </div>
                     </td>
                     <td class="w-2"></td>
-                    <td class="td w-53 highlight-block">
-                        <div class="title">ALSO NOTIFY :</div>
+                    <td class="w-49 td highlight-block">
+                        <div class="title">
+                            <div class="item-edit">
+                                <table>
+                                    <tbody><tr>
+                                        <td class="w-50">Release To :</td>
+                                        <td class="w-50 data">
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </div>
+                        </div>
                         <div class="data">
                             <div class="item-edit hover-toggle-icon-text-template">
-                                <textarea asp-for="@Model.HblNotifyName" cols="40" rows="8" class="text-scroll no-adjustment ng-isolate-scope">@Model.HblNotifyName</textarea>
+                                <textarea name="release_to" cols="40" rows="6" class="w-100 text-scroll no-adjustment ng-isolate-scope"  id="id_release_to">@Model.MblBillToName</textarea>
                             </div>
                         </div>
                     </td>
                 </tr>
             </tbody></table>
-            <table>
-                <tbody><tr class="text-11">
-                    <td class="col-padding border-b">
-                        <table class="col-height margin-t-sm border-t">
-                            <tbody><tr>
-                                <td class="w-15"><strong>VESSEL NAME :</strong></td>
-                                <td class="w-22">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="VesselName" value="@Model.VesselName" id="id_vessel_name" class="ng-isolate-scope"></div>
-                                </td>
-                                <td class="w-19"><strong>PORT OF LOADING :</strong></td>
-                                <td class="w-36">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="PolName" value="@Model.PolName"  id="id_POL_location" class="ng-isolate-scope"></div>
-                                </td>
-                                <td class="w-7"><strong>ETD :</strong></td>
-                                <td class="w-11">@(Model.PolEtd?.ToString("MM/dd/yyyy") ?? "")</td>
-                            </tr>
-                            <tr>
-                                <td><strong>VOYAGE NO. :</strong></td>
-                                <td>
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Voyage" value="@Model.Voyage" id="id_voyage" class="ng-isolate-scope"></div>
-                                </td>
-                                <td><strong>PORT OF DISCHARGE :</strong></td>
-                                <td>
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="PodName" value="@Model.PodName" id="id_POD_location" class="ng-isolate-scope"></div>
-                                </td>
-                                <td><strong>ETA :</strong></td>
-                                <td>@(Model.PodEta?.ToString("MM/dd/yyyy") ?? "")</td>
-                            </tr>
-                            <tr>
-                                <td><strong>OUR FILE NO. :</strong></td>
-                                <td>
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="DocNo" value="@Model.DocNo" id="id_filing_no" class="ng-isolate-scope"></div>
-                                </td>
-                                <td><strong>DEL :</strong></td>
-                                <td>
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="DelName" value="@Model.DelName" id="id_DEL_location" class="ng-isolate-scope"></div>
-                                </td>
-                                <td><strong>D.ETA :</strong></td>
-                                <td>@(Model.DelEta?.ToString("MM/dd/yyyy") ?? "")</td>
-                            </tr>
-                            <tr>
-                                <td><strong>MASTER B/L NO. :</strong></td>
-                                <td><div class="auto-font-size __width-md"><span>@Model.MblNo</span></div></td>
-                                <td><strong>FINAL DESTINATION :</strong></td>
-                                <td>
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="FdestName" value="@Model.FdestName" id="id_FDEST_location" class="ng-isolate-scope"></div>
-                                </td>
-                                <td><strong>F.ETA :</strong></td>
-                                <td>@(Model.FdestEta?.ToString("MM/dd/yyyy") ?? "")</td>
-                            </tr>
-                            <tr>
-                                <td><strong>HOUSE B/L NO. :</strong></td>
-                                <td><div class="auto-font-size __width-md"><span>@Model.HblNo</span></div></td>
-                                <td><strong>PIECE COUNT :</strong></td>
-                                <td><div class="auto-font-size __width-lg"><span></span></div></td>
-                                <td><strong>UNIT :</strong></td>
-                                <td class="td" rowspan="3"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>AMS B/L NO. :</strong></td>
-                                <td>
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="AMS_NO"  id="id_AMS_NO" class="ng-isolate-scope"></div>
-                                </td>
-                                <td><strong>COMMODITY :</strong></td>
-                                <td class="td" rowspan="3">
-                                    <div class="item-edit hover-toggle-icon-text-template"><textarea name="commodity_descriptions" cols="40" rows="4" class="text-scroll no-adjustment ng-isolate-scope"  id="id_commodity_descriptions"></textarea></div>
-                                </td>
-                                <td>&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td><strong>I.T. NO. :</strong></td>
-                                <td>
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ItnNo" value="@Model.ItnNo" id="id_it_no" class="ng-isolate-scope"></div>
-                                </td>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td class="td"><strong>SHIPPER :</strong></td>
-                                <td class="td" colspan="2">
-                                    <div class="auto-font-size __width-lg"><span>@Model.ShippingAgentName</span></div>
-                                </td>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                            </tr>
-                        </tbody></table>
-                    </td>
-                </tr>
-                <tr class="border-b text-11">
-                    <td class="col-padding">
-                        <strong>CONTAINER NO. / TYPE / SERIAL NO. / P.O. NO. :</strong>
-
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="container_no_area" cols="40" rows="13" class="text-scroll no-adjustment ng-isolate-scope"  id="id_container_no_area">
-                         @foreach(var container in Model.ContainerList) {
-            @Html.Raw(container.CONTAINER_NO + "/ " + container.TYPE + "/ " + container.SEAL_NO + "/ " + Model.PoNo + "\r\n")
-        }
-
-
-                        </textarea></div>
-                    </td>
+            <table class="border margin-t-md">
+                <tbody><tr>
+                    <td class="col-padding-double bg-light border-b">B/L INFORMATION</td>
                 </tr>
                 <tr>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr class="border-t border-l border-r">
-                    <td class="text-center padding-t-xs padding-b-xs text-md">
-                        According to the steamship company, your shipment is on
-                        <span class="item-edit hover-toggle-icon-text-template"><input type="text" name="title_2"  class="w-auto ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" id="id_title_2"></span>
-                        <br>The following documents are required for its release.
-                    </td>
-                </tr>
-            </tbody></table>
-
-            <table class="border text-12">
-                <tbody><tr>
-                    <td class="col-padding-double">
-                        <table>
+                    <td class="col-padding">
+                        <table class="col-height">
                             <tbody><tr>
-                                <td class="col-padding-double w-5 text-center">
-                                    <div class="item-edit"><input type="checkbox" name="commercial_invoice" id="id_commercial_invoice"></div>
+                                <td class="td w-50 border-r">
+                                    <table>
+                                        <tbody><tr>
+                                            <td class="w-30">FILE NO. :</td>
+                                            <td class="w-70">
+                                                <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="DocNumber" value="@Model.FilingNo"  id="id_filing_no" class="ng-isolate-scope"></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>MB/L NO :</td>
+                                            <td>@Model.MblNo</td>
+                                        </tr>
+                                        <tr>
+                                            <td>HB/L NO :</td>
+                                            <td>@Model.HblNo</td>
+                                        </tr>
+                                           <tr>
+                                            <td>SUB B/L NO :</td>
+                                            <td>@Model.FilingNo</td>
+                                        </tr>
+                                        <tr>
+                                            <td>AMS B/L NO :</td>
+                                            <td>@Model.HblNo</td>
+                                        </tr>
+                                        <tr>
+                                            <td>ETA :</td>
+                                            <td>
+                                                <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ArrivalDate" value="@Model.PodEta?.ToShortDateString()"  id="id_ETA_date" class="ng-isolate-scope"></div>
+                                            </td>
+                                        </tr>
+                                           <tr>
+                                            <td>F.DEST ETA :</td>
+                                            <td>
+                                                <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ArrivalDate" value="@Model.FdestEta?.ToShortDateString()"  id="id_ETA_date" class="ng-isolate-scope"></div>
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <td>VESSEL/VOY NO :</td>
+                                            <td>
+                                                <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ArrivalDate" value="@Model.VesselName/@Model.Voyage"  id="id_ETA_date" class="ng-isolate-scope"></div>
+                                            </td>
+                                        </tr>
+                                          <tr>
+                                            <td>I.T NO :</td>
+                                            <td>
+                                                <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ArrivalDate" value="@Model.LCNo"  id="id_ETA_date" class="ng-isolate-scope"></div>
+                                            </td>
+                                        </tr>
+                                    </tbody></table>
                                 </td>
-                                <td class="col-padding-double w-35"><strong>Commercial Invoice, please Send to:</strong>
-                                </td>
-                                <td class="col-padding-double w-65 border-b">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="commercial_invoice_text"  id="id_commercial_invoice_text" class="ng-isolate-scope"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="col-padding-double w-5 text-center">
-                                    <div class="item-edit"><input type="checkbox" name="fumigation_certificate" id="id_fumigation_certificate"></div>
-                                </td>
-                                <td class="col-padding-double w-35"><strong>Fumigation Certificate, please Send to:</strong></td>
-                                <td class="col-padding-double w-65 border-b">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="fumigation_certificate_text"  id="id_fumigation_certificate_text" class="ng-isolate-scope"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="col-padding-double w-5 text-center">
-                                    <div class="item-edit"><input type="checkbox" name="inspection_charges" id="id_inspection_charges"></div>
-                                </td>
-                                <td class="col-padding-double w-35"><strong>The Guarantee for inspection charges to:</strong></td>
-                                <td class="col-padding-double w-65 border-b">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="inspection_charges_text"  id="id_inspection_charges_text" class="ng-isolate-scope"></div>
+                                <td class="td w-50">
+                                    <table>
+                                        <colgroup>
+                                            <col class="w-20">
+                                            <col class="w-80">
+                                        </colgroup>
+                                        <tbody><tr>
+                                            <table class="margin-t">
+         <tbody>
+            <tr class="border-b border-t bg-light text-8">
+               <th class="w-5 border-r text-center col-padding-double item-edit">
+                  <input type="checkbox" name="check_all_container" onClick="toggle(this)" checked>
+               </th>
+               <th class="w-15 border-r text-left col-padding-double">
+                  CONTAINER NO.
+               </th>
+               <th class="w-6 border-r text-center col-padding-double">
+                  TYPE
+               </th>
+               <th class="w-12 border-r text-left col-padding-double">
+                  SEAL NO.
+               </th>
+               <th class="w-15 border-r text-right col-padding-double">
+                  PACKAGE
+               </th>
+              @* <th class="w-24 border-r text-right col-padding-double">
+                  WEIGHT
+               </th>*@
+               <th class="w-12 border-r text-left col-padding-double">
+                  PICKUP NO.
+               </th>
+               <th class="w-10 text-center col-padding-double">
+                  L.F.D
+               </th>
+            </tr>
+
+
+                                        @if (Model.ContainerList != null && Model.ContainerList.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.ContainerList.Count; i++)
+                                            {
+                                                var container = Model.ContainerList[i];
+
+                            <tr class="border-b">
+                               <td class="td td-item border-r text-center item-edit"><input type="checkbox" class="ContainerListCheck" name="ContainerList[@(i.ToString())].chk" value="true" checked=""></td>
+                               <td class="td td-item border-r">@container.CONTAINER_NO</td>
+                               <td class="td td-item text-center border-r">@container.TYPE</td>
+                               <td class="td td-item border-r">@container.SEAL_NO</td>
+                                <td class="td td-item border-r">@container.PACKAGE</td>
+                            @*   <td class="td td-item text-right border-r">@container.WEIGHT</td>*@
+                               <td class="td td-item border-r">@container.PICKUP_NO</td>
+                               <td class="td td-item text-center">@container.LFD</td>
+
+                                <input type="hidden" name="ContainerList[@(i.ToString())].CONTAINER_NO" value="@container.CONTAINER_NO" />
+                                <input type="hidden" name="ContainerList[@(i.ToString())].TYPE" value="@container.TYPE" />
+                                <input type="hidden" name="ContainerList[@(i.ToString())].SEAL_NO" value="@container.SEAL_NO" />
+                                   <input type="hidden" name="ContainerList[@(i.ToString())].PACKAGE" value="@container.PACKAGE" />
+                               @* <input type="hidden" name="ContainerList[@(i.ToString())].WEIGHT" value="@container.WEIGHT" />*@
+                                <input type="hidden" name="ContainerList[@(i.ToString())].PICKUP_NO" value="@container.PICKUP_NO" />
+                                <input type="hidden" name="ContainerList[@(i.ToString())].LFD" value="@container.LFD" />
+                            </tr>                   
+                                            }
+                                        }
+                                        else
+                                        {
+                    <tr class="border-b">
+                       <td class="td td-item border-r text-center item-edit"><input type="checkbox" class="ContainerListCheck" name="ContainerList[0].chk" value="true" checked=""></td>
+                       <td class="td td-item border-r"></td>
+                       <td class="td td-item text-center border-r"></td>
+                       <td class="td td-item border-r"></td>
+
+                       <td class="td td-item text-right border-r"></td>
+                       <td class="td td-item border-r"></td>
+                       <td class="td td-item text-center"></td>
+                    </tr>         
+                                        }
+         </tbody>
+      </table>
+                                        </tr>
+                                    </tbody></table>
                                 </td>
                             </tr>
                         </tbody></table>
                     </td>
                 </tr>
             </tbody></table>
-            <table class="margin-t">
-                <tbody><tr>
-                    <td>&nbsp;</td>
+            <table class="margin-t-md">
+                <tbody><tr class="border-t bg-light">
+                    <th class="col-padding-double border-r text-left w-20">MARKS &amp; NOS.</th>
+                    <th class="col-padding-double border-r text-right w-12">NO. OF PKGS.</th>
+                    <th class="col-padding-double border-r text-left w-35">DESCRIPTION OF PACKAGES AND GOODS</th>
+                    <th class="col-padding-double border-r text-right w-13">WEIGHT<br>MEASUREMENT</th>
+                    <th class="col-padding-double text-left w-20">PORT OF LOADING &amp; ETD</th>
                 </tr>
-                <tr class="border">
-                    <td class="title col-padding-double">REMARKS</td>
-                </tr>
-                <tr class="border-r border-l border-b">
-                    <td class="border-b text-bold col-padding-double">
-                        <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="remark" cols="40" rows="10" class="text-scroll no-adjustment ng-isolate-scope"  id="id_remark"></textarea>
+                <tr class="border-t border-b">
+                    <td class="td col-padding td-item border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="28" class="text-scroll ng-isolate-scope"  id="id_mark">@Model.Mark</textarea></div>
+                    </td>
+                    <td class="td col-padding td-item border-r text-right">@Model.TotalPackage</td>
+                    <td class="td col-padding td-item border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="28" class="text-scroll ng-isolate-scope"  id="id_good_items"></textarea></div>
+                    </td>
+                    <td class="td col-padding td-item border-r w-13 text-right">@Model.TotalGrossWeightStr@Environment.NewLine@Model.TotalMeasureStr</td>
+                    <td class="td col-padding td-item w-20">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="APOL_ETD" cols="40" rows="28" class="text-scroll ng-isolate-scope"  id="id_APOL_ETD">@Model.PolName@Environment.NewLine@(Model.PodEta?.ToString("MM/dd/yyyy") ?? "")</textarea>
                         </div>
                     </td>
                 </tr>
             </tbody></table>
-            <p class="text-center text-bold">
-                If you have any question, please contact us.
-                <br>Thank You.
-            </p>
+            <table class="border margin-t-md">
+                <tbody><tr>
+                    <td class="col-padding-double border-b">SPECIAL INSTRUCTIONS</td>
+                </tr>
+                <tr>
+                    <td class="col-padding">
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <textarea name="special_instructions" cols="40" rows="10" class="text-scroll no-adjustment ng-isolate-scope"  id="id_special_instructions"></textarea>
+                        </div>
+                    </td>
+                </tr>
+            </tbody></table>
         </div>
     </div>
     </div>

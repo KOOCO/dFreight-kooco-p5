@@ -196,6 +196,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     var CoLoader = tradePartners.Where(w => w.Id == data.CoLoaderId).FirstOrDefault();
                     oceanImportDetails.CargoTypeName = string.Concat(CoLoader?.TPName, "/", CoLoader?.TPCode);
                 }
+                if (data.CyLocationId != null)
+                {
+                    var CY = tradePartners.Where(w => w.Id == data.CyLocationId).FirstOrDefault();
+                    oceanImportDetails.CyLocation = string.Concat(CY?.TPName, "/", CY?.TPCode);
+                }
                 if (data.DelId != null)
                 {
                     var Del = portMangements.Where(w => w.Id == data.DelId).FirstOrDefault();
@@ -363,6 +368,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             oceanImportDetails.CurrentDate = DateTime.Now;
             oceanImportDetails.VesselName = data.VesselName;
             oceanImportDetails.Voyage = data.Voyage;
+            oceanImportDetails.AgentRefNo = data.AgentRefNo;
 
             return oceanImportDetails;
         }

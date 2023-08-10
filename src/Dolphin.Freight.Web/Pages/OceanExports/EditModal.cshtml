@@ -24,6 +24,7 @@
     <script type="text/javascript">
         var cardIndex = 0;
         var l = abp.localization.getResource('Freight');
+        var isLocked;
         $(document).ready(function () {
 
             //HB/l dropdown
@@ -32,14 +33,14 @@
 
             var showMsg = '@Model.ShowMsg';
             if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
-            var isLocked = '@Model.OceanExportMbl.IsLocked';
-            if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
+            isLocked = '@Model.OceanExportMbl.IsLocked';
             if (isLocked == 'True') {
-                $('#lockButtonMbl').find('i').addClass('fa fa-lock')
+                $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> '+l("Btn:Lock"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
             }
             else {
-                $('#deleteButtonMbl').toggle();
-                $('#lockButtonMbl').find('i').addClass('fa fa-lock-open')
+                $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
             }
 
             console.log('@ViewData["HAVEHBL"]');
@@ -112,12 +113,12 @@
                     dolphin.freight.importExport.oceanExports.oceanExportMbl.lockedOrUnLockedOceanExportMbl({ MbId: id })
                         .done(function () {
                             if (isLock) {
-                                $('#deleteButtonMbl').toggle();
-                                $('#lockButtonMbl').find('i').toggleClass('fa-lock fa-lock-open')
+                                $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+                                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
                                 abp.message.success(l('Message:SuccessUnlock'));
                             } else {
-                                $('#deleteButtonMbl').toggle();
-                                $('#lockButtonMbl').find('i').toggleClass('fa-lock fa-lock-open')
+                                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                               $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
                                 abp.message.success(l('Message:SuccessLock'));
                             }
                         });
@@ -351,7 +352,7 @@
                         $('#partialContainer').html(partial);
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
-
+                        if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
                         setTimeout(() => {
                             initializeDropdownSearch("OceanExportHbl_HblShipperId", 1);
                             initializeDropdownSearch("OceanExportHbl_HblCustomerId");
@@ -476,12 +477,12 @@
                     dolphin.freight.importExport.oceanExports.oceanExportHbl.lockedOrUnLockedOceanExportHbl({ HblId: id })
                         .done(function () {
                             if (isLock) {
-                                $('#deleteButtonHbl').toggle();
-                                $('#lockButtonHbl').find('i').toggleClass('fa-lock fa-lock-open')
+                                $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                               $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
                                 abp.message.success(l('Message:SuccessUnlock'));
                             } else {
-                                $('#deleteButtonHbl').toggle();
-                                $('#lockButtonHbl').find('i').toggleClass('fa-lock fa-lock-open')
+                                $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                                $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
                                 abp.message.success(l('Message:SuccessLock'));
                             }
                         });
@@ -561,10 +562,10 @@
 
 
                             <div class="btn-group dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                    @L["Display:Function"]
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDropMbl" data-bs-toggle="dropdown">
+                                    
                                 </button>
-                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
+                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDropMbl">
                                     <a class='dropdown-item' id="lockButtonMbl" href='javascript:void(0)' onclick="lockUnlockMbl('@Model.OceanExportMbl.Id')">
                                         <i class=""></i> @L["Btn:Lock"]
                                     </a>
@@ -581,8 +582,8 @@
                                         <i class="fa fa-file-text-o"></i> @L["GoFreight EDI"]
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <a class='dropdown-item' href='javascript:void(0)'>
-                                        <i class="fa fa-files-o"></i> @L["Btn:File Package"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getMBLDocPackagePopUp()">
+                                        <i class="fa fa-files-o"></i> @L["Btn:Document Package"]          
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PrintMBLInstruction", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Print MB/L | B/L Instruction"]
@@ -1030,6 +1031,9 @@
 <div class="modal mymodal" id="ManifestModal" tabindex="-1" role="dialog">
 </div>
 
+<div class="modal" id="MBLDocumentPackageModal">
+</div>
+
 <script>
     var changeReport = function (sel) {
         if (sel.value === 'CARRIER')
@@ -1037,4 +1041,17 @@
         else
             $('.reporttype').show();
     }
+
+    function getMBLDocPackagePopUp() {
+        $.ajax({
+            url: '/Docs/DocumentPackageMBLPopupPartial?id=@Model.OceanExportMbl.Id',
+            type: 'GET',
+            dataType: "html",
+            success: function (res) {
+                $('#MBLDocumentPackageModal').html(res);
+                $('#MBLDocumentPackageModal').modal('show');
+            }
+        });
+    }
+
 </script>

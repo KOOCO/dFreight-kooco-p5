@@ -218,7 +218,7 @@ table td {
 
 </script>
 
-@if (!Model.IsPDF)
+@if (!Model.IsPDF && !Model.IsPartialView)
 {
 <div class="nav">
    <ul>
@@ -238,6 +238,8 @@ table td {
 }
 
 <form id="myForm" name="myForm" method="POST">
+    <input type="hidden" name="reportType" value="MBL Export Manifest" />
+    <input type="hidden" name="displayBy" value="MBL" />
     <input type="hidden" asp-for="@Model.MblNo" />
     <input type="hidden" asp-for="@Model.TotalWeightStr" />
     <input type="hidden" asp-for="@Model.TotalWeightStrLBS" />

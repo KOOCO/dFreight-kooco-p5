@@ -547,10 +547,13 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public bool showContainerRider { get; set; } = true;
         public List<string> DDLItems { get; set; }
         public bool IsPartialView { get; set; } = false;
+        public string DisplayReportBy { get; set; }
+        public List<ContainerList> ContainerList { get; set; }
     }
 
     public class Hbl
     {
+        public string Id { get; set; }
         public string HblNo { get; set; }
         public string HblPcs { get; set; }
         public string Weight { get; set; }
@@ -577,5 +580,17 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public double? Amount { get; set; }
         public List<InvoiceDto> InvoiceDto { get; set; }
         public List<ManifestCommodity> ManifestCommodities { get; set; }
+      
+    }
+    public class ContainerList
+    {
+        public string chk { get; set; }
+        public string CONTAINER_NO { get; set; }
+        public string TYPE { get; set; }
+        public string SEAL_NO { get; set; }
+        public string PACKAGE { get; set; }
+        public string WEIGHT { get; set; }
+        public string PICKUP_NO { get; set; }
+        public string LFD { get; set; }
     }
 }

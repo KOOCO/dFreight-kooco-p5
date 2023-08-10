@@ -4,7 +4,7 @@
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
-@model Dolphin.Freight.ImportExport.OceanExports.OceanExportDetails
+@model Dolphin.Freight.Web.ViewModels.Reports.ProfitReportViewModel
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
 @{
@@ -197,18 +197,18 @@ table td {
     }
 
 <form id="myForm" name="myForm" method="POST">
-    <input type="hidden" asp-for="@Model.MblNo" />
+    <input type="hidden" asp-for="@Model.MawbNo" />
+    <input type="hidden" asp-for="@Model.Del" />
     <input type="hidden" asp-for="@Model.PageType" />
-    <input type="hidden" asp-for="@Model.MblOperatorName" />
+    <input type="hidden" asp-for="@Model.Operator" />
     <input type="hidden" asp-for="@Model.PolName" />
     <input type="hidden" asp-for="@Model.PodName" />
     <input type="hidden" asp-for="@Model.PackageCategoryName" />
-    <input type="hidden" asp-for="@Model.MblConsigneeName" />
-    <input type="hidden" asp-for="@Model.FilingNo" />
-    <input type="hidden" asp-for="@Model.MblNo" />
+    <input type="hidden" asp-for="@Model.Consignee" />
+    <input type="hidden" asp-for="@Model.FileNo" />
     <input type="hidden" asp-for="@Model.PackageWeightName" />
-    <input type="hidden" asp-for="@Model.ShippingAgentName" />
-    <input type="hidden" asp-for="@Model.PodEta" />
+    <input type="hidden" asp-for="@Model.AgentName" />
+    <input type="hidden" asp-for="@Model.PodEtd" />
     <input type="hidden" asp-for="@Model.PolEtd" />
     <input type="hidden" asp-for="@Model.MblReferralByName" />
     <input type="hidden" asp-for="@Model.InvoicesJson" />
@@ -230,7 +230,7 @@ table td {
                             <td style="width: 35%"></td>
                             <td style="width: 15%"></td>
                             <td style="width: 10%"></td>
-                            <td style="width: 20%; text-align: center">OCEAN EXPORT</td>
+                            <td style="width: 20%; text-align: center">@((Model.PageType == Dolphin.Freight.Common.FreightPageType.OEMBL)? "OCEAN EXPORT": "OCEAN IMPORT")</td>
                         </tr>
                         <tr style="border-bottom: 2pt solid #000">
                             <td style="width: 10%"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CURRENCY</font></font></td>
@@ -254,32 +254,32 @@ table td {
                         </tr>
                         <tr>
                             <td>AGENT NAME:</td>
-                            <td>@Model.ShippingAgentName</td>
+                            <td>@Model.AgentName</td>
                             <td>P.O.L / ETD:</td>
-                            <td> @string.Concat(@Model.PolName, " / ",  @Model.PolEtd.GetValueOrDefault().ToShortDateString())?.TrimStart('/')</td>
+                            <td> @string.Concat(@Model.PolName, " / ",  DateTime.Parse(@Model.PolEtd).ToShortDateString())?.TrimStart('/')</td>
                         </tr>
                         <tr>
                             <td>D.E.L :</td>
-                            <td>@Model.DelName</td>
+                            <td>@Model.Del</td>
                             <td>P.O.D / ETA :</td>
-                            <td>@string.Concat(@Model.PodName, " / ",  @Model.PodEta.GetValueOrDefault().ToShortDateString())?.TrimStart('/')</td>
+                            <td>@string.Concat(@Model.PodName, " / ",  DateTime.Parse(@Model.PodEtd).ToShortDateString())?.TrimStart('/')</td>
                         </tr>
                         <tr>
                             <td>CONTAINER NO:</td>
                             <td></td>
                             <td>OP :</td>
-                            <td>@Model.MblOperatorName</td>
+                            <td>@Model.Operator</td>
                             
                         </tr>
                         <tr>
                             <td>FILE NO:</td>
-                            <td>@Model.FilingNo</td>
+                            <td>@Model.FileNo</td>
                             <td>SHIP MODE:</td>
                             <td>@Model.ShipModeName</td>
                         </tr>
                         <tr>
                             <td>MASTER B/L NO:</td>
-                            <td>@Model.MblNo</td>
+                            <td>@Model.MawbNo</td>
                             <td style="white-space:nowrap">SERVICE TERM:</td>
                             <td style="padding-left:20px">@string.Concat(@Model.SvcTermToName, "-",  @Model.SvcTermFromName)?.TrimStart('-')</td>
                         </tr>
@@ -287,7 +287,7 @@ table td {
                             <td>WEIGHT:</td>
                             <td>@Model.PackageWeightName</td>
                             <td style="white-space:nowrap">MEASUREMENT :</td>
-                            <td>@Model.PackageMeasureId</td>
+                            <td>@Model.Measurement</td>
                         </tr>
                         <tr>
                             <td></td>
@@ -361,8 +361,8 @@ table td {
                             }
                             
                             <tr class="text-bold">
-                                <td class="td text-center">H</td>
-                                <td class="td"><div class="auto-font-size __width-bl-no"><span>@Model.MblNo</span></div></td>
+                                <td class="td text-center">@((Model.PageType == Dolphin.Freight.Common.FreightPageType.OEMBL || Model.PageType == Dolphin.Freight.Common.FreightPageType.OIMBL)? "M" : "H")</td>
+                                <td class="td"><div class="auto-font-size __width-bl-no"><span>@Model.MawbNo</span></div></td>
                                 <td class="td">
                                     <div class="auto-font-size __width-invoice">
                                         <span class="item-edit">
