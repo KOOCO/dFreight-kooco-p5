@@ -5123,7 +5123,7 @@ namespace Dolphin.Freight.Web.Controllers
             };
             if (data != null && isIncludeInvoices)
             {
-                var queryType = pageType == FreightPageType.OEMBL ? 3 : 1;
+                var queryType = pageType == FreightPageType.OIMBL ? 3 : 1;
 
                 QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = Id };
 
