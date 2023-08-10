@@ -224,9 +224,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             return new OceanImportHblDto();
         }
 
-        public async Task<OceanExportDetails> GetOceanImportDetailsById(Guid Id)
+        public async Task<OceanImportDetails> GetOceanImportDetailsById(Guid Id)
         {
-            var oceanImportDetails = new OceanExportDetails();
+            var oceanImportDetails = new OceanImportDetails();
             var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
             var portMangements = ObjectMapper.Map<List<PortsManagement>, List<PortsManagementDTO>>(await _portsManagementRepository.GetListAsync());
             var sysCodes = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(await _sysCodeRepository.GetListAsync());
@@ -236,7 +236,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
 
             if (data != null)
             {
-                oceanImportDetails = ObjectMapper.Map<OceanImportHbl, OceanExportDetails>(data);
+                oceanImportDetails = ObjectMapper.Map<OceanImportHbl, OceanImportDetails>(data);
 
                 var mbl = await _mblRepository.GetAsync(data.MblId.GetValueOrDefault());
 
