@@ -548,6 +548,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public List<string> DDLItems { get; set; }
         public bool IsPartialView { get; set; } = false;
         public string DisplayReportBy { get; set; }
+        public List<ContainerList> ContainerList { get; set; }
     }
 
     public class Hbl
@@ -568,7 +569,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string extraProperty { get; set; }
         public string CommodityDesc { get; set; }
         public string Remark { get; set; }
-        public List<ContainerList> ContainerList { get; set; }
+      
     }
     public class ContainerList
     {
