@@ -3161,7 +3161,7 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> MblProfitReportDetailed(OceanExportDetails model)
+        public async Task<IActionResult> MblProfitReportDetailed(ProfitReportViewModel model)
         {
             model.IsPDF = true;
 
@@ -4916,6 +4916,7 @@ namespace Dolphin.Freight.Web.Controllers
                 PackageCategoryName = oceanImportDetails.PackageCategoryName,
                 Consignee = oceanImportDetails.MblConsigneeName,
                 MblReferralByName = oceanImportDetails.MblReferralByName,
+                ReportType = reportType,
                 PageType = pageType
             };
             
@@ -4925,18 +4926,25 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(returnUrl, profitReport); 
         }
-
         [HttpPost]
-        public async Task<IActionResult> OceanImportProfitReportDetail(OceanImportDetails model)
+        public async Task<IActionResult> OceanImportProfitReportDetailOrSummry(ProfitReportViewModel model)
         {
+            var pageType = model.PageType;
+            var reportType = model.ReportType;
+            string returnUrl = pageType == FreightPageType.OIMBL
+                ? (reportType == "Summary") ? "Views/Docs/MblProfitReportSummary.cshtml" : "Views/Docs/MblProfitReportDetailed.cshtml"
+                : "Views/Docs/HblProfitReport.cshtml";
+
             model.IsPDF = true;
-           
-            return await _generatePdf.GetPdf("Views/Docs/ProfitReportDetail.cshtml", model);
+
+            model.Invoices = JsonConvert.DeserializeObject<IList<InvoiceDto>>(model.InvoicesJson);
+
+            return await _generatePdf.GetPdf(returnUrl, model);
         }
 
-        #region Private Functions
+            #region Private Functions
 
-        private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
+            private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)
         {
             var data = new AirExportDetails();
 
