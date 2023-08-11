@@ -47,6 +47,81 @@
             //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
+
+        function ConslidateByConsignee() {
+
+            var url = new URL(window.location.href);
+            var mblId = url.searchParams.get('Id');
+
+            if (mblId == null) {
+                var url = window.location.href;
+                var mblId = url.split('/')[url.split('/').length - 1];
+            }
+
+            dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(mblId).done(function (res) {
+                var consignee = [];
+                var duplicates = new Set();
+                var seen = new Set();
+                res.forEach(item => {
+                    if (item.hblConsigneeId !== null && seen.has(item.hblConsigneeId)) {
+                        duplicates.add(item.hblConsigneeId);
+                    }
+                    seen.add(item.hblConsigneeId);
+                });
+
+                var duplicateArray = Array.from(duplicates).join();
+
+                $.ajax({
+                    url: abp.appPath + 'Docs/ConsolidatedByConsignee?mblId=' + mblId + '&conId=' + duplicateArray,
+                    type: 'GET',
+                    dataType: "html",
+                    success: function (res) {
+                        $('#consolidatedModal').html(res);
+                        $('.modal.mymodal').modal('show');
+                        $('#frmConsolidateArrival').find('.modal.fade').removeClass('modal fade');
+                    }
+                });
+
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+
+            if (mawbId == null) {
+                var url = window.location.href;
+                var mawbId = url.split('/')[url.split('/').length - 1];
+            }
+
+            dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(mawbId).done(function (res) {
+                var consignee = [];
+                for (let i = 0; i < res.length; i++) {
+                    if (res[i].hblConsigneeId != null) {
+                        consignee.push(res[i].hblConsigneeId);
+                    }
+                }
+                checkForDuplicates(consignee);
+            });
+        });
+
+        function checkForDuplicates(array) {
+            let counts = {};
+
+            for (let i = 0; i < array.length; i++) {
+                if (counts[array[i]]) {
+                    counts[array[i]] += 1;
+                } else {
+                    counts[array[i]] = 1;
+                }
+            }
+
+            for (let prop in counts) {
+                if (counts[prop] > 1) {
+                    $(".consolidateConsignee").removeClass("disabled");
+                }
+            }
+        }
     </script>
 }
 <div class="page-header">
@@ -132,8 +207,8 @@
                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getOrderDelivery()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
                                     </a>
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
+                                <a class='dropdown-item consolidateConsignee disabled' href='javascript:void(0)' onclick="if(!$(this).hasClass('disabled')) { ConslidateByConsignee() }" title="This function is only available when two or more hbl have same consignee">
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Arrival Notice"]
                                 </a>
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
@@ -711,4 +786,7 @@
             </div>
         </abp-column>
     </abp-row>
+</div>
+
+<div class="modal mymodal" id="consolidatedModal" tabindex="-1" role="dialog">
 </div>

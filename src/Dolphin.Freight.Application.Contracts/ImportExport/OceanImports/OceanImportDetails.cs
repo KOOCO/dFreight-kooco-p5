@@ -25,6 +25,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string PoNo { get; set; }
         public string DocNo { get; set; }
         public string HblNo { get; set; }
+        public string HblNos { get; set; }
         public string LCNo { get; set; }
         public string LCIssueBankName { get; set; }
         public string ETD { get; set; }
@@ -532,6 +533,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string BillOfLanding { get; set; }
         public string DisplayUnit { get; set; }
         public string ContainerNo { get; set; }
+        public string SealNo { get; set; }
         public string MblFdestName { get; set; }
         public string PackageUnitName { get; set; }
         public string PackagpackageUnitName { get; set; }
