@@ -427,7 +427,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 oceanImportDetails.MblPostDate = mbl.PostDate;
                 oceanImportDetails.EmptyPickUpDate = data.CargoArrivalDate;
                 oceanImportDetails.EarlyReturnDateTime = data.EarlyReturnDateTime;
-
+                oceanImportDetails.AgentRefNo = mbl.AgentRefNo;
                 oceanImportDetails.Description = data.Description;
             }
 

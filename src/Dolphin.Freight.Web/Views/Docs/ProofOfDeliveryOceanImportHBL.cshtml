@@ -17572,18 +17572,22 @@
 
         .w-1 {
             width: 1%
+             font-size:12px!importent;
         }
 
         .w-2 {
             width: 2%
+             font-size:12px!importent;
         }
 
         .w-3 {
             width: 3%
+             font-size:12px!importent;
         }
 
         .w-4 {
             width: 4%
+             font-size:12px!importent;
         }
 
         .w-5 {
@@ -17756,14 +17760,17 @@
 
         .w-47 {
             width: 47%
+             font-size:12px!importent;
         }
 
         .w-48 {
             width: 48%
+             font-size:12px!importent;
         }
 
         .w-49 {
             width: 49%
+             font-size:12px!importent;
         }
 
         .w-50 {
@@ -20128,10 +20135,12 @@
 
         .w-10 {
             width: 10%;
+             font-size:12px!importent;
         }
 
         .w-40 {
             width: 40% !important;
+            font-size:12px!importent;
         }
 
         table td {
@@ -20270,7 +20279,7 @@ EMAIL: hanjun.lin@dolphin-gp.com
                     <td class="w-10 border-t border-b border-r">
                         <div class="item-pdf">&nbsp;</div>
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <input type="text" name="pod_date" value="08-11-2023" template-id="205eb3c1d5c0ba8eef9a4e2e2b16988d091aadcb3442b64f2fd9d4ff06deb9dc:Form.pod_date" id="id_pod_date" class="ng-isolate-scope">
+                            <input type="text" name="pod_date" value="" template-id="205eb3c1d5c0ba8eef9a4e2e2b16988d091aadcb3442b64f2fd9d4ff06deb9dc:Form.pod_date" id="id_pod_date" class="ng-isolate-scope">
                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fcg-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fcg-c260="" class="icon-text-template" style="top: 1px; left: 43px;"></span><!---->
 
 </hc-input-template></div>
@@ -20357,7 +20366,7 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                         <div class="data">
                             <div class="item-edit hover-toggle-icon-text-template">
                                 <textarea name="customer_area" cols="40" rows="10" class="text-scroll no-adjustment ng-isolate-scope" template-id="205eb3c1d5c0ba8eef9a4e2e2b16988d091aadcb3442b64f2fd9d4ff06deb9dc:Form.customer_area" id="id_customer_area">
-
+                                @Model.MblBillToName
                                 </textarea>
                             <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fcg-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fcg-c260="" class="icon-text-template" style="top: 3px; left: 691px;"></span><!---->
 
@@ -20375,23 +20384,23 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                 </tr>
                 <tr>
                     <td class="col-padding">
-                        <table class="col-height">
+                        <table class="col-height" style="font-size:12px;">
                             <tbody><tr>
-                                <td class="w-18">OUR FILE NO. :</td>
+                                <td class="w-18" style=" font-size:12px!importent;"><span style=" font-size:12px!importent;">OUR FILE NO. :</span></td>
                                 <td class="w-22">
                                     <div class="item-pdf auto-font-size __width-sm"><span>&nbsp;</span></div>
                                     <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="filing_no" value="@Model.DocNo" template-id="205eb3c1d5c0ba8eef9a4e2e2b16988d091aadcb3442b64f2fd9d4ff06deb9dc:Form.filing_no" id="id_filing_no" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fcg-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fcg-c260="" class="icon-text-template" style="top: 1px; left: 130px;"></span><!---->
 
 </hc-input-template></div>
                                 </td>
-                                <td class="w-15">SHIPPER :</td>
-                                <td class="w-45"><div class="auto-font-size __width-lg"><span>@Model.ShippingAgentName</span></div></td>
+                                <td class="w-15" style=" font-size:12px!importent;"><span style=" font-size:12px!importent;">SHIPPER :</span></td>
+                                <td class="w-45"><div class="auto-font-size __width-lg"><span style=" font-size:12px!importent;">@Model.ShippingAgentName</span></div></td>
                             </tr>
                             <tr>
                                 <td>AGENT FILE NO. :</td>
                                 <td>
                                     <div class="item-pdf auto-font-size __width-sm"><span>&nbsp;</span></div>
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="agent_ref_no" value="" template-id="205eb3c1d5c0ba8eef9a4e2e2b16988d091aadcb3442b64f2fd9d4ff06deb9dc:Form.agent_ref_no" id="id_agent_ref_no" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fcg-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fcg-c260="" class="icon-text-template" style="top: 1px; left: 130px;"></span><!---->
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="agent_ref_no" value="@Model.AgentRefNo" template-id="205eb3c1d5c0ba8eef9a4e2e2b16988d091aadcb3442b64f2fd9d4ff06deb9dc:Form.agent_ref_no" id="id_agent_ref_no" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fcg-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fcg-c260="" class="icon-text-template" style="top: 1px; left: 130px;"></span><!---->
 
 </hc-input-template></div>
                                 </td>
@@ -20406,7 +20415,7 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
 
 </hc-input-template></div>
                                 </td>
-                                <td>VESSEL/VOY. NO. :</td>
+                                <td>VESSEL/VOY. NO :</td>
                                 <td><div class="auto-font-size __width-lg"><span>@Model.VesselName/@Model.Voyage</span></div></td>
                             </tr>
                             <tr>
