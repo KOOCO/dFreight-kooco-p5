@@ -43,6 +43,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string SoNo { get; set; }
         public string HblSoNo { get; set; }
         public string ItnNo { get; set; }
+        public string ItNo { get; set; }
+        public DateTime? ItDate { get; set; }
         public string AmsNo { get; set; }
         public Guid? MblCarrierId { get; set; }
         public string MblCarrierName { get; set; }
@@ -406,6 +408,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public string TransPort1Name { get; set; }
         public string CyLocationName { get; set; }
+        public string ItLocationName { get; set; }
         /// <summary>
         /// 中轉港ETA
         /// </summary>

@@ -355,6 +355,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     var cyLocation = countries.Where(w => w.Id == data.CyLocationId).FirstOrDefault();
                     oceanImportDetails.CyLocationName = cyLocation?.CountryName;
                 }
+                if (data.ItLocation != null)
+                {
+                    var itLocation = portMangements.Where(w => w.Id == Guid.Parse(data.ItLocation)).FirstOrDefault();
+                    oceanImportDetails.ItLocationName = itLocation?.PortName;
+                }
             }
 
             oceanImportDetails.Commodity = data.GetProperty<List<ManifestCommodity>>("Commodities");
@@ -369,6 +374,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             oceanImportDetails.VesselName = data.VesselName;
             oceanImportDetails.Voyage = data.Voyage;
             oceanImportDetails.AgentRefNo = data.AgentRefNo;
+            oceanImportDetails.ItNo = data.ItNo;
+            oceanImportDetails.ItDate = data.ItDate;
 
             return oceanImportDetails;
         }

@@ -121,6 +121,12 @@ table {
 .w-40 {
     width: 40%!important;
 }
+.col-padding-double {
+    font-size: xx-small;
+}
+.remark_total {
+    font-size: small;
+}
 table td {
     padding: 0;
 }
@@ -276,6 +282,9 @@ table td {
     <input type="hidden" asp-for="@Model.TotalPackageStr" />
     <input type="hidden" asp-for="@Model.TotalMeasure" />
     <input type="hidden" asp-for="@Model.PackageMeasureName" />
+    <input type="hidden" asp-for="@Model.ItDate" />
+    <input type="hidden" asp-for="@Model.ItNo" />
+    <input type="hidden" asp-for="@Model.ItLocationName" />
     <input type="hidden" asp-for="@Model.CreateUpdateContainerDtosJson" />
     
     <div id="main" class="edit">
@@ -433,8 +442,8 @@ table td {
                                     <div class="title">I.T. NO.</div>
                                     <div class="data">
                                         <div class="auto-font-size __width-it-no">
-                                            <span>@Model.ItnNo</span>
-                                            <span class="ng-hide">See Remark</span>
+                                            <span>@Model.ItNo</span>
+                                            <span class="ng-hide"></span>
                                         </div>
                                     </div>
                                 </td>
@@ -442,14 +451,14 @@ table td {
                                 <td class="td highlight-block">
                                     <div class="title">I.T. PLACE</div>
                                     <div class="data">
-                                        <div class="auto-font-size __width-it-location"><span></span></div>
+                                        <div class="auto-font-size __width-it-location"><span>@Model.ItLocationName</span></div>
                                     </div>
                                 </td>
                                 <td>&nbsp;</td>
                                 <td class="td highlight-block">
                                     <div class="title">I.T. DATE</div>
                                     <div class="data">
-                                        <div class="auto-font-size __width-date"><span></span></div>
+                                        <div class="auto-font-size __width-date"><span>@Model.ItDate?.ToShortDateString()</span></div>
                                     </div>
                                 </td>
                             </tr>
@@ -847,7 +856,7 @@ table td {
                 
                 <tr style="display: table-row;" bind-auto-font-size="" class="">
                     <td class="td border-r" colspan="2">
-                        <div class="remark_con auto-font-size auto-link __col-remark" style="line-height: 12px !important;"><span>TO ALL CUSTOMERS:<br>
+                        <div class="remark_con auto-font-size auto-link __col-remark" style="line-height: 12px !important; overflow: auto;"><span>TO ALL CUSTOMERS:<br>
                             1. PLEASE MAKE A CHECK PAYABLE TO "HARD CORE TECHNOLOGY"<br>
                             2. WE WILL RELEASE THE FREIGHT UPON RECEIVING YOUR FULL PAYMENT AS SHOWN ABOVE AND<br>
                             YOUR PROPERLY ENDORSED ORIGINAL BILL OF LADING.<br>
@@ -935,7 +944,7 @@ table td {
                 <td class="w-50 text-center">
                     <h1 class="ng-binding">
                         REF NO.
-                                OIM-23050004
+                                @Model.DocNo
                     </h1>
                 </td>
                 <td class="w-25 text-right"><h1>BL NO. SEE REMARK</h1></td>

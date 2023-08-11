@@ -58,7 +58,7 @@
 			var url = window.location.href;
 			var mblId = url.split('/')[url.split('/').length - 1];
 		}
-		debugger;
+		
 		$.ajax({
 			url: abp.appPath + 'Docs/ConsolidatedArrivalNoticeOceanImport',
 			type: 'GET',
@@ -68,6 +68,7 @@
 				var pageType = 'OIMBL';
 				var Url = abp.appPath + 'Docs/ConsolidatedArrivalNoticeOceanImport?mblId=' + mblId + '&consignee=' + consignee + '&pageType=' + pageType
 				var myWindows = window.open(Url, 'Empty', 'width=1200,height=800');
+				$('.modal').modal('hide');
 				myWindows.focus();
 			}
 		});
