@@ -78,6 +78,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public bool IsUsedCareOf { get; set; }
 
         public Guid? CareOfId { get; set; }
+        public string HblCustomerName { get; set; }
 
         [ForeignKey("CareOfId")]
         public virtual Dolphin.Freight.TradePartners.TradePartnerDto CareOf { get; set; }

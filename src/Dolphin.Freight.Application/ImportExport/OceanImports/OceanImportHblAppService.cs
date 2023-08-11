@@ -255,6 +255,12 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     oceanImportDetails.MblBillToName = string.Concat(billto.TPName, "/", billto.TPCode);
                     oceanImportDetails.MblBillToContent=billto.TPLocalAddress;
                 }
+                if (data.HblCustomerId != null)
+                {
+                    var customer = tradePartners.Where(w => w.Id == data.HblCustomerId).FirstOrDefault();
+                    oceanImportDetails.HblCustomerName = string.Concat(customer.TPName, "/", customer.TPCode);
+                   
+                }
                 if (data.HblShipperId != null)
                 {
                     var shipper = tradePartners.Where(w => w.Id == data.HblShipperId).FirstOrDefault();
