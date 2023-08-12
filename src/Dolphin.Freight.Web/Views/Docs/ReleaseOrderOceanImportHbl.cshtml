@@ -215,7 +215,7 @@ table td {
                     <td class="w-57">
                         <h1 class="auto-font-size office-name _no-logo"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h1>
                         <div class="auto-font-size office-des _no-logo">
-                            <span>77792 COBB CAPE<br>
+                            <span style="font-size:12px;">77792 COBB CAPE<br>
                             TRISTANCHESTER, NE 47478<br>
                             TEL: 08417606080 FAX: 08417606080<br>
                             EMAIL: hanjun.lin@dolphin-gp.com</span>
@@ -301,16 +301,16 @@ table td {
                     </td>
                 </tr>
             </tbody></table>
-            <table class="border margin-t-md">
+            <table class="border margin-t-md" style="font-size:12px;">
                 <tbody><tr>
                     <td class="col-padding-double bg-light border-b">B/L INFORMATION</td>
                 </tr>
-                <tr>
+                <tr >
                     <td class="col-padding">
-                        <table class="col-height">
+                        <table class="col-height" style="font-size:12px;">
                             <tbody><tr>
                                 <td class="td w-50 border-r">
-                                    <table>
+                                    <table style="font-size:12px;">
                                         <tbody><tr>
                                             <td class="w-30">FILE NO. :</td>
                                             <td class="w-70">
@@ -366,35 +366,16 @@ table td {
                                             <col class="w-80">
                                         </colgroup>
                                         <tbody><tr>
-                                            <table class="margin-t">
+                                            <table class="margin-t" style="font-size:11px;" >
          <tbody>
-            <tr class="border-b border-t bg-light text-8">
-               <th class="w-5 border-r text-center col-padding-double item-edit">
-                  <input type="checkbox" name="check_all_container" onClick="toggle(this)" checked>
-               </th>
-               <th class="w-15 border-r text-left col-padding-double">
-                  CONTAINER NO.
-               </th>
-               <th class="w-6 border-r text-center col-padding-double">
-                  TYPE
-               </th>
-               <th class="w-12 border-r text-left col-padding-double">
-                  SEAL NO.
-               </th>
-               <th class="w-15 border-r text-right col-padding-double">
-                  PACKAGE
-               </th>
-              @* <th class="w-24 border-r text-right col-padding-double">
-                  WEIGHT
-               </th>*@
-               <th class="w-12 border-r text-left col-padding-double">
-                  PICKUP NO.
-               </th>
-               <th class="w-10 text-center col-padding-double">
-                  L.F.D
-               </th>
-            </tr>
-
+           <tr class="border-b">
+                                            <td class="w-21">CONTAINER NO.</td>
+                                            <td class="w-10">TP/SZ</td>
+                                            <td class="w-17">SEAL NO.</td>
+                                            <td class="w-17">PICK UP NO.</td>
+                                            <td class="w-15">LFD</td>
+                                            <td class="w-20">PKG</td>
+                                        </tr>
 
                                         @if (Model.ContainerList != null && Model.ContainerList.Count > 0)
                                         {
@@ -402,38 +383,137 @@ table td {
                                             {
                                                 var container = Model.ContainerList[i];
 
-                            <tr class="border-b">
-                               <td class="td td-item border-r text-center item-edit"><input type="checkbox" class="ContainerListCheck" name="ContainerList[@(i.ToString())].chk" value="true" checked=""></td>
-                               <td class="td td-item border-r">@container.CONTAINER_NO</td>
-                               <td class="td td-item text-center border-r">@container.TYPE</td>
-                               <td class="td td-item border-r">@container.SEAL_NO</td>
-                                <td class="td td-item border-r">@container.PACKAGE</td>
-                            @*   <td class="td td-item text-right border-r">@container.WEIGHT</td>*@
-                               <td class="td td-item border-r">@container.PICKUP_NO</td>
-                               <td class="td td-item text-center">@container.LFD</td>
+   
+                              <tr>
+                                                    <td>
+                                                        <div class="item-pdf auto-font-size __width-container">
+                                                          
+                                                        </div>
+                                                        <div class="item-edit hover-toggle-icon-text-template">
+                                                            <input type="text" name="container_no_97826" value="@container.CONTAINER_NO"  template-id="f724d9f44c7b21449fc582e3a79f507c094d164284b3557f0ef5eaeffb920986:FormExtend.container_no_97826" id="id_container_no_97826" class="ng-isolate-scope">
+                                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-cht-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-cht-c260="" class="icon-text-template" style="top: 3px; left: 62px;"></span><!---->
 
-                                <input type="hidden" name="ContainerList[@(i.ToString())].CONTAINER_NO" value="@container.CONTAINER_NO" />
-                                <input type="hidden" name="ContainerList[@(i.ToString())].TYPE" value="@container.TYPE" />
-                                <input type="hidden" name="ContainerList[@(i.ToString())].SEAL_NO" value="@container.SEAL_NO" />
-                                   <input type="hidden" name="ContainerList[@(i.ToString())].PACKAGE" value="@container.PACKAGE" />
-                               @* <input type="hidden" name="ContainerList[@(i.ToString())].WEIGHT" value="@container.WEIGHT" />*@
-                                <input type="hidden" name="ContainerList[@(i.ToString())].PICKUP_NO" value="@container.PICKUP_NO" />
-                                <input type="hidden" name="ContainerList[@(i.ToString())].LFD" value="@container.LFD" />
-                            </tr>                   
+</hc-input-template></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="item-pdf auto-font-size __width-tp">
+                                                            <span>&nbsp;</span>
+                                                        </div>
+                                                        <div class="item-edit hover-toggle-icon-text-template">
+                                                            <input type="text" name="container_size_97826"  value="@container.TYPE" template-id="f724d9f44c7b21449fc582e3a79f507c094d164284b3557f0ef5eaeffb920986:FormExtend.container_size_97826" id="id_container_size_97826" class="ng-isolate-scope">
+                                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-cht-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-cht-c260="" class="icon-text-template" style="top: 3px; left: 16px;"></span><!---->
+
+</hc-input-template></div>
+                                                    </td>
+                                                    <td>
+
+                                                        <div class="item-pdf auto-font-size __width-seal">
+                                                            
+                                                        </div>
+                                                        <div class="item-edit hover-toggle-icon-text-template">
+                                                            <input type="text" name="seal_no_97826" value="@container.SEAL_NO"  template-id="f724d9f44c7b21449fc582e3a79f507c094d164284b3557f0ef5eaeffb920986:FormExtend.seal_no_97826" id="id_seal_no_97826" class="ng-isolate-scope">
+                                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-cht-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-cht-c260="" class="icon-text-template" style="top: 3px; left: 45px;"></span><!---->
+
+</hc-input-template></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="item-pdf auto-font-size __width-pickup">
+                                                            <span>&nbsp;</span>
+                                                        </div>
+                                                        <div class="item-edit hover-toggle-icon-text-template">
+                                                            <input type="text" name="pickup_no_97826" value="@container.PICKUP_NO" template-id="f724d9f44c7b21449fc582e3a79f507c094d164284b3557f0ef5eaeffb920986:FormExtend.pickup_no_97826" id="id_pickup_no_97826" class="ng-isolate-scope">
+                                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-cht-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-cht-c260="" class="icon-text-template" style="top: 3px; left: 45px;"></span><!---->
+
+</hc-input-template></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="item-pdf auto-font-size __width-lfd">
+                                                          
+                                                        </div>
+                                                        <div class="item-edit hover-toggle-icon-text-template">
+                                                            <input type="text" name="last_free_date_97826" value="@container.LFD"  template-id="f724d9f44c7b21449fc582e3a79f507c094d164284b3557f0ef5eaeffb920986:FormExtend.last_free_date_97826" id="id_last_free_date_97826" class="ng-isolate-scope">
+                                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-cht-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-cht-c260="" class="icon-text-template" style="top: 3px; left: 37px;"></span><!---->
+
+</hc-input-template></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="item-pdf auto-font-size __width-pkg">
+                                                           
+                                                        </div>
+                                                        <div class="item-edit hover-toggle-icon-text-template">
+                                                            <input type="text" name="package_97826" value="@container.PACKAGE"  template-id="f724d9f44c7b21449fc582e3a79f507c094d164284b3557f0ef5eaeffb920986:FormExtend.package_97826" id="id_package_97826" class="ng-isolate-scope">
+                                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-cht-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-cht-c260="" class="icon-text-template" style="top: 3px; left: 58px;"></span><!---->
+
+</hc-input-template></div>
+                                                    </td>
+                                                </tr>  
                                             }
                                         }
                                         else
                                         {
-                    <tr class="border-b">
-                       <td class="td td-item border-r text-center item-edit"><input type="checkbox" class="ContainerListCheck" name="ContainerList[0].chk" value="true" checked=""></td>
-                       <td class="td td-item border-r"></td>
-                       <td class="td td-item text-center border-r"></td>
-                       <td class="td td-item border-r"></td>
+                    <tr>
+                                                    <td>
+                                                        <div class="item-pdf auto-font-size __width-container">
+                                                          
+                                                        </div>
+                                                        <div class="item-edit hover-toggle-icon-text-template">
+                                                            <input type="text" name="container_no_97826"  template-id="f724d9f44c7b21449fc582e3a79f507c094d164284b3557f0ef5eaeffb920986:FormExtend.container_no_97826" id="id_container_no_97826" class="ng-isolate-scope">
+                                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-cht-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-cht-c260="" class="icon-text-template" style="top: 3px; left: 62px;"></span><!---->
 
-                       <td class="td td-item text-right border-r"></td>
-                       <td class="td td-item border-r"></td>
-                       <td class="td td-item text-center"></td>
-                    </tr>         
+</hc-input-template></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="item-pdf auto-font-size __width-tp">
+                                                            <span>&nbsp;</span>
+                                                        </div>
+                                                        <div class="item-edit hover-toggle-icon-text-template">
+                                                            <input type="text" name="container_size_97826" template-id="f724d9f44c7b21449fc582e3a79f507c094d164284b3557f0ef5eaeffb920986:FormExtend.container_size_97826" id="id_container_size_97826" class="ng-isolate-scope">
+                                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-cht-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-cht-c260="" class="icon-text-template" style="top: 3px; left: 16px;"></span><!---->
+
+</hc-input-template></div>
+                                                    </td>
+                                                    <td>
+
+                                                        <div class="item-pdf auto-font-size __width-seal">
+                                                            
+                                                        </div>
+                                                        <div class="item-edit hover-toggle-icon-text-template">
+                                                            <input type="text" name="seal_no_97826"  template-id="f724d9f44c7b21449fc582e3a79f507c094d164284b3557f0ef5eaeffb920986:FormExtend.seal_no_97826" id="id_seal_no_97826" class="ng-isolate-scope">
+                                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-cht-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-cht-c260="" class="icon-text-template" style="top: 3px; left: 45px;"></span><!---->
+
+</hc-input-template></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="item-pdf auto-font-size __width-pickup">
+                                                            <span>&nbsp;</span>
+                                                        </div>
+                                                        <div class="item-edit hover-toggle-icon-text-template">
+                                                            <input type="text" name="pickup_no_97826" template-id="f724d9f44c7b21449fc582e3a79f507c094d164284b3557f0ef5eaeffb920986:FormExtend.pickup_no_97826" id="id_pickup_no_97826" class="ng-isolate-scope">
+                                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-cht-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-cht-c260="" class="icon-text-template" style="top: 3px; left: 45px;"></span><!---->
+
+</hc-input-template></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="item-pdf auto-font-size __width-lfd">
+                                                          
+                                                        </div>
+                                                        <div class="item-edit hover-toggle-icon-text-template">
+                                                            <input type="text" name="last_free_date_97826"  template-id="f724d9f44c7b21449fc582e3a79f507c094d164284b3557f0ef5eaeffb920986:FormExtend.last_free_date_97826" id="id_last_free_date_97826" class="ng-isolate-scope">
+                                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-cht-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-cht-c260="" class="icon-text-template" style="top: 3px; left: 37px;"></span><!---->
+
+</hc-input-template></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="item-pdf auto-font-size __width-pkg">
+                                                           
+                                                        </div>
+                                                        <div class="item-edit hover-toggle-icon-text-template">
+                                                            <input type="text" name="package_97826"  template-id="f724d9f44c7b21449fc582e3a79f507c094d164284b3557f0ef5eaeffb920986:FormExtend.package_97826" id="id_package_97826" class="ng-isolate-scope">
+                                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-cht-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-cht-c260="" class="icon-text-template" style="top: 3px; left: 58px;"></span><!---->
+
+</hc-input-template></div>
+                                                    </td>
+                                                </tr>     
                                         }
          </tbody>
       </table>
@@ -445,7 +525,7 @@ table td {
                     </td>
                 </tr>
             </tbody></table>
-            <table class="margin-t-md">
+            <table class="margin-t-md" style="font-size:12px">
                 <tbody><tr class="border-t bg-light">
                     <th class="col-padding-double border-r text-left w-20">MARKS &amp; NOS.</th>
                     <th class="col-padding-double border-r text-right w-12">NO. OF PKGS.</th>
@@ -457,14 +537,18 @@ table td {
                     <td class="td col-padding td-item border-r">
                         <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="28" class="text-scroll ng-isolate-scope"  id="id_mark">@Model.Mark</textarea></div>
                     </td>
-                    <td class="td col-padding td-item border-r text-right">@Model.TotalPackage</td>
-                    <td class="td col-padding td-item border-r">
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="28" class="text-scroll ng-isolate-scope"  id="id_good_items"></textarea></div>
+                    <td class="td col-padding td-item border-r text-right"><div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="28" class="text-scroll ng-isolate-scope"  id="id_good_items">@Model.TotalPackagesStr</textarea></div>
                     </td>
-                    <td class="td col-padding td-item border-r w-13 text-right">@Model.TotalGrossWeightStr@Environment.NewLine@Model.TotalMeasureStr</td>
+                    <td class="td col-padding td-item border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="28" class="text-scroll ng-isolate-scope"  id="id_good_items">@Model.Description</textarea></div>
+                    </td>
+                    <td class="td col-padding td-item border-r w-13 text-right">
+                         <div class="item-edit hover-toggle-icon-text-template">
+                        <textarea name="good_items" cols="40" rows="28" class="text-scroll ng-isolate-scope"  id="id_good_items">@Model.TotalWeightStr/@Model.TotalWeightStrLBS@Environment.NewLine@Model.TotalMeasureStr/@Model.TotalMeasureStrLBS</textarea>
+                        </div></td>
                     <td class="td col-padding td-item w-20">
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="APOL_ETD" cols="40" rows="28" class="text-scroll ng-isolate-scope"  id="id_APOL_ETD">@Model.PolName@Environment.NewLine@(Model.PodEta?.ToString("MM/dd/yyyy") ?? "")</textarea>
-                        </div>
+                        <div class="item-edit hover-toggle-icon-text-template">
+                         <textarea name="good_items" cols="40" rows="28" class="text-scroll ng-isolate-scope"  id="id_good_items">@Model.MPolName@Environment.NewLine@(Model.PolEtd?.ToString("MM/dd/yyyy") ?? "")</textarea></div>
                     </td>
                 </tr>
             </tbody></table>

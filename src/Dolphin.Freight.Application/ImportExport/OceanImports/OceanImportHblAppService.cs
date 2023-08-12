@@ -319,7 +319,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     var por = portMangements.Where(w => w.Id == mbl.PorId).FirstOrDefault();
                     oceanImportDetails.MPorName = por?.PortName;
                 }
-
+                if (mbl.PolId != null)
+                {
+                    var por = portMangements.Where(w => w.Id == mbl.PolId).FirstOrDefault();
+                    oceanImportDetails.MPolName = por?.PortName;
+                }
                 if (data.PolId != null)
                 {
                     var pol = portMangements.Where(w => w.Id == data.PolId).FirstOrDefault();
@@ -415,6 +419,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 oceanImportDetails.LCIssueDate = data.LcIssueDate;
                 oceanImportDetails.FdestEta = data.FdestEta;
                 oceanImportDetails.PolEtd = mbl.PolEtd;
+              
                 oceanImportDetails.PorEtd = data.PorEtd;
                 oceanImportDetails.MPorEtd = mbl.PorEtd;
                 oceanImportDetails.PodEta = data.PodEta;

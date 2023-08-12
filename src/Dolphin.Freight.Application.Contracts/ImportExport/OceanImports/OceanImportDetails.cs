@@ -193,6 +193,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 裝貨港(POL)
         /// </summary>
         public string PolName { get; set; }
+        public string MPolName { get; set; }
         /// <summary>
         /// 裝貨港(POL) ETD
         /// </summary>
