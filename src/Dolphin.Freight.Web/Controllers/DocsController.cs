@@ -4030,7 +4030,11 @@ namespace Dolphin.Freight.Web.Controllers
             var oceanExportDetails = await GetOceanImportDetailsByPageType(id, pageType);
             var packageName = _dropdownService.PackageUnitLookupList;
             var containers = await _containerAppService.QueryListHblAsync(id);
-
+            oceanExportDetails.TotalWeight = 0;
+            QueryContainerDto query = new QueryContainerDto();
+            query.QueryId = oceanExportDetails.MblId;
+            var mblContainer = await _containerAppService.QueryListAsync(query);
+            oceanExportDetails.Mark =string.Concat(mblContainer.FirstOrDefault().ContainerNo)+'/'+ mblContainer.FirstOrDefault().SealNo;
             var containerlists = new List<CreateUpdateContainerDto>();
 
             foreach (var item in containers)
@@ -4045,9 +4049,19 @@ namespace Dolphin.Freight.Web.Controllers
                     PackageWeightStrLBS = string.Concat(Math.Round(item.PackageWeight * 2.204, 2)) + " LBS",
                     PackageMeasureStr = string.Concat(item.PackageMeasure) + " CBM",
                     PackageMeasureStrLBS = string.Concat(Math.Round(item.PackageMeasure * 35.315, 2)) + " CFT"
+                    
                 };
+                oceanExportDetails.TotalWeight = oceanExportDetails.TotalWeight + item.PackageWeight;
+                oceanExportDetails.TotalMeasure=oceanExportDetails.TotalMeasure + item.PackageMeasure;
+                oceanExportDetails.TotalPackage = oceanExportDetails.TotalPackage + item.PackageNum;
+                oceanExportDetails.PackageUnitName = containerSizeName;
                 containerlists.Add(container);
             }
+            oceanExportDetails.TotalWeightStr = string.Concat(oceanExportDetails.TotalWeight) + " KGS";
+            oceanExportDetails.TotalWeightStrLBS = string.Concat(Math.Round(oceanExportDetails.TotalWeight * 2.204, 2)) + " LBS";
+            oceanExportDetails.TotalMeasureStr = string.Concat(oceanExportDetails.TotalMeasure) + " CBM";
+            oceanExportDetails.TotalMeasureStrLBS = string.Concat(Math.Round(oceanExportDetails.TotalMeasure * 35.315, 2)) + " CFT";
+            oceanExportDetails.TotalPackagesStr = string.Concat(oceanExportDetails.TotalPackage) + oceanExportDetails.PackageUnitName;
 
             oceanExportDetails.CreateUpdateContainer = containerlists;
             oceanExportDetails.CreateUpdateContainerJson = JsonConvert.SerializeObject(containerlists);

@@ -20242,7 +20242,7 @@
                                     <div class="inline-block">
                                         <div class="item-pdf"></div>
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <input type="text" name="HBL_NO" value="" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.HBL_NO" id="id_HBL_NO" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-nou-c260="" ng-version="12.2.17" tabindex="0">
+                                            <input type="text" name="HBL_NO" value="@Model.HblNo" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.HBL_NO" id="id_HBL_NO" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-nou-c260="" ng-version="12.2.17" tabindex="0">
                                                 <span _ngcontent-nou-c260="" class="icon-text-template" style="top: 2px; left: 115px;"></span><!---->
 
                                             </hc-input-template>
@@ -20264,9 +20264,7 @@
                                             <span>FORMOSUS,LLC</span>
                                         </div>
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <textarea name="shipper_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.shipper_area" id="id_shipper_area">
-                                @Model.ShippingAgentName
-                                </textarea>
+                                            <textarea name="shipper_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.shipper_area" id="id_shipper_area">@Model.ShippingAgentName</textarea>
                                             <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-nou-c260="" ng-version="12.2.17" tabindex="0">
                                                 <span _ngcontent-nou-c260="" class="icon-text-template" style="top: 3px; left: 328px;"></span><!---->
 
@@ -20321,8 +20319,7 @@
                                            
                                         </div>
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <textarea name="consignee_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.consignee_area" id="id_consignee_area">
-                                    @Model.HblConsigneeName
+                                            <textarea name="consignee_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.consignee_area" id="id_consignee_area">@Model.HblConsigneeName
                                             </textarea>
                                             <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-nou-c260="" ng-version="12.2.17" tabindex="0">
                                                 <span _ngcontent-nou-c260="" class="icon-text-template" style="top: 3px; left: 328px;"></span><!---->
@@ -20338,9 +20335,7 @@
                                           
                                         </div>
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <textarea name="also_notify_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.also_notify_area" id="id_also_notify_area">
-                                        @Model.HblConsigneeName
-                                            </textarea>
+                                            <textarea name="also_notify_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.also_notify_area" id="id_also_notify_area">@Model.HblConsigneeName</textarea>
                                             <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-nou-c260="" ng-version="12.2.17" tabindex="0">
                                                 <span _ngcontent-nou-c260="" class="icon-text-template" style="top: 3px; left: 328px;"></span><!---->
 
@@ -20357,9 +20352,7 @@
 
                                         </div>
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <textarea name="notify_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.notify_area" id="id_notify_area">
-                                            @Model.HblNotifyName
-                                            </textarea>
+                                            <textarea name="notify_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.notify_area" id="id_notify_area">@Model.HblNotifyName</textarea>
                                             <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-nou-c260="" ng-version="12.2.17" tabindex="0">
                                                 <span _ngcontent-nou-c260="" class="icon-text-template" style="top: 3px; left: 328px;"></span><!---->
 
@@ -20445,7 +20438,7 @@
                             <tr>
                                 <td class="td td-item border-r" rowspan="2">
                                     <div class="item-edit hover-toggle-icon-text-template">
-                                        <textarea name="mark" cols="40" rows="29" class="text-scroll ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.mark" id="id_mark"> @Model.Mark</textarea>
+                                        <textarea name="mark" cols="40" rows="29" class="text-scroll ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.mark" id="id_mark">@Model.Mark</textarea>
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-nou-c260="" ng-version="12.2.17" tabindex="0">
                                             <span _ngcontent-nou-c260="" class="icon-text-template" style="top: 1px; left: 139px;"></span><!---->
 
@@ -20483,7 +20476,7 @@
                                         
                                     </div>
                                     <div class="item-edit hover-toggle-icon-text-template">
-                                        <textarea name="packages" cols="40" rows="29" class="text-right text-scroll no-adjustment ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.packages" id="id_packages">@Model.TotalPackage CARTON(S)</textarea>
+                                        <textarea name="packages" cols="40" rows="29" class="text-right text-scroll no-adjustment ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.packages" id="id_packages">@Model.TotalPackagesStr</textarea>
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-nou-c260="" ng-version="12.2.17" tabindex="0">
                                             <span _ngcontent-nou-c260="" class="icon-text-template" style="top: 1px; left: 72px;"></span><!---->
 
@@ -20535,9 +20528,7 @@
                                       
                                     </div>
                                     <div class="item-edit hover-toggle-icon-text-template">
-                                        <textarea name="weight" cols="40" rows="25" class="text-right text-scroll no-adjustment ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.weight" id="id_weight">
-                                            @Model.TotalGrossWeightStr
-                                        </textarea>
+                                        <textarea name="weight" cols="40" rows="25" class="text-right text-scroll no-adjustment ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.weight" id="id_weight">@Model.TotalWeightStr/@Model.TotalWeightStrLBS</textarea>
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-nou-c260="" ng-version="12.2.17" tabindex="0">
                                             <span _ngcontent-nou-c260="" class="icon-text-template" style="top: 1px; left: 64px;"></span><!---->
 
@@ -20549,8 +20540,7 @@
                                       
                                     </div>
                                     <div class="item-edit hover-toggle-icon-text-template">
-                                        <textarea name="measure" cols="40" rows="25" class="text-right text-scroll no-adjustment ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.measure" id="id_measure">
-                                          @Model.TotalMeasureStr
+                                        <textarea name="measure" cols="40" rows="25" class="text-right text-scroll no-adjustment ng-isolate-scope" template-id="2779420e1fa8956595bca6fbe60de4b47914041414631875d2b903e19b448a7f:Form.measure" id="id_measure">@Model.TotalMeasureStr/@Model.TotalMeasureStrLBS
                                         </textarea>
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-nou-c260="" ng-version="12.2.17" tabindex="0">
                                             <span _ngcontent-nou-c260="" class="icon-text-template" style="top: 1px; left: 64px;"></span><!---->
