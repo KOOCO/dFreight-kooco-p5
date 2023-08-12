@@ -3831,9 +3831,41 @@ namespace Dolphin.Freight.Web.Controllers
         }
         public async Task<IActionResult> CarrierCertificateOceanImportHbl(Guid id, FreightPageType pageType)
         {
-            var airImportDetails = await GetOceanImportDetailsByPageType(id, pageType);
+            var oceanExportDetails = await GetOceanImportDetailsByPageType(id, pageType);
+            var packageName = _dropdownService.PackageUnitLookupList;
+            var containers = await _containerAppService.QueryListHblAsync(id);
+            var containerlists = new List<CreateUpdateContainerDto>();
 
-            return View(airImportDetails);
+            foreach (var item in containers)
+            {
+                var containerSizeName = string.Concat(packageName.Where(w => w.Value == string.Concat(item.PackageUnitId)).Select(s => s.Text));
+
+                var container = new CreateUpdateContainerDto()
+                {
+                    PackageNum = item.PackageNum,
+                    PackageUnitName = containerSizeName,
+                    PackageWeightStr = string.Concat(item.PackageWeight) + " KGS",
+                    PackageWeightStrLBS = string.Concat(Math.Round(item.PackageWeight * 2.204, 2)) + " LBS",
+                    PackageMeasureStr = string.Concat(item.PackageMeasure) + " CBM",
+                    PackageMeasureStrLBS = string.Concat(Math.Round(item.PackageMeasure * 35.315, 2)) + " CFT"
+
+                };
+                oceanExportDetails.TotalWeight = oceanExportDetails.TotalWeight + item.PackageWeight;
+                oceanExportDetails.TotalMeasure = oceanExportDetails.TotalMeasure + item.PackageMeasure;
+                oceanExportDetails.TotalPackage = oceanExportDetails.TotalPackage + item.PackageNum;
+                oceanExportDetails.PackageUnitName = containerSizeName;
+                containerlists.Add(container);
+            }
+            oceanExportDetails.TotalWeightStr = string.Concat(oceanExportDetails.TotalWeight) + " KGS";
+            oceanExportDetails.TotalWeightStrLBS = string.Concat(Math.Round(oceanExportDetails.TotalWeight * 2.204, 2)) + " LBS";
+            oceanExportDetails.TotalMeasureStr = string.Concat(oceanExportDetails.TotalMeasure) + " CBM";
+            oceanExportDetails.TotalMeasureStrLBS = string.Concat(Math.Round(oceanExportDetails.TotalMeasure * 35.315, 2)) + " CFT";
+            oceanExportDetails.TotalPackagesStr = string.Concat(oceanExportDetails.TotalPackage) + oceanExportDetails.PackageUnitName;
+
+            oceanExportDetails.CreateUpdateContainer = containerlists;
+
+
+            return View(oceanExportDetails);
         }
         [HttpPost]
         public async Task<IActionResult> CarrierCertificateOceanImportHbl(OceanImportDetails model)

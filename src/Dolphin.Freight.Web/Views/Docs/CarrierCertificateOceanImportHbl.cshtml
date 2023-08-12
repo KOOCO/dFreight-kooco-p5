@@ -331,20 +331,20 @@ table td {
                 </tr>
                 <tr>
                     <td>
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_mark"></textarea></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_mark">@Model.Mark</textarea></div>
                     </td>
                     <td class="text-right">
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="package_area" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_package_area">@Model.TotalPackage</textarea></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="package_area" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_package_area">@Model.TotalPackagesStr</textarea></div>
                     </td>
                     <td>
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_good_items"></textarea></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_good_items">@Model.Description</textarea></div>
                     </td>
                     <td class="text-right">
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="chargeable_weight" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_chargeable_weight">@Model.TotalGrossWeightStr</textarea>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="chargeable_weight" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_chargeable_weight">@Model.TotalWeightStr/@Model.TotalWeightStrLBS</textarea>
                         </div>
                     </td>
                     <td>
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="APOL_ETD" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_APOL_ETD">@Model.PolName@Environment.NewLine@(Model.PolEtd?.ToString("MM/dd/yyyy") ?? "")</textarea>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="APOL_ETD" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_APOL_ETD">@Model.MPolName@Environment.NewLine@(Model.PolEtd?.ToString("MM/dd/yyyy") ?? "")</textarea>
                         </div>
                     </td>
                 </tr>
