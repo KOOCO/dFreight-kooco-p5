@@ -4253,7 +4253,61 @@ namespace Dolphin.Freight.Web.Controllers
         {
             var oceanExportDetails = await GetOceanImportDetailsByPageType(id, pageType);
             oceanExportDetails.HblOperatorName = _currentUser.Name + " " + _currentUser.SurName;
+            QueryContainerDto query = new QueryContainerDto();
+            query.QueryId = oceanExportDetails.MblId;
+            var containers = await _containerAppService.QueryListAsync(query);
+            oceanExportDetails.ContainerList = new List<ImportExport.OceanImports.ContainerList>();
+            var totalWeightKgs = 0.0;
+            var totalWeightLbs = 0.0;
+            var totalMeasureCft = 0.0;
+            var totalMeasureCbm = 0.0;
+            var totalPackage = 0;
+            var packageUnitName = "";
+            foreach (var container in containers)
+            {
+                var con = new
+                  ImportExport.OceanImports.ContainerList
+                {
+                    PACKAGE = container.PackageNum.ToString(),
+                    WEIGHT = container.PackageWeight + " " + container.PackageWeightUnit,
+                    CONTAINER_NO = container.ContainerNo,
+                    PICKUP_NO = container.PicupNo,
+                    SEAL_NO = container.SealNo,
+                    LFD = container.LastFreeDate.ToString(),
 
+                };
+                totalWeightKgs = totalWeightKgs + container.PackageWeight;
+                totalWeightLbs = totalWeightKgs * 2.2;
+
+                //}
+                //if (container.PackageWeightUnit == "LBS")
+                //{
+                //    totalWeightLbs = totalWeightLbs + container.PackageWeight;
+                //    totalWeightKgs= totalWeightLbs * 0.45359237;
+
+                //}
+                //if (container.PackageMeasureUnit == "CFT")
+                //{
+                //    totalMeasureCft = totalMeasureCft + container.PackageMeasure;
+                //    totalMeasureCbm = totalMeasureCft * 0.0283168466;
+
+                //}
+                //if (container.PackageMeasureUnit == "CBM")
+                //{
+                totalMeasureCbm = totalMeasureCbm + container.PackageMeasure;
+                totalMeasureCft = totalMeasureCbm * 35.315;
+
+                //}
+                totalPackage = totalPackage + container.PackageNum;
+                packageUnitName = container.PackageUnitId != null ? (await _containerSizeAppService.GetAsync((Guid)container.PackageUnitId)).ContainerCode : "";
+                oceanExportDetails.ContainerList.Add(con);
+            };
+
+            //oceanExportDetails.Gr = totalWeightKgs.ToString("N2") + " KGS";
+            //oceanExportDetails.gross_weight_lbs = totalWeightLbs.ToString("N2") + " LBS";
+            //oceanExportDetails.measurement_cbm = totalMeasureCbm.ToString("N2") + " CBM";
+            //oceanExportDetails.measurement_cft = totalMeasureCft.ToString("N2") + " CFT";
+            //oceanExportDetails.total_packages_count = totalPackage + packageUnitName;
             return View(oceanExportDetails);
         }
         [HttpPost]

@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Volo.Abp.Users;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.OceanImports
 {
@@ -542,6 +543,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string MblFdestName { get; set; }
         public string PackageUnitName { get; set; }
         public string PackagpackageUnitName { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
 
         public TradePartnerDto CargoPickUp { get; set; }
         public string CreateUpdateContainerJson { get; set; }

@@ -434,6 +434,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 oceanImportDetails.EarlyReturnDateTime = data.EarlyReturnDateTime;
                 oceanImportDetails.AgentRefNo = mbl.AgentRefNo;
                 oceanImportDetails.Description = data.Description;
+                oceanImportDetails.ExtraProperties = data.ExtraProperties;
+             
             }
 
             return oceanImportDetails;
