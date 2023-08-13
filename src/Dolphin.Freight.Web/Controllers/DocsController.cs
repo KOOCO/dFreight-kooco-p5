@@ -3716,7 +3716,7 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
 
-        public async Task<IActionResult> DeliveryOrderOceanImportHbl(Guid id)
+        public async Task<IActionResult> PickupDeliveryInstrucationOceanImportHbl(Guid id)
         {
             DeliveryOrderIndexViewModel InfoViewModel = new DeliveryOrderIndexViewModel();
 
@@ -3724,7 +3724,7 @@ namespace Dolphin.Freight.Web.Controllers
             //queryHbl.Id = Guid.Parse(id);
             QueryContainerDto query = new QueryContainerDto() { QueryId = id, MaxResultCount = 1000 };
             var OceanExportHbl = await _oceanImportHblAppService.GetOceanImportDetailsById(id);
-            var containers = await _containerAppService.QueryListAsync(query);
+            var containers = await _containerAppService.QueryListHblAsync(id);
 
             #region
             //https://eval-asia.gofreight.co/ocean/export/shipment/OEX-23030003/?hbl=47125&hide_mbl=false
@@ -3738,12 +3738,13 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.DateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             InfoViewModel.Date = DateTime.Now.ToString("yyyy-MM-dd");
             InfoViewModel.HBL_LcNo = OceanExportHbl.LCNo;
-            InfoViewModel.trucker_area = "";
+            InfoViewModel.trucker_area = OceanExportHbl.TruckerName;
             InfoViewModel.FirstName = OceanExportHbl.HblOperatorName;
             InfoViewModel.empty_pickup_area = OceanExportHbl.EmptyPickupName;
             InfoViewModel.issue_at = OceanExportHbl.PostDate.ToString("dd-MM-yyyy");/* "05-09-2023";*/
             InfoViewModel.issue_by = OceanExportHbl.HblOperatorName;
             InfoViewModel.MBL_NO = OceanExportHbl.MblNo;
+            InfoViewModel.HBL_NO = OceanExportHbl.HblNo;
             InfoViewModel.carrier = OceanExportHbl.MblCarrierName;
             InfoViewModel.VESSEL_INFO = OceanExportHbl.VesselName + OceanExportHbl.Voyage;
             InfoViewModel.POR_location = OceanExportHbl.PorName;
@@ -3766,8 +3767,15 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.CyLocation = OceanExportHbl.CyLocation;
             InfoViewModel.delivery_to_date = OceanExportHbl.DelEta?.ToString("dd-MM-yyyy");
             InfoViewModel.billing_to_area = OceanExportHbl.MblBillToName + "\r\n" + OceanExportHbl.MblBillToContent; /*"HARD CORE TECHNOLOGY\r\n198 PEARSON GATEWAY APT. 555\r\nNORTH JAMES, KY 98809-9933\r\nWALNUT, CA 91789, UNITED STATES\r\nATTN: JENNIFER JIMENEZ TEL: 585.592.4848 FAX: 649-277-5122"*/;
-
+            InfoViewModel.marks = OceanExportHbl.Mark;
+            InfoViewModel.description = OceanExportHbl.Description;
             InfoViewModel.ContainerList = new List<DeliveryOrderContainerList>();
+            var totalWeightKgs = 0.0;
+            var totalWeightLbs = 0.0;
+            var totalMeasureCft = 0.0;
+            var totalMeasureCbm = 0.0;
+            var totalPackage = 0;
+            var packageUnitName = "";
             foreach (var container in containers)
             {
                 var con = new
@@ -3781,9 +3789,38 @@ namespace Dolphin.Freight.Web.Controllers
                     LFD = container.LastFreeDate.ToString(),
 
                 };
+                totalWeightKgs = totalWeightKgs + container.PackageWeight;
+                totalWeightLbs = totalWeightKgs * 2.2;
+
+                //}
+                //if (container.PackageWeightUnit == "LBS")
+                //{
+                //    totalWeightLbs = totalWeightLbs + container.PackageWeight;
+                //    totalWeightKgs= totalWeightLbs * 0.45359237;
+
+                //}
+                //if (container.PackageMeasureUnit == "CFT")
+                //{
+                //    totalMeasureCft = totalMeasureCft + container.PackageMeasure;
+                //    totalMeasureCbm = totalMeasureCft * 0.0283168466;
+
+                //}
+                //if (container.PackageMeasureUnit == "CBM")
+                //{
+                totalMeasureCbm = totalMeasureCbm + container.PackageMeasure;
+                totalMeasureCft = totalMeasureCbm * 35.315;
+
+                //}
+                totalPackage = totalPackage + container.PackageNum;
+                packageUnitName = container.PackageUnitId != null ? (await _containerSizeAppService.GetAsync((Guid)container.PackageUnitId)).ContainerCode : "";
                 InfoViewModel.ContainerList.Add(con);
             };
             #endregion
+            InfoViewModel.gross_weight_kgs = totalWeightKgs.ToString("N2") + " KGS";
+            InfoViewModel.gross_weight_lbs = totalWeightLbs.ToString("N2") + " LBS";
+            InfoViewModel.measurement_cbm = totalMeasureCbm.ToString("N2") + " CBM";
+            InfoViewModel.measurement_cft = totalMeasureCft.ToString("N2") + " CFT";
+            InfoViewModel.total_packages_count = totalPackage + packageUnitName;
             return View(InfoViewModel);
         }
         [HttpPost]
