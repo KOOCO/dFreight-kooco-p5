@@ -69,6 +69,8 @@ namespace Dolphin.Freight.Web.ViewModels.DeliveryOrder
         public string FdestName { get; set; }
         public string CyLocation { get; set; }
         public string PodEta { get; set; }
+        public string description { get; set; }
+        public string marks { get; set; }
         public List<DeliveryOrderContainerList> ContainerList { get; set; }
         //ReportLog
         public Guid ReportId { get; set; }
