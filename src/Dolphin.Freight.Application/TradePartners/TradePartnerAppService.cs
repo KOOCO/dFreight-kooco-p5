@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Internal.Mappers;
+using Dolphin.Freight.Common;
 using Dolphin.Freight.Settings.Countries;
 using Dolphin.Freight.Settings.Currencies;
 using Dolphin.Freight.TradePartner;
@@ -22,7 +23,7 @@ namespace Dolphin.Freight.TradePartners
             TradePartner,
             TradePartnerDto, // show
             Guid, // primary key
-            PagedAndSortedResultRequestDto, // for paging & sorting
+            QueryDto, // for paging & sorting
             CreateUpdateTradePartnerDto>,
         ITradePartnerAppService
     {
@@ -250,7 +251,7 @@ namespace Dolphin.Freight.TradePartners
             );
         }
 
-        public override async Task<PagedResultDto<TradePartnerDto>> GetListAsync(PagedAndSortedResultRequestDto input) 
+        public override async Task<PagedResultDto<TradePartnerDto>> GetListAsync(QueryDto input)
         {
             var queryable = await Repository.GetQueryableAsync();
 
@@ -258,6 +259,17 @@ namespace Dolphin.Freight.TradePartners
             var query = from tradePartner in queryable
                         join country in await _countryRepository.GetQueryableAsync() on tradePartner.CountryCode equals country.Id.ToString()
                         select new { tradePartner, country };
+
+            query = query.WhereIf(!string.IsNullOrWhiteSpace(input.Search), x => x.country.CountryName
+                                        .Contains(input.Search) || x.tradePartner.TPCode
+                                .Contains(input.Search) || x.tradePartner.TPName
+                                .Contains(input.Search) || x.tradePartner.TPAliasName
+                                .Contains(input.Search) || x.tradePartner.TPNameLocal
+                                .Contains(input.Search) || x.tradePartner.ScacCode
+                                .Contains(input.Search) || x.tradePartner.IataCode
+                                .Contains(input.Search) || x.tradePartner.TPPrintAddress
+                                .Contains(input.Search)); 
+              
 
             // paging
             query = query

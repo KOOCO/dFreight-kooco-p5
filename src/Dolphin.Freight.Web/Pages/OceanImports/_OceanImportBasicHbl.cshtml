@@ -57,25 +57,37 @@
                 <a class='dropdown-item' href='#'>
                     <i class="fa fa-file-text-o"></i> @L["Btn:Authority (ATME)"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("DeliveryOrderOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
                 </a>
                 <a class='dropdown-item' href='#'>
                     <i class="fa fa-file-text-o"></i> @L["I.T/T.E"]
                 </a>
-                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
-                </a>
-                <a class='dropdown-item' href='#'>
+              
+                <a class='dropdown-item' href='javascript:void(0)'onclick="getPreliminaryClaim()" >
                     <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
                 </a>
-                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
+               
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ExamHoldNoticeOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
                 </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ReleaseOrderOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("CarrierCertificateOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
+                 </a>
+                   <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ForwarderCargoReceiptOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
+                 </a>
+                   <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ProofOfDeliveryOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Proof of Delivery"]
+                 </a>
                 <p class="dropdown-divider"></p>
                 <a class='dropdown-item' href='#'>
                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                 </a>
+               
                 <p class="dropdown-divider"></p>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()" style="color: #4B77BE; font-weight: 500;">
                     <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
@@ -300,7 +312,7 @@
 
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.MblReferralById", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "MblReferralById", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.MblReferralById) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.MblReferralById", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblReferralById", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.MblReferralById) })
             </abp-column>
         </abp-row>
         <abp-row></abp-row>

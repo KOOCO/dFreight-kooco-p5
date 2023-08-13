@@ -1,10 +1,12 @@
 ﻿@page
 @using Dolphin.Freight.Localization
+@using Dolphin.Freight.Web.CommonService;
 @using Dolphin.Freight.Web.Pages.AwbNoRanges
 @using Microsoft.Extensions.Localization
 @using Dolphin.Freight.Web.Pages.Components
 @using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
 @model EditModalModel
+@inject IDropdownService _dropdown
 @inject IStringLocalizer<FreightResource> L
 @{
     Layout = null;
@@ -16,8 +18,7 @@
     <abp-modal-body>
         <abp-row>
             <abp-column>
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CompanyId", FieldName = "CompanyId",DefaultValue="", IsShowLabel = true , IsRequired = true  })
-
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CarrierId", AspItems = _dropdown.TradePartnerLookupList, ShowFiledContentValue = @Model.CarrierId.ToString(), IsShowLabel = true, FieldName = @L["CarrierId"]+".*" })
             </abp-column>
         </abp-row>
         <abp-row>
@@ -42,7 +43,7 @@
         </div>
         <form id="createForm" method="post" action="/Settings/AwbNoRanges/EditModal">
             <abp-input asp-for="Id" />
-            <input type="hidden" name="CompanyId" id="formCompannyId" value="@Model.AwbNoRange.CompanyId" />
+            <input type="hidden" name="CarrierId" id="formCarrierId" value="@Model.CarrierId" />
             <input type="hidden" name="StartNo" id="formStartNo" value="@Model.AwbNoRange.StartNo" />
             <input type="hidden" name="EndNo" id="formEndNo" value="@Model.AwbNoRange.EndNo" />
             <input type="hidden" name="Note" id="formNote" value="@Model.AwbNoRange.Note" />

@@ -1,6 +1,7 @@
 ﻿@using Dolphin.Freight.AirExports;
 @using Dolphin.Freight.AirImports;
 @using Dolphin.Freight.Web.Pages.Components;
+@using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Microsoft.AspNetCore.Mvc.Localization;
 @using Microsoft.Extensions.Localization;
 @using Dolphin.Freight.Localization
@@ -107,29 +108,29 @@
                     <i class="fa fa-share"></i> @L["Btn:Move"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='#'>
+                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ArrivalNoticeAirImportHawb", "Docs", new { id = Model.HawbModel.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HawbAuthority", "Docs", new { id = Model.HawbModel.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL, reportType = "Summary" })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Authority (ATME)"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("DeliveryOrderAirImportHawb", "Docs", new { id = Model.HawbModel.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ITTE", "Docs", new { id = Model.HawbModel.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL})')">
                     <i class="fa fa-file-text-o"></i> @L["I.T/T.E"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ReleaseOrderAirImportHawb", "Docs", new { id = Model.HawbModel.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PreliminaryClaimAirImportHawb", "Docs", new { id = Model.HawbModel.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                    <a class='dropdown-item' href='javascript:void()' onclick="OpenWindow('@Url.Action("CarrierCertificateAirImportHawb", "Docs", new { id = Model.HawbModel.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='javscript:void(0)' onclick="gotoReport(4)">
+                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AirImportProfitReport", "Docs", new { id = Model.HawbModel.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL, reportType = "Summary" })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                 </a>
                 <p class="dropdown-divider"></p>
@@ -440,6 +441,18 @@
                 <abp-input asp-for="@Model.Id" type="hidden" />
                 <abp-input asp-for="HawbModel.ExtraProperties" value="@Json.Serialize(Model.HawbModel.ExtraProperties)" type="hidden" />
                 <abp-input asp-for="@Model.HawbModel.Id" type="hidden" />
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column>
+                <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                    @L["Title:Memo"]
+                </abp-card-header>
+                <abp-card>
+                    <abp-card-body>
+                        <partial name="Memos/_Memo" model="new _MemoModel(Model.HawbModel.Id, Dolphin.Freight.Common.FreightPageType.AIMBL)" />
+                    </abp-card-body>
+                </abp-card>
             </abp-column>
         </abp-row>
     </abp-card-body>

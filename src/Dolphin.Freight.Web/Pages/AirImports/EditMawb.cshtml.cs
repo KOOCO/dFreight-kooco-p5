@@ -2,6 +2,7 @@ using Dolphin.Freight.AirExports;
 using Dolphin.Freight.AirImports;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.AirImports;
+using Dolphin.Freight.Settings.Countries;
 using Dolphin.Freight.Settinngs.PackageUnits;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.TradePartners;
@@ -28,6 +29,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         private readonly IPackageUnitAppService _packageUnitAppService;
         private readonly IAirImportMawbAppService _airImportMawbAppService;
         private readonly IAirImportHawbAppService _airImportHawbAppService;
+        private readonly ICountryAppService _countryAppService;
 
         // �Ψӱ���CreateMawb redirect�L�Ӫ���T
         [HiddenInput]
@@ -52,7 +54,8 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             IAirportAppService airportAppService,
             IPackageUnitAppService packageUnitAppService,
             IAirImportMawbAppService airImportMawbAppService,
-            IAirImportHawbAppService airImportHawbAppService
+            IAirImportHawbAppService airImportHawbAppService,
+             ICountryAppService countryAppService
             )
         {
             _tradePartnerAppService = tradePartnerAppService;
@@ -61,6 +64,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             _packageUnitAppService = packageUnitAppService;
             _airImportMawbAppService = airImportMawbAppService;
             _airImportHawbAppService = airImportHawbAppService;
+            _countryAppService= countryAppService;
         }
 
         #region OnGetAsync()
@@ -174,9 +178,9 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         #region FillAirportAsync()
         private async Task FillAirportAsync()
         {
-            var airportLookup = await _airportAppService.GetAirportLookupAsync();
+            var airportLookup = await _countryAppService.GetCountryLookupAsync();
             AirportLookupList = airportLookup.Items
-                                                .Select(x => new SelectListItem(x.AirportIataCode + " " + x.AirportName, x.Id.ToString(), false))
+                                                .Select(x => new SelectListItem(x.Code + " " + x.CountryName, x.Id.ToString(), false))
                                                 .ToList();
         }
         #endregion

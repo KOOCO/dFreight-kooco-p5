@@ -51,7 +51,11 @@ namespace Dolphin.Freight.Settings.PackageUnits
                     dictionary.Add(syscode.Id, syscode.CodeValue);
                 }
             } 
-            var PackageUnits = await _repository.GetListAsync();
+            var PackageUnits = await _repository.GetQueryableAsync();
+            PackageUnits = PackageUnits.WhereIf(!string.IsNullOrWhiteSpace(query.Filter), x => x.PackageCode.ToLower()
+                                        .Contains(query.Filter.ToLower()) || x.PackageName.ToLower()
+                                        .Contains(query.Filter.ToLower()));
+
             List<PackageUnit> rs;
             List<PackageUnitDto> list = new List<PackageUnitDto>();
             if (query != null && query.QueryKey != null)
@@ -60,7 +64,7 @@ namespace Dolphin.Freight.Settings.PackageUnits
             }
             else 
             {
-                rs = PackageUnits;
+                rs = PackageUnits.ToList();
             }
             if (rs != null && rs.Count > 0) 
             {
@@ -89,5 +93,13 @@ namespace Dolphin.Freight.Settings.PackageUnits
             return new ListResultDto<PackageUnitLookupDto>(ObjectMapper.Map<List<PackageUnit>, List<PackageUnitLookupDto>>(packageUnits));
         }
 
+        public async Task<bool> IsPackageUnitAlreadyExist(string packageCode, Guid? packageUnitId)
+        {
+            var query = await _repository.GetQueryableAsync();
+            if (packageUnitId != null && packageUnitId != Guid.Empty)
+                return query.Any(x => x.PackageCode == packageCode && x.Id != packageUnitId);
+            else
+                return query.Any(x => x.PackageCode == packageCode);
+        }
     }
 }

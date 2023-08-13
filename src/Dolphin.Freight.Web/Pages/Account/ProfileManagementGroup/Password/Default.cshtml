@@ -7,31 +7,60 @@
 @inject ICurrentUser CurrentUser;
 @model Volo.Abp.Account.Web.Pages.Account.Components.ProfileManagementGroup.Password.AccountProfilePasswordManagementGroupViewComponentCustom.ChangePasswordInfoModel
 
-<h4>Reset Password</h4><hr />
+<script src="~/libs/jquery/jquery.js"></script>
+
+<h4>Reset Password</h4>
+<hr />
 <form id="ChangePasswordForm">
     <div class="mb-3">
         @if (!Model.HideOldPasswordInput)
         {
             <label asp-for="CurrentPassword" label="@L["CurrentPassword"]" class="form-label"></label>
             <div class="input-group">
-                <input type="password" class="form-control" autocomplete="new-password" asp-for="CurrentPassword"/>
+                <input type="password" class="form-control" autocomplete="new-password" asp-for="CurrentPassword" />
                 <button class="btn btn-secondary password-visibility-button" type="button"><i class="fa fa-eye-slash" aria-hidden="true"></i></button>
             </div>
-            <span asp-validation-for="CurrentPassword"></span><br/>
+            <span asp-validation-for="CurrentPassword"></span>
+
+            <br />
         }
         <label asp-for="NewPassword" label="@L["NewPassword"]" class="form-label"></label>
         <div class="input-group">
-            <input type="password" class="form-control" autocomplete="new-password" asp-for="NewPassword"/>
-            <button class="btn btn-secondary password-visibility-button" type="button" ><i class="fa fa-eye-slash" aria-hidden="true"></i></button>
+            <input type="password" class="form-control" autocomplete="new-password" asp-for="NewPassword" />
+            <button class="btn btn-secondary password-visibility-button" type="button"><i class="fa fa-eye-slash" aria-hidden="true"></i></button>
         </div>
-        <span asp-validation-for="NewPassword"></span><br/>
-    
+        <span asp-validation-for="NewPassword"></span><br />
+
         <label asp-for="NewPasswordConfirm" label="@L["NewPasswordConfirm"]" class="form-label"></label>
         <div class="input-group">
-            <input type="password" class="form-control" autocomplete="new-password" asp-for="NewPasswordConfirm"/>
+            <input type="password" class="form-control" autocomplete="new-password" asp-for="NewPasswordConfirm" />
             <button class="btn btn-secondary password-visibility-button" type="button"><i class="fa fa-eye-slash" aria-hidden="true"></i></button>
         </div>
         <span asp-validation-for="NewPasswordConfirm"></span>
     </div>
     <abp-button type="submit" button-type="Primary" text="@L["Submit"].Value" />
 </form>
+
+<script type="text/javascript">
+    $(".password-visibility-button").click(function (e) {
+        let button = $(this);
+
+        let passwordInput = button.parent().find("input");
+        if (!passwordInput) {
+            return;
+        }
+
+        if (passwordInput.attr("type") === "password") {
+            passwordInput.attr("type", "text");
+        }
+        else {
+            passwordInput.attr("type", "password");
+        }
+
+        let icon = button.find("i");
+        if (icon) {
+            icon.toggleClass("fa-eye-slash").toggleClass("fa-eye");
+        }
+    });
+
+</script>

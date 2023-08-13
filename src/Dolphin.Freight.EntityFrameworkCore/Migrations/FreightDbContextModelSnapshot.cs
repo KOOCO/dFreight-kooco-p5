@@ -688,6 +688,11 @@ namespace Dolphin.Freight.Migrations
                     b.Property<bool>("IsOceanImportMbl")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsPayroll")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<bool>("IsTkm")
                         .HasColumnType("bit");
 
@@ -2278,6 +2283,9 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<DateTime>("ApptDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("BookingId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -5694,6 +5702,10 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("LastModifierId");
 
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("ParentId");
+
                     b.Property<string>("ShowName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -6671,7 +6683,6 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnName("LastModifierId");
 
                     b.Property<string>("Memo")
-                        .IsRequired()
                         .HasMaxLength(2048)
                         .HasColumnType("nvarchar(2048)");
 

@@ -1,6 +1,14 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
 
+    var _changeInterval = null;
+    var queryListFilter = function () {
+        return {
+            search: $("input[name='Search'").val()
+        };
+    };
+
+
     var dataTable = $('#TPListTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
@@ -8,9 +16,9 @@
             order: [[1, "asc"]],
             searching: false,
             scrollX: true,
+            processing: true,
             
-            
-            ajax: abp.libs.datatables.createAjax(dolphin.freight.tradePartners.tradePartner.getList),
+            ajax: abp.libs.datatables.createAjax(dolphin.freight.tradePartners.tradePartner.getList, queryListFilter ),
             columnDefs: [
                 {
                     title: l('Actions'),
@@ -113,32 +121,36 @@
                     width: '300px',
                     data: "tpType",
                     render: function (data) {
-                        return l([
-                            "Enum:TPType.AirCarrier",
-                            "Enum:TPType.Bank",
-                            "Enum:TPType.BookingWindow",
-                            "Enum:TPType.CFS",
-                            "Enum:TPType.Consignee",
-                            "Enum:TPType.Customer",
-                            "Enum:TPType.CustomerBroker",
-                            "Enum:TPType.Cy",
-                            "Enum:TPType.Employee",
-                            "Enum:TPType.Forwarder",
-                            "Enum:TPType.Government",
-                            "Enum:TPType.Manufacturer",
-                            "Enum:TPType.OceanCarrier",
-                            "Enum:TPType.OfficeExpense",
-                            "Enum:TPType.Others",
-                            "Enum:TPType.OverseaAgent",
-                            "Enum:TPType.RailCompany",
-                            "Enum:TPType.RampLocation",
-                            "Enum:TPType.ShipperKnown",
-                            "Enum:TPType.ShipperUnknown",
-                            "Enum:TPType.Terminal",
-                            "Enum:TPType.Trucker",
-                            "Enum:TPType.Vendor",
-                            "Enum:TPType.Warehouse",
-                        ][data]);
+                        if (data) {
+                            return l([
+                                "Enum:TPType.AirCarrier",
+                                "Enum:TPType.Bank",
+                                "Enum:TPType.BookingWindow",
+                                "Enum:TPType.CFS",
+                                "Enum:TPType.Consignee",
+                                "Enum:TPType.Customer",
+                                "Enum:TPType.CustomerBroker",
+                                "Enum:TPType.Cy",
+                                "Enum:TPType.Employee",
+                                "Enum:TPType.Forwarder",
+                                "Enum:TPType.Government",
+                                "Enum:TPType.Manufacturer",
+                                "Enum:TPType.OceanCarrier",
+                                "Enum:TPType.OfficeExpense",
+                                "Enum:TPType.Others",
+                                "Enum:TPType.OverseaAgent",
+                                "Enum:TPType.RailCompany",
+                                "Enum:TPType.RampLocation",
+                                "Enum:TPType.ShipperKnown",
+                                "Enum:TPType.ShipperUnknown",
+                                "Enum:TPType.Terminal",
+                                "Enum:TPType.Trucker",
+                                "Enum:TPType.Vendor",
+                                "Enum:TPType.Warehouse",
+                            ][data]);
+                        }
+                        else
+                            return "";
                     }
                 },
                 {
@@ -182,7 +194,13 @@
     );
 
    
-
+    $('#Search').keyup(function () {
+        clearInterval(_changeInterval)
+        _changeInterval = setInterval(function () {
+            dataTable.ajax.reload();
+            clearInterval(_changeInterval)
+        }, 1000);
+    });
     
 
     $('#AddTradePartnerButton').click(function (e) {

@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.ImportExport.AirExports;
+using Dolphin.Freight.Common;
 using Dolphin.Freight.Settings.PortsManagement;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.ObjectMapping;
+using Dolphin.Freight.TradePartners;
 
 namespace Dolphin.Freight.ImportExport.AirImports
 {
@@ -18,7 +21,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
             AirImportMawb,
             AirImportMawbDto,
             Guid,
-            PagedAndSortedResultRequestDto,
+            QueryDto,
             CreateUpdateAirImportMawbDto>,
         IAirImportMawbAppService
     {
@@ -43,7 +46,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
             _airImportHawbAppService = airImportHawbAppService;
         }
 
-        public override async Task<PagedResultDto<AirImportMawbDto>> GetListAsync(PagedAndSortedResultRequestDto input)
+        public override async Task<PagedResultDto<AirImportMawbDto>> GetListAsync(QueryDto input)
         {
             // port management
             Dictionary<Guid, string> portManagementDictionary = new Dictionary<Guid, string>();
@@ -68,6 +71,9 @@ namespace Dolphin.Freight.ImportExport.AirImports
             }
 
             var queryable = await Repository.GetQueryableAsync();
+            queryable = queryable.WhereIf(!string.IsNullOrWhiteSpace(input.Search), x => x.MawbNo
+                                 .Contains(input.Search) || x.FilingNo
+                                 .Contains(input.Search));
             var query = queryable
                 .OrderBy(x=>x.CreationTime)
                 .Skip(input.SkipCount)
@@ -117,7 +123,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
             }
 
             //Get the total count with another query
-            var totalCount = await Repository.GetCountAsync();
+            var totalCount = queryable.Count();
 
             return new PagedResultDto<AirImportMawbDto>(
                 totalCount,
@@ -132,6 +138,114 @@ namespace Dolphin.Freight.ImportExport.AirImports
 
             await Repository.DeleteAsync(Id);
             await _airImportHawbAppService.DeleteManyAsync(ids);
+        }
+
+        public async Task<AirImportDetails> GetAirImportDetailsById(Guid Id)
+        {
+            var tradePartners = await _tradePartnerRepository.GetListAsync();
+            var portMangements = await _portsManagementAppService.GetListAsync();
+
+            var data = await Repository.GetAsync(Id);
+
+            var airImportDetails = ObjectMapper.Map<AirImportMawb, AirImportDetails>(data);
+
+            if (data.ConsigneeId != null)
+            {
+                var consignee = tradePartners.Where(w => w.Id == data.ConsigneeId).FirstOrDefault();
+                airImportDetails.ConsigneeName = string.Concat(consignee.TPName, "/", consignee.TPCode);
+            }
+
+            if (data.DepatureId != null)
+            {
+                var departure = portMangements.Where(w => w.Id == data.DepatureId).FirstOrDefault();
+                airImportDetails.DepatureName = departure?.PortName;
+            }
+
+            if (data.DestinationId != null)
+            {
+                var destination = portMangements.Where(w => w.Id == data.DestinationId).FirstOrDefault();
+                airImportDetails.DestinationAirportName = destination?.PortName;
+                airImportDetails.DestinationCountry = destination?.Country;
+            }
+
+            if (data.NotifyId != null)
+            {
+                var notify = tradePartners.Where(w => w.Id == data.NotifyId).FirstOrDefault();
+                airImportDetails.NotifyName = string.Concat(notify.TPName, "/", notify.TPCode);
+            }
+
+            if (data.ShipperId != null)
+            {
+                var shipper = tradePartners.Where(w => w.Id == data.ShipperId).FirstOrDefault();
+                airImportDetails.ShipperName = string.Concat(shipper.TPName, "/", shipper.TPCode);
+            }
+
+            if (data.OverseaAgentId != null)
+            {
+                var overseaAgent = tradePartners.Where(w => w.Id == data.OverseaAgentId).FirstOrDefault();
+                airImportDetails.OverseaAgentTPName = string.Concat(overseaAgent.TPName, "/", overseaAgent.TPCode);
+                airImportDetails.IATA = overseaAgent.IataCode;
+            }
+
+            if (data.CarrierId != null)
+            {
+                var carrier = tradePartners.Where(w => w.Id == data.CarrierId).FirstOrDefault();
+                airImportDetails.CarrierTPName = string.Concat(carrier.TPName, "/", carrier.TPCode);
+            }
+
+            if (data.FreightLocationId != null)
+            {
+                var freightLocation = tradePartners.Where(w => w.Id == data.FreightLocationId).FirstOrDefault();
+                airImportDetails.FreightLocationName = string.Concat(freightLocation.TPName, "/", freightLocation.TPCode);
+            }
+
+            airImportDetails.FlightNo = data.FlightNo;
+            airImportDetails.AirWayBillNo = data.MawbNo;
+            airImportDetails.MawbNo = airImportDetails.MawbNo;
+            airImportDetails.DocNumber = data.FilingNo;
+            airImportDetails.ChargableWeight = string.Concat(data.ChargeableWeightKg, " ", data.ChargeableWeightLb);
+            airImportDetails.DepatureDate = data.DepatureDate;
+            airImportDetails.ArrivalDate = data.ArrivalDate;
+            airImportDetails.OPName = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
+            airImportDetails.MawbId = data.Id;
+
+
+            return airImportDetails;
+        }
+        public async Task<AirImportMawbDto> GetAirImportMawbDetailsById(Guid Id)
+        {
+            var tradePartner = await _tradePartnerRepository.GetListAsync();
+            var portManagement = await _portsManagementAppService.GetListAsync();
+
+            var data = await Repository.GetAsync(Id);
+
+            var airImportDetails = ObjectMapper.Map<AirImportMawb, AirImportMawbDto>(data);
+
+            if(data.DepatureId is not null)
+            {
+                var departure = portManagement.Where(w => w.Id == data.DepatureId).FirstOrDefault();
+                airImportDetails.DepartureName = departure?.PortName;
+            }
+
+            if(data.DestinationId is not null)
+            {
+                var destination = portManagement.Where(w => w.Id == data.DestinationId).FirstOrDefault();
+                airImportDetails.DestinationName = destination?.PortName;
+            }
+             
+            if (data.CarrierId is not null)
+            {
+                var carrier = tradePartner.Where(w => w.Id == data.CarrierId).FirstOrDefault();
+                airImportDetails.CarrierName = string.Concat(carrier.TPName, "/", carrier.TPCode);
+            }
+
+            airImportDetails.MawbNo = data.MawbNo;
+            airImportDetails.FilingNo = data.FilingNo;
+            airImportDetails.FlightNo = data.FlightNo;
+            airImportDetails.DepatureDate = data.DepatureDate;
+            airImportDetails.ArrivalDate = data.ArrivalDate;
+
+            return airImportDetails;
         }
 
     }

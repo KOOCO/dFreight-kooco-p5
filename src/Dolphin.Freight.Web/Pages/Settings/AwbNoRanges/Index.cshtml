@@ -1,14 +1,18 @@
 ﻿@page
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.CommonService;
 @using Dolphin.Freight.Web.Pages.AwbNoRanges
+@using Dolphin.Freight.Web.Pages.Components;
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
 @model IndexModel
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
+@inject IDropdownService _dropdown
 @section scripts{
     <abp-script src="/Pages/Settings/AwbNoRanges/Index.js" />
+    <abp-script src="/Pages/Settings/AwbNoRanges/init.js" />
 }
 <div class="page-header">
     <div class="breadcrumb-wrapper">
@@ -27,13 +31,78 @@
             @if (await AuthorizationService.IsGrantedAsync(SettingsPermissions.AwbNoRanges.Create))
             {
                 <abp-button id="NewAwbNoRangeButton"
-                        text="@L["Create"].Value"
-                        icon="plus"
+                            text="@L["Create"].Value"
+                            icon="plus"
                             class="btn btn-add" />
             }
         </abp-card-header>
+        <div>
+            <button class="btn-success" data-bs-toggle="collapse" data-bs-target="#hidden" style="float: right;margin-top: -20px; margin-right: 20px; margin-bottom: 10px;">
+                <i class="fa fa-filter" aria-hidden="true"></i>
+                Filters
+            </button>
+        </div>
+        <div id='hidden' class='collapse'>
+            <div class="row col-12">
+                <abp-column size="_4">
+                    <abp-input asp-for="Search" />
+                </abp-column>
+                <abp-column size="_4">
+                    <abp-input asp-for="CreatedDate" asp-items="@Model.CreatedDate" type="date" />
+                </abp-column>
+                <abp-column size="_4">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CarrierId", AspItems = _dropdown.TradePartnerLookupList, ShowFiledContentValue = @Model.CarrierId.ToString(), IsShowLabel = true, FieldName = @L["CarrierId"] })
+                </abp-column>
+            </div>
+            <div class="col-12" style="text-align: center">
+                <button class="btn btn-warning mr-2" data-bs-toggle="collapse" data-bs-target="#hidden">
+                    Cancel
+                </button>
+                <abp-button id="SearchButton"
+                            text="@L["Search"].Value"
+                            icon="search"
+                            class="btn-primary" />
+            </div>
+        </div>
         <abp-card-body>
-            <abp-table class="nowrap" striped-rows="true" id="AwbNoRangesTable"></abp-table>
+            
+            <abp-table class="nowrap mt-3" striped-rows="true" id="AwbNoRangesTable"></abp-table>
         </abp-card-body>
     </abp-card>
 </div>
+<style>
+
+    #hidden{
+        height:154px !important;
+    }
+
+    .dropdown {
+        margin-top: 7.5px !important;
+        height:40px!important
+    }
+
+    .select2-selection{
+        height: 38px !important;
+    }
+
+    .select2-dropdown.select2-dropdown {
+        width: 347.725px !important;
+    }
+
+    .select2-results__options{
+        width: 347.725px !important;
+    }
+
+    #drop_CarrierId {
+        overflow: hidden;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 36px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        top: 6px !important
+    }
+
+</style>

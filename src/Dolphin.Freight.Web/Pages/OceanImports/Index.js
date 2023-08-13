@@ -1,5 +1,11 @@
 ﻿var l = abp.localization.getResource('Freight');
 var dataTable;
+var _changeInterval = null;
+var queryListFilter = function () {
+    return {
+        search: $("input[name='Search'").val()
+    };
+};
 
 var columns = [
 {
@@ -88,21 +94,26 @@ $(function () {
                 serverSide: true,
                 paging: true,
                 order: col,
-                searching: true,
+                searching: false,
                 scrollX: true,
+                processing: true,
                 responsive: {
                     details: {
                         type: 'column'
                     }
                 },
-                ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.oceanImports.oceanImportMbl.queryList),
+                ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.oceanImports.oceanImportMbl.queryList, queryListFilter),
                 columnDefs: columns
             })
         );
     })
 
-    $('[type=search]').on('keyup', function () {
-        dataTable.search(this.value).draw();
+    $('#Search').keyup(function () {
+        clearInterval(_changeInterval)
+        _changeInterval = setInterval(function () {
+            dataTable.ajax.reload();
+            clearInterval(_changeInterval)
+        }, 1000);
     });
 
     $('#NewMblButton').click(function (e) {

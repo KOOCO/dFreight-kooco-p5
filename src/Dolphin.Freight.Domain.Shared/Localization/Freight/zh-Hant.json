@@ -104,6 +104,7 @@
     "Btn:Package Label": "包裝標籤",
     "Btn:Manifest by Agent": "代理清單",
     "Btn:Carrier Certificate": "運營商證書",
+    "Btn:Consolidated Arrival Notice": "合併到達通知",
     "Btn:Dangerous Goods": "危險貨物聲明",
     "Btn:Pre-Alert": "Pre-Alert",
     "Btn:Booking Confirmation": "S/O確認書",
@@ -1334,8 +1335,9 @@
     "DocNo": "文件號碼",
     "BuyingFreight": "運費(買方)",
     "SellingFreight": "運費(賣方)",
-    "HblSalesTypeId": "業務類別"
+    "HblSalesTypeId": "業務類別",
 
+    "PackageUnitAlreadyExist": "相同的代碼 {0} 已存在於系統中"
 
 
 

@@ -6,7 +6,7 @@
             serverSide: true,
             paging: true,
             order: [[1, "asc"]],
-            searching: true,
+            searching: false,
             scrollX: true,
             ajax: abp.libs.datatables.createAjax(dolphin.freight.settings.airOtherCharge.airOtherCharge.getList),
             columns: [
@@ -101,7 +101,7 @@
                                         return l('AirOtherChargeDeletionConfirmationMessage', data.record.startNo, data.record.endNo);
                                     },
                                     action: function (data) {
-                                        dolphin.freight.settings.AirOtherCharge.AirOtherCharge
+                                        dolphin.freight.settings.airOtherCharge.airOtherCharge
                                             .delete(data.record.id)
                                             .then(function () {
                                                 abp.notify.info(l('SuccessfullyDeleted'));
@@ -116,10 +116,6 @@
             ]
         })
     );
-
-    $('[type=search]').on('keyup', function () {
-        dataTable.search(this.value).draw();
-    });
 
     var createModal = new abp.ModalManager(abp.appPath + 'Settings/AirOtherCharge/CreateModal');
     var editModal = new abp.ModalManager(abp.appPath + 'Settings/AirOtherCharge/EditModal');

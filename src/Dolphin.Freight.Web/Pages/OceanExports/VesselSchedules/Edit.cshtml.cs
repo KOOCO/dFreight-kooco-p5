@@ -147,7 +147,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         #region FillPortAsync()
         private async Task FillPortAsync()
         {
-            var portLookup = await _portAppService.GetListAsync(new Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto());
+            var portLookup = await _portAppService.GetListAsync(new QueryDto());
             PortLookupList = portLookup.Items
                                             .Select(x => new SelectListItem(x.PortName, x.Id.ToString(), false))
                                             .ToList();

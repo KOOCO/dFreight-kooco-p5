@@ -1,20 +1,28 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
+    var getFilter = function () {
+        return {
 
+
+            code: $("#GlCode").val(),
+            remark: $("#Remark").val(),
+
+        }
+    };
 
     var dataTable = $('#GlCodesTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
             paging: true,
             order: [[1, "asc"]],
-            searching: true,
+            searching: false,
             scrollX: true,
             responsive: {
                 details: {
                     type: 'column'
                 }
             },
-            ajax: abp.libs.datatables.createAjax(dolphin.freight.accountingSettings.glCodes.glCode.queryList),
+            ajax: abp.libs.datatables.createAjax(dolphin.freight.accountingSettings.glCodes.glCode.queryList, getFilter),
             columnDefs: [
                 {
                     title: l('Actions'),
@@ -120,7 +128,11 @@
         dataTable.search(this.value).draw();
     });
  
-    var createModal = new abp.ModalManager(abp.appPath + 'AccountingSettings/GlCodes/CreateModal');
+    var createModal = new abp.ModalManager({
+        viewUrl: abp.appPath + 'AccountingSettings/GlCodes/CreateModal',
+        scriptUrl:"/Pages/AccountingSettings/GlCodes/createModal.js",
+        modelClass:"giCodeCreate"
+    });
     var editModal = new abp.ModalManager(abp.appPath + 'AccountingSettings/GlCodes/EditModal');
 
     createModal.onResult(function () {
@@ -133,6 +145,16 @@
     $('#NewGlCodeButton').click(function (e) {
         e.preventDefault();
         createModal.open();
+    });
+    $('#GlCode').on('input', function (e) {
+        // Place your existing code here
+        debugger;
+        dataTable.ajax.reload();
+    });
+    $('#Remark').on('input', function (e) {
+        // Place your existing code here
+        debugger;
+        dataTable.ajax.reload();
     });
 
 });

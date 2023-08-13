@@ -1,44 +1,48 @@
 ﻿var l = abp.localization.getResource('Freight');
 var dataTable;
+var _changeInterval = null;
+var queryListFilter = function () {
+    return {
+        search: $("input[name='Search'").val()
+    };
+};
 
 var columns = [
-{
-    title: l('Actions'),
-    orderable: false,
-    rowAction: {
-        items:
-            [
-                {
-                    text: l('Edit'),
-                    visible: abp.auth.isGranted('Settings.ItNoRanges.Edit'), //CHECK for the PERMISSION
-                    action: function (data) {
-                        if (data.record.isLocked) {
+    {
+        title: l('Actions'),
+        orderable: false,
+        rowAction: {
+            items:
+                [
+                    {
+                        text: l('Edit'),
+                        visible: abp.auth.isGranted('Settings.ItNoRanges.Edit'), //CHECK for the PERMISSION
+                        action: function (data) {
+                            if (data.record.isLocked) {
 
+                            }
+                            location.href = 'EditModal?Id=' + data.record.id;
                         }
-                        location.href = 'EditModal?Id=' + data.record.id;
-
-                    }
-                },
-                {
-                    text: l('Delete'),
-                    visible: function (data) {
-
-                        return !data.isLocked && abp.auth.isGranted('Settings.ItNoRanges.Delete')
                     },
+                    {
+                        text: l('Delete'),
+                        visible: function (data) {
 
-                    action: function (data) {
-                        if (!data.record.isLocked) {
-                            abp.message.confirm(l('DeletionConfirmationMessage'))
-                                .then(function (confirmed) {
-                                    if (confirmed) {
-                                        dolphin.freight.importExport.oceanExports.oceanExportMbl
-                                            .delete(data.record.id)
-                                            .then(function () {
-                                                abp.message.success(l('SuccessfullyDeleted'));
-                                                dataTable.ajax.reload();
-                                            });
-                                    }
-                                });
+                            return !data.isLocked && abp.auth.isGranted('Settings.ItNoRanges.Delete')
+                        },
+                        action: function (data) {
+                            if (!data.record.isLocked) {
+                                abp.message.confirm(l('DeletionConfirmationMessage'))
+                                    .then(function (confirmed) {
+                                        if (confirmed) {
+                                            dolphin.freight.importExport.oceanExports.oceanExportMbl
+                                                .delete(data.record.id)
+                                                .then(function () {
+                                                    abp.message.success(l('SuccessfullyDeleted'));
+                                                    dataTable.ajax.reload();
+                                                });
+                                        }
+                                    });
 
                         } else {
                             abp.message.warn("鎖定不能刪除")
@@ -46,11 +50,13 @@ var columns = [
                     }
                 }
             ]
-    }
-}]
+        }
+
+    },
+ 
+]
 
 $(function () {
-
     dolphin.freight.web.controllers.configuration.getJsonConfig('OceanExports').done(function (data) {
         data.forEach(function (item) {
 
@@ -60,7 +66,7 @@ $(function () {
                 if (item.text.toLowerCase().includes('islocked')) {
                     column = {
                         //是否鎖定
-                        title: l('IsLocked'),
+                        title: l('Status'),
                         orderable: false,
                         render: function (data, type, row, meta) {
                             if (row.isLocked)
@@ -80,7 +86,7 @@ $(function () {
             }
         });
 
-                var col = (columns.length > 2) ? [[2, 'asc']] : [[0, 'asc']];
+        var col = (columns.length > 2) ? [[2, 'asc']] : [[0, 'asc']];
 
 
         dataTable = $('#MblListTable').DataTable(
@@ -88,14 +94,15 @@ $(function () {
                 serverSide: true,
                 paging: true,
                 order: col,
-                searching: true,
+                searching: false,
                 scrollX: true,
+                processing: true,
                 responsive: {
                     details: {
                         type: 'column'
                     }
                 },
-                ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.oceanExports.oceanExportMbl.queryList),
+                ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.oceanExports.oceanExportMbl.queryList, queryListFilter),
                 columnDefs: columns
             })
         );
@@ -103,8 +110,12 @@ $(function () {
 
 
 
-    $('[type=search]').on('keyup', function () {
-        dataTable.search(this.value).draw();
+    $('#Search').keyup(function () {
+        clearInterval(_changeInterval)
+        _changeInterval = setInterval(function () {
+            dataTable.ajax.reload();
+            clearInterval(_changeInterval)
+        }, 1000);
     });
 
     $('#NewMblButton').click(function (e) {

@@ -10,11 +10,17 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public DateTime PostDate { get; set; }
         public string Currency { get; set; } = "USD";
         public string Sales { get; set; }
+        public string SalesType { get; set; }
         public string Customer { get; set; }
         public string AgentName { get; set; }
+        public string PolName { get; set; }
         public string PolEtd { get; set; }
+        public string PodName { get; set; }
+        public string PorEtd { get; set; }
+        public string PorName { get; set; }
         public string Shipper { get; set; }
         public string PodEtd { get; set; }
+        public string Del { get; set; }
         public string Consignee { get; set; }
         public string Operator { get; set; }
         public string FileNo { get; set; }
@@ -35,5 +41,14 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public string InvoicesJson { get; set; }
         public string ReportType { get; set; }
         public string AWbNo { get; set; }
+        public string SvcTermToName { get; set; }
+        public string SvcTermFromName { get; set; }
+        public bool IsCustomerRef { get; set; }
+        public string ContainerNo { get; set; }
+        public string ContainerCount { get; set; }
+        public string MblReferralByName { get; set; }
+        public string PackageWeightName { get; set; }
+        public string PackageCategoryName { get; set; }
+        public string ShipModeName { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         /// 關鍵字
         /// </summary>
         public string QueryKey { get; set; }
-
+        public string Search { get; set; }
     }
 }
 

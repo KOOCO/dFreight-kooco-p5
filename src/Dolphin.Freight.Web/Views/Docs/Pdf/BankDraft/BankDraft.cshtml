@@ -8,12 +8,279 @@
 @{
     Layout = null;
 }
-<div style="display: flex;justify-content:center;">
-    <div style="background-color:white;">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    div, span{ font-size:14px !important;}
+    /*.btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+     .btn-sm, .btn-xs {
+            padding: 4px 10px 5px 10px;
+            font-size: 13px;
+            line-height: 1.5;
+            cursor:pointer;
+        }
+
+         .btn-sm :disabled {
+              cursor: not-allowed;
+              pointer-events: all !important;
+            }
+
+        
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex;
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+
+        .d-none{
+            display: none !important;
+        }
+
+    .w-10, .w-20, .w-100, .text-right, .text-center, .auto-font-size, textarea {
+        font-size:10px;
+    }
+    .edit {
+        background: #333 !important;
+        padding-bottom: 20px !important
+    }
+
+    .nav {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        border-bottom: 2px solid #111 !important;
+        background: #222 !important;
+        z-index: 1049 !important;
+        text-align: center !important;
+        font-size: 12px !important;
+    }
+
+    .nav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.nav ul li {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+}
+
+.nav ul li button {
+    width: 48px;
+    height: 38px;
+    background-size: 22px 22px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: #222;
+    border: none;
+    cursor: pointer;
+    opacity: .5;
+    transition: all ease-in .3s;
+}
+
+.view-setting {
+    position: fixed;
+    top: 8px;
+    right: 10px;
+    color: #c5c5c5;
+}
+
+.edit .wrap.landscape {
+    width: 1056px;
+}
+
+.edit .wrap {
+    width: 816px;
+    margin: auto;
+    background: #fff;
+    padding: 20pt;
+    position: relative;
+    margin-top: 13px;
+}
+
+.header {
+    font-size: 11px;
+    padding: 15px 0;
+}
+
+.edit .wrap table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.text-sm {
+    font-size: 9px;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+    width: 100%;
+}
+
+table tr {
+    page-break-inside: avoid;
+}
+
+.margin-t {
+    margin-top: 5px;
+}
+
+.text-bold {
+    font-weight: 700;
+}
+
+.border-t {
+    border-top: 0.25pt solid #000;
+}
+
+.td {
+    vertical-align: top;
+}
+
+.text-center {
+    text-align: center!important;
+}*/
+
+</style>
+
+<script>
+   var zoom = 1;
+    $(document).ready(function(){
+		document.getElementById('zin').onclick = function() {
+            zoom += 0.1;
+            document.getElementById('myForm').style.transform = 'scale('+zoom+')';
+            document.getElementById('zout').disabled = false;
+        }
+
+        document.getElementById('zout').onclick = function() {
+            if(zoom > 1){
+                zoom -= 0.1;
+                document.getElementById('myForm').style.transform = 'scale('+zoom+')';
+            }
+            else{
+                document.getElementById('zout').disabled = true;
+            }
+        }
+    });
+
+    function print()
+    {
+        debugger;
+        document.getElementById("myForm").submit();
+    }
+
+</script>
+
+@* @if (!Model.IsPDF && !Model.IsPartialView)
+ {*@
+   @* <div class="nav">
+        <ul>
+            <li>
+                <button type="button" style="width:120px; color:white" onclick="print()"><i class="fa fa-print">儲存PDF或列印</i></button>
+            </li>
+            <li>
+        
+                <select disabled>
+                    <option value="en">English</option>
+                    <option value="zh-hans">简体中文 (Simplified Chinese)</option>
+                    <option value="zh-hant">繁體中文 (Traditional Chinese)</option>
+                </select>
+        
+            </li><!-- end ngIf: vm.canSelectLanguage -->
+
+        </ul>
+
+        <div class="view-setting">
+            <div class="btn-group">
+                <button class="button btn-sm" title="Zoom Out" id="zout" disabled="disabled"><i class="fa fa-search-minus"></i>
+                </button>
+                <button class="button btn-sm" title="Zoom In" id="zin"><i class="fa fa-search-plus"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>*@
+@* }*@
+
+<form id="myForm" method="post">
+    <input type="hidden" name="reportType" value="BankDraft" />
+    <input type="hidden" asp-for="@Model.Amount" />
+    <input type="hidden" asp-for="@Model.Amount.Length" />
+    <input type="hidden" asp-for="@Model.Date" />
+    <input type="hidden" asp-for="@Model.AtSight" />
+    <input type="hidden" asp-for="@Model.ShipperName" />
+    <input type="hidden" asp-for="@Model.ShipperName3" />
+    <input type="hidden" asp-for="@Model.ShipperName2" />
+    <input type="hidden" asp-for="@Model.AmountToString" />
+    <input type="hidden" asp-for="@Model.DrawnDocCredit" />
+    <input type="hidden" asp-for="@Model.IssueDate" />
+    <input type="hidden" asp-for="@Model.LCIssueBank" />
+    <input type="hidden" asp-for="@Model.ToTradePartnerName" />
+    <input type="hidden" asp-for="@Model.ToLCIssueBank" />
+    <input type="hidden" asp-for="@Model.DraftNo" />
+    <input type="hidden" asp-for="@Model.BankPreference" />
+    <input type="hidden" asp-for="@Model.Gentlemen" />
+    <input type="hidden" asp-for="@Model.EncloseDate" />
+    <input type="hidden" asp-for="@Model.EncloseDraftNo" />
+    <input type="hidden" asp-for="@Model.EncloseForCollection" />
+    <input type="hidden" asp-for="@Model.EncloseForOther" />
+    <input type="hidden" asp-for="@Model.EncloseForOtherInput" />
+    <input type="hidden" asp-for="@Model.EncloseForPayment" />
+    <input type="hidden" asp-for="@Model.ExtraBl" />
+    <input type="hidden" asp-for="@Model.ExtraBlCopy" />
+    <input type="hidden" asp-for="@Model.ExtraCommInv" />
+    <input type="hidden" asp-for="@Model.ExtraInsCtf" />
+    <input type="hidden" asp-for="@Model.ExtraConsInv" />
+    <input type="hidden" asp-for="@Model.ExtraPkngList" />
+    <input type="hidden" asp-for="@Model.ExtraWgtCtf" />
+    <input type="hidden" asp-for="@Model.DeliverInOneMailing" />
+    <input type="hidden" asp-for="@Model.DeliverInTwoMailing" />
+    <input type="hidden" asp-for="@Model.DeliverIfDraft" />
+    <input type="hidden" asp-for="@Model.AllChargesForAccount" />
+    <input type="hidden" asp-for="@Model.DoNotWaiveCharges" />
+    <input type="hidden" asp-for="@Model.ProtestForNonPayment" />
+    <input type="hidden" asp-for="@Model.DoNotProtest" />
+    <input type="hidden" asp-for="@Model.PresentOnArrival" />
+    <input type="hidden" asp-for="@Model.AdviseNonPaymentBy" />
+    <input type="hidden" asp-for="@Model.AdvisePaymentBy" />
+    <input type="hidden" asp-for="@Model.ReferToName" />
+    <input type="hidden" asp-for="@Model.ReferToAddress" />
+    <input type="hidden" asp-for="@Model.ToActFullyOnOurBehalf" />
+    <input type="hidden" asp-for="@Model.ToAssistNotToAlter" />
+    <input type="hidden" asp-for="@Model.OtherInstructions" />
+    <input type="hidden" asp-for="@Model.ReferQuestionTo" />
+    <input type="hidden" asp-for="@Model.ReferQuestionName" />
+    <input type="hidden" asp-for="@Model.ReferQuestionPhone" />
+    <input type="hidden" asp-for="@Model.AuthorizedSignatureInput" />
+    <input type="hidden" asp-for="@Model.UserCompany" />
+
+<div id="main" class="edit">              
+   <div class="wrap border-blue oe-old-hbl">
+    <div style="width:100%;">
+    <div style="background-color:white;width:100%;">
         <div>&nbsp;</div>
         <div style="display:inline-block;width:10px">&nbsp;</div>
-        <div style="display:inline-block;">
-            <table style="border-collapse:collapse;border-spacing:0;width:1200px">
+        <div style="display:inline-block;width:100%;">
+            <table style="border-collapse:collapse;border-spacing:0;width:100%;">
 	            <tbody>
 		            <tr>
 			            <td rowspan="16" style="border-style:solid;border-width:1px;width:30px">&nbsp;</td>
@@ -21,13 +288,13 @@
 			            <td colspan="6" style="border-top:solid;border-right:solid;border-width:1px;">
                             <div style="height:10px;">&nbsp;</div>
                             <div style="display:inline-block;width:3px">&nbsp;</div>
-                            <div style="width:520px;height:25px;border-bottom:1px solid black;display:inline-block;">
-                                    <span style="font-size:26px;">U.S.$&nbsp;&nbsp;&nbsp;&nbsp;@Model.Amount</span>
+                            <div style="width:350px;height:25px;border-bottom:1px solid black;display:inline-block;">
+                                    <span style="">U.S.$&nbsp;&nbsp;&nbsp;&nbsp;@Model.Amount</span>
                             </div>
-                            <div style="display:inline-block;width:180px">&nbsp;</div>
-                            <div style="display:inline-block;width:180px;text-align:right;font-size:26px;">Date&nbsp;</div>
+                            <div style="display:inline-block;width:30px">&nbsp;</div>
+                            <div style="display:inline-block;width:100px;text-align:right;">Date&nbsp;</div>
                             <div style="width:200px;height:25px;border-bottom:1px solid black;display:inline-block;">
-                                <span style="font-size:26px;padding: 0 10px;">
+                                <span style="padding: 0 10px;">
                                     &nbsp;@Model.Date
                                 </span>
                             </div>
@@ -37,22 +304,22 @@
                         <td colspan="6" style="border-right:solid;border-width:1px;">
                             <div style="height:10px;">&nbsp;</div>
                             <div style="display:inline-block;width:3px">&nbsp;</div>
-                            <div style="width:520px;height:25px;border-bottom:1px solid black;display:inline-block;">
-                                <span style="font-size:26px;">
+                            <div style="width:350px;height:25px;border-bottom:1px solid black;display:inline-block;">
+                                <span style="">
                                     @Model.AtSight
                                 </span>
                             </div>
-                            &nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:26px;">of this</span>
-                            <span style="font-size:26px;"><I>&nbsp;&nbsp;F&nbsp;&nbsp;I&nbsp;&nbsp;R&nbsp;&nbsp;S&nbsp;&nbsp;T&nbsp;&nbsp;</I></span>
-                            <span style="font-size:26px;">of</span>
-                            &nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:26px;">Exchange(Second unpaid)</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span style="">of this</span>
+                            <span style=""><I>&nbsp;&nbsp;F&nbsp;&nbsp;I&nbsp;&nbsp;R&nbsp;&nbsp;S&nbsp;&nbsp;T&nbsp;&nbsp;</I></span>
+                            <span style="">of</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span style="">Exchange(Second unpaid)</span>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="6" style="border-right:solid;border-width:1px;">
                             <div style="height:10px;">&nbsp;</div>
                             <div style="display:inline-block;width:3px">&nbsp;</div>
-                            <div style="display:inline-block;font-size:26px;">
+                            <div style="display:inline-block;">
                                 <span>Pay to the Order of</span>&nbsp;&nbsp;&nbsp;&nbsp;
                                 @Model.ShipperName
                             </div>
@@ -71,7 +338,7 @@
                                             case 2 :
                                             case 3 :
                                             case 4 :
-                                                <span style="font-size:26px;padding: 0 10px;">
+                                                <span style="padding: 0 10px;">
                                                     <strong>@Model.AmountToString</strong>
                                                 </span>
                                                 break;
@@ -117,7 +384,7 @@
                                                 </span>
                                                 break;
                                             default :
-                                                <span style="font-size:26px;padding: 0 10px;">
+                                                <span style="padding: 0 10px;">
                                                     <strong>@Model.AmountToString</strong>
                                                 </span>
                                                 break;
@@ -125,7 +392,7 @@
                                     }                                   
                                 </div>
                                 <div style="width:30%;text-align:right;display:inline-block;">
-                                    <span style="font-size:26px;padding: 0 10px;">
+                                    <span style="padding: 0 10px;">
                                         <strong>United States Dollars</strong>
                                     </span>
                                 </div>
@@ -136,64 +403,63 @@
 		            <tr>
 			            <td colspan="6" rowspan="12" style="border-bottom:solid;border-right:solid;border-width:1px;">
                             <div>
-                                <div style="height:10px;">&nbsp;</div>                                
-                                <div style="display:inline-block;font-size:26px;">
+                                <div style="height:10px;">&nbsp;</div>    
+                                <div style="width:3px;display:inline-block;"></div>
+                                <div style="display:inline-block;">
                                     @Model.DrawnDocCredit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 </div>
                                 <div style="display:inline-block;width:80px">&nbsp;</div>
-                                <div style="display:inline-block;font-size:26px;">
+                                <div style="display:inline-block;">
                                     <span>DATE OF ISSUE</span>&nbsp;&nbsp;
                                     @Model.IssueDate
                                 </div>
                             </div>
                             <div>
-                                <div style="height:20px;">&nbsp;</div>
-                                <div style="display:inline-block;width:3px">&nbsp;</div>
-                                <div style="display:inline-block;font-size:26px;">
+                                <div style="display:inline-block;">
                                     @Model.LCIssueBank
                                 </div>
                             </div>
                             <div>
                                 <div style="height:20px;">&nbsp;</div>
                                 <div style="display:inline-block;width:3px">&nbsp;</div>
-                                <div style="display:inline-block;font-size:26px;">
+                                <div style="display:inline-block;">
                                     <span>for Value received and charge the same to account of</span>
                                 </div>
                                 <div style="display:inline-block;width:80px">&nbsp;</div>
-                                <div style="display:inline-block;font-size:26px;vertical-align:top;">
+                                <div style="display:inline-block;vertical-align:top;">
                                     @Model.ToTradePartnerName
                                 </div>
                             </div>
                             <div>
                                 <div style="height:8px;">&nbsp;</div>
                                 <div style="display:inline-block;width:8px">&nbsp;</div>
-                                <div style="display:inline-block;vertical-align:top;font-size:26px;">
+                                <div style="display:inline-block;vertical-align:top;">
                                     <span>TO</span>
                                 </div>
                                 <div style="display:inline-block;width:8px">&nbsp;</div>
-                                <div style="display:inline-block;vertical-align:top;font-size:26px;">
+                                <div style="display:inline-block;vertical-align:top;">
                                     @Model.ToLCIssueBank
-                                    <div style="height:100px;">&nbsp;</div>
-                                    <div style="border-bottom:1px solid black;width:480px"></div>
+                                    <div style="height:30px;">&nbsp;</div>
+                                    <div style="border-bottom:1px solid black;width:310px"></div>
                                 </div>
-                                <div style="display:inline-block;width:85px">&nbsp;</div>
-                                <div style="display:inline-block;vertical-align:top;font-size:26px;">
-                                    <div style="height:130px;">&nbsp;</div>
-                                    <div style="border-bottom:1px solid black;width:480px"></div>
+                                <div style="display:inline-block;width:40px">&nbsp;</div>
+                                <div style="display:inline-block;vertical-align:top;">
+                                    <div style="height:30px;">&nbsp;</div>
+                                    <div style="border-bottom:1px solid black;width:310px"></div>
                                 </div>
                             </div>
                             <div>
                                 <div style="height:20px;">&nbsp;</div>
                                 <div style="display:inline-block;width:8px">&nbsp;</div>
-                                <div style="display:inline-block;font-size:26px;">No.&nbsp;</div>
-                                <div style="width:480px;height:25px;border-bottom:1px solid black;display:inline-block;">
-                                    <span style="font-size:26px;">
+                                <div style="display:inline-block;">No.&nbsp;</div>
+                                <div style="width:315px;height:25px;border-bottom:1px solid black;display:inline-block;">
+                                    <span style="">
                                         @Model.DraftNo
                                     </span>
                                 </div>
-                                <div style="display:inline-block;width:370px">&nbsp;</div>
+                                <div style="display:inline-block;width:205px">&nbsp;</div>
                                 <div style="text-align:right;display:inline-block;">
-                                    <span style="font-size:22px;">
+                                    <span>
                                         <strong>Authorized Signature</strong>
                                     </span>
                                 </div>
@@ -201,24 +467,22 @@
                             <div>
                                 <div style="height:10px;">&nbsp;</div>
                                 <div style="display:inline-block;width:3px">&nbsp;</div>
-                                <div style="display:inline-block;vertical-align:top;font-size:26px;">
+                                <div style="display:inline-block;vertical-align:top;">
                                     @Model.BankPreference
                                 </div>
-                                <div style="display:inline-block;width:630px">&nbsp;</div>
-                                <div style="display:inline-block;font-size:26px;">
+                                <div style="display:inline-block;">
                                     <div style="height:8px;">&nbsp;</div>
                                     @Model.ShipperName2
                                 </div>
                             </div>
                             <br />
-                            <br />
-                            <br />
+                           
                         </td>
 		            </tr>
 	            </tbody>
             </table>
             <center>
-                <div style="width:1200px;height:7px;border-bottom:3px dashed black;text-align: center"></div>
+                <div style="height:7px;border-bottom:3px dashed black;text-align: center"></div>
             </center>
             <br />
             <div>
@@ -226,17 +490,17 @@
                     <span>Gentlemen:</span>
                     @Model.GentlemenNameAddress
                 </div>
-                <div style="display:inline-block;width:560px">&nbsp;</div>
+                <div style="display:inline-block;width:340px">&nbsp;</div>
                 <div style="display:inline-block;font-size:20px;">
-                    <div style="width:480px;height:25px;border-bottom:1px solid black;display:inline-block;text-align:center;">
+                    <div style="width:340px;height:25px;border-bottom:1px solid black;display:inline-block;text-align:center;">
                         <div style="display:inline-block;width:5px">&nbsp;</div>
                         @Model.EncloseDate
                     </div>
                 </div>
             </div>
             <div>
-                <div style="display:inline-block;width:920px">&nbsp;</div>
-                <div style="display:inline-block;vertical-align:top;font-size:20px;">
+                <div style="display:inline-block;width:415px">&nbsp;</div>
+                <div style="display:inline-block;vertical-align:top;width:340px;text-align:center;">
                     <span>Date</span>
                 </div>
             </div>
@@ -248,7 +512,7 @@
                     </div>
                     <div style="display:inline-block;width:8px">&nbsp;</div>
                     <div style="display:inline-block;font-size:20px;">
-                        <div style="width:200px;height:25px;border-bottom:1px solid black;display:inline-block;">
+                        <div style="width:130px;height:15px;border-bottom:1px solid black;display:inline-block;">
                             @Model.EncloseDraftNo
                         </div>                        
                     </div>
@@ -256,7 +520,7 @@
                         <span style="font-size:20px;">and documents listed below</span>
                     </div>
                 </div>
-                <div style="display:inline-block;width:50px">&nbsp;</div>
+                <div style="display:inline-block;width:40px">&nbsp;</div>
                 <div style="display:inline-block;font-size:20px;">
                     @{
                         if (Model.EncloseForCollection == "on")
@@ -289,18 +553,18 @@
                 </div>
             </div>
             <br /><br />
-            <table style="border-collapse:collapse;border-spacing:0;width:1200px;">
+            <table style="border-collapse:collapse;border-spacing:0;width:100%">
 	            <tbody>
 		            <tr style="text-align:center;">
-			            <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">BILLS<br>OF LADING</span></td>
-			            <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">B/L<br>COPY</span></td>
-			            <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">COMM.<br>INV.</span></td>
-			            <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">INS.<br>CTF.</span></td>
-			            <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">CTF.<br>ORIG.</span></td>
-			            <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">CONS.<br>INV.</span></td>
-			            <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">PKNG.<br>LIST</span></td>
-                        <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">WGT.<br>CTF.</span></td>
-                        <td style="border-style:solid;border-width:1px;"><span style="font-size:20px">OTHER DOCUMENTS</span></td>
+			            <td style="border-style:solid;border-width:1px;"><span style="font-size:13px!important;">BILLS<br>OF LADING</span></td>
+			            <td style="border-style:solid;border-width:1px;"><span style="font-size: 13px !important;">B/L<br>COPY</span></td>
+			            <td style="border-style:solid;border-width:1px;"><span style="font-size: 13px !important;">COMM.<br>INV.</span></td>
+			            <td style="border-style:solid;border-width:1px;"><span style="font-size: 13px !important;">INS.<br>CTF.</span></td>
+			            <td style="border-style:solid;border-width:1px;"><span style="font-size: 13px !important;">CTF.<br>ORIG.</span></td>
+			            <td style="border-style:solid;border-width:1px;"><span style="font-size: 13px !important;">CONS.<br>INV.</span></td>
+			            <td style="border-style:solid;border-width:1px;"><span style="font-size: 13px !important;">PKNG.<br>LIST</span></td>
+                        <td style="border-style:solid;border-width:1px;"><span style="font-size: 13px !important;">WGT.<br>CTF.</span></td>
+                        <td style="border-style:solid;border-width:1px;"><span style="font-size: 13px !important;">OTHER DOCUMENTS</span></td>
 		            </tr>
 		            <tr>
 			            <td style="border-style:solid;border-width:1px;text-align:center;">
@@ -327,12 +591,12 @@
 			            <td style="border-style:solid;border-width:1px;text-align:center;">
                             @Model.ExtraWgtCtf
                         </td>
-                        <td style="border-style:solid;border-width:1px;"><span style="font-size:20px">EXTRA SET OF COPIES FOR BANK FILE</span></td>
+                        <td style="border-style:solid;border-width:1px;"><span style="font-size:13px !important;">EXTRA SET OF COPIES FOR BANK FILE</span></td>
 		            </tr>
 	            </tbody>
             </table>
             <div style="height:8px;">&nbsp;</div>
-            <table style="border-collapse:collapse;border-spacing:0;width:1200px;">
+            <table style="border-collapse:collapse;border-spacing:0;">
 	            <tbody>
                     <tr>
 			            <td colspan="2" style="border-left:solid;border-right:solid;border-width:1px;text-align:center;">
@@ -340,7 +604,7 @@
                         </td>
 		            </tr>
 		            <tr>
-			            <td style="border-left:solid;border-right:solid;border-bottom:solid;border-width:1px;width:53%;">
+			            <td style="border-left:solid;border-right:solid;border-bottom:solid;border-width:1px;width:53%;padding-left:8px;">
                             <div>
                                 @{
                                     if (Model.DeliverInOneMailing == "on")
@@ -554,7 +818,7 @@
                             </div>
                             <div style="height:8px;">&nbsp;</div>
                         </td>
-			            <td style="border-left:solid;border-right:solid;border-bottom:solid;border-width:1px;width:47%;" valign="top">
+			            <td style="border-left:solid;border-right:solid;border-bottom:solid;border-width:1px;width:47%;padding-left:8px;" valign="top">
                             <div style="height:70px;">&nbsp;</div>
                             <div>
                                 <div style="display:inline-block;width:3px">&nbsp;</div>
@@ -621,7 +885,7 @@
                         </td>
 		            </tr>
 		            <tr>
-                        <td colspan="2" style="border-style:solid;border-width:1px;font-size:20px">
+                        <td colspan="2" style="border-style:solid;border-width:1px;padding-left: 8px;padding-top: 8px;display: block;">
                             <div><span style="font-size:20px">OTHER INSTRUCTIONS :</span></div>
                             @Model.OtherInstructions
                             <br /><br />
@@ -649,32 +913,32 @@
                 }
                 <div style="height:10px;">&nbsp;</div>
                 <div style="display:inline-block;width:15px;">&nbsp;</div>
-                <div style="width:350px;height:25px;border-bottom:1px solid black;display:inline-block;font-size:20px">
+                <div style="width:345px;height:25px;border-bottom:1px solid black;display:inline-block;font-size:20px">
                     @Model.ReferQuestionName
                 </div>
                 <div style="height:10px;">&nbsp;</div>
                 <div style="display:inline-block;width:15px;">&nbsp;</div>
-                <div style="width:350px;height:25px;border-bottom:1px solid black;display:inline-block;font-size:20px">
+                <div style="width:345px;height:25px;border-bottom:1px solid black;display:inline-block;font-size:20px">
                     @Model.ReferQuestionPhone
                 </div>
             </div>
             <div style="display:inline-block;vertical-align:top;">
                 <div style="height:10px;">&nbsp;</div>
-                <div style="display:inline-block;width:300px;">&nbsp;</div>
-                <div style="width:500px;height:25px;border-bottom:1px solid black;display:inline-block;font-size:20px">
+                <div style="display:inline-block;width:40px;">&nbsp;</div>
+                <div style="width:345px;height:25px;border-bottom:1px solid black;display:inline-block;font-size:20px">
                     @Model.ShipperName3
                 </div>
                 <div style="height:30px;">&nbsp;</div>
-                <div style="display:inline-block;width:300px;">&nbsp;</div>
-                <div style="width:500px;height:25px;border-bottom:1px solid black;display:inline-block;font-size:20px">
+                <div style="display:inline-block;width:40px;">&nbsp;</div>
+                <div style="width:345px;height:25px;border-bottom:1px solid black;display:inline-block;font-size:20px">
                     @Model.AuthorizedSignatureInput
-                    <div style="display:inline-block;width:240px;">&nbsp;</div>
+                    <div style="display:inline-block;width:199px;">&nbsp;</div>
                     <span style="font-size:20px;">
                         <strong>Authorized Signature</strong>
                     </span>
                 </div>
                 <div style="height:10px;">&nbsp;</div>
-                <div style="display:inline-block;width:300px;">&nbsp;</div>
+                <div style="display:inline-block;width:40px;">&nbsp;</div>
                 <div style="display:inline-block;">
                     @Model.UserCompany
                 </div>
@@ -683,681 +947,11 @@
             <div><span style="font-size:26px">FORM B-2 - C</span></div>
         </div>
     </div>
-    <div style="page-break-before:always">&nbsp;</div> @*換頁*@
-    <div style="background-color:white;">
-        <div>&nbsp;</div>
-        <div style="display:inline-block;width:10px">&nbsp;</div>
-        <div style="display:inline-block;">
-            <table style="border-collapse:collapse;border-spacing:0;width:1200px">
-                <tbody>
-                    <tr>
-                        <td rowspan="16" style="border-style:solid;border-width:1px;width:30px">&nbsp;</td>
-                        <td rowspan="16" style="border-style:solid;border-width:1px;width:10px">&nbsp;</td>
-                        <td colspan="6" style="border-top:solid;border-right:solid;border-width:1px;">
-                            <div style="height:10px;">&nbsp;</div>
-                            <div style="display:inline-block;width:3px">&nbsp;</div>
-                            <div style="width:520px;height:25px;border-bottom:1px solid black;display:inline-block;">
-                                <span style="font-size:26px;">U.S.$&nbsp;&nbsp;&nbsp;&nbsp;@Model.Amount</span>
-                            </div>
-                            <div style="display:inline-block;width:180px">&nbsp;</div>
-                            <div style="display:inline-block;width:180px;text-align:right;font-size:26px;">Date&nbsp;</div>
-                            <div style="width:200px;height:25px;border-bottom:1px solid black;display:inline-block;">
-                                <span style="font-size:26px;padding: 0 10px;">
-                                    &nbsp;@Model.Date
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="6" style="border-right:solid;border-width:1px;">
-                            <div style="height:10px;">&nbsp;</div>
-                            <div style="display:inline-block;width:3px">&nbsp;</div>
-                            <div style="width:520px;height:25px;border-bottom:1px solid black;display:inline-block;">
-                                <span style="font-size:26px;">
-                                    @Model.AtSight
-                                </span>
-                            </div>
-                            &nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:26px;">of this</span>
-                            <span style="font-size:26px;"><I>&nbsp;&nbsp;S&nbsp;&nbsp;E&nbsp;&nbsp;C&nbsp;&nbsp;O&nbsp;&nbsp;N&nbsp;&nbsp;D&nbsp;&nbsp;</I></span>
-                            <span style="font-size:26px;">of</span>
-                            &nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:26px;">Exchange(Second unpaid)</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="6" style="border-right:solid;border-width:1px;">
-                            <div style="height:10px;">&nbsp;</div>
-                            <div style="display:inline-block;width:3px">&nbsp;</div>
-                            <div style="display:inline-block;font-size:26px;">
-                                <span>Pay to the Order of</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                                @Model.ShipperName
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="6" style="border-right:solid;border-width:1px;">
-                            <div style="height:10px;">&nbsp;</div>
-                            <div style="display:inline-block;width:3px">&nbsp;</div>
-                            <div style="width:98%;height:30px;border-bottom:1px solid black;display:inline-block;">
-                                <div style="width:68%;text-align:left;display:inline-block;">
-                                    @{
-                                        switch (Model.Amount.Length)
-                                        { 
-                                            case 1 :
-                                            case 2 :
-                                            case 3 :
-                                            case 4 :
-                                                <span style="font-size:26px;padding: 0 10px;">
-                                                    <strong>@Model.AmountToString</strong>
-                                                </span>
-                                                break;
-                                            case 5 :
-                                                <span style="font-size:24px;padding: 0 10px;">
-                                                    <strong>@Model.AmountToString</strong>
-                                                </span>
-                                                break;
-                                            case 6 :
-                                                <span style="font-size:20px;padding: 0 10px;">
-                                                    <strong>@Model.AmountToString</strong>
-                                                </span>
-                                                break;
-                                            case 7 :
-                                                <span style="font-size:18px;padding: 0 10px;">
-                                                    <strong>@Model.AmountToString</strong>
-                                                </span>
-                                                break;
-                                            case 8 :
-                                                <span style="font-size:16px;padding: 0 10px;">
-                                                    <strong>@Model.AmountToString</strong>
-                                                </span>
-                                                break;
-                                            case 9 :
-                                                <span style="font-size:14px;padding: 0 10px;">
-                                                    <strong>@Model.AmountToString</strong>
-                                                </span>
-                                                break;
-                                            case 10 :
-                                                <span style="font-size:12px;padding: 0 10px;">
-                                                    <strong>@Model.AmountToString</strong>
-                                                </span>
-                                                break;
-                                            case 11 :
-                                                <span style="font-size:11px;padding: 0 10px;">
-                                                    <strong>@Model.AmountToString</strong>
-                                                </span>
-                                                break;
-                                            case 12 :
-                                            case 13 :
-                                                <span style="font-size:10px;padding: 0 10px;">
-                                                    <strong>@Model.AmountToString</strong>
-                                                </span>
-                                                break;
-                                            default :
-                                                <span style="font-size:26px;padding: 0 10px;">
-                                                    <strong>@Model.AmountToString</strong>
-                                                </span>
-                                                break;
-                                        }
-                                    }                                   
-                                </div>
-                                <div style="width:30%;text-align:right;display:inline-block;">
-                                    <span style="font-size:26px;padding: 0 10px;">
-                                        <strong>United States Dollars</strong>
-                                    </span>
-                                </div>
-                            </div>
-                            <div style="display:inline-block;width:3px">&nbsp;</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="6" rowspan="12" style="border-bottom:solid;border-right:solid;border-width:1px;">
-                            <div>
-                                <div style="height:10px;">&nbsp;</div>
-                                <div style="display:inline-block;font-size:26px;">
-                                    @Model.DrawnDocCredit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                </div>
-                                <div style="display:inline-block;width:80px">&nbsp;</div>
-                                <div style="display:inline-block;font-size:26px;">
-                                    <span>DATE OF ISSUE</span>&nbsp;&nbsp;
-                                    @Model.IssueDate
-                                </div>
-                            </div>
-                            <div>
-                                <div style="height:20px;">&nbsp;</div>
-                                <div style="display:inline-block;width:3px">&nbsp;</div>
-                                <div style="display:inline-block;font-size:26px;">
-                                    @Model.LCIssueBank
-                                </div>
-                            </div>
-                            <div>
-                                <div style="height:20px;">&nbsp;</div>
-                                <div style="display:inline-block;width:3px">&nbsp;</div>
-                                <div style="display:inline-block;font-size:26px;">
-                                    <span>for Value received and charge the same to account of</span>
-                                </div>
-                                <div style="display:inline-block;width:80px">&nbsp;</div>
-                                <div style="display:inline-block;font-size:26px;vertical-align:top;">
-                                    @Model.ToTradePartnerName
-                                </div>
-                            </div>
-                            <div>
-                                <div style="height:8px;">&nbsp;</div>
-                                <div style="display:inline-block;width:8px">&nbsp;</div>
-                                <div style="display:inline-block;vertical-align:top;font-size:26px;">
-                                    <span>TO</span>
-                                </div>
-                                <div style="display:inline-block;width:8px">&nbsp;</div>
-                                <div style="display:inline-block;vertical-align:top;font-size:26px;">
-                                    @Model.ToLCIssueBank
-                                    <div style="height:100px;">&nbsp;</div>
-                                    <div style="border-bottom:1px solid black;width:480px"></div>
-                                </div>
-                                <div style="display:inline-block;width:85px">&nbsp;</div>
-                                <div style="display:inline-block;vertical-align:top;font-size:26px;">
-                                    <div style="height:130px;">&nbsp;</div>
-                                    <div style="border-bottom:1px solid black;width:480px"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div style="height:20px;">&nbsp;</div>
-                                <div style="display:inline-block;width:8px">&nbsp;</div>
-                                <div style="display:inline-block;font-size:26px;">No.&nbsp;</div>
-                                <div style="width:480px;height:25px;border-bottom:1px solid black;display:inline-block;">
-                                    <span style="font-size:26px;">
-                                        @Model.DraftNo
-                                    </span>
-                                </div>
-                                <div style="display:inline-block;width:370px">&nbsp;</div>
-                                <div style="text-align:right;display:inline-block;">
-                                    <span style="font-size:22px;">
-                                        <strong>Authorized Signature</strong>
-                                    </span>
-                                </div>
-                            </div>
-                            <div>
-                                <div style="height:10px;">&nbsp;</div>
-                                <div style="display:inline-block;width:3px">&nbsp;</div>
-                                <div style="display:inline-block;vertical-align:top;font-size:26px;">
-                                    @Model.BankPreference
-                                </div>
-                                <div style="display:inline-block;width:630px">&nbsp;</div>
-                                <div style="display:inline-block;font-size:26px;">
-                                    <div style="height:8px;">&nbsp;</div>
-                                    @Model.ShipperName2
-                                </div>
-                            </div>
-                            <br />
-                            <br />
-                            <br />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <center>
-                <div style="width:1200px;height:7px;border-bottom:3px dashed black;text-align: center"></div>
-            </center>
-            <br />
-            <div>
-                <div style="display:inline-block;font-size:20px;">
-                    <span>Gentlemen:</span>
-                    @Model.GentlemenNameAddress
-                </div>
-                <div style="display:inline-block;width:560px">&nbsp;</div>
-                <div style="display:inline-block;font-size:20px;">
-                    <div style="width:480px;height:25px;border-bottom:1px solid black;display:inline-block;text-align:center;">
-                        <div style="display:inline-block;width:5px">&nbsp;</div>
-                        @Model.EncloseDate
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div style="display:inline-block;width:920px">&nbsp;</div>
-                <div style="display:inline-block;vertical-align:top;font-size:20px;">
-                    <span>Date</span>
-                </div>
-            </div>
-            <div style="height:15px;">&nbsp;</div>
-            <div>
-                <div style="display:inline-block;vertical-align:top;font-size:20px;">
-                    <div style="display:inline-block;text-align:center;font-size:20px;">
-                        <span style="font-size:20px;">We enclose Draft Number</span>
-                    </div>
-                    <div style="display:inline-block;width:8px">&nbsp;</div>
-                    <div style="display:inline-block;font-size:20px;">
-                        <div style="width:200px;height:25px;border-bottom:1px solid black;display:inline-block;">
-                            @Model.EncloseDraftNo
-                        </div>
-                    </div>
-                    <div style="display:inline-block;font-size:20px;">
-                        <span style="font-size:20px;">and documents listed below</span>
-                    </div>
-                </div>
-                <div style="display:inline-block;width:50px">&nbsp;</div>
-                <div style="display:inline-block;font-size:20px;">
-                    @{
-                        if (Model.EncloseForCollection == "on")
-                        {
-                                <span>[X] for collection</span>
-                        }
-                        else
-                        {
-                                <span>[ ] for collection</span>
-                        }
-                            <br />
-                        if (Model.EncloseForOther == "on")
-                        {
-                                <span>[X] for @Model.EncloseForOtherInput</span>
-                        }
-                        else
-                        {
-                                <span>[ ] for @Model.EncloseForOtherInput</span>
-                        }
-                            <br />
-                        if (Model.EncloseForPayment == "on")
-                        {
-                                <span>[X] for payment/negotiation under L/C</span>
-                        }
-                        else
-                        {
-                                <span>[ ] for payment/negotiation under L/C</span>
-                        }
-                    }
-                </div>
-            </div>
-            <br /><br />
-            <table style="border-collapse:collapse;border-spacing:0;width:1200px;">
-                <tbody>
-                    <tr style="text-align:center;">
-                        <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">BILLS<br>OF LADING</span></td>
-                        <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">B/L<br>COPY</span></td>
-                        <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">COMM.<br>INV.</span></td>
-                        <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">INS.<br>CTF.</span></td>
-                        <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">CTF.<br>ORIG.</span></td>
-                        <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">CONS.<br>INV.</span></td>
-                        <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">PKNG.<br>LIST</span></td>
-                        <td style="border-style:solid;border-width:1px;width:110px;"><span style="font-size:20px">WGT.<br>CTF.</span></td>
-                        <td style="border-style:solid;border-width:1px;"><span style="font-size:20px">OTHER DOCUMENTS</span></td>
-                    </tr>
-                    <tr>
-                        <td style="border-style:solid;border-width:1px;text-align:center;">
-                            @Model.ExtraBl
-                        </td>
-                        <td style="border-style:solid;border-width:1px;text-align:center;">
-                            @Model.ExtraBlCopy
-                        </td>
-                        <td style="border-style:solid;border-width:1px;text-align:center;">
-                            @Model.ExtraCommInv
-                        </td>
-                        <td style="border-style:solid;border-width:1px;text-align:center;">
-                            @Model.ExtraInsCtf
-                        </td>
-                        <td style="border-style:solid;border-width:1px;text-align:center;">
-                            @Model.ExtraCtfOrig
-                        </td>
-                        <td style="border-style:solid;border-width:1px;text-align:center;">
-                            @Model.ExtraConsInv
-                        </td>
-                        <td style="border-style:solid;border-width:1px;text-align:center;">
-                            @Model.ExtraPkngList
-                        </td>
-                        <td style="border-style:solid;border-width:1px;text-align:center;">
-                            @Model.ExtraWgtCtf
-                        </td>
-                        <td style="border-style:solid;border-width:1px;"><span style="font-size:20px">EXTRA SET OF COPIES FOR BANK FILE</span></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div style="height:8px;">&nbsp;</div>
-            <table style="border-collapse:collapse;border-spacing:0;width:1200px;">
-                <tbody>
-                    <tr>
-                        <td colspan="2" style="border-left:solid;border-right:solid;border-width:1px;text-align:center;">
-                            <div><span style="font-size:20px">Please handle in accordance with instructions marked "X"</span></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border-left:solid;border-right:solid;border-bottom:solid;border-width:1px;width:53%;">
-                            <div>
-                                @{
-                                    if (Model.DeliverInOneMailing == "on")
-                                    {
-                                            <span style="font-size:20px">[X] Deliver all documents in one mailing.</span>
-                                    }
-                                    else
-                                    {
-                                            <span style="font-size:20px">[ ] Deliver all documents in one mailing.</span>
-                                    }
-                                }
-                            </div>
-                            <div style="height:8px;">&nbsp;</div>
-                            <div>
-                                @{
-                                    if (Model.DeliverInTwoMailing == "on")
-                                    {
-                                            <span style="font-size:20px">[X] Deliver documents in two mailing.</span>
-                                    }
-                                    else
-                                    {
-                                            <span style="font-size:20px">[ ] Deliver documents in two mailing.</span>
-                                    }
-                                }
-                            </div>
-                            <div style="height:8px;">&nbsp;</div>
-                            <div>
-                                @{
-                                    if (Model.DeliverIfDraft == "on")
-                                    {
-                                            <span style="font-size:20px">[X] Deliver documents against payment if sight draft, or acceptance<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if time draft.</span>
-                                    }
-                                    else
-                                    {
-                                            <span style="font-size:20px">[ ] Deliver documents against payment if sight draft, or acceptance<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if time draft.</span>
-                                    }
-                                }
-                            </div>
-                            <div style="height:8px;">&nbsp;</div>
-                            <div>
-                                @{
-                                    if (Model.AllChargesForAccount == "on")
-                                    {
-                                            <span style="font-size:20px">[X] All charges for account of drawee.</span>
-                                    }
-                                    else
-                                    {
-                                            <span style="font-size:20px">[ ] All charges for account of drawee.</span>
-                                    }
-                                }
-                            </div>
-                            <div style="height:8px;">&nbsp;</div>
-                            <div>
-                                @{
-                                    if (Model.DoNotWaiveCharges == "on")
-                                    {
-                                            <span style="font-size:20px">[X] Do not waive charges.</span>
-                                    }
-                                    else
-                                    {
-                                            <span style="font-size:20px">[ ] Do not waive charges.</span>
-                                    }
-                                }
-                            </div>
-                            <div style="height:8px;">&nbsp;</div>
-                            <div>
-                                @{
-                                    if (Model.ProtestForNonPayment == "on")
-                                    {
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px">[X] Protest for</span>
-                                            </div>
-                                            <div style="display:inline-block;width:30px">&nbsp;</div>
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px"><u>non-payment</u><br />non-acceptance</span>
-                                            </div>
-                                    }
-                                    else
-                                    {
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px">[ ] Protest for</span>
-                                            </div>
-                                            <div style="display:inline-block;width:30px">&nbsp;</div>
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px"><u>non-payment</u><br />non-acceptance</span>
-                                            </div>
-                                    }
-                                }
-                            </div>
-                            <div style="height:8px;">&nbsp;</div>
-                            <div>
-                                @{
-                                    if (Model.DoNotProtest == "on")
-                                    {
-                                            <span style="font-size:20px">[X] Do not protest.</span>
-                                    }
-                                    else
-                                    {
-                                            <span style="font-size:20px">[ ] Do not protest.</span>
-                                    }
-                                }
-                            </div>
-                            <div style="height:8px;">&nbsp;</div>
-                            <div>
-                                @{
-                                    if (Model.PresentOnArrival == "on")
-                                    {
-                                            <span style="font-size:20px">[X] Present on arrival of goods.</span>
-                                    }
-                                    else
-                                    {
-                                            <span style="font-size:20px">[ ] Present on arrival of goods.</span>
-                                    }
-                                }
-                            </div>
-                            <div style="height:8px;">&nbsp;</div>
-                            <div>
-                                @{
-                                    if (Model.AdviseNonPaymentBy == "on")
-                                    {
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px">[X] Advise</span>
-                                            </div>
-                                            <div style="display:inline-block;width:30px">&nbsp;</div>
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px"><u>non-payment</u><br />non-acceptance</span>
-                                            </div>
-                                            <div style="display:inline-block;width:10px">&nbsp;</div>
-                                            <div style="display:inline-block;">
-                                                <span style="font-size:20px">By</span>
-                                            </div>
-                                            <div style="display:inline-block;width:10px">&nbsp;</div>
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px"><u>air mail</u><br />cable</span>
-                                            </div>
-                                            <div style="display:inline-block;width:10px">&nbsp;</div>
-                                            <div style="display:inline-block;">
-                                                <span style="font-size:20px">giving reasons</span>
-                                            </div>
-                                    }
-                                    else
-                                    {
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px">[ ] Advise</span>
-                                            </div>
-                                            <div style="display:inline-block;width:30px">&nbsp;</div>
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px"><u>non-payment</u><br />non-acceptance</span>
-                                            </div>
-                                            <div style="display:inline-block;width:10px">&nbsp;</div>
-                                            <div style="display:inline-block;">
-                                                <span style="font-size:20px">By</span>
-                                            </div>
-                                            <div style="display:inline-block;width:10px">&nbsp;</div>
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px"><u>air mail</u><br />cable</span>
-                                            </div>
-                                            <div style="display:inline-block;width:10px">&nbsp;</div>
-                                            <div style="display:inline-block;">
-                                                <span style="font-size:20px">giving reasons</span>
-                                            </div>
-                                    }
-                                }
-                            </div>
-                            <div style="height:8px;">&nbsp;</div>
-                            <div>
-                                @{
-                                    if (Model.AdvisePaymentBy == "on")
-                                    {
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px">[X] Advise</span>
-                                            </div>
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px">Advise</span>
-                                            </div>
-                                            <div style="display:inline-block;width:30px">&nbsp;</div>
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px"><u>payment</u><br />acceptance</span>
-                                            </div>
-                                            <div style="display:inline-block;width:10px">&nbsp;</div>
-                                            <div style="display:inline-block;">
-                                                <span style="font-size:20px">By</span>
-                                            </div>
-                                            <div style="display:inline-block;width:10px">&nbsp;</div>
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px"><u>air mail</u><br />cable</span>
-                                            </div>
-                                    }
-                                    else
-                                    {
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px">[ ] Advise</span>
-                                            </div>
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px">Advise</span>
-                                            </div>
-                                            <div style="display:inline-block;width:30px">&nbsp;</div>
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px"><u>payment</u><br />acceptance</span>
-                                            </div>
-                                            <div style="display:inline-block;width:10px">&nbsp;</div>
-                                            <div style="display:inline-block;">
-                                                <span style="font-size:20px">By</span>
-                                            </div>
-                                            <div style="display:inline-block;width:10px">&nbsp;</div>
-                                            <div style="display:inline-block">
-                                                <span style="font-size:20px"><u>air mail</u><br />cable</span>
-                                            </div>
-                                    }
-                                }
-                            </div>
-                            <div style="height:8px;">&nbsp;</div>
-                        </td>
-                        <td style="border-left:solid;border-right:solid;border-bottom:solid;border-width:1px;width:47%;" valign="top">
-                            <div style="height:70px;">&nbsp;</div>
-                            <div>
-                                <div style="display:inline-block;width:3px">&nbsp;</div>
-                                <span style="font-size:20px">IN CASE OF NEED refer to:</span>
-                            </div>
-                            <div style="height:10px;">&nbsp;</div>
-                            <div>
-                                <div style="display:inline-block;width:3px">&nbsp;</div>
-                                <span style="font-size:20px">Name</span>
-                                <div style="display:inline-block;width:15px">&nbsp;</div>
-                                <div style="width:294px;height:25px;border-bottom:1px solid black;display:inline-block;">
-                                    @Model.ReferToName
-                                </div>
-                            </div>
-                            <div style="height:10px;">&nbsp;</div>
-                            <div>
-                                <div style="display:inline-block;width:3px">&nbsp;</div>
-                                <div style="display:inline-block;"><span style="font-size:20px">Address</span></div>
-                                <div style="display:inline-block;width:3px">&nbsp;</div>
-                                <div style="width:294px;height:45px;border-bottom:1px solid black;display:inline-block;">
-                                    @Model.ReferToAddress
-                                </div>
-                            </div>
-                            <div style="height:25px;">&nbsp;</div>
-                            <div>
-                                <div style="display:inline-block;width:3px">&nbsp;</div>
-                                <span style="font-size:20px">who is empower by us:</span>
-                            </div>
-                            <div style="height:8px;">&nbsp;</div>
-                            <div>
-                                <div style="display:inline-block;width:30px">&nbsp;</div>
-                                @{
-                                    if (Model.ToActFullyOnOurBehalf == "on")
-                                    {
-                                            <div style="display:inline-block;"><span style="font-size:20px">a [X]</span></div>
-                                            <div style="display:inline-block;"><span style="font-size:20px">To act fully on our behalf, i.e., authorize reductions,</span></div>
-                                            <div style="display:inline-block;"><span style="font-size:20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extensions, free delivery waiving of protest, etc.</span></div>
-                                    }
-                                    else
-                                    {
-                                            <div style="display:inline-block;"><span style="font-size:20px">a [ ]</span></div>
-                                            <div style="display:inline-block;"><span style="font-size:20px">To act fully on our behalf, i.e., authorize reductions,</span></div>
-                                            <div style="display:inline-block;"><span style="font-size:20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extensions, free delivery waiving of protest, etc.</span></div>
-                                    }
-                                }
-                            </div>
-                            <div>
-                                <div style="display:inline-block;width:30px">&nbsp;</div>
-                                @{
-                                    if (Model.ToAssistNotToAlter == "on")
-                                    {
-                                            <div style="display:inline-block;"><span style="font-size:20px">b [X]</span></div>
-                                            <div style="display:inline-block;"><span style="font-size:20px">To assist in obtaining acceptance or payment of </span></div>
-                                            <div style="display:inline-block;"><span style="font-size:20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;draft,as drawn, but not to alter its terms in any way.</span></div>
-                                    }
-                                    else
-                                    {
-                                            <div style="display:inline-block;"><span style="font-size:20px">b [ ]</span></div>
-                                            <div style="display:inline-block;"><span style="font-size:20px">To assist in obtaining acceptance or payment of </span></div>
-                                            <div style="display:inline-block;"><span style="font-size:20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;draft,as drawn, but not to alter its terms in any way.</span></div>
-                                    }
-                                }
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="border-style:solid;border-width:1px;font-size:20px">
-                            <div><span style="font-size:20px">OTHER INSTRUCTIONS :</span></div>
-                            @Model.OtherInstructions
-                            <br /><br />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <br />
-            <div><span style="font-size:20px;">Please refer all questions conceming this collection to:</span></div>
-            <br />
-            <div style="display:inline-block;font-size:24px;">
-                @{
-                    if (Model.ReferQuestionTo == "SHIPPER")
-                    {
-                            <span>[X] Shipper</span>
-
-                            <br />
-                            <span>[ ] Freight Forwarder.</span>
-                    }
-                    else
-                    {
-                            <span>[ ] Shipper</span>
-
-                            <br />
-                            <span>[X] Freight Forwarder.</span>
-                    }
-                }
-                <div style="height:10px;">&nbsp;</div>
-                <div style="display:inline-block;width:15px;">&nbsp;</div>
-                <div style="width:350px;height:25px;border-bottom:1px solid black;display:inline-block;font-size:20px">
-                    @Model.ReferQuestionName
-                </div>
-                <div style="height:10px;">&nbsp;</div>
-                <div style="display:inline-block;width:15px;">&nbsp;</div>
-                <div style="width:350px;height:25px;border-bottom:1px solid black;display:inline-block;font-size:20px">
-                    @Model.ReferQuestionPhone
-                </div>
-            </div>
-            <div style="display:inline-block;vertical-align:top;">
-                <div style="height:10px;">&nbsp;</div>
-                <div style="display:inline-block;width:300px;">&nbsp;</div>
-                <div style="width:500px;height:25px;border-bottom:1px solid black;display:inline-block;font-size:20px">
-                    @Model.ShipperName3
-                </div>
-                <div style="height:30px;">&nbsp;</div>
-                <div style="display:inline-block;width:300px;">&nbsp;</div>
-                <div style="width:500px;height:25px;border-bottom:1px solid black;display:inline-block;font-size:20px">
-                    @Model.AuthorizedSignatureInput
-                    <div style="display:inline-block;width:240px;">&nbsp;</div>
-                    <span style="font-size:20px;">
-                        <strong>Authorized Signature</strong>
-                    </span>
-                </div>
-                <div style="height:10px;">&nbsp;</div>
-                <div style="display:inline-block;width:300px;">&nbsp;</div>
-                <div style="display:inline-block;">
-                    @Model.UserCompany
-                </div>
-            </div>
-            <br /><br /><br />
-            <div><span style="font-size:26px">FORM B-2 - C</span></div>
-        </div>
+    
+</div>
     </div>
 </div>
+</form>
+
+
+

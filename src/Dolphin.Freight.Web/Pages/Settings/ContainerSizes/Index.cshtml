@@ -24,16 +24,74 @@
             <div class="title">
                 @L["Menu:ContainerSizes"]
             </div>
+
             @if (await AuthorizationService.IsGrantedAsync(SettingsPermissions.ContainerSizes.Create))
             {
                 <abp-button id="NewContainerSizeButton"
-                        text="@L["Create"].Value"
-                        icon="plus"
+                            text="@L["Create"].Value"
+                            icon="plus"
                             class="btn btn-add" />
             }
         </abp-card-header>
+        <div>
+            <button class="btn-success" data-bs-toggle="collapse" data-bs-target="#hidden" style="float: right;margin-top: -20px; margin-right: 20px; margin-bottom: 10px;">
+                <i class="fa fa-filter" aria-hidden="true"></i>
+                Filters
+            </button>
+        </div>
+        <div id='hidden' class='collapse' style="text-align: center">
+            <div class="row col-12" style="text-align: center">
+                <abp-column size="_6" class="filterDiv">
+                    <abp-input asp-for="Search" label="Keyword" class="ml-4 mr-3" />
+                </abp-column>
+                <abp-column size="_3" class="filterDiv">
+                    <abp-select asp-for="Active" asp-items="@Model.StatusList" class="ml-4" />
+                </abp-column>
+            </div>
+            <div class="col-12" style="text-align: center">
+                <button class="btn btn-warning mr-2" data-bs-toggle="collapse" data-bs-target="#hidden">
+                    Cancel
+                </button>
+                <abp-button id="SearchButton"
+                            text="@L["Search"].Value"
+                            icon="search"
+                            class="btn-primary" />
+            </div>
+        </div>
         <abp-card-body>
-            <abp-table class="nowrap"  striped-rows="true" id="ContainerSizesTable"></abp-table>
+            <abp-table class="nowrap mt-2" striped-rows="true" id="ContainerSizesTable"></abp-table>
         </abp-card-body>
     </abp-card>
 </div>
+
+<style>
+    #hidden {
+        height: 154px !important;
+    }
+
+    .dropdown {
+        margin-top: 7.5px !important;
+        height: 40px !important
+    }
+
+    .select2-selection {
+        height: 38px !important;
+    }
+
+    .select2-dropdown.select2-dropdown {
+        width: 347.725px !important;
+    }
+
+    .select2-results__options {
+        width: 347.725px !important;
+    }
+
+    #drop_CarrierId {
+        overflow: hidden;
+    }
+
+    .filterDiv div {
+        display: flex;
+    }
+
+</style>

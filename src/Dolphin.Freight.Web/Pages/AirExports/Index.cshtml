@@ -38,7 +38,20 @@
             </abp-row>
         </abp-card-header>
         <abp-card-body>
+            <div class="row col-12" style="text-align: center; margin:0!important">
+                <abp-column size="_9"></abp-column>
+                <abp-column size="_3" class="filterDiv">
+                    <abp-input asp-for="Search" class="ml-4" />
+                </abp-column>
+            </div>
             <abp-table class="nowrap" striped-rows="true" id="MblListTable"></abp-table>
         </abp-card-body>
     </abp-card>
 </div>
+<style>
+    .filterDiv div {
+        display: flex;
+        padding: 0 !important;
+    }
+</style>
+

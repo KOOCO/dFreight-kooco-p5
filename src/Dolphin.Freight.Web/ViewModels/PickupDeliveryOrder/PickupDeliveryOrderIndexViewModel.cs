@@ -21,7 +21,7 @@ namespace Dolphin.Freight.Web.ViewModels.PickupDeliveryOrder
         public string issue_at { get; set; }
         public string issue_by { get; set; }
         public string trucker_area { get; set; }
-
+        public string Hbl_LcNo { get; set; }
         public string is_show_empty_pickup_area { get; set; }
         public string empty_pickup_area { get; set; }
         public string empty_pickup_ref_no { get; set; }

@@ -18,5 +18,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         Task<CreateUpdateOceanExportMblDto> GetCreateUpdateOceanExportMblDtoById(Guid Id);
 
         Task<CreateUpdateOceanExportMblDto> GetMblById(QueryMblDto query);
+        Task<OceanExportDetails> GetOceanExportDetailsById(Guid Id);
     }
 }

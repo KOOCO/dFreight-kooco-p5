@@ -9,10 +9,11 @@
     {
     <script type="text/javascript">
         function gotoInvoice(MawbId, InvoiceType) {
-            debugger;
             location.href = '/Accounting/Invoice?MethodType=3&MawbId=' + MawbId + "&InvoiceType=" + InvoiceType;
         }
-
+        function gotoHawbInvoice(HawbId, InvoiceType) {
+            location.href = '/Accounting/Invoice?MethodType=3&HawbId=' + HawbId + "&InvoiceType=" + InvoiceType;
+        }
         function onAddHawbClick() {
             location.href = "/AirExports/EditModal?Id=@Model.Id&from=accounting";
         }
@@ -95,6 +96,17 @@
                 }
             });
         }
+        function getConsolidatedManifestByAgentAirExportMawb() {
+            $.ajax({
+                url: abp.appPath + 'Docs/ConsolidatedManifestByAgentAirExportMawbPartial?mawbId=' + '@Model.AirExportMawbDto.Id',
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('.modal-content').html(res);
+                    $('.modal').modal('show');
+                }
+            });
+        }
     </script>
 }
 <div class="page-header">
@@ -152,8 +164,8 @@
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PrintMawb", "Docs", new { id = Model.AirExportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEMBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Print MAWB"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest (Comprehensive)"]
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getConsolidatedManifestByAgentAirExportMawb()">
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Manifest"]
                                 </a>
                                 <a class='dropdown-item' href="javascript:void(0)" onclick="getManifestByAgentAirExportMawb()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Manifest by Agent"]
@@ -230,8 +242,8 @@
                                                 <tr>
                                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m0invoiceDtos.Count">@L["Menu:AccountingAR"]</td>
                                                     <td><a href="/Accounting/Invoice?MethodType=3&MawbId=@Model.Id&Hid=&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
-                                                    <td>@dto.InvoiceCompanyName</td>
-                                                    @{
+                                                      <td>@dto.InvoiceCompanyName</td>
+                                                 @{
                                                         double j = 0;
                                                     }
                                                     @foreach(var invBill in dto.InvoiceBillDtos){
@@ -258,7 +270,7 @@
                                                 <tr>
                                                     <td><a href="/Accounting/Invoice?MethodType=3&MawbId=@Model.Id&Hid=&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                     <td>@dto.InvoiceCompanyName</td>
-                                                    @{
+                                                     @{
                                                         double j = 0;
                                                     }
                                                     @foreach(var invBill in dto.InvoiceBillDtos){
@@ -277,7 +289,7 @@
                                                     <td></td>
                                                     <td>@dto.PostDate</td>
                                                     <td>@dto.InvoiceDate</td>
-                                                    <td></td>
+                                                    <td></td>   
                                                 </tr>
                                             }
 
@@ -295,13 +307,27 @@
                                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m1invoiceDtos.Count">@L["Menu:AccountingDC"]</td>
                                                     <td><a href="/Accounting/Invoice?MethodType=3&Mid=@Model.Id&Hid=&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                     <td>@dto.InvoiceCompanyName</td>
-                                                    <td>@dto.OutstandingAmount</td>
+                                                    @{
+                                                        double j = 0;
+                                                    }
+                                                    @foreach (var invBill in dto.InvoiceBillDtos)
+                                                    {
+                                                        j = j + @invBill.Quantity;
+                                                    }
+                                                    <td>@j</td>
                                                     <td>0.00</td>
-                                                    <td>@dto.OutstandingAmount</td>
+                                                    @{
+                                                        double r = 0;
+                                                    }
+                                                    @foreach (var invRate in dto.InvoiceBillDtos)
+                                                    {
+                                                        r += invRate.Quantity * invRate.Rate;
+                                                    }
+                                                    <td>@r.ToString("0.00")</td>
                                                     <td></td>
                                                     <td>@dto.PostDate</td>
                                                     <td>@dto.InvoiceDate</td>
-                                                    <td></td>
+                                                    <td></td> 
                                                 </tr>
                                             }
                                             else
@@ -309,13 +335,27 @@
                                                 <tr>
                                                     <td><a href="/Accounting/Invoice?MethodType=3&Mid=@Model.Id&Hid=&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                     <td>@dto.InvoiceCompanyName</td>
-                                                    <td>@dto.OutstandingAmount</td>
+                                                     @{
+                                                        double j = 0;
+                                                    }
+                                                    @foreach (var invBill in dto.InvoiceBillDtos)
+                                                    {
+                                                        j = j + @invBill.Quantity;
+                                                    }
+                                                    <td>@j</td>
                                                     <td>0.00</td>
-                                                    <td>@dto.OutstandingAmount</td>
+                                                    @{
+                                                        double r = 0;
+                                                    }
+                                                    @foreach (var invRate in dto.InvoiceBillDtos)
+                                                    {
+                                                        r += invRate.Quantity * invRate.Rate;
+                                                    }
+                                                    <td>@r.ToString("0.00")</td>
                                                     <td></td>
                                                     <td>@dto.PostDate</td>
                                                     <td>@dto.InvoiceDate</td>
-                                                    <td></td>
+                                                    <td></td>    
                                                 </tr>
                                             }
 
@@ -332,10 +372,24 @@
                                                 <tr>
                                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m2invoiceDtos.Count">@L["Menu:AccountingAP"]</td>
                                                     <td><a href="/Accounting/Invoice?MethodType=3&Mid=@Model.Id&Hid=&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
-                                                    <td>@dto.InvoiceCompanyName</td>
-                                                    <td>@dto.OutstandingAmount</td>
+                                                   @* <td>@dto.InvoiceCompanyName</td>*@
+                                                    <td>@dto.ShipTo</td>
+                                                    @{
+                                                        double j = 0;
+                                                    }
+                                                    @foreach(var invBill in dto.InvoiceBillDtos)
+                                                    {
+                                                        j = j + @invBill.Quantity;
+                                                    }
+                                                    <td>@j</td>
                                                     <td>0.00</td>
-                                                    <td>@dto.OutstandingAmount</td>
+                                                    @{
+                                                        double r = 0;
+                                                    }
+                                                    @foreach(var invRate in dto.InvoiceBillDtos){
+                                                        r += invRate.Quantity * invRate.Rate;
+                                                    }
+                                                    <td>@r.ToString("0.00")</td>
                                                     <td></td>
                                                     <td>@dto.PostDate</td>
                                                     <td>@dto.InvoiceDate</td>
@@ -346,10 +400,23 @@
                                             {
                                                 <tr>
                                                     <td><a href="/Accounting/Invoice?MethodType=3&Mid=@Model.Id&Hid=&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
-                                                    <td>@dto.InvoiceCompanyName</td>
-                                                    <td>@dto.OutstandingAmount</td>
+                                                   @* <td>@dto.InvoiceCompanyName</td>*@
+                                                     <td>@dto.ShipTo</td>
+                                                    @{
+                                                        double j = 0;
+                                                    }
+                                                    @foreach(var invBill in dto.InvoiceBillDtos){
+                                                        j = j + @invBill.Quantity;
+                                                    }
+                                                    <td>@j</td>
                                                     <td>0.00</td>
-                                                    <td>@dto.OutstandingAmount</td>
+                                                    @{
+                                                        double r = 0;
+                                                    }
+                                                    @foreach(var invRate in dto.InvoiceBillDtos){
+                                                        r += invRate.Quantity * invRate.Rate;
+                                                    }
+                                                    <td>@r.ToString("0.00")</td>
                                                     <td></td>
                                                     <td>@dto.PostDate</td>
                                                     <td>@dto.InvoiceDate</td>
@@ -460,9 +527,9 @@
 
                                 <abp-column size-md="_12">
                                     <div>
-                                        <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id','@Model.Hid',0)">@L["Btn:AddAR"]</abp-button>
-                                        <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id','@Model.Hid',1)">@L["Btn:AddDC"]</abp-button>
-                                        <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id','@Model.Hid',2)">@L["Btn:AddAP"]</abp-button>
+                                        <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoHawbInvoice('@Model.Hid',0)">@L["Btn:AddAR"]</abp-button>
+                                        <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoHawbInvoice('@Model.Hid',1)">@L["Btn:AddDC"]</abp-button>
+                                        <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoHawbInvoice('@Model.Hid',2)">@L["Btn:AddAP"]</abp-button>
                                     </div>
                                     <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:0.5em;">
                                         <tr border="1">
@@ -477,115 +544,196 @@
                                             <th width="10%">@L["Display:InvoiceDate"]</th>
                                             <th width="5%">@L["Display:Function"]</th>
                                         </tr>
-                                        @if (Model.m0invoiceDtos != null && Model.m0invoiceDtos.Count > 0)
+                                        @if (Model.h0invoiceDtos != null && Model.h0invoiceDtos.Count > 0)
                                         {
                                             var i = 0;
-                                            foreach (var dto in Model.m0invoiceDtos)
+                                            foreach (var dto in Model.h0invoiceDtos)
                                             {
                                                 if (i == 0)
                                                 {
                                                     i++;
                                                     <tr>
-                                                        <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m0invoiceDtos.Count">@L["Menu:AccountingAR"]</td>
-                                                        <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
-                                                        <td>@dto.InvoiceCompanyName</td>
-                                                        <td>@dto.OutstandingAmount</td>
-                                                        <td>0.00</td>
-                                                        <td>@dto.OutstandingAmount</td>
-                                                        <td></td>
-                                                        <td>@dto.PostDate</td>
-                                                        <td>@dto.InvoiceDate</td>
-                                                        <td></td>
+                                                        <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h0invoiceDtos.Count">@L["Menu:AccountingAR"]</td>
+                                                        <td><a href="/Accounting/Invoice?MethodType=3&HawbId=@Model.Hid&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                                         <td>@dto.InvoiceCompanyName</td>
+                                                          @{
+                                                        double j = 0;
+                                                    }
+                                                    @foreach(var invBill in dto.InvoiceBillDtos){
+                                                        j = j + @invBill.Quantity;
+                                                    }
+                                                    <td>@j</td>
+                                                    <td>0.00</td>
+                                                    @{
+                                                        double r = 0;
+                                                    }
+                                                    @foreach(var invRate in dto.InvoiceBillDtos)
+                                                    {
+                                                        r += @invRate.Quantity * @invRate.Rate;
+                                                    }
+                                                    <td>@r.ToString("0.00")</td>
+                                                    <td></td>
+                                                    <td>@dto.PostDate</td>
+                                                    <td>@dto.InvoiceDate</td>
+                                                    <td></td>
                                                     </tr>
                                                 }
                                                 else
                                                 {
                                                     <tr>
-                                                        <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                                        <td><a href="/Accounting/Invoice?MethodType=3&HawbId=@Model.Hid&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                         <td>@dto.InvoiceCompanyName</td>
-                                                        <td>@dto.OutstandingAmount</td>
-                                                        <td>0.00</td>
-                                                        <td>@dto.OutstandingAmount</td>
-                                                        <td></td>
-                                                        <td>@dto.PostDate</td>
-                                                        <td>@dto.InvoiceDate</td>
-                                                        <td></td>
+                                                          @{
+                                                        double j = 0;
+                                                    }
+                                                    @foreach(var invBill in dto.InvoiceBillDtos){
+                                                        j = j + @invBill.Quantity;
+                                                    }
+                                                    <td>@j</td>
+                                                    <td>0.00</td>
+                                                    @{
+                                                        double r = 0;
+                                                    }
+                                                    @foreach(var invRate in dto.InvoiceBillDtos)
+                                                    {
+                                                        r += @invRate.Quantity * @invRate.Rate;
+                                                    }
+                                                    <td>@r.ToString("0.00")</td>
+                                                    <td></td>
+                                                    <td>@dto.PostDate</td>
+                                                    <td>@dto.InvoiceDate</td>
+                                                    <td></td>
                                                     </tr>
                                                 }
 
                                             }
                                         }
-                                        @if (Model.m1invoiceDtos != null && Model.m1invoiceDtos.Count > 0)
+                                        @if (Model.h1invoiceDtos != null && Model.h1invoiceDtos.Count > 0)
                                         {
                                             var i = 0;
-                                            foreach (var dto in Model.m1invoiceDtos)
+                                            foreach (var dto in Model.h1invoiceDtos)
                                             {
                                                 if (i == 0)
                                                 {
                                                     i++;
                                                     <tr>
-                                                        <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m1invoiceDtos.Count">@L["Menu:AccountingDC"]</td>
-                                                        <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                                        <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h1invoiceDtos.Count">@L["Menu:AccountingDC"]</td>
+                                                        <td><a href="/Accounting/Invoice?MethodType=3&HawbId=@Model.Hid&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                         <td>@dto.InvoiceCompanyName</td>
-                                                        <td>@dto.OutstandingAmount</td>
-                                                        <td>0.00</td>
-                                                        <td>@dto.OutstandingAmount</td>
-                                                        <td></td>
-                                                        <td>@dto.PostDate</td>
-                                                        <td>@dto.InvoiceDate</td>
-                                                        <td></td>
+                                                        @{
+                                                        double j = 0;
+                                                    }
+                                                    @foreach (var invBill in dto.InvoiceBillDtos)
+                                                    {
+                                                        j = j + @invBill.Quantity;
+                                                    }
+                                                    <td>@j</td>
+                                                    <td>0.00</td>
+                                                    @{
+                                                        double r = 0;
+                                                    }
+                                                    @foreach (var invRate in dto.InvoiceBillDtos)
+                                                    {
+                                                        r += invRate.Quantity * invRate.Rate;
+                                                    }
+                                                    <td>@r.ToString("0.00")</td>
+                                                    <td></td>
+                                                    <td>@dto.PostDate</td>
+                                                    <td>@dto.InvoiceDate</td>
+                                                    <td></td> 
                                                     </tr>
                                                 }
                                                 else
                                                 {
                                                     <tr>
-                                                        <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                                        <td><a href="/Accounting/Invoice?MethodType=3&HawbId=@Model.Hid&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                         <td>@dto.InvoiceCompanyName</td>
-                                                        <td>@dto.OutstandingAmount</td>
-                                                        <td>0.00</td>
-                                                        <td>@dto.OutstandingAmount</td>
-                                                        <td></td>
-                                                        <td>@dto.PostDate</td>
-                                                        <td>@dto.InvoiceDate</td>
-                                                        <td></td>
+ @{
+                                                        double j = 0;
+                                                    }
+                                                    @foreach (var invBill in dto.InvoiceBillDtos)
+                                                    {
+                                                        j = j + @invBill.Quantity;
+                                                    }
+                                                    <td>@j</td>
+                                                    <td>0.00</td>
+                                                    @{
+                                                        double r = 0;
+                                                    }
+                                                    @foreach (var invRate in dto.InvoiceBillDtos)
+                                                    {
+                                                        r += invRate.Quantity * invRate.Rate;
+                                                    }
+                                                    <td>@r.ToString("0.00")</td>
+                                                    <td></td>
+                                                    <td>@dto.PostDate</td>
+                                                    <td>@dto.InvoiceDate</td>
+                                                    <td></td>         
                                                     </tr>
                                                 }
 
                                             }
                                         }
-                                        @if (Model.m2invoiceDtos != null && Model.m2invoiceDtos.Count > 0)
+                                        @if (Model.h2invoiceDtos != null && Model.h2invoiceDtos.Count > 0)
                                         {
                                             var i = 0;
-                                            foreach (var dto in Model.m2invoiceDtos)
+                                            foreach (var dto in Model.h2invoiceDtos)
                                             {
                                                 if (i == 0)
                                                 {
                                                     i++;
                                                     <tr>
-                                                        <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m2invoiceDtos.Count">@L["Menu:AccountingAP"]</td>
-                                                        <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
-                                                        <td>@dto.InvoiceCompanyName</td>
-                                                        <td>@dto.OutstandingAmount</td>
-                                                        <td>0.00</td>
-                                                        <td>@dto.OutstandingAmount</td>
-                                                        <td></td>
-                                                        <td>@dto.PostDate</td>
-                                                        <td>@dto.InvoiceDate</td>
-                                                        <td></td>
+                                                        <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h2invoiceDtos.Count">@L["Menu:AccountingAP"]</td>
+                                                        <td><a href="/Accounting/Invoice?MethodType=3&HawbId=@Model.Hid&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                                      @*  <td>@dto.InvoiceCompanyName</td>*@
+                                                        <td>@dto.ShipTo</td>
+                                                    @{
+                                                        double j = 0;
+                                                    }
+                                                    @foreach(var invBill in dto.InvoiceBillDtos)
+                                                    {
+                                                        j = j + @invBill.Quantity;
+                                                    }
+                                                    <td>@j</td>
+                                                    <td>0.00</td>
+                                                    @{
+                                                        double r = 0;
+                                                    }
+                                                    @foreach(var invRate in dto.InvoiceBillDtos){
+                                                        r += invRate.Quantity * invRate.Rate;
+                                                    }
+                                                    <td>@r.ToString("0.00")</td>
+                                                    <td></td>
+                                                    <td>@dto.PostDate</td>
+                                                    <td>@dto.InvoiceDate</td>
+                                                    <td></td>
                                                     </tr>
                                                 }
                                                 else
                                                 {
                                                     <tr>
-                                                        <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
-                                                        <td>@dto.InvoiceCompanyName</td>
-                                                        <td>@dto.OutstandingAmount</td>
-                                                        <td>0.00</td>
-                                                        <td>@dto.OutstandingAmount</td>
-                                                        <td></td>
-                                                        <td>@dto.PostDate</td>
-                                                        <td>@dto.InvoiceDate</td>
-                                                        <td></td>
+                                                        <td><a href="/Accounting/Invoice?MethodType=3&HawbId=@Model.Hid&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                                       @* <td>@dto.InvoiceCompanyName</td>*@
+                                                        <td>@dto.ShipTo</td>
+                                                    @{
+                                                        double j = 0;
+                                                    }
+                                                    @foreach(var invBill in dto.InvoiceBillDtos){
+                                                        j = j + @invBill.Quantity;
+                                                    }
+                                                    <td>@j</td>
+                                                    <td>0.00</td>
+                                                    @{
+                                                        double r = 0;
+                                                    }
+                                                    @foreach(var invRate in dto.InvoiceBillDtos){
+                                                        r += invRate.Quantity * invRate.Rate;
+                                                    }
+                                                    <td>@r.ToString("0.00")</td>
+                                                    <td></td>
+                                                    <td>@dto.PostDate</td>
+                                                    <td>@dto.InvoiceDate</td>
+                                                    <td></td>
                                                     </tr>
                                                 }
 

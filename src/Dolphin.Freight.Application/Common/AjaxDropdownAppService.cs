@@ -37,9 +37,20 @@ namespace Dolphin.Freight.Common
         public async Task<List<SysCodeDto>> GetSysCodeDtosByTypeAsync(QueryDto query) 
         {
             var sysCodes = await _sysCideRepository.GetListAsync();
-            var rs = sysCodes.Where(x => x.CodeType.Contains(query.QueryType)).ToList();
-            var list = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(rs);
-            return list;
+            if (query?.QueryType == "GlGroupId" && query?.ParentId!=null)
+            {
+                var rs = sysCodes.Where(x => x.CodeType==query.QueryType && x.ParentId==query.ParentId).ToList();
+               
+                var list = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(rs);
+                return list;
+            }
+            else
+            {
+                var rs = sysCodes.Where(x => x.CodeType.Contains(query.QueryType)).ToList();
+                var list = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(rs);
+                return list;
+            }
+           
         }
         public async Task<List<SysCodeDto>> GetSysCodeByTypeAsync()
         {

@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Dolphin.Freight.ImportExport.Containers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 using Volo.Abp.Users;
 
 namespace Dolphin.Freight.ImportExport.OceanImports
@@ -385,6 +387,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 國內行程 / 出口指示
         /// </summary>
         public string DomesticInstructions { get; set; }
+        public string DomesticInstructionsDelOrder { get; set; }
         /// <summary>
         /// S/O備註
         /// </summary>
@@ -399,5 +402,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        
+        public CreateUpdateContainerDto CreateUpdateHBLContainerDto { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

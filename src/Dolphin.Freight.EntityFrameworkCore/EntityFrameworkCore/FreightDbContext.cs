@@ -270,7 +270,7 @@ public class FreightDbContext :
             b.ToTable(FreightConsts.DbTablePrefix + "TradePartnerMemo", FreightConsts.DbSchema);
             b.ConfigureByConvention();
             b.Property(b => b.Title).IsRequired().HasMaxLength(100);
-            b.Property(b => b.Memo).IsRequired().HasMaxLength(2048);
+            b.Property(b => b.Memo).HasMaxLength(2048);
         }); 
         builder.Entity<DefaultFreightAP>(b =>
         {
@@ -435,6 +435,7 @@ public class FreightDbContext :
             b.Property(x => x.CodeValue).IsRequired().HasMaxLength(50);
             b.Property(x => x.CodeType).IsRequired().HasMaxLength(50);
             b.Property(x => x.ShowName).IsRequired().HasMaxLength(50);
+            b.Property(x => x.ParentId).HasColumnName(nameof(SysCode.ParentId));
 
         });
         builder.Entity<Office>(b =>
@@ -598,6 +599,7 @@ public class FreightDbContext :
                 FreightConsts.DbSchema);
             b.ConfigureByConvention();
             b.Property(x => x.Code).IsRequired().HasMaxLength(16);
+            b.Property(x=>x.IsPayroll).HasDefaultValue(false);
         });
         builder.Entity<CurrencyTable>(b =>
         {

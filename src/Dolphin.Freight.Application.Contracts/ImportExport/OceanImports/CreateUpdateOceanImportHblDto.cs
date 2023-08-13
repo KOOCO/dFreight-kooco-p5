@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 using Volo.Abp.Users;
 
 namespace Dolphin.Freight.ImportExport.OceanImports
@@ -15,6 +16,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
 
         public Guid? MblId { get; set; }
+        public Guid? ContainerId { get; set; }
         /// <summary>
         /// HB/L號碼
         /// </summary>
@@ -209,6 +211,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 信用狀編號
         /// </summary>
         public string LcNo { get; set; }
+        public int PackageNo { get; set; }
+        public double? PackageWeight { get; set; }
+        public double? PackageMeasurement { get; set; }
         /// <summary>
         /// 信用狀開立銀行
         /// </summary>
@@ -346,6 +351,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 國內行程 / 出口指示
         /// </summary>
         public string DomesticInstructions { get; set; }
+        public string DomesticInstructionsDelOrder { get; set; }
         /// <summary>
         /// S/O備註
         /// </summary>
@@ -376,5 +382,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

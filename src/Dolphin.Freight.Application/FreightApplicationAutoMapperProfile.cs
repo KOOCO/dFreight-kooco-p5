@@ -147,9 +147,13 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<OceanExportHbl, OceanExportHblDto>();
         CreateMap<OceanExportHbl, CreateUpdateOceanExportHblDto>();
         CreateMap<CreateUpdateOceanExportHblDto, OceanExportHbl>();
+        CreateMap<OceanExportHblDto, CreateUpdateOceanExportHblDto> ();
         CreateMap<SysCode, SysCodeDto>();
         CreateMap<PackageUnit, PackageUnitDto>();
         CreateMap<CreateUpdatePackageUnitDto, PackageUnit>();
+        CreateMap<OceanExportMbl, OceanExportDetails>();
+        CreateMap<OceanExportHbl, OceanExportDetails>();
+        CreateMap<Container, CreateUpdateContainerDto>();
 
         // ContactPerson
         CreateMap<ContactPerson, ContactPersonDto>();
@@ -166,6 +170,8 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<OceanImportHbl, OceanImportHblDto>();
         CreateMap<OceanImportHbl, CreateUpdateOceanImportHblDto>();
         CreateMap<CreateUpdateOceanImportHblDto, OceanImportHbl>();
+        CreateMap<OceanImportMbl, OceanImportDetails>();
+        CreateMap<OceanImportHbl, OceanImportDetails>();
 
         // Substation
         CreateMap<Substation, SubstationLookupDto>();
@@ -191,6 +197,8 @@ public class FreightApplicationAutoMapperProfile : Profile
         // AirImportMawb
         CreateMap<AirImportMawb, AirImportMawbDto>();
         CreateMap<CreateUpdateAirImportMawbDto, AirImportMawb>();
+        CreateMap<AirImportMawb, AirImportDetails>();
+        CreateMap<AirImportHawb, AirImportDetails>();
 
         // AirExportHawb
         CreateMap<AirImportHawb, AirImportHawbDto>();

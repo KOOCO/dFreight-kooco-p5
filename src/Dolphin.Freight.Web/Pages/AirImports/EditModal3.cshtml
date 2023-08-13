@@ -11,29 +11,32 @@
     <abp-script src="/Pages/AirImports/EditMawb.js" />
     <script type="text/javascript">
         var cardIndex = 0;
+          $("#addHBtn").click(function () {
+                var url = "/AirImports/EditMawb?Id=@Model.Id&from=NewHawb";
+                location.href = url;
+            })
+        //$('#addHBtn').on('click', function () {
+        //    if ($('#mawbDiv')[0].classList.contains('show')) {
+        //        $('#btnMawbCollapse').click();
+        //    }
 
-        $('#addHBtn').on('click', function () {
-            if ($('#mawbDiv')[0].classList.contains('show')) {
-                $('#btnMawbCollapse').click();
-            }
+        //    if ($('#btnHawbCardCollapse_0').length) {
+        //        showAlert(alertConfirmation2, 'Store');
+        //    }
+        //    else {
 
-            if ($('#btnHawbCardCollapse_0').length) {
-                showAlert(alertConfirmation2, 'Store');
-            }
-            else {
+        //        let hawbcard = createHawbCard();
 
-                let hawbcard = createHawbCard();
+        //        let index = $('.hbl_sm_area').find('.card').length;
+        //        hawbcard = setHawbCardValues(hawbcard, '00000000-0000-0000-0000-000000000000', '0', index);
 
-                let index = $('.hbl_sm_area').find('.card').length;
-                hawbcard = setHawbCardValues(hawbcard, '00000000-0000-0000-0000-000000000000', '0', index);
+        //        $('#hblCards').append(hawbcard);
 
-                $('#hblCards').append(hawbcard);
-
-                setTimeout(() => {
-                    $('.hblCardTitle')[index].click();
-                }, 500);
-            }
-        })
+        //        setTimeout(() => {
+        //            $('.hblCardTitle')[index].click();
+        //        }, 500);
+        //    }
+        //})
 
         $('#editForm').on('abp-ajax-success', function (result, rs) {
             console.log("enter here");
@@ -160,7 +163,7 @@
         function gotoInvoice(MawbId, HawbId, InvoiceType) {
             var url = new URL(window.location.href);
             MawbId = url.searchParams.get('Id');
-            location.href = '/Accounting/Invoice?MethodType=2&Mid=' + MawbId + '&Hid=' + HawbId + "&InvoiceType=" + InvoiceType;
+            location.href = '/Accounting/Invoice?MethodType=2&MawbId=' + MawbId + '&HawbId=' + HawbId + "&InvoiceType=" + InvoiceType;
         }
 
         function OpenInTrackTrace() {
@@ -171,6 +174,124 @@
                 myWindow.focus();
             });
         }
+
+        function getConsolidatedArrivalNotice() {
+            debugger;
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+
+            if (mawbId == null) {
+                var url = window.location.href;
+                var mawbId = url.split('/')[url.split('/').length - 1];
+            }
+
+            dolphin.freight.importExport.airImports.airImportHawb.getHawbCardsByMawbId(mawbId)
+                .done(function (res) {
+                    var consignee = [];
+                    var duplicates = new Set();
+                    var seen = new Set();
+                    for (let i = 0; i < res.length; i++) {
+                        let id = res[i].consigneeId;
+                        consignee.push(id);
+                        if (seen.has(id)) {
+                            duplicates.add(id);
+                        }
+                        seen.add(id);
+                    }
+                    var duplicateArray = Array.from(duplicates);
+                    var duplicateString = duplicateArray.join(', ');
+
+                    $.ajax({
+                        url: abp.appPath + 'Docs/ConsolidatedArrivalNoticePartialView?mawbId=' + '@Model.AirImportMawbDto.Id' + '&conId=' + duplicateString,
+                        type: 'GET',
+                        dataType: "html",
+                        success: function (res) {
+                            $('.modal-content').html(res);
+                            $('.modal').modal('show');
+                        }
+                    });
+
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+
+            if (mawbId == null) {
+                var url = window.location.href;
+                var mawbId = url.split('/')[url.split('/').length - 1];
+            }
+
+            dolphin.freight.importExport.airImports.airImportHawb.getHawbCardsByMawbId(mawbId)
+                .done(function (res) {
+                    var consignee = [];
+                    for (let i = 0; i < res.length; i++) {
+                        consignee.push(res[i].consigneeId);
+                    }
+                    checkForDuplicates(consignee);
+                });
+        });
+
+        function checkForDuplicates(array) {
+            let counts = {};
+
+            for (let i = 0; i < array.length; i++) {
+                if (counts[array[i]]) {
+                    counts[array[i]] += 1;
+                } else {
+                    counts[array[i]] = 1;
+                }
+            }
+
+            for (let prop in counts) {
+                if (counts[prop] > 1) {
+                    $(".dropdown-item").removeClass("disabled");
+                }
+            }
+        }
+
+        function getBatchPrintingPopup() {
+            debugger;
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+
+            if (mawbId == null) {
+                var url = window.location.href;
+                var mawbId = url.split('/')[url.split('/').length - 1];
+            }
+
+            dolphin.freight.importExport.airImports.airImportHawb.getHawbCardById($('#AirImportHawbDto_Id').val())
+                .then(function (res) {
+                    var hawbId = res.id;
+
+                    $.ajax({
+                        url: abp.appPath + 'Docs/BatchPrintingPartialView?hawbId=' + hawbId + '&mawbId=' + mawbId,
+                        type: 'GET',
+                        dataType: "html",
+                        success: function (res) {
+                            $('.modal-content').html(res);
+                            $('.modal').modal('show');
+                            $(document).on('show.bs.modal', '#batchPrintingModel', function () {
+                                $('.modal-dialog').addClass('modal-lg');
+
+                                $('#checkAll').on('click', function () {
+                                    $('.childCheckbox').prop('checked', $(this).prop('checked'));
+                                });
+
+                                $('.childCheckbox').on('click', function () {
+                                    if ($('.childCheckbox:not(:checked)').length === 0) {
+                                        $('#checkAll').prop('checked', true);
+                                    } else {
+                                        $('#checkAll').prop('checked', false);
+                                    }
+                                });
+                            })
+                        }
+                    });
+                });
+        }
+
     </script>
 }
 <div class="page-header">
@@ -207,6 +328,13 @@
                                 <span id="title0">@Model.AirImportMawbDto.MawbNo </span>
                             </abp-card-title>
 
+                            <div id="myModal" class="modal" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="btn-group dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
                                     @L["Display:Function"]
@@ -215,18 +343,21 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-lock"></i> @L["Btn:Lock"]
                                     </a>
-                                    <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getBatchPrintingPopup()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Batch Printing"]
                                     </a>
                                     <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ManifestAirImport", "Docs", new { id = Model.AirImportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIMBL })')">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
+                                    </a>
+                                    <a class='dropdown-item disabled' href='javascript:void(0)' onclick="if(!$(this).hasClass('disabled')) { getConsolidatedArrivalNotice() }" title="This function is only available when two or more hawb have same consignee">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Arrival Notice"]
+                                    </a>
+                                    <p class="dropdown-divider"></p>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AirImportProfitReport", "Docs", new { id = Model.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIMBL, reportType = "Summary" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AirImportProfitReport", "Docs", new { id = Model.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIMBL, reportType = "Detailed" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                                     </a>
                                     <p class="dropdown-divider"></p>

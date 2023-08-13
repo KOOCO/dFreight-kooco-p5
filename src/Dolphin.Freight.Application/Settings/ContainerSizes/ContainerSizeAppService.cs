@@ -48,16 +48,23 @@ namespace Dolphin.Freight.Settings.ContainerSizes
                     dictionary.Add(syscode.Id, syscode.ShowName);
                 }
             }
-            var ContainerSizes = await _repository.GetListAsync();
+            //var ContainerSizes = await _repository.GetListAsync();
+            var ContainerSizes = await _repository.GetQueryableAsync();
             List<ContainerSize> rs;
             List<ContainerSizeDto> list = new List<ContainerSizeDto>();
+
+            ContainerSizes = ContainerSizes.WhereIf(query.Active != null, x => x.IsUseed == query.Active)
+                                           .WhereIf(!string.IsNullOrWhiteSpace(query.Filter), x => x.SizeDescription.ToLower()
+                                           .Contains(query.Filter.ToLower()) || x.ContainerCode.Contains(query.Filter.ToLower()));
+
+
             if (query != null && query.QueryKey != null)
             {
                 rs = ContainerSizes.Where(x => x.SizeDescription.Contains(query.QueryKey) || x.ContainerCode.Contains(query.QueryKey) || x.ContainerGroup.CodeValue.Contains(query.QueryKey)).ToList();
             }
             else
             {
-                rs = ContainerSizes;
+                rs = ContainerSizes.ToList();
             }
             if (rs != null && rs.Count > 0)
             {

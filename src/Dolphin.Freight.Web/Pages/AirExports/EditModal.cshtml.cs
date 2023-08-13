@@ -24,6 +24,7 @@ using System.Security.Cryptography.Xml;
 using Dolphin.Freight.Settings.Countries;
 using Volo.Abp.Uow;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace Dolphin.Freight.Web.Pages.AirExports
 {
@@ -37,6 +38,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         private readonly IAirExportMawbAppService _airExportMawbAppService;
         private readonly IAirExportHawbAppService _airExportHawbAppService;
         private readonly ICountryDisplayNameAppService _countryDisplayNameAppService;
+        private readonly ICountryAppService _countryAppService;
 
         public EditModalModel(ITradePartnerAppService tradePartnerAppService,
             ISubstationAppService substationAppService,
@@ -44,7 +46,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             IPackageUnitAppService packageUnitAppService,
             IAirExportMawbAppService airExportMawbAppService,
             IAirExportHawbAppService airExportHawbAppService,
-            ICountryDisplayNameAppService countryDisplayNameAppService
+            ICountryDisplayNameAppService countryDisplayNameAppService,
+            ICountryAppService countryAppService
             )
         {
             Logger = NullLogger<CreateMawbModel>.Instance;
@@ -55,11 +58,18 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             _airExportMawbAppService = airExportMawbAppService;
             _airExportHawbAppService = airExportHawbAppService;
             _countryDisplayNameAppService = countryDisplayNameAppService;
+            _countryAppService = countryAppService;
         }
 
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
+        [BindProperty]
+        public List<MoreInformation> MoreInformations { get; set; }
+        [BindProperty]
+        public MoreInformation MoreInformationPrepaid { get; set; }
+        [BindProperty]
+        public MoreInformation MoreInformationCollect { get; set; }
 
         private static readonly Object lockObject = new object();
         public async Task OnGetAsync(Guid Id)
@@ -67,6 +77,17 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             AirExportMawbDto = await _airExportMawbAppService.GetAsync(Id);
             AirExportHawbDto = new AirExportHawbDto();
             /*AirExportHawbDto = await _airExportHawbAppService.GetHblCardsById(Id);*/
+            //if (AirExportMawbDto.ExtraProperties != null)
+            //{
+                
+
+            //     var extraproperty=AirExportMawbDto.ExtraProperties;
+
+            //    var json = AirExportMawbDto.ExtraProperties.Where(x => x.Key == "MoreInformation").Select(x => x.Value).ToList();
+
+            //    MoreInformations = JsonConvert.DeserializeObject<List<MoreInformation>>(json.ToString());
+
+            //}
 
             await FillTradePartnerAsync();
             await FillSubstationAsync();
@@ -79,7 +100,19 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public IActionResult OnPostAsync()
         {
             var updateItem = ObjectMapper.Map<AirExportMawbDto, CreateUpdateAirExportMawbDto>(AirExportMawbDto);
+            if (updateItem.ExtraProperties == null)
+            {
+                updateItem.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+            }
+            if (MoreInformationPrepaid != null || MoreInformationCollect!=null)
+            {
+                MoreInformations.Add(MoreInformationPrepaid);
+                MoreInformations.Add(MoreInformationCollect);
+                
+                updateItem.ExtraProperties.Remove("MoreInformation");
+                updateItem.ExtraProperties.Add("MoreInformation",MoreInformations);
 
+            }
             _airExportMawbAppService.UpdateAsync(AirExportMawbDto.Id, updateItem).Wait();
 
             if (AirExportHawbDto is not null)
@@ -97,6 +130,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                     updateHawb.ExtraProperties.Remove("Commodites");
                     updateHawb.ExtraProperties.Add("Commodities", AirExportHawbDto.Commodities);
                 }
+                
 
                 if (AirExportHawbDto.OtherCharges != null)
                 {
@@ -165,9 +199,9 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         #region FillAirportAsync()
         private async Task FillAirportAsync()
         {
-            var airportLookup = await _airportAppService.GetAirportLookupAsync();
+            var airportLookup = await _countryAppService.GetCountryLookupAsync();
             AirportLookupList = airportLookup.Items
-                                                .Select(x => new SelectListItem(x.AirportIataCode + " " + x.AirportName, x.Id.ToString(), false))
+                                                .Select(x => new SelectListItem(x.Code + " " + x.CountryName, x.Id.ToString(), false))
                                                 .ToList();
         }
         #endregion

@@ -166,7 +166,8 @@
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
-                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
+                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white');
+                        setFilteredDropdown();
                         Swal.clickCancel();
                     })
 
@@ -195,6 +196,7 @@
         }
 
         function createHawbCard() {
+            debugger
             let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
                 ' onclick="onHawbCardClick(event,{{hblCardId}})">{{hblNo}}</h5>' +
                 ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
@@ -273,13 +275,100 @@
                     }
                 })
         }
-
+          function getOrderDelivery() {
+            var idNo = $('#OceanImportMbl_Id').val();
+            myWindow = window.open("@Url.Action("DeliveryOrderOceanImportMawb", "Docs")" + "?id=" + idNo, 'DeliveryOrderOceanImportMawb', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow.focus()
+        }
         function OpenInTrackTrace() {
             var MblNo = $('#OceanImportMbl_MblNo').val();
             myWindow = window.open('https://www.track-trace.com/bol#' + MblNo, '_blank', 'width=1200,height=1000');
             myWindow.focus();
         }
+         function getPreliminaryClaim() {
+            var idNo = $('#OceanImportHBL').val();
+            myWindow = window.open("@Url.Action("PreliminaryClaimOceanImport", "Docs")" + "?id=" + idNo+"&pageType=2", 'PreliminaryClaimOceanExport', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow.focus()
+        }
 
+        function ConslidateByConsignee() {
+
+            var url = new URL(window.location.href);
+            var mblId = url.searchParams.get('Id');
+
+            if (mblId == null) {
+                var url = window.location.href;
+                var mblId = url.split('/')[url.split('/').length - 1];
+            }
+            
+            dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(mblId).done(function (res) 
+            {
+                var consignee = [];
+                var duplicates = new Set();
+                var seen = new Set();
+                res.forEach(item => {
+                    if (item.hblConsigneeId !== null && seen.has(item.hblConsigneeId)) {
+                        duplicates.add(item.hblConsigneeId);
+                    }
+                    seen.add(item.hblConsigneeId);
+                });
+
+                var duplicateArray = Array.from(duplicates).join();
+
+                $.ajax({
+                    url: abp.appPath + 'Docs/ConsolidatedByConsignee?mblId=' + mblId + '&conId=' + duplicateArray,
+                    type: 'GET',
+                    dataType: "html",
+                    success: function (res) {
+                        $('#consolidatedModal').html(res);
+                        $('.modal.mymodal').modal('show');
+                        $('#frmConsolidateArrival').find('.modal.fade').removeClass('modal fade');
+                    }
+                });
+
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+
+            if (mawbId == null) {
+                var url = window.location.href;
+                var mawbId = url.split('/')[url.split('/').length - 1];
+            }
+
+            dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(mawbId).done(function (res)
+            {
+                var consignee = [];
+                for (let i = 0; i < res.length; i++) {
+                    if (res[i].hblConsigneeId != null){
+                        consignee.push(res[i].hblConsigneeId);
+                    }
+                }
+                checkForDuplicates(consignee);
+            });
+        });
+
+        function checkForDuplicates(array) {
+            let counts = {};
+
+            for (let i = 0; i < array.length; i++) {
+                if (counts[array[i]]) {
+                    counts[array[i]] += 1;
+                } else {
+                    counts[array[i]] = 1;
+                }
+            }
+
+            for (let prop in counts) {
+                if (counts[prop] > 1) {
+                    $(".consolidateConsignee").removeClass("disabled");
+                }
+            }
+        }
     </script>
 }
 <div class="page-header">
@@ -364,18 +453,22 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Batch Printing"]
                                     </a>
+                                     
                                     <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ManifestOceanImportMBL", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL })')">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
+                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getOrderDelivery()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
+                                    </a>
+                                    <a class='dropdown-item consolidateConsignee disabled' href='javascript:void(0)' onclick="if(!$(this).hasClass('disabled')) { ConslidateByConsignee() }" title="This function is only available when two or more hbl have same consignee">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Arrival Notice"]
                                     </a>
                                      <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
+                            <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanImportProfitReportDetailOrSummry", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL, reportType = "Summary" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanImportProfitReportDetailOrSummry", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL, reportType = "Detail" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                                     </a>
                                     <li class="dropdown-divider"></li>
@@ -434,29 +527,29 @@
                                     <abp-input asp-for="OceanImportMbl.PostDate" type="text" abp-data-datepicker="false" readonly="true" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblOverseaAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblOverseaAgentId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblOverseaAgentContent) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblOverseaAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblOverseaAgentId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblOverseaAgentId) })
                                     <input type="hidden" name="OceanImportMbl.MblOverseaAgentId" id="mMblOverseaAgentId" value="@Model.OceanImportMbl.MblOverseaAgentId" />
                                     <input type="hidden" name="OceanImportMbl.MblOverseaAgentContent" id="mMblOverseaAgentContent" value="@Model.OceanImportMbl.MblOverseaAgentContent" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblCarrierId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblCarrierId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblCarrierContent) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblCarrierId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblCarrierId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblCarrierId) })
                                     <input type="hidden" name="OceanImportMbl.MblCarrierId" id="mMblCarrierId" value="@Model.OceanImportMbl.MblCarrierId" />
                                     <input type="hidden" name="OceanImportMbl.MblCarrierContent" id="mMblCarrierContent" value="@Model.OceanImportMbl.MblCarrierContent" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.BlAcctCarrierId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "BlAcctCarrierId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.BlAcctCarrierContent) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.BlAcctCarrierId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "BlAcctCarrierId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.BlAcctCarrierId) })
                                     <input type="hidden" name="OceanImportMbl.BlAcctCarrierId" id="mBlAcctCarrierId" value="@Model.OceanImportMbl.BlAcctCarrierId" />
                                     <input type="hidden" name="OceanImportMbl.BlAcctCarrierContent" id="mBlAcctCarrierContent" value="@Model.OceanImportMbl.BlAcctCarrierContent" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.ForwardingAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "ForwardingAgentId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.ForwardingAgentContent) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.ForwardingAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "ForwardingAgentId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.ForwardingAgentId) })
                                     <input type="hidden" name="OceanImportMbl.ForwardingAgentId" id="mForwardingAgentId" value="@Model.OceanImportMbl.ForwardingAgentId" />
                                     <input type="hidden" name="OceanImportMbl.ForwardingAgentContent" id="mForwardingAgentContent" value="@Model.OceanImportMbl.ForwardingAgentContent" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.CoLoaderId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "CoLoaderId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.CoLoaderContent) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.CoLoaderId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "CoLoaderId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.CoLoaderId) })
                                     <input type="hidden" name="OceanImportMbl.CoLoaderId" id="mCoLoaderId" value="@Model.OceanImportMbl.CoLoaderId" />
                                     <input type="hidden" name="OceanImportMbl.CoLoaderContent" id="mCoLoaderContent" value="@Model.OceanImportMbl.CoLoaderContent" />
                                 </abp-column>
@@ -696,6 +789,9 @@
                 </div>
             </abp-column>
         </abp-row>
+
+        <div class="modal mymodal" id="consolidatedModal" tabindex="-1" role="dialog">
+        </div>
 
         <input type="hidden" name="Id" id="Id" value="@Model.Id" />
         <input type="hidden" name="Hid" id="Hid" value="@Model.OceanImportHbl.Id" />

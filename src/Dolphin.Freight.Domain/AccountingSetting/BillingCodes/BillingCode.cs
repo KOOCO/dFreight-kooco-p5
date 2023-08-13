@@ -129,5 +129,6 @@ namespace Dolphin.Freight.AccountingSettings.BillingCodes
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public bool IsPayroll { get; set; }
     }
 }

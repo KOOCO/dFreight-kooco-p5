@@ -16,7 +16,7 @@
 </label>
 }
 
-<div class="d-flex mb-5 dropdown form-control form-control-fix">
+<div class="d-flex dropdown form-control form-control-fix">
     
 <select name="@Model.Name" id="@Model.Id" class="filteredDropdown form-select form-control cursor-pointer" @Model.Disabled @(Model.IsRequired? "required": "")>
     <option></option>
@@ -35,7 +35,7 @@
 
 @if (Model.SelectType == 1)
 {
-    <button title="" class="btn btn-info " style="color:#ffffff; " type="button" id="btn_@Model.GetFiledContentName().Replace(" ", string.Empty)" data-busy-text="Processing..." data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top" data-bs-content="@Model.GetShowFiledContent()" data-bs-original-title="@L["Title:ReportFormTitle"]" onclick="editTitle('@Model.GetFiledContentName().Replace(" ", string.Empty)','@Model.GetShowFiledContent()')" disabled>
+    <button title="" class="btn btn-info btn-sm-custom " style="color:#ffffff; " type="button" id="btn_@Model.GetFiledContentName().Replace(" ", string.Empty)" data-busy-text="Processing..." data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top" data-bs-content="@Model.GetShowFiledContent()" data-bs-original-title="@L["Title:ReportFormTitle"]" onclick="editTitle('@Model.GetFiledContentName().Replace(" ", string.Empty)','@Model.GetShowFiledContent()')" disabled>
         <i class="fas fa-edit"></i>
     </button>
     <div class="modal" tabindex="-1" id="modal_@Model.GetFiledContentName().Replace(" ", string.Empty)">

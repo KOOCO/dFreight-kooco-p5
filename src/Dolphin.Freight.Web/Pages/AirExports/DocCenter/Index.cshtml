@@ -47,29 +47,32 @@
 
         var cardIndex = 0;
 
-        $('#addHBtn').on('click', function () {
-            debugger;
-            if ($('#mawbDiv')[0].classList.contains('show')) {
-                $('#btnMawbCollapse').click();
-            }
+        //$('#addHBtn').on('click', function () {
+        //    debugger;
+        //    if ($('#mawbDiv')[0].classList.contains('show')) {
+        //        $('#btnMawbCollapse').click();
+        //    }
 
-            if ($('#btnHawbCardCollapse_0').length) {
-                showAlert(alertConfirmation2, 'Store');
-            }
-            else {
+        //    if ($('#btnHawbCardCollapse_0').length) {
+        //        showAlert(alertConfirmation2, 'Store');
+        //    }
+        //    else {
 
-                let hawbcard = createHawbCard();
+        //        let hawbcard = createHawbCard();
 
-                let index = $('.hbl_sm_area').find('.card').length;
-                hawbcard = setHawbCardValues(hawbcard, '00000000-0000-0000-0000-000000000000', '0', index);
+        //        let index = $('.hbl_sm_area').find('.card').length;
+        //        hawbcard = setHawbCardValues(hawbcard, '00000000-0000-0000-0000-000000000000', '0', index);
 
-                $('#hblCards').append(hawbcard);
+        //        $('#hblCards').append(hawbcard);
 
-                setTimeout(() => {
-                    $('.hblCardTitle')[index].click();
-                }, 500);
-            }
-        })
+        //        setTimeout(() => {
+        //            $('.hblCardTitle')[index].click();
+        //        }, 500);
+        //    }
+        //})
+           function onAddHawbClick() {
+            location.href = "/AirExports/EditModal?Id=@Model.Id&from=accounting";
+        }
 
         $('#editForm').on('abp-ajax-success', function (result, rs) {
             console.log("enter here");
@@ -215,6 +218,17 @@
                 }
             });
         }
+        function getConsolidatedManifestByAgentAirExportMawb() {
+            $.ajax({
+                url: abp.appPath + 'Docs/ConsolidatedManifestByAgentAirExportMawbPartial?mawbId=' + '@Model.AirExportMawbDto.Id',
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('.modal-content').html(res);
+                    $('.modal').modal('show');
+                }
+            });
+        }
     </script>
 }
 <div class="page-header">
@@ -274,7 +288,7 @@
                         <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PrintMawb", "Docs", new { id = Model.AirExportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEMBL })')">
                             <i class="fa fa-file-text-o"></i> @L["Btn:Print MAWB"]
                         </a>
-                        <a class='dropdown-item' href='#'>
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="getConsolidatedManifestByAgentAirExportMawb()">
                             <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Manifest"]
                         </a>
                         <a class='dropdown-item' href="javascript:void(0)" onclick="getManifestByAgentAirExportMawb()">
@@ -376,7 +390,7 @@
 <abp-column size-md="_3">
     <div class="card-wrap">
 
-        <button class="btn btn-block btn-add" type="button" id="addHBtn">
+        <button class="btn btn-block btn-add" type="button" onclick="onAddHawbClick()" id="addHBtn">
             <i class="fa-solid fa-plus"></i>Add HAWB
         </button>
 

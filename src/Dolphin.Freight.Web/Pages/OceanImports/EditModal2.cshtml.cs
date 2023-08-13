@@ -9,6 +9,10 @@ using System.Collections.Generic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Settinngs.SysCodes;
+using Dolphin.Freight.ImportExport.OceanExports;
+using QueryHblDto = Dolphin.Freight.ImportExport.OceanImports.QueryHblDto;
+using static Dolphin.Freight.Permissions.OceanExportPermissions;
+using System.Linq;
 
 namespace Dolphin.Freight.Web.Pages.OceanImports
 {
@@ -25,6 +29,10 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
         public CreateUpdateOceanImportHblDto OceanImportHbl { get; set; }
         [BindProperty]
         public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
+
+        [BindProperty]
+        public List<ManifestCommodity> Commodities { get; set; }
+
         [BindProperty(SupportsGet = true)]
         public int NewHbl { get; set; } = 0;
         public string CardClass { get; set; }
@@ -76,6 +84,10 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
                     if (OceanImportHbls != null && OceanImportHbls.Count > 0)
                     {
                         OceanImportHbl = ObjectMapper.Map<OceanImportHblDto, CreateUpdateOceanImportHblDto>(OceanImportHbls[0]);
+                        OceanImportHbl.PackageNo = OceanImportHbls[0].CreateUpdateHBLContainerDto?.PackageNum ?? 0;
+                        OceanImportHbl.PackageWeight = OceanImportHbls[0].CreateUpdateHBLContainerDto?.PackageWeight ?? 0;
+                        OceanImportHbl.PackageMeasurement = OceanImportHbls[0].CreateUpdateHBLContainerDto?.PackageMeasure ?? 0;
+                        OceanImportHbl.ContainerId = OceanImportHbls[0].CreateUpdateHBLContainerDto?.Id;
                         Hid = OceanImportHbl.Id;
                         IsShowHbl = true;
                     }
@@ -85,7 +97,15 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             else
             {
                 queryHbl.Id = Hid;
-                OceanImportHbl = new();
+                OceanImportHbl = new CreateUpdateOceanImportHblDto();
+                if (OceanImportHbls != null && OceanImportHbls.Count > 0)
+                {
+                    OceanImportHbl = ObjectMapper.Map<OceanImportHblDto, CreateUpdateOceanImportHblDto>(OceanImportHbls.Where(w => w.Id == Hid).FirstOrDefault());
+                    OceanImportHbl.PackageNo = OceanImportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.PackageNum ?? 0).FirstOrDefault();
+                    OceanImportHbl.PackageWeight = OceanImportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.PackageWeight ?? 0).FirstOrDefault();
+                    OceanImportHbl.PackageMeasurement = OceanImportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.PackageMeasure ?? 0).FirstOrDefault();
+                    OceanImportHbl.ContainerId = OceanImportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.Id ?? Guid.Empty).FirstOrDefault();
+                }
                 IsShowHbl = true;
 
 
@@ -97,9 +117,48 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             OceanImportMb2.Mark = OceanImportMbl.Mark;
             OceanImportMb2.Description = OceanImportMbl.Description;
             OceanImportMb2.DomesticInstructions = OceanImportMbl.DomesticInstructions;
-            await _oceanImportMblAppService.UpdateAsync(Id, OceanImportMb2) ;
-            //await _oceanImportMblAppService.UpdateAsync(Id, OceanImportMbl);
-            //await _oceanImportHblAppService.UpdateAsync(Hid, OceanImportHbl);
+            await _oceanImportMblAppService.UpdateAsync(Id, OceanImportMb2);
+            QueryHblDto queryHblDto = new QueryHblDto() { Id = OceanImportHbl.Id };
+            var oceanImportHbl = await _oceanImportHblAppService.GetHblById(queryHblDto);
+            oceanImportHbl.PackageNo = OceanImportHbl.PackageNo;
+            oceanImportHbl.PackageWeight = OceanImportHbl.PackageWeight;
+            oceanImportHbl.PackageMeasurement = OceanImportHbl.PackageMeasurement;
+            if (oceanImportHbl.Id != Guid.Empty)
+            {
+                CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                {
+                    PackageNum = oceanImportHbl.PackageNo,
+                    PackageWeight = oceanImportHbl.PackageWeight,
+                    PackageMeasure = oceanImportHbl.PackageMeasurement,
+                    HblId = oceanImportHbl.Id,
+                };
+                if (OceanImportHbl.ContainerId is not null && OceanImportHbl.ContainerId != Guid.Empty)
+                {
+                    await _containerAppService.UpdateAsync(OceanImportHbl.ContainerId.GetValueOrDefault() ,containerDto);
+                }
+                else
+                {
+                    await _containerAppService.CreateAsync(containerDto);
+                }
+            }
+            oceanImportHbl.Mark = OceanImportHbl.Mark;
+            oceanImportHbl.Description = OceanImportHbl.Description;
+            oceanImportHbl.DomesticInstructions = OceanImportHbl.DomesticInstructions;
+            oceanImportHbl.DomesticInstructionsDelOrder = OceanImportHbl.DomesticInstructionsDelOrder;
+            oceanImportHbl.PoNo = OceanImportHbl.PoNo;
+
+            if (oceanImportHbl.ExtraProperties == null)
+            {
+                oceanImportHbl.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+            }
+
+            if (Commodities != null && Commodities.Any())
+            {
+                oceanImportHbl.ExtraProperties.Remove("Commodities");
+                oceanImportHbl.ExtraProperties.Add("Commodities", Commodities);
+            }
+
+            await _oceanImportHblAppService.UpdateAsync(oceanImportHbl.Id, oceanImportHbl);
             QueryContainerDto query = new QueryContainerDto() { QueryId=Id };
             var rs = await _containerAppService.DeleteByMblIdAsync(query); 
             foreach (var dto in CreateUpdateContainerDtos) 

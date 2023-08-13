@@ -19,6 +19,12 @@
             content: "*";
             color: red;
         }
+
+        a.disabled {
+            pointer-events: none;
+            cursor: default;
+            color: gray;
+        }
     </style>
 }
 @section scripts
@@ -385,7 +391,121 @@
             })
         }
 
+        function getConsolidatedArrivalNotice() {
 
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+
+            if (mawbId == null) {
+                var url = window.location.href;
+                var mawbId = url.split('/')[url.split('/').length - 1];
+            }
+
+            dolphin.freight.importExport.airImports.airImportHawb.getHawbCardsByMawbId(mawbId)
+                .done(function (res) {
+                    var consignee = [];
+                    var duplicates = new Set();
+                    var seen = new Set();
+                    for (let i = 0; i < res.length; i++) {
+                        let id = res[i].consigneeId;
+                        consignee.push(id);
+                        if (seen.has(id)) {
+                            duplicates.add(id);
+                        }
+                        seen.add(id);
+                    }
+                    var duplicateArray = Array.from(duplicates);
+                    var duplicateString = duplicateArray.join(', ');
+
+                    $.ajax({
+                        url: abp.appPath + 'Docs/ConsolidatedArrivalNoticePartialView?mawbId=' + '@Model.MawbModel.Id' + '&conId=' + duplicateString,
+                        type: 'GET',
+                        dataType: "html",
+                        success: function (res) {
+                            $('.modal-content').html(res);
+                            $('.modal').modal('show');
+                        }
+                    });
+
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+
+            if (mawbId == null) {
+                var url = window.location.href;
+                var mawbId = url.split('/')[url.split('/').length - 1];
+            }
+
+            dolphin.freight.importExport.airImports.airImportHawb.getHawbCardsByMawbId(mawbId)
+                .done(function (res) {
+                    var consignee = [];
+                    for (let i = 0; i < res.length; i++) {
+                        consignee.push(res[i].consigneeId);
+                    }
+                    checkForDuplicates(consignee);
+                });
+        });
+
+        function checkForDuplicates(array) {
+            let counts = {};
+
+            for (let i = 0; i < array.length; i++) {
+                if (counts[array[i]]) {
+                    counts[array[i]] += 1;
+                } else {
+                    counts[array[i]] = 1;
+                }
+            }
+
+            for (let prop in counts) {
+                if (counts[prop] > 1) {
+                    $(".dropdown-item").removeClass("disabled");
+                }
+            }
+        }
+
+        function getBatchPrintingPopup() {
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+
+            if (mawbId == null) {
+                var url = window.location.href;
+                var mawbId = url.split('/')[url.split('/').length - 1];
+            }
+
+            dolphin.freight.importExport.airImports.airImportHawb.getHawbCardById($('#Id').val())
+                .then(function (res) {                    
+                    var hawbId = res.id;
+
+                    $.ajax({
+                        url: abp.appPath + 'Docs/BatchPrintingPartialView?hawbId=' + hawbId + '&mawbId=' + mawbId,
+                        type: 'GET',
+                        dataType: "html",
+                        success: function (res) {
+                            $('.modal-content').html(res);
+                            $('.modal').modal('show');
+                            $(document).on('show.bs.modal', '#batchPrintingModel', function () {
+                                $('.modal-dialog').addClass('modal-lg');
+
+                                $('#checkAll').on('click', function () {
+                                    $('.childCheckbox').prop('checked', $(this).prop('checked'));
+                                });
+
+                                $('.childCheckbox').on('click', function () {
+                                    if ($('.childCheckbox:not(:checked)').length === 0) {
+                                        $('#checkAll').prop('checked', true);
+                                    } else {
+                                        $('#checkAll').prop('checked', false);
+                                    }
+                                });
+                            })
+                        }
+                    });
+                });
+        }
 
     </script>
 
@@ -450,6 +570,13 @@
                                 @L["MAWBInformation"] @Model.MawbModel.MawbNo
                             </abp-card-title>
 
+                            <div id="myModal" class="modal" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="btn-group dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
                                     @L["Display:Function"]
@@ -464,21 +591,21 @@
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="deleteMawbAirImport()">
                                         <i class="fa fa-trash"></i> @L["Btn:Delete"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getBatchPrintingPopup()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Batch Printing"]
                                     </a>
                                     <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ManifestAirImport", "Docs", new { id = Model.MawbModel.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIMBL })')">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
+                                    <a class='dropdown-item disabled' href='javascript:void(0)' onclick="if(!$(this).hasClass('disabled')) { getConsolidatedArrivalNotice() }" title="This function is only available when two or more hawb have same consignee">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Arrival Notice"]
                                     </a>
                                     <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AirImportProfitReport", "Docs", new { id = Model.MawbModel.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIMBL, reportType = "Summary" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AirImportProfitReport", "Docs", new { id = Model.MawbModel.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIMBL, reportType = "Detailed" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                                     </a>
                                     <p class="dropdown-divider"></p>
@@ -504,7 +631,7 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label asp-for="MawbModel.MawbNo" class="redStar form-label">@L["Display:Air:MawbNo"]</label>
-                                    <input asp-for="MawbModel.MawbNo" class="form-control" size="Small" />
+                                    <input asp-for="MawbModel.MawbNo" class="form-control form-control-sm" size="Small" />
                                     <span asp-validation-for="MawbModel.MawbNo" class="text-danger"></span>
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -513,7 +640,7 @@
                                     <span asp-validation-for="MawbModel.OfficeId" class="text-danger"></span>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.AwbType" size="Small" />
+                                    <abp-select asp-for="MawbModel.AwbType" class="form-control form-control-sm" size="Small" />
                                 </abp-column>
                             </abp-row>
                             <!--第2列-->
@@ -522,7 +649,7 @@
                                     <abp-input asp-for="MawbModel.PostDate" size="Small" readonly="true" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.OverseaAgentId" size="Small">
+                                    <abp-select asp-for="MawbModel.OverseaAgentId" class="form-control form-control-sm pr-4" size="Small">
                                         <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                                     </abp-select>
                                 </abp-column>
@@ -539,7 +666,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.CoLoaderId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.CoLoaderId, IsShowLabel = true, FieldName = @L["CoLoaderId"] })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.OPId" size="Small" disabled="true">
+                                    <abp-select asp-for="MawbModel.OPId" class="form-control form-control-sm" size="Small" disabled="true">
                                         <option value='@CurrentUser.Id' selected> @(CurrentUser.Name + " " + CurrentUser.SurName) </option>
                                     </abp-select>
                                 </abp-column>
@@ -558,7 +685,7 @@
 
                             </abp-row>
                             <!--第5列-->
-                            <br />
+                           
                             <!--第6列-->
                             <abp-row>
                                 <abp-column size-md="_3">
@@ -584,11 +711,11 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label asp-for="MawbModel.ArrivalDate" class="redStar form-label">@L["Display:Air:ArrivalDate"]</label>
-                                    <input asp-for="MawbModel.ArrivalDate" class="form-control" />
+                                    <input asp-for="MawbModel.ArrivalDate" class="form-control form-control-sm" />
                                     <span asp-validation-for="MawbModel.ArrivalDate" class="text-danger"></span>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.FreightLocationId" size="Small">
+                                    <abp-select asp-for="MawbModel.FreightLocationId" class="form-control form-control-sm pr-4" size="Small">
                                         <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                                     </abp-select>
                                 </abp-column>
@@ -596,14 +723,14 @@
                                     <abp-input asp-for="MawbModel.StorageStartDate" size="Small" />
                                 </abp-column>
                             </abp-row>
-                            <br />
+                            
                             <!--Route區塊-->
-                            <abp-row>
+                             <abp-row>
                                 <div class="collapse" id="collapseRoute">
-                                    <div class="card card-body">
+                                    <div class="card card-body table-responsive">
                                         <h3>Route</h3>
-                                        <table class="table table-bordered table-responsive">
-                                            <thead>
+                                        <abp-table class="nowrap" class="table table-bordered">
+                                          <thead>
                                                 <tr>
                                                     <th></th>
                                                     <th>Airport</th>
@@ -613,17 +740,13 @@
                                                     <th>Carrier</th>
                                                 </tr>
                                             </thead>
+
                                             <tbody>
-                                                <tr>
+                                           <tr>
                                                     <th>Trans1</th>
                                                     <td>
-                                                        <select asp-for="MawbModel.RouteTrans1Id" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                          @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans1Id", AspItems = _dropdownService.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans1Id) })
+                                                   
                                                     </td>
                                                     <td>
                                                         <input asp-for="MawbModel.RouteTrans1ArrivalDate" size="Small" />
@@ -641,13 +764,8 @@
                                                 <tr>
                                                     <th>Trans2</th>
                                                     <td>
-                                                        <select asp-for="MawbModel.RouteTrans2Id" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                       @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans2Id", AspItems = _dropdownService.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans2Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans2Id) })
+                                                   
                                                     </td>
                                                     <td>
                                                         <input asp-for="MawbModel.RouteTrans2ArrivalDate" size="Small" />
@@ -665,13 +783,8 @@
                                                 <tr>
                                                     <th>Trans3</th>
                                                     <td>
-                                                        <select asp-for="MawbModel.RouteTrans3Id" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans3Id", AspItems = _dropdownService.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans3Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans3Id) })
+                                                   
                                                     </td>
                                                     <td>
                                                         <input asp-for="MawbModel.RouteTrans3ArrivalDate" size="Small" />
@@ -687,31 +800,44 @@
                                                     </td>
                                                 </tr>
                                             </tbody>
-                                        </table>
+                                        </abp-table>
                                     </div>
                                 </div>
                             </abp-row>
-                            <br />
+                        @*    <abp-row class="mt-0">
+                                <div class="collapse" id="collapseRoute">
+                                    <div class="card card-body">
+                                        <h3>Route</h3>
+                                        <table class="table table-sm table-bordered table-responsive">
+                                                                                       <tbody>
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </abp-row>*@
+                            
                             <!--第八列 Package, Weight Settings Area-->
-                            <abp-row>
+                            <hr />
+                            <abp-row class="mt-0">
                                 <div class="container">
                                     <div class="row">
                                         <div class="col">
-                                            <table class="table table-borderless">
+                                            <table class="table table-sm table-borderless mb-0">
                                                 <thead>
                                                     <tr>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
+                                                        <td>&nbsp;</td>
+                                                        <td>&nbsp;</td>
+                                                        <td>&nbsp;</td>
+                                                        <td>&nbsp;</td>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <th>@L["Package"]</th>
-                                                        <td><input asp-for="MawbModel.Package" class="form-control" /></td>
+                                                        <td>@L["Package"]</td>
+                                                        <td><input asp-for="MawbModel.Package" class="form-control form-control-sm" /></td>
                                                         <td colspan="3">
-                                                            <select asp-for="MawbModel.MawbPackageUnitId" class="form-select">
+                                                            <select asp-for="MawbModel.MawbPackageUnitId" class="form-select form-control form-control-sm">
                                                                 <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                                                                 @foreach (var packageUnit in Model.PackageUnitLookupList)
                                                                 {
@@ -721,43 +847,43 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["VolumeWeight"]</th>
-                                                        <td><input asp-for="MawbModel.VolumeWeightKg" class="form-control" /></td>
+                                                        <td>@L["VolumeWeight"]</td>
+                                                        <td><input asp-for="MawbModel.VolumeWeightKg" class="form-control form-control-sm" /></td>
                                                         <td>@L["KG"]</td>
                                                         <td>
-                                                            <input asp-for="MawbModel.VolumeWeightCbm" class="form-control" />
+                                                            <input asp-for="MawbModel.VolumeWeightCbm" class="form-control form-control-sm" />
                                                         </td>
                                                         <td>CBM</td>
                                                     </tr>
                                                     <tr>
-                                                        <th></th>
+                                                        <td></td>
                                                         <td colspan="4"><abp-button size="Small" button-type="Primary" text="@L["SetDimensions"]" disabled="true" icon="pencil-square" /></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                         <div class="col">
-                                            <table class="table table-borderless">
+                                            <table class="table table-sm table-borderless mb-0">
                                                 <thead>
                                                     <tr>
-                                                        <th></th>
-                                                        <th>@L["KG"]</th>
-                                                        <th>@L["LB"]</th>
+                                                        <td></td>
+                                                        <td>@L["KG"]</td>
+                                                        <td>@L["LB"]</td>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <th>@L["GrossWeight"]</th>
-                                                        <td><input asp-for="MawbModel.GrossWeightKg" class="form-control" id="GrossWeightKg" /></td>
-                                                        <td><input asp-for="MawbModel.GrossWeightLb" class="form-control" id="GrossWeightLb" /></td>
+                                                        <td>@L["GrossWeight"]</td>
+                                                        <td><input asp-for="MawbModel.GrossWeightKg" class="form-control form-control-sm" id="GrossWeightKg" /></td>
+                                                        <td><input asp-for="MawbModel.GrossWeightLb" class="form-control form-control-sm" id="GrossWeightLb" /></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["ChargeableWeight"]</th>
-                                                        <td><input asp-for="MawbModel.ChargeableWeightKg" class="form-control" id="ChargeableWeightKg" /></td>
-                                                        <td><input asp-for="MawbModel.ChargeableWeightLb" class="form-control" id="ChargeableWeightLb" /></td>
+                                                        <td>@L["ChargeableWeight"]</td>
+                                                        <td><input asp-for="MawbModel.ChargeableWeightKg" class="form-control form-control-sm" id="ChargeableWeightKg" /></td>
+                                                        <td><input asp-for="MawbModel.ChargeableWeightLb" class="form-control form-control-sm" id="ChargeableWeightLb" /></td>
                                                     </tr>
                                                     <tr>
-                                                        <th></th>
+                                                        <td></td>
                                                         <td colspan="3"><abp-button size="Small" button-type="Primary" text="@L["SumPackage&Weight"]" disabled="true" icon="pencil-square" /></td>
                                                     </tr>
                                                 </tbody>
@@ -767,6 +893,7 @@
                                 </div>
                             </abp-row>
                             <!--第9列-->
+                            <hr />
                             <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.FreightType", AspItems = Html.GetEnumSelectList(typeof(FreightType)).ToList(), IsShowLabel = true, FieldName ="Freight", ShowFiledContentValue = Convert.ToString(Model.MawbModel.FreightType) })
@@ -796,7 +923,7 @@
                                 </abp-column>
                             </abp-row>
 
-                            <abp-row>
+                            <abp-row class="mt-4">
                                 <abp-column>
                                     <abp-card-header style="background:#cccccc;color:#FFFFFF;">
                                         @L["Title:Memo"]

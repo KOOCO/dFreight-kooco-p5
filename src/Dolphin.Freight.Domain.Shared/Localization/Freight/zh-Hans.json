@@ -102,7 +102,7 @@
     "Btn:Print HB/L": "打印 HB/L",
     "Btn:Certificate of Origin": "原产地证书",
     "Btn:Save": "储存",
-
+    "Btn:Consolidated Arrival Notice": "合并到达通知",
     "Btn:List of Cargo": "货物清单",
     "Btn:USDA Heat Treatment": "美国农业部热处理",
 
@@ -998,6 +998,8 @@
     "Manifest:CARRIER": "船公司",
     "Manifest:ReportType": "报表类别",
     "Manifest:BY_CONTAINER": "依集装箱显示",
-    "Manifest:BY_MBL": "依MBL显示"
+    "Manifest:BY_MBL": "依MBL显示",
+
+    "PackageUnitAlreadyExist": "相同的代码 {0} 已存在于系统中."
   }
 }

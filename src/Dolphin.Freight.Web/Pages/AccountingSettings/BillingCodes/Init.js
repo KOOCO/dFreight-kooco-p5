@@ -65,5 +65,6 @@ function doSubmit()
     $("#formIsTkm").val($("#BillingCode_IsTkm").prop("checked"));
     $("#formIsMsm").val($("#BillingCode_IsMsm").prop("checked"));
     $("#formIsWhs").val($("#BillingCode_IsWhs").prop("checked"));
+    $("#formIsPayroll").val($("#BillingCode_IsPayroll").prop("checked"));
     $("#createForm").submit();
 }

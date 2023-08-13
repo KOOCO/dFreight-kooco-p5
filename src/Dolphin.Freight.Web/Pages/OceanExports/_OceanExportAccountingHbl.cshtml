@@ -9,10 +9,35 @@
 @inject IStringLocalizer<FreightResource> L
 
 <script>
+    $(document).ready(function () {
+        var isHblLocked = '@Model.OceanExportHblDto.IsLocked';
+        if (isHblLocked == 'True') {
+            $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+            $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+        }
+        else {
+            $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+            $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+        }
+    });
+    function getDocPackagePopUp() {
+        $.ajax({
+            url: '/Docs/DocumentPackageHBLPopupPartial?id=@Model.OceanExportHblDto.Id',
+            type: 'GET',
+            dataType: "html",
+            success: function (res) {
+                $('#documentPackageModal').html(res);
+                $('#documentPackageModal').modal('show');
+            }
+        });
+    }
+    function getReportHblClauses() {
+        myWindow = window.open("@Url.Action("HblClauses", "Docs")", 'HblClauses', 'width=1500,height=800');
+        myWindow.focus()
+    }
     function gotoInvoiceHBL(Mid, Hid, InvoiceType) {
-        debugger;
         if (Hid != '00000000-0000-0000-0000-000000000000') {
-            location.href = '/Accounting/Invoice?MethodType=5&Mid=' + Mid + "&Hid=" + Hid + "&InvoiceType=" + InvoiceType;
+            location.href = '/Accounting/Invoice?MethodType=1&Mid=' + Mid + "&Hid=" + Hid + "&InvoiceType=" + InvoiceType;
         }
         else {
             Swal.fire({
@@ -31,6 +56,146 @@
             myWindow.focus();
         });
     }
+            function getCertificateOfOrigin(id) {
+            var idNo = id;
+            debugger
+            if (idNo != '00000000-0000-0000-0000-000000000000') {
+           
+            myWindow = window.open("@Url.Action("CertificateOfOrigin", "Docs")" + "?id=" + idNo, 'CertificateOfOrigin', 'width=1200,height=800');
+            myWindow.focus()
+            }
+             else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
+        }
+        }
+            function getCommercialInvoice(id) {
+             //var idNo = $('#OceanExportHbl_Id').val();
+               var idNo = id;
+            
+            if (idNo != '00000000-0000-0000-0000-000000000000') {
+           
+            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")"+"?Id="+idNo, 'CommercialInvoice', 'width=1200,height=800');
+            myWindow.focus()
+            }
+                  else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
+        }
+        }
+            function getPreliminaryClaim(id) {
+                var idNo = id;
+            
+            if (idNo != '00000000-0000-0000-0000-000000000000') {
+           
+            myWindow = window.open("@Url.Action("PreliminaryClaimOceanExport", "Docs")" + "?id=" + idNo+"&pageType=4", 'PreliminaryClaimOceanExport', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow.focus()
+             }
+                  else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
+        }
+        }
+
+
+          function getPreAlert(id) {
+               var idNo = id;
+                if (idNo != '00000000-0000-0000-0000-000000000000') {
+              
+            myWindow = window.open("@Url.Action("PreAlert", "Docs")" + "?id=" + idNo, 'PreAlert', 'width=1200,height=800');
+            myWindow.focus()
+             }
+                  else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
+        }
+
+        }
+         function getReportBankDraft(id) {
+              var idNo = id;
+             if (idNo != '00000000-0000-0000-0000-000000000000') {
+              
+            myWindow = window.open("@Url.Action("BankDraft", "Docs")" + "?id=" + idNo, 'BankDraft', 'width=1500,height=800');
+            myWindow.focus()
+                      }
+                  else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
+        }
+        }
+           function getUsdaHeatTreatment(id) {
+                var idNo = id;
+         if (idNo != '00000000-0000-0000-0000-000000000000') {
+              
+            myWindow = window.open("@Url.Action("UsdaHeatTreatment", "Docs")" + "?id=" + idNo, 'UsdaHeatTreatment', 'width=1200,height=800');
+            myWindow.focus()
+              }
+                  else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
+        }
+        }
+            function getReportCarDocument(id)
+        {
+             var idNo = id;
+         if (idNo != '00000000-0000-0000-0000-000000000000') {
+              
+         
+                    
+           myWindow = window.open("@Url.Action("Shipment", "Docs")"+ "?id=" + idNo, 'Shipment', 'width=1200,height=800');
+            myWindow.focus()
+         }
+            else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
+        }
+        }
+              function getReportBookingConfirmation(id) {
+             var idNo = id;
+         if (idNo != '00000000-0000-0000-0000-000000000000') {
+              
+         
+            myWindow = window.open("@Url.Action("BookingConfirmation", "Docs")" + "?id=" + idNo, 'BookingConfirmation', 'width=1200,height=800');
+            myWindow.focus()
+            }
+            else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
+        }
+        }
 </script>
 
 
@@ -39,35 +204,38 @@
         <abp-card-title>
             HB/L  @Model.OceanExportHblDto.HblNo
         </abp-card-title>
-
+          <input type="hidden" name="OceanExportHbl.Id" id="OceanExportHbl_Id" value="@Model.OceanExportHblDto.Id" />
           <div class="btn-group dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                                @L["Display:Function"]
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDropHbl" data-bs-toggle="dropdown">
+                                                
                             </button>
-                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop" style="max-height:300px !important;overflow:auto">
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDropHbl" style="max-height:300px !important;overflow:auto">
+                <a class='dropdown-item' id="lockButtonHbl" href='javascript:void(0)' onclick="lockUnlockHbl('@Model.OceanExportHblDto.Id')">
+                                       
                                     </a>
                                     <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
+        <a class='dropdown-item' href='javascript:void(0)' onclick="getDocPackagePopUp()">
                                         <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getReportCarDocument('@Model.OceanExportHblDto.Id')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Print Automobile Documents"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Print HB/L"]
+        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HBLPrintOceanExport", "Docs", new { id = Model.OceanExportHblDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Print HB/L"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HBLPrintOceanExportOBL", "Docs", new { id = Model.OceanExportHblDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Print OB/L"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getReportHblClauses()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:B/L Clauses"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getCommercialInvoice('@Model.OceanExportHblDto.Id')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HBLPackingListOceanExport", "Docs", new { id = Model.OceanExportHblDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
+                                    </a>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getCertificateOfOrigin('@Model.OceanExportHblDto.Id')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Certificate of Origin"]
                                     </a>
                                     <a class='dropdown-item' href='#'>
@@ -76,39 +244,39 @@
                                     <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
                                     </a>
-                                     <a class='dropdown-item' href='#'>
+                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getReportBookingConfirmation('@Model.OceanExportHblDto.Id')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
                                     </a>
-                                     <a class='dropdown-item' href='#'>
+                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getReportBankDraft('@Model.OceanExportHblDto.Id')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
                                     </a>
                                      <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Package Label"]
                                     </a>
        
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getPreAlert('@Model.OceanExportHblDto.Id')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Pre-Alert"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getUsdaHeatTreatment('@Model.OceanExportHblDto.Id')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:USDA Heat Treatment"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder cargo receipt"]
-                                    </a>                                  
-                                    <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ForwarderCargoReceiptOceanExportHBL", "Docs", new { id = Model.OceanExportHblDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("DangerousGoodsOceanExportHBL", "Docs", new { id = Model.OceanExportHblDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                   <a class='dropdown-item' href='javascript:void(0)' onclick="getPreliminaryClaim('@Model.OceanExportHblDto.Id')">
+                                       <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+                                   </a>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ExamHoldNoticeOceanExportHBL", "Docs", new { id = Model.OceanExportHblDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HblShippingAdvice", "Docs", new { id = Model.OceanExportHblDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Shipping Advice"]
                                     </a>
                                     <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanExportProfitReport", "Docs", new { id = Model.OceanExportHblDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                                     </a>
                                     <li class="dropdown-divider"></li>
@@ -128,8 +296,8 @@
                 <input type="hidden" name="OceanExportHblDto.Id" id="OceanExportHblDto_Id" value="@Model.OceanExportHblDto.Id" />
                 <div>
                     <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoiceHBL('@Model.OceanExportHblDto.MblId','@Model.OceanExportHblDto.Id',0)">@L["Btn:AddAR"]</abp-button>
-                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoiceHBL('','@Model.OceanExportHblDto.Id',4)">@L["Btn:AddDC"]</abp-button>
-                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoiceHBL('','@Model.OceanExportHblDto.Id',3)">@L["Btn:AddAP"]</abp-button>
+                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoiceHBL('','@Model.OceanExportHblDto.Id',1)">@L["Btn:AddDC"]</abp-button>
+                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoiceHBL('','@Model.OceanExportHblDto.Id',2)">@L["Btn:AddAP"]</abp-button>
                 </div>
                 <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:0.5em;">
                     <tr border="1">
@@ -154,11 +322,25 @@
                                 i++;
                                 <tr>
                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h0invoiceDtos.Count">@L["Menu:AccountingAR"]</td>
-                                    <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
-                                    <td>@dto.InvoiceCompanyName</td>
-                                    <td>@dto.OutstandingAmount</td>
+                                    <td><a href="/Accounting/Invoice?MethodType=1&Mid=&Hid=@Model.OceanExportHblDto.Id &InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                      <td>@dto.InvoiceCompanyName</td>
+                                    @{
+                                        double j = 0;
+                                    }
+                                    @foreach (var invBill in dto.InvoiceBillDtos)
+                                    {
+                                        j = j + @invBill.Quantity;
+                                    }
+                                    <td>@j</td>
                                     <td>0.00</td>
-                                    <td>@dto.OutstandingAmount</td>
+                                    @{
+                                        double r = 0;
+                                    }
+                                    @foreach (var invRate in dto.InvoiceBillDtos)
+                                    {
+                                        r += invRate.Quantity * invRate.Rate;
+                                    }
+                                    <td>@r.ToString("0.00")</td>
                                     <td></td>
                                     <td>@dto.PostDate</td>
                                     <td>@dto.InvoiceDate</td>
@@ -168,11 +350,25 @@
                             else
                             {
                                 <tr>
-                                    <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td><a href="/Accounting/Invoice?MethodType=1&Mid=&Hid=@Model.OceanExportHblDto.Id&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
-                                    <td>@dto.OutstandingAmount</td>
+                                    @{
+                                        double j = 0;
+                                    }
+                                    @foreach (var invBill in dto.InvoiceBillDtos)
+                                    {
+                                        j = j + @invBill.Quantity;
+                                    }
+                                    <td>@j</td>
                                     <td>0.00</td>
-                                    <td>@dto.OutstandingAmount</td>
+                                    @{
+                                        double r = 0;
+                                    }
+                                    @foreach (var invRate in dto.InvoiceBillDtos)
+                                    {
+                                        r += invRate.Quantity * invRate.Rate;
+                                    }
+                                    <td>@r.ToString("0.00")</td>
                                     <td></td>
                                     <td>@dto.PostDate</td>
                                     <td>@dto.InvoiceDate</td>
@@ -192,7 +388,7 @@
                                 i++;
                                 <tr>
                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h1invoiceDtos.Count">@L["Menu:AccountingDC"]</td>
-                                    <td><a href="/Accounting/Invoice?MethodType=5&Mid=&Hid=@Model.OceanExportHblDto.Id&InvoiceType=4&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td><a href="/Accounting/Invoice?MethodType=1&Mid=&Hid=@Model.OceanExportHblDto.Id&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
                                     @{
                                         double j = 0;
@@ -220,7 +416,7 @@
                             else
                             {
                                 <tr>
-                                    <td><a href="/Accounting/Invoice?MethodType=5&Mid=&Hid=@Model.OceanExportHblDto.Id&InvoiceType=4&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td><a href="/Accounting/Invoice?MethodType=1&Mid=&Hid=@Model.OceanExportHblDto.Id&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
                                     @{
                                         double j = 0;
@@ -258,7 +454,7 @@
                                 i++;
                                 <tr>
                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h2invoiceDtos.Count">@L["Menu:AccountingAP"]</td>
-                                    <td><a href="/Accounting/Invoice?MethodType=5&Mid=&Hid=@Model.OceanExportHblDto.Id&InvoiceType=3&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td><a href="/Accounting/Invoice?MethodType=1&Mid=&Hid=@Model.OceanExportHblDto.Id&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.ShipTo</td>
                                     @{
                                         double j = 0;
@@ -286,7 +482,7 @@
                             else
                             {
                                 <tr>
-                                    <td><a href="/Accounting/Invoice?MethodType=5&Mid=&Hid=@Model.OceanExportHblDto.Id&InvoiceType=3&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td><a href="/Accounting/Invoice?MethodType=1&Mid=&Hid=@Model.OceanExportHblDto.Id&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.ShipTo</td>
                                     @{
                                         double j = 0;
@@ -338,3 +534,6 @@
         </abp-row>
     </abp-card-body>
 </abp-card>
+
+<div class="modal" id="documentPackageModal">
+</div>
