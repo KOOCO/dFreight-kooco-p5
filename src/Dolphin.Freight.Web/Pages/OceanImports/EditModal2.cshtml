@@ -860,9 +860,7 @@
                                           @*   <a class='dropdown-item' href='#'>
                                                 <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
                                             </a> *@
-                                             <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PickupDeliveryInstrucationOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id })')">
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Pickup Delivery Instruction"]
-                </a>
+                    
                                              <a class='dropdown-item' href='#' >
                                                 <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
                                             </a>
@@ -882,9 +880,9 @@
                                                  <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
                                            </a>
                                          
-                                            <a class='dropdown-item' href='#'>
-                                                <i class="fa fa-file-text-o"></i> @L["Btn:Pickup Delivery Instruction"]
-                                            </a>
+                                                                  <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PickupDeliveryInstrucationOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Pickup Delivery Instruction"]
+                </a>
                                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ForwarderCargoReceiptOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
                                                 <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
                                              </a>

@@ -420,6 +420,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 oceanImportDetails.FdestEta = data.FdestEta;
                 oceanImportDetails.PolEtd = mbl.PolEtd;
               
+              
                 oceanImportDetails.PorEtd = data.PorEtd;
                 oceanImportDetails.MPorEtd = mbl.PorEtd;
                 oceanImportDetails.PodEta = data.PodEta;
