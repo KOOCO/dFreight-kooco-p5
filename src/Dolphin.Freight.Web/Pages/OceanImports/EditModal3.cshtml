@@ -201,18 +201,14 @@
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ManifestOceanImportMBL", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-file-text-o"></i> @L["Btn:Unpacking/Isolation Instructions"]
-                                </a>
+                              
                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getOrderDelivery()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
                                     </a>
                                 <a class='dropdown-item consolidateConsignee disabled' href='javascript:void(0)' onclick="if(!$(this).hasClass('disabled')) { ConslidateByConsignee() }" title="This function is only available when two or more hbl have same consignee">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Arrival Notice"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
-                                </a>
+                              
                              
                                 <div class="dropdown-divider"></div>
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanImportProfitReportDetailOrSummry", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL, reportType = "Summary" })')">
