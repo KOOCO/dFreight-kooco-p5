@@ -17,6 +17,10 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// </summary>
         public Guid? HblId { get; set; }
         /// <summary>
+        /// 對應的VesselSchedule
+        /// </summary>
+        public Guid? VesselScheduleId { get; set; }
+        /// <summary>
         /// 對應的ExportBooking
         /// </summary>
         public Guid? BookingId { get; set; }
