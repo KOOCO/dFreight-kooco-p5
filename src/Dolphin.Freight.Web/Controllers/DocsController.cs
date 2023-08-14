@@ -3635,7 +3635,9 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.issue_by = OceanExportMbl.MblOperatorName;
             InfoViewModel.MBL_NO = OceanExportMbl.MblNo;
             InfoViewModel.carrier = OceanExportMbl.MblCarrierName;
-            InfoViewModel.VESSEL_INFO = OceanExportMbl.VesselName + OceanExportMbl.Voyage;
+            InfoViewModel.VESSEL_INFO = OceanExportMbl.VesselName;
+            InfoViewModel.VOVAGE_INFO = OceanExportMbl.Voyage;
+
             InfoViewModel.POR_location = OceanExportMbl.PorName;
             InfoViewModel.POR_location_ETD = OceanExportMbl.PorEtd?.ToString("dd-MM-yyyy");
             InfoViewModel.POL_location = OceanExportMbl.PolName;
