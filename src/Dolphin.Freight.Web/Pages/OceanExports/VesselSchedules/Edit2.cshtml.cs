@@ -50,7 +50,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         {
             VesselScheduleDto = await _vesselScheduleAppService.GetAsync(Id);
 
-            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 3, ParentId = Id };
+            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 5, ParentId = Id };
             IList<InvoiceDto> invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
             m0invoiceDtos = new List<InvoiceDto>();
             m1invoiceDtos = new List<InvoiceDto>();

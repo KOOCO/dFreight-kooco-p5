@@ -310,6 +310,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
             InvoiceDto.BookingId = Bid;
             InvoiceDto.MawbId = MawbId;
             InvoiceDto.HawbId = HawbId;
+            InvoiceDto.VesselScheduleId = VesselId;
             if (InvoiceDto.InvoiceNo == null) 
             {
                 Random rnd = new Random(Guid.NewGuid().GetHashCode());
