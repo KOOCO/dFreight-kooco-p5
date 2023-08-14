@@ -3763,12 +3763,13 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.LcIssueBank = OceanExportHbl.LCIssueBankName;
             InfoViewModel.LcIssueDate = OceanExportHbl.LCIssueDate?.ToString("dd-MM-yyyy");
             InfoViewModel.carrier_bkg_no = OceanExportHbl.SoNo;
-            InfoViewModel.delivery_to_area = OceanExportHbl.DeliveryToName;
+            InfoViewModel.delivery_to_area = OceanExportHbl.DelName;
             InfoViewModel.CyLocation = OceanExportHbl.CyLocation;
             InfoViewModel.delivery_to_date = OceanExportHbl.DelEta?.ToString("dd-MM-yyyy");
             InfoViewModel.billing_to_area = OceanExportHbl.MblBillToName + "\r\n" + OceanExportHbl.MblBillToContent; /*"HARD CORE TECHNOLOGY\r\n198 PEARSON GATEWAY APT. 555\r\nNORTH JAMES, KY 98809-9933\r\nWALNUT, CA 91789, UNITED STATES\r\nATTN: JENNIFER JIMENEZ TEL: 585.592.4848 FAX: 649-277-5122"*/;
             InfoViewModel.marks = OceanExportHbl.Mark;
             InfoViewModel.description = OceanExportHbl.Description;
+            InfoViewModel.PodEta = OceanExportHbl.PodEta?.ToString("dd-MM-yyyy");
             InfoViewModel.ContainerList = new List<DeliveryOrderContainerList>();
             var totalWeightKgs = 0.0;
             var totalWeightLbs = 0.0;
