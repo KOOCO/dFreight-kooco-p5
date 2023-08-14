@@ -27,5 +27,7 @@ namespace Dolphin.Freight.Web.CommonService
         List<SelectItems> CountryLookupList { get; }    
         List<SelectItems> PreCarriageVesselLookupList { get; }
         List<SelectItems> GiCodeLookupList { get; }
+        List<SelectItems> CreditLimitGroupNameLookupList { get; }
+        List<SelectItems> AccountGroupnameLookupList { get; }
     }
 }

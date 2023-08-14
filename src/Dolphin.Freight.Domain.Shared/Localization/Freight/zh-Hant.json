@@ -678,6 +678,8 @@
     "DisplayName:TPCode": "代碼",
     "DisplayName:TPName": "名稱",
     "DisplayName:TPNamePrint": "列印名稱",
+    "DisplayName:TPInfoModel.CreditLimitGroupId": "Credit Limit Group Name",
+    "DisplayName:TPInfoModel.AccountGroupId": "Account Group Name",
     "DisplayName:TPNameLocal": "註冊地名稱 (發票抬頭)",
     "DisplayName:TPLocalAddress": "註冊地地址",
     "DisplayName:CityCode": "城市",
@@ -893,6 +895,7 @@
     "Enum:TPType.Trucker": "TRUCKER",
     "Enum:TPType.Vendor": "VENDOR",
     "Enum:TPType.Warehouse": "WAREHOUSE",
+    "Enum:TPType.FBAWarehouse": "FBA WAREHOUSE",
 
     // 通用文字
     "------拜託下面這個不要亂改------": "------改了可能很多東西會壞掉------",

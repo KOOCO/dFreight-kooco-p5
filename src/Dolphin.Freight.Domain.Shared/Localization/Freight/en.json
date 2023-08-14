@@ -709,6 +709,8 @@
 
 
     "DisplayName:TPType": "TP Type",
+    "DisplayName:TPInfoModel.CreditLimitGroupId": "Credit Limit Group Name",
+    "DisplayName:TPInfoModel.AccountGroupId": "Account Group Name",
     "DisplayName:TPCode": "Code",
     "DisplayName:TPName": "Name",
     "DisplayName:TPNamePrint": "Print Name",
@@ -934,6 +936,7 @@
     "Enum:TPType.Trucker": "TRUCKER",
     "Enum:TPType.Vendor": "VENDOR",
     "Enum:TPType.Warehouse": "WAREHOUSE",
+    "Enum:TPType.FBAWarehouse": "FBA WAREHOUSE",
 
     // 通用文字
     "------拜託下面這個不要亂改------": "------改了可能很多東西會壞掉------",
