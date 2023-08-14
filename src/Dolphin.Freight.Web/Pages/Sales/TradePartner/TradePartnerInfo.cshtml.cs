@@ -13,7 +13,8 @@ using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Dolphin.Freight.TradePartners.Credits;
 using System.Linq;
-
+using Dolphin.Freight.TradePartners.TradeParties;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
 {
@@ -27,6 +28,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
 
         private readonly ICreditLimitGroupRepository _creditLimitGroupRepository;
         private readonly IAccountGroupAppService _accountGroupAppService;
+        private readonly ITradePartyAppService _tradePartyAppService;
 
 
         [BindProperty]
@@ -37,10 +39,14 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
         public List<SelectListItem> AccountGroupNameLookupList { get; set; }
         public List<SelectListItem> CurrencyLookupList { get; set; }
 
+        [BindProperty]
+        public List<CreateUpdateTradePartyDto> TradeParties { get; set; }
+
         public TradePartnerInfoModel(ITradePartnerAppService tradePartnerAppService,
             ICreditLimitGroupRepository creditLimitGroupRepository,
             ICreditLimitGroupAppService creditLimitGroupAppService,
-            IAccountGroupAppService accountGroupAppService
+            IAccountGroupAppService accountGroupAppService,
+            ITradePartyAppService tradePartyAppService
             )
         {
             Logger = NullLogger<TradePartnerInfoModel>.Instance;
@@ -70,6 +76,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
                                                 .Select(x => new SelectListItem(x.CurrencyName, x.Id.ToString(), false))
                                                 .ToList();
 
+            TradeParties = new List<CreateUpdateTradePartyDto>();
         }
 
         #region OnPostAsync()
@@ -80,6 +87,25 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
             {
                 return Page();
             }
+
+            if(TradeParties != null && TradeParties.Any())
+            {
+                foreach (var tradeParty in TradeParties)
+                {
+                    if (tradeParty.ExtraProperties == null)
+                    {
+                        tradeParty.ExtraProperties = new();
+                    }
+
+                    if(tradeParty.TradePartyListDto != null)
+                    {
+                        tradeParty.ExtraProperties.Add("TradePartyList", tradeParty.TradePartyListDto);
+                    }
+
+                    await _tradePartyAppService.SaveAsync(tradeParty);
+                }
+            }
+
             // ±NPopUpTips²Õ¦¨Json¦r¦ê
             PopUpTipsObj popUpTipsObj = new PopUpTipsObj(
                 TPInfoModel.DoorToDoor,

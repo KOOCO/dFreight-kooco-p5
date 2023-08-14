@@ -39,6 +39,11 @@
             margin-bottom: 25px;
         }
 
+        .flex-alignitems-center{
+            display:flex;
+            align-items: center;
+        }
+
         @@-moz-keyframes blink {
             0% {
                 opacity: 1;
@@ -375,8 +380,61 @@
 
         });
 
+        var chkIndex = 0;
+        function onAddTradeParty(tradeParty) {
+            var newRowData = {
+                chkIndex: chkIndex
+            };
 
+            var newRow = $('#tradePartyTemplate').tmpl(newRowData);
 
+            $('#tradePartyBody_'+tradeParty).append(newRow);
+
+            chkIndex += 1;
+        }
+
+        function onCreateNewTradePartner(tradePartyType){
+            
+            switch(tradePartyType){
+                case '1':
+                    onAddTradeParty(tradePartyType);
+                break;
+                case '2':
+                    alert('unknown');
+                break;
+            }      
+        }
+
+    </script>
+
+    <script id="tradePartyTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_TradeParty" id="chk_TradeParty_${chkIndex}" />
+          </td>
+          <td><input type="checkbox" name="TradeParties[${chkIndex}].IsDefault" value="${IsDefault}" /></td>
+          <td><input type="text" name="TradeParties[${chkIndex}].TradePartyDescription" value="${TradePartyDescription}" /></td>
+          <td><input type="text" name="TradeParties[${chkIndex}].TradePartyListDto.CompanyName" value="${CompanyName}"  /></td>
+           <td class="form-group">
+            <input type="text" class="w-100" placeholder="Address">
+            <div class="flex-alignitems-center">
+                <input type="text" placeholder="City" name="TradeParties[${chkIndex}].TradePartyListDto.City" value="${TradePartyType}">
+                <input type="text" placeholder="State" name="TradeParties[${chkIndex}].TradePartyListDto.State" value="${TradePartyType}"><br>
+            </div>
+            <div class="flex-alignitems-center">
+                <input type="text" placeholder="Zip Code" name="TradeParties[${chkIndex}].TradePartyListDto.ZipCode" value="${TradePartyType}">
+                <select class="w-100" name="TradeParties[${chkIndex}].TradePartyListDto.Country">
+                    <option>India</option>
+                </select>
+            </div>
+            
+          </td>
+          <td><input type="text" name="TradeParties[${chkIndex}].TradePartyListDto.IsRep" value="${TradePartyType}"  /></td>
+          <td><input type="text" name="TradeParties[${chkIndex}].TradePartyListDto.Contact" value="${TradePartyType}"  /></td>
+          <td><input type="text" name="TradeParties[${chkIndex}].TradePartyListDto.Phone" value="${TradePartyType}"  /></td>
+          <td><input type="text" name="TradeParties[${chkIndex}].TradePartyListDto.Fax" value="${TradePartyType}"  /></td>
+          <td><input type="text" name="TradeParties[${chkIndex}].TradePartyListDto.Email" value="${TradePartyType}"  /></td>
+        </tr>
     </script>
 }
 <div class="page-header">
@@ -777,12 +835,54 @@
                                 <abp-button class="add-trade-party"
                                         text=@L["Display:Button:New"]
                                         icon="plus"
+                                        onclick="onCreateNewTradePartner('@row')"
                                         button-type="Outline_Secondary"
                                             data-party-type="@row" />
                             </abp-column>
                         </abp-row>
-                        <abp-row class="trade-party-block">
-                            <abp-table class="nowrap" small="true" border-style="Bordered" class="trade-party-table" data-type="@row"></abp-table>
+                        <abp-row class="mt-2">
+                            <abp-column size-md="_12">
+                                <div class="table-responsive trade-party-block">
+                                    <abp-table>
+                                        <colgroup>
+                                            <col class="td-3per"><!--chk-->
+                                            <col class="td-5per"><!--Default-->
+                                            <col class="td-14per"><!--Description-->
+                                            <col class="td-16per"><!--Company Name-->
+                                            <col class="td-20per"><!--Address-->
+                                            <col class="td-3per"><!--Rep.-->
+                                            <col class="td-8per"><!--Contact-->
+                                            <col class="td-9per"><!--Phone-->
+                                            <col class="td-9per"><!--Fax-->
+                                            <col class="td-12per"><!--Email-->
+                                            <col class="td-3per"><!--btn-->
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center col-checkbox">
+                                                    <input type="checkbox">
+                                                </th>
+                                                <th class="text-center">Default</th>
+                                                <th>Description</th>
+                                                <th>
+                                                    <span class="text-danger">*</span>
+                                                    Company Name
+                                                </th>
+                                                <th>Address</th>
+                                                <th>Rep.</th>
+                                                <th>Contact</th>
+                                                <th>Phone</th>
+                                                <th>Fax</th>
+                                                <th>Email</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tradePartyBody_@row">
+
+                                        </tbody>
+                                    </abp-table>
+                                </div>
+                            </abp-column>
                         </abp-row>
                     }
                 </abp-accordion-item>

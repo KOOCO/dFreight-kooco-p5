@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.TradePartners.TradeParties
 {
@@ -13,5 +14,7 @@ namespace Dolphin.Freight.TradePartners.TradeParties
         public TradePartyType TradePartyType { get; set; }
         public string TradePartyDescription { get; set; }
         public bool IsDefault { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public TradePartyListDto TradePartyListDto { get; set; } = new TradePartyListDto();
     }
 }
