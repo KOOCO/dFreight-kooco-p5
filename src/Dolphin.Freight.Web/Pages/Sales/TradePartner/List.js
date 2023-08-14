@@ -122,6 +122,8 @@
                     data: "tpType",
                     render: function (data) {
                         if (data) {
+                            console.log(data);
+                            debugger;
                             return l([
                                 "Enum:TPType.AirCarrier",
                                 "Enum:TPType.Bank",
@@ -146,8 +148,8 @@
                                 "Enum:TPType.Terminal",
                                 "Enum:TPType.Trucker",
                                 "Enum:TPType.Vendor",
-                                "Enum:TPType.Warehouse",
-                            ][data]);
+                                "Enum:TPType.Warehouse"
+                            ][data - 1]);
                         }
                         else
                             return "";

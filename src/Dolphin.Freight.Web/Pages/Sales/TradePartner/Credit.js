@@ -72,7 +72,7 @@
                             "Enum:TPType.Trucker",
                             "Enum:TPType.Vendor",
                             "Enum:TPType.Warehouse",
-                        ][data]);
+                        ][data - 1]);
                     }
                 },
                 {
