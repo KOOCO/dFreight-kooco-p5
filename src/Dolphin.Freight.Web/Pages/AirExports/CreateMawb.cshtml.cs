@@ -17,7 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
 using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
-
+using Dolphin.Freight.Accounting;
 namespace Dolphin.Freight.Web.Pages.AirExports
 {
     public class CreateMawbModel : AbpPageModel
@@ -35,7 +35,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
 
         [BindProperty]
         public CreateMawbViewModel MawbModel { get; set; }
-
+        [BindProperty]
+        public List<Commodity> Commodities { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> AirportLookupList { get; set; }
@@ -68,9 +69,11 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             _airExportMawbAppService = airExportMawbAppService;
             _airExportHawbAppService = airExportHawbAppService;
         }
-
+        [BindProperty]
+        public List<SelectListItem> EnumList { get; set; }
         public async Task OnGetAsync()
         {
+            EnumList = GetIncotermsSelectList();
             MawbModel = new CreateMawbViewModel
             {
                 // set default value
@@ -106,6 +109,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             MawbModel.FilingNo = SetAirExportFileNo();
             MawbModel.PostDate = Clock.Now.ClearTime();
             var NewMawab = ObjectMapper.Map<CreateMawbViewModel, CreateUpdateAirExportMawbDto>(MawbModel);
+        
             if (NewMawab.ExtraProperties == null)
             {
                 NewMawab.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
@@ -119,6 +123,11 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                 NewMawab.ExtraProperties.Add("MoreInformation", MoreInformations);
 
             }
+            if (Commodities != null)
+            {
+                NewMawab.ExtraProperties.Add("Commodities", Commodities);
+            }
+
 
             var inputDto = await _airExportMawbAppService.CreateAsync(NewMawab);
             MawbId = inputDto.Id;
@@ -331,8 +340,22 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             [SelectItems(nameof(TradePartnerLookupList))]
             public String BusinessReferredId { get; set; }
             public bool IsECom { get; set; }
+            public string PONo { get; set; }
         }
         #endregion
+        private List<SelectListItem> GetIncotermsSelectList()
+        {
+            var enumValues = Enum.GetValues(typeof(AccountingInformationCode))
+                                  .Cast<AccountingInformationCode>()
+                                  .Select(e => new SelectListItem
+                                  {
+                                      Text = L["Enum:" + e.ToString()],
+                                      Value = e.ToString(),
 
+                                  })
+                                  .ToList();
+
+            return enumValues;
+        }
     }
 }

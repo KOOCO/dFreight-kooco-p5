@@ -25,6 +25,7 @@ using Dolphin.Freight.Settings.Countries;
 using Volo.Abp.Uow;
 using System.Threading;
 using Newtonsoft.Json;
+using Dolphin.Freight.Accounting;
 
 namespace Dolphin.Freight.Web.Pages.AirExports
 {
@@ -39,6 +40,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         private readonly IAirExportHawbAppService _airExportHawbAppService;
         private readonly ICountryDisplayNameAppService _countryDisplayNameAppService;
         private readonly ICountryAppService _countryAppService;
+        [BindProperty]
+       public List<SelectListItem> EnumList { get; set; }
 
         public EditModalModel(ITradePartnerAppService tradePartnerAppService,
             ISubstationAppService substationAppService,
@@ -79,7 +82,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             /*AirExportHawbDto = await _airExportHawbAppService.GetHblCardsById(Id);*/
             //if (AirExportMawbDto.ExtraProperties != null)
             //{
-                
+
 
             //     var extraproperty=AirExportMawbDto.ExtraProperties;
 
@@ -88,7 +91,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             //    MoreInformations = JsonConvert.DeserializeObject<List<MoreInformation>>(json.ToString());
 
             //}
-
+            EnumList = GetIncotermsSelectList();
             await FillTradePartnerAsync();
             await FillSubstationAsync();
             await FillAirportAsync();
@@ -104,13 +107,19 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             {
                 updateItem.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
             }
-            if (MoreInformationPrepaid != null || MoreInformationCollect!=null)
+            if (AirExportMawbDto.Commodities != null )
+            {
+                updateItem.ExtraProperties.Remove("Commodites");
+                updateItem.ExtraProperties.Add("Commodities", AirExportMawbDto.Commodities);
+
+            }
+            if (MoreInformationPrepaid != null || MoreInformationCollect != null)
             {
                 MoreInformations.Add(MoreInformationPrepaid);
                 MoreInformations.Add(MoreInformationCollect);
-                
+
                 updateItem.ExtraProperties.Remove("MoreInformation");
-                updateItem.ExtraProperties.Add("MoreInformation",MoreInformations);
+                updateItem.ExtraProperties.Add("MoreInformation", MoreInformations);
 
             }
             _airExportMawbAppService.UpdateAsync(AirExportMawbDto.Id, updateItem).Wait();
@@ -238,6 +247,19 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             return AEFileNo;
         }
         #endregion
+        private List<SelectListItem> GetIncotermsSelectList()
+        {
+            var enumValues = Enum.GetValues(typeof(AccountingInformationCode))
+                                  .Cast<AccountingInformationCode>()
+                                  .Select(e => new SelectListItem
+                                  {
+                                      Text =L["Enum:" + e.ToString()],
+                                      Value = e.ToString(),
+                                    
+                                  })
+                                  .ToList();
 
+            return enumValues;
+        }
     }
 }

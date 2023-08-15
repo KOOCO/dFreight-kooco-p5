@@ -153,6 +153,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         
         public String BusinessReferredId { get; set; }
         public bool IsECom { get; set; }
+        public string PONo { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

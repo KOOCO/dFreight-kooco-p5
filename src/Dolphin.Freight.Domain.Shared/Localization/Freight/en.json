@@ -911,6 +911,16 @@
     "Enum:PaymentType.Credit": "CREDIT",
     "Enum:PaymentType.CreditHold": "CREDIT HOLD",
     "Enum:PaymentType.Koinfo": "KOINFO",
+    // Enum Accounting Information Code
+    "Enum:CRD": "CRD: Credit Card Expire Date",
+    "Enum:CRI": "CRI: Credit Card Issuance Name",
+    "Enum:CRN": "CRN: Credit Card Number",
+    "Enum:GEN": "GEN: General Information",
+    "Enum:GBL": "GBL: Government Bill Lading",
+    "Enum:MCO": "MCO:Miscellaneous Charge Order",
+    "Enum:STL": "STL: Mode of Settlement",
+    "Enum:RET": "RET: Return of Origin",
+    "Enum:SRN": "SRN: Shipper's Reference Number'",
 
     // Enum TPType
     "Enum:TPType.AirCarrier": "AIR CARRIER",
