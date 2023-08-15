@@ -4055,17 +4055,17 @@ namespace Dolphin.Freight.Web.Controllers
                 Hbl.Mark = hblDetails.Mark;
                 Hbl.ShipperName = hblDetails.ShippingAgentName;
                 Hbl.CONSIGNEE = hblDetails.HblConsigneeName;
-                Hbl.WeightKgs = string.Concat(hblContainer.PackageWeight) ;
-                Hbl.WeightLbs = string.Concat(Math.Round((decimal)(hblContainer.PackageWeight * 2.204), 2)) ;
-                Hbl.MeasureCbm = string.Concat(hblContainer.PackageMeasure) ;
-                Hbl.MeasureCft = string.Concat(Math.Round((decimal)(hblContainer.PackageMeasure * 35.315), 2)) ;
-                Hbl.Package = string.Concat(hblContainer.PackageNum) + oceanImportDetails.PackageUnitName;
+                Hbl.WeightKgs = hblContainer?.PackageWeight!=null? string.Concat(hblContainer?.PackageWeight):"0" ;
+                Hbl.WeightLbs = hblContainer?.PackageWeight!=null? string.Concat(Math.Round((decimal)(hblContainer?.PackageWeight * 2.204), 2)):"0" ;
+                Hbl.MeasureCbm = hblContainer?.PackageMeasure!=null? string.Concat(hblContainer?.PackageMeasure) :"0";
+                Hbl.MeasureCft = hblContainer?.PackageMeasure != null ? string.Concat(Math.Round((decimal)(hblContainer?.PackageMeasure * 35.315), 2)):"0" ;
+                Hbl.Package = hblContainer?.PackageNum!=null? string.Concat(hblContainer?.PackageNum) + oceanImportDetails.PackageUnitName:"0";
                 Hbl.ExtraProperties = hbl.ExtraProperties;
                 Hbl.FDest = hblDetails.FdestName;
                 Hbl.IT_No = hblDetails.ItNo;
-                oceanImportDetails.TotalPackage = (int)(oceanImportDetails.TotalPackage + hblContainer.PackageNum);
-                oceanImportDetails.TotalMeasure = (double)(oceanImportDetails.TotalMeasure + hblContainer.PackageMeasure);
-                oceanImportDetails.TotalWeight = (double)(oceanImportDetails.TotalWeight + hblContainer.PackageWeight);
+                oceanImportDetails.TotalPackage = hblContainer?.PackageNum!=null?(int)(oceanImportDetails.TotalPackage + hblContainer?.PackageNum): oceanImportDetails.TotalPackage;
+                oceanImportDetails.TotalMeasure = hblContainer?.PackageMeasure!=null?(double)(oceanImportDetails.TotalMeasure + hblContainer?.PackageMeasure): oceanImportDetails.TotalMeasure;
+                oceanImportDetails.TotalWeight = hblContainer?.PackageWeight!=null?(double)(oceanImportDetails.TotalWeight + hblContainer?.PackageWeight): oceanImportDetails.TotalWeight;
                
                 HblsLists.Add(Hbl);
                 oceanImportDetails.TotalMeasureStrLBS = (oceanImportDetails.TotalMeasure * 35.315).ToString("N2");
