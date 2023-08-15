@@ -13,8 +13,8 @@ namespace Dolphin.Freight.TradePartners.TradeParties
         public Guid TargetTradePartnerId { get; set; }
         public TradePartyType TradePartyType { get; set; }
         public string TradePartyDescription { get; set; }
-        public bool IsDefault { get; set; }
+        public bool? IsDefault { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
-        public TradePartyListDto TradePartyListDto { get; set; } = new TradePartyListDto();
+        public TradePartyInfo TradePartyListDto { get; set; } = new TradePartyInfo();
     }
 }

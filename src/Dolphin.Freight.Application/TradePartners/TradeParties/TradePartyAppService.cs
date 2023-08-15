@@ -79,40 +79,52 @@ namespace Dolphin.Freight.TradePartners.TradeParties
 
         public async Task SaveAsync(CreateUpdateTradePartyDto dto)
         {
-            TradeParty entity = dto.Id == null ? new() : await _repository.GetAsync(dto.Id.Value);
-
-            if (dto.Id == dto.TargetTradePartnerId)
+            try
             {
-                return;
+                TradeParty entity = dto.Id == null ? new() : await _repository.GetAsync(dto.Id.Value);
+
+                if (dto.Id == dto.TargetTradePartnerId)
+                {
+                    return;
+                }
+
+                //entity.TradePartnerId = dto.TradePartnerId;
+                //entity.TargetTradePartnerId = dto.TargetTradePartnerId;
+                //entity.TradePartyDescription = dto.TradePartyDescription;
+                //entity.TradePartyType = dto.TradePartyType;
+                //entity.IsDefault = dto.IsDefault.GetValueOrDefault();
+                //entity.ExtraProperties = dto.ExtraProperties;
+
+                entity =  ObjectMapper.Map<CreateUpdateTradePartyDto, TradeParty>(dto);
+
+
+                if (entity.IsDefault)
+                {
+                    await _repository.UpdateManyAsync(
+                        (await _repository.GetListAsync())
+                        .Where(row => row.TradePartyType == entity.TradePartyType)
+                        .ToList()
+                        .Select(row => {
+                            row.IsDefault = false;
+                            return row;
+                        })
+                        .ToList()
+                    );
+                }
+
+                if (dto.Id == null)
+                {
+                    await _repository.InsertAsync(entity,true);
+                }
+                else
+                {
+                    await _repository.UpdateAsync(entity);
+                }
             }
-
-            entity.TradePartnerId = dto.TradePartnerId;
-            entity.TargetTradePartnerId = dto.TargetTradePartnerId;
-            entity.TradePartyDescription = dto.TradePartyDescription;
-            entity.TradePartyType = dto.TradePartyType;
-            entity.IsDefault = dto.IsDefault;
-
-            if (entity.IsDefault)
+            catch (Exception ex)
             {
-                await _repository.UpdateManyAsync(
-                    (await _repository.GetListAsync())
-                    .Where(row => row.TradePartyType == entity.TradePartyType)
-                    .ToList()
-                    .Select(row => {
-                        row.IsDefault = false;
-                        return row;
-                    })
-                    .ToList()
-                );
-            }
 
-            if (dto.Id == null)
-            {
-                await _repository.InsertAsync(entity);
-            }
-            else
-            {
-                await _repository.UpdateAsync(entity);
+                throw;
             }
         }
 

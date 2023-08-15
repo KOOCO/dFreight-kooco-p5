@@ -54,6 +54,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
             _creditLimitGroupRepository = creditLimitGroupRepository;
             _creditLimitGroupAppService = creditLimitGroupAppService;
             _accountGroupAppService = accountGroupAppService;
+            _tradePartyAppService = tradePartyAppService;
         }
 
         public async Task OnGetAsync()
@@ -87,25 +88,6 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
             {
                 return Page();
             }
-
-            if(TradeParties != null && TradeParties.Any())
-            {
-                foreach (var tradeParty in TradeParties)
-                {
-                    if (tradeParty.ExtraProperties == null)
-                    {
-                        tradeParty.ExtraProperties = new();
-                    }
-
-                    if(tradeParty.TradePartyListDto != null)
-                    {
-                        tradeParty.ExtraProperties.Add("TradePartyList", tradeParty.TradePartyListDto);
-                    }
-
-                    await _tradePartyAppService.SaveAsync(tradeParty);
-                }
-            }
-
             // ±NPopUpTips²Õ¦¨Json¦r¦ê
             PopUpTipsObj popUpTipsObj = new PopUpTipsObj(
                 TPInfoModel.DoorToDoor,
@@ -128,6 +110,27 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
             var inputDto = await _tradePartnerAppService.CreateTPAsync(
                 ObjectMapper.Map<CreateTradePartnerInfoViewModel, CreateUpdateTradePartnerDto>(TPInfoModel)
                 );
+
+            if(TradeParties != null && TradeParties.Any())
+            {
+                foreach (var tradeParty in TradeParties)
+                {
+                    if (tradeParty.ExtraProperties == null)
+                    {
+                        tradeParty.ExtraProperties = new();
+                    }
+
+                    if(tradeParty.TradePartyListDto != null)
+                    {
+                        tradeParty.ExtraProperties.Add("TradePartyList", tradeParty.TradePartyListDto);
+                    }
+
+                    tradeParty.TradePartnerId = inputDto.Id;
+
+                    await _tradePartyAppService.SaveAsync(tradeParty);
+                }
+            }
+
             // Logger.LogDebug("inputDtoId:" + inputDto.Id);
             //var result = new CreatedAtActionResult("Post", "", new { Id = inputDto.Id }, inputDto);
             //return result;

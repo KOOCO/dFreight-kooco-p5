@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 using System.ComponentModel.DataAnnotations.Schema;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.TradePartners.TradeParties
 {
