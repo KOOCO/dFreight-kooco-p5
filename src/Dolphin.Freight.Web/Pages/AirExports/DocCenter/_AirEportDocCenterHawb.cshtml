@@ -72,9 +72,6 @@
                 <a class='dropdown-item' href='#'>
                     <i class="fa fa-lock"></i> @L["Btn:Block"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="copyHawb('@Model.AirExportHawbDto.Id')">
-                    <i class="fa fa-files-o"></i> @L["Btn:Copy"]
-                </a>
         <li class="dropdown-divider"></li>
         <a class='dropdown-item' href='javascript:void(0)' onclick="DocumentPackage('@Url.Action("DocumentPackage", "Docs", new { id = Model.AirExportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEHBL })')">
                     <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
