@@ -110,7 +110,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string BillToId { get; set; }
         public string CustomsBroker { get; set; }
 
-
+        public bool IsLocked { get; set; }
 
         /// <summary>
         /// 是否刪除

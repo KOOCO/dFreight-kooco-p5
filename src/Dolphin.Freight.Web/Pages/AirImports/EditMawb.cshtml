@@ -33,6 +33,7 @@
     <abp-script src="/Pages/AirImports/EditMawb.js" />
     <script type="text/javascript">
         var l = abp.localization.getResource('Freight');
+        var isLocked;
         $(document).ready(function () {
 
             var l = abp.localization.getResource('Freight');
@@ -43,7 +44,8 @@
             } else {
                 abp.message.success('Successfully saved.');
             }
-
+             isLocked = '@Model.MawbModel.IsLocked';
+         
             const isDirectMasterChecked = document.querySelector('#isDirectMaster');
             if (isDirectMasterChecked.checked == true) {
                 $("#shipperId").removeAttr("disabled");
@@ -164,6 +166,7 @@
                         onSetCommodity();
                         onSetSubHawbs();
                         Swal.clickCancel();
+                        if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
 
                         $('#chkFrtRelease').on('change', function () {
@@ -254,36 +257,49 @@
         }
 
         function deleteHawbAirImport() {
-            abp.message.confirm(l('DeletionConfirmationMessage'))
-                .then(function (confirmed) {
-                    if (confirmed) {
-                        dolphin.freight.importExport.airImports.airImportHawb
-                            .delete($('#HawbModel_Id').val())
-                            .then(function () {
-                                abp.message.success(l('SuccessfullyDeleted'));
-                                $('#hblCard').remove();
-                                $('#hblCards').find('.card-body.show').closest('.card.board-item').remove()
-                            });
-                    }
-                });
+            islockedCheck = $('#HawbModel_IsLocked').val();
+            debugger;
+            islockedCheck = islockedCheck === "True";
+            if (islockedCheck) {
+                abp.message.error(l('Delete Error Data Is Locked'))
+            }
+            else {
+                abp.message.confirm(l('DeletionConfirmationMessage'))
+                    .then(function (confirmed) {
+                        if (confirmed) {
+                            dolphin.freight.importExport.airImports.airImportHawb
+                                .delete($('#HawbModel_Id').val())
+                                .then(function () {
+                                    abp.message.success(l('SuccessfullyDeleted'));
+                                    $('#hblCard').remove();
+                                    $('#hblCards').find('.card-body.show').closest('.card.board-item').remove()
+                                });
+                        }
+                    });
+            }
         }
 
         function deleteMawbAirImport() {
-            var url = new URL(window.location.href);
-            var mawbId = url.searchParams.get('Id');
-            abp.message.confirm(l('DeletionConfirmationMessage'))
-                .then(function (confirmed) {
-                    if (confirmed) {
-                        dolphin.freight.importExport.airImports.airImportMawb
-                            .delete(mawbId)
-                            .then(function () {
-                                abp.message.success(l('SuccessfullyDeleted')).done(function () {
-                                    location.href = '/AirImports/Index';
+            if (isLocked) { 
+             abp.message.error(l('Delete Error Data Is Locked'))
+            }
+            else {
+                var url = new URL(window.location.href);
+                var mawbId = url.searchParams.get('Id');
+                abp.message.confirm(l('DeletionConfirmationMessage'))
+                    .then(function (confirmed) {
+                        if (confirmed) {
+                            dolphin.freight.importExport.airImports.airImportMawb
+                                .delete(mawbId)
+                                .then(function () {
+                                    abp.message.success(l('SuccessfullyDeleted')).done(function () {
+                                        location.href = '/AirImports/Index';
+                                    });
                                 });
-                            });
-                    }
-                })
-        }
+                        }
+                    })
+            }
+            }
         function OpenInTrackTrace() {
             var MawbNo = $('#MawbModel_MawbNo').val();
             myWindow = window.open('https://www.track-trace.com/bol#' + MawbNo, '_blank', 'width=1200,height=1000');
@@ -506,6 +522,41 @@
                     });
                 });
         }
+           function setMawbLockUnlock(isLockedCheck) {
+            var id = $('#MawbModel_Id').val();
+            var hawbId = $('#HawbModel_Id').val();
+            isLockedCheck = isLockedCheck === "True";
+            if(isLockedCheck){
+                
+            abp.message.confirm(l('UnlockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airImports.airImportMawb
+                            .lockedOrUnLockedAirImportMawb(id)
+                            .then(function () {
+                                   abp.message.success(l('SuccessfullyUnlocked'));
+                                window.location.reload();
+                            });
+                    }
+                });
+            } else{
+                abp.message.confirm(l('LockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                      dolphin.freight.importExport.airImports.airImportMawb
+                            .lockedOrUnLockedAirImportMawb(id)
+                            .then(function () {
+                                dolphin.freight.importExport.airImports.airImportHawb
+                            .lockedOrUnLockedAirImportHawb(hawbId)
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyLocked'));
+                                window.location.reload();
+                            });
+                            });
+                    }
+                });
+            }
+        }
 
     </script>
 
@@ -568,6 +619,7 @@
                         <abp-card-header style="background:#555555;color:#FFFFFF;">
                             <abp-card-title>
                                 @L["MAWBInformation"] @Model.MawbModel.MawbNo
+                                <input asp-for="@Model.MawbModel.Id" hidden />
                             </abp-card-title>
 
                             <div id="myModal" class="modal" tabindex="-1" role="dialog">
@@ -579,11 +631,26 @@
 
                             <div class="btn-group dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                                         @if(@Model.MawbModel.IsLocked)
+                                        {
+                                            <i class="fa fa-lock"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock-open"></i>
+                                        }
                                     @L["Display:Function"]
                                 </button>
                                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                   <a class='dropdown-item' href='javascript:void(0)' onclick="setMawbLockUnlock('@Model.MawbModel.IsLocked')">
+                                        @if(@Model.MawbModel.IsLocked)
+                                        {
+                                            <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                        }
                                     </a>
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]

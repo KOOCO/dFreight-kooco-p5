@@ -23,7 +23,7 @@
     <abp-script src="/Pages/AirExports/DocCenter/DocCenter.js" />
     <script type="text/javascript">
         const l = abp.localization.getResource('Freight');
-
+        var isLocked;
         $(function () {
             $(document).on('click', '.button-download', function () {
                 const filename = $(this).data('filename');
@@ -73,7 +73,7 @@
            function onAddHawbClick() {
             location.href = "/AirExports/EditModal?Id=@Model.Id&from=accounting";
         }
-
+        isLocked = '@Model.AirExportMawbDto.IsLocked';
         $('#editForm').on('abp-ajax-success', function (result, rs) {
             console.log("enter here");
             event.preventDefault();
@@ -122,6 +122,7 @@
                         $('#partialContainer').html(partial);
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
+                         if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
                     })
 
                     $('.btnHawbCardCollapse').each(function (i, e) {
@@ -229,6 +230,41 @@
                 }
             });
         }
+          function setMawbLockUnlock(isLockedCheck) {
+            var id = '@Model.AirExportMawbDto.Id';
+             var hawbId = $('#AirExportHawbDto_Id').val();
+            isLockedCheck = isLockedCheck === "True";
+            if(isLockedCheck){
+                
+            abp.message.confirm(l('UnlockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airExports.airExportMawb
+                            .lockedOrUnLockedAirExportMawb(id)
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyUnlocked'));
+                                window.location.reload();
+                            });
+                    }
+                });
+            } else{
+                abp.message.confirm(l('LockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airExports.airExportMawb
+                            .lockedOrUnLockedAirExportMawb(id)
+                            .then(function () {
+                            dolphin.freight.importExport.airExports.airExportHawb
+                            .lockedOrUnLockedAirExportHawb(hawbId)
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyLocked'));
+                                window.location.reload();
+                            });
+                            });
+                    }
+                });
+            }
+        }
     </script>
 }
 <div class="page-header">
@@ -274,13 +310,28 @@
 
                             <div class="btn-group dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                                      @if(@Model.AirExportMawbDto.IsLocked)
+                                        {
+                                            <i class="fa fa-lock"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock-open"></i>
+                                        }
                                     @L["Display:Function"]
                                 </button>
 
                             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-lock"></i> @L["Btn:Block"]
-                                </a>
+                                 <a class='dropdown-item' href='javascript:void(0)' onclick="setMawbLockUnlock('@Model.AirExportMawbDto.IsLocked')">
+                                        @if(@Model.AirExportMawbDto.IsLocked)
+                                        {
+                                            <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                        }
+                                    </a>
                         <li class="dropdown-divider"></li>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="DocumentPackage('@Url.Action("DocumentPackage", "Docs", new { id = Model.AirExportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEMBL })')">
                             <i class="fa fa-files-o"></i> @L["Btn:Document Package"]

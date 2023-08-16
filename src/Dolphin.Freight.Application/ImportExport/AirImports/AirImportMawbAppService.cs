@@ -13,6 +13,7 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
 using Dolphin.Freight.TradePartners;
+using Volo.Abp;
 
 namespace Dolphin.Freight.ImportExport.AirImports
 {
@@ -246,6 +247,20 @@ namespace Dolphin.Freight.ImportExport.AirImports
             airImportDetails.ArrivalDate = data.ArrivalDate;
 
             return airImportDetails;
+        }
+        public async Task LockedOrUnLockedAirImportMawbAsync(Guid id)
+        {
+            try
+            {
+                var mbl = await _repository.GetAsync(id);
+                mbl.IsLocked = !mbl.IsLocked;
+                await _repository.UpdateAsync(mbl);
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+
         }
 
     }
