@@ -18,5 +18,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
         >
     {
         Task<AirExportDetails> GetAirExportDetailsById(Guid Id);
+        Task LockedOrUnLockedAirExportMawbAsync(Guid id);
     }
 }

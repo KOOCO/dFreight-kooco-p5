@@ -41,5 +41,6 @@ namespace Dolphin.Freight.Common
         public DateTime? DepatureDate { get; set; }
         public string DestinationCountry { get; set; }
         public FreightPageType PageType { get; set; }
+        public bool IsLocked { get; set; }
     }
 }

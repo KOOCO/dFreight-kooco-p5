@@ -8,6 +8,7 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Users;
 using Dolphin.Freight.Common;
 using Volo.Abp.Data;
+using NPOI.SS.UserModel;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -367,5 +368,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public List<Commodity> Commodities { get; set; }
         public string PONo { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public bool IsLocked { get; set; }
     }
 }

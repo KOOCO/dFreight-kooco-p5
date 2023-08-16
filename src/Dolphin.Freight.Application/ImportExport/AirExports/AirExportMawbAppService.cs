@@ -10,6 +10,7 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Common;
+using Volo.Abp;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -237,6 +238,21 @@ namespace Dolphin.Freight.ImportExport.AirExports
             airExportDetails.Operator = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
 
             return airExportDetails;
+        }
+
+        public async Task LockedOrUnLockedAirExportMawbAsync(Guid id)
+        {
+            try
+            {
+                var mbl = await _repository.GetAsync(id);
+                mbl.IsLocked = !mbl.IsLocked;
+                await _repository.UpdateAsync(mbl);
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+
         }
     }
 }

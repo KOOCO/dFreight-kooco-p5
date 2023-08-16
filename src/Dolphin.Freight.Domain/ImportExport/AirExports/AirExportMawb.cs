@@ -440,6 +440,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// </summary>
         public bool IsDeleted { get; set; }
         public string PONo { get; set; }
+        public bool IsLocked { get; set; }
 
         public AirExportMawb() { 
             AwbDate = DateTime.Now;
