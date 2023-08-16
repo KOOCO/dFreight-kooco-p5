@@ -166,7 +166,7 @@
 
             var trhtml = "<tr id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
             trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='exportDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
-            trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
+            trhtml = trhtml + "<td> <input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
             trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"

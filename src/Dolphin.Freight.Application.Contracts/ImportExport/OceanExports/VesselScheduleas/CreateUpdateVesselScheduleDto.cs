@@ -7,6 +7,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
 {
     public class CreateUpdateVesselScheduleDto
     {
+        public Guid Id { get; set; }
         /// <summary>
         /// 船期編號 
         /// </summary>

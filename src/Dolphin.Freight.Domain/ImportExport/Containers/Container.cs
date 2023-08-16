@@ -161,5 +161,6 @@ namespace Dolphin.Freight.ImportExport.Containers
         public Guid? PackageUnitId { get; set; }
         public string PackageWeightUnit { get; set; }
         public string PackageMeasureUnit { get; set; }
+        public Guid? VesselId { get; set; }
     }
 }
