@@ -20198,8 +20198,9 @@
                        
                         commodities.forEach(function (commodity) {
                             commodity.chkIndex = commodityIndex;
-                            document.getElementById("commodity "+ hbl.hblNo).value = document.getElementById("commodity "+ hbl.hblNo).value + commodity.Description + '\n';
-
+                            if (commodity.Description) {
+                                document.getElementById("commodity " + hbl.hblNo).value = document.getElementById("commodity " + hbl.hblNo).value + commodity.Description + '\n';
+                            }
 
 
 
@@ -20594,8 +20595,7 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                             </div>
                             <div class="item-edit">
                                 <p class="margin-b hover-toggle-icon-text-template">
-                                    <textarea name="good_items_47147" cols="40" rows="1" class="text-scroll ng-isolate-scope" template-id="baa2a9de7495abe08e4a1de3fc66f6b35c57495bd288429c5072382357111a0b:FormExtend.good_items_47147" id="commodity @hbl.HblNo" ng-keyup="vm.textAreaAdjust($event)" placeholder="COMMODITY" style="height: 24px;">
-                                            </textarea>
+                                    <textarea name="commodity @hbl.HblNo" cols="40" rows="1" class="text-scroll ng-isolate-scope" template-id="baa2a9de7495abe08e4a1de3fc66f6b35c57495bd288429c5072382357111a0b:FormExtend.commodity @hbl.HblNo" id="commodity @hbl.HblNo" ng-keyup="vm.textAreaAdjust($event)" placeholder="COMMODITY" ng-model="vm.mark[47147]" style="height: 24px;"></textarea>
                                 <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-bhp-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-bhp-c260="" class="icon-text-template" style="top: 3px; left: 204px;"></span><!---->
 
 

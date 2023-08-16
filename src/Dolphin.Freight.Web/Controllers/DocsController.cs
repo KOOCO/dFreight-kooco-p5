@@ -4072,6 +4072,7 @@ namespace Dolphin.Freight.Web.Controllers
                 oceanImportDetails.TotalWeightStrLBS = (oceanImportDetails.TotalWeight * 2.204).ToString("N2");
             }
             oceanImportDetails.HblLists = HblsLists;
+            oceanImportDetails.MblOperatorName = oceanImportDetails.MblOperatorName != null ? oceanImportDetails.MblOperatorName : CurrentUser.Name;
             return View(oceanImportDetails);
         }
 
