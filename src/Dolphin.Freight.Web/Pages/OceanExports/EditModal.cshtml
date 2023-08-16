@@ -41,7 +41,7 @@
             var showMsg = '@Model.ShowMsg';
             if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
             isLocked = '@Model.OceanExportMbl.IsLocked';
-            if (isLocked == 'True') {
+            if (!isLocked == 'True') {
                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> '+l("Btn:Lock"));
                 $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
             }
@@ -125,7 +125,7 @@
                     })
                     dolphin.freight.importExport.oceanExports.oceanExportMbl.lockedOrUnLockedOceanExportMbl({ MbId: id })
                         .done(function () {
-                            if (isLock) {
+                            if (!isLock) {
                                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
                                 $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
                             } else {
@@ -495,7 +495,7 @@
                     })
                     dolphin.freight.importExport.oceanExports.oceanExportHbl.lockedOrUnLockedOceanExportHbl({ HblId: id })
                         .done(function () {
-                            if (isLock) {
+                            if (!isLock) {
                                 $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
                                 $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
                             } else {
