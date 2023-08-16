@@ -129,5 +129,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// </summary>
         public bool IsDeleted { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public string CurrentHawbNo { get; set; }
     }
 }

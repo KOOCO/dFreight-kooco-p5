@@ -177,7 +177,7 @@ namespace Dolphin.Freight.Web.Controllers
 
         [HttpGet]
         [Route("AirExportBasicHawb")]
-        public async Task<PartialViewResult> GetAirExportBasicHawb(Guid Id)
+        public async Task<PartialViewResult> GetAirExportBasicHawb(Guid Id, string hawbNo)
         {
             FillWtValOther();
 
@@ -191,6 +191,7 @@ namespace Dolphin.Freight.Web.Controllers
             model.CountryName = CountryName;
 
             model.AirExportHawbDto = await _airExportHawbAppService.GetHawbCardById(Id);
+            model.AirExportHawbDto.CurrentHawbNo = hawbNo;
 
             if( Id == Guid.Empty)
             {

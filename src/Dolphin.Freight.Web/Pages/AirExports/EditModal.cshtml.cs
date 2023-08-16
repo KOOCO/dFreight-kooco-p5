@@ -135,6 +135,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             {
                 var updateHawb = ObjectMapper.Map<AirExportHawbDto, CreateUpdateAirExportHawbDto>(AirExportHawbDto);
                 updateHawb.MawbId = AirExportMawbDto.Id;
+                bool isUpdate = AirExportHawbDto.Id != Guid.Empty;
 
                 if (updateHawb.ExtraProperties == null)
                 {
@@ -154,8 +155,13 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                     updateHawb.ExtraProperties.Add("OtherCharges", AirExportHawbDto.OtherCharges);
                 }
 
+                if (string.IsNullOrEmpty(AirExportHawbDto.HawbNo) || AirExportHawbDto.HawbNo == "0")
+                {
+                    AirExportHawbDto.Id = Guid.NewGuid();
+                    isUpdate = false;
+                }
 
-                if (AirExportHawbDto.Id != Guid.Empty)
+                if (isUpdate)
                 {
                     _airExportHawbAppService.UpdateAsync(AirExportHawbDto.Id, updateHawb).Wait();
                 }
