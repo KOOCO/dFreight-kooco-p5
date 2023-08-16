@@ -95,7 +95,52 @@
 
             resetCommodityIndex();
         }
+        var chkIndex = 0;
+        function onAddMawbCommodity()
+        {
+            var newRowData = {
+                chkIndex: chkIndex
+            };
 
+            var newRow = $('#mawbCommodityTemplate').tmpl(newRowData);
+
+            $('#MawbcommodityBody').append(newRow);
+
+            chkIndex += 1;
+
+            resetCommodityIndex();
+        }
+         var chkAccountingIndex = 0;
+        function onAddAccounting()
+        {
+            var newRowData = {
+                chkIndex: chkAccountingIndex,
+                
+            };
+
+            var newRow = $('#accountingTemplate').tmpl(newRowData);
+
+            $('#accountingBody').append(newRow);
+
+            chkAccountingIndex += 1;
+
+            resetAccountingIndex();
+        }
+        
+        $('#addMawbCommodityBtn').on('click', function () {
+            // addMawbCommodityTr();
+            onAddMawbCommodity();
+        })
+
+           $("#MawbdeleteBtn").click(function () {
+               onRemoveMawbCommodity();
+            // $("input[name='f0']:checked").each(function () {
+            //     var tid = $(this).val();
+            //     $("#did_" + tid).val("1");
+            //     var val = $(this).attr('id').split('_')[1];
+            //     $("#Mawbtr_" + val).hide();
+            // })
+        })
         var chkOtherChargesIndex = 0;
         function onAddOtherCharges() {
 
@@ -119,7 +164,20 @@
 
             resetCommodityIndex();
         }
+         function onRemoveAccounting(){
+            $('[name="chk_Accounting"]:checked').each(function (i, elem) { 
+                $(elem).closest('tr').remove();
+            });
 
+            resetAccountingIndex();
+        }
+        function onRemoveMawbCommodity(){
+            $('[name="chk_commodity"]:checked').each(function (i, elem) { 
+                $(elem).closest('tr').remove();
+            });
+
+            resetMawbCommodityIndex();
+        }
         function onRemoveOtherCharges() {
             $('[name="chk_otherCharges"]:checked').each(function (i, elem) {
                 $(elem).closest('tr').remove();
@@ -242,6 +300,39 @@
             $('#saveBtn').click();
         }
 
+             function addAccountingTr() {
+            addAccountingTrTag("", "");
+        }
+         $('#addAccountingBodyBtn').on('click', function () {
+            onAddAccounting();
+        })
+        var trAccountingindex = 0;
+        function addAccountingTrTag(value1, value2, value3, value4, value5) {
+            var enumValues = '@Html.Raw(Json.Serialize(Model.EnumList))';
+            var enumvalues = JSON.parse(enumValues);
+            var trhtml = "<tr id='trAccounting_" + trAccountingindex + "'><td> <input type='checkbox' name='f1' id='did_" + trAccountingindex + "'  value='" + trAccountingindex + "'    /></td>"
+            trhtml = trhtml + "<td><select  id='f1_" + trAccountingindex + "' asp-items='Html.GetEnumSelectList(typeof(IncotermsType))' class='form-select-sm form-control'>" +
+                "<option value='' selected> @L["Display:Dropdownlist:Option:Select"]</option>";
+                enumvalues.forEach(function (enumvalue) {
+                
+                  trhtml += '<option value="' + enumvalue.value + '">' + enumvalue.text + '</option>';
+                
+                
+                
+                
+            });
+
+               trhtml += "</select></td>";
+                trhtml = trhtml + "<td><input type='text' " + trAccountingindex + " id='f1_" + trAccountingindex + "' ' class='form-control' value='" + value2 + "' /></td>"
+            $("#accountingBody").append(trhtml);
+            trAccountingindex++;
+        }
+
+
+         $("#deleteAccountingBtn").click(function () {
+             onRemoveAccounting();
+        })
+
         $('#addHBtn').on('click', function () {
             if ($('#mawbDiv')[0].classList.contains('show')) {
                 $('#btnMawbCollapse').click();
@@ -267,6 +358,34 @@
         function resetCommodityIndex()
         {
             $('#commodityBody > tr').each(function (e, elem) {
+                $(elem).find('td').each(function (a, aelem) {
+                    var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
+                  
+                    $(aelem).find('input').attr('name', attrName);
+                    if ($(aelem).hasClass('d-none')) { 
+                        var aelemVal = $(aelem).find('input').val(); 
+                        $(aelem).find('input').val(aelemVal.replace(/[0-9]/, e)); 
+                    }
+                })
+            })
+        }
+            function resetAccountingIndex()
+        {
+            $('#accountingBody > tr').each(function (e, elem) {
+                $(elem).find('td').each(function (a, aelem) {
+                    var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
+                  
+                    $(aelem).find('input').attr('name', attrName);
+                    if ($(aelem).hasClass('d-none')) { 
+                        var aelemVal = $(aelem).find('input').val(); 
+                        $(aelem).find('input').val(aelemVal.replace(/[0-9]/, e)); 
+                    }
+                })
+            })
+        }
+          function resetMawbCommodityIndex()
+        {
+            $('#MawbcommodityBody > tr').each(function (e, elem) {
                 $(elem).find('td').each(function (a, aelem) {
                     var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
                   
@@ -307,7 +426,42 @@
           <td class="d-none"><input type="hidden" name="AirExportHawbDto.Commodities[${chkIndex}].Id" value="commodity_${chkIndex}" id="hidden_Commodity_${chkIndex}" /></td>
         </tr>
     </script>
-
+    <script id="mawbCommodityTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_commodity" id="chk_Commodity_${chkIndex}" />
+          </td>
+          <td><input type="text" name="Commodities[${chkIndex}].Description" id="desc_${chkIndex}" /></td>
+          <td><input type="text" name="Commodities[${chkIndex}].HTSCode" id="htscode_${chkIndex}" /></td>
+          <td><input type="text" name="Commodities[${chkIndex}].PONumber"   /></td>
+          <td class="d-none"><input type="hidden" name="Commodities[${chkIndex}].Id" value="commodity_${chkIndex}" id="hidden_Commodity_${chkIndex}" /></td>
+        </tr>
+    </script>
+    <script>
+  var enumValues = @Html.Raw(Json.Serialize(Model.EnumList));
+</script>
+    <script id="accountingTemplate" type="text/x-jQuery-tmpl">
+      
+      
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_Accounting" id="chk_Accounting_${chkIndex}" />
+          </td>
+               <td>
+      <select id="f1_${chkIndex}" name="AccountingInformation[${chkIndex}].Code"  class="filteredDropdown form-select form-control cursor-pointer ">
+        <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
+      {{each enumValues}}
+          <option value="${$value.value}">${$value.text}</option>
+        {{/each}}
+      </select>
+    </td>
+          <td><input type="text" name="AccountingInformation[${chkIndex}].Information" id="information_${chkIndex}" class="form-control" /></td>
+         
+     
+        
+          <td class="d-none"><input type="hidden" name="AccountingInformation[${chkIndex}].Id" value="accountingInformation_${chkIndex}" id="hidden_AccountingInformation_${chkIndex}" /></td>
+        </tr>
+    </script>
     <script id="otherChargesTemplate" type="text/x-jQuery-tmpl">
         <tr>
           <td>
@@ -760,9 +914,7 @@
                                         <th><input type="checkbox" /></th>
                                         <th>@L["Code"]</th>
                                         <th>@L["Information"]</th>
-                                        <th>@L["ChargeItem"]</th>
-                                        <th>@L["Description"]</th>
-                                        <th>@L["ChargeAmount"]</th>
+                                     
                                         </thead>
                                         <tbody id="accountingBody">
                                         </tbody>
@@ -808,7 +960,7 @@
                                             </div>
                                             <abp-row>
                                                 <abp-column size-md="_12">
-                                                    <abp-input asp-for="@Model.AirExportHawbDto.PONo" id="AwbCancelledOpId" />
+                                                    <abp-input asp-for="@Model.MawbModel.PONo" id="AwbCancelledOpId" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row class="mt-4">

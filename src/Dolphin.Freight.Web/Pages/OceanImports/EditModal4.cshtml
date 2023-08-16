@@ -148,7 +148,12 @@
             //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
-
+             function getDEVSEG() {
+            var idNo = $('#OceanImportMbl_Id').val();
+            myWindow = window.open("@Url.Action("DEVSEGOceanImportMbl", "Docs")" + "?id=" + idNo, 'DEVSEGOceanImportMbl', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow.focus()
+        }
         function ConslidateByConsignee() {
 
             var url = new URL(window.location.href);
@@ -302,15 +307,13 @@
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ManifestOceanImportMBL", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-file-text-o"></i> @L["Btn:Unpacking/Isolation Instructions"]
-                                </a>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getDEVSEG()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:DEV/SEG"]
+                                    </a>
                                        <a class='dropdown-item' href='javascript:void(0)' onclick="getOrderDelivery()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
                                     </a>
-                                <a class='dropdown-item consolidateConsignee disabled' href='javascript:void(0)' onclick="if(!$(this).hasClass('disabled')) { ConslidateByConsignee() }" title="This function is only available when two or more hbl have same consignee">
-                                    <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Arrival Notice"]
-                                </a>
+                             
                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
                                 </a>
@@ -375,9 +378,7 @@
                               @*   <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
                                 </a> *@
-                                      <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PickupDeliveryInstrucationOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id })')">
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Pickup Delivery Instruction"]
-                </a>
+               
                                              <a class='dropdown-item' href='#' >
                                                 <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
                                             </a>
@@ -396,9 +397,9 @@
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("CarrierCertificateOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
                                      <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
                                  </a>
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-file-text-o"></i> @L["Btn:Pickup Delivery Instruction"]
-                                </a>
+                                                      <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PickupDeliveryInstrucationOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Pickup Delivery Instruction"]
+                </a>
                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ForwarderCargoReceiptOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
                  </a>

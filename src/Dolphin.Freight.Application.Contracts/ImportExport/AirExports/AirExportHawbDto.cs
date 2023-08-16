@@ -122,10 +122,13 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string ActualShipperName { get; set; }
         public string BillToName { get; set; }
 
+        public bool IsLocked { get; set; }
+
         /// <summary>
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public string CurrentHawbNo { get; set; }
     }
 }

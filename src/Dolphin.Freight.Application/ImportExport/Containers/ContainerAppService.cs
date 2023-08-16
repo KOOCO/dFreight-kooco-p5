@@ -55,6 +55,17 @@ namespace Dolphin.Freight.ImportExport.Containers
             var list = ObjectMapper.Map<List<Container>, List<ContainerDto>>(Containers.ToList());
             return list;
         }
+        public async Task<List<ContainerDto>> QueryListVesselAsync(Guid vesselId)
+        {
+            var Containers = await _repository.GetListAsync();
+
+            if (vesselId != Guid.Empty)
+            {
+                Containers = Containers.Where(x => x.VesselId == vesselId).ToList();
+            }
+            var list = ObjectMapper.Map<List<Container>, List<ContainerDto>>(Containers.ToList());
+            return list;
+        }
         public async Task<List<ContainerDto>> QueryListBookingAsync(Guid bookingId)
         {
             var Containers = await _repository.GetListAsync();
@@ -76,7 +87,16 @@ namespace Dolphin.Freight.ImportExport.Containers
             }
             return list.Count;
         }
-
+        public async Task<int> DeleteByVesselIdAsync(QueryContainerDto query)
+        {
+            var list = await this.QueryListVesselAsync(query.QueryId);
+            foreach (var dto in list)
+            {
+                var did = dto.Id;
+                await this.DeleteAsync(did);
+            }
+            return list.Count;
+        }
         public async Task<int> DeleteByMblIdAsync(QueryContainerDto query) 
         {
             var list = await this.QueryListAsync(query);

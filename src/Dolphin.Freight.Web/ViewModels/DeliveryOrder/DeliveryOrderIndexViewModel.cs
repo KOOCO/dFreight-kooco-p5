@@ -39,6 +39,7 @@ namespace Dolphin.Freight.Web.ViewModels.DeliveryOrder
         public string carrier_bkg_no { get; set; }
         public string carrier { get; set; }
         public string VESSEL_INFO { get; set; }
+        public string VOVAGE_INFO { get; set; }
         public string POR_location { get; set; }
         public string POR_location_ETD { get; set; }
         public string POL_location { get; set; }

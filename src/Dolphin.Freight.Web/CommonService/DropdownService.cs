@@ -8,6 +8,7 @@ using Dolphin.Freight.Settinngs.PackageUnits;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
+using Dolphin.Freight.TradePartners.Credits;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,6 +29,8 @@ namespace Dolphin.Freight.Web.CommonService
         private readonly IContainerSizeAppService _containerAppService;
         private readonly ICountryAppService _countryAppService;
         private readonly IGlCodeAppService _glCodeAppService;
+        private readonly ICreditLimitGroupAppService _creditLimitGroupAppService;
+        private readonly IAccountGroupAppService _accountGroupAppService;
         public DropdownService(ITradePartnerAppService tradePartnerAppService,
                                ISubstationAppService substationAppService,
                                IAirportAppService airportAppService,
@@ -37,7 +40,9 @@ namespace Dolphin.Freight.Web.CommonService
                                IPortsManagementAppService portsManagementAppService,
                                IContainerSizeAppService containerAppService,
                                ICountryAppService countryAppService,
-                               IGlCodeAppService glCodeAppService)
+                               IGlCodeAppService glCodeAppService,
+                               ICreditLimitGroupAppService creditLimitGroupAppService,
+                               IAccountGroupAppService accountGroupAppService)
         {
             _tradePartnerAppService = tradePartnerAppService;
             _substationAppService = substationAppService;
@@ -49,6 +54,8 @@ namespace Dolphin.Freight.Web.CommonService
             _containerAppService = containerAppService;
             _countryAppService = countryAppService;
             _glCodeAppService = glCodeAppService;
+            _creditLimitGroupAppService = creditLimitGroupAppService;
+            _accountGroupAppService = accountGroupAppService;
         }
         public List<SelectItems> TradePartnerLookupList => FillTradePartnerAsync().Result;
 
@@ -90,6 +97,8 @@ namespace Dolphin.Freight.Web.CommonService
 
         public List<SelectItems> PreCarriageVesselLookupList => FillPreCarriageVesselTypeAsync().Result;
         public List<SelectItems> GiCodeLookupList => FillGiCodesAsync().Result;
+        public List<SelectItems> CreditLimitGroupNameLookupList => FillCreditLimitGroupName().Result;
+        public List<SelectItems> AccountGroupnameLookupList => FillAccountGroupName().Result;
 
         #region FillTradePartnerAsync()
         private async Task<List<SelectItems>> FillTradePartnerAsync()
@@ -322,6 +331,28 @@ namespace Dolphin.Freight.Web.CommonService
 
             return lookup.Select(x => new SelectListItem(x.Code, x.Id.ToString(), false)).ToList();
         }
+        #endregion
+
+        #region FillCreditLimitAsync()
+
+        private async Task<List<SelectItems>> FillCreditLimitGroupName()
+        {
+            var lookup = await _creditLimitGroupAppService.GetCreditLimitGroupNameLookupAsync();
+
+            return lookup.Items.Select(s => new SelectListItem(s.CreditLimitGroupName, s.Id.ToString(), false)).ToList();
+        }
+
+        #endregion
+
+        #region AccountGroupNameAsync()
+
+        private async Task<List<SelectItems>> FillAccountGroupName()
+        {
+            var lookup = await _accountGroupAppService.GetAccountGroupNameLookupAsync();
+
+            return lookup.Items.Select(s => new SelectItems(s.AccountGroupName, s.Id.ToString(), false)).ToList();
+        }
+
         #endregion
     }
 }

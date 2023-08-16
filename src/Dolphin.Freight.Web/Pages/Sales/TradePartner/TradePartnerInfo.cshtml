@@ -2,9 +2,12 @@
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.TradePartners.TradeParties;
 @using Microsoft.Extensions.Localization
+@using Dolphin.Freight.Web.Pages.Components
+@using Dolphin.Freight.Web.CommonService;
 @using Dolphin.Freight.TradePartner
 @model Dolphin.Freight.Web.Pages.Sales.TradePartner.TradePartnerInfoModel
 @inject IStringLocalizer<FreightResource> L
+@inject IDropdownService _dropdown
 @section styles{
     <style>
         .redStar::before {
@@ -110,19 +113,19 @@
             addSelections[0] = $("#tpCityCode").val();
             addSelections[1] = $("#tpStateCode").val();
             addSelections[2] = $("#tpPostCode").val();
-            addSelections[3] = $("#tpCountryCode option:selected").val();
+            addSelections[3] = $("#TPInfoModel_CountryCode option:selected").val();
             var j = 0, result;
             for (let i = 0; i < addSelections.length; i++) {
                 if ((addSelections[i] !== 'undefined') && (addSelections[i] != '') && (addSelections[i] != '- 請選擇 -') && (addSelections[i] != '- Select -')) {
                     if (j == 0) {
                         if (i == 3) {
-                            result = $("#tpCountryCode option:selected").text();
+                            result = $("#TPInfoModel_CountryCode option:selected").text();
                         } else {
                             result = addSelections[i];
                         }
                     } else {
                         if (i == 3) {
-                            result += "," + $("#tpCountryCode option:selected").text();
+                            result += "," + $("#TPInfoModel_CountryCode option:selected").text();
                         } else {
                             result += "," + addSelections[i];
                         }
@@ -217,7 +220,7 @@
                 }
             });
 
-            $("#tpCountryCode").change(function () {
+            $("#TPInfoModel_CountryCode").change(function () {
                 if ($("#checkboxAddress").is(":checked")) {
                     if ($("#tpLocalAddress").val() != '') {
                         if ($("#checkboxName").is(":checked")) {
@@ -307,7 +310,8 @@
                 }
             });
 
-            $("#tpCopyFromLocalAddress").click(function () {
+            $("#tpCopyFromLocalAddress").click(function (event) {
+                event.preventDefault();
                 $("#tpAccountAddress").mousemove();
                 var originalAccountAddressValue = $("#tpAccountAddress").val();
                 if (typeof ("#tpAccountAddress") == 'undefined') {
@@ -337,9 +341,9 @@
                 }
             });
 
-            $("#tpCreditLimitGroupName").on("change", function () {
-                var txt = $('#tpCreditLimitGroupName');
-                if (txt.val() != "- Select -") {
+            $("#TPInfoModel_CreditLimitGroupId").on("change", function () {
+                var txt = $('#TPInfoModel_CreditLimitGroupId');
+                if (txt.val() != "") {
                     $("#tpCreditTermType").attr("disabled", "disabled");
                     $("#tpCreditTermDays").attr("disabled", "disabled");
                     $("#tpCreditLimit").attr("disabled", "disabled");
@@ -616,9 +620,8 @@
                             <abp-input asp-for="TPInfoModel.TPAliasName" />
                         </abp-column>
                         <abp-column>
-                            <abp-select asp-for="TPInfoModel.AccountGroupId" id="tpAccountGroupName">
-                                <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                            </abp-select>
+                            <label asp-for="TPInfoModel.AccountGroupId">@L["DisplayName:TPInfoModel.AccountGroupId"]</label>
+                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "TPInfoModel.AccountGroupId", AspItems = _dropdown.AccountGroupnameLookupList, IsShowLabel = true, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.TPInfoModel.AccountGroupId) })
                         </abp-column>
                     </abp-row>
                     <abp-row>
@@ -638,9 +641,8 @@
                             <abp-input asp-for="TPInfoModel.Ceo" />
                         </abp-column>
                         <abp-column>
-                            <abp-select asp-for="TPInfoModel.CreditLimitGroupId" id="tpCreditLimitGroupName">
-                                <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                            </abp-select>
+                            <label asp-for="TPInfoModel.CreditLimitGroupId">@L["DisplayName:TPInfoModel.CreditLimitGroupId"]</label>
+                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "TPInfoModel.CreditLimitGroupId", AspItems = _dropdown.CreditLimitGroupNameLookupList, IsShowLabel = true, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.TPInfoModel.CreditLimitGroupId) })
                         </abp-column>
                     </abp-row>
                     <abp-row>
@@ -667,7 +669,7 @@
                             <abp-input asp-for="TPInfoModel.ScacCode" />
                         </abp-column>
                         <abp-column>
-                            <abp-input asp-for="TPInfoModel.CbsaCode" />
+                            <abp-input asp-for="TPInfoModel.AccountNo" />
                             <abp-input asp-for="TPInfoModel.FirmsCode" />
                         </abp-column>
                     </abp-row>
@@ -693,13 +695,7 @@
                             <label asp-for="TPInfoModel.CountryCode" class="redStar form-label"></label>
                             <span asp-validation-for="TPInfoModel.CountryCode" class="text-danger"></span>
                             @*<abp-select asp-for="TPInfoModel.CountryCode" id="tpCountryCode">*@
-                            <select asp-for="TPInfoModel.CountryCode" id="tpCountryCode" class="form-select form-control">
-                                <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                @foreach (var country in Model.CountryLookupList)
-                                {
-                                    <option value=@country.Value>@country.Text</option>
-                                }
-                            </select>
+                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "TPInfoModel.CountryCode", AspItems = _dropdown.CountryLookupList, IsShowLabel = true, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.TPInfoModel.CountryCode) })
                         </abp-column>
                         <abp-column>
                             <abp-select asp-for="TPInfoModel.BussinessStatusType" />
@@ -726,7 +722,8 @@
                         <abp-column size="_6">
                             <abp-input asp-for="TPInfoModel.Website" />
                         </abp-column>
-                        <abp-column>
+                        <abp-column size="_3">
+                            <abp-input asp-for="TPInfoModel.CbsaCode" />
                         </abp-column>
                     </abp-row>
                     <abp-row>
@@ -760,7 +757,7 @@
                     <abp-row>
                         <abp-column size="_6">
                             <abp-input asp-for="TPInfoModel.AccountAddress" id="tpAccountAddress" row="5" />
-                            <a abp-button="Primary" href="#" size="Small" id="tpCopyFromLocalAddress">@L["Display:Button:CopyFromLocalAddress"]</a>
+                            <a abp-button="Primary" href="javascript:void(0)" size="Small" id="tpCopyFromLocalAddress" onclick="return false;">@L["Display:Button:CopyFromLocalAddress"]</a>
                         </abp-column>
                         <abp-column>
                             <abp-input asp-for="TPInfoModel.TaxId" id="taxIdInput" />
@@ -783,7 +780,7 @@
                             <abp-select asp-for="TPInfoModel.CreditTermType" id="tpCreditTermType" />
                         </abp-column>
                         <abp-column>
-                            <abp-input asp-for="TPInfoModel.CreditTermDays" id="tpCreditTermDays" />
+                            <abp-input asp-for="TPInfoModel.CreditTermDays" id="tpCreditTermDays" style="margin-top: 8px;" />
                         </abp-column>
                         <abp-column>
                             <abp-input asp-for="TPInfoModel.CreditLimit" id="tpCreditLimit" />
@@ -837,8 +834,7 @@
                             <abp-input asp-for="TPInfoModel.ImporterNo" />
                         </abp-column>
                         <abp-column>
-                            <br />
-                            <abp-button button-type="Primary" disabled="true"> Check Bond Status </abp-button>
+                            <abp-button button-type="Primary" disabled="true" style="margin-top: 28px;"> Check Bond Status </abp-button>
                         </abp-column>
                     </abp-row>
                     <h4>@L["Display:TradePartner:H4:OtherSetting"]</h4>

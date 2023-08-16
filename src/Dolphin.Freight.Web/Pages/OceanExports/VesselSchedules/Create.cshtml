@@ -3,12 +3,15 @@
 @using Dolphin.Freight.Web.Pages.Components
 @using Microsoft.Extensions.Localization
 @using Dolphin.Freight.Web.CommonService
+@using Dolphin.Freight.Web.Pages.Shared.Memos;
 @model Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas.CreateModel
 @inject IStringLocalizer<FreightResource> L
 @inject IDropdownService _dropdown;
 @section scripts
     {
     <script type="text/javascript">
+        var trindex = 0;
+         var containerSizes = [];
         $(document).ready(function () {
 
             initializeDropdownSearch("VesselSchedule_OfficeId");
@@ -57,6 +60,28 @@
             }
 
         }
+           dolphin.freight.settings.containerSizes.containerSize.queryAllList({}).done(function (result) {
+                if (result != null && result.length > 0) {
+                    containerSizes = result;
+                    // dolphin.freight.importExport.containers.container.queryList({ QueryId: 'Model.Id' }).done(function (result) {
+                    //     if (result != null && result.length > 0) {
+                    //         for (var i = 0; i < result.length; i++) {
+                    //             var value1 = result[i].containerNo;
+                    //             var value2 = result[i].containerSizeId;
+                    //             var value3 = result[i].sealNo;
+                    //             var value4 = result[i].packageNum;
+                    //             var value5 = result[i].packageWeight;
+                    //             var value6 = result[i].packageMeasure;
+                    //             addTrTag(value1, value2, value3, value4, value5, value6);
+
+                    //         }
+                    //     }
+                    // });
+                }
+            });
+         function exportDiv(trindex) {
+            $("#tr2_" + trindex).show();
+        }
         function addCardRight(hblId, hblNo, soNo, bgColor) {
             var cardHtml = "<div id='card_" + hblId + "' class='card mt-3' onclick=''>"
             cardHtml = cardHtml + "<div class='card-body'  style='background:" + bgColor + ";color:#FFFFFF;'>"
@@ -65,20 +90,60 @@
             cardHtml = cardHtml + " </div> </div>"
             return cardHtml;
         }
+         $("#addBtn").click(function () {
+          
+                addTr()
+            })
+                $("#deleteBtn").click(function () {
+                $("input[name='f0']:checked").each(function () {
+                    var tid = $(this).val();
+                    $("#did_" + tid).val("1");
+                    $("#tr_" + $(this).val()).hide();
+                })
+            })
         function addTr() {
-            addTrTag("", "", "", "", "", "");
+            addTrTag("", "", "", "", "", "","","");
         }
-        function addTrTag(value1, value2, value3, value4, value5, value6) {
-            trindex++;
-            var trhtml = "<tr id='tr_" + trindex + "'><td><input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f1' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> </td>"
-            trhtml = trhtml + "<td><input type='text' name='f2' id='f2_" + trindex + "' class='form-control' value='" + value2 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f3' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f4' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f5' id='f5_" + trindex + "' class='form-control' value='" + value5 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f6' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
+        // function addTrTag(value1, value2, value3, value4, value5, value6) {
+        //     trindex++;
+        //     var trhtml = "<tr id='tr_" + trindex + "'><td><input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f1' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> </td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f2' id='f2_" + trindex + "' class='form-control' value='" + value2 + "' /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f3' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f4' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f5' id='f5_" + trindex + "' class='form-control' value='" + value5 + "' /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f6' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
+        //     trhtml = trhtml + "</tr>"
+        //     $("#trtbody").append(trhtml);
+        // }
+            function addTrTag(value1, value2, value3, value4, value5, value6, value7,value8) {
+
+            var trhtml = "<tr id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
+            trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='exportDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
+                trhtml = trhtml + "<td>";
+          /*   <input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' /> */
+            trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
+             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' id='f5_" + trindex + "' class='form-control' value='" + value5 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' id='f7_" + trindex + "' class='form-control' value='" + value7 + "' /></td>"
+               trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' id='f8_" + trindex + "' class='form-control' value='" + value8 + "' /></td>"
+            trhtml = trhtml + "</tr>"
+            trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
             trhtml = trhtml + "</tr>"
             $("#trtbody").append(trhtml);
+            trindex++;
+        }
+        function getcontainerSizeSelect(selectedId) {
+            var selectHtml = "<select name='CreateUpdateContainerDtos[" + trindex + "].ContainerSizeId' class='form-control' >";
+            for (var i = 0; i < containerSizes.length; i++) {
+                selectHtml = selectHtml + "<option value='" + containerSizes[i].id + "' ";
+                if (containerSizes[i].id == selectedId) selectHtml = selectHtml + " selected ";
+                selectHtml = selectHtml + ">" + containerSizes[i].containerCode + "</option>"
+            }
+            selectHtml = selectHtml + "</select>";
+            return selectHtml;
         }
     </script>
 }
@@ -320,6 +385,19 @@
 
                                     </table>
 
+                                </abp-column>
+                            </abp-row>
+
+                               <abp-row>
+                                <abp-column>
+                                    <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                                        @L["Title:Memo"]
+                                    </abp-card-header>
+                                    <abp-card>
+                                        <abp-card-body>
+                                            <partial name="Memos/_Memo" model="new _MemoModel(Model.VesselSchedule.Id, Dolphin.Freight.Common.FreightPageType.VS)" />
+                                        </abp-card-body>
+                                    </abp-card>
                                 </abp-column>
                             </abp-row>
                         </abp-card-body>

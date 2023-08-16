@@ -1,5 +1,6 @@
 using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.AirExports;
+using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
 using Dolphin.Freight.Settinngs.PackageUnits;
@@ -46,7 +47,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         public List<SelectListItem> SvgTermLookupList { get; set; }
         public List<SelectListItem> ShipModeLookupList { get; set; }
         public List<SelectListItem> FreightTermLookupList { get; set; }
-
+        [BindProperty]
+        public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
         private readonly IVesselScheduleAppService _vesselScheduleAppService;
         private readonly ITradePartnerAppService _tradePartnerAppService;
         private readonly ISubstationAppService _substationAppService;
@@ -55,8 +57,10 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         private readonly ISysCodeAppService _sysCodeAppService;
         private readonly IPortAppService _portAppService;
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
+        private readonly IContainerAppService _containerAppService;
         public EditModel(VesselScheduleAppService vesselScheduleAppService, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService,
-            IAirportAppService airportAppService, IPackageUnitAppService packageUnitAppService, ISysCodeAppService sysCodeAppService, IPortAppService portAppService, IAjaxDropdownAppService ajaxDropdownAppService)
+            IAirportAppService airportAppService, IPackageUnitAppService packageUnitAppService, ISysCodeAppService sysCodeAppService, IPortAppService portAppService, IAjaxDropdownAppService ajaxDropdownAppService,
+            IContainerAppService containerAppService)
         {
             _vesselScheduleAppService = vesselScheduleAppService;
             _tradePartnerAppService = tradePartnerAppService;
@@ -66,6 +70,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
             _sysCodeAppService = sysCodeAppService;
             _portAppService = portAppService;
             _ajaxDropdownAppService = ajaxDropdownAppService;
+            _containerAppService = containerAppService;
         }
         public async Task OnGetAsync()
         {
@@ -90,6 +95,13 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         public async Task<IActionResult> OnPostAsync()
         {
             await _vesselScheduleAppService.UpdateAsync(Id, VesselSchedule);
+            QueryContainerDto query = new QueryContainerDto() { QueryId = Id };
+            var rs = await _containerAppService.DeleteByVesselIdAsync(query);
+            foreach (var dto in CreateUpdateContainerDtos)
+            {
+                var a = dto.IsDeleted;
+                if (dto.Status == 0) await _containerAppService.CreateAsync(dto);
+            }
             return NoContent();
         }
 

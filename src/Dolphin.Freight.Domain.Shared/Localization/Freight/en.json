@@ -212,6 +212,7 @@
     "Btn:AddHawb": "Add HAWB",
     "Btn:Lock": "Lock",
     "Btn:UnLock": "UnLock",
+    "Btn:DEV/SEG": "DEV/SEG",
     "Btn:All HAWB Packaging Labels": "All HAWB Package Label",
     "Btn:Print MAWB": "Print MAWB",
     "Btn:Print HAWB": "Print HAWB",
@@ -709,6 +710,8 @@
 
 
     "DisplayName:TPType": "TP Type",
+    "DisplayName:TPInfoModel.CreditLimitGroupId": "Credit Limit Group Name",
+    "DisplayName:TPInfoModel.AccountGroupId": "Account Group Name",
     "DisplayName:TPCode": "Code",
     "DisplayName:TPName": "Name",
     "DisplayName:TPNamePrint": "Print Name",
@@ -908,6 +911,16 @@
     "Enum:PaymentType.Credit": "CREDIT",
     "Enum:PaymentType.CreditHold": "CREDIT HOLD",
     "Enum:PaymentType.Koinfo": "KOINFO",
+    // Enum Accounting Information Code
+    "Enum:CRD": "CRD: Credit Card Expire Date",
+    "Enum:CRI": "CRI: Credit Card Issuance Name",
+    "Enum:CRN": "CRN: Credit Card Number",
+    "Enum:GEN": "GEN: General Information",
+    "Enum:GBL": "GBL: Government Bill Lading",
+    "Enum:MCO": "MCO:Miscellaneous Charge Order",
+    "Enum:STL": "STL: Mode of Settlement",
+    "Enum:RET": "RET: Return of Origin",
+    "Enum:SRN": "SRN: Shipper's Reference Number'",
 
     // Enum TPType
     "Enum:TPType.AirCarrier": "AIR CARRIER",
@@ -934,6 +947,7 @@
     "Enum:TPType.Trucker": "TRUCKER",
     "Enum:TPType.Vendor": "VENDOR",
     "Enum:TPType.Warehouse": "WAREHOUSE",
+    "Enum:TPType.FBAWarehouse": "FBA WAREHOUSE",
 
     // 通用文字
     "------拜託下面這個不要亂改------": "------改了可能很多東西會壞掉------",

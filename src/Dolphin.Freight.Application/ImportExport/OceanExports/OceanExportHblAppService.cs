@@ -235,7 +235,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }
             return new OceanExportHblDto();
         }
-        public async void LockedOrUnLockedOceanExportHblAsync(QueryHblDto query)
+        public async Task LockedOrUnLockedOceanExportHblAsync(QueryHblDto query)
         {
             var Hbl = await _repository.GetAsync(query.HblId.Value);
             Hbl.IsLocked = !Hbl.IsLocked;

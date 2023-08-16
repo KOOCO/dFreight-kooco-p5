@@ -4,6 +4,7 @@ using Dolphin.Freight.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,10 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Dolphin.Freight.Migrations
 {
     [DbContext(typeof(FreightDbContext))]
-    partial class FreightDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230816031536_Add VesselId in Container Table")]
+    partial class AddVesselIdinContainerTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1066,9 +1068,6 @@ namespace Dolphin.Freight.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
-                    b.Property<bool>("IsLocked")
-                        .HasColumnType("bit");
-
                     b.Property<string>("IssuingCarrier")
                         .HasColumnType("nvarchar(max)");
 
@@ -1315,9 +1314,6 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsECom")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsLocked")
                         .HasColumnType("bit");
 
                     b.Property<Guid?>("IssuingCarrierId")
@@ -2342,6 +2338,8 @@ namespace Dolphin.Freight.Migrations
                     b.Property<DateTime>("GateOutDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("HblId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsAvailableForPickup")
                         .HasColumnType("bit");
@@ -2393,10 +2391,14 @@ namespace Dolphin.Freight.Migrations
                     b.Property<double>("PackageMeasure")
                         .HasColumnType("float");
 
+                    b.Property<string>("PackageMeasureUnit")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PackageNum")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("PackageUnitId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("PackageWeight")
                         .HasColumnType("float");
@@ -3966,6 +3968,8 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("DomesticInstructions")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DomesticInstructionsDelOrder")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("DoorDeliveryATA")
                         .HasColumnType("datetime2");

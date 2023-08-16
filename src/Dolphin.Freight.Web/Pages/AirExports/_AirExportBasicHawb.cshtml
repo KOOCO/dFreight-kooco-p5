@@ -15,11 +15,12 @@
 @inject IStringLocalizer<FreightResource> L
 
 <script>
-
+    var isHawbLocked;
     $(document).ready(function () {
         if ($('#HawbCancelledDate').val() == '0001-01-01T00:00') {
             $('#HawbCancelledDate').val('');
         }
+        isHawbLocked = '@Model.AirExportHawbDto.IsLocked';
     });
 
     // Hawb Cancel Area
@@ -92,6 +93,36 @@
         myWindow = window.open("@Url.Action("HawbPrintAirExportHawb", "Docs")", 'width=1200,height=800');
         myWindow.focus()
     }
+    function setHawbLockUnlock(isLockedCheck) {
+        var id = $('#AirExportHawbDto_Id').val();
+        isLockedCheck = isLockedCheck === "True";
+        if(isLockedCheck){
+            
+        abp.message.confirm(l('UnlockConfirmationMessage'))
+            .then(function (confirmed) {
+                if (confirmed) {
+                    dolphin.freight.importExport.airExports.airExportHawb
+                        .lockedOrUnLockedAirExportHawb(id)
+                        .then(function () {
+                            abp.message.success(l('SuccessfullyUnlocked'));
+                            window.location.reload();
+                        });
+                }
+            });
+        } else{
+            abp.message.confirm(l('LockConfirmationMessage'))
+            .then(function (confirmed) {
+                if (confirmed) {
+                    dolphin.freight.importExport.airExports.airExportHawb
+                        .lockedOrUnLockedAirExportHawb(id)
+                        .then(function () {
+                            abp.message.success(l('SuccessfullyLocked'));
+                            window.location.reload();
+                        });
+                }
+            });
+        }
+    }
 </script>
 
 
@@ -107,13 +138,28 @@
         </abp-card-title>
         <div class="btn-group dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                 @if(@Model.AirExportHawbDto.IsLocked)
+                                        {
+                                            <i class="fa fa-lock"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock-open"></i>
+                                        }
                 @L["Display:Function"]
             </button>
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                </a>
-                <a class='dropdown-item' href='#'>
+                 <a class='dropdown-item' href='javascript:void(0)' onclick="setHawbLockUnlock('@Model.AirExportHawbDto.IsLocked')">
+                                        @if(@Model.AirExportHawbDto.IsLocked)
+                                        {
+                                            <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                        }
+                                    </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="copyHawb('@Model.AirExportHawbDto.Id')">
                     <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                 </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="deleteHawb()">
@@ -174,8 +220,8 @@
         <!--第一列-->
         <abp-row>
             <abp-column size-md="_3">
-                <label class="redStar" asp-for="AirExportHawbDto.HawbNo">@L["HawbNo"].Value</label>
-                <abp-input asp-for="AirExportHawbDto.HawbNo" suppress-label="true" required size="Small" />
+                <label class="" asp-for="AirExportHawbDto.HawbNo">@L["HawbNo"].Value</label>
+                <abp-input asp-for="AirExportHawbDto.HawbNo" suppress-label="true" size="Small" />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="AirExportHawbDto.BookingNo" size="Small" >
@@ -591,6 +637,7 @@
                 <abp-input asp-for="@Model.Id" type="hidden" />
                 <abp-input asp-for="AirExportHawbDto.ExtraProperties" value="@Json.Serialize(Model.AirExportHawbDto.ExtraProperties)" type="hidden" />
                 <abp-input asp-for="@Model.AirExportHawbDto.Id" type="hidden" />
+                <abp-input asp-for="@Model.AirExportHawbDto.CurrentHawbNo" type="hidden" />
             </abp-column>
         </abp-row>
     </abp-card-body>

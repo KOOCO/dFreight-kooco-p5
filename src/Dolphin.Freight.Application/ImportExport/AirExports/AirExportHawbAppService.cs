@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
@@ -34,7 +35,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         private readonly IPortsManagementAppService _portRepository;
         private readonly IRepository<AirExportMawb, Guid> _mawbRepository;
         private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
-        
+
         public AirExportHawbAppService(IRepository<AirExportHawb, Guid> repository,
             IRepository<SysCode, Guid> sysCodeRepository,
             IRepository<AirExportHawb, Guid> mblRepository,
@@ -64,7 +65,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
                                            .Contains(query.Search));
             List<AirExportHawb> rs = airExportHawbs.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<AirExportHawbDto> list = new List<AirExportHawbDto>();
-            
+
             if (rs.Any())
             {
                 foreach (var pu in rs)
@@ -262,7 +263,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 hawb.ActualShippedr = shipper.TPName;
             }
 
-            if(hawb.Notify is not null)
+            if (hawb.Notify is not null)
             {
                 var notify = tradePartners.Where(w => w.Id.ToString() == hawb.Notify).FirstOrDefault();
                 hawb.Notify = string.Concat(notify.TPName, "/", notify.TPCode);
@@ -279,7 +280,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
 
             var data = await GetHawbCardById(Id);
 
-            if(data != null)
+            if (data != null)
             {
                 airExportDetails = ObjectMapper.Map<AirExportHawbDto, AirExportDetails>(data);
 
@@ -380,6 +381,21 @@ namespace Dolphin.Freight.ImportExport.AirExports
             }
 
             return airExportDetails;
+        }
+
+        public async Task LockedOrUnLockedAirExportHawbAsync(Guid id)
+        {
+            try
+            {
+                var mbl = await _repository.GetAsync(id);
+                mbl.IsLocked = !mbl.IsLocked;
+                await _repository.UpdateAsync(mbl);
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+
         }
     }
 }

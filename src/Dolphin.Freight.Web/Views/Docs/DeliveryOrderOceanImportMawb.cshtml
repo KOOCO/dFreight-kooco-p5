@@ -558,7 +558,7 @@ table td {
                                     <div class="title">VOYAGE.</div>
                                     <div class="data data--highlight">
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <input type="text" name="VOYAGE" value="@Model.VESSEL_INFO" id="id_HBL_NO" class="ng-isolate-scope">
+                                            <input type="text" name="VOYAGE" value="@Model.VOVAGE_INFO" id="id_HBL_NO" class="ng-isolate-scope">
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 3px; left: 138px;"></span><!---->
 
                                         </hc-input-template></div>
@@ -689,14 +689,14 @@ table td {
                <th class="w-15 border-r text-left col-padding-double">
                   CONTAINER NO.
                </th>
-               <th class="w-6 border-r text-center col-padding-double">
+               <th class="w-12 border-r text-center col-padding-double">
                   TYPE
                </th>
                <th class="w-12 border-r text-left col-padding-double">
                   SEAL NO.
                </th>
               
-               <th class="w-24 border-r text-right col-padding-double">
+               <th class="w-22 border-r  col-padding-double">
                   WEIGHT
                </th>
                <th class="w-12 border-r text-left col-padding-double">
@@ -718,10 +718,10 @@ table td {
                                <td class="td td-item text-center item-edit"><input type="checkbox" class="ContainerListCheck" name="ContainerList[@(i.ToString())].chk" value="true" checked=""></td>
                                <td class="td td-item ">@container.CONTAINER_NO</td>
                                <td class="td td-item text-center ">@container.TYPE</td>
-                               <td class="td td-item ">@container.SEAL_NO</td>
+                               <td class="td td-item text-center">@container.SEAL_NO</td>
 
-                               <td class="td td-item text-right ">@container.WEIGHT</td>
-                               <td class="td td-item ">@container.PICKUP_NO</td>
+                               <td class="td td-item text-center ">@container.WEIGHT</td>
+                               <td class="td td-item text-center ">@container.PICKUP_NO</td>
                                <td class="td td-item text-center">@container.LFD</td>
 
                                 <input type="hidden" name="ContainerList[@(i.ToString())].CONTAINER_NO" value="@container.CONTAINER_NO" />
