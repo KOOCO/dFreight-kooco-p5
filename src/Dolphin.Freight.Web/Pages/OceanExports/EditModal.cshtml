@@ -115,7 +115,7 @@
 
         function lockUnlockMbl(id) {
             var isLock = $('#lockButtonMbl').find('i').hasClass('fa-lock');
-            abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+            abp.message.confirm(l(isLock ? 'LockConfirmationMessage' : 'UnlockConfirmationMessage')).then(function (confirmed) {
                 if (confirmed) {
                     Swal.fire({
                         title: 'Loading...',
@@ -125,15 +125,16 @@
                     })
                     dolphin.freight.importExport.oceanExports.oceanExportMbl.lockedOrUnLockedOceanExportMbl({ MbId: id })
                         .done(function () {
-                            if (!isLock) {
+                            Swal.clickCancel();
+                            if (isLock) {
                                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
                                 $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                                abp.message.success(l('Message:SuccessLock'));
                             } else {
                                 $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
                                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                                abp.message.success(l('Message:SuccessUnlock'));
                             }
-                            Swal.clickCancel();
-                            abp.message.success(l('Message:SuccessLock'));
                         });
                 }
             });
@@ -495,15 +496,18 @@
                     })
                     dolphin.freight.importExport.oceanExports.oceanExportHbl.lockedOrUnLockedOceanExportHbl({ HblId: id })
                         .done(function () {
-                            if (!isLock) {
+                            Swal.clickCancel();
+                            if (isLock) {
                                 $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
                                 $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+                                abp.message.success(l('Message:SuccessLock'));
+
                             } else {
                                 $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
                                 $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                                abp.message.success(l('Message:SuccessUnlock'));
                             }
-                             Swal.clickCancel();
-                            abp.message.success(l('Message:SuccessLock'));
+                            
                            
                         });
                 }
