@@ -21,7 +21,7 @@
         var isLocked;
         $(document).ready(function () {
             isLocked = '@Model.OceanExportMbl.IsLocked';
-            if (!isLocked == 'True') {
+            if (isLocked != 'True') {
                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
                 $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
             }
