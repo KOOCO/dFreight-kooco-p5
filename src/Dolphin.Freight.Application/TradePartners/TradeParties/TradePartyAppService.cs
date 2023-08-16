@@ -154,5 +154,13 @@ namespace Dolphin.Freight.TradePartners.TradeParties
         {
             await _repository.DeleteAsync(id);
         }
+
+        public async Task<List<CreateUpdateTradePartyDto>> GetListByTradePartnerId(Guid id)
+        {
+            var list = await _repository.GetListAsync();
+            var retVal = ObjectMapper.Map<List<TradeParty>, List<CreateUpdateTradePartyDto>>(list.Where(w => w.TradePartnerId == id).ToList());
+
+            return retVal;
+        }
     }
 }

@@ -41,7 +41,6 @@
 
         .flex-alignitems-center{
             display:flex;
-            align-items: center;
         }
 
         @@-moz-keyframes blink {
@@ -104,7 +103,7 @@
 @section scripts{
     <abp-script src="/Pages/Sales/TradePartner/TradePartnerInfo.js" />
     <script>
-
+        var l = abp.localization.getResource('Freight');
         // check city, state, post, country, tel and fax
         function getAddressValue() {
             var addSelections = new Array(4);
@@ -399,8 +398,8 @@
             onAddTradeParty(tradePartyType); 
         }
 
-        function onRemoveCommodity() {
-            $('[name="chk_commodity"]:checked').each(function (i, elem) {
+        function onRemoveTradePartner(index) {
+            $('[id="chk_TradeParty_'+index+'"]:checked').each(function (i, elem) {
                 $(elem).closest('tr').remove();
             });
         }
@@ -411,62 +410,143 @@
             { 
                 if (result.items != null && result.items.length > 0) {
                     companyNames = result.items;
-                    var selectHtml = "<select id='TradeParties["+chkIndex+"].TradePartyListDto.CompanyName' name='TradeParties["+chkIndex+"].TradePartyListDto.CompanyName' class='form-control select-search' ><option></option>";
+                    var selectHtml = "<select id='companyName_" + chkIndex + "' onchange='getCompanyDetails(" + chkIndex + ")' name='TradeParties[" + chkIndex + "].TargetTradePartnerId' class='form-control select-search' ><option></option>";
                     for (var i = 0; i < companyNames.length; i++) {
                         selectHtml = selectHtml + "<option value='" + companyNames[i].id + "' ";
                         selectHtml = selectHtml + ">" + companyNames[i].tpName + "</option>"
                     }
                     selectHtml = selectHtml + "</select>";
-                    $('#ddlCompanyName_'+chkIndex).append(selectHtml).find('.select-search').select2();
+                    $('#ddlCompanyName_' + chkIndex).append(selectHtml).find('.select-search').select2({
+                        placeholder: l("Dropdown:Select"),
+                        allowClear: true,
+                    });
                 } 
             });
         }
 
+        function getCompanyDetails(index){
+
+
+            dolphin.freight.tradePartners.tradePartner.getList({}).done(function(res) {
+                var countryRes = res.items.find(f => f.id == $('#companyName_'+index).val());
+                if(countryRes){
+                    var address = countryRes.tpPrintAddress;
+                    var city = countryRes.cityCode;
+                    var state = countryRes.stateCode;
+                    var postCode = countryRes.postCode;
+                    var fax = countryRes.fax;
+                    var telephone = countryRes.telephone;
+                    var countryCode = countryRes.countryCode;
+                
+                    if(address != null){
+                        address = address.trimStart();
+                        $('#tpAddress_'+index).val(address);
+                    } else{
+                        $('#tpAddress_'+index).val('');
+                    }
+                    if(city != null){
+                        $('#tpCity_'+index).val(city);
+                    } else{
+                        $('#tpCity_'+index).val('');
+                    }
+                    if(state != null){
+                        $('#tpState_'+index).val(state);
+                    } else{
+                        $('#tpState_'+index).val('');
+                    }
+                    if(postCode != null){
+                        $('#tpZIP_'+index).val(postCode);
+                    } else{
+                        $('#tpZIP_'+index).val('');
+                    }
+                    if(fax != null){
+                        $('#tpFax_'+index).val(fax);
+                    } else{
+                        $('#tpFax_'+index).val('');
+                    }
+                    if(fax != null){
+                        $('#tpTelephone_'+index).val(telephone);
+                    } else{
+                        $('#tpTelephone_' + index).val('');
+                    }
+
+                    getCountryDDL(countryCode, index);
+                
+
+                    $('#tPAddressDiv_' + index).show();
+                    }
+                else{
+                    $('#tPAddressDiv_'+index).find('input').each(function (i, e) { $(e).resetForm() });
+                    $('#country_'+index).val(null).trigger('change');
+                    $('#tPAddressDiv_'+index).hide();
+                }
+            });
+        }
+
         $("#saveBtn").click(function() {
-            var checkBoxes = $([
-                $('#tradePartyDiv input[id^=IsDefault]'),
-                $('#tradePartyDiv input[id^=IsRep]')
-            ]);
-            updateCheckboxValues(checkBoxes[0]);
-            updateCheckboxValues(checkBoxes[1]);
+            updateCheckboxValues($('#tradePartyDiv').find('[id^="IsRep"]'));
+            updateCheckboxValues($('#tradePartyDiv').find('[id^="IsDefault"]'));
         })
 
         function updateCheckboxValues(checkboxes) {
+            debugger;
             checkboxes.each(function () {
                 var checkboxId = $(this).attr("id");
                 var isChecked = $(this).prop("checked");
+                console.log(checkboxId);
                 $("#" + checkboxId).val(isChecked ? 'true' : 'false');
             });
         }
+
+        function getCountryDDL(countryCode, index){
+            dolphin.freight.settings.countries.country.getCountryLookup({}).done(function (countryRes) {
+
+                var selectedCountry = countryRes.items.find(f => f.id == countryCode);
+                var selectHtml = "<select id='country_" + index + "' onchange='getCompanyDetails(" + index + ")' name='TradeParties[" + index + "].TradePartyListDto.Country' class='form-control select-search' ><option></option>";
+
+                for (var i = 0; i < countryRes.items.length; i++) {
+                        var selected = (countryRes.items[i].id == countryCode)? "selected": "";
+                        selectHtml = selectHtml + "<option "+selected+" value='" + countryRes.items[i].id + "' ";
+                    selectHtml = selectHtml + ">" + countryRes.items[i].countryName + "</option>"
+                }
+                selectHtml = selectHtml + "</select>";
+                $('#country_'+index).remove()
+                $('#divCountry_' + index).append(selectHtml).find('.select-search').select2({
+                    placeholder: l("Dropdown:Select"),
+                    allowClear: true,
+                });
+            });
+        }
+
+        //$('[id^=ddlCompanyName_$]').on('change', function (){
+
+        //})
     </script>
 
     <script id="tradePartyTemplate" type="text/x-jQuery-tmpl">
         <tr>
           <td>
-              <input type="checkbox" name="chk_TradeParty" id="chk_TradeParty_${chkIndex}" />
+              <input type="checkbox" name="chk_TradeParty" id="chk_TradeParty_${tradeParty}" />
           </td>
-          <td><input type="checkbox" name="TradeParties[${chkIndex}].IsDefault" id="IsDefault_${chkIndex}"/></td>
+          <td><input type="checkbox" name="TradeParties[${chkIndex}].IsDefault" id="IsDefault_${chkIndex}" /></td>
           <td><input type="text" name="TradeParties[${chkIndex}].TradePartyDescription" /></td>
-          @*<td><input type="text" name="TradeParties[${chkIndex}].TradePartyListDto.CompanyName" /></td>*@
-          <td id="ddlCompanyName_${chkIndex}" style="min-width:166px"></td>
-           <td class="form-group">
-            <input type="text" class="w-100" name="TradeParties[${chkIndex}].TradePartyListDto.Address" placeholder="Address">
-            <div class="flex-alignitems-center">
-                <input type="text" placeholder="City" name="TradeParties[${chkIndex}].TradePartyListDto.City" >
-                <input type="text" placeholder="State" name="TradeParties[${chkIndex}].TradePartyListDto.State" ><br>
+          <td id="ddlCompanyName_${chkIndex}" style="min-width:166px; padding:inherit"></td>
+          <td class="form-group">
+            <div id="tPAddressDiv_${chkIndex}" style="display: none;">
+                <input type="text" class="w-100" id='tpAddress_${chkIndex}' name="TradeParties[${chkIndex}].TradePartyListDto.Address" placeholder="Address">
+                <div class="flex-alignitems-center">
+                    <input type="text" placeholder="City" id='tpCity_${chkIndex}' name="TradeParties[${chkIndex}].TradePartyListDto.City" >
+                    <input type="text" placeholder="State" id='tpState_${chkIndex}' name="TradeParties[${chkIndex}].TradePartyListDto.State" ><br>
+                </div>
+                <div id="divCountry_${chkIndex}" class="flex-alignitems-center">
+                    <input type="text" placeholder="Zip Code" id='tpZIP_${chkIndex}' name="TradeParties[${chkIndex}].TradePartyListDto.ZipCode" >
+                </div>
             </div>
-            <div class="flex-alignitems-center">
-                <input type="text" placeholder="Zip Code" name="TradeParties[${chkIndex}].TradePartyListDto.ZipCode" >
-                <select class="w-100" name="TradeParties[${chkIndex}].TradePartyListDto.Country">
-                    <option>India</option>
-                </select>
-            </div>
-            
           </td>
           <td><input type="checkbox" name="TradeParties[${chkIndex}].TradePartyListDto.IsRep" id="IsRep_${chkIndex}"/></td>
           <td><input type="text" name="TradeParties[${chkIndex}].TradePartyListDto.Contact" /></td>
-          <td><input type="text" name="TradeParties[${chkIndex}].TradePartyListDto.Tel" /></td>
-          <td><input type="text" name="TradeParties[${chkIndex}].TradePartyListDto.Fax"  /></td>
+          <td><input type="text" id='tpTelephone_${chkIndex}' name="TradeParties[${chkIndex}].TradePartyListDto.Tel" /></td>
+          <td><input type="text" id='tpFax_${chkIndex}' name="TradeParties[${chkIndex}].TradePartyListDto.Fax"  /></td>
           <td><input type="text" name="TradeParties[${chkIndex}].TradePartyListDto.Email" /></td>
           <td class="d-none"><input type="hidden" name="TradeParties[${chkIndex}].TradePartyType" value="${tradeParty}"/></td>
         </tr>
@@ -863,7 +943,7 @@
                 </abp-accordion-item>
                 <abp-accordion-item title=@L["Display:TradePartner:AccordionItem:TradeParty"]>
                     <div id="tradePartyDiv">
-                        @foreach (int row in Enum.GetValues(typeof(TradePartyType)))
+                    @foreach (int row in Enum.GetValues(typeof(TradePartyType)))
                     {
                         <abp-row>
                             <abp-column>
@@ -874,6 +954,7 @@
                                         onclick="onCreateNewTradePartner('@row')"
                                         button-type="Outline_Secondary"
                                             data-party-type="@row" />
+                                    <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteCommodityBtn" onclick="onRemoveTradePartner('@(row)')">delete</abp-button>
                             </abp-column>
                         </abp-row>
                         <abp-row class="mt-2">

@@ -30,9 +30,14 @@
             font-size: 15px;
             margin-right: 10px;
         }
+
         .trade-party-block:not(:last-of-type) {
             margin-top: 15px;
             margin-bottom: 25px;
+        }
+
+        .flex-alignitems-center {
+            display: flex;
         }
         @@-moz-keyframes blink {
             0% {
@@ -124,6 +129,9 @@
         }
 
         $(document).ready(function () {
+
+            onSetTradeParties();
+
             $("#tpNameInput").on('keyup', function () {
                 $("#tpNamePrintInput").val($(this).val());
                 $("#tpNameLocalInput").val($(this).val());
@@ -362,6 +370,266 @@
                 abp.message.success('Successfully saved.');
             });
         });
+    </script>
+
+    <script>
+         var l = abp.localization.getResource('Freight');
+
+        var chkIndex = $('.trade-party-block').find('tbody tr').length;
+        function onAddTradeParty(tradeParty) {
+            debugger;
+            chkIndex = $('.trade-party-block').find('tbody tr').length;
+            if(chkIndex < 0)
+                chkIndex = 0;
+            var newRowData = {
+                chkIndex: chkIndex,
+                tradeParty: tradeParty
+            };
+
+            var newRow = $('#tradePartyTemplate').tmpl(newRowData);
+
+            $('#tradePartyBody_' + tradeParty).append(newRow);
+            getDDLCompanyName(chkIndex);
+
+            resetTradePartyIndex(chkIndex);
+
+            chkIndex += 1;
+        }
+
+        var companyNames = [];
+        function getDDLCompanyName(chkIndex, selectedId) {
+            dolphin.freight.tradePartners.tradePartner.getTradePartnersLookup({}).done(function (result) {
+                if (result.items != null && result.items.length > 0) {
+                    companyNames = result.items;
+                    var selectHtml = "<select id='companyName_" + chkIndex + "' onchange='getCompanyDetails(" + chkIndex + ")' name='TradeParties[" + chkIndex + "].TradePartyListDto.CompanyName' class='form-control select-search' ><option></option>";
+                    for (var i = 0; i < companyNames.length; i++) {
+                        var selected = (companyNames[i].id == selectedId)? "selected": "";
+                        selectHtml = selectHtml + "<option " + selected + " value='" + companyNames[i].id + "' ";
+                        selectHtml = selectHtml + ">" + companyNames[i].tpName + "</option>"
+                    }
+                    selectHtml = selectHtml + "</select>";
+                    $('#ddlCompanyName_' + chkIndex).append(selectHtml).find('.select-search').select2({
+                        placeholder: l("Dropdown:Select"),
+                        allowClear: true,
+                    });
+
+                    if(selectedId){
+                        $('#tPAddressDiv_' + chkIndex).show();
+                    }
+                }
+            });
+        }
+
+        function getCompanyDetails(index) {
+
+
+            dolphin.freight.tradePartners.tradePartner.getList({}).done(function (res) {
+                var countryRes = res.items.find(f => f.id == $('#companyName_' + index).val());
+                if (countryRes) {
+                    var address = countryRes.tpPrintAddress;
+                    var city = countryRes.cityCode;
+                    var state = countryRes.stateCode;
+                    var postCode = countryRes.postCode;
+                    var fax = countryRes.fax;
+                    var telephone = countryRes.telephone;
+                    var countryCode = countryRes.countryCode;
+
+                    if (address != null) {
+                        address = address.trimStart();
+                        $('#tpAddress_' + index).val(address);
+                    } else {
+                        $('#tpAddress_' + index).val('');
+                    }
+                    if (city != null) {
+                        $('#tpCity_' + index).val(city);
+                    } else {
+                        $('#tpCity_' + index).val('');
+                    }
+                    if (state != null) {
+                        $('#tpState_' + index).val(state);
+                    } else {
+                        $('#tpState_' + index).val('');
+                    }
+                    if (postCode != null) {
+                        $('#tpZIP_' + index).val(postCode);
+                    } else {
+                        $('#tpZIP_' + index).val('');
+                    }
+                    if (fax != null) {
+                        $('#tpFax_' + index).val(fax);
+                    } else {
+                        $('#tpFax_' + index).val('');
+                    }
+                    if (fax != null) {
+                        $('#tpTelephone_' + index).val(telephone);
+                    } else {
+                        $('#tpTelephone_' + index).val('');
+                    }
+
+                    getCountryDDL(countryCode, index);
+
+
+                    $('#tPAddressDiv_' + index).show();
+                }
+                else {
+                    $('#tPAddressDiv_' + index).find('input').each(function (i, e) { $(e).resetForm() });
+                    $('#country_' + index).val(null).trigger('change');
+                    $('#tPAddressDiv_' + index).hide();
+                }
+            });
+        }
+
+        function updateCheckboxValues(checkboxes) {
+            checkboxes.each(function () {
+                var checkboxId = $(this).attr("id");
+                var isChecked = $(this).prop("checked");
+                console.log(checkboxId);
+                $("#" + checkboxId).val(isChecked ? 'true' : 'false');
+            });
+        }
+
+        function getCountryDDL(countryCode, index) {
+            dolphin.freight.settings.countries.country.getCountryLookup({}).done(function (countryRes) {
+
+                var selectedCountry = countryRes.items.find(f => f.id == countryCode);
+                var selectHtml = "<select id='country_" + index + "' onchange='getCompanyDetails(" + index + ")' name='TradeParties[" + index + "].TradePartyListDto.Country' class='form-control select-search' ><option></option>";
+
+                for (var i = 0; i < countryRes.items.length; i++) {
+                    var selected = (countryRes.items[i].id == countryCode) ? "selected" : "";
+                    selectHtml = selectHtml + "<option " + selected + " value='" + countryRes.items[i].id + "' ";
+                    selectHtml = selectHtml + ">" + countryRes.items[i].countryName + "</option>"
+                }
+                selectHtml = selectHtml + "</select>";
+                $('#country_' + index).remove()
+                $('#divCountry_' + index).append(selectHtml).find('.select-search').select2({
+                    placeholder: l("Dropdown:Select"),
+                    allowClear: true,
+                });
+            });
+        }
+
+        function resetTradePartyIndex(tradeParty) {
+            debugger;
+            $('.trade-party-block').find('tbody tr').each(function (e, elem) {
+                $(elem).find('td').each(function (a, aelem) {
+                    var inputs = $(aelem).find('input');
+
+                    if(inputs && inputs.length){
+                        if(inputs.length > 1){
+                            inputs.each(function(i, inputElem){
+                                $(inputElem).attr('name').replace(/[0-9]/, e);
+                            })
+                            var select = $(aelem).find('select');
+                            select.length && select.attr('name').replace(/[0-9]/, e);
+                        }
+                        else{
+                            inputs.attr('name').replace(/[0-9]/, e);
+                        }
+                    }
+                    else{
+                        inputs = $(aelem).find('select');
+                        inputs.length && inputs.attr('name').replace(/[0-9]/, e);
+                    }
+                    
+                })
+            })
+        }
+        
+        function resetTradePartiesCount(){
+            dolphin.freight.tradePartners.tradeParties.tradeParty.getListByTradePartnerId(window.location.href.substring(window.location.href.lastIndexOf('/')+1)).then(function(res) {
+                if(res){
+                    chkIndex = res.length;
+                }
+            });
+        }
+
+        function onSetTradeParties() {
+            debugger;
+            var tradePartiesJSON = '@Html.Raw(Json.Serialize(Model.TradeParties))';
+
+            if (tradePartiesJSON) {
+                var tradeParties = JSON.parse(tradePartiesJSON);
+                var tradeIndex = 0;
+                tradeParties.forEach(function(tradeParty){
+                    var extraProperties = tradeParty.extraProperties;
+                    var tradePartyTemplateData = { 'IsDefault': tradeParty.isDefault, 'TradePartyDescription': tradeParty.tradePartyDescription, 'tradeParty':                                                      tradeParty.tradePartyType};
+                        tradePartyTemplateData.DefaultValue = tradeParty.isDefault? "checked": "";
+                    if (extraProperties && extraProperties != 'null' && extraProperties.TradePartyList) {
+                        var tradePartyInfo = extraProperties.TradePartyList;
+
+                        tradePartyTemplateData.Address = tradePartyInfo.Address;
+                        tradePartyTemplateData.City = tradePartyInfo.City;
+                        tradePartyTemplateData.State = tradePartyInfo.State;
+                        tradePartyTemplateData.Country = tradePartyInfo.Country;
+                        tradePartyTemplateData.ZipCode = tradePartyInfo.ZipCode;
+                        tradePartyTemplateData.IsRep = tradePartyInfo.IsRep;
+                        tradePartyTemplateData.Contact = tradePartyInfo.Contact;
+                        tradePartyTemplateData.Tel = tradePartyInfo.Tel;
+                        tradePartyTemplateData.Fax = tradePartyInfo.Fax;
+                        tradePartyTemplateData.Email = tradePartyInfo.Email;
+                        tradePartyTemplateData.chkIndex = tradeIndex;
+                        tradePartyTemplateData.RepValue = tradePartyInfo.IsRep? "checked": "";
+                        tradePartyTemplateData.Id = tradePartyInfo.Id;
+                        
+
+                        var newRow = $('#tradePartyTemplate').tmpl(tradePartyTemplateData);
+                        $('#tradePartyBody_' + tradeParty.tradePartyType).append(newRow);
+
+                        getDDLCompanyName(tradeIndex, tradeParty.targetTradePartnerId);
+
+                        if(tradePartyInfo.Country){
+                            getCountryDDL(tradePartyInfo.Country, tradeIndex);
+                        }
+
+                        tradeIndex += 1;
+                    }
+                })
+            }
+            resetTradePartiesCount();
+        }
+
+        function onRemoveTradePartner(index) {
+            $('[id="chk_TradeParty_'+ index +'"]:checked').each(function (i, elem) {
+                $(elem).closest('tr').remove();
+            });
+
+            resetTradePartyIndex(index);
+        }
+
+    </script>
+
+    <script id="tradePartyTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_TradeParty_${tradeParty}" id="chk_TradeParty_${tradeParty}" />
+          </td>
+          <td><input type="checkbox" name="TradeParties[${chkIndex}].IsDefault" id="IsDefault_${chkIndex}" ${DefaultValue} /></td>
+          <td><input type="text" name="TradeParties[${chkIndex}].TradePartyDescription" value="${TradePartyDescription}" /></td>
+        @*<td><input type="text" name="TradeParties[${chkIndex}].TradePartyListDto.CompanyName" /></td>*@
+          <td id="ddlCompanyName_${chkIndex}" style="min-width:166px; padding:inherit"></td>
+          <td class="form-group">
+            <div id="tPAddressDiv_${chkIndex}" style="display: none;">
+                <input type="text" class="w-100" id='tpAddress_${chkIndex}' name="TradeParties[${chkIndex}].TradePartyListDto.Address" value="${Address}" placeholder="Address">
+                <div class="flex-alignitems-center">
+                    <input type="text" placeholder="City" id='tpCity_${chkIndex}' name="TradeParties[${chkIndex}].TradePartyListDto.City" value="${City}">
+                    <input type="text" placeholder="State" id='tpState_${chkIndex}' name="TradeParties[${chkIndex}].TradePartyListDto.State" value="${State}" ><br>
+                </div>
+                <div id="divCountry_${chkIndex}" class="flex-alignitems-center">
+                    <input type="text" placeholder="Zip Code" id='tpZIP_${chkIndex}' name="TradeParties[${chkIndex}].TradePartyListDto.ZipCode" value="${ZipCode}" >
+        @*<select class="w-100" id='tpCountry_${chkIndex}' name="TradeParties[${chkIndex}].TradePartyListDto.Country">
+                    {{ getCountryDDL() }}
+                </select>*@
+                </div>
+            </div>
+          </td>
+          <td><input type="checkbox" name="TradeParties[${chkIndex}].TradePartyListDto.IsRep" id="IsRep_${chkIndex}" ${RepValue} /></td>
+          <td><input type="text" name="TradeParties[${chkIndex}].TradePartyListDto.Contact" value="${Contact}"  /></td>
+          <td><input type="text" id='tpTelephone_${chkIndex}' name="TradeParties[${chkIndex}].TradePartyListDto.Tel" value="${Tel}" /></td>
+          <td><input type="text" id='tpFax_${chkIndex}' name="TradeParties[${chkIndex}].TradePartyListDto.Fax" value="${Fax}"  /></td>
+          <td><input type="text" name="TradeParties[${chkIndex}].TradePartyListDto.Email" value="${Email}" /></td>
+          <td class="d-none"><input type="hidden" name="TradeParties[${chkIndex}].TradePartyType" value="${tradeParty}"/></td>
+          <td class="d-none"><input type="hidden" name="TradeParties[${chkIndex}].Id" value="${Id}"/></td>
+        </tr>
     </script>
 }
 <div class="page-header">
@@ -757,12 +1025,54 @@
                         <abp-button class="add-trade-party"
                                 text=@L["Display:Button:New"]
                                 icon="plus"
+                                onclick="onAddTradeParty('@row')"
                                 button-type="Outline_Secondary"
                                 data-party-type="@row" />
+                                <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteCommodityBtn" onclick="onRemoveTradePartner('@(row)')">delete</abp-button>
                     </abp-column>
                 </abp-row>
-                <abp-row class="trade-party-block">
-                    <abp-table class="nowrap" small="true" border-style="Bordered" class="trade-party-table" data-type="@row"></abp-table>
+                <abp-row class="mt-2">
+                    <abp-column size-md="_12">
+                        <div class="table-responsive trade-party-block">
+                            <abp-table>
+                                <colgroup>
+                                    <col class="td-3per"><!--chk-->
+                                    <col class="td-5per"><!--Default-->
+                                    <col class="td-14per"><!--Description-->
+                                    <col class="td-16per"><!--Company Name-->
+                                    <col class="td-20per"><!--Address-->
+                                    <col class="td-3per"><!--Rep.-->
+                                    <col class="td-8per"><!--Contact-->
+                                    <col class="td-9per"><!--Phone-->
+                                    <col class="td-9per"><!--Fax-->
+                                    <col class="td-12per"><!--Email-->
+                                    <col class="td-3per"><!--btn-->
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th class="text-center col-checkbox">
+                                            <input type="checkbox">
+                                        </th>
+                                        <th class="text-center">Default</th>
+                                        <th>Description</th>
+                                        <th>
+                                            <span class="text-danger">*</span>
+                                            Company Name
+                                        </th>
+                                        <th>Address</th>
+                                        <th>Rep.</th>
+                                        <th>Contact</th>
+                                        <th>Phone</th>
+                                        <th>Fax</th>
+                                        <th>Email</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tradePartyBody_@row">
+                                </tbody>
+                            </abp-table>
+                        </div>
+                    </abp-column>
                 </abp-row>
             }
         </abp-accordion-item>

@@ -8,7 +8,7 @@ namespace Dolphin.Freight.TradePartners.TradeParties
 {
     public class CreateUpdateTradePartyDto : AuditedEntityDto<Guid>
     {
-        public new Guid? Id { get; set; }
+        public new Guid Id { get; set; }
         public Guid TradePartnerId { get; set; }
         public Guid TargetTradePartnerId { get; set; }
         public TradePartyType TradePartyType { get; set; }
