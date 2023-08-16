@@ -110,6 +110,22 @@
 
             resetCommodityIndex();
         }
+         var chkAccountingIndex = 0;
+        function onAddAccounting()
+        {
+            var newRowData = {
+                chkIndex: chkAccountingIndex,
+                
+            };
+
+            var newRow = $('#accountingTemplate').tmpl(newRowData);
+
+            $('#accountingBody').append(newRow);
+
+            chkAccountingIndex += 1;
+
+            resetAccountingIndex();
+        }
         
         $('#addMawbCommodityBtn').on('click', function () {
             // addMawbCommodityTr();
@@ -147,6 +163,13 @@
             });
 
             resetCommodityIndex();
+        }
+         function onRemoveAccounting(){
+            $('[name="chk_Accounting"]:checked').each(function (i, elem) { 
+                $(elem).closest('tr').remove();
+            });
+
+            resetAccountingIndex();
         }
         function onRemoveMawbCommodity(){
             $('[name="chk_commodity"]:checked').each(function (i, elem) { 
@@ -281,7 +304,7 @@
             addAccountingTrTag("", "");
         }
          $('#addAccountingBodyBtn').on('click', function () {
-            addAccountingTr();
+            onAddAccounting();
         })
         var trAccountingindex = 0;
         function addAccountingTrTag(value1, value2, value3, value4, value5) {
@@ -307,12 +330,7 @@
 
 
          $("#deleteAccountingBtn").click(function () {
-            $("input[name='f1']:checked").each(function () {
-                var tid = $(this).val();
-                $("#did_" + tid).val("1");
-                var val = $(this).attr('id').split('_')[1];
-                $("#trAccounting_" + val).hide();
-            })
+             onRemoveAccounting();
         })
 
         $('#addHBtn').on('click', function () {
@@ -340,6 +358,20 @@
         function resetCommodityIndex()
         {
             $('#commodityBody > tr').each(function (e, elem) {
+                $(elem).find('td').each(function (a, aelem) {
+                    var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
+                  
+                    $(aelem).find('input').attr('name', attrName);
+                    if ($(aelem).hasClass('d-none')) { 
+                        var aelemVal = $(aelem).find('input').val(); 
+                        $(aelem).find('input').val(aelemVal.replace(/[0-9]/, e)); 
+                    }
+                })
+            })
+        }
+            function resetAccountingIndex()
+        {
+            $('#accountingBody > tr').each(function (e, elem) {
                 $(elem).find('td').each(function (a, aelem) {
                     var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
                   
@@ -405,7 +437,31 @@
           <td class="d-none"><input type="hidden" name="Commodities[${chkIndex}].Id" value="commodity_${chkIndex}" id="hidden_Commodity_${chkIndex}" /></td>
         </tr>
     </script>
-
+    <script>
+  var enumValues = @Html.Raw(Json.Serialize(Model.EnumList));
+</script>
+    <script id="accountingTemplate" type="text/x-jQuery-tmpl">
+      
+      
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_Accounting" id="chk_Accounting_${chkIndex}" />
+          </td>
+               <td>
+      <select id="f1_${chkIndex}" name="AccountingInformation[${chkIndex}].Code"  class="filteredDropdown form-select form-control cursor-pointer ">
+        <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
+      {{each enumValues}}
+          <option value="${$value.value}">${$value.text}</option>
+        {{/each}}
+      </select>
+    </td>
+          <td><input type="text" name="AccountingInformation[${chkIndex}].Information" id="information_${chkIndex}" class="form-control" /></td>
+         
+     
+        
+          <td class="d-none"><input type="hidden" name="AccountingInformation[${chkIndex}].Id" value="accountingInformation_${chkIndex}" id="hidden_AccountingInformation_${chkIndex}" /></td>
+        </tr>
+    </script>
     <script id="otherChargesTemplate" type="text/x-jQuery-tmpl">
         <tr>
           <td>
