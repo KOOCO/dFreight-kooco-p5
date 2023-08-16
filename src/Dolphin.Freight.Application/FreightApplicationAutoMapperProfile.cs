@@ -291,5 +291,7 @@ public class FreightApplicationAutoMapperProfile : Profile
 
         CreateMap<IdentityUserDto, UserData>();
         CreateMap<UserData, IdentityUserDto>();
+        CreateMap<TradeParty, CreateUpdateTradePartyDto>();
+        CreateMap<CreateUpdateTradePartyDto, TradeParty>();
     }
 }

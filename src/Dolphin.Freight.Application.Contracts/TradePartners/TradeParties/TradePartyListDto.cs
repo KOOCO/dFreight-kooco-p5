@@ -13,6 +13,10 @@ namespace Dolphin.Freight.TradePartners.TradeParties
         public bool IsDefault { get; set; }
         public string CompanyName { get; set; }
         public string Address { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Country { get; set; }
+        public string ZipCode { get; set; }
         public Guid? ContactPersonId { get; set; }
         public bool? IsRep { get; set; }
         public string Contact { get; set; }

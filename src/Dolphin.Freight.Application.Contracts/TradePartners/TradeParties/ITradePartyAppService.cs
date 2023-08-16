@@ -13,5 +13,6 @@ namespace Dolphin.Freight.TradePartners.TradeParties
         Task SaveAsync(CreateUpdateTradePartyDto dto);
         Task DeleteAsync(Guid id);
         Task SwitchDefaultAsync(SwitchDefaultTradePartyDto dto);
+        Task<List<CreateUpdateTradePartyDto>> GetListByTradePartnerId(Guid id);
     }
 }

@@ -13,7 +13,8 @@ using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Dolphin.Freight.TradePartners.Credits;
 using System.Linq;
-
+using Dolphin.Freight.TradePartners.TradeParties;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
 {
@@ -27,6 +28,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
 
         private readonly ICreditLimitGroupRepository _creditLimitGroupRepository;
         private readonly IAccountGroupAppService _accountGroupAppService;
+        private readonly ITradePartyAppService _tradePartyAppService;
 
 
         [BindProperty]
@@ -37,10 +39,14 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
         public List<SelectListItem> AccountGroupNameLookupList { get; set; }
         public List<SelectListItem> CurrencyLookupList { get; set; }
 
+        [BindProperty]
+        public List<CreateUpdateTradePartyDto> TradeParties { get; set; }
+
         public TradePartnerInfoModel(ITradePartnerAppService tradePartnerAppService,
             ICreditLimitGroupRepository creditLimitGroupRepository,
             ICreditLimitGroupAppService creditLimitGroupAppService,
-            IAccountGroupAppService accountGroupAppService
+            IAccountGroupAppService accountGroupAppService,
+            ITradePartyAppService tradePartyAppService
             )
         {
             Logger = NullLogger<TradePartnerInfoModel>.Instance;
@@ -48,6 +54,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
             _creditLimitGroupRepository = creditLimitGroupRepository;
             _creditLimitGroupAppService = creditLimitGroupAppService;
             _accountGroupAppService = accountGroupAppService;
+            _tradePartyAppService = tradePartyAppService;
         }
 
         public async Task OnGetAsync()
@@ -70,6 +77,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
                                                 .Select(x => new SelectListItem(x.CurrencyName, x.Id.ToString(), false))
                                                 .ToList();
 
+            TradeParties = new List<CreateUpdateTradePartyDto>();
         }
 
         #region OnPostAsync()
@@ -102,6 +110,27 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
             var inputDto = await _tradePartnerAppService.CreateTPAsync(
                 ObjectMapper.Map<CreateTradePartnerInfoViewModel, CreateUpdateTradePartnerDto>(TPInfoModel)
                 );
+
+            if(TradeParties != null && TradeParties.Any())
+            {
+                foreach (var tradeParty in TradeParties)
+                {
+                    if (tradeParty.ExtraProperties == null)
+                    {
+                        tradeParty.ExtraProperties = new();
+                    }
+
+                    if(tradeParty.TradePartyListDto != null)
+                    {
+                        tradeParty.ExtraProperties.Add("TradePartyList", tradeParty.TradePartyListDto);
+                    }
+
+                    tradeParty.TradePartnerId = inputDto.Id;
+
+                    await _tradePartyAppService.SaveAsync(tradeParty);
+                }
+            }
+
             // Logger.LogDebug("inputDtoId:" + inputDto.Id);
             //var result = new CreatedAtActionResult("Post", "", new { Id = inputDto.Id }, inputDto);
             //return result;
