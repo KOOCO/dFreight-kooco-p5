@@ -73,6 +73,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public MoreInformation MoreInformationPrepaid { get; set; }
         [BindProperty]
         public MoreInformation MoreInformationCollect { get; set; }
+        [BindProperty]
+        public List<AccountingInformation> AccountingInformation { get; set; }
 
         private static readonly Object lockObject = new object();
         public async Task OnGetAsync(Guid Id)
@@ -112,6 +114,11 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                 updateItem.ExtraProperties.Remove("Commodites");
                 updateItem.ExtraProperties.Add("Commodities", AirExportMawbDto.Commodities);
 
+            }
+            if (AccountingInformation != null)
+            {
+                updateItem.ExtraProperties.Remove("AccountingInformation");
+                updateItem.ExtraProperties.Add("AccountingInformation", AccountingInformation);
             }
             if (MoreInformationPrepaid != null || MoreInformationCollect != null)
             {

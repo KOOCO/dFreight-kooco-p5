@@ -24,6 +24,34 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-templates@1.0.0/jquery.tmpl.min.js"></script>
     <abp-script src="/Pages/AirExports/CreateMawb.js" />
     <abp-script src="/Pages/AirExports/EditModel.js" />
+     
+</script>
+    <script>
+        var Code = "";
+  var enumValues = @Html.Raw(Json.Serialize(Model.EnumList));
+</script>
+    <script id="accountingTemplate" type="text/x-jQuery-tmpl">
+      
+      
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_Accounting" id="chk_Accounting_${chkIndex}" />
+          </td>
+               <td>
+      <select id="f1_${chkIndex}" name="AccountingInformation[${chkIndex}].Code"   class="filteredDropdown form-select form-control cursor-pointer ">
+        <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
+      {{each enumValues}}
+          <option value="${$value.value}" {{if $value.value === Code}}selected{{/if}}>${$value.text}</option>
+        {{/each}}
+      </select>
+    </td>
+          <td><input type="text" name="AccountingInformation[${chkIndex}].Information" value="${Information}" id="information_${chkIndex}" class="form-control" /></td>
+         
+     
+        
+          <td class="d-none"><input type="hidden" name="AccountingInformation[${chkIndex}].Id" value="accountingInformation_${chkIndex}" id="hidden_AccountingInformation_${chkIndex}" /></td>
+        </tr>
+    </script>
     <script id="mawbCommodityTemplate" type="text/x-jQuery-tmpl">
         <tr>
           <td>
@@ -75,6 +103,7 @@
             });
             onSetMawbCommodity();
             onSetMoreInformation();
+            onSetAccountingInformation();
             // Calculate Weight Kg to Lb
             $("#GrossWeightKg").on('keyup', function () {
                 $("#GrossWeightLb").val(Math.round($("#GrossWeightKg").val() * 2.2046226218 * 100) / 100);
@@ -189,7 +218,19 @@
                 })
             })
         }
+              function resetAccountingIndex()
+        {
+              $(elem).find('td').each(function (a, aelem) {
+                    var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
 
+                    $(aelem).find('input').attr('name', attrName);
+                    if ($(aelem).hasClass('d-none')) {
+                        var aelemVal = $(aelem).find('input').val();
+                        $(aelem).find('input').val(aelemVal.replace(/[0-9]/, e));
+                    }
+             
+            })
+}
              function onSetMoreInformation() {
             var extraProperties = '@Html.Raw(Json.Serialize(Model.AirExportMawbDto.ExtraProperties))';
 
@@ -266,7 +307,26 @@
                 }
             }
         }
+        function onSetAccountingInformation() {
+            debugger;
+            var extraProperties ='@Html.Raw(Json.Serialize(Model.AirExportMawbDto.ExtraProperties))';
 
+            if (extraProperties && extraProperties != 'null') {
+                var accountingInformations = JSON.parse(extraProperties).AccountingInformation;
+
+                if(accountingInformations && accountingInformations.length){
+                    var Index = 0;
+                    accountingInformations.forEach(function (accountingInformation) {
+                        accountingInformation.chkIndex = Index;
+
+                        var newRow = $('#accountingTemplate').tmpl(accountingInformation);
+                        $('#accountingBody').append(newRow);
+
+                        Index += 1;
+                    })
+                }
+            }
+        }
         var chkIndex = 0;
         function onAddMawbCommodity() {
             debugger;
@@ -313,7 +373,23 @@
 
             resetOtherChargesIndex();
         }
+            var chkAccountingIndex = 0;
+        function onAddAccounting()
+        {
+            debugger;
+            var newRowData = {
+                chkIndex: chkAccountingIndex,
+                
+            };
 
+            var newRow = $('#accountingTemplate').tmpl(newRowData);
+
+            $('#accountingBody').append(newRow);
+
+            chkAccountingIndex += 1;
+
+            resetAccountingIndex();
+        }
         function onRemoveCommodity() {
             $('[name="chk_commodity"]:checked').each(function (i, elem) {
                 $(elem).closest('tr').remove();
@@ -375,7 +451,7 @@
         })
 
         $('#addAccountingBodyBtn').on('click', function () {
-            addAccountingTr();
+            onAddAccounting();
         })
 
         $('#addOtherChargesBodyBtn').on('click', function () {
@@ -445,14 +521,15 @@
                 $("#trMawbOtherCharges_" + val).hide();
             })
         })
+            function onRemoveAccounting(){
+            $('[name="chk_Accounting"]:checked').each(function (i, elem) { 
+                $(elem).closest('tr').remove();
+            });
 
+            resetAccountingIndex();
+        }
         $("#deleteAccountingBtn").click(function () {
-            $("input[name='f1']:checked").each(function () {
-                var tid = $(this).val();
-                $("#did_" + tid).val("1");
-                var val = $(this).attr('id').split('_')[1];
-                $("#trAccounting_" + val).hide();
-            })
+            onRemoveAccounting();
         })
 
         $("#deleteOtherChargesBtn").click(function () {

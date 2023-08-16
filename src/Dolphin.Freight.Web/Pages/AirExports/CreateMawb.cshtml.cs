@@ -37,6 +37,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public CreateMawbViewModel MawbModel { get; set; }
         [BindProperty]
         public List<Commodity> Commodities { get; set; }
+        [BindProperty]
+        public List<AccountingInformation> AccountingInformation { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> AirportLookupList { get; set; }
@@ -127,7 +129,10 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             {
                 NewMawab.ExtraProperties.Add("Commodities", Commodities);
             }
-
+            if (AccountingInformation != null)
+            {
+                NewMawab.ExtraProperties.Add("AccountingInformation", AccountingInformation);
+            }
 
             var inputDto = await _airExportMawbAppService.CreateAsync(NewMawab);
             MawbId = inputDto.Id;
