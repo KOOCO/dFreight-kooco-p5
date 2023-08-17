@@ -524,7 +524,7 @@
         }
            function setMawbLockUnlock(isLockedCheck) {
             var id = $('#MawbModel_Id').val();
-            var hawbId = $('#HawbModel_Id').val();
+            
             isLockedCheck = isLockedCheck === "True";
             if(isLockedCheck){
                 
@@ -546,12 +546,10 @@
                       dolphin.freight.importExport.airImports.airImportMawb
                             .lockedOrUnLockedAirImportMawb(id)
                             .then(function () {
-                                dolphin.freight.importExport.airImports.airImportHawb
-                            .lockedOrUnLockedAirImportHawb(hawbId)
-                            .then(function () {
+                           
                                 abp.message.success(l('SuccessfullyLocked'));
                                 window.location.reload();
-                            });
+                            
                             });
                     }
                 });

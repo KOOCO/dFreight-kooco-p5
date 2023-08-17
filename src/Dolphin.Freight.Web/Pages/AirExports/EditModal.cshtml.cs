@@ -141,7 +141,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             }
             _airExportMawbAppService.UpdateAsync(AirExportMawbDto.Id, updateItem).Wait();
 
-            if (AirExportHawbDto is not null)
+            if (AirExportHawbDto is not null && !string.IsNullOrEmpty(AirExportHawbDto.HawbNo))
             {
                 var updateHawb = ObjectMapper.Map<AirExportHawbDto, CreateUpdateAirExportHawbDto>(AirExportHawbDto);
                 updateHawb.MawbId = AirExportMawbDto.Id;

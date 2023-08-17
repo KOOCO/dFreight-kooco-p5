@@ -134,25 +134,18 @@
                         dolphin.freight.importExport.airExports.airExportMawb
                             .lockedOrUnLockedAirExportMawb(id)
                             .then(function () {
-                                if (hawbId == '00000000-0000-0000-0000-000000000000') {
-                                    abp.message.success(l('SuccessfullyLocked'));
-                                    window.location.reload();
-                                }
-                                else {
-                            dolphin.freight.importExport.airExports.airExportHawb
-                            .lockedOrUnLockedAirExportHawb(hawbId)
-                            .then(function () {
+                         
                                 abp.message.success(l('SuccessfullyLocked'));
                                 window.location.reload();
-                            });
-                                }
+                          
+                                
                             });
                     }
                 });
             }
         }
          function setHawbLockUnlock(isLockedCheck) {
-            var id = $('#AirExportHawbDto_Id').val();
+            var id = '@Model.AirExportHawbDto.Id';
             isLockedCheck = isLockedCheck === "True";
             if(isLockedCheck){
                 
