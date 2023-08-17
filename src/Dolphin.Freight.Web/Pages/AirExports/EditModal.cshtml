@@ -87,6 +87,28 @@
     <script type="text/javascript">
         var l = abp.localization.getResource('Freight');
           var isLocked;
+          var showMsg = '@Model.ShowMsg';
+            if (showMsg == 'True') {
+                var EmptyGuid = '00000000-0000-0000-0000-000000000000';
+                dolphin.freight.common.memos.memo.getListByQuery({sourceId:EmptyGuid, fType:7 }).done(function (result) {
+                    debugger;
+                    var item = result;
+                    debugger;
+                    if (item.length>0) {
+                        dolphin.freight.common.memos.memo.updateSourceId('@Model.Id', 7).done(function (response) {
+                            memoDataTable.ajax.reload();
+                            abp.message.success(l("Message:SuccessAdd"));
+
+                        })
+                    } else {
+                       abp.message.success(l("Message:SuccessAdd"));
+                    }
+
+
+
+                })
+            }
+
         $(document).ready(function () {
 
             // Awb Cancel Area
