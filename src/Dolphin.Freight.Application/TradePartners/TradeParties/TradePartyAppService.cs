@@ -81,7 +81,7 @@ namespace Dolphin.Freight.TradePartners.TradeParties
         {
             try
             {
-                TradeParty entity = dto.Id == null ? new() : await _repository.GetAsync(dto.Id.Value);
+                TradeParty entity = dto.Id==Guid.Empty ? new() : await _repository.GetAsync(dto.Id);
 
                 if (dto.Id == dto.TargetTradePartnerId)
                 {
