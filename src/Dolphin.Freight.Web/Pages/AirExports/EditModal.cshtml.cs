@@ -67,6 +67,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool ShowMsg { get; set; } = false;
         [BindProperty]
         public List<MoreInformation> MoreInformations { get; set; }
         [BindProperty]
