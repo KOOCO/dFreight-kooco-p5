@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
@@ -350,6 +351,20 @@ namespace Dolphin.Freight.ImportExport.AirImports
             }
 
             return airImportDetails;
+        }
+        public async Task LockedOrUnLockedAirImportHawbAsync(Guid id)
+        {
+            try
+            {
+                var mbl = await _repository.GetAsync(id);
+                mbl.IsLocked = !mbl.IsLocked;
+                await _repository.UpdateAsync(mbl);
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+
         }
     }
 }

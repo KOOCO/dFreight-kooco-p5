@@ -10,11 +10,14 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-templates@1.0.0/jquery.tmpl.min.js"></script>
     <abp-script src="/Pages/AirImports/EditMawb.js" />
     <script type="text/javascript">
+        var l = abp.localization.getResource('Freight');
         var cardIndex = 0;
+        var isLocked;
           $("#addHBtn").click(function () {
                 var url = "/AirImports/EditMawb?Id=@Model.Id&from=NewHawb";
                 location.href = url;
             })
+               isLocked = '@Model.AirImportMawbDto.IsLocked';
         //$('#addHBtn').on('click', function () {
         //    if ($('#mawbDiv')[0].classList.contains('show')) {
         //        $('#btnMawbCollapse').click();
@@ -86,6 +89,7 @@
                         $('#partialContainer').html(partial);
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
+                        if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"))
                     })
 
                     $('.btnHawbCardCollapse').each(function (i, e) {
@@ -291,6 +295,41 @@
                     });
                 });
         }
+           function setMawbLockUnlock(isLockedCheck) {
+            var id = '@Model.AirImportMawbDto.Id';
+            var hawbId = $('#AirImportHawbDto_Id').val();
+            isLockedCheck = isLockedCheck === "True";
+            if(isLockedCheck){
+                
+            abp.message.confirm(l('UnlockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airImports.airImportMawb
+                            .lockedOrUnLockedAirImportMawb(id)
+                            .then(function () {
+                                   abp.message.success(l('SuccessfullyUnlocked'));
+                                window.location.reload();
+                            });
+                    }
+                });
+            } else{
+                abp.message.confirm(l('LockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                      dolphin.freight.importExport.airImports.airImportMawb
+                            .lockedOrUnLockedAirImportMawb(id)
+                            .then(function () {
+                                dolphin.freight.importExport.airImports.airImportHawb
+                            .lockedOrUnLockedAirImportHawb(hawbId)
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyLocked'));
+                                window.location.reload();
+                            });
+                            });
+                    }
+                });
+            }
+        }
 
     </script>
 }
@@ -337,11 +376,27 @@
 
                             <div class="btn-group dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                                       @if(@Model.AirImportMawbDto.IsLocked)
+                                        {
+                                            <i class="fa fa-lock"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock-open"></i>
+                                        }
                                     @L["Display:Function"]
+                                   
                                 </button>
                                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="setMawbLockUnlock('@Model.AirImportMawbDto.IsLocked')">
+                                        @if(@Model.AirImportMawbDto.IsLocked)
+                                        {
+                                            <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                        }
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getBatchPrintingPopup()">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Batch Printing"]

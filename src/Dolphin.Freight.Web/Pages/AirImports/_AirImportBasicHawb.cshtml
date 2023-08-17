@@ -72,6 +72,36 @@
         myWindow = window.open(url, pname, 'width=1200,height=800')
         myWindow.focus()
     }
+      function setHawbLockUnlock(isLockedCheck) {
+            var id = '@Model.HawbModel.Id';
+            isLockedCheck = isLockedCheck === "True";
+            if(isLockedCheck){
+                
+            abp.message.confirm(l('UnlockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airImports.airImportHawb
+                            .lockedOrUnLockedAirImportHawb(id)
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyUnlocked'));
+                                window.location.reload();
+                            });
+                    }
+                });
+            } else{
+                abp.message.confirm(l('LockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                      dolphin.freight.importExport.airImports.airImportHawb
+                            .lockedOrUnLockedAirImportHawb(id)
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyLocked'));
+                                window.location.reload();
+                            });
+                    }
+                });
+            }
+        }
 
 </script>
 <!-- HABL Card -->
@@ -89,12 +119,28 @@
         {
             <div class="btn-group dropdown">
             <button class="btn btn-secondary dropdown-toggle" style="position: relative;" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                  @if(@Model.HawbModel.IsLocked)
+                         {
+                           <i class="fa fa-lock"></i>
+                                        }
+                           else
+                       {
+                           <i class="fa fa-lock-open"></i>
+                                        }
                 @L["Display:Function"]
             </button>
+            <input asp-for="@Model.HawbModel.IsLocked" type="hidden"/>
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                </a>
+                  <a class='dropdown-item' href='javascript:void(0)' onclick="setHawbLockUnlock('@Model.HawbModel.IsLocked')">
+                                        @if(@Model.HawbModel.IsLocked)
+                                        {
+                                            <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                        }
+                                    </a>
                 <a class='dropdown-item' href='#'>
                     <i class="fa fa-copy"></i> @L["Btn:Copy"]
                 </a>

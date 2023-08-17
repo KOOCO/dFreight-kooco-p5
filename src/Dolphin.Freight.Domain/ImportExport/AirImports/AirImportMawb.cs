@@ -378,6 +378,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public bool IsLocked { get; set; }
 
 
     }
