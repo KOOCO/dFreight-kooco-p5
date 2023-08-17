@@ -2,13 +2,11 @@
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.TradePartners.TradeParties;
 @using Dolphin.Freight.Web.Pages.Shared;
-@using Dolphin.Freight.Web.Pages.Components
-@using Dolphin.Freight.Web.CommonService;
 @using Microsoft.Extensions.Localization
 @using Dolphin.Freight.TradePartner
 @model Dolphin.Freight.Web.Pages.Sales.TradePartner.EditTradePartnerInfoModel
 @inject IStringLocalizer<FreightResource> L
-@inject IDropdownService _dropdown
+@inject Dolphin.Freight.Web.CommonService.IDropdownService _dropdownService;
 @section styles{
     <style>
         .redStar::before {
@@ -91,6 +89,13 @@
 @section scripts{
     <abp-script src="/Pages/Sales/TradePartner/EditTradePartnerInfo.js" />
     <script>
+        var companyList = [];
+
+        function getCompanies(){
+             companyList =  @Html.Raw(Json.Serialize(_dropdownService.TradePartnerLookupList));
+         }
+
+        getCompanies();
 
         // check city, state, post, country, tel and fax
         function getAddressValue() {
@@ -98,19 +103,19 @@
             addSelections[0] = $("#tpCityCode").val();
             addSelections[1] = $("#tpStateCode").val();
             addSelections[2] = $("#tpPostCode").val();
-            addSelections[3] = $("#TPInfoModel_CountryCode option:selected").val();
+            addSelections[3] = $("#tpCountryCode option:selected").val();
             var j = 0, result;
             for (let i = 0; i < addSelections.length; i++) {
                 if ((addSelections[i] !== 'undefined') && (addSelections[i] != '') && (addSelections[i] != '- 請選擇 -') && (addSelections[i] != '- Select -')) {
                     if (j == 0) {
                         if (i == 3) {
-                            result = $("#TPInfoModel_CountryCode option:selected").text();
+                            result = $("#tpCountryCode option:selected").text();
                         } else {
                             result = addSelections[i];
                         }
                     } else {
                         if (i == 3) {
-                            result += "," + $("#TPInfoModel_CountryCode option:selected").text();
+                            result += "," + $("#tpCountryCode option:selected").text();
                         } else {
                             result += "," + addSelections[i];
                         }
@@ -132,6 +137,8 @@
         }
 
         $(document).ready(function () {
+
+            
 
             onSetTradeParties();
 
@@ -208,7 +215,7 @@
                 }
             });
 
-            $("#TPInfoModel_CountryCode").change(function () {
+            $("#tpCountryCode").change(function () {
                 if ($("#checkboxAddress").is(":checked")) {
                     if ($("#tpLocalAddress").val() != '') {
                         if ($("#checkboxName").is(":checked")) {
@@ -298,8 +305,7 @@
                 }
             });
 
-            $("#tpCopyFromLocalAddress").click(function (event) {
-                event.preventDefault();
+            $("#tpCopyFromLocalAddress").click(function () {
                 $("#tpAccountAddress").mousemove();
                 var originalAccountAddressValue = $("#tpAccountAddress").val();
                 if (typeof ("#tpAccountAddress") == 'undefined') {
@@ -314,8 +320,6 @@
                 }
             });
 
-
-
             $("#tpNamePrintInput").on('keyup', function () {
                 $("#tpNameLocalInput").val($(this).val())
             });
@@ -329,8 +333,8 @@
                 }
             });
 
-            $("#TPInfoModel_CreditLimitGroupId").on("change", function () {
-                var txt = $('#TPInfoModel_CreditLimitGroupId');
+            $("#tpCreditLimitGroupName").on("change", function () {
+                var txt = $('#tpCreditLimitGroupName');
                 if (txt.val() != "- Select -") {
                     $("#tpCreditTermType").attr("disabled", "disabled");
                     $("#tpCreditTermDays").attr("disabled", "disabled");
@@ -378,6 +382,8 @@
 
     <script>
          var l = abp.localization.getResource('Freight');
+         
+         
 
         var chkIndex = $('.trade-party-block').find('tbody tr').length;
         function onAddTradeParty(tradeParty) {
@@ -402,26 +408,41 @@
 
         var companyNames = [];
         function getDDLCompanyName(chkIndex, selectedId) {
-            dolphin.freight.tradePartners.tradePartner.getTradePartnersLookup({}).done(function (result) {
-                if (result.items != null && result.items.length > 0) {
-                    companyNames = result.items;
-                    var selectHtml = "<select id='companyName_" + chkIndex + "' onchange='getCompanyDetails(" + chkIndex + ")' name='TradeParties[" + chkIndex + "].TradePartyListDto.CompanyName' class='form-control select-search' ><option></option>";
-                    for (var i = 0; i < companyNames.length; i++) {
-                        var selected = (companyNames[i].id == selectedId)? "selected": "";
-                        selectHtml = selectHtml + "<option " + selected + " value='" + companyNames[i].id + "' ";
-                        selectHtml = selectHtml + ">" + companyNames[i].tpName + "</option>"
-                    }
-                    selectHtml = selectHtml + "</select>";
-                    $('#ddlCompanyName_' + chkIndex).append(selectHtml).find('.select-search').select2({
-                        placeholder: l("Dropdown:Select"),
-                        allowClear: true,
-                    });
 
-                    if(selectedId){
-                        $('#tPAddressDiv_' + chkIndex).show();
-                    }
+            if(companyList){
+                bindCompanyDropdown(companyList, selectedId, chkIndex);
+            }
+            else{
+                dolphin.freight.tradePartners.tradePartner.getTradePartnersLookup({}).done(function (result) {
+                    bindCompanyDropdown(result, selectedId, chkIndex);
+                });
+            }
+        }
+
+        function bindCompanyDropdown(result, selectedId, chkIndex){
+            debugger;
+            if (result.length > 0) {
+                companyNames = result;
+                
+                var selectHtml = "<select id='companyName_" + chkIndex + "' onchange='getCompanyDetails(" + chkIndex + ")' name='TradeParties[" + chkIndex + "].TargetTradePartnerId' class='form-control select-search' ><option></option>";
+                for (var i = 0; i < companyNames.length; i++) {
+                    let id = companyNames[i].value;
+                    let name = companyNames[i].text.split('/')[0].replace('\t', '');
+
+                    var selected = (id == selectedId) ? "selected" : "";
+                    selectHtml = selectHtml + "<option " + selected + " value='" + id + "' ";
+                    selectHtml = selectHtml + ">" + name + "</option>"
                 }
-            });
+                selectHtml = selectHtml + "</select>";
+                $('#ddlCompanyName_' + chkIndex).append(selectHtml).find('.select-search').select2({
+                    placeholder: l("Dropdown:Select"),
+                    allowClear: true,
+                });
+
+                if (selectedId) {
+                    $('#tPAddressDiv_' + chkIndex).show();
+                }
+            }
         }
 
         function getCompanyDetails(index) {
@@ -513,7 +534,7 @@
         }
 
         function resetTradePartyIndex(tradeParty) {
-            debugger;
+            var changed = '';
             $('.trade-party-block').find('tbody tr').each(function (e, elem) {
                 $(elem).find('td').each(function (a, aelem) {
                     var inputs = $(aelem).find('input');
@@ -521,18 +542,20 @@
                     if(inputs && inputs.length){
                         if(inputs.length > 1){
                             inputs.each(function(i, inputElem){
-                                $(inputElem).attr('name').replace(/[0-9]/, e);
+                                changed = $(inputElem).attr('name').replace(/[0-9]/, e);
+                                $(inputElem).attr('name', changed);
                             })
                             var select = $(aelem).find('select');
-                            select.length && select.attr('name').replace(/[0-9]/, e);
+                            select.length && select.attr('name', select.attr('name').replace(/[0-9]/, e));
                         }
                         else{
-                            inputs.attr('name').replace(/[0-9]/, e);
+                            changed = inputs.attr('name').replace(/[0-9]/, e);
+                            inputs.attr('name', changed);
                         }
                     }
                     else{
                         inputs = $(aelem).find('select');
-                        inputs.length && inputs.attr('name').replace(/[0-9]/, e);
+                        inputs.length && inputs.attr('name', inputs.attr('name').replace(/[0-9]/, e));
                     }
                     
                 })
@@ -540,7 +563,7 @@
         }
         
         function resetTradePartiesCount(){
-            dolphin.freight.tradePartners.tradeParties.tradeParty.getListByTradePartnerId(window.location.href.substring(window.location.href.lastIndexOf('/')+1)).then(function(res) {
+            dolphin.freight.tradePartners.tradeParties.tradeParty.getListByTradePartnerId(window.location.href.substring(window.location.href.lastIndexOf('/') + 1)).then(function (res) {
                 if(res){
                     chkIndex = res.length;
                 }
@@ -573,7 +596,7 @@
                         tradePartyTemplateData.Email = tradePartyInfo.Email;
                         tradePartyTemplateData.chkIndex = tradeIndex;
                         tradePartyTemplateData.RepValue = tradePartyInfo.IsRep? "checked": "";
-                        tradePartyTemplateData.Id = tradePartyInfo.Id;
+                        tradePartyTemplateData.Id = tradeParty.id;
                         
 
                         var newRow = $('#tradePartyTemplate').tmpl(tradePartyTemplateData);
@@ -600,12 +623,24 @@
             resetTradePartyIndex(index);
         }
 
+        function onChkAllChange(e, partyType) {
+            var elem = e.currentTarget || e.srcElement || e.target;
+            var checked = $(elem).prop('checked') ? "checked" : "";
+
+            if (checked) {
+                $('#tradePartyBody_' + partyType).find('[name="chk_TradeParty"]').prop('checked', 'checked');
+            }
+            else {
+                $('#tradePartyBody_' + partyType).find('[name="chk_TradeParty"]').prop('checked', '');
+            }
+        }
+
     </script>
 
     <script id="tradePartyTemplate" type="text/x-jQuery-tmpl">
         <tr>
           <td>
-              <input type="checkbox" name="chk_TradeParty_${tradeParty}" id="chk_TradeParty_${tradeParty}" />
+              <input type="checkbox" name="chk_TradeParty" id="chk_TradeParty_${tradeParty}" />
           </td>
           <td><input type="checkbox" name="TradeParties[${chkIndex}].IsDefault" id="IsDefault_${chkIndex}" ${DefaultValue} /></td>
           <td><input type="text" name="TradeParties[${chkIndex}].TradePartyDescription" value="${TradePartyDescription}" /></td>
@@ -645,16 +680,16 @@
         <nav class="submenu">
         <ol>
             <li class="menu-item">
-                <a class="nav-link active" id="nav-basic-tab" href="javascript:void(0)">@L["Display:TradePartner:NavTab:Basic"]</a>
+                <a class="nav-link active" id="nav-basic-tab" href="#">@L["Display:TradePartner:NavTab:Basic"]</a>
             </li>
             <li class="menu-item">
-                <a class="nav-link" id="nav-accounting-tab" href="/Sales/TradePartner/DefaultFreight/@Model.Id">@L["Display:TradePartner:NavTab:AccountingSetting"]</a>
+                <a class="nav-link disabled" id="nav-accounting-tab" href="#">@L["Display:TradePartner:NavTab:AccountingSetting"]</a>
             </li>
             <li class="menu-item">
-                <a class="nav-link" id="nav-doc-tab" href="/Sales/TradePartner/DocCenter/@Model.Id">@L["Display:TradePartner:NavTab:DocCenter"]</a>
+                <a class="nav-link active" id="nav-doc-tab" href="/Sales/TradePartner/DocCenter/@Model.Id">@L["Display:TradePartner:NavTab:DocCenter"]</a>
             </li>
             <li class="menu-item">
-                <a class="nav-link disabled" id="nav-status-tab" href="javascript:void(0)">@L["Display:TradePartner:NavTab:Status"]</a>
+                <a class="nav-link disabled" id="nav-status-tab" href="#">@L["Display:TradePartner:NavTab:Status"]</a>
             </li>
         </ol>
         </nav>
@@ -695,8 +730,9 @@
                         <abp-input asp-for="TPInfoModel.TPAliasName" />
                     </abp-column>
                     <abp-column>
-                        <label asp-for="TPInfoModel.AccountGroupId">@L["DisplayName:TPInfoModel.AccountGroupId"]</label>
-                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "TPInfoModel.AccountGroupId", AspItems = _dropdown.AccountGroupnameLookupList, IsShowLabel = true, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.TPInfoModel.AccountGroupId) })
+                        <abp-select asp-for="TPInfoModel.AccountGroupId" id="tpAccountGroupName">
+                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                        </abp-select>
                     </abp-column>
                 </abp-row>
                 <abp-row>
@@ -716,8 +752,9 @@
                         <abp-input asp-for="TPInfoModel.Ceo" />
                     </abp-column>
                     <abp-column>
-                        <label asp-for="TPInfoModel.CreditLimitGroupId">@L["DisplayName:TPInfoModel.CreditLimitGroupId"]</label>
-                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "TPInfoModel.CreditLimitGroupId", AspItems = _dropdown.CreditLimitGroupNameLookupList, IsShowLabel = true, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.TPInfoModel.CreditLimitGroupId) })
+                        <abp-select asp-for="TPInfoModel.CreditLimitGroupId" id="tpCreditLimitGroupName">
+                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                        </abp-select>
                     </abp-column>
                 </abp-row>
                 <abp-row>
@@ -744,7 +781,7 @@
                         <abp-input asp-for="TPInfoModel.ScacCode" />
                     </abp-column>
                     <abp-column>
-                        <abp-input asp-for="TPInfoModel.AccountNo" />
+                        <abp-input asp-for="TPInfoModel.CbsaCode" />
                         <abp-input asp-for="TPInfoModel.FirmsCode" />
                     </abp-column>
                 </abp-row>
@@ -763,14 +800,20 @@
                     </abp-column>
                 </abp-row>
                 <abp-row>
-                <abp-column>
-                    <abp-input asp-for="TPInfoModel.PostCode" id="tpPostCode" />
-                </abp-column>
-                <abp-column>
-                    <label asp-for="TPInfoModel.CountryCode" class="redStar form-label"></label>
-                    <span asp-validation-for="TPInfoModel.CountryCode" class="text-danger"></span>
-                    @*<abp-select asp-for="TPInfoModel.CountryCode" id="tpCountryCode">*@
-                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "TPInfoModel.CountryCode", AspItems = _dropdown.CountryLookupList, IsShowLabel = true, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.TPInfoModel.CountryCode) })
+                    <abp-column>
+                        <abp-input asp-for="TPInfoModel.PostCode" id="tpPostCode" />
+                    </abp-column>
+                    <abp-column>
+                        <label asp-for="TPInfoModel.CountryCode" class="redStar form-label"></label>
+                        <span asp-validation-for="TPInfoModel.CountryCode" class="text-danger"></span>
+                        @*<abp-select asp-for="TPInfoModel.CountryCode" id="tpCountryCode">*@
+                        <select asp-for="TPInfoModel.CountryCode" id="tpCountryCode" class="form-select form-control">
+                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                        @foreach (var country in Model.CountryLookupList)
+                        {
+                            <option value=@country.Value>@country.Text</option>
+                        }
+                    </select>
                 </abp-column>
                 <abp-column>
                     <abp-select asp-for="TPInfoModel.BussinessStatusType" />
@@ -797,8 +840,7 @@
                 <abp-column size="_6">
                     <abp-input asp-for="TPInfoModel.Website" />
                 </abp-column>
-                <abp-column size="_3">
-                    <abp-input asp-for="TPInfoModel.CbsaCode" />
+                <abp-column>
                 </abp-column>
             </abp-row>
             <abp-row>
@@ -832,7 +874,7 @@
             <abp-row>
                 <abp-column size="_6">
                     <abp-input asp-for="TPInfoModel.AccountAddress" id="tpAccountAddress" row="5" />
-                    <a abp-button="Primary" href="javascript:void(0)" size="Small" id="tpCopyFromLocalAddress" onclick="return false;">@L["Display:Button:CopyFromLocalAddress"]</a>
+                    <a abp-button="Primary" href="#" size="Small" id="tpCopyFromLocalAddress">@L["Display:Button:CopyFromLocalAddress"]</a>
                 </abp-column>
                 <abp-column>
                     <abp-input asp-for="TPInfoModel.TaxId" id="taxIdInput" />
@@ -855,7 +897,7 @@
                     <abp-select asp-for="TPInfoModel.CreditTermType" id="tpCreditTermType" />
                 </abp-column>
                 <abp-column>
-                    <abp-input asp-for="TPInfoModel.CreditTermDays" id="tpCreditTermDays" style="margin-top: 8px;" />
+                    <abp-input asp-for="TPInfoModel.CreditTermDays" id="tpCreditTermDays" />
                 </abp-column>
                 <abp-column>
                     <abp-input asp-for="TPInfoModel.CreditLimit" id="tpCreditLimit" />
@@ -909,7 +951,8 @@
                     <abp-input asp-for="TPInfoModel.ImporterNo" />
                 </abp-column>
                 <abp-column>
-                    <abp-button button-type="Primary" disabled="true" style="margin-top: 28px;"> Check Bond Status </abp-button>
+                    <br />
+                    <abp-button button-type="Primary" disabled="true"> Check Bond Status </abp-button>
                 </abp-column>
             </abp-row>
             <h4>@L["Display:TradePartner:H4:OtherSetting"]</h4>
@@ -1047,7 +1090,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center col-checkbox">
-                                            <input type="checkbox">
+                                            <input type="checkbox" onchange="onChkAllChange(event,@row)">
                                         </th>
                                         <th class="text-center">Default</th>
                                         <th>Description</th>

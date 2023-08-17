@@ -4,6 +4,7 @@
 @using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
 @inject IStringLocalizer<FreightResource> L
 @model Dolphin.Freight.Web.Pages.Sales.TradePartner.ModalWithCreateTradePartyModel
+@inject Dolphin.Freight.Web.CommonService.IDropdownService _dropdownService;
 @{
     Layout = null;
 }
@@ -26,15 +27,15 @@
             <div class="form-group">
                 <label class="form-label">@L["Display:TradeParty:THead:CompanyName"]</label>
                 <select name="CreateUpdateTradePartyDto.targetTradePartnerId" class="form-select form-control">
-                    @foreach (var row in Model.TradePartnerLookupList)
+                    @foreach (var row in _dropdownService.TradePartnerLookupList)
                     {
-                        if (row.Id == Model.TargetTradePartnerId)
+                        if (Guid.Parse(row.Value) == Model.TargetTradePartnerId)
                         {
-                            <option value="@row.Id" selected>@String.Format("{0}({1})", row.TPName, row.TPCode)</option>
+                            <option value="@Guid.Parse(row.Value)" selected>@String.Format("{0}({1})", row.Text.Split('/')[0].TrimEnd(), row.Text.Split('/')[1].TrimStart())</option>
                         }
-                        else if (row.Id != Model.TradePartnerId)
+                        else if (Guid.Parse(row.Value) != Model.TradePartnerId)
                         {
-                            <option value="@row.Id">@String.Format("{0}({1})", row.TPName, row.TPCode)</option>
+                            <option value="@Guid.Parse(row.Value)">@String.Format("{0}({1})", row.Text.Split('/')[0].TrimEnd(), row.Text.Split('/')[1].TrimStart())</option>
                         }
                     }
                 </select>

@@ -522,9 +522,18 @@
             });
         }
 
-        //$('[id^=ddlCompanyName_$]').on('change', function (){
+        function onChkAllChange(e, partyType){
+            var elem = e.currentTarget || e.srcElement || e.target;
+            var checked = $(elem).prop('checked')? "checked": "";
 
-        //})
+            if(checked){
+                $('#tradePartyBody_' + partyType).find('[name="chk_TradeParty"]').prop('checked', 'checked');
+            }
+            else{
+                $('#tradePartyBody_' + partyType).find('[name="chk_TradeParty"]').prop('checked','');
+            }
+        }
+
     </script>
 
     <script id="tradePartyTemplate" type="text/x-jQuery-tmpl">
@@ -973,7 +982,7 @@
                                         <thead>
                                             <tr>
                                                 <th class="text-center col-checkbox">
-                                                    <input type="checkbox">
+                                                    <input type="checkbox" id="chk_AllInGridTradeParty_@row" onchange="onChkAllChange(event, @row)">
                                                 </th>
                                                 <th class="text-center">Default</th>
                                                 <th>Description</th>

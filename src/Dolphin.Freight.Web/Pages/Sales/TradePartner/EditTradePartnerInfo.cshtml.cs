@@ -149,6 +149,10 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
                 ObjectMapper.Map<CreateTradePartnerInfoViewModel, CreateUpdateTradePartnerDto>(TPInfoModel)
                 );
 
+                var currentTradeParties = await _tradePartyAppService.GetListByTradePartnerId(TPInfoModel.Id);
+                //var deleted =  currentTradeParties.ExceptBy(TradeParties, x => x);
+                var deleted =  currentTradeParties.Where(x => !TradeParties.Any(y=>y.Id == x.Id)).ToList();
+
                 if (TradeParties != null && TradeParties.Any())
                 {
                     foreach (var tradeParty in TradeParties)
@@ -165,10 +169,24 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
                         }
 
                         tradeParty.TradePartnerId = TPInfoModel.Id;
+                        if(tradeParty.Id != Guid.Empty)
+                        {
+                            await _tradePartyAppService.UpdateAsync(tradeParty.Id, tradeParty);
+                        }
+                        else
+                        {
+                            await _tradePartyAppService.CreateAsync(tradeParty);
+                        }
 
-                        await _tradePartyAppService.SaveAsync(tradeParty);
+                        
                     }
                 }
+
+                foreach (var item in deleted)
+                {
+                    await _tradePartyAppService.DeleteAsync(item.Id);
+                }
+
             }
             catch (DbUpdateConcurrencyException ex)
             {
