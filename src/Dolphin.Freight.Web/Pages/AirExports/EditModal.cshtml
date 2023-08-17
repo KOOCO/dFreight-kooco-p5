@@ -28,7 +28,12 @@
 </script>
     <script>
         var Code = "";
+        var CarrierAgent="";
+        var CollectPaid="";
+        var ChargeItem = "";
+
   var enumValues = @Html.Raw(Json.Serialize(Model.EnumList));
+  var chargeItems=@Html.Raw(Json.Serialize(Model.ChargeItemList));
 </script>
     <script id="accountingTemplate" type="text/x-jQuery-tmpl">
       
@@ -84,9 +89,58 @@
           <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].ChargeAmount" value="${ChargeAmount}"  /></td>
         </tr>
     </script>
+    <script id="mawbOtherChargesTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_mawbOtherCharges" id="chk_mawbOtherCharges_${chkIndex}" />
+          </td>
+          
+           <td> <select  name="AirExportMawbDto.OtherCharges[${chkIndex}].CarrierAgent" id="desc_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
+        <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
+        <option value="Carrier" {{if "Carrier" === CarrierAgent}}selected{{/if}}  > Carrier</option>
+         <option value="Agent" {{if "Agent" === CarrierAgent}}selected{{/if}} > Agent</option>
+        </select></td>
+          <td> <select  name="AirExportMawbDto.OtherCharges[${chkIndex}].CollectPaid" id="htscode_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
+        <option value="" > @L["Display:Dropdownlist:Option:Select"]</option>
+        <option value="Collect" {{if "Collect" === CollectPaid}}selected{{/if}} > Collect</option>
+         <option value="Prepaid" {{if "Prepaid" === CollectPaid}}selected{{/if}} >Prepaid</option>
+        </select></td>
+         <td> <select name="AirExportMawbDto.OtherCharges[${chkIndex}].ChargeItem"  class="filteredDropdown form-select form-control cursor-pointer ">
+        <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
+      {{each chargeItems}}
+         <option value="${$value.value}" {{if $value.value === ChargeItem}}selected{{/if}}>${$value.text}</option>
+        {{/each}}
+      </select></td>
+         @*  <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].ChargeItem" /></td> *@
+          <td><input type="text" name="AirExportMawbDto.OtherCharges[${chkIndex}].Description" value="${Description}" class="form-control"  /></td>
+          <td><input type="text" name="AirExportMawbDto.OtherCharges[${chkIndex}].ChargeAmount" value="${ChargeAmount}" class="form-control" /></td>
+        </tr>
+    </script>
     <script type="text/javascript">
         var l = abp.localization.getResource('Freight');
           var isLocked;
+          var showMsg = '@Model.ShowMsg';
+            if (showMsg == 'True') {
+                var EmptyGuid = '00000000-0000-0000-0000-000000000000';
+                dolphin.freight.common.memos.memo.getListByQuery({sourceId:EmptyGuid, fType:7 }).done(function (result) {
+                    debugger;
+                    var item = result;
+                    debugger;
+                    if (item.length>0) {
+                        dolphin.freight.common.memos.memo.updateSourceId('@Model.Id', 7).done(function (response) {
+                            memoDataTable.ajax.reload();
+                            abp.message.success(l("Message:SuccessAdd"));
+
+                        })
+                    } else {
+                       abp.message.success(l("Message:SuccessAdd"));
+                    }
+
+
+
+                })
+            }
+
         $(document).ready(function () {
 
             // Awb Cancel Area
@@ -108,6 +162,7 @@
             onSetMawbCommodity();
             onSetMoreInformation();
             onSetAccountingInformation();
+            onSetMawbOtherCharges();
             // Calculate Weight Kg to Lb
             $("#GrossWeightKg").on('keyup', function () {
                 $("#GrossWeightLb").val(Math.round($("#GrossWeightKg").val() * 2.2046226218 * 100) / 100);
@@ -160,6 +215,82 @@
             //$(this).addClass('disabled');
         })
         
+
+            //mawbOtherCharges Functions
+             function onSetMawbOtherCharges() {
+
+            var extraProperties ='@Html.Raw(Json.Serialize(Model.AirExportMawbDto.ExtraProperties))';
+
+            if (extraProperties && extraProperties != 'null') {
+                var otherCharges = JSON.parse(extraProperties).OtherCharges;
+
+                if(otherCharges && otherCharges.length){
+                    var Index = 0;
+                    otherCharges.forEach(function (otherCharge) {
+                        otherCharge.chkIndex = Index;
+
+                        var newRow = $('#mawbOtherChargesTemplate').tmpl(otherCharge);
+                        $('#mawbOtherChargesBody').append(newRow);
+
+                        Index += 1;
+                    })
+                }
+            }
+        }
+
+         var chkMawbOtherChargesIndex = 0;
+        function onAddMawbOtherCharges() {
+
+            var newRowData = {
+                chkIndex: chkMawbOtherChargesIndex
+            };
+
+            var newRow = $('#mawbOtherChargesTemplate').tmpl(newRowData);
+
+            $('#mawbOtherChargesBody').append(newRow);
+
+            chkMawbOtherChargesIndex += 1;
+
+            resetMawbOtherChargesIndex();
+        }
+           function onRemoveMawbOtherCharges() {
+            $('[name="chk_mawbOtherCharges"]:checked').each(function (i, elem) {
+                $(elem).closest('tr').remove();
+            });
+
+            resetMawbOtherChargesIndex();
+        }
+      function resetMawbOtherChargesIndex() {
+    $('#mawbOtherChargesBody > tr').each(function (e, elem) {
+         $(elem).find('td').each(function (a, aelem) {
+            var inputElement = $(aelem).find('input, select');
+            var attrName = inputElement.attr('name');
+            
+            if (attrName) {
+                var newAttrName = attrName.replace(/[0-9]/, e);
+                inputElement.attr('name', newAttrName);
+            }
+            
+            if ($(aelem).hasClass('d-none')) {
+                var aelemVal = inputElement.val();
+                if (aelemVal) {
+                    var newAelemVal = aelemVal.replace(/[0-9]/, e);
+                    inputElement.val(newAelemVal);
+                }
+            }
+        });
+    });
+}
+          $('#addMawbOtherChargesBodyBtn').on('click', function () {
+            onAddMawbOtherCharges();
+        });
+          $('#deleteMawbOtherChargesBtn').on('click', function () {
+            onRemoveMawbOtherCharges();
+        })
+
+        //
+
+
         function resetCommodityIndex() {
             $('#commodityBody > tr').each(function (e, elem) {
                 $(elem).find('td').each(function (a, aelem) {
@@ -220,18 +351,27 @@
                 })
             })
         }
-              function resetAccountingIndex()
-        {
-              $(elem).find('td').each(function (a, aelem) {
-                    var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
+        function resetAccountingIndex() {
+            $('#accountingBody > tr').each(function (e, elem) {
+                $(elem).find('td').each(function (a, aelem) {
+                    var inputElement = $(aelem).find('input, select');
+                    var attrName = inputElement.attr('name');
 
-                    $(aelem).find('input').attr('name', attrName);
-                    if ($(aelem).hasClass('d-none')) {
-                        var aelemVal = $(aelem).find('input').val();
-                        $(aelem).find('input').val(aelemVal.replace(/[0-9]/, e));
+                    if (attrName) {
+                        var newAttrName = attrName.replace(/[0-9]/, e);
+                        inputElement.attr('name', newAttrName);
                     }
-             
-            })
+
+                    if ($(aelem).hasClass('d-none')) {
+                        var aelemVal = inputElement.val();
+                        if (aelemVal) {
+                            var newAelemVal = aelemVal.replace(/[0-9]/, e);
+                            inputElement.val(newAelemVal);
+                        }
+                    }
+                });
+            });
+        
 }
              function onSetMoreInformation() {
             var extraProperties = '@Html.Raw(Json.Serialize(Model.AirExportMawbDto.ExtraProperties))';
@@ -447,9 +587,7 @@
             // })
         })
 
-        $('#addMawbOtherChargesBodyBtn').on('click', function () {
-            addMawbOtherChargesTr();
-        })
+       
 
         $('#addAccountingBodyBtn').on('click', function () {
             onAddAccounting();
@@ -459,20 +597,8 @@
             addOtherChargesTr();
         })
 
-        function addMawbOtherChargesTr() {
-            addMawbOtherChargesTrTag("", "", "", "", "");
-        }
-        var trMawbOtherChargesindex = 0;
-        function addMawbOtherChargesTrTag(value1, value2, value3, value4, value5) {
-            var trhtml = "<tr id='trMawbOtherCharges_" + trMawbOtherChargesindex + "'><td> <input type='checkbox' name='f1' id='did_" + trMawbOtherChargesindex + "'  value='" + trMawbOtherChargesindex + "'    /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trMawbOtherChargesindex + " id='f1_" + trMawbOtherChargesindex + "' class='form-control' value='" + value1 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trMawbOtherChargesindex + " id='f1_" + trMawbOtherChargesindex + "' ' class='form-control' value='" + value2 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trMawbOtherChargesindex + " id='f1_" + trMawbOtherChargesindex + "' ' class='form-control' value='" + value3 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trMawbOtherChargesindex + " id='f1_" + trMawbOtherChargesindex + "' ' class='form-control' value='" + value4 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trMawbOtherChargesindex + " id='f1_" + trMawbOtherChargesindex + "' ' class='form-control' value='" + value5 + "' /></td>"
-            $("#MawbotherChargesBody").append(trhtml);
-            trMawbOtherChargesindex++;
-        }
+        
+        
 
         function addAccountingTr() {
             addAccountingTrTag("", "");
@@ -634,7 +760,7 @@
                         }
 
                         Swal.clickCancel();
-                         if (isLocked == 'True'||isHawbLocked) abp.message.warn(l("Message:LockMessage"));
+                         if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
                     })
 
                     $('.btnHawbCardCollapse').each(function (i, e) {
@@ -704,35 +830,48 @@
         }
 
         function deleteHawb() {
-            abp.message.confirm(l('DeletionConfirmationMessage'))
-                .then(function (confirmed) {
-                    if (confirmed) {
-                        dolphin.freight.importExport.airExports.airExportHawb
-                            .delete($('#AirExportHawbDto_Id').val())
-                            .then(function () {
-                                abp.message.success(l('SuccessfullyDeleted'));
-                                $('#hblCard').remove();
-                                $('#hblCards').find('.card-body.show').closest('.card.board-item').remove()
-                            });
-                    }
-                });
+              islockedCheck = $('#AirExportHawbDto_IsLocked').val();
+               islockedCheck = islockedCheck === "True";
+            if (islockedCheck) {
+                abp.message.error(l('Delete Error Data Is Locked'))
+            }
+            else
+            {
+                abp.message.confirm(l('DeletionConfirmationMessage'))
+                    .then(function (confirmed) {
+                        if (confirmed) {
+                            dolphin.freight.importExport.airExports.airExportHawb
+                                .delete($('#AirExportHawbDto_Id').val())
+                                .then(function () {
+                                    abp.message.success(l('SuccessfullyDeleted'));
+                                    $('#hblCard').remove();
+                                    $('#hblCards').find('.card-body.show').closest('.card.board-item').remove()
+                                });
+                        }
+                    });
+            }
         }
 
         function deleteMawb() {
-            var url = new URL(window.location.href);
-            var mawbId = url.searchParams.get('Id');
-            abp.message.confirm(l('DeletionConfirmationMessage'))
-                .then(function (confirmed) {
-                    if (confirmed) {
-                        dolphin.freight.importExport.airExports.airExportMawb
-                            .delete(mawbId)
-                            .then(function () {
-                                abp.message.success(l('SuccessfullyDeleted')).done(function () {
-                                    location.href = '/AirExports/Index';
+            if (isLocked) {
+                abp.message.error(l('Delete Error Data Is Locked'))
+            }
+            else {
+                var url = new URL(window.location.href);
+                var mawbId = url.searchParams.get('Id');
+                abp.message.confirm(l('DeletionConfirmationMessage'))
+                    .then(function (confirmed) {
+                        if (confirmed) {
+                            dolphin.freight.importExport.airExports.airExportMawb
+                                .delete(mawbId)
+                                .then(function () {
+                                    abp.message.success(l('SuccessfullyDeleted')).done(function () {
+                                        location.href = '/AirExports/Index';
+                                    });
                                 });
-                            });
-                    }
-                })
+                        }
+                    })
+            }
         }
 
         function OpenInTrackTrace() {
@@ -767,6 +906,7 @@
 
         function setMawbLockUnlock(isLockedCheck) {
             var id = $('#AirExportMawbDto_Id').val();
+             var hawbId = $('#AirExportHawbDto_Id').val();
             isLockedCheck = isLockedCheck === "True";
             if(isLockedCheck){
                 
@@ -788,8 +928,12 @@
                         dolphin.freight.importExport.airExports.airExportMawb
                             .lockedOrUnLockedAirExportMawb(id)
                             .then(function () {
+                            dolphin.freight.importExport.airExports.airExportHawb
+                            .lockedOrUnLockedAirExportHawb(hawbId)
+                            .then(function () {
                                 abp.message.success(l('SuccessfullyLocked'));
                                 window.location.reload();
+                            });
                             });
                     }
                 });
@@ -1346,13 +1490,13 @@
                                     <abp-table class="nowrap" border="1" class="w-100">
                                         <thead border="1">
                                         <th><input type="checkbox" /></th>
-                                        <th>@L["CarrierAgent"]</th>
+                                        <th style="min-width: 120px!important;">@L["CarrierAgent"]</th>
                                         <th>@L["CollectPrepaid"]</th>
                                         <th>@L["ChargeItem"]</th>
                                         <th>@L["Description"]</th>
                                         <th>@L["Charge Amount"]</th>
                                         </thead>
-                                        <tbody id="MawbotherChargesBody">
+                                        <tbody id="mawbOtherChargesBody">
                                         </tbody>
                                     </abp-table>
                                 </abp-column>

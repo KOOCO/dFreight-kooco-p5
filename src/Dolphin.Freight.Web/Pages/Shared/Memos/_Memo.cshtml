@@ -96,6 +96,7 @@
 <script>
     {
         
+             var memoDataTable;
         let oldOnload = window.onload;
         let initTable = function () {
             const addButtonId = '@Model.AddButtonId';
@@ -106,7 +107,6 @@
 
             let l = abp.localization.getResource('Freight');
 
-            let memoDataTable;
 
             const createMemoModal = new abp.ModalManager({
                 viewUrl: '/Shared/Memos/_CreateUpdateMemo',

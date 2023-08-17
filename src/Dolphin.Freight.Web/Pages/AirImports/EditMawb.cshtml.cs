@@ -363,7 +363,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             public String BusinessReferredId { get; set; }
             
             public bool IsECom { get; set; }
-            
+            public bool IsLocked { get; set; }
             public DisplayUnitType DisplayUnit { get; set; }
         }
         #endregion

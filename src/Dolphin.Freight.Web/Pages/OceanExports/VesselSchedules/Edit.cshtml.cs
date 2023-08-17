@@ -94,7 +94,15 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            await _vesselScheduleAppService.UpdateAsync(Id, VesselSchedule);
+            try
+            {
+                await _vesselScheduleAppService.UpdateAsync(Id, VesselSchedule);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
             QueryContainerDto query = new QueryContainerDto() { QueryId = Id };
             var rs = await _containerAppService.DeleteByVesselIdAsync(query);
             foreach (var dto in CreateUpdateContainerDtos)

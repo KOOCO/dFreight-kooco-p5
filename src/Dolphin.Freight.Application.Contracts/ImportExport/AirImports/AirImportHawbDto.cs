@@ -103,7 +103,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string CustomsBroker { get; set; }
         public List<Commodity> Commodities { get; set; }
         public List<SubHawbs> SubHawbs { get; set; }
-
+        public bool IsLocked { get; set; }
 
         /// <summary>
         /// 是否刪除

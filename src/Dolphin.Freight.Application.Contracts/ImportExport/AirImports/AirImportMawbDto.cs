@@ -270,7 +270,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string DestinationName { get; set; }
         public string CarrierName { get; set; }
         public FreightPageType PageType { get; set; }
-
+        public bool IsLocked { get; set; }
         public List<AllHawbListAirImport> AllHawbListAirImports { get; set; }
     }
     public class AllHawbListAirImport

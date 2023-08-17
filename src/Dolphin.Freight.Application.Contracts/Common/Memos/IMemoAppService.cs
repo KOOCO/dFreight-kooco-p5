@@ -14,5 +14,6 @@ namespace Dolphin.Freight.Common.Memos
         Task SaveAsync(CreateUpdateMemoDto dto);
         Task SwitchHighlightAsync(SwitchHighlightDto dto);
         Task DeleteAsync(Guid id);
+        Task UpdateSourceIdAsync(Guid SourceId, FreightPageType fpageType);
     }
 }

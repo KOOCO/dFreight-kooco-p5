@@ -148,6 +148,7 @@
                                         }
                 @L["Display:Function"]
             </button>
+            <input asp-for="@Model.AirExportHawbDto.IsLocked" type="hidden" />
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
                  <a class='dropdown-item' href='javascript:void(0)' onclick="setHawbLockUnlock('@Model.AirExportHawbDto.IsLocked')">
                                         @if(@Model.AirExportHawbDto.IsLocked)
