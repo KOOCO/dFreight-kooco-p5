@@ -366,6 +366,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string ConsigneeName { get; set; }
         public string NotifyName { get; set; }
         public List<Commodity> Commodities { get; set; }
+        public List<OtherCharges> OtherCharges { get; set; }
         public string PONo { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
         public bool IsLocked { get; set; }

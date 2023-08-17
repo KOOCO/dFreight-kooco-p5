@@ -73,9 +73,11 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         }
         [BindProperty]
         public List<SelectListItem> EnumList { get; set; }
+        public List<SelectListItem> ChargeItemList { get; set; }
         public async Task OnGetAsync()
         {
             EnumList = GetIncotermsSelectList();
+            ChargeItemList = GetChargeItemSelectList();
             MawbModel = new CreateMawbViewModel
             {
                 // set default value
@@ -123,6 +125,12 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                 
 
                 NewMawab.ExtraProperties.Add("MoreInformation", MoreInformations);
+
+            }
+            if (NewMawab.OtherCharges != null)
+            {
+
+                NewMawab.ExtraProperties.Add("OtherCharges", NewMawab.OtherCharges);
 
             }
             if (Commodities != null)
@@ -346,6 +354,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             public String BusinessReferredId { get; set; }
             public bool IsECom { get; set; }
             public string PONo { get; set; }
+            public List<OtherCharges> OtherCharges { get; set; }
         }
         #endregion
         private List<SelectListItem> GetIncotermsSelectList()
@@ -355,6 +364,20 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                                   .Select(e => new SelectListItem
                                   {
                                       Text = L["Enum:" + e.ToString()],
+                                      Value = e.ToString(),
+
+                                  })
+                                  .ToList();
+
+            return enumValues;
+        }
+        private List<SelectListItem> GetChargeItemSelectList()
+        {
+            var enumValues = Enum.GetValues(typeof(ChargeItems))
+                                  .Cast<ChargeItems>()
+                                  .Select(e => new SelectListItem
+                                  {
+                                      Text = L["Enum:ItemCharge." + e.ToString()],
                                       Value = e.ToString(),
 
                                   })

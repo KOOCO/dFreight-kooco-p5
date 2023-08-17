@@ -141,6 +141,59 @@
             //     $("#Mawbtr_" + val).hide();
             // })
         })
+        //
+         var chkMawbOtherChargesIndex = 0;
+        function onAddMawbOtherCharges() {
+
+            var newRowData = {
+                chkIndex: chkMawbOtherChargesIndex
+            };
+
+            var newRow = $('#mawbOtherChargesTemplate').tmpl(newRowData);
+
+            $('#mawbOtherChargesBody').append(newRow);
+
+            chkMawbOtherChargesIndex += 1;
+
+            resetMawbOtherChargesIndex();
+        }
+           function onRemoveMawbOtherCharges() {
+            $('[name="chk_mawbOtherCharges"]:checked').each(function (i, elem) {
+                $(elem).closest('tr').remove();
+            });
+
+            resetMawbOtherChargesIndex();
+        }
+     function resetMawbOtherChargesIndex() {
+    $('#mawbOtherChargesBody > tr').each(function (e, elem) {
+        $(elem).find('td').each(function (a, aelem) {
+            var inputElement = $(aelem).find('input, select');
+            var attrName = inputElement.attr('name');
+            
+            if (attrName) {
+                var newAttrName = attrName.replace(/[0-9]/, e);
+                inputElement.attr('name', newAttrName);
+            }
+            
+            if ($(aelem).hasClass('d-none')) {
+                var aelemVal = inputElement.val();
+                if (aelemVal) {
+                    var newAelemVal = aelemVal.replace(/[0-9]/, e);
+                    inputElement.val(newAelemVal);
+                }
+            }
+        });
+    });
+}
+          $('#addMawbOtherChargesBodyBtn').on('click', function () {
+            onAddMawbOtherCharges();
+        });
+          $('#deleteMawbOtherChargesBtn').on('click', function () {
+            onRemoveMawbOtherCharges();
+        })
+
+        //
+
         var chkOtherChargesIndex = 0;
         function onAddOtherCharges() {
 
@@ -371,17 +424,26 @@
         }
             function resetAccountingIndex()
         {
-            $('#accountingBody > tr').each(function (e, elem) {
-                $(elem).find('td').each(function (a, aelem) {
-                    var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
-                  
-                    $(aelem).find('input').attr('name', attrName);
-                    if ($(aelem).hasClass('d-none')) { 
-                        var aelemVal = $(aelem).find('input').val(); 
-                        $(aelem).find('input').val(aelemVal.replace(/[0-9]/, e)); 
-                    }
-                })
-            })
+            
+                $('#accountingBody > tr').each(function (e, elem) {
+        $(elem).find('td').each(function (a, aelem) {
+            var inputElement = $(aelem).find('input, select');
+            var attrName = inputElement.attr('name');
+            
+            if (attrName) {
+                var newAttrName = attrName.replace(/[0-9]/, e);
+                inputElement.attr('name', newAttrName);
+            }
+            
+            if ($(aelem).hasClass('d-none')) {
+                var aelemVal = inputElement.val();
+                if (aelemVal) {
+                    var newAelemVal = aelemVal.replace(/[0-9]/, e);
+                    inputElement.val(newAelemVal);
+                }
+            }
+        });
+    });
         }
           function resetMawbCommodityIndex()
         {
@@ -439,6 +501,7 @@
     </script>
     <script>
   var enumValues = @Html.Raw(Json.Serialize(Model.EnumList));
+  var chargeItems=@Html.Raw(Json.Serialize(Model.ChargeItemList));
 </script>
     <script id="accountingTemplate" type="text/x-jQuery-tmpl">
       
@@ -469,9 +532,37 @@
           </td>
           <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].CarrierAgent" id="desc_${chkIndex}" /></td>
           <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].CollectPaid" id="htscode_${chkIndex}" /></td>
+      
           <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].ChargeItem" /></td>
           <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].Description"  /></td>
           <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].ChargeAmount"  /></td>
+        </tr>
+    </script>
+      <script id="mawbOtherChargesTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_mawbOtherCharges" id="chk_mawbOtherCharges_${chkIndex}" />
+          </td>
+          
+           <td> <select  name="MawbModel.OtherCharges[${chkIndex}].CarrierAgent" id="desc_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
+        <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
+        <option value="Carrier" > Carrier</option>
+         <option value="Agent" > Agent</option>
+        </select></td>
+          <td> <select  name="MawbModel.OtherCharges[${chkIndex}].CollectPaid" id="htscode_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
+        <option value="" > @L["Display:Dropdownlist:Option:Select"]</option>
+        <option value="Collect" > Collect</option>
+         <option value="Prepaid" >Prepaid</option>
+        </select></td>
+         <td> <select name="MawbModel.OtherCharges[${chkIndex}].ChargeItem"  class="filteredDropdown form-select form-control cursor-pointer ">
+        <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
+      {{each chargeItems}}
+          <option value="${$value.value}">${$value.text}</option>
+        {{/each}}
+      </select></td>
+         @*  <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].ChargeItem" /></td> *@
+          <td><input type="text" name="MawbModel.OtherCharges[${chkIndex}].Description" class="form-control"  /></td>
+          <td><input type="text" name="MawbModel.OtherCharges[${chkIndex}].ChargeAmount" class="form-control" /></td>
         </tr>
     </script>
 }
@@ -885,13 +976,13 @@
                                     <abp-table class="nowrap" border="1" class="w-100">
                                         <thead border="1">
                                         <th><input type="checkbox" /></th>
-                                        <th>@L["CarrierAgent"]</th>
+                                        <th style="min-width: 120px!important;">@L["CarrierAgent"]</th>
                                         <th>@L["CollectPrepaid"]</th>
                                         <th>@L["ChargeItem"]</th>
                                         <th>@L["Description"]</th>
                                         <th>@L["Charge Amount"]</th>
                                         </thead>
-                                        <tbody id="MawbotherChargesBody">
+                                        <tbody id="mawbOtherChargesBody">
                                         </tbody>
                                     </abp-table>
                                 </abp-column>
