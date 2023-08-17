@@ -5600,6 +5600,15 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/ConsolidatedArrivalNoticeOceanImport.cshtml", model);
         }
 
+        public async Task<IActionResult> ProfitReportMawbListAirExport(string reportType, FreightPageType pageType, string param)
+        {
+            AirExportDetails airExportDetails = new();
+
+            airExportDetails.DDLItems = param.Split(',').ToList();
+
+            return View(airExportDetails);
+        }
+
         #region Private Functions
 
         private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)

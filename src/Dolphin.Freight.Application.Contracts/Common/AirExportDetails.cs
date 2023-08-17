@@ -42,5 +42,7 @@ namespace Dolphin.Freight.Common
         public string DestinationCountry { get; set; }
         public FreightPageType PageType { get; set; }
         public bool IsLocked { get; set; }
+        public bool IsPartialView { get; set; } = false;
+        public List<string> DDLItems { get; set; }
     }
 }

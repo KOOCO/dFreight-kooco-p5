@@ -9,6 +9,7 @@ using Volo.Abp.Users;
 using Dolphin.Freight.Common;
 using Volo.Abp.Data;
 using NPOI.SS.UserModel;
+using Dolphin.Freight.Accounting.Invoices;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -201,6 +202,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// 航空公司報價單號
         /// </summary>
         public string CarrierSpotNo { get; set; }
+        public string HawbNos { get; set; }
         /// <summary>
         /// 運費及聲明價值費(PPD / COLL)
         /// </summary>
@@ -360,6 +362,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string Shipper { get; set; }
        
         public string OverseaAgentTPName { get; set; }
+        public string AwbAccountCarrierName { get; set; }
         public string DepatureAirportName { get; set; }
         public string DestinationAirportName { get; set; }
         public string CarrierTPName { get; set; }
@@ -369,5 +372,14 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string PONo { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
         public bool IsLocked { get; set; }
+        public double ARTotal { get; set; }
+        public double DCTotal { get; set; }
+        public double APTotal { get; set; }
+        public double Total { get; set; }
+        public List<InvoiceDto> AR { get; set; }
+        public List<InvoiceDto> DC { get; set; }
+        public List<InvoiceDto> AP { get; set; }
+        public string InvoicesJson { get; set; }
+        public List<InvoiceDto> Invoices { get; set; }
     }
 }

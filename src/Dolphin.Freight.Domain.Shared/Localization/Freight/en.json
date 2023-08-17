@@ -1,3 +1,4 @@
+
 {
   "culture": "en",
   "texts": {
@@ -290,7 +291,7 @@
     "GAList": "G&A List",
     "FilingNo": "Doc No",
     "MblNo": "MB/L No",
-    "PostDate": "Post Date ",
+    "PostDate": "Post Date",
     "OfficeId": "Office",
     "BlTypeId": "Bl Type",
     "SoNo": "S/O No",
@@ -990,7 +991,6 @@
     "DepartmentCode": "DepartmentCode",
     "SalesDepartmentId": "SalesDepartmentId",
     "JobNo": "JobNo",
-    "Carrier": "Carrier",
     "FreightRemarks": "FreightRemarks",
     "ContractNo": "ContractNo",
     // "CustomerId": "CustomerId",
@@ -1089,6 +1089,10 @@
     "MawbCarrierId": "Carrier",
     "IssuingCarrierId": "Issuing Carrier/Agent",
     "AwbType": "AWB Type",
+    "Shipper": "Shipper (Shipping Agent)",
+    "Consignee": "Consignee (Oversea Agent)",
+    "GrossWeight": "Gross Weight",
+    "ChargableWeight": "Chargable Weight",
     "MawbNo": "MAWB No.",
     "AwbDate": "AWB Date",
     "ConsigneeId": "Consignee(Oversea Agent)",

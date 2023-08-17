@@ -11,6 +11,10 @@ using Volo.Abp.Domain.Repositories;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Common;
 using Volo.Abp;
+using Microsoft.AspNetCore.Mvc;
+using Dolphin.Freight.Accounting.Invoices;
+using Newtonsoft.Json;
+using NPOI.POIFS.Crypt.Dsig;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -31,6 +35,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         private readonly IPortsManagementAppService _portRepository;
         private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IRepository<AirExportHawb, Guid> _airExportHawbRepository;
+        private readonly IInvoiceAppService _invoiceAppService;
 
         public AirExportMawbAppService(
             IRepository<AirExportMawb, Guid> repository,
@@ -40,7 +45,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
             IPortsManagementAppService portRepository,
             IRepository<Airport, Guid> airportRepository,
             IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
-            IRepository<AirExportHawb, Guid> airExportHawbRepository
+            IRepository<AirExportHawb, Guid> airExportHawbRepository,
+            IInvoiceAppService invoiceAppService
         ) : base(repository)
         {
             _repository = repository;
@@ -51,6 +57,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
             _airportRepository = airportRepository;
             _tradePartnerRepository = tradePartnerRepository;
             _airExportHawbRepository = airExportHawbRepository; 
+            _invoiceAppService = invoiceAppService;
         }
 
         public async Task<PagedResultDto<AirExportMawbDto>> QueryListAsync(QueryHblDto query)
@@ -117,6 +124,17 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 }
             }
 
+            // substation
+            Dictionary<Guid, string> substationDictionary = new Dictionary<Guid, string>();
+            var substationList = await _substationRepository.GetListAsync();
+            if (null != substationList && substationList.Count > 0)
+            {
+                foreach (var substation in substationList)
+                {
+                    substationDictionary.Add(substation.Id, substation.SubstationName);
+                }
+            }
+
             var queryable = await Repository.GetQueryableAsync();
             queryable = queryable.WhereIf(input.MblId != null && input.MblId != Guid.Empty, x => x.Id
                                            .Equals(input.MblId))
@@ -133,7 +151,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
             var airExportMawbList = await asyncExecuter.ToListAsync(query);
             List<AirExportMawbDto> airExportMawbDtoList = new List<AirExportMawbDto>();
 
-            string departureName, destinationName;
+            string shipperName, awbAccountCarrier, consingeeName, carrierName ,departureName, destinationName, office;
 
             if (null != airExportMawbList && airExportMawbList.Count > 0)
             {
@@ -141,11 +159,88 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 {
                     var airExportMawbDto = ObjectMapper.Map<AirExportMawb, AirExportMawbDto>(airExportMawb);
 
+                    tradePartnerDictionary.TryGetValue(airExportMawb.ShipperId.GetValueOrDefault(), out shipperName);
+                    airExportMawbDto.Shipper = shipperName;
+                    
+                    tradePartnerDictionary.TryGetValue(airExportMawb.AwbAcctCarrierId.GetValueOrDefault(), out awbAccountCarrier);
+                    airExportMawbDto.AwbAccountCarrierName = awbAccountCarrier;
+                    
+                    tradePartnerDictionary.TryGetValue(airExportMawb.ConsigneeId.GetValueOrDefault(), out consingeeName);
+                    airExportMawbDto.ConsigneeName = consingeeName;
+                    
+                    tradePartnerDictionary.TryGetValue(airExportMawb.MawbCarrierId.GetValueOrDefault(), out carrierName);
+                    airExportMawbDto.CarrierTPName = carrierName;
+
                     pdictionary.TryGetValue(airExportMawb.DepatureId.GetValueOrDefault(), out departureName);
                     airExportMawbDto.DepatureAirportName = departureName;
 
                     pdictionary.TryGetValue(airExportMawb.DestinationId.GetValueOrDefault(), out destinationName);
                     airExportMawbDto.DestinationAirportName = destinationName;
+
+                    substationDictionary.TryGetValue(airExportMawb.OfficeId.GetValueOrDefault(), out office);
+                    airExportMawbDto.OfficeName = office;
+
+                    var hawbs = await _airExportHawbRepository.GetListAsync();
+                    airExportMawbDto.HawbNos = string.Join(", ", hawbs.Where(w => w.MawbId == airExportMawbDto.Id).Select(s => s.HawbNo));
+
+                    var queryType = 0;
+
+                    QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = airExportMawb.Id };
+
+                    airExportMawbDto.Invoices = (await _invoiceAppService.QueryInvoicesAsync(queryDto)).ToList();
+
+                    if (airExportMawbDto.Invoices is not null && airExportMawbDto.Invoices.Count > 0)
+                    {
+                        airExportMawbDto.AR = new List<InvoiceDto>();
+                        airExportMawbDto.DC = new List<InvoiceDto>();
+                        airExportMawbDto.AP = new List<InvoiceDto>();
+                        foreach (var dto in airExportMawbDto.Invoices)
+                        {
+                            switch (dto.InvoiceType)
+                            {
+                                default:
+                                    airExportMawbDto.AR.Add(dto);
+                                    break;
+                                case 1:
+                                    airExportMawbDto.DC.Add(dto);
+                                    break;
+                                case 2:
+                                    airExportMawbDto.AP.Add(dto);
+                                    break;
+                            }
+                        }
+
+                        if (airExportMawbDto.AR.Any())
+                        {
+                            double arTotal = 0;
+                            foreach (var ar in airExportMawbDto.AR)
+                            {
+                                arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                            }
+                            airExportMawbDto.ARTotal = arTotal;
+                        }
+                        if (airExportMawbDto.AP.Any())
+                        {
+                            double apTotal = 0;
+                            foreach (var ap in airExportMawbDto.AP)
+                            {
+                                apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                            }
+
+                            airExportMawbDto.APTotal = apTotal;
+                        }
+                        if (airExportMawbDto.DC.Any())
+                        {
+                            double dcTotal = 0;
+                            foreach (var dc in airExportMawbDto.DC)
+                            {
+                                dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                            }
+                            airExportMawbDto.DCTotal = dcTotal;
+                        }
+                        airExportMawbDto.Total = airExportMawbDto.ARTotal - airExportMawbDto.APTotal + airExportMawbDto.DCTotal;
+                        airExportMawbDto.InvoicesJson = JsonConvert.SerializeObject(airExportMawbDto.Invoices);
+                    }
 
                     airExportMawbDtoList.Add(airExportMawbDto);
                 }
