@@ -2726,7 +2726,7 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ProfitReport(Guid id, FreightPageType pageType, string reportType)
+        public async Task<IActionResult> ProfitReport(Guid id, FreightPageType pageType, string reportType, bool isPartialView = false)
         {
             string returnUrl = string.Empty;
 
@@ -2754,7 +2754,7 @@ namespace Dolphin.Freight.Web.Controllers
                 FileNo = airExportDetails.DocNumber
             };
 
-            var queryType = pageType == FreightPageType.AEMBL ? 5 : 4;
+            var queryType = pageType == FreightPageType.AEMBL ? 0 : 4;
 
             QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = id };
             profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
@@ -2812,6 +2812,7 @@ namespace Dolphin.Freight.Web.Controllers
             }
 
             profitReport.Total = profitReport.ARTotal - profitReport.APTotal + profitReport.DCTotal;
+            profitReport.IsPartialView = isPartialView;
 
             returnUrl = pageType == FreightPageType.AEMBL
                 ? (reportType == "Summary") ? "Views/Docs/MawbProfitReport.cshtml" : "Views/Docs/MawbProfitReportDetailed.cshtml"
@@ -2827,7 +2828,14 @@ namespace Dolphin.Freight.Web.Controllers
 
             model.IsPDF = true;
 
-            model.Invoices = JsonConvert.DeserializeObject<IList<InvoiceDto>>(model.InvoicesJson);
+            if(model.InvoicesJson != null)
+            {
+                model.Invoices = JsonConvert.DeserializeObject<IList<InvoiceDto>>(model.InvoicesJson);
+            }
+            else
+            {
+                model.Invoices = new List<InvoiceDto>();
+            }
 
             return await _generatePdf.GetPdf(returnUrl, model);
         }
@@ -5600,14 +5608,22 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/ConsolidatedArrivalNoticeOceanImport.cshtml", model);
         }
 
-        public async Task<IActionResult> ProfitReportMawbListAirExport(string reportType, FreightPageType pageType, string param)
+        public IActionResult ProfitReportMawbListAirExport(string reportType, FreightPageType pageType, string param)
         {
             AirExportDetails airExportDetails = new();
 
             airExportDetails.DDLItems = param.Split(',').ToList();
 
+            airExportDetails.ReportType = reportType;
+
             return View(airExportDetails);
         }
+        [HttpPost]
+        public async Task<IActionResult> ProfitReportMawbListAirExport(ProfitReportViewModel model)
+        {
+            return await ProfitReport(model);
+        }
+
 
         #region Private Functions
 

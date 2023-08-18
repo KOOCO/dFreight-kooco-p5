@@ -185,7 +185,7 @@ table tr {
     }
 </script>
 
- @if (!Model.IsPDF)
+ @if (!Model.IsPDF && !Model.IsPartialView)
     {
         <div class="nav">
            <ul>
@@ -221,6 +221,7 @@ table tr {
     <form id="myForm" method="post">
         <input type="hidden" autocomplete="off">
     <input type="hidden" asp-for="@Model.PageType" />
+    <input type="hidden" asp-for="@Model.IsPartialView" />
     <input type="hidden" asp-for="@Model.ReportType" />
     <input type="hidden" asp-for="@Model.InvoicesJson" />
     <input type="hidden" asp-for="@Model.AgentName" />
