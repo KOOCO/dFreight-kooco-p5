@@ -9,7 +9,7 @@ using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
 
 namespace Dolphin.Freight.Web.Pages.Shared.Memos
 {
-    public class _CreateUpdateMemoModel : AbpPageModel
+    public class CopyMawbModal : AbpPageModel
     {
         [BindProperty(SupportsGet = true)]
         public Guid? Id { get; set; }
@@ -28,12 +28,12 @@ namespace Dolphin.Freight.Web.Pages.Shared.Memos
         public CreateUpdateMemoDto CreateUpdateMemoDto { get; set; }
 
         private readonly IMemoAppService _memoAppService;
-        private ILogger<_CreateUpdateMemoModel> Logger { get; set; }
+        private ILogger<CopyMawbModal> Logger { get; set; }
 
-        public _CreateUpdateMemoModel(IMemoAppService memoAppService)
+        public CopyMawbModal(IMemoAppService memoAppService)
         {
             _memoAppService = memoAppService;
-            Logger = NullLogger<_CreateUpdateMemoModel>.Instance;
+            Logger = NullLogger<CopyMawbModal>.Instance;
         }
 
         public async Task OnGetAsync()

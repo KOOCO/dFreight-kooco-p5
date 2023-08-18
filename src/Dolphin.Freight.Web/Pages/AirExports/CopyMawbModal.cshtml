@@ -1,0 +1,128 @@
+﻿@page
+@using Dolphin.Freight.Localization
+@using Microsoft.Extensions.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@model Dolphin.Freight.Web.Pages.AirExports.CopyMawbModal
+@inject IStringLocalizer<FreightResource> L
+@{
+    Layout = null;
+}
+<script>
+    $(document).ready(function () {
+        // Get references to the checkboxes
+        var accountingCheckbox = $('#accountingCheckbox');
+        var apCheckbox = $('#apCheckbox');
+        var arCheckbox = $('#arCheckbox');
+        var dcCheckbox = $('#dcCheckbox');
+
+        // Disable "A/P", "A/R", and "D/C" checkboxes initially
+        apCheckbox.prop('disabled', false);
+        arCheckbox.prop('disabled', false);
+        dcCheckbox.prop('disabled', false);
+
+        // Function to update the state of the "Accounting Information" checkbox
+        function updateAccountingCheckboxState() {
+            var apChecked = apCheckbox.is(':checked');
+            var arChecked = arCheckbox.is(':checked');
+            var dcChecked = dcCheckbox.is(':checked');
+
+            // Update the state of "Accounting Information" checkbox based on the state of "A/P", "A/R", and "D/C" checkboxes
+            accountingCheckbox.prop('checked', apChecked || arChecked || dcChecked);
+
+            // Enable or disable "A/P", "A/R", and "D/C" checkboxes based on the state of "Accounting Information" checkbox
+            apCheckbox.prop('disabled', !accountingCheckbox.is(':checked'));
+            arCheckbox.prop('disabled', !accountingCheckbox.is(':checked'));
+            dcCheckbox.prop('disabled', !accountingCheckbox.is(':checked'));
+        }
+
+        // When the "Accounting Information" checkbox is changed
+        accountingCheckbox.change(function () {
+            var isChecked = accountingCheckbox.is(':checked');
+
+            // Update the state of "A/P", "A/R", and "D/C" checkboxes based on the "Accounting Information" checkbox
+            apCheckbox.prop('checked', isChecked);
+            arCheckbox.prop('checked', isChecked);
+            dcCheckbox.prop('checked', isChecked);
+
+            // Enable or disable "A/P", "A/R", and "D/C" checkboxes based on the "Accounting Information" checkbox
+            apCheckbox.prop('disabled', !isChecked);
+            arCheckbox.prop('disabled', !isChecked);
+            dcCheckbox.prop('disabled', !isChecked);
+        });
+
+        // When any of "A/P", "A/R", or "D/C" checkboxes are changed
+        apCheckbox.change(function () {
+            updateAccountingCheckboxState();
+        });
+        arCheckbox.change(function () {
+            updateAccountingCheckboxState();
+        });
+        dcCheckbox.change(function () {
+            updateAccountingCheckboxState();
+        });
+    });
+    $('#copyForm').on('abp-ajax-success', function (result, rs) {
+        location.href = 'CreateMawb?Id=@Model.Id&IsCopyFlightInfo=@Model.IsCopyFlightInfo&CopyHawb=@Model.CopyHawb&AccountingInfo=@Model.CopyAccountingInformation&CopyCommodity=@Model.CopyCommodity&IsAPCopy=@Model.AP&IsARCopy=@Model.AR&IsDCCopy=@Model.DC'
+    });
+</script>
+<form id="copyForm" method="post" action="/AirExports/CopyMawbModal">
+    <abp-modal size="Large">
+ 
+            <abp-modal-header title="@L["CopyMawb"]"></abp-modal-header>
+      
+      
+        <abp-modal-body>
+          
+                <input name="CreateUpdateMemoDto.id" type="hidden" value="@Model.Id" />
+          <abp-column size="_12">
+            <p>Please Select How Would you like to Copy MAWB Information?</p>
+
+               </abp-column>
+            
+                <abp-column size="_12">
+            <input type="checkbox" name="@Model.IsCopyFlightInfo" asp-for="@Model.IsCopyFlightInfo" valid" id="title"  />
+            <label class="form-label">@L["Display:Copyflightinfo"]</label>
+            </abp-column>
+            <abp-column size="_12">
+                
+            <p>Please select how would you like to copy HAWB under this MAWB?</p>
+        </abp-column>
+        <abp-column size="_12">
+
+                <abp-radio asp-for="@Model.CopyHawb" asp-items="@Model.HblOptions" inline="true" />
+          
+            
+                
+           
+           
+
+            
+                    
+           </abp-column>
+                 <abp-column size="_12">
+            <input type="checkbox" name="@Model.CopyCommodity" asp-for="@Model.CopyCommodity"  id="title" />
+            <label class="form-label">@L["Display:Copycommodity"]</label>
+           </abp-column>
+           
+                <abp-column size="_12">
+                <input type="checkbox" name="@Model.CopyAccountingInformation" asp-for="@Model.CopyAccountingInformation" id="accountingCheckbox" />
+            <label class="form-label">@L["Display:CopyAccountingInformation"]</label>
+           </abp-column>
+           
+                <abp-column size="_12">
+                <input type="checkbox" name="@Model.AP" asp-for="@Model.AP" id="apCheckbox" />
+            <label class="form-label">@L["Display:A/P"]</label>
+
+
+                <input type="checkbox" name="@Model.AR" asp-for="@Model.AR" id="arCheckbox" />
+            <label class="form-label">@L["Display:A/R"]</label>
+
+
+                <input type="checkbox" name="@Model.DC" asp-for="@Model.DC" id="dcCheckbox" />
+            <label class="form-label">@L["Display:D/C"]</label>
+            </abp-column>
+          
+        </abp-modal-body>
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)"></abp-modal-footer>
+    </abp-modal>
+</form>
