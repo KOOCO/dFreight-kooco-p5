@@ -77,6 +77,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public MoreInformation MoreInformationCollect { get; set; }
         [BindProperty]
         public List<AccountingInformation> AccountingInformation { get; set; }
+        public List<SelectListItem> ChargeItemList { get; set; }
 
         private static readonly Object lockObject = new object();
         public async Task OnGetAsync(Guid Id)
@@ -96,6 +97,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
 
             //}
             EnumList = GetIncotermsSelectList();
+            ChargeItemList = GetChargeItemSelectList();
             await FillTradePartnerAsync();
             await FillSubstationAsync();
             await FillAirportAsync();
@@ -117,6 +119,12 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                 updateItem.ExtraProperties.Add("Commodities", AirExportMawbDto.Commodities);
 
             }
+            if (AirExportMawbDto.OtherCharges != null)
+            {
+                updateItem.ExtraProperties.Remove("OtherCharges");
+                updateItem.ExtraProperties.Add("OtherCharges", AirExportMawbDto.OtherCharges);
+
+            }
             if (AccountingInformation != null)
             {
                 updateItem.ExtraProperties.Remove("AccountingInformation");
@@ -133,7 +141,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             }
             _airExportMawbAppService.UpdateAsync(AirExportMawbDto.Id, updateItem).Wait();
 
-            if (AirExportHawbDto is not null)
+            if (AirExportHawbDto is not null && !string.IsNullOrEmpty(AirExportHawbDto.HawbNo))
             {
                 var updateHawb = ObjectMapper.Map<AirExportHawbDto, CreateUpdateAirExportHawbDto>(AirExportHawbDto);
                 updateHawb.MawbId = AirExportMawbDto.Id;
@@ -271,6 +279,20 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                                       Text =L["Enum:" + e.ToString()],
                                       Value = e.ToString(),
                                     
+                                  })
+                                  .ToList();
+
+            return enumValues;
+        }
+        private List<SelectListItem> GetChargeItemSelectList()
+        {
+            var enumValues = Enum.GetValues(typeof(ChargeItems))
+                                  .Cast<ChargeItems>()
+                                  .Select(e => new SelectListItem
+                                  {
+                                      Text = L["Enum:ItemCharge." + e.ToString()],
+                                      Value = e.ToString(),
+
                                   })
                                   .ToList();
 

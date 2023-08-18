@@ -22,7 +22,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
     public class CreateModel : FreightPageModel
     {
      
-
+       public Guid Id { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> AirportLookupList { get; set; }
