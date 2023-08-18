@@ -5278,8 +5278,6 @@ namespace Dolphin.Freight.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetDocPKGReportPartialMBL(Guid id, FreightPageType pageType, string reportType, string displayBy)
         {
-            //switch (reportType.Split('-')[0].TrimEnd())
-
             switch (reportType)
             {
                 case "MBL Export Manifest":
@@ -5349,7 +5347,7 @@ namespace Dolphin.Freight.Web.Controllers
 
                 if(item.ContainerSizeId != Guid.Empty)
                 {
-                    var sizeName = string.Concat(containers.Where(w => w.Value == Convert.ToString(item.ContainerSizeId)).Select(s => s.Text));   
+                    var sizeName = string.Concat(containers.Where(w => w.Value == Convert.ToString(item.ContainerSizeId)).Select(s => s.Text));
                     if (cntrSizeOccurence.ContainsKey(sizeName))
                     {
                         cntrSizeOccurence[sizeName]++;

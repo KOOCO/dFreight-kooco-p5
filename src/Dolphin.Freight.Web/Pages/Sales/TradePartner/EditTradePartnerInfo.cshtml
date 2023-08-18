@@ -395,27 +395,43 @@
             $('#tradePartyBody_' + tradeParty).append(newRow);
             getDDLCompanyName(chkIndex);
 
-            resetTradePartyIndex(chkIndex);
+            resetTradePartyIndex();
 
             chkIndex += 1;
         }
 
         var companyNames = [];
         function getDDLCompanyName(chkIndex, selectedId) {
-            dolphin.freight.tradePartners.tradePartner.getTradePartnersLookup({}).done(function (result) {
-                if (result.items != null && result.items.length > 0) {
-                    companyNames = result.items;
-                    var selectHtml = "<select id='companyName_" + chkIndex + "' onchange='getCompanyDetails(" + chkIndex + ")' name='TradeParties[" + chkIndex + "].TradePartyListDto.CompanyName' class='form-control select-search' ><option></option>";
-                    for (var i = 0; i < companyNames.length; i++) {
-                        var selected = (companyNames[i].id == selectedId)? "selected": "";
-                        selectHtml = selectHtml + "<option " + selected + " value='" + companyNames[i].id + "' ";
-                        selectHtml = selectHtml + ">" + companyNames[i].tpName + "</option>"
-                    }
-                    selectHtml = selectHtml + "</select>";
-                    $('#ddlCompanyName_' + chkIndex).append(selectHtml).find('.select-search').select2({
-                        placeholder: l("Dropdown:Select"),
-                        allowClear: true,
-                    });
+            debugger;
+            if(companyList){
+                bindCompanyDropdown(companyList, selectedId, chkIndex);
+            }
+            else{
+                dolphin.freight.tradePartners.tradePartner.getTradePartnersLookup({}).done(function (result) {
+                    bindCompanyDropdown(result, selectedId, chkIndex);
+                });
+            }
+        }
+
+        function bindCompanyDropdown(result, selectedId, chkIndex){
+            debugger;
+            if (result.length > 0) {
+                companyNames = result;
+                
+                var selectHtml = "<select id='companyName_" + chkIndex + "' onchange='getCompanyDetails(" + chkIndex + ")' name='TradeParties[" + chkIndex + "].TargetTradePartnerId' class='form-control select-search' ><option></option>";
+                for (var i = 0; i < companyNames.length; i++) {
+                    let id = companyNames[i].value;
+                    let name = companyNames[i].text.split('/')[0].replace('\t', '');
+
+                    var selected = (id == selectedId) ? "selected" : "";
+                    selectHtml = selectHtml + "<option " + selected + " value='" + id + "' ";
+                    selectHtml = selectHtml + ">" + name + "</option>"
+                }
+                selectHtml = selectHtml + "</select>";
+                $('#ddlCompanyName_' + chkIndex).append(selectHtml).find('.select-search').select2({
+                    placeholder: l("Dropdown:Select"),
+                    allowClear: true,
+                });
 
                     if(selectedId){
                         $('#tPAddressDiv_' + chkIndex).show();
@@ -512,8 +528,8 @@
             });
         }
 
-        function resetTradePartyIndex(tradeParty) {
-            debugger;
+        function resetTradePartyIndex() {
+            var changed = '';
             $('.trade-party-block').find('tbody tr').each(function (e, elem) {
                 $(elem).find('td').each(function (a, aelem) {
                     var inputs = $(aelem).find('input');
@@ -521,18 +537,24 @@
                     if(inputs && inputs.length){
                         if(inputs.length > 1){
                             inputs.each(function(i, inputElem){
-                                $(inputElem).attr('name').replace(/[0-9]/, e);
+                                changed = $(inputElem).attr('name').replace(/\d+/, e);
+                                $(inputElem).attr('name', changed);
                             })
                             var select = $(aelem).find('select');
-                            select.length && select.attr('name').replace(/[0-9]/, e);
+                            select.length && select.attr('name', select.attr('name').replace(/\d+/, e));
                         }
                         else{
-                            inputs.attr('name').replace(/[0-9]/, e);
+                            changed = inputs.attr('name').replace(/\d+/, e);
+                            inputs.attr('name', changed);
                         }
                     }
                     else{
                         inputs = $(aelem).find('select');
-                        inputs.length && inputs.attr('name').replace(/[0-9]/, e);
+                        if(inputs && inputs.length){
+                            inputs.attr('name', inputs.attr('name').replace(/\d+/, e));
+                            parentTd = inputs.closest('td');
+                            parentTd.attr('id', parentTd.attr('id').replace(/\d+/, e));
+                        }
                     }
                     
                 })
@@ -597,7 +619,9 @@
                 $(elem).closest('tr').remove();
             });
 
-            resetTradePartyIndex(index);
+            $('#BtnChkAllChange_'+index).prop('checked','');
+
+            resetTradePartyIndex();
         }
 
     </script>
@@ -1047,7 +1071,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center col-checkbox">
-                                            <input type="checkbox">
+                                            <input type="checkbox" id="BtnChkAllChange_@row" onchange="onChkAllChange(event,@row)">
                                         </th>
                                         <th class="text-center">Default</th>
                                         <th>Description</th>
