@@ -1,6 +1,7 @@
 ﻿using Dolphin.Freight.AccountingSettings.GlCodes;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.AirExports;
+using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.Settings.Countries;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settinngs.ContainerSizes;
@@ -9,9 +10,11 @@ using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Dolphin.Freight.TradePartners.Credits;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp.Domain.Repositories;
 using SelectItems = Microsoft.AspNetCore.Mvc.Rendering.SelectListItem;
 using SelectListItem = Microsoft.AspNetCore.Mvc.Rendering.SelectListItem;
 
@@ -31,6 +34,7 @@ namespace Dolphin.Freight.Web.CommonService
         private readonly IGlCodeAppService _glCodeAppService;
         private readonly ICreditLimitGroupAppService _creditLimitGroupAppService;
         private readonly IAccountGroupAppService _accountGroupAppService;
+        private readonly IRepository<AirImportMawb, Guid> _airImportMawbAppService;
         public DropdownService(ITradePartnerAppService tradePartnerAppService,
                                ISubstationAppService substationAppService,
                                IAirportAppService airportAppService,
@@ -42,7 +46,8 @@ namespace Dolphin.Freight.Web.CommonService
                                ICountryAppService countryAppService,
                                IGlCodeAppService glCodeAppService,
                                ICreditLimitGroupAppService creditLimitGroupAppService,
-                               IAccountGroupAppService accountGroupAppService)
+                               IAccountGroupAppService accountGroupAppService,
+                               IRepository<AirImportMawb, Guid> airImportMawbAppService)
         {
             _tradePartnerAppService = tradePartnerAppService;
             _substationAppService = substationAppService;
@@ -56,6 +61,7 @@ namespace Dolphin.Freight.Web.CommonService
             _glCodeAppService = glCodeAppService;
             _creditLimitGroupAppService = creditLimitGroupAppService;
             _accountGroupAppService = accountGroupAppService;
+            _airImportMawbAppService = airImportMawbAppService;
         }
         public List<SelectItems> TradePartnerLookupList => FillTradePartnerAsync().Result;
 
@@ -99,6 +105,22 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> GiCodeLookupList => FillGiCodesAsync().Result;
         public List<SelectItems> CreditLimitGroupNameLookupList => FillCreditLimitGroupName().Result;
         public List<SelectItems> AccountGroupnameLookupList => FillAccountGroupName().Result;
+        public List<SelectItems> MawbLookupList => FillMawbListAsync().Result;
+
+        #region FillMawbListAsync()
+        private async Task<List<SelectItems>> FillMawbListAsync()
+        {
+            var mawbLookup = await _airImportMawbAppService.GetListAsync();
+            
+            var selectItems = mawbLookup.Select(item => new SelectItems
+            {
+                Text = item.MawbNo,
+                Value = Convert.ToString(item.Id)
+            }).ToList();
+
+            return selectItems;
+        }
+        #endregion
 
         #region FillTradePartnerAsync()
         private async Task<List<SelectItems>> FillTradePartnerAsync()

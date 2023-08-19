@@ -86,6 +86,10 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 foreach (var airImportMawb in airImportMawbList)
                 {
                     var airImportMawbDto = ObjectMapper.Map<AirImportMawb, AirImportMawbDto>(airImportMawb);
+                    if (airImportMawb.Id != Guid.Empty)
+                    {
+                        airImportMawbDto.Id = airImportMawb.Id;
+                    }
                     if (airImportMawb.DepatureId != null)
                     {
                         airImportMawbDto.DepatureAirportName = portManagementDictionary[airImportMawb.DepatureId.Value];

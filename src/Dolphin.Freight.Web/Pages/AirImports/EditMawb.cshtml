@@ -255,7 +255,19 @@
         function alertConfirmation2() {
             $('#saveBtn').click();
         }
-
+        function editMawbAirImport(prevMawbId, hawbId) {
+            debugger;
+            $.ajax({
+                url: abp.appPath + 'Docs/AirImportPartialView',
+                type: 'GET',
+                data: { prevMawbId: prevMawbId, hawbId: hawbId },
+                dataType: "html",
+                success: function (res) {
+                    $('.modal-content').html(res);
+                    $('.modal').modal('show');
+                }
+            });
+        }
         function deleteHawbAirImport() {
             islockedCheck = $('#HawbModel_IsLocked').val();
             debugger;
@@ -278,7 +290,6 @@
                     });
             }
         }
-
         function deleteMawbAirImport() {
             if (isLocked) { 
              abp.message.error(l('Delete Error Data Is Locked'))
@@ -300,6 +311,7 @@
                     })
             }
             }
+
         function OpenInTrackTrace() {
             var MawbNo = $('#MawbModel_MawbNo').val();
             myWindow = window.open('https://www.track-trace.com/bol#' + MawbNo, '_blank', 'width=1200,height=1000');
