@@ -61,11 +61,28 @@
             updateAccountingCheckboxState();
         });
     });
+    // $("#copyForm").submit(function (event) {
+    //     // event.preventDefault(); // Prevent default form submission
+    //     var id = $('#Id').val();
+    //     var isFlightInfo = $('#IsCopyFlightInfo').val();
+    //     var copyHawb = $('#CopyHawb').val();
+    //     var isCopyCommodity = $('#CopyCommodity').val();
+    //     var isAccountingInformation = $('#accountingCheckbox').val();
+    //     var apCheckbox = $('#apCheckbox').val();
+    //     var arCheckbox = $('#arCheckbox').val();
+    //     var dcCheckbox = $('#dcCheckbox').val();
+    //     // Serialize form values as a query string
+    //     var formData = $(this).serialize();
+    //     debugger;
+        
+    //     // You can now use the formData for your custom actions or AJAX request
+    // });
     $('#copyForm').on('abp-ajax-success', function (result, rs) {
-        location.href = 'CreateMawb?Id=@Model.Id&IsCopyFlightInfo=@Model.IsCopyFlightInfo&CopyHawb=@Model.CopyHawb&AccountingInfo=@Model.CopyAccountingInformation&CopyCommodity=@Model.CopyCommodity&IsAPCopy=@Model.AP&IsARCopy=@Model.AR&IsDCCopy=@Model.DC'
+        debugger;
+        location.href = 'CreateMawb?Id=' + rs.responseText.Id + '&IsCopyFlightInfo=' + rs.responseText.IsCopyFlightInfo + '&CopyHawb=' + rs.responseText.CopyHawb + '&AccountingInfo=' + rs.responseText.CopyAccountingInformation + '&CopyCommodity=' + rs.responseText.CopyCommodity + '&IsAPCopy=' + rs.responseText.AP + '&IsARCopy=' + rs.responseText.AR + '&IsDCCopy=' + rs.responseText.DC
     });
 </script>
-<form id="copyForm" method="post" action="/AirExports/CopyMawbModal">
+<form abp-model="CopyModel" id="copyForm" method="post" action="@Url.Page("/AirExports/CopyMawbModal")">
     <abp-modal size="Large">
  
             <abp-modal-header title="@L["CopyMawb"]"></abp-modal-header>
@@ -73,14 +90,14 @@
       
         <abp-modal-body>
           
-                <input name="CreateUpdateMemoDto.id" type="hidden" value="@Model.Id" />
+                <abp-input type="hidden" asp-for="@Model.Id" />
           <abp-column size="_12">
             <p>Please Select How Would you like to Copy MAWB Information?</p>
 
                </abp-column>
             
                 <abp-column size="_12">
-            <input type="checkbox" name="@Model.IsCopyFlightInfo" asp-for="@Model.IsCopyFlightInfo" valid" id="title"  />
+                <input suppress-label type="checkbox"  asp-for="@Model.CopyModel.IsCopyFlightInfo" />
             <label class="form-label">@L["Display:Copyflightinfo"]</label>
             </abp-column>
             <abp-column size="_12">
@@ -89,7 +106,7 @@
         </abp-column>
         <abp-column size="_12">
 
-                <abp-radio asp-for="@Model.CopyHawb" asp-items="@Model.HblOptions" inline="true" />
+                <abp-radio  asp-for="@Model.CopyModel.CopyHawb" asp-items="@Model.HblOptions" inline="true" />
           
             
                 
@@ -100,25 +117,25 @@
                     
            </abp-column>
                  <abp-column size="_12">
-            <input type="checkbox" name="@Model.CopyCommodity" asp-for="@Model.CopyCommodity"  id="title" />
+                <input type="checkbox" suppress-label asp-for="@Model.CopyModel.CopyCommodity" />
             <label class="form-label">@L["Display:Copycommodity"]</label>
            </abp-column>
            
                 <abp-column size="_12">
-                <input type="checkbox" name="@Model.CopyAccountingInformation" asp-for="@Model.CopyAccountingInformation" id="accountingCheckbox" />
+                <input type="checkbox" suppress-label asp-for="@Model.CopyModel.CopyAccountingInformation" id="accountingCheckbox" />
             <label class="form-label">@L["Display:CopyAccountingInformation"]</label>
            </abp-column>
            
                 <abp-column size="_12">
-                <input type="checkbox" name="@Model.AP" asp-for="@Model.AP" id="apCheckbox" />
+                <input type="checkbox" suppress-label asp-for="@Model.CopyModel.AP" id="apCheckbox" />
             <label class="form-label">@L["Display:A/P"]</label>
 
 
-                <input type="checkbox" name="@Model.AR" asp-for="@Model.AR" id="arCheckbox" />
+                <input type="checkbox" suppress-label asp-for="@Model.CopyModel.AR" id="arCheckbox" />
             <label class="form-label">@L["Display:A/R"]</label>
 
 
-                <input type="checkbox" name="@Model.DC" asp-for="@Model.DC" id="dcCheckbox" />
+                <input type="checkbox" suppress-label asp-for="@Model.CopyModel.DC" id="dcCheckbox" />
             <label class="form-label">@L["Display:D/C"]</label>
             </abp-column>
           
