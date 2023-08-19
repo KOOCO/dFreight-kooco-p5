@@ -401,14 +401,14 @@
             $('#tradePartyBody_' + tradeParty).append(newRow);
             getDDLCompanyName(chkIndex);
 
-            resetTradePartyIndex(chkIndex);
+            resetTradePartyIndex();
 
             chkIndex += 1;
         }
 
         var companyNames = [];
         function getDDLCompanyName(chkIndex, selectedId) {
-
+            debugger;
             if(companyList){
                 bindCompanyDropdown(companyList, selectedId, chkIndex);
             }
@@ -533,7 +533,7 @@
             });
         }
 
-        function resetTradePartyIndex(tradeParty) {
+        function resetTradePartyIndex() {
             var changed = '';
             $('.trade-party-block').find('tbody tr').each(function (e, elem) {
                 $(elem).find('td').each(function (a, aelem) {
@@ -542,20 +542,24 @@
                     if(inputs && inputs.length){
                         if(inputs.length > 1){
                             inputs.each(function(i, inputElem){
-                                changed = $(inputElem).attr('name').replace(/[0-9]/, e);
+                                changed = $(inputElem).attr('name').replace(/\d+/, e);
                                 $(inputElem).attr('name', changed);
                             })
                             var select = $(aelem).find('select');
-                            select.length && select.attr('name', select.attr('name').replace(/[0-9]/, e));
+                            select.length && select.attr('name', select.attr('name').replace(/\d+/, e));
                         }
                         else{
-                            changed = inputs.attr('name').replace(/[0-9]/, e);
+                            changed = inputs.attr('name').replace(/\d+/, e);
                             inputs.attr('name', changed);
                         }
                     }
                     else{
                         inputs = $(aelem).find('select');
-                        inputs.length && inputs.attr('name', inputs.attr('name').replace(/[0-9]/, e));
+                        if(inputs && inputs.length){
+                            inputs.attr('name', inputs.attr('name').replace(/\d+/, e));
+                            parentTd = inputs.closest('td');
+                            parentTd.attr('id', parentTd.attr('id').replace(/\d+/, e));
+                        }
                     }
                     
                 })
@@ -620,7 +624,21 @@
                 $(elem).closest('tr').remove();
             });
 
-            resetTradePartyIndex(index);
+           $('#BtnChkAllChange_'+index).prop('checked','');
+
+            resetTradePartyIndex();
+        }
+
+        function onChkAllChange(e, partyType) {
+            var elem = e.currentTarget || e.srcElement || e.target;
+            var checked = $(elem).prop('checked') ? "checked" : "";
+
+            if (checked) {
+                $('#tradePartyBody_' + partyType).find('[name="chk_TradeParty"]').prop('checked', 'checked');
+            }
+            else {
+                $('#tradePartyBody_' + partyType).find('[name="chk_TradeParty"]').prop('checked', '');
+            }
         }
 
         function onChkAllChange(e, partyType) {
@@ -1090,7 +1108,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center col-checkbox">
-                                            <input type="checkbox" onchange="onChkAllChange(event,@row)">
+                                            <input type="checkbox" id="BtnChkAllChange_@row" onchange="onChkAllChange(event,@row)">
                                         </th>
                                         <th class="text-center">Default</th>
                                         <th>Description</th>

@@ -395,6 +395,8 @@
             $('#tradePartyBody_'+tradeParty).append(newRow);
             getDDLCompanyName(chkIndex);
 
+            resetTradePartyIndex();
+
             chkIndex += 1;
         }
 
@@ -406,6 +408,10 @@
             $('[id="chk_TradeParty_'+index+'"]:checked').each(function (i, elem) {
                 $(elem).closest('tr').remove();
             });
+
+            $('#chk_AllInGridTradeParty_' + index).prop('checked', '');
+
+            resetTradePartyIndex();
         }
 
         var companyNames = [];
@@ -532,6 +538,39 @@
             else{
                 $('#tradePartyBody_' + partyType).find('[name="chk_TradeParty"]').prop('checked','');
             }
+        }
+
+        function resetTradePartyIndex() {
+            var changed = '';
+            $('.trade-party-block').find('tbody tr').each(function (e, elem) {
+                $(elem).find('td').each(function (a, aelem) {
+                    var inputs = $(aelem).find('input');
+
+                    if (inputs && inputs.length) {
+                        if (inputs.length > 1) {
+                            inputs.each(function (i, inputElem) {
+                                changed = $(inputElem).attr('name').replace(/\d+/, e);
+                                $(inputElem).attr('name', changed);
+                            })
+                            var select = $(aelem).find('select');
+                            select.length && select.attr('name', select.attr('name').replace(/\d+/, e));
+                        }
+                        else {
+                            changed = inputs.attr('name').replace(/\d+/, e);
+                            inputs.attr('name', changed);
+                        }
+                    }
+                    else {
+                        inputs = $(aelem).find('select');
+                        if (inputs && inputs.length) {
+                            inputs.attr('name', inputs.attr('name').replace(/\d+/, e));
+                            parentTd = inputs.closest('td');
+                            parentTd.attr('id', parentTd.attr('id').replace(/\d+/, e));
+                        }
+                    }
+
+                })
+            })
         }
 
     </script>
