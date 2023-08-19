@@ -86,7 +86,7 @@
                     }
                 }
 
-                var column = {
+                var column = {  
                     title: l(item.text),
                     data: itemData
                 };

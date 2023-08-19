@@ -120,8 +120,6 @@
                 </abp-column>
             </div>
             <div class="portlet-tool">
-
-
                 <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
                     <button type="button" class="btn btn-outline-secondary" style="cursor: no-drop;"><i class="fa fa-files-o me-0"></i></button>
                     <button type="button" class="btn btn-outline-secondary" style="cursor: no-drop;"><i class="fa fa-trash me-0"></i></button>
@@ -134,6 +132,10 @@
                     <button type="button" id="summaryId" class="btn btn-outline-secondary" onclick="getProfitReport('Summary')" disabled><i class="fa fa-file-text-o me-0"></i>Profit Report - Summary</button>
                     <button type="button" id="detailedId" class="btn btn-outline-secondary" onclick="getProfitReport('Detailed')" disabled><i class="fa fa-file-text-o me-0"></i>Profit Report - Detailed</button>
                 </div>
+                <abp-button id="btnConfiguration" style="float: right; margin-right: 30px;"
+                            text="@L["Configuration"].Value"
+                            icon="gear"
+                            button-type="Primary" />
             </div>
             <abp-table class="nowrap"  striped-rows="true" id="MawbListTable" class="stripe row-border order-column" style="width:100%"></abp-table>
         </abp-card-body>
