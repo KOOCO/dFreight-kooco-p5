@@ -37,7 +37,8 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public string ShowMsg { get; set; }
-
+        [BindProperty(SupportsGet = true)]
+        public Guid ResultedMawbId { get; set; }
         [BindProperty]
         public CreateAIMMawbViewModel MawbModel { get; set; }
 

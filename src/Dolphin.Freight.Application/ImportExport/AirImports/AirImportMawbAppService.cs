@@ -271,6 +271,12 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 throw new UserFriendlyException(ex.Message);
             }
         }
+        public async Task<List<AirImportMawbDto>> GetMawbListAsync() {
+
+            var query = await _repository.GetQueryableAsync();
+            return ObjectMapper.Map<List<AirImportMawb>, List<AirImportMawbDto>>(query.ToList());
+        
+        }
 
     }
 }

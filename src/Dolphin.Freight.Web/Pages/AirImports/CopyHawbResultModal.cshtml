@@ -1,0 +1,37 @@
+﻿@page
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Web.CommonService;
+@using Dolphin.Freight.Web.Pages.Components;
+@using Microsoft.Extensions.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@model Dolphin.Freight.Web.Pages.AirImports.CopyHawbResultModal
+@inject IDropdownService _dropdown;
+@inject IStringLocalizer<FreightResource> L
+@{
+    Layout = null;
+}
+<script>
+  
+   
+
+    function gotoMawbPage() {
+   
+        location.href = 'EditMawb?Id=@Model.Id';
+    }
+
+</script>
+
+    <abp-modal size="Large">
+ 
+            <abp-modal-header title="@L["CopyHawb"]"></abp-modal-header>
+      
+      
+        <abp-modal-body>
+        
+          <div>
+
+            <p>HB/L copied successfully. You can click the link below to directly access MB/L</p><a href='javascript:void(0)' onclick="gotoMawbPage()">@Model.MawbDocNo</a>
+          </div>
+        </abp-modal-body>
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel)"></abp-modal-footer>
+    </abp-modal>
