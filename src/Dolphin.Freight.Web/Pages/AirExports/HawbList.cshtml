@@ -13,8 +13,10 @@
 <div class="page-header">
     <div class="breadcrumb-wrapper">
         <abp-breadcrumb>
-            <abp-breadcrumb-item title=@L["Menu:AirExports"] />
-            <abp-breadcrumb-item title=@L["Menu:AirExports.HawbList"] href="#" />
+            @*<abp-breadcrumb-item title=@L["Menu:AirExports"] />*@
+            <abp-breadcrumb-item title=@L["Menu:AirExport"] />
+            @*<abp-breadcrumb-item title=@L["Menu:AirExports.HawbList"] href="#" />*@
+            <abp-breadcrumb-item title=@L["Menu:AirExport.HawbList"] href="#" />
         </abp-breadcrumb>
     </div>
 </div>
@@ -22,7 +24,8 @@
     <abp-card>
         <abp-card-header>
             <div class="title">
-                @L["Menu:AirExports.HawbList"]
+                @*@L["Menu:AirExports.HawbList"]*@
+                @L["Menu:AirExport.HawbList"]
             </div>
         </abp-card-header>
         <abp-card-body>
@@ -32,6 +35,15 @@
                     <abp-input asp-for="Search" class="ml-4" />
                 </abp-column>
             </div>
+            <abp-button type="button" id="btnAirExportHawbListProfit" onclick="getHwabProfitReport()" class="btn btn-outline-secondary" disabled="true">
+                <span uib-tooltip="">
+                    <i class="fa fa-file-text-o"></i><font style="vertical-align: inherit;">
+                        <font style="">
+                            profit report
+                        </font>
+                    </font>
+                </span>
+            </abp-button>
             <abp-table class="nowrap" striped-rows="true" id="HawbListTable"></abp-table>
         </abp-card-body>
     </abp-card>

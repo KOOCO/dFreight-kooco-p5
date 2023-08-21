@@ -5624,6 +5624,19 @@ namespace Dolphin.Freight.Web.Controllers
             return await ProfitReport(model);
         }
 
+        public IActionResult ProfitReportHawbListAirExport(FreightPageType pageType, string param)
+        {
+            AirExportDetails airExportDetails = new();
+
+            airExportDetails.DDLItems = param.Split(',').ToList();
+
+            return View(airExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ProfitReportHawbListAirExport(ProfitReportViewModel model)
+        {
+            return await ProfitReport(model);
+        }
 
         #region Private Functions
 

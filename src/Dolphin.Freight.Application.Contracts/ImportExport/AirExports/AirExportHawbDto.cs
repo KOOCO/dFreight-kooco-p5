@@ -16,6 +16,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// Mawb Id
         /// </summary>
         public Guid? MawbId { get; set; }
+        public Guid? HawbId { get; set; }
         /// <summary>
         /// Hawb 號碼
         /// </summary>
@@ -130,5 +131,9 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public bool IsDeleted { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
         public string CurrentHawbNo { get; set; }
+
+        public string DocNumber { get; set; }
+        public string ArrivalDate { get; set; }
+        public DateTime? DepatureDate { get; set; }
     }
 }

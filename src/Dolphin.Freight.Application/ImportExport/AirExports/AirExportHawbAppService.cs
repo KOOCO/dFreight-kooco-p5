@@ -58,25 +58,21 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public async Task<PagedResultDto<AirExportHawbDto>> QueryListAsync(QueryHblDto query)
         {
             var airExportHawbs = await _repository.GetQueryableAsync();
-            airExportHawbs = airExportHawbs.WhereIf(query.MblId != null && query.MblId != Guid.Empty, x => x.Id
-                                           .Equals(query.MblId.Value))
-                                           .WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.HawbNo
-                                           .Contains(query.Search) || x.MawbId.ToString()
-                                           .Contains(query.Search));
-            List<AirExportHawb> rs = airExportHawbs.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
-            List<AirExportHawbDto> list = new List<AirExportHawbDto>();
+            List<AirExportDetails> airExportDetails = new();
 
-            if (rs.Any())
+            foreach (var airExportHawb in airExportHawbs)
             {
-                foreach (var pu in rs)
-                {
-                    var dto = ObjectMapper.Map<AirExportHawb, AirExportHawbDto>(pu);
-                    list.Add(dto);
-                }
+                var detail = await GetAirExportDetailsById(airExportHawb.Id);
+                airExportDetails.Add(detail);
             }
+
+                List<AirExportDetails> rs = airExportDetails.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
+
             PagedResultDto<AirExportHawbDto> listDto = new PagedResultDto<AirExportHawbDto>();
-            listDto.Items = list;
-            listDto.TotalCount = airExportHawbs.Count();
+            List<AirExportHawbDto> exportHawbDtos = ObjectMapper.Map<List<AirExportDetails>, List<AirExportHawbDto>>(rs);
+
+            listDto.Items = exportHawbDtos;
+            listDto.TotalCount = airExportDetails.Count();
             return listDto;
         }
 
@@ -370,7 +366,10 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 airExportDetails.DocNumber = mawb.FilingNo;
                 airExportDetails.GrossWeight = data.GrossWeightCneeKG;
                 airExportDetails.HandlingInformation = data.HandlingInformation;
-                airExportDetails.ArrivalDate = mawb.ArrivalDate?.ToShortDateString();
+                if (mawb.ArrivalDate != null && mawb.ArrivalDate != default(DateTime))
+                    airExportDetails.ArrivalDate = ((DateTime)mawb.ArrivalDate).ToString("yyyy-MM-dd HH:mm");
+                else
+                    airExportDetails.ArrivalDate = "-";
                 airExportDetails.NVD = data.DVCarriage;
                 airExportDetails.NCV = data.DVCustoms;
                 airExportDetails.ChargableWeight = string.Concat(data.ChargeableWeightCneeKG, " ", data.ChargeableWeightCneeLB);
@@ -378,6 +377,9 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 airExportDetails.ChargeableWeightCneeKG = data.ChargeableWeightCneeKG;
                 airExportDetails.ChargeableWeightCneeLB = data.ChargeableWeightCneeLB;
                 airExportDetails.DepatureDate = mawb.DepatureDate;
+                airExportDetails.HawbId = data.Id;
+                airExportDetails.DocNumber = mawb.FilingNo;
+
             }
 
             return airExportDetails;

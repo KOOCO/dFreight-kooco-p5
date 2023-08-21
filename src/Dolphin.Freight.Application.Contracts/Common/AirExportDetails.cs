@@ -7,6 +7,7 @@ namespace Dolphin.Freight.Common
 {
     public class AirExportDetails
     {
+        public Guid HawbId { get; set; }
         public string ShippperName { get; set; }
         public string IssuingCarrierName { get; set; }
         public string NotifyName { get; set; }

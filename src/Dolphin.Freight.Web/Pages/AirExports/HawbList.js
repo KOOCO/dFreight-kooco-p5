@@ -6,6 +6,59 @@ var queryListFilter = function () {
         search: $("input[name='Search'").val()
     };
 };
+
+function selectAllCheckbox(element) {
+    var isChecked = $(element).prop('checked');
+    $('#HawbListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+
+    if (isChecked) {
+        $('#btnAirExportHawbListProfit').prop('disabled', false);
+    } else {
+        $('#btnAirExportHawbListProfit').prop('disabled', true);
+    }
+}
+function selectCheckbox(checkbox) {
+    if ($("#HawbListTable input[type=checkbox]:checked").length > 0) {
+        $('#btnAirExportHawbListProfit').prop('disabled', false);
+        //check if all rows are selected then make main header checkbox selected
+        $('#selectAllCheckbox').prop('checked', false);
+        if ($("#HawbListTable input.selectCheckbox[type=checkbox]").length == $("#HawbListTable input[type=checkbox]:checked").length) {
+            $('#selectAllCheckbox').prop('checked', true);
+        }
+    } else {
+        $('#btnAirExportHawbListProfit').prop('disabled', true);
+    }
+}
+function getHwabProfitReport(reportType) {
+    var params = "";
+    var selectedCheckboxes = $('#HawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        var id = selectedCheckboxes[i].attributes['data-id'].value;
+        var filingNo = selectedCheckboxes[i].attributes['data-filingNo'].value;
+
+
+        params += id + ' / ' + filingNo + ',';
+    }
+    console.log(params);
+    params = params.replace(/^,|,$/g, '');
+
+    OpenWindow('/Docs/ProfitReportHawbListAirExport?pageType=@Dolphin.Freight.Common.FreightPageType.AEHBL&param=' + params);
+}
+
+function getDateTimeForAWB(data) {
+    return luxon
+        .DateTime
+        .fromISO(data, {
+            locale: abp.localization.currentCulture.name
+        }).toFormat('yyyy-MM-dd HH:mm');
+}
+
+
+function onChangeSelection(e) {
+    if ($("#HawbListTable input[type=checkbox]:checked").length > 0) {
+        document.getElementById("btnAirExportHawbListProfit").style.display = 'block';;
+    } else { document.getElementById("btnAirExportHawbListProfit").style.display = 'none'; }
+}
 $(function () {
     dataTable = $('#HawbListTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
@@ -27,6 +80,19 @@ $(function () {
                 //    orderable: false,
                 //    "defaultContent": ""
                 //},
+                {
+                    title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
+                    data: null,
+                    orderable: false,
+                    render: function (data, type, row) {
+
+                        var id = row.hawbId;
+                        var filingNo = row.docNumber;
+                        $('#btnAirExportHawbListProfit').prop('disabled', true);
+                        $('#selectAllCheckbox').prop('checked', false);
+                        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" data-filingNo="' + filingNo + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
+                    }
+                },
                 {
                     title: l('Actions'),
                     rowAction: {
@@ -85,6 +151,12 @@ $(function () {
                 },
                 {
                     //Hawb號碼
+                    title: l('FileNo'),
+                    data: "docNumber",
+                    defaultContent: "-"
+                },
+                {
+                    //Hawb號碼
                     title: l('HawbNo'),
                     data: "hawbNo"
                 },
@@ -98,6 +170,28 @@ $(function () {
                     title: l('Departure'),
                     data: "departure",
                     defaultContent: ''
+                },
+                {
+                    title: l('DepatureDate'),
+                    data: "depatureDate",
+                    defaultContent: "-",
+                    render: function (data) {
+                        if (data) {
+                            //return data; // (new Date(data)).toLocaleDateString('en-US');
+                            return getDateTimeForAWB(data);
+                        }
+                    }
+                },
+                {
+                    title: l('ArrivalDate'),
+                    data: "arrivalDate",
+                    defaultContent: '-'
+                    
+                },
+                {
+                    title: l('AES'),
+                    data: '',
+                    defaultContent: '-'
                 },
                 {
                     //Destination
