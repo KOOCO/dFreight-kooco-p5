@@ -3009,10 +3009,10 @@ namespace Dolphin.Freight.Web.Controllers
             return PartialView("Pages/Shared/_mblAirImportDropdownList.cshtml", airImportDetails);
 
         }
-        public async Task<IActionResult> AirImportChangeMawbParent(Guid mawbId, Guid prevMawbId, Guid hawbId)
+        public async Task<IActionResult> AirImportChangeMawbParent(Guid mawbId, Guid hawbId)
         {
-            var hawb = await _airImportHawbRepository.GetAsync(hawbId);
-
+            // Upate selcted mawb id for particular  hawb
+            await _airImportHawbAppService.UpdateMawbIdOfHawbAsync(hawbId, mawbId);
 
             return View();
         }

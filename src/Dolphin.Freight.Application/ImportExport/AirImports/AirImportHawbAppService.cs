@@ -366,5 +366,21 @@ namespace Dolphin.Freight.ImportExport.AirImports
             }
 
         }
+
+        public async Task UpdateMawbIdOfHawbAsync(Guid hawbId, Guid newMawbId)
+        {
+            try
+            {
+                var hawb = await _repository.GetAsync(hawbId);
+                hawb.MawbId = newMawbId;
+                await _repository.UpdateAsync(hawb);
+            }
+            catch (Exception ex)
+            {
+
+                throw new UserFriendlyException(ex.Message);
+            }
+        }
+
     }
 }
