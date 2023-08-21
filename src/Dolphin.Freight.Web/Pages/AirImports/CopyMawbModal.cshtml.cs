@@ -79,7 +79,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         public bool AR { get; set; }
        
         public bool DC { get; set; }
-
+        public Guid MawbId { get; set; }
 
 
     }

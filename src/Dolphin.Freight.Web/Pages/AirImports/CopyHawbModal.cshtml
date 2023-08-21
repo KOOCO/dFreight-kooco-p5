@@ -1,13 +1,18 @@
 ﻿@page
 @using Dolphin.Freight.Localization
+@using Dolphin.Freight.Web.CommonService;
+@using Dolphin.Freight.Web.Pages.Components;
 @using Microsoft.Extensions.Localization
 @using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
-@model Dolphin.Freight.Web.Pages.AirImports.CopyMawbModal
+@model Dolphin.Freight.Web.Pages.AirImports.CopyHawbModal
+@inject IDropdownService _dropdown;
 @inject IStringLocalizer<FreightResource> L
 @{
     Layout = null;
 }
 <script>
+    var MawbId = "";
+   
     $(document).ready(function () {
         // Get references to the checkboxes
         var accountingCheckbox = $('#accountingCheckbox');
@@ -78,27 +83,33 @@
     //     // You can now use the formData for your custom actions or AJAX request
     // });
     $('#copyForm').on('abp-ajax-success', function (result, rs) {
-        debugger;
-        location.href = 'CreateMawb?Id=' + rs.responseText.Id + '&IsCopyFlightInfo=' + rs.responseText.IsCopyFlightInfo + '&AccountingInfo=' + rs.responseText.CopyAccountingInformation + '&IsAPCopy=' + rs.responseText.AP + '&IsARCopy=' + rs.responseText.AR + '&IsDCCopy=' + rs.responseText.DC
+
+
+        var url = new URL(window.location.href);
+        // Show the div with id "message"
+        location.href = url + '&ResultedMawbId=' + rs.responseText.MawbId + '&copyHawbMessage=True';
+    
     });
+  
+
 </script>
-<form abp-model="CopyModel" id="copyForm" method="post" action="@Url.Page("/AirImports/CopyMawbModal")">
+<form abp-model="CopyModel" id="copyForm" method="post" action="@Url.Page("/AirImports/CopyHawbModal")">
     <abp-modal size="Large">
  
-            <abp-modal-header title="@L["CopyMawb"]"></abp-modal-header>
+            <abp-modal-header title="@L["CopyHawb"]"></abp-modal-header>
       
       
         <abp-modal-body>
-          
-                <abp-input type="hidden" asp-for="@Model.Id" />
+         
+              <abp-input type="hidden" asp-for="@Model.Id" />
           <abp-column size="_12">
-            <p>Please Select How Would you like to Copy MAWB Information?</p>
+                <p>Please select which MB/L you want to copy HB/L to?</p>
 
                </abp-column>
             
                 <abp-column size="_12">
-                <input suppress-label type="checkbox"  asp-for="@Model.CopyModel.IsCopyFlightInfo" />
-            <label class="form-label">@L["Display:Copyflightinfo"]</label>
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CopyModel.MawbId", AspItems = _dropdown.AirImportMawbLookupList,Selected=Model.CopyModel.MawbId.ToString(),IsRequired=true, IsShowLabel = false, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.CopyModel.MawbId) })
+
             </abp-column>
    @*          <abp-column size="_12">
                 
@@ -138,7 +149,8 @@
                 <input type="checkbox" suppress-label asp-for="@Model.CopyModel.DC" id="dcCheckbox" />
             <label class="form-label">@L["Display:D/C"]</label>
             </abp-column>
-          
+         
+      
         </abp-modal-body>
         <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)"></abp-modal-footer>
     </abp-modal>

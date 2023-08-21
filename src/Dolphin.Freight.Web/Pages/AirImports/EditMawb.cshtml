@@ -44,6 +44,16 @@
             } else {
                 abp.message.success('Successfully saved.');
             }
+              var url = new URL(window.location.href);
+    var result = url.searchParams.get('copyHawbMessage');
+    if (result == 'True') {
+        var id = '@Model.ResultedMawbId';
+        createModal.open({
+            id,
+
+        });
+
+    }
              isLocked = '@Model.MawbModel.IsLocked';
          
             const isDirectMasterChecked = document.querySelector('#isDirectMaster');
@@ -114,7 +124,7 @@
                 }
             })
         });
-            const createMemoModal = new abp.ModalManager({
+            var createMemoModal = new abp.ModalManager({
                 viewUrl: '/AirImports/CopyMawbModal',
             });
         $('#editForm').on('abp-ajax-success', function (result, rs) {
@@ -280,7 +290,9 @@
                     });
             }
         }
-
+              var createModal = new abp.ModalManager({
+        viewUrl: '/AirImports/CopyHawbResultModal',
+    });
         function deleteMawbAirImport() {
             if (isLocked) { 
              abp.message.error(l('Delete Error Data Is Locked'))
@@ -567,6 +579,8 @@
         
         
         }
+   
+  
     </script>
 
     <script id="commodityTemplate" type="text/x-jQuery-tmpl">
