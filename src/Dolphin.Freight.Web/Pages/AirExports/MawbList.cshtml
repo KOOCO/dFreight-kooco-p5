@@ -114,6 +114,14 @@
         </abp-card-header>
         <abp-card-body>
             <div class="row col-12" style="text-align: center; margin:0!important">
+                <abp-column size-md="_12">
+                    <abp-button id="btnConfiguration" style="float: right; margin-top: -65px;"
+                                text="@L["Configuration"].Value"
+                                icon="gear"
+                                button-type="Primary" />
+                </abp-column>
+            </div>
+            <div class="row col-12" style="text-align: center; margin:0!important">
                 <abp-column size="_9"></abp-column>
                 <abp-column size="_3" class="filterDiv">
                     <abp-input asp-for="Search" class="ml-4" />
@@ -132,10 +140,6 @@
                     <button type="button" id="summaryId" class="btn btn-outline-secondary" onclick="getProfitReport('Summary')" disabled><i class="fa fa-file-text-o me-0"></i>Profit Report - Summary</button>
                     <button type="button" id="detailedId" class="btn btn-outline-secondary" onclick="getProfitReport('Detailed')" disabled><i class="fa fa-file-text-o me-0"></i>Profit Report - Detailed</button>
                 </div>
-                <abp-button id="btnConfiguration" style="float: right; margin-right: 30px;"
-                            text="@L["Configuration"].Value"
-                            icon="gear"
-                            button-type="Primary" />
             </div>
             <abp-table class="nowrap"  striped-rows="true" id="MawbListTable" class="stripe row-border order-column" style="width:100%"></abp-table>
         </abp-card-body>
