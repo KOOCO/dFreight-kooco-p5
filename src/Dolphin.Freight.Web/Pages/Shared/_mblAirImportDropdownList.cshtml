@@ -3,8 +3,12 @@
 @using Dolphin.Freight.Web.Pages.Components
 @using Dolphin.Freight.Web.CommonService;
 @model Dolphin.Freight.ImportExport.AirImports.AirImportDetails
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
 @inject IStringLocalizer<FreightResource> L
 @inject IDropdownService _dropdown
+@{
+    Layout = null;
+}
 <style>
     .sortable-list__item {
         padding: 5px 22px 5px 7px;
@@ -15,10 +19,9 @@
 </style>
 <script>
     function updateMawbParent() {
-        debugger;
         var mawbId = $("#Id").val();
         $.ajax({
-            url: abp.appPath + 'Docs/AirImportChangeMawbParent?mawbId=' + mawbId'&prevMawbId=@Model.MawbId&hawbId=@Model.HawbId',
+            url: abp.appPath + 'Docs/AirImportChangeMawbParent?mawbId=' + mawbId +'&hawbId=@Model.HawbId',
             type: 'post',
             dataType: "html",
             success: function (res) {
@@ -29,9 +32,50 @@
     }
 </script>
 <form id="frmManifest" data-check-form-on-close="false">
+
     <abp-modal>
-        <h5 class="modal-title" style="color: black; padding: 1rem;">Mawb List</h5>
-        <abp-modal-body class="overflow-auto" style="height:400px;">
+        <abp-modal-header title="@L["HBLMBL"]"></abp-modal-header>
+        
+        <abp-modal-body>
+            <label class="form-label">@L["MoveHBLtoOtherMBL"]</label>
+            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "Id", AspItems = _dropdown.MawbLookupList, IsShowLabel = true, FieldName = "", SelectType = 0, ShowFiledContentValue = "" })
+        </abp-modal-body>
+        <abp-modal-footer>
+           <abp-button id="btnManifestCancel"
+                        text="@L["Btn:Cancel"].Value"
+                        button-type="Default"
+                        onclick="ManifestCancel()" />
+            <abp-button id="btnManifestSave"
+                        text="@L["Btn:Ok"].Value"
+                        button-type="Primary"
+                        onclick="updateMawbParent()" />
+        </abp-modal-footer>
+        @*<abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)"></abp-modal-footer>*@
+    </abp-modal>
+
+   @* <abp-modal>
+        <h5 class="modal-title" style="color: black; padding: 1rem;">HAWB move to other MAWB</h5>
+        <abp-modal-body class="overflow-auto" style="height:200px;">
+            <div class="mb-3">
+                <label style="color: black;>Please select which MB/L would you like to move HB/L to?</label>
+                <div class="input-group">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "Id", AspItems = _dropdown.MawbLookupList, IsShowLabel = true, FieldName = "", SelectType = 0, ShowFiledContentValue = "" })
+                </div>
+            </div>
+            <br/>
+        </abp-modal-body>
+         <abp-modal-footer>
+            <abp-button id="btnManifestCancel"
+                        text="@L["Btn:Cancel"].Value"
+                        button-type="Default"
+                        onclick="ManifestCancel()" />
+            <abp-button id="btnManifestSave"
+                        text="@L["Btn:Ok"].Value"
+                        button-type="Primary"
+                        onclick="updateMawbParent()" />
+        </abp-modal-footer>*@
+       @* <h5 class="modal-title" style="color: black; padding: 1rem;">HAWB move to other MAWB</h5>
+        <abp-modal-body class="overflow-auto" style="height:200px;">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group form-full">
@@ -49,6 +93,6 @@
                         text="Ok"
                         button-type="Primary"
                         onclick="updateMawbParent()" />
-        </abp-modal-footer>
-    </abp-modal>
+        </abp-modal-footer>*@
+    @*</abp-modal>*@
 </form>
