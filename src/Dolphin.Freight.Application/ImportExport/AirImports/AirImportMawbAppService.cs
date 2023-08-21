@@ -259,7 +259,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     var hbls = query.Where(x => x.MawbId == id).ToList();
                     foreach (var hbl in hbls)
                     {
-                        hbl.IsLocked = !mbl.IsLocked;
+                        hbl.IsLocked = mbl.IsLocked;
 
                         await _airImportHawbAppService.UpdateAsync(hbl);
                     }

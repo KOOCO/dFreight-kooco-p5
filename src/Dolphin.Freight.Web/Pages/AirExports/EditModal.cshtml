@@ -724,6 +724,7 @@
                         dataType: "html",
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
+                        debugger;
                         $('#partialContainer').html(partial);
                         
                          
@@ -931,12 +932,10 @@
                         dolphin.freight.importExport.airExports.airExportMawb
                             .lockedOrUnLockedAirExportMawb(id)
                             .then(function () {
-                            dolphin.freight.importExport.airExports.airExportHawb
-                            .lockedOrUnLockedAirExportHawb(hawbId)
-                            .then(function () {
+                       
                                 abp.message.success(l('SuccessfullyLocked'));
                                 window.location.reload();
-                            });
+                     
                             });
                     }
                 });
