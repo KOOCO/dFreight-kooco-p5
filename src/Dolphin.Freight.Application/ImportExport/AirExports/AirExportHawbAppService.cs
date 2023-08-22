@@ -1,10 +1,12 @@
-﻿using Dolphin.Freight.Common;
+﻿using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +37,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         private readonly IPortsManagementAppService _portRepository;
         private readonly IRepository<AirExportMawb, Guid> _mawbRepository;
         private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
+        private readonly IInvoiceAppService _invoiceAppService;
 
         public AirExportHawbAppService(IRepository<AirExportHawb, Guid> repository,
             IRepository<SysCode, Guid> sysCodeRepository,
@@ -43,7 +46,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
             IPortsManagementAppService portRepository,
             IRepository<Airport, Guid> airportRepository,
             IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
-            IRepository<AirExportMawb, Guid> mawbRepository) : base(repository)
+            IRepository<AirExportMawb, Guid> mawbRepository,
+            IInvoiceAppService invoiceAppService) : base(repository)
         {
             _repository = repository;
             _sysCodeRepository = sysCodeRepository;
@@ -53,6 +57,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
             _airportRepository = airportRepository;
             _tradePartnerRepository = tradePartnerRepository;
             _mawbRepository = mawbRepository;
+            _invoiceAppService = invoiceAppService;
         }
 
         public async Task<PagedResultDto<AirExportHawbDto>> QueryListAsync(QueryHblDto query)
@@ -66,7 +71,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 airExportDetails.Add(detail);
             }
 
-                List<AirExportDetails> rs = airExportDetails.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
+            List<AirExportDetails> rs = airExportDetails.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
 
             PagedResultDto<AirExportHawbDto> listDto = new PagedResultDto<AirExportHawbDto>();
             List<AirExportHawbDto> exportHawbDtos = ObjectMapper.Map<List<AirExportDetails>, List<AirExportHawbDto>>(rs);
@@ -361,13 +366,75 @@ namespace Dolphin.Freight.ImportExport.AirExports
                     airExportDetails.BillToName = string.Concat(billTo.TPName, "/", billTo.TPCode);
                 }
 
+                if (data != null)
+                {
+                    QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = 4, ParentId = Id };
+
+                    data.Invoices = (await _invoiceAppService.QueryInvoicesAsync(queryDto)).ToList();
+
+                    if (data.Invoices != null && data.Invoices.Count > 0)
+                    {
+                        data.AR = new List<InvoiceDto>();
+                        data.DC = new List<InvoiceDto>();
+                        data.AP = new List<InvoiceDto>();
+                        foreach (var dto in data.Invoices)
+                        {
+                            switch (dto.InvoiceType)
+                            {
+                                default:
+                                    data.AR.Add(dto);
+                                    break;
+                                case 1:
+                                    data.DC.Add(dto);
+                                    break;
+                                case 2:
+                                    data.AP.Add(dto);
+                                    break;
+                            }
+                        }
+
+                        if (data.AR.Any())
+                        {
+                            double arTotal = 0;
+                            foreach (var ar in data.AR)
+                            {
+                                arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                            }
+                            data.ARTotal = arTotal;
+                        }
+                        if (data.AP.Any())
+                        {
+                            double apTotal = 0;
+                            foreach (var ap in data.AP)
+                            {
+                                apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                            }
+
+                            data.APTotal = apTotal;
+                        }
+                        if (data.DC.Any())
+                        {
+                            double dcTotal = 0;
+                            foreach (var dc in data.DC)
+                            {
+                                dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                            }
+                            data.DCTotal = dcTotal;
+                        }
+
+                        data.Total = data.ARTotal - data.APTotal + data.DCTotal;
+
+                        data.InvoicesJson = JsonConvert.SerializeObject(data.Invoices);
+                    }
+                }
+
                 airExportDetails.AirWayBillNo = data.HawbNo;
                 airExportDetails.MawbNo = mawb.MawbNo ?? "";
                 airExportDetails.DocNumber = mawb.FilingNo;
                 airExportDetails.GrossWeight = data.GrossWeightCneeKG;
                 airExportDetails.HandlingInformation = data.HandlingInformation;
-                if (mawb.ArrivalDate != null && mawb.ArrivalDate != default(DateTime))
-                    airExportDetails.ArrivalDate = ((DateTime)mawb.ArrivalDate).ToString("yyyy-MM-dd HH:mm");
+                if (mawb.ArrivalDate != null)
+                    airExportDetails.ArrivalDate = Convert.ToDateTime(mawb.ArrivalDate).ToString("MM/dd/yyyy");
                 else
                     airExportDetails.ArrivalDate = "-";
                 airExportDetails.NVD = data.DVCarriage;
@@ -379,7 +446,10 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 airExportDetails.DepatureDate = mawb.DepatureDate;
                 airExportDetails.HawbId = data.Id;
                 airExportDetails.DocNumber = mawb.FilingNo;
-
+                airExportDetails.BookingNumber = data.BookingNo;
+                airExportDetails.ARTotal = Math.Round(data.ARTotal, 2);
+                airExportDetails.APTotal = Math.Round(data.APTotal, 2);
+                airExportDetails.DCTotal = Math.Round(data.DCTotal, 2);
             }
 
             return airExportDetails;
