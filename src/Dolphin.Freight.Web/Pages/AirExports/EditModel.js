@@ -1,6 +1,7 @@
 ﻿$(function () {
     var url = new URL(window.location.href);
     var selectedHblNo;
+    var isHawbLocked;
 
     dolphin.freight.importExport.airExports.airExportHawb.getHblCardsById(url.searchParams.get('Id'))
         .done(function (hblCards) {
@@ -16,6 +17,8 @@
 
                     if (hblCard.id == url.searchParams.get('Hid')) {
                         selectedHblNo = hblCard.hawbNo;
+                        isHawbLocked = hblCard.isLocked;
+                        debugger;
                     }
 
                 })

@@ -118,6 +118,9 @@
     </script>
     <script type="text/javascript">
         var l = abp.localization.getResource('Freight');
+          var createMemoModal = new abp.ModalManager({
+                viewUrl: '/AirExports/CopyMawbModal',
+            });
           var isLocked;
           var showMsg = '@Model.ShowMsg';
             if (showMsg == 'True') {
@@ -700,7 +703,7 @@
 
                 var color = getComputedStyle(element.parentElement.parentElement).backgroundColor;
 
-                if (!$('#btnHawbCardCollapse_' + hawbNo).attr('class').includes('collapsed')) {
+              if (!$('#btnHawbCardCollapse_' + hawbNo).attr('class').includes('collapsed')) {
                     $('.hblCardHawbNo').addClass('d-none');
                     $('#hblCard_' + hawbNo).removeClass('d-none');
                 }
@@ -721,6 +724,7 @@
                         dataType: "html",
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
+                        debugger;
                         $('#partialContainer').html(partial);
                         
                          
@@ -928,16 +932,25 @@
                         dolphin.freight.importExport.airExports.airExportMawb
                             .lockedOrUnLockedAirExportMawb(id)
                             .then(function () {
-                            dolphin.freight.importExport.airExports.airExportHawb
-                            .lockedOrUnLockedAirExportHawb(hawbId)
-                            .then(function () {
+                       
                                 abp.message.success(l('SuccessfullyLocked'));
                                 window.location.reload();
-                            });
+                     
                             });
                     }
                 });
             }
+        }
+
+        function onCopyMawbClick(){
+            var id = '@Model.AirExportMawbDto.Id';
+                createMemoModal.open({
+                    id,
+                   
+                });
+          
+        
+        
         }
     </script>
 
@@ -1008,7 +1021,7 @@
                                             <i class="fa fa-lock"></i> @L["Btn:Lock"]
                                         }
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="onCopyMawbClick()">
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="deleteMawb()">

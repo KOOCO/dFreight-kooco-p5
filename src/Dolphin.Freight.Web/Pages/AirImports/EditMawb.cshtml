@@ -44,6 +44,16 @@
             } else {
                 abp.message.success('Successfully saved.');
             }
+              var url = new URL(window.location.href);
+    var result = url.searchParams.get('copyHawbMessage');
+    if (result == 'True') {
+        var id = '@Model.ResultedMawbId';
+        createModal.open({
+            id,
+
+        });
+
+    }
              isLocked = '@Model.MawbModel.IsLocked';
          
             const isDirectMasterChecked = document.querySelector('#isDirectMaster');
@@ -114,7 +124,9 @@
                 }
             })
         });
-
+            var createMemoModal = new abp.ModalManager({
+                viewUrl: '/AirImports/CopyMawbModal',
+            });
         $('#editForm').on('abp-ajax-success', function (result, rs) {
             console.log("enter here");
             event.preventDefault();
@@ -278,7 +290,9 @@
                     });
             }
         }
-
+              var createModal = new abp.ModalManager({
+        viewUrl: '/AirImports/CopyHawbResultModal',
+    });
         function deleteMawbAirImport() {
             if (isLocked) { 
              abp.message.error(l('Delete Error Data Is Locked'))
@@ -555,7 +569,18 @@
                 });
             }
         }
-
+             function onCopyMawbClick(){
+            var id = '@Model.MawbModel.Id';
+                createMemoModal.open({
+                    id,
+                   
+                });
+          
+        
+        
+        }
+   
+  
     </script>
 
     <script id="commodityTemplate" type="text/x-jQuery-tmpl">
@@ -650,7 +675,7 @@
                                             <i class="fa fa-lock"></i> @L["Btn:Lock"]
                                         }
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="onCopyMawbClick()">
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="deleteMawbAirImport()">
@@ -810,7 +835,7 @@
                                            <tr>
                                                     <th>Trans1</th>
                                                     <td>
-                                                          @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans1Id", AspItems = _dropdownService.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans1Id) })
+                                                          @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans1Id", AspItems = _dropdownService.AirportLookupList,Selected=Model.MawbModel.RouteTrans1Id, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans1Id) })
                                                    
                                                     </td>
                                                     <td>
@@ -829,7 +854,7 @@
                                                 <tr>
                                                     <th>Trans2</th>
                                                     <td>
-                                                       @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans2Id", AspItems = _dropdownService.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans2Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans2Id) })
+                                                       @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans2Id", AspItems = _dropdownService.AirportLookupList,Selected=Model.MawbModel.RouteTrans2Id, IsShowLabel = false, FieldName = "RouteTrans2Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans2Id) })
                                                    
                                                     </td>
                                                     <td>
@@ -848,7 +873,7 @@
                                                 <tr>
                                                     <th>Trans3</th>
                                                     <td>
-                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans3Id", AspItems = _dropdownService.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans3Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans3Id) })
+                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans3Id", AspItems = _dropdownService.AirportLookupList,Selected=Model.MawbModel.RouteTrans3Id, IsShowLabel = false, FieldName = "RouteTrans3Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans3Id) })
                                                    
                                                     </td>
                                                     <td>

@@ -83,7 +83,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public async Task OnGetAsync(Guid Id)
         {
             AirExportMawbDto = await _airExportMawbAppService.GetAsync(Id);
-            AirExportHawbDto = new AirExportHawbDto();
+            //AirExportHawbDto = new AirExportHawbDto();
             /*AirExportHawbDto = await _airExportHawbAppService.GetHblCardsById(Id);*/
             //if (AirExportMawbDto.ExtraProperties != null)
             //{

@@ -1,5 +1,6 @@
 ﻿using Dolphin.Freight.Common;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -17,6 +18,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         Task<AirImportDetails> GetAirImportDetailsById(Guid Id);
         Task<AirImportMawbDto> GetAirImportMawbDetailsById(Guid Id);
         Task LockedOrUnLockedAirImportMawbAsync(Guid id);
+        Task<List<AirImportMawbDto>> GetMawbListAsync();
 
     }
 }
