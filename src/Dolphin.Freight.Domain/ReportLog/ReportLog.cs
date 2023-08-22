@@ -80,5 +80,8 @@ namespace Dolphin.Freight.ReportLog
         public string ForwardingAgentName { get; set; } = "";
         public string ColorRemarkId { get; set; } = "";
         public string ColorRemarkName { get; set; } = "";
+        public string CargoType { get; set; }
+        public string SalesPerson { get; set; } // Sales Person but don't get table 
+        public DateTime BLPostDate { get; set; } //  Mawb post date
     }
 }

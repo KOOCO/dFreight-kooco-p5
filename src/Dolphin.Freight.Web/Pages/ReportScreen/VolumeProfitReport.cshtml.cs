@@ -1,4 +1,4 @@
-using Dolphin.Freight.AirExports;
+﻿using Dolphin.Freight.AirExports;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -332,6 +332,9 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             [DisplayName("Output By")]
             public string OutputBy { get; set; }
 
+            public int MinProfit { get; set; }
+            public int MaxProfit { get; set; }
+
 
             /// <summary>
             /// OUTPUT Options
@@ -347,11 +350,14 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             public bool IsBillTo { get; set; }
             public bool IsReferredBy { get; set; }
             public bool IsOutputOffice { get; set; }
+            public bool IsBLPostDate { get; set; }
             public bool IsETD { get; set; }
             public bool IsETA { get; set; }
             public bool IsOutputFreightTerm { get; set; }
             public bool IsIncoterms { get; set; }
             public bool IsServiceTerm { get; set; }
+            public bool IsCargoType { get; set; }
+            public bool IsSalesPerson { get; set; }
             public bool IsMBLOP { get; set; }
             public bool IsOperation { get; set; }
             public bool IsOPCOOPOP { get; set; }
@@ -381,6 +387,22 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             public bool IsBlType { get; set; }
             public bool IsLatestGateIn { get; set; }
 
+
+            public bool IsOceanImport { get; set; }
+            public bool IsOceanExport { get; set; }
+            public bool IsAirImport { get; set; }
+            public bool IsAirExport { get; set; }
+            public bool IsTruck { get; set; }
+            public bool IsMisc { get; set; }
+            public bool IsWarehouse { get; set; }
+            public bool IsVolumeDetail { get; set; }
+            public bool IsProfitDetail { get; set; }
+            public bool IsContainerDetail { get; set; }
+            public bool IsVolByCntrAndSalesType { get; set; }
+            public bool IsNA { get; set; }
+            public bool IsCOLoad { get; set; }
+            public bool IsFreeCargo { get; set; }
+            public bool IsNomi { get; set; }
 
 
         }
@@ -474,9 +496,58 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
 
         public List<SelectListItem> OutputType { get; set; } = new List<SelectListItem>
         {
-            new SelectListItem { Value = "all", Text = "ABBOTT, BROWN AND GARCIA"},
-             new SelectListItem { Value = "range", Text = "ABBOTT, BROWN AND MASON"},
-              new SelectListItem { Value = "negative", Text = "ABBOTT, DIAZ AND GREEN"}
+            //new SelectListItem { Value = "all", Text = "ABBOTT, BROWN AND GARCIA"},
+            //new SelectListItem { Value = "range", Text = "ABBOTT, BROWN AND MASON"},
+            //new SelectListItem { Value = "negative", Text = "ABBOTT, DIAZ AND GREEN"}
+
+            new SelectListItem { Value = "all", Text = "Shipper"},
+            new SelectListItem { Value = "range", Text = "Oversea Agent"},
+            new SelectListItem { Value = "negative", Text = "Consignee"},
+            new SelectListItem { Value = "all", Text = "Customer"},
+            new SelectListItem { Value = "range", Text = "Carrier"},
+            new SelectListItem { Value = "negative", Text = "Customs Broker"},
+            new SelectListItem { Value = "all", Text = "Trucker"},
+            new SelectListItem { Value = "range", Text = "Account Group"},
+            new SelectListItem { Value = "negative", Text = "Bill To"},
+            new SelectListItem { Value = "all", Text = "Referred By"},
+            new SelectListItem { Value = "range", Text = "Office"},
+            new SelectListItem { Value = "negative", Text = "BL Post Date"},
+            new SelectListItem { Value = "all", Text = "ETD"},
+            new SelectListItem { Value = "range", Text = "ΕΤΑ"},
+            new SelectListItem { Value = "negative", Text = "Freight Term"},
+            new SelectListItem { Value = "all", Text = "Incoterms"},
+            new SelectListItem { Value = "range", Text = "Service Term"},
+            new SelectListItem { Value = "all", Text = "Cargo Type"},
+            new SelectListItem { Value = "range", Text = "Sales Person"},
+            new SelectListItem { Value = "all", Text = "MB/L OP"},
+            new SelectListItem { Value = "range", Text = "Operation"},
+            new SelectListItem { Value = "all", Text = "OP/Co-op OP"},
+            new SelectListItem { Value = "range", Text = "Ship Line"},
+            new SelectListItem { Value = "all", Text = "POL"},
+            new SelectListItem { Value = "range", Text = "POD"},
+            new SelectListItem { Value = "all", Text = "Country of POL"},
+            new SelectListItem { Value = "all", Text = "Country of POD"},
+            new SelectListItem { Value = "all", Text = "DEL"},
+            new SelectListItem { Value = "all", Text = "Final Destination"},
+            new SelectListItem { Value = "all", Text = "Vessel / Flight"},
+            new SelectListItem { Value = "range", Text = "MBL/MAWB No./ Warehouse B/L No."},
+            new SelectListItem { Value = "range", Text = "HB/L | HAWB No."},
+            new SelectListItem { Value = "range", Text = "File No."},
+            new SelectListItem { Value = "range", Text = "Door Move"},
+            new SelectListItem { Value = "range", Text = "C.Clearance"},
+            new SelectListItem { Value = "range", Text = "ISF No."},
+            new SelectListItem { Value = "range", Text = "FBA FC"},
+            new SelectListItem { Value = "range", Text = "Sales Type"},
+            new SelectListItem { Value = "range", Text = "HB/L Referred By / Nominated Agent"},
+            new SelectListItem { Value = "range", Text = "E-Commerce"},
+            new SelectListItem { Value = "range", Text = "Forwarding Agent"},
+            new SelectListItem { Value = "all", Text = "Carrier Contract No."},
+            new SelectListItem { Value = "range", Text = "MBL Color Remark"},
+            new SelectListItem { Value = "all", Text = "HBL Color Remark"},
+            new SelectListItem { Value = "range", Text = "Co-Loader"},
+            new SelectListItem { Value = "all", Text = "B/L Type"},
+            new SelectListItem { Value = "range", Text = "Latest Gate In"}
+
         };
 
         public List<SelectListItem> ServiceTermStart { get; set; } = new List<SelectListItem>

@@ -5622,7 +5622,13 @@ namespace Dolphin.Freight.Web.Controllers
             return await ProfitReport(model);
         }
 
+        [HttpGet]
+        public IActionResult TotalProfitVolumeSummary(Guid id)
+        {
 
+            return View();
+        }
+       
         #region Private Functions
 
         private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)

@@ -66,6 +66,9 @@
             $("#AwbChargeableWeightLb").on('keyup', function () {
                 $("#AwbChargeableWeightKg").val(Math.round($("#AwbChargeableWeightLb").val() * 0.45359237 * 100) / 100);
             });
+
+            $("#VPRM_MinProfit").prop("disabled", true);
+            $("#VPRM_MaxProfit").prop("disabled", true);
         });
 
         $('#createForm').on('abp-ajax-success', function () {
@@ -83,29 +86,35 @@
         }
 
         function showTable() {
+            debugger;
+            var outputFormat = $("input[name='VPRM.OutputFormat']:checked").val();
 
-            var isDataTable = $.fn.dataTable.isDataTable('#mawReport');
-
-            var createForm = $('#createForm');
-
-            var form = createForm.serializeFormToObject();
-
-            if (!isDataTable) {
-                dolphin.freight.reportLog.reportLog.getMawbReport(form.vPRM).done(function (res) {
-                    LoadDataTable(res);
-                })
-
-                $('#result').show();
+            if (outputFormat === "PDF") {
+                OpenWindow('/Docs/TotalProfitVolumeSummary');
             }
             else {
-                var table = $('#mawReport').DataTable();
+                var isDataTable = $.fn.dataTable.isDataTable('#mawReport');
 
-                dolphin.freight.reportLog.reportLog.getMawbReport(form.vPRM).done(function (res) {
-                    table.destroy();
-                    LoadDataTable(res);
-                });
+                var createForm = $('#createForm');
+
+                var form = createForm.serializeFormToObject();
+
+                if (!isDataTable) {
+                    dolphin.freight.reportLog.reportLog.getMawbReport(form.vPRM).done(function (res) {
+                        LoadDataTable(res);
+                    })
+
+                    $('#result').show();
+                }
+                else {
+                    var table = $('#mawReport').DataTable();
+
+                    dolphin.freight.reportLog.reportLog.getMawbReport(form.vPRM).done(function (res) {
+                        table.destroy();
+                        LoadDataTable(res);
+                    });
+                }
             }
-
         }
 
         function LoadDataTable(data) {
@@ -129,6 +138,9 @@
                 isColorRemarkChecked = $('#VPRM_IsMblColorRemark').prop('checked'),
                 isFreightTermIdChecked = $('#VPRM_IsOutputFreightTerm').prop('checked'),
                 isSalesTypeChecked = $('#VPRM_IsOutputSalesType').prop('checked');
+                isCargoType = $('#VPRM_IsCargoType').prop('checked');
+                isBLPostDate = $('#VPRM_IsBLPostDate').prop('checked');
+                isSalesPerson = $('#VPRM_IsSalesPerson').prop('checked');
 
             var dataTable = $('#mawReport').DataTable(
                 abp.libs.datatables.normalizeConfiguration({
@@ -182,6 +194,21 @@
                             title: l('CustomerRefNo'),
                             data: "customerRefNo",
                             visible: isCustomerRefChecked
+                        },
+                        {
+                            title: l('PostDate'),
+                            data: "postDate",//<->//
+                            visible: isBLPostDate
+                        },
+                        {
+                            title: l('CargoType'),
+                            data: "cargoType",//<->//
+                            visible: isCargoType
+                        },
+                        {
+                            title: l('SalesPerson'),
+                            data: "salesPerson",//<->//
+                            visible: isSalesPerson
                         },
                         {
                             title: l('FreightTermId'),
@@ -246,7 +273,36 @@
                     ]
                 })
             );
-        }</script>
+        }
+
+        $("input[name='VPRM.Profit']").on("change", function () {
+            var selectedValue = $("input[name='VPRM.Profit']:checked").val();
+
+            if (selectedValue === "range") {
+                $("#VPRM_MinProfit").prop("disabled", false);
+                $("#VPRM_MaxProfit").prop("disabled", false);
+            } else {
+                $("#VPRM_MinProfit").prop("disabled", true);
+                $("#VPRM_MaxProfit").prop("disabled", true);
+            }
+        });
+
+        $("input[name='VPRM.OutputFormat']").on("change", function () {
+            var selectedValue = $("input[name='VPRM.OutputFormat']:checked").val();
+
+            if (selectedValue === "DS") {
+                $('#VPRM_IsVolumeDetail, #VPRM_IsProfitDetail, #VPRM_IsContainerDetail').prop('disabled', false);
+                $("#OutputBySection").show();
+                $("#result").show();
+            } 
+            else {
+                $('#VPRM_IsVolumeDetail, #VPRM_IsProfitDetail, #VPRM_IsContainerDetail').prop('disabled', true);
+                $("#OutputBySection").hide();
+                $("#result").hide();
+            }
+        });
+
+    </script>
 }
 <form abp-model="MawbModel" submit-button="true" data-ajaxForm="true" id="createForm">
     <abp-row>
@@ -298,16 +354,46 @@
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
+                            @*<label asp-for="VPRM.ShippingType" class="form-label">Shipping Type</label>
+                            <input asp-for="VPRM.ShippingType" class="form-control" />*@
+
                             <label asp-for="VPRM.ShippingType" class="form-label">Shipping Type</label>
-                            <input asp-for="VPRM.ShippingType" class="form-control" />
+                            <abp-row>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsOceanImport" label="Ocean Import" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsOceanExport" label="Ocean Export" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsAirImport" label="Air Import" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsAirExport" label="Air Export" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsTruck" label="Truck" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsMisc" label="Misc." />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsWarehouse" label="Warehouse" />
+                                </abp-column>
+                            </abp-row>
+
                         </abp-column>
                         <abp-column size-md="_3">
                             <abp-select asp-for="VPRM.Currency" size="Small" asp-items="@Model.Currency">
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
-                            <label asp-for="VPRM.Profit" class="form-label">Profite</label>
+                            <label asp-for="VPRM.Profit" class="form-label">Profit</label>
                             <abp-radio asp-for="VPRM.Profit" asp-items="Model.Profit" inline="true" />
+                            <div style="display:flex; padding-top:10px;">
+                                <input asp-for="VPRM.MinProfit" class="form-control" style="margin-right:10px;"/>
+                                <input asp-for="VPRM.MaxProfit" class="form-control" />
+                            </div>
                         </abp-column>
                         <abp-column size-md="_3">
                             <abp-select asp-for="VPRM.ShipMode" size="Small" asp-items="@Model.ShipMode">
@@ -325,8 +411,25 @@
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
+                            @*<label asp-for="VPRM.Detail" class="form-label">Detail</label>
+                            <input asp-for="VPRM.Detail" class="form-control" />*@
+
                             <label asp-for="VPRM.Detail" class="form-label">Detail</label>
-                            <input asp-for="VPRM.Detail" class="form-control" />
+                            <abp-row>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsVolumeDetail" label="Show Volume Detail" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsProfitDetail" label="Show Profit Detail" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsContainerDetail" label="Show Container Detail" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsVolByCntrAndSalesType" label="Volume By Container Type And Sales Type" disabled/>
+                                </abp-column>
+                            </abp-row>
+
                         </abp-column>
                         <abp-column size-md="_3">
                             <abp-select asp-for="VPRM.Sales" size="Small" asp-items="@Model.Sales">
@@ -355,8 +458,25 @@
                     <!--第五列-->
                     <abp-row>
                         <abp-column size-md="_3">
-                            <label asp-for="VPRM.SalesTypeId" class="form-label">Sales Type</label>
-                            <input asp-for="VPRM.SalesTypeId" class="form-control" />
+                            @*<label asp-for="VPRM.SalesTypeId" class="form-label">Sales Type</label>
+                            <input asp-for="VPRM.SalesTypeId" class="form-control" />*@
+
+                            <label asp-for="VPRM.Detail" class="form-label">Detail</label>
+                            <abp-row>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsNA" label="N/A" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsCOLoad" label="CO-LOAD" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsFreeCargo" label="FREE CARGO" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsNomi" label="NOMI" />
+                                </abp-column>
+                            </abp-row>
+
                         </abp-column>
                         <abp-column size-md="_3">
                             <abp-select asp-for="VPRM.InvoiceType" size="Small" asp-items="@Model.InvoiceType">
@@ -369,7 +489,7 @@
 
                     </abp-row>
                     <!--第六列-->
-                    <abp-row>
+                    <abp-row id="OutputBySection">
                         <label asp-for="VPRM.OutputBy" class="form-label">Output By</label>
                         <abp-row>
                             <abp-column size-md="Auto">
@@ -406,6 +526,9 @@
                                 <abp-input size-md="Auto" asp-for="VPRM.IsOutputOffice" label="Output Office" />
                             </abp-column>
                             <abp-column size-md="Auto">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsBLPostDate" label="BL Post Date" />
+                            </abp-column>
+                            <abp-column size-md="Auto">
                                 <abp-input size-md="Auto" asp-for="VPRM.IsETD" label="ETD" />
                             </abp-column>
                             <abp-column size-md="Auto">
@@ -419,6 +542,12 @@
                             </abp-column>
                             <abp-column size-md="Auto">
                                 <abp-input size-md="Auto" asp-for="VPRM.IsServiceTerm" label="Service Term" />
+                            </abp-column>
+                            <abp-column size-md="Auto">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsCargoType" label="Cargo Type" />
+                            </abp-column>
+                            <abp-column size-md="Auto">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsSalesPerson" label="Sales Person" />
                             </abp-column>
                             <abp-column size-md="Auto">
                                 <abp-input size-md="Auto" asp-for="VPRM.IsMBLOP" label="MB/L OP" />
