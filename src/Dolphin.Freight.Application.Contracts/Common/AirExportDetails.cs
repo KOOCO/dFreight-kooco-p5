@@ -22,6 +22,10 @@ namespace Dolphin.Freight.Common
         public string GrossWeight { get; set; }
         public string IATA { get; set; }
         public string DocNumber { get; set; }
+        public string BookingNumber { get; set; }
+        public double ARTotal { get; set; }
+        public double DCTotal { get; set; }
+        public double APTotal { get; set; }
         public string BillTo { get; set; }
         public string ArrivalDate { get; set; }
         public string NVD { get; set; }

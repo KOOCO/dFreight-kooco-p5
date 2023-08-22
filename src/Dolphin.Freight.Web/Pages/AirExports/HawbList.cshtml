@@ -30,6 +30,16 @@
         </abp-card-header>
         <abp-card-body>
             <div class="row col-12" style="text-align: center; margin:0!important">
+                <abp-column size-md="_12">
+                    <abp-button id="btnConfiguration"
+                                class="btn-sm"
+                                style="float: right;margin-top: -60px;"
+                                text="@L["Configuration"].Value"
+                                icon="gear"
+                                button-type="Primary" />
+                </abp-column>
+            </div>
+            <div class="row col-12" style="text-align: center; margin:0!important">
                 <abp-column size="_9"></abp-column>
                 <abp-column size="_3" class="filterDiv">
                     <abp-input asp-for="Search" class="ml-4" />
