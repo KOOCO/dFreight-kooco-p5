@@ -12,13 +12,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <style>
-    #periodsize{
-        font-size : 20px;
-    }
-    #largeSize{
-        font-size : 40px;
-    }
-    body{ font-family:Arial}
     .btn {
         background-color: black;
         border: none;
@@ -167,47 +160,6 @@ table tr {
     text-align: center!important;
 }
 
-table {
-  width: 100%;
-  margin-bottom: 1rem;
-  color: #212529;
-}
-
-table th,
-table td {
-  padding: 0.75rem;
-  vertical-align: top;
-  border-top: 1px solid #dee2e6;
-}
-
-table thead th {
-  vertical-align: bottom;
-  border-bottom: 2px solid #dee2e6;
-}
-
-table tbody + tbody {
-  border-top: 2px solid #dee2e6;
-}
-
-table-sm th,
-table-sm td {
-  padding: 0.3rem;
-}
-
-table {
-  border: 1px solid #dee2e6;
-}
-
-table th,
-table td {
-  border: 1px solid #dee2e6;
-}
-
-table thead th,
-table thead td {
-  border-bottom-width: 2px;
-}
-
 </style>
 
 <script>
@@ -247,7 +199,7 @@ table thead td {
             <li>
                 <button type="button" style="width:120px; color:white" onclick="print()"><i class="fa fa-print">儲存PDF或列印</i></button>
             </li>
-            @*<li>
+            <li>
         
                 <select disabled>
                     <option value="en">English</option>
@@ -255,7 +207,7 @@ table thead td {
                     <option value="zh-hant">繁體中文 (Traditional Chinese)</option>
                 </select>
         
-            </li>*@<!-- end ngIf: vm.canSelectLanguage -->
+            </li><!-- end ngIf: vm.canSelectLanguage -->
 
         </ul>
 
@@ -295,12 +247,12 @@ table thead td {
         <input type="hidden" asp-for="@Model.PackageUnitName" />
         <input type="hidden" asp-for="@Model.Description" />*@
 
-<div id="main" class="edit ng-scope">              
+<div id="main" class="edit">              
    <div class="wrap report-volume-profit landscape">
         <div class="header _padding-0">
             <div class="text-center">
-                <div class="text-lg text-bold" id="largeSize">Volume Summary Report</div>
-                <h4 class="text-light margin-t-sm" id="periodsize">Period (05-31-2023 ~ 06-29-2023)</h4>
+                <div class="text-lg text-bold">Volume Summary Report</div>
+                <h4 class="text-light margin-t-sm">Period (05-31-2023 ~ 06-29-2023)</h4>
             </div>
         </div>
         
@@ -619,7 +571,7 @@ table thead td {
                                 
                             </td>
                         </tr>
-              
+                    
                 
                 <!-- Same tables in Volume Profit report and Volume report -->
                 
@@ -750,8 +702,8 @@ table thead td {
                 <div>
                     <div class="header">
                         <div class="text-center">
-                            <div class="text-lg text-bold"  id="largeSize">Volume Summary Report</div>
-                            <h4 class="text-light margin-t-sm"  id="periodsize">Period (05-31-2023 ~ 06-29-2023)</h4>
+                            <div class="text-lg text-bold">Volume Summary Report</div>
+                            <h4 class="text-light margin-t-sm">Period (05-31-2023 ~ 06-29-2023)</h4>
                         </div>
                     </div>
                     <table class="tabld-padding-double">
