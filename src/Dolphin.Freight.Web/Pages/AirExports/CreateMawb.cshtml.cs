@@ -172,7 +172,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                 };
             }
 
-                AirExportHawbDto = new AirExportHawbDto();
+               
 
                 await FillTradePartnerAsync();
                 await FillSubstationAsync();
@@ -451,8 +451,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
 
                 if (CopyHawb == "AllHAWB")
                 {
-                        var hbls = await _airExportHawbAppService.GetHblCardsById(Id);
-                        var newHbls = hbls.Where(x => x.Id == AirExportHawbDto.Id);
+                        var hbls = await _airExportHawbAppService.GetHblCardsById(AirExportMawbDto.Id);
+                        var newHbls = hbls.Where(x => x.Id != AirExportHawbDto.Id).ToList();
                         foreach (var hbl in newHbls)
                         {
                             if (hbl is not null && !string.IsNullOrEmpty(hbl.HawbNo))

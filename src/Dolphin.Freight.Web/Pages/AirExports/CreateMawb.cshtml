@@ -217,6 +217,26 @@
         })
 
         //
+            function onSetCommodity(){
+                debugger;
+            var extraProperties = $('#AirExportHawbDto_ExtraProperties').val();
+
+            if(extraProperties && extraProperties != 'null'){
+                var commodities = JSON.parse(extraProperties).Commodities;
+                
+                if(commodities && commodities.length){
+                var commodityIndex = 0;
+                    commodities.forEach(function(commodity){
+                        commodity.chkIndex = commodityIndex;
+
+                        var newRow = $('#commodityTemplate').tmpl(commodity);
+                        $('#commodityBody').append(newRow);
+
+                        commodityIndex += 1;
+                    })
+                }
+            }
+        }
 
           function onSetMawbCommodity() {
             var extraProperties = '@Html.Raw(Json.Serialize(Model.MawbModel.ExtraProperties))';
@@ -406,6 +426,7 @@
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white');
                         window.location.href.toLowerCase().includes('createmawb') && $('#hblCard').find('#ActionDrop').hide();
                         Swal.clickCancel();
+                        onSetCommodity();
                     })
 
                     $('.btnHawbCardCollapse').each(function (i, e) {
@@ -573,17 +594,7 @@
     </script>
 
     <!-- Define the template -->
-    <script id="commodityTemplate" type="text/x-jQuery-tmpl">
-        <tr>
-          <td>
-              <input type="checkbox" name="chk_commodity" id="chk_Commodity_${chkIndex}" />
-          </td>
-          <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].Description" id="desc_${chkIndex}" /></td>
-          <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].HTSCode" id="htscode_${chkIndex}" /></td>
-          <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].PONumber"  disabled /></td>
-          <td class="d-none"><input type="hidden" name="AirExportHawbDto.Commodities[${chkIndex}].Id" value="commodity_${chkIndex}" id="hidden_Commodity_${chkIndex}" /></td>
-        </tr>
-    </script>
+   
 </script>
     <script>
         var Code = "";
@@ -626,7 +637,16 @@
           <td><input type="text" name="Commodities[${chkIndex}].PONumber" value="${PONumber}"   /></td>
         </tr>
     </script>
-
+     <script id="commodityTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_commodity" id="Id" />
+          </td>
+          <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].Description" value="${Description}" /></td>
+          <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].HTSCode" value="${HTSCode}" /></td>
+          <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].PONumber" value="${PONumber}"  disabled /></td>
+        </tr>
+    </script>
     <script id="otherChargesTemplate" type="text/x-jQuery-tmpl">
         <tr>
           <td>
