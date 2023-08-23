@@ -11,20 +11,20 @@ namespace Dolphin.Freight.Migrations
         {
    
 
-            migrationBuilder.AddColumn<string>(
-                name: "ItNo",
-                table: "AppOceanImportHbls",
-                type: "nvarchar(max)",
-                nullable: true);
+            //migrationBuilder.AddColumn<string>(
+            //    name: "ItNo",
+            //    table: "AppOceanImportHbls",
+            //    type: "nvarchar(max)",
+            //    nullable: true);
 
           
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "ItNo",
-                table: "AppOceanImportHbls");
+            //migrationBuilder.DropColumn(
+            //    name: "ItNo",
+            //    table: "AppOceanImportHbls");
 
        
         }
