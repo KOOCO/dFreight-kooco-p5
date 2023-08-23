@@ -5623,10 +5623,28 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult TotalProfitVolumeSummary(Guid id)
+        public IActionResult TotalProfitVolumeSummary(Guid id, string shippingType, string reportType, string salesType)
         {
+            VolumeReportSummaryViewModel InfoModel = new();
 
-            return View();
+            var shippingTypes = shippingType.Split(',').ToList();
+            var containerList = _dropdownService.ContainerLookupList;
+
+            foreach(var item in shippingTypes)
+            {
+                var containersList = new List<ReportLog.ContainerList>();
+                foreach(var container in containerList)
+                {
+                    var containers = new ReportLog.ContainerList
+                    {
+                        Name = container.Text
+                    };
+                    containersList.Add(containers);
+                }
+                InfoModel.ContainerList = containersList;
+            }
+
+            return View(InfoModel);
         }
        
         #region Private Functions
