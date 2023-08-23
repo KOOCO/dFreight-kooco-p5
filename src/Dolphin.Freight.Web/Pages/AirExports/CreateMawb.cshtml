@@ -694,6 +694,11 @@
     <div class="board-wrap">
         <form abp-model="MawbModel" submit-button="true" data-ajaxForm="true" id="createForm">
             <abp-row>
+                @if(Model.Id!=Guid.Empty)
+                {
+                  <abp-input suppress-label asp-for="@Model.AirExportMawbDto.Id" type="hidden" />
+                }
+              
                 <abp-column size-md="_9" id="parentCard">
                     <!-- MBL Card-->
                     <abp-card border="Dark" id="mawbCard" style="margin-bottom: 1.2rem;">
