@@ -117,6 +117,9 @@ namespace Dolphin.Freight.ReportLog
         public bool IsCoLoader { get; set; }
         public bool IsBlType { get; set; }
         public bool IsLatestGateIn { get; set; }
+        public string CargoType { get; set; }
+        public string SalesPerson { get; set; } // Sales Person but don't get table 
+        public DateTime BLPostDate { get; set; } //  Mawb post date
     }
 }
 

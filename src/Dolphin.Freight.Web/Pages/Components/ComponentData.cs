@@ -51,5 +51,7 @@ namespace Dolphin.Freight.Web.Pages.Components
         public string Id { get { if (Name != null) return Name.Replace(".", "_"); return ""; } }
         public List<SelectListItem> AspItems { get; set; }
 
+        public bool IsMultipleSelection { get; set; }
+
     }
 }

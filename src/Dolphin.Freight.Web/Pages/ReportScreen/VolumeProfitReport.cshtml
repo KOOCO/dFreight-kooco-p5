@@ -2,8 +2,11 @@
 @using Dolphin.Freight.AirExports
 @using Dolphin.Freight.Localization
 @using Microsoft.Extensions.Localization
+@using Dolphin.Freight.Web.CommonService;
+@using Dolphin.Freight.Web.Pages.Components;
 @model Dolphin.Freight.Web.Pages.ReportScreen.VolumeProfileReportModel
 @inject IStringLocalizer<FreightResource> L
+@inject IDropdownService _dropdown
 @section styles
     {
     <style>
@@ -11,7 +14,61 @@
             content: "*";
             color: red;
         }
+
+        /*.select2-container {
+            width: 100% !important;
+            padding: 0;
+        }
+
+        .select2-dropdown {
+            border: 1px solid #aaa;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .select2-search__field {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            outline: none;
+            border-radius: 2px;
+        }
+
+        .select2-selection__choice {
+            background-color: #007bff;
+            border-radius: 4px;
+            padding: 5px 10px;
+            color: white;
+            border: none;
+            margin-top: 5px;
+        }
+
+        .select2-selection__choice__remove {
+            color: white;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+
+        .select2-selection__choice:hover {
+            background-color: #0056b3;
+        }
+
+        .select2-selection__arrow {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .select2-results__option--highlighted {
+            background-color: #ebebeb;
+            color: #333;
+        }
+
+        .select2-results__option[aria-disabled=true] {
+            color: #999;
+            font-style: italic;
+        }*/
+
     </style>
+
 }
 @section scripts
     {
@@ -86,7 +143,6 @@
         }
 
         function showTable() {
-            debugger;
             var outputFormat = $("input[name='VPRM.OutputFormat']:checked").val();
 
             if (outputFormat === "PDF") {
@@ -302,6 +358,17 @@
             }
         });
 
+        //document.addEventListener('DOMContentLoaded', function(){
+        //    debugger;
+        //    var l = abp.localization.getResource('Freight');
+
+        //    $('#VPRM_FreightCode').select2({
+        //        placeholder: l("Dropdown:Select"),
+        //        allowClear: true
+        //    });
+        //});
+        
+
     </script>
 }
 <form abp-model="MawbModel" submit-button="true" data-ajaxForm="true" id="createForm">
@@ -395,15 +462,14 @@
                                 <input asp-for="VPRM.MaxProfit" class="form-control" />
                             </div>
                         </abp-column>
-                        <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.ShipMode" size="Small" asp-items="@Model.ShipMode">
-                            </abp-select>
+                        <abp-column size-md="_12">
+                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VPRM.FreightCode", AspItems = @Model.FreightCode, IsShowLabel = true, IsMultipleSelection= true, FieldName = "FreightCode", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.FreightCode) })
                         </abp-column>
                     </abp-row>
                     <!--第三列-->
                     <abp-row>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.FreightCode" size="Small" asp-items="@Model.FreightCode">
+                            <abp-select asp-for="VPRM.ShipMode" size="Small" asp-items="@Model.ShipMode">
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
@@ -457,11 +523,11 @@
                     </abp-row>
                     <!--第五列-->
                     <abp-row>
-                        <abp-column size-md="_3">
+                        <abp-column size-md="_6">
                             @*<label asp-for="VPRM.SalesTypeId" class="form-label">Sales Type</label>
                             <input asp-for="VPRM.SalesTypeId" class="form-control" />*@
 
-                            <label asp-for="VPRM.Detail" class="form-label">Detail</label>
+                            <label asp-for="VPRM.SalesTypeId" class="form-label">Sales Type</label>
                             <abp-row>
                                 <abp-column size-md="Auto">
                                     <abp-input size-md="Auto" asp-for="VPRM.IsNA" label="N/A" />
