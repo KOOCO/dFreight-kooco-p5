@@ -5629,6 +5629,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             var shippingTypes = shippingType.Split(',').ToList();
             var containerList = _dropdownService.ContainerLookupList;
+            var shipLookupList = _dropdownService.ShipModeLookupList;
 
             foreach(var item in shippingTypes)
             {
@@ -5642,6 +5643,17 @@ namespace Dolphin.Freight.Web.Controllers
                     containersList.Add(containers);
                 }
                 InfoModel.ContainerList = containersList;
+
+                var shipModeList = new List<ReportLog.ShipModeList>();
+                foreach(var ship in shipLookupList)
+                {
+                    var shipMode = new ReportLog.ShipModeList
+                    {
+                        Name = ship.Text
+                    };
+                    shipModeList.Add(shipMode);
+                }
+                InfoModel.ShipModeList = shipModeList;
             }
 
             return View(InfoModel);
