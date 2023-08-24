@@ -1,0 +1,27 @@
+﻿
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Web.CommonService;
+@using Dolphin.Freight.Web.Pages.Components;
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.ImportExport.AirImports.AirImportDetails
+@inject IDropdownService _dropdown;
+@inject IStringLocalizer<FreightResource> L
+@{
+    Layout = null;
+}
+
+
+<abp-modal size="Large">
+
+    <abp-modal-header style="color: black;" title="@L["MoveHawb"]"></abp-modal-header>
+    <abp-modal-body>
+
+        <div>
+
+            <p style="color: black; font-size: 16px;">Hawb copied successfully. You can click the link below to directly access Mawb</p><a href="EditMawb?Id=@Model.Id">@Model.FilingNo</a>
+        </div>
+    </abp-modal-body>
+    <abp-modal-footer>
+        <button class="btn btn-primary" type="button" id="closeButtonAE" onclick="cancelButton()">Close</button>
+    </abp-modal-footer>
+</abp-modal>

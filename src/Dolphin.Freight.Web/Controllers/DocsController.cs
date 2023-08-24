@@ -3014,7 +3014,18 @@ namespace Dolphin.Freight.Web.Controllers
             // Upate selcted mawb id for particular  hawb
             await _airImportHawbAppService.UpdateMawbIdOfHawbAsync(hawbId, mawbId);
 
-            return Ok();
+            var mawb = await _airImportMawbAppService.GetAsync(mawbId);
+            var docNo = mawb.FilingNo;
+
+            return Json(new { id = mawbId, fileNo = docNo });
+        }
+        public IActionResult GetAirImportMawbPopUp(string id, string fileNo)
+        {
+            AirImportDetails ViewModel = new();
+            ViewModel.Id = Guid.Parse(id);
+            ViewModel.FilingNo = fileNo;
+
+            return PartialView("Pages/Shared/_airImportMawbPopUp.cshtml", ViewModel);
         }
         public async Task<IActionResult> ManifestByAgentAirExportMawbPartial(Guid mawbId)
         {

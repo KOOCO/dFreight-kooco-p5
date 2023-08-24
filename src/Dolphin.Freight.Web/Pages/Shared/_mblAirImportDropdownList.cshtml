@@ -29,6 +29,7 @@
         margin-left: 35px;
     }
 </style>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         //$('#Id').select2();
@@ -39,15 +40,31 @@
     });
 
     function updateMawbParent() {
-        var mawbId = $("#Id").val();
+
+        var newMawb;
+        var fileNo
+
+        var mawbId = $('#MawbLookup_Id').val();
         $.ajax({
             url: abp.appPath + 'Docs/AirImportChangeMawbParent?mawbId=' + mawbId + '&hawbId=@Model.HawbId',
             type: 'post',
             dataType: "html",
-            success: function () {
+            success: function (res) {
                 debugger;
                 $('.modal').modal('hide');
-                window.location.reload();
+                newMawb = JSON.parse(res).id;
+                fileNo = JSON.parse(res).fileNo;
+
+                $.ajax({
+                    url: abp.appPath + 'Docs/GetAirImportMawbPopUp',
+                    type: 'GET',
+                    data: { id: newMawb, fileNo: fileNo },
+                    success: function (result) {
+                        debugger;
+                        $('.modal-content').html(result);
+                        $('.modal').modal('show');
+                    }
+                });
             }
         });
     }

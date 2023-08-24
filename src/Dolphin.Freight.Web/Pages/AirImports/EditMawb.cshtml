@@ -225,6 +225,11 @@
             }
         }
 
+    function cancelButton() {
+        window.location.href = window.location.href;
+    }
+
+
         function createHawbCard() {
             let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title text-light hblCardTitle" id="title_{{hawbNo}}"' +
                 ' onclick="onHawbCardClick(event,{{hblCardId}})">{{hawbNo}}</h5>' +
