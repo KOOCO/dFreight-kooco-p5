@@ -173,6 +173,7 @@
         
     });
     $("#saveEditBtn").click(function () {
+        debugger;
         var OfficeId = $("#mOfficeId").val();
         if (OfficeId == "" || OfficeId == "00000000-0000-0000-0000-000000000000") {
             $("#err_OfficeId").show();
