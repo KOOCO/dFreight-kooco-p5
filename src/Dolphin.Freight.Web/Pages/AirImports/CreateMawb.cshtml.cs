@@ -49,6 +49,8 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         public CreateAIMMawbViewModel MawbModel { get; set; }
         [BindProperty]
         public AirImportHawbDto HawbModel { get; set; }
+        [BindProperty]
+        public AirImportMawbDto AirImportMawbDto { get; set; }
 
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
@@ -81,10 +83,17 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         {
             if (Id != Guid.Empty)
             {
-                AirImportMawbDto airImportDto = await _airImportMawbAppService.GetAsync(Id);
+                AirImportMawbDto = await _airImportMawbAppService.GetAsync(Id);
 
-                MawbModel=ObjectMapper.Map<AirImportMawbDto,CreateAIMMawbViewModel>(airImportDto );
+                MawbModel=ObjectMapper.Map<AirImportMawbDto,CreateAIMMawbViewModel>(AirImportMawbDto);
                 MawbModel.MawbNo = null;
+                MawbModel.FilingNo = null;
+                MawbModel.AwbType = AWBType.Normal;
+                MawbModel.ServiceTermTypeFrom = ServiceTermType.Airport;
+                MawbModel.ServiceTermTypeTo = ServiceTermType.Airport;
+                MawbModel.DisplayUnit = DisplayUnitType.Both;
+                MawbModel.FreightType = FreightType.Collect;
+                MawbModel.IncotermsType = IncotermsType.Cfr;
                 //MawbModel.Id = Guid.Empty;
                 if (!IsCopyFlightInfo)
                 {
@@ -145,7 +154,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
                );
                 if (AccountingInfo)
                 {
-                    QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 5, ParentId = Id };
+                    QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 0, ParentId = AirImportMawbDto.Id };
                     var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
                     if (invoiceDtos != null && invoiceDtos.Count > 0)
                     {
