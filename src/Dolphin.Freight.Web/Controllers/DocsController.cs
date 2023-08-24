@@ -3014,7 +3014,7 @@ namespace Dolphin.Freight.Web.Controllers
             // Upate selcted mawb id for particular  hawb
             await _airImportHawbAppService.UpdateMawbIdOfHawbAsync(hawbId, mawbId);
 
-            return View();
+            return Ok();
         }
         public async Task<IActionResult> ManifestByAgentAirExportMawbPartial(Guid mawbId)
         {

@@ -106,22 +106,7 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> GiCodeLookupList => FillGiCodesAsync().Result;
         public List<SelectItems> CreditLimitGroupNameLookupList => FillCreditLimitGroupName().Result;
         public List<SelectItems> AccountGroupnameLookupList => FillAccountGroupName().Result;
-        public List<SelectItems> MawbLookupList => FillMawbListAsync().Result;
 
-        #region FillMawbListAsync()
-        private async Task<List<SelectItems>> FillMawbListAsync()
-        {
-            var mawbLookup = await _airImportMawbAppService.GetListAsync();
-            
-            var selectItems = mawbLookup.Select(item => new SelectItems
-            {
-                Text = item.MawbNo,
-                Value = Convert.ToString(item.Id)
-            }).ToList();
-
-            return selectItems;
-        }
-        #endregion
 
         #region FillTradePartnerAsync()
         private async Task<List<SelectItems>> FillTradePartnerAsync()
