@@ -13,6 +13,11 @@
 @section styles
     {
     <style>
+        #ejo .btn-primary {
+            color: #fff;
+            background-color: rgb(0 123 255 / 52%);
+            border-color: #007bff;
+        }
         .redStar::before {
             content: "* ";
             color: red;
@@ -1302,9 +1307,11 @@
                 </abp-column>
             </abp-row>
             <!-- 下方Save按鈕 -->
-            <abp-row class="mt-3">
+                <abp-row class="mt-3" id="ejo">
                 <abp-column>
-                        <abp-button class="btn btn-primary me-md-2 cursor-pointer" type="button" id="saveBtn">@L["Display:Button:Submit"]</abp-button>
+                    <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
+                         <abp-button class="btn btn-primary me-md-2 cursor-pointer" type="button" id="saveBtn">@L["Save"]</abp-button>
+                    </div>
                 </abp-column>
             </abp-row>
             <abp-row>
