@@ -1,4 +1,5 @@
-﻿using Dolphin.Freight.Common;
+﻿using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ImportExport.OceanImports;
@@ -45,6 +46,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         private readonly IRepository<PortsManagement, Guid> _portsManagementAppService;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IRepository<AirImportMawb, Guid> _mawbRepository;
+        private readonly IInvoiceAppService _invoiceAppService;
         public AirImportHawbAppService(IRepository<AirImportHawb, Guid> repository,
             IRepository<PackageUnit, Guid> packageUnitRepository,
             IRepository<Airport, Guid> airportRepository,
@@ -55,7 +57,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
             IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
             IRepository<PortsManagement, Guid> portsManagementAppService,
             IRepository<AirImportMawb, Guid> mawbRepository,
-            IIdentityUserAppService identityUserAppService) : base(repository)
+            IIdentityUserAppService identityUserAppService,
+            IInvoiceAppService invoiceAppService) : base(repository)
         {
             _repository = repository;
             _airportRepository = airportRepository;
@@ -68,7 +71,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
             _portsManagementAppService = portsManagementAppService;
             _mawbRepository = mawbRepository;
             _packageUnitRepository = packageUnitRepository;
-            _identityUserAppService= identityUserAppService;
+            _identityUserAppService = identityUserAppService;
+            _invoiceAppService = invoiceAppService;
         }
 
         public async Task<List<AirImportHawbDto>> GetHawbCardsByMawbId(Guid Id)
@@ -233,6 +237,64 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     {
                         var MblSale = ObjectMapper.Map<IdentityUserDto, UserData>(await _identityUserAppService.GetAsync(dto.SalesId.GetValueOrDefault()));
                         dto.SalesName = string.Concat(MblSale?.Name, "/", MblSale?.Surname)?.TrimStart('/');
+                    }
+                    var queryType = 4;
+
+                    QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = dto.Id };
+
+                    var Invoices = (await _invoiceAppService.QueryInvoicesAsync(queryDto)).ToList();
+
+                    if (Invoices is not null && Invoices.Count > 0)
+                    {
+                        var AR = new List<InvoiceDto>();
+                        var DC = new List<InvoiceDto>();
+                        var  AP = new List<InvoiceDto>();
+                        foreach (var dto1 in Invoices)
+                        {
+                            switch (dto1.InvoiceType)
+                            {
+                                default:
+                                    AR.Add(dto1);
+                                    break;
+                                case 1:
+                                    DC.Add(dto1);
+                                    break;
+                                case 2:
+                                    AP.Add(dto1);
+                                    break;
+                            }
+                        }
+
+                        if (AR.Any())
+                        {
+                            double arTotal = 0;
+                            foreach (var ar in AR)
+                            {
+                                arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                            }
+                          dto.ARBalance = arTotal.ToString("N2");
+                        }
+                        if (AP.Any())
+                        { 
+                            double apTotal = 0;
+                            foreach (var ap in AP)
+                            {
+                                apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                            }
+
+                            dto.APBalance = apTotal.ToString("N2");
+                        }
+                        if (DC.Any())
+                        {
+                            double dcTotal = 0;
+                            foreach (var dc in DC)
+                            {
+                                dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                            }
+                            dto.DCBalance = dcTotal.ToString("N2");
+                        }
+                    //    Total = airExportMawbDto.ARTotal - airExportMawbDto.APTotal + airExportMawbDto.DCTotal;
+                    //    airExportMawbDto.InvoicesJson = JsonConvert.SerializeObject(airExportMawbDto.Invoices);
                     }
                     ////SysCode
                     //if (mdictionary[dto.MblId].OblTypeId != null) dto.OblTypeName = dictionary[mdictionary[dto.MblId].OblTypeId.Value];

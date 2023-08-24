@@ -37,11 +37,7 @@
         <abp-card-body>
             <div class="row col-12" style="text-align: left; margin:0!important">
                 <abp-column size="_9">
-  <abp-button id="btnProfitReport"
-                                text="@L["Btn:Profit Report"].Value"
-                                icon="file-text-o"
-                                button-type="Primary" 
-                                disabled="true"/>
+  
                 
               
                 </abp-column>
@@ -49,6 +45,15 @@
                     <abp-input asp-for="Search" class="ml-4" />
                 </abp-column>
             </div>
+              <abp-button type="button" id="btnAirExportHawbListProfit" onclick="getHwabProfitReport()" class="btn btn-outline-secondary" disabled="true">
+                <span uib-tooltip="">
+                    <i class="fa fa-file-text-o"></i><font style="vertical-align: inherit;">
+                        <font style="">
+                            Profit Report
+                        </font>
+                    </font>
+                </span>
+            </abp-button>
             <abp-table class="nowrap" striped-rows="true" id="HawbListTable"></abp-table>
         </abp-card-body>
     </abp-card>

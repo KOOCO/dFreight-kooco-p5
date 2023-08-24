@@ -9,11 +9,18 @@ var queryListFilter = function () {
 };
 var columns = [
     {
-        orderable: false,
-        className: 'select-checkbox',
-        targets: 0
-    },
-  
+    title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
+    data: null,
+    orderable: false,
+    render: function (data, type, row) {
+
+        var id = row.id;
+        var filingNo = row.docNo;
+        $('#btnAirExportHawbListProfit').prop('disabled', true);
+        $('#selectAllCheckbox').prop('checked', false);
+        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" data-filingNo="' + filingNo + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
+    }
+},
     {
         title: l('Actions'),
         orderable: false,
@@ -62,17 +69,53 @@ var columns = [
 
 
 ]
+function selectAllCheckbox(element) {
+    var isChecked = $(element).prop('checked');
+    $('#HawbListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+
+    if (isChecked) {
+        $('#btnAirExportHawbListProfit').prop('disabled', false);
+    } else {
+        $('#btnAirExportHawbListProfit').prop('disabled', true);
+    }
+}
+function selectCheckbox(checkbox) {
+    if ($("#HawbListTable input[type=checkbox]:checked").length > 0) {
+        $('#btnAirExportHawbListProfit').prop('disabled', false);
+        //check if all rows are selected then make main header checkbox selected
+        $('#selectAllCheckbox').prop('checked', false);
+        if ($("#HawbListTable input.selectCheckbox[type=checkbox]").length == $("#HawbListTable input[type=checkbox]:checked").length) {
+            $('#selectAllCheckbox').prop('checked', true);
+        }
+    } else {
+        $('#btnAirExportHawbListProfit').prop('disabled', true);
+    }
+}
+function getHwabProfitReport(reportType) {
+    var params = "";
+    var selectedCheckboxes = $('#HawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        var id = selectedCheckboxes[i].attributes['data-id'].value;
+        var filingNo = selectedCheckboxes[i].attributes['data-filingNo'].value;
+
+
+        params += id + ' / ' + filingNo + ',';
+    }
+    console.log(params);
+    params = params.replace(/^,|,$/g, '');
+   var id= selectedCheckboxes[0].attributes['data-id'].value;
+    OpenWindow('/Docs/AirImportProfitReport/' + id +'?pageType=AIHBL&reportType=Summar');
+}
 $(function () {
     dolphin.freight.web.controllers.configuration.getJsonConfig('AirImportHawbList').done(function (data) {
         data.forEach(function (item) {
        
             if (!item.lock && item.checkable) {
-                var column;
 
                 if (item.text.toLowerCase().includes('islocked')) {
                     column = {
                         //是否鎖定
-                        title: l('Status'),
+                        title: '<div  style=" cursor: pointer;"><span><i class="fa fa-unlock"></i>Status</span></div>',
                         orderable: false,
                         render: function (data, type, row, meta) {
                             if (row.isLocked)
@@ -83,7 +126,9 @@ $(function () {
                     }
                 }
                 else {
+                    debugger;
                     column = {
+                       
                         title: l(item.text),
                         data: item.name
                     };
@@ -103,7 +148,7 @@ $(function () {
                 searching: false,
                 processing: true,
                 scrollX: true,
-                select: true,
+               
                 responsive: {
                     details: {
                         type: 'column'
@@ -143,44 +188,7 @@ $(function () {
         });
     })
 
-    $('#HawbListTable').on('click', 'tr', function () {
-        debugger;
-        var selectedRow = dataTable.row(this);
-      
-        var selectedData = selectedRow.data();
-        id = selectedData.id;
-           
 
-            // Use the secondColumnValue in your logic
-       
-        if ($(this).hasClass('selected')) {
-            $(this).removeClass('selected');
-            // Call your function to handle row deselection
-            // e.g., handleDeselection($(this).data('row-id'));
-        } else {
-            dataTable.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-            // Call your function to handle row selection
-            // e.g., handleSelection($(this).data('row-id'));
-        }
-
-        // Enable/disable your button based on selection status
-        updateButtonState();
-    });
-
-    // Function to update button state
-    function updateButtonState() {
-        var $button = $('#btnProfitReport');
-        var anySelected = dataTable.rows('.selected').any();
-        $button.prop('disabled', !anySelected);
-    }
-    $('#btnProfitReport').click(function (e) {
-        debugger;
-        var url = '/Docs/AirImportProfitReport/'+id+'?pageType=AIHBL&reportType=Summary';
-       var pname = "ProfitSummary";
-        myWindow = window.open(url, pname, 'width=1200,height=800')
-        myWindow.focus()
-    });
 
 });
 var lock = function (id) {
