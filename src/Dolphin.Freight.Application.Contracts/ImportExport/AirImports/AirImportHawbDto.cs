@@ -85,6 +85,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public DateTime? ITDate { get; set; }
         public string ITIssuedLocation { get; set; }
         public DateTime? FrtRelease { get; set; }
+        public DateTime? DepatureDate { get; set; }
+        public DateTime? ArrivalDate { get; set; }
         public string ReleasedBy { get; set; }
         public string CargoReleasedto { get; set; }
         public DateTime? CReleasedDate { get; set; }
@@ -114,7 +116,10 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string DeliveryLocationName { get; set; }
         public string DepatureName { get; set; }
         public string OperatorName { get; set; }
-
+        public string ARBalance { get; set; }
+        public string APBalance { get; set; }
+        public string DCBalance { get; set; }
+        public string Measurement { get; set; }
         /// <summary>
         /// 是否刪除
         /// </summary>
