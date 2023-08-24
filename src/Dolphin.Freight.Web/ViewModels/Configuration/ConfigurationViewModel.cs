@@ -14,14 +14,6 @@ namespace Dolphin.Freight.Web.ViewModels.Configuration
         public Guid UserId { get; set; }
     }
 
-    public class ConfigurationViewModel2
-    {
-        public Guid Id { get; set; }
-        public List<Preference> Preference { get; set; }
-        public string PreferenceSrc { get; set; }
-        public Guid UserId { get; set; }
-    }
-
     public class Preference
     {
         public bool Checkable { get; set; }

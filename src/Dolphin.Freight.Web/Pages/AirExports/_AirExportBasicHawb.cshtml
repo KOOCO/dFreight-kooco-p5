@@ -20,7 +20,7 @@
         if ($('#HawbCancelledDate').val() == '0001-01-01T00:00') {
             $('#HawbCancelledDate').val('');
         }
-        isHawbLocked = '@Model.AirExportHawbDto.IsLocked';
+     
     });
 
     // Hawb Cancel Area
@@ -93,6 +93,8 @@
         myWindow = window.open("@Url.Action("HawbPrintAirExportHawb", "Docs")", 'width=1200,height=800');
         myWindow.focus()
     }
+     isHawbLocked;
+        debugger;
     function setHawbLockUnlock(isLockedCheck) {
         var id = $('#AirExportHawbDto_Id').val();
         isLockedCheck = isLockedCheck === "True";

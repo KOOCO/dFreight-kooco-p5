@@ -491,10 +491,16 @@
 
     $('#TPForm').on('abp-ajax-success', function () {
         event.preventDefault();
+        var tpName = $('#tpNameInput').val();
         $('#nav-accounting-tab').removeClass("disabled");
         $('#nav-doc-tab').removeClass("disabled");
         $('#nav-status-tab').removeClass("disabled");
-        abp.message.success('Successfully saved.');
+        abp.message.success('Successfully saved.').then(function () {
+            dolphin.freight.tradePartners.tradePartner.findByTpName(tpName).then(function (res) {
+                var tpId = res.id;
+                window.location.pathname = '/Sales/TradePartner/EditTradePartnerInfo/' + tpId;
+            });
+        });
     });
 
     var createModal = new abp.ModalManager({

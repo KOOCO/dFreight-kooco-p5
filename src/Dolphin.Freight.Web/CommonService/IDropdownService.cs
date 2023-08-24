@@ -25,11 +25,11 @@ namespace Dolphin.Freight.Web.CommonService
         List<SelectItems> CargoTypeLookupList { get; }
         List<SelectItems> PortsManagementLookupList { get; }
         List<SelectItems> ContainerLookupList { get; }
-        List<SelectItems> CountryLookupList { get; }    
+        List<SelectItems> CountryLookupList { get; }
         List<SelectItems> PreCarriageVesselLookupList { get; }
         List<SelectItems> GiCodeLookupList { get; }
         List<SelectItems> CreditLimitGroupNameLookupList { get; }
         List<SelectItems> AccountGroupnameLookupList { get; }
-        List<SelectItems> MawbLookupList { get; }
+        List<SelectItems> AirImportMawbLookupList { get;}
     }
 }

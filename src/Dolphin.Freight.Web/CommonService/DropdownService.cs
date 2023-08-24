@@ -34,7 +34,7 @@ namespace Dolphin.Freight.Web.CommonService
         private readonly IGlCodeAppService _glCodeAppService;
         private readonly ICreditLimitGroupAppService _creditLimitGroupAppService;
         private readonly IAccountGroupAppService _accountGroupAppService;
-        private readonly IRepository<AirImportMawb, Guid> _airImportMawbAppService;
+        private readonly IAirImportMawbAppService _airImportMawbAppService;
         public DropdownService(ITradePartnerAppService tradePartnerAppService,
                                ISubstationAppService substationAppService,
                                IAirportAppService airportAppService,
@@ -47,7 +47,8 @@ namespace Dolphin.Freight.Web.CommonService
                                IGlCodeAppService glCodeAppService,
                                ICreditLimitGroupAppService creditLimitGroupAppService,
                                IAccountGroupAppService accountGroupAppService,
-                               IRepository<AirImportMawb, Guid> airImportMawbAppService)
+                                IAirImportMawbAppService airImportMawbAppService
+                               )
         {
             _tradePartnerAppService = tradePartnerAppService;
             _substationAppService = substationAppService;
@@ -100,7 +101,7 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> ContainerLookupList => FillContainerAsync().Result;
 
         public List<SelectItems> CountryLookupList => FillCountryAsync().Result;
-
+        public List<SelectItems> AirImportMawbLookupList => FillAirImportMawbAsync().Result;
         public List<SelectItems> PreCarriageVesselLookupList => FillPreCarriageVesselTypeAsync().Result;
         public List<SelectItems> GiCodeLookupList => FillGiCodesAsync().Result;
         public List<SelectItems> CreditLimitGroupNameLookupList => FillCreditLimitGroupName().Result;
@@ -291,7 +292,14 @@ namespace Dolphin.Freight.Web.CommonService
             return lookUp.Select(x => new SelectListItem(x.CodeValue, x.Id.ToString(), false)).ToList();
         }
         #endregion
+        #region AirImportMawbList()
+        private async Task<List<SelectItems>> FillAirImportMawbAsync()
+        {
+            var lookUp = await _airImportMawbAppService.GetMawbListAsync();
 
+            return lookUp.Select(x => new SelectListItem(x.FilingNo+'/'+x.MawbNo, x.Id.ToString(), false)).ToList();
+        }
+        #endregion
         #region FillIncotermsIdAsync()
         private async Task<List<SelectItems>> FillIncotermsIdAsync()
         {

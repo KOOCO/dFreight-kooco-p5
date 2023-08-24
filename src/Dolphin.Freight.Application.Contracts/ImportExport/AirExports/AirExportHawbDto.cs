@@ -7,6 +7,7 @@ using System.Text;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Users;
 using Volo.Abp.Data;
+using Dolphin.Freight.Accounting.Invoices;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -16,6 +17,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// Mawb Id
         /// </summary>
         public Guid? MawbId { get; set; }
+        public Guid? HawbId { get; set; }
         /// <summary>
         /// Hawb 號碼
         /// </summary>
@@ -130,5 +132,21 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public bool IsDeleted { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
         public string CurrentHawbNo { get; set; }
+
+        public string DocNumber { get; set; }
+        public string ArrivalDate { get; set; }
+        public DateTime? DepatureDate { get; set; }
+        public string ShippperName { get; set; }
+        public string ConsigneeName { get; set; }
+        public string OverSeaAgentName { get; set; }
+        public double Total { get; set; }
+        public string InvoicesJson { get; set; }
+        public double ARTotal { get; set; }
+        public double DCTotal { get; set; }
+        public double APTotal { get; set; }
+        public List<InvoiceDto> AR { get; set; }
+        public List<InvoiceDto> DC { get; set; }
+        public List<InvoiceDto> AP { get; set; }
+        public List<InvoiceDto> Invoices { get; set; }
     }
 }

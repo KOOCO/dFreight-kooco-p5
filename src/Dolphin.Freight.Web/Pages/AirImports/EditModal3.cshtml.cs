@@ -66,7 +66,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         {
             AirImportMawbDto = await _airImportMawbAppService.GetAsync(Id);
 
-            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 5, ParentId = Id };
+            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 0, ParentId = Id };
             var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
             m0invoiceDtos = new List<InvoiceDto>();
             m1invoiceDtos = new List<InvoiceDto>();

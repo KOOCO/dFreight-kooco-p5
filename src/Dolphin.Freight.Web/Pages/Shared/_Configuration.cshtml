@@ -32,7 +32,7 @@
                                                 @Html.Hidden($"Preference[{i}].Name", Model.Preference[i].Name)
                                                 @Html.Hidden($"Preference[{i}].Show", Model.Preference[i].Show)
                                                 @Html.Hidden($"Preference[{i}].Lock", Model.Preference[i].Lock)
-                                                @Html.Hidden($"Preference[{i}].Text", Model.Preference[i].Text)
+                                                @if (Model.Preference[i].Text != null) @Html.Hidden($"Preference[{i}].Text", Model.Preference[i].Text)
                                                 @Html.Hidden($"Preference[{i}].Width", Model.Preference[i].Width)
                                                 @Html.Hidden($"Preference[{i}].Freeze", Model.Preference[i].Freeze)
                                                 @Html.Hidden($"Preference[{i}].Configurable", Model.Preference[i].Configurable)
@@ -49,7 +49,10 @@
                                             </span>
                                         </div>
                                         <font style="vertical-align: inherit;">
-                                            @L[@Model.Preference[i].Text]
+                                            @if (Model.Preference[i].Text != null)
+                                            {
+                                                @L[@Model.Preference[i].Text]
+                                            }
                                         </font>
                                     </label>
                                 </li>

@@ -62,7 +62,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public virtual UserData OP { get; set; }
 
         public Guid? ConsigneeId { get; set; }
-
+        public string ConsigneeName { get; set; }
         public string FreightLocation { get; set; }
         public string FinalDestination { get; set; }
         public DateTime? FinalETA { get; set; }
@@ -104,6 +104,16 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public List<Commodity> Commodities { get; set; }
         public List<SubHawbs> SubHawbs { get; set; }
         public bool IsLocked { get; set; }
+        public string SalesName { get; set; }
+        public string DocNo { get; set; }
+        public string DestinationName { get; set; }
+        public string ShipperName { get; set; }
+        public string OfficeName { get; set; }
+        public string MawbNo { get; set; }
+        public string FreightLocationName { get; set; }
+        public string DeliveryLocationName { get; set; }
+        public string DepatureName { get; set; }
+        public string OperatorName { get; set; }
 
         /// <summary>
         /// 是否刪除
