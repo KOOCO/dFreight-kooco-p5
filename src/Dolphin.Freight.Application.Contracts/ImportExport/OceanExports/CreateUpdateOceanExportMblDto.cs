@@ -326,8 +326,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 取消日期
         /// </summary>
         //[DataType(DataType.Date)]
-        [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
+        //[DataType(DataType.DateTime)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? CanceledDate { get; set; }
         /// <summary>
         /// 取消者ID
@@ -362,8 +362,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 放貨日期
         /// </summary>
-        [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
+        //[DataType(DataType.DateTime)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? MblReleaseDate { get; set; }
         /// <summary>
         /// 放貨人ID
