@@ -21,7 +21,6 @@
 
                 })
                 setTimeout(() => {
-                    debugger
                     var from = url.searchParams.get('from');
                     if (from == 'NewHawb') {
                         $('#addHBtn').click();
@@ -38,3 +37,4 @@
         })
 
 })
+

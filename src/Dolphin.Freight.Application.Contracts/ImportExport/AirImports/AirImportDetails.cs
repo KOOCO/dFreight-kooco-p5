@@ -12,6 +12,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
 {
     public class AirImportDetails
     {
+        public Guid? Id { get; set; }
         public bool IsPDF { get; set; }
         public string AirWayBillNo { get; set; }
         public string TotalPackage { get; set; }
@@ -332,6 +333,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public DateTime ITDate { get; set; }
         public string ITIssuedLocation { get; set; }
         public string ClassOfEntry { get; set; }
+
+        public List<AirImportMawbDto> MawbList { get; set; }
     }
     public class OverSeaAgentAirImport
     {
