@@ -238,7 +238,7 @@
         }
         $('#createForm').on('abp-ajax-success', function (result, rs) {
             event.preventDefault();
-            alert('Edit?ShowMsg=true&Id=' + rs.responseText.id);
+            //alert('Edit?ShowMsg=true&Id=' + rs.responseText.id);
             location.href = 'Edit?ShowMsg=true&Id=' + rs.responseText.id
 
         });
