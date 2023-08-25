@@ -3,7 +3,7 @@
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
-@model Dolphin.Freight.ImportExport.OceanExports.OceanExportDetails
+@model Dolphin.Freight.ReportLog.VolumeReportSummaryViewModel
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
 @{
@@ -827,13 +827,10 @@ table thead td {
                                 </th>
                             </tr>
                             <tr class="border-b bg-light">
-                                <th class="col-padding-double text-right border-r">20'</th>
-                                <th class="col-padding-double text-right border-r">40'</th>
-                                <th class="col-padding-double text-right border-r">HC</th>
-                                <th class="col-padding-double text-right border-r">45'</th>
-                                <th class="col-padding-double text-right border-r">RF</th>
-                                <th class="col-padding-double text-right border-r">SOC</th>
-                                <th class="col-padding-double text-right border-r">Etc.</th>
+                                @foreach(var container in Model.ContainerList){
+                                    <th class="col-padding-double text-right border-r">@container.Name</th>
+                                }
+
                                 <th class="col-padding-double text-right border-r">LCL</th>
                                 <th class="col-padding-double text-right border-r">FAK</th>
                                 <th class="col-padding-double text-right border-r">BULK</th>

@@ -147,8 +147,29 @@
             var outputFormat = $("input[name='VPRM.OutputFormat']:checked").val();
 
             if (outputFormat === "PDF") {
+                var shippingType = '';
+                var reportType = '';
+                var salesType = '';
 
-                OpenWindow('/Docs/TotalProfitVolumeSummary');
+                if ($('#VPRM_IsOceanImport')[0].checked) shippingType += 'OceanImport,';
+                if ($('#VPRM_IsOceanExport')[0].checked) shippingType += 'OceanExport,';
+                if ($('#VPRM_IsAirExport')[0].checked) shippingType += 'AirExport,';
+                if ($('#VPRM_IsAirImport')[0].checked) shippingType += 'AirImport,';
+                if ($('#VPRM_IsTruck')[0].checked) shippingType += 'Truck,';
+                if ($('#VPRM_IsMisc')[0].checked) shippingType += 'Misc,';
+                if ($('#VPRM_IsWarehouse')[0].checked) shippingType += 'Warehouse';
+                shippingType = shippingType.replace(/^,|,$/g, '');
+
+                if ($("input[name='VPRM.Report']:checked").val() == 'vp') reportType = 'Volume & Profit';
+                if ($("input[name='VPRM.Report']:checked").val() == 'v') reportType = 'Volume Only';
+
+                if ($('#VPRM_IsNA')[0].checked) salesType += 'N/A,';
+                if ($('#VPRM_IsCOLoad')[0].checked) salesType += 'CO-LOAD,';
+                if ($('#VPRM_IsFreeCargo')[0].checked) salesType += 'FREE CARGO,';
+                if ($('#VPRM_IsNomi')[0].checked) salesType += 'NOMI';
+                salesType = salesType.replace(/^,|,$/g, '');
+
+                OpenWindow('/Docs/TotalProfitVolumeSummary?shippingType=' + shippingType + '&reportType=' + reportType + '&salesType=' + salesType);
             }
             else {
                 var isDataTable = $.fn.dataTable.isDataTable('#mawReport');
