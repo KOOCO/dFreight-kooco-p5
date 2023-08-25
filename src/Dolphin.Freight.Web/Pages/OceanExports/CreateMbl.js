@@ -1,85 +1,37 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
     $(document).ready(function () {
-        $('#OceanExportMbl_PostDate').removeAttr('type');
-        $('#OceanExportMbl_PorEtd').removeAttr('type');
-        $('#OceanExportMbl_PolEtd').removeAttr('type');
-        $('#OceanExportMbl_PodEta').removeAttr('type');
-        $('#OceanExportMbl_DelEta').removeAttr('type');
-        $('#OceanExportMbl_FdestEta').removeAttr('type');
-        $('#OceanExportMbl_DocCutOffTime').removeAttr('type');
-        $('#OceanExportMbl_PortCutOffTime').removeAttr('type');
-        $('#OceanExportMbl_VgmCutOffTime').removeAttr('type');
-        $('#OceanExportMbl_RailCutOffTime').removeAttr('type');
-        $('#OceanExportMbl_OnBoardDate').removeAttr('type');
-        $('#OceanExportMbl_Trans1Eta').removeAttr('type');
-        $('#dateTimePickerPostDate').datetimepicker({
-            format: 'Y-m-d H:i',
-            step: 15,
-            allowInput: false,
-        });
-        $('#OceanExportMbl_PorEtd').datetimepicker({
-            format: 'Y-m-d H:i',
-            step: 15,
-            allowInput: false,
-        });
-        $('#OceanExportMbl_PolEtd').datetimepicker({
-            format: 'Y-m-d H:i',
-            step: 15,
-            allowInput: false,
-        });
-        $('#OceanExportMbl_PolEtd').datetimepicker({
-            format: 'Y-m-d H:i',
-            step: 15,
-            allowInput: false,
-        });
-        $('#OceanExportMbl_PodEta').datetimepicker({
-            format: 'Y-m-d H:i',
-            step: 15,
-            allowInput: false,
-        });
-        $('#OceanExportMbl_DelEta').datetimepicker({
-            format: 'Y-m-d H:i',
-            step: 15,
-            allowInput: false,
-        });
-        $('#OceanExportMbl_FdestEta').datetimepicker({
-            format: 'Y-m-d H:i',
-            step: 15,
-            allowInput: false,
-        });
-        $('#OceanExportMbl_DocCutOffTime').datetimepicker({
-            format: 'Y-m-d H:i',
-            step: 15,
-            allowInput: false,
-        });
-        $('#OceanExportMbl_PortCutOffTime').datetimepicker({
-            format: 'Y-m-d H:i',
-            step: 15,
-            allowInput: false,
-        });
-        $('#OceanExportMbl_VgmCutOffTime').datetimepicker({
-            format: 'Y-m-d H:i',
-            step: 15,
-            allowInput: false,
-        });
-        $('#OceanExportMbl_RailCutOffTime').datetimepicker({
-            format: 'Y-m-d H:i',
-            step: 15,
-            allowInput: false,
-        });
-        $('#OceanExportMbl_OnBoardDate').datetimepicker({
-            format: 'Y-m-d H:i',
-            step: 15,
-            allowInput: false,
-        });
-        $('#OceanExportMbl_Trans1Eta').datetimepicker({
-            format: 'Y-m-d H:i',
-            step: 15,
-            allowInput: false,
+        const ids = [
+            'OceanExportMbl_PostDate',
+            'OceanExportMbl_PorEtd',
+            'OceanExportMbl_PolEtd',
+            'OceanExportMbl_PodEta',
+            'OceanExportMbl_DelEta',
+            'OceanExportMbl_FdestEta',
+            'OceanExportMbl_DocCutOffTime',
+            'OceanExportMbl_PortCutOffTime',
+            'OceanExportMbl_VgmCutOffTime',
+            'OceanExportMbl_RailCutOffTime',
+            'OceanExportMbl_OnBoardDate',
+            'OceanExportMbl_Trans1Eta'
+        ];
+        
+        ids.forEach(function (id) {
+            $('#' + id).removeAttr('type').datetimepicker({
+                format: 'Y-m-d H:i',
+                step: 15,
+                allowInput: false
+            });
+
+            let dateElem = $('#' + id);
+            let currentVal = dateElem.val();
+            if (currentVal.includes('T')) {
+                dateElem.val(currentVal.replace('T', ' '));
+            }
         });
     });
-    
+
+
     tempusDominus.extend(window.tempusDominus.plugins.customDateFormat)
     $(".cdatetime").tempusDominus({
         restrictions: {
@@ -92,6 +44,8 @@
             format: 'yyyy-MM-dd HH:mm',
         }
     });
+
+
     $(".cdatetime").change(function () {
         checkDateTime($(this).attr("id"), $(this).val())
     })
