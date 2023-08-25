@@ -1,86 +1,85 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
-    //$("#OceanExportMbl_PorEtd").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportMbl_PolEtd").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportMbl_PodEta").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportMbl_DelEta").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportMbl_FdestEta").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportHbl_PorEtd").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportHbl_PolEtd").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportHbl_PodEta").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportHbl_DelEta").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportHbl_FdestEta").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportMbl_CanceledDate").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportHbl_PorEtd").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportHbl_PodEta").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportHbl_DelEta").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportHbl_FdestEta").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-    //$("#OceanExportHbl_CargoArrivalDate").datepicker({
-    //    format: "yyyy-mm-dd",
-    //    startDate: '-15d',
-    //    endDate: '+60d'
-    //});
-
+    $(document).ready(function () {
+        $('#OceanExportMbl_PostDate').removeAttr('type');
+        $('#OceanExportMbl_PorEtd').removeAttr('type');
+        $('#OceanExportMbl_PolEtd').removeAttr('type');
+        $('#OceanExportMbl_PodEta').removeAttr('type');
+        $('#OceanExportMbl_DelEta').removeAttr('type');
+        $('#OceanExportMbl_FdestEta').removeAttr('type');
+        $('#OceanExportMbl_DocCutOffTime').removeAttr('type');
+        $('#OceanExportMbl_PortCutOffTime').removeAttr('type');
+        $('#OceanExportMbl_VgmCutOffTime').removeAttr('type');
+        $('#OceanExportMbl_RailCutOffTime').removeAttr('type');
+        $('#OceanExportMbl_OnBoardDate').removeAttr('type');
+        $('#OceanExportMbl_Trans1Eta').removeAttr('type');
+        $('#dateTimePickerPostDate').datetimepicker({
+            format: 'Y-m-d H:i',
+            step: 15,
+            allowInput: false,
+        });
+        $('#OceanExportMbl_PorEtd').datetimepicker({
+            format: 'Y-m-d H:i',
+            step: 15,
+            allowInput: false,
+        });
+        $('#OceanExportMbl_PolEtd').datetimepicker({
+            format: 'Y-m-d H:i',
+            step: 15,
+            allowInput: false,
+        });
+        $('#OceanExportMbl_PolEtd').datetimepicker({
+            format: 'Y-m-d H:i',
+            step: 15,
+            allowInput: false,
+        });
+        $('#OceanExportMbl_PodEta').datetimepicker({
+            format: 'Y-m-d H:i',
+            step: 15,
+            allowInput: false,
+        });
+        $('#OceanExportMbl_DelEta').datetimepicker({
+            format: 'Y-m-d H:i',
+            step: 15,
+            allowInput: false,
+        });
+        $('#OceanExportMbl_FdestEta').datetimepicker({
+            format: 'Y-m-d H:i',
+            step: 15,
+            allowInput: false,
+        });
+        $('#OceanExportMbl_DocCutOffTime').datetimepicker({
+            format: 'Y-m-d H:i',
+            step: 15,
+            allowInput: false,
+        });
+        $('#OceanExportMbl_PortCutOffTime').datetimepicker({
+            format: 'Y-m-d H:i',
+            step: 15,
+            allowInput: false,
+        });
+        $('#OceanExportMbl_VgmCutOffTime').datetimepicker({
+            format: 'Y-m-d H:i',
+            step: 15,
+            allowInput: false,
+        });
+        $('#OceanExportMbl_RailCutOffTime').datetimepicker({
+            format: 'Y-m-d H:i',
+            step: 15,
+            allowInput: false,
+        });
+        $('#OceanExportMbl_OnBoardDate').datetimepicker({
+            format: 'Y-m-d H:i',
+            step: 15,
+            allowInput: false,
+        });
+        $('#OceanExportMbl_Trans1Eta').datetimepicker({
+            format: 'Y-m-d H:i',
+            step: 15,
+            allowInput: false,
+        });
+    });
+    
     tempusDominus.extend(window.tempusDominus.plugins.customDateFormat)
     $(".cdatetime").tempusDominus({
         restrictions: {

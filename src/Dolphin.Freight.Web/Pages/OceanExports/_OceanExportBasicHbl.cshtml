@@ -276,13 +276,13 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.PorId", AspItems = Model.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorName", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.PorId) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanExportHbl.PorEtd" type="datetime-local" abp-data-datepicker="false" />
+                <abp-input asp-for="OceanExportHbl.PorEtd" />
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.PolId", AspItems = Model.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolName", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.PolId) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanExportHbl.PolEtd" type="datetime-local" abp-data-datepicker="true" />
+                <abp-input asp-for="OceanExportHbl.PolEtd" />
             </abp-column>
         </abp-row>
         <abp-row class="mb-3">
@@ -290,7 +290,7 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.PodId", AspItems = Model.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodName", SelectType = 0, ShowFiledContentValue = Model.OceanExportHbl.PodId.ToString() })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanExportHbl.PodEta" type="text" abp-data-datepicker="false" />
+                <abp-input asp-for="OceanExportHbl.PodEta" />
             </abp-column>
         </abp-row>
         <abp-row class="mb-3">
@@ -298,13 +298,13 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.DelId", AspItems = Model.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelName", SelectType = 0, ShowFiledContentValue = Model.OceanExportHbl.DelId.ToString() })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanExportHbl.DelEta" type="datetime-local" abp-data-datepicker="false" />
+                <abp-input asp-for="OceanExportHbl.DelEta" />
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.FdestId", AspItems = Model.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 0, ShowFiledContentValue = Model.OceanExportHbl.FdestId.ToString() })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanExportHbl.FdestEta" type="datetime-local" abp-data-datepicker="false" />
+                <abp-input asp-for="OceanExportHbl.FdestEta" />
             </abp-column>
         </abp-row>
         <abp-row class="mb-3">
@@ -318,7 +318,7 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.DeliveryToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["HDeliveryToId"], SelectType = 0, ShowFiledContentValue = Model.OceanExportHbl.DeliveryToId.ToString() })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanExportHbl.CargoArrivalDate" type="text" abp-data-datepicker="false" />
+                <abp-input asp-for="OceanExportHbl.CargoArrivalDate" />
             </abp-column>
         </abp-row>
         <abp-row class="mb-3">
@@ -374,12 +374,12 @@
                 <abp-input asp-for="OceanExportHbl.LcIssueBank" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanExportHbl.LcIssueDate" class="cdatetime" type="datetime-local" abp-data-datetimepicker="false" />
+                <abp-input asp-for="OceanExportHbl.LcIssueDate" />
             </abp-column>
         </abp-row>
         <abp-row class="mb-3">
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanExportHbl.OnBoardDate" class="cdatetime" type="datetime-local" abp-data-datetimepicker="false" />
+                <abp-input asp-for="OceanExportHbl.OnBoardDate" />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="OceanExportHbl.IsStackable" />
@@ -405,13 +405,13 @@
             </abp-column>
             <abp-column size-md="_3">
                 <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsReleased" id="OceanExportHbl_IsReleased" value="true" /> @L["IsReleased"] </label>
-                <input asp-for="OceanExportHbl.HblReleaseDate" class="form-control cdatetime" type="datetime-local" abp-data-datetimepicker="false" />
+                <input asp-for="OceanExportHbl.HblReleaseDate" />
 
 
             </abp-column>
 
         </abp-row>
-        <abp-row class="mb-3">
+        <abp-row class="mb-3">  
             <abp-column size-md="_3">
              @*   <abp-row>
                     <abp-column size-md="_4">
