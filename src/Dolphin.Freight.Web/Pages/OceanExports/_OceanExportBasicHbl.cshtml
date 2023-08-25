@@ -47,6 +47,40 @@
             $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
             $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
         }
+
+        $(document).ready(function () {
+            const ids = [
+                'OceanExportHbl_PorEtd',
+                'OceanExportHbl_PodEta',
+                'OceanExportHbl_DelEta',
+                'OceanExportHbl_FdestEta',
+                'OceanExportHbl_CargoArrivalDate',
+                'OceanExportHbl_HblWhCutOffTime',
+                'OceanExportHbl_EarlyReturnDatetime',
+                'OceanExportHbl_LcIssueDate',
+                'OceanExportHbl_OnBoardDate',
+                'OceanExportHbl_HblReleaseDate'
+            ];
+            
+            ids.forEach(function (id) {
+                let dateElem = $('#' + id);
+
+                if (dateElem.length === 0) {
+                    return;
+                }
+
+                dateElem.removeAttr('type').datetimepicker({
+                    format: 'Y-m-d H:i',
+                    step: 15,
+                    allowInput: false
+                });
+
+                let currentVal = dateElem.val();
+                if (currentVal.includes('T')) {
+                    dateElem.val(currentVal.replace('T', ' '));
+                }
+            });
+        });
     });
         
 
@@ -365,7 +399,7 @@
         </abp-row>
         <abp-row class="mb-3">
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanExportHbl.EarlyReturnDatetime" class="cdatetime" type="datetime-local" abp-data-datetimepicker="false" />
+                <abp-input asp-for="OceanExportHbl.EarlyReturnDatetime" abp-data-datetimepicker="false" />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="OceanExportHbl.LcNo" />
@@ -405,7 +439,7 @@
             </abp-column>
             <abp-column size-md="_3">
                 <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanExportHbl.IsReleased" id="OceanExportHbl_IsReleased" value="true" /> @L["IsReleased"] </label>
-                <input asp-for="OceanExportHbl.HblReleaseDate" />
+                <input class="form-control" asp-for="OceanExportHbl.HblReleaseDate" />
 
 
             </abp-column>

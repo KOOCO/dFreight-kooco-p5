@@ -12,7 +12,7 @@
             'OceanExportMbl_PortCutOffTime',
             'OceanExportMbl_VgmCutOffTime',
             'OceanExportMbl_RailCutOffTime',
-            'OceanExportMbl_OnBoardDate',
+            'OceanExportMbl_OnBoardDate', 
             'OceanExportMbl_Trans1Eta',
             'OceanExportHbl_PorEtd',
             'OceanExportHbl_PodEta',
@@ -27,13 +27,18 @@
         ];
         
         ids.forEach(function (id) {
-            $('#' + id).removeAttr('type').datetimepicker({
+            let dateElem = $('#' + id);
+
+            if (dateElem.length === 0) {
+                return;
+            }
+
+            dateElem.removeAttr('type').datetimepicker({
                 format: 'Y-m-d H:i',
                 step: 15,
                 allowInput: false
             });
 
-            let dateElem = $('#' + id);
             let currentVal = dateElem.val();
             if (currentVal.includes('T')) {
                 dateElem.val(currentVal.replace('T', ' '));
