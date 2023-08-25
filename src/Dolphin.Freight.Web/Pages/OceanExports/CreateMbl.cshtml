@@ -18,12 +18,19 @@
                 border-color: #007bff;
             }
         </style>
+    @*<link href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.css" rel="stylesheet">*@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
     @*<link href="~/global-styles.css" rel="stylesheet" />*@
 }
 @section scripts
     {
+    @*<abp-script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js" />*@
     <abp-script src="/Pages/OceanExports/CreateMbl.js" />
+@*
+    Try Code*@
+    @*<link rel="stylesheet" type="text/css" href="/jquery.datetimepicker.css" />
+    <script src="/jquery.js"></script>
+    <script src="/build/jquery.datetimepicker.full.min.js"></script>*@
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -32,6 +39,11 @@
             setFilteredDropdown();
             
             var l = abp.localization.getResource('Freight');
+            
+
+
+            
+
             $("#addHBtn").click(function () {
                 addHBtn();
             });
@@ -150,8 +162,7 @@
                            
                             <abp-row class="mb-3">
                                 <abp-column size-md="_3">
-               
-                                    <abp-input asp-for="OceanExportMbl.PostDate"/>
+                                    <abp-input asp-for="OceanExportMbl.PostDate" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportMbl.SoNo"/>

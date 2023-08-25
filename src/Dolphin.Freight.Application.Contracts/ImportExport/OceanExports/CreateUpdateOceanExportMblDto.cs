@@ -211,7 +211,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public string PolName { get; set; }
 
         [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? PolEtd { get; set; }
         /// <summary>
         /// 卸貨港(POD)ID
