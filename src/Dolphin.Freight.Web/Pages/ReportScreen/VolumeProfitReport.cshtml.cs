@@ -332,9 +332,9 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             [DisplayName("Output By")]
             public string OutputBy { get; set; }
 
-            public int MinProfit { get; set; }
-            public int MaxProfit { get; set; }
-
+            public decimal? MinProfit { get; set; }
+            
+            public decimal? MaxProfit { get; set; }
 
             /// <summary>
             /// OUTPUT Options
@@ -403,7 +403,6 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             public bool IsCOLoad { get; set; }
             public bool IsFreeCargo { get; set; }
             public bool IsNomi { get; set; }
-
 
         }
 

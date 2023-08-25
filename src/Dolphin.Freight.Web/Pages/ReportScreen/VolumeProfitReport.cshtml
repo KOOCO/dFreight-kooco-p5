@@ -143,18 +143,23 @@
         }
 
         function showTable() {
+            
             var outputFormat = $("input[name='VPRM.OutputFormat']:checked").val();
 
             if (outputFormat === "PDF") {
+
                 OpenWindow('/Docs/TotalProfitVolumeSummary');
             }
             else {
                 var isDataTable = $.fn.dataTable.isDataTable('#mawReport');
 
                 var createForm = $('#createForm');
-
                 var form = createForm.serializeFormToObject();
-
+                //Update freightCode for model
+                if (form != null && form.vPRM != null && form.vPRM.freightCode != null)
+                {
+                    form.vPRM.freightCode = $('#VPRM_FreightCode').val();
+                }
                 if (!isDataTable) {
                     dolphin.freight.reportLog.reportLog.getMawbReport(form.vPRM).done(function (res) {
                         LoadDataTable(res);
@@ -164,7 +169,6 @@
                 }
                 else {
                     var table = $('#mawReport').DataTable();
-
                     dolphin.freight.reportLog.reportLog.getMawbReport(form.vPRM).done(function (res) {
                         table.destroy();
                         LoadDataTable(res);
@@ -174,7 +178,6 @@
         }
 
         function LoadDataTable(data) {
-
             var isOverSeaAgentChecked = $('#VPRM_IsOverseaAgent').prop('checked'),
                 isConsigneeChecked = $('#VPRM_IsConsignee').prop('checked'),
                 isShipperChecked = $('#VPRM_IsShipper').prop('checked'),
@@ -201,7 +204,7 @@
             var dataTable = $('#mawReport').DataTable(
                 abp.libs.datatables.normalizeConfiguration({
                     serverSide: false,
-                    paging: true,
+                    paging: false,
                     order: [[1, "asc"]],
                     searching: true,
                     scrollX: true,
@@ -253,8 +256,15 @@
                         },
                         {
                             title: l('PostDate'),
-                            data: "postDate",//<->//
-                            visible: isBLPostDate
+                            data: "blPostDate",//<->//
+                            visible: isBLPostDate,
+                            render: function (data) {
+                            return luxon
+                                .DateTime
+                                .fromISO(data, {
+                                    locale: abp.localization.currentCulture.name
+                                }).toFormat('yyyy-MM-dd HH:mm');
+                            }
                         },
                         {
                             title: l('CargoType'),
@@ -358,15 +368,14 @@
             }
         });
 
-        //document.addEventListener('DOMContentLoaded', function(){
-        //    debugger;
-        //    var l = abp.localization.getResource('Freight');
+        document.addEventListener('DOMContentLoaded', function(){
+            var l = abp.localization.getResource('Freight');
 
-        //    $('#VPRM_FreightCode').select2({
-        //        placeholder: l("Dropdown:Select"),
-        //        allowClear: true
-        //    });
-        //});
+            $('#VPRM_FreightCode').select2({
+                placeholder: l("Dropdown:Select"),
+                allowClear: true
+            });
+        });
         
 
     </script>
@@ -427,25 +436,25 @@
                             <label asp-for="VPRM.ShippingType" class="form-label">Shipping Type</label>
                             <abp-row>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsOceanImport" label="Ocean Import" />
+                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsOceanImport" label="Ocean Import" />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsOceanExport" label="Ocean Export" />
+                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsOceanExport" label="Ocean Export" />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsAirImport" label="Air Import" />
+                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsAirImport" label="Air Import" />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsAirExport" label="Air Export" />
+                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsAirExport" label="Air Export" />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsTruck" label="Truck" />
+                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsTruck" label="Truck" />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsMisc" label="Misc." />
+                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsMisc" label="Misc." />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsWarehouse" label="Warehouse" />
+                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsWarehouse" label="Warehouse" />
                                 </abp-column>
                             </abp-row>
 
@@ -725,11 +734,9 @@
     <abp-row>
         <abp-card-body>
             <abp-table class="nowrap" striped-rows="true" id="mawReport" class="stripe row-border order-column" style="width:100%;">
-
+                
             </abp-table>
         </abp-card-body>
     </abp-row>
-
-
 </div>
 
