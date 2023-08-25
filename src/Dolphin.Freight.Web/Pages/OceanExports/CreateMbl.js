@@ -13,7 +13,17 @@
             'OceanExportMbl_VgmCutOffTime',
             'OceanExportMbl_RailCutOffTime',
             'OceanExportMbl_OnBoardDate',
-            'OceanExportMbl_Trans1Eta'
+            'OceanExportMbl_Trans1Eta',
+            'OceanExportHbl_PorEtd',
+            'OceanExportHbl_PodEta',
+            'OceanExportHbl_DelEta',
+            'OceanExportHbl_FdestEta',
+            'OceanExportHbl_CargoArrivalDate',
+            'OceanExportHbl_HblWhCutOffTime',
+            'OceanExportHbl_EarlyReturnDateTime',
+            'OceanExportHbl_LcIssueDate',
+            'OceanExportHbl_OnBoardDate',
+            'OceanExportHbl_HblReleaseDate'
         ];
         
         ids.forEach(function (id) {
