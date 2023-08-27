@@ -23,6 +23,44 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var l = abp.localization.getResource('Freight');
+
+            $(document).ready(function () {
+                const ids = [
+                    'ExportBooking_SoNoDate',
+                    'ExportBooking_PorEtd',
+                    'ExportBooking_PodEta',
+                    'ExportBooking_DelEta',
+                    'ExportBooking_FdestEta',
+                    'ExportBooking_WhCutOffTime',
+                    'ExportBooking_DocCutOffTime',
+                    'ExportBooking_PortCutOffTime',
+                    'ExportBooking_VgmCutOffTime',
+                    'ExportBooking_RailCutOffTime',
+                    'ExportBooking_EarlyReturnDatetime',
+                    'ExportBooking_Trans1Eta'
+                ];
+
+                ids.forEach(function (id) {
+                    debugger;
+                    let dateElem = $('#' + id);
+
+                    if (dateElem.length === 0) {
+                        return;
+                    }
+
+                    dateElem.removeAttr('type').datetimepicker({
+                        format: 'Y-m-d H:i',
+                        step: 15,
+                        allowInput: false
+                    });
+
+                    let currentVal = dateElem.val();
+                    if (currentVal.includes('T')) {
+                        dateElem.val(currentVal.replace('T', ' '));
+                    }
+                });
+            });
+
             var showCopyMsg = '@Model.ShowCopyMsg'
             if (showCopyMsg == 'True') abp.message.success(l("Message:SuccessCopy"));
             var showMsg = '@Model.ShowMsg';
@@ -596,7 +634,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.SoNoDate" required-symbol="false" />
+                                                    <abp-input asp-for="ExportBooking.SoNoDate" abp-data-datepicker="false" required-symbol="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -836,7 +874,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.PorEtd" />
+                                                    <abp-input asp-for="ExportBooking.PorEtd" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -846,7 +884,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.PodEta" />
+                                                    <abp-input asp-for="ExportBooking.PodEta" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -856,7 +894,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.DelEta" />
+                                                    <abp-input asp-for="ExportBooking.DelEta" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -866,7 +904,7 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.FdestEta" />
+                                                    <abp-input asp-for="ExportBooking.FdestEta" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -890,7 +928,7 @@
                                             </abp-row>
                                             <abp-row class="hideArea">
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.Trans1Eta" />
+                                                    <abp-input asp-for="ExportBooking.Trans1Eta" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row class="hideArea">
@@ -954,32 +992,32 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.WhCutOffTime" />
+                                                    <abp-input asp-for="ExportBooking.WhCutOffTime" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.DocCutOffTime" />
+                                                    <abp-input asp-for="ExportBooking.DocCutOffTime" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.PortCutOffTime" />
+                                                    <abp-input asp-for="ExportBooking.PortCutOffTime" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.VgmCutOffTime" />
+                                                    <abp-input asp-for="ExportBooking.VgmCutOffTime" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.RailCutOffTime" />
+                                                    <abp-input asp-for="ExportBooking.RailCutOffTime" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.EarlyReturnDatetime" />
+                                                    <abp-input asp-for="ExportBooking.EarlyReturnDatetime" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
