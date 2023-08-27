@@ -216,8 +216,8 @@
 
     }
    function openCopyModal(){
-    
-     var selectedCheckboxes = $('#MawbListTable tbody input.lockUnlockCheckbox[type="checkbox"]:checked');
+
+        var selectedCheckboxes = $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
 
         var id = selectedCheckboxes[0].attributes[2].value;
          copyModalMawbList.open({
