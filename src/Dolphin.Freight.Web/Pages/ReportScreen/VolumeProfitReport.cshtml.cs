@@ -26,6 +26,7 @@ using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
 using Volo.Abp.Timing;
 using Dolphin.Freight.Web.Pages.AirExports;
 using Dolphin.Freight.ReportLog;
+using Dolphin.Freight.Web.CommonService;
 
 namespace Dolphin.Freight.Web.Pages.ReportScreen
 {
@@ -41,6 +42,7 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
         private readonly IPackageUnitAppService _packageUnitAppService;
         private readonly IAirExportMawbAppService _airExportMawbAppService;
         private readonly IReportLogRepository _reportLogRepository;
+        private readonly IDropdownService _dropdownService;
 
         [BindProperty]
         public CreateMawbViewModel MawbModel { get; set; }
@@ -61,7 +63,8 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             ISubstationAppService substationAppService,
             IAirportAppService airportAppService,
             IPackageUnitAppService packageUnitAppService,
-            IAirExportMawbAppService airExportMawbAppService
+            IAirExportMawbAppService airExportMawbAppService,
+            IDropdownService dropdownService
             )
         {
             Logger = NullLogger<CreateMawbModel>.Instance;
@@ -70,6 +73,7 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             _airportAppService = airportAppService;
             _packageUnitAppService = packageUnitAppService;
             _airExportMawbAppService = airExportMawbAppService;
+            _dropdownService = dropdownService;
         }
 
 
@@ -509,53 +513,53 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             //new SelectListItem { Value = "range", Text = "ABBOTT, BROWN AND MASON"},
             //new SelectListItem { Value = "negative", Text = "ABBOTT, DIAZ AND GREEN"}
 
-            new SelectListItem { Value = "all", Text = "Shipper"},
-            new SelectListItem { Value = "range", Text = "Oversea Agent"},
-            new SelectListItem { Value = "negative", Text = "Consignee"},
-            new SelectListItem { Value = "all", Text = "Customer"},
-            new SelectListItem { Value = "range", Text = "Carrier"},
-            new SelectListItem { Value = "negative", Text = "Customs Broker"},
-            new SelectListItem { Value = "all", Text = "Trucker"},
-            new SelectListItem { Value = "range", Text = "Account Group"},
-            new SelectListItem { Value = "negative", Text = "Bill To"},
-            new SelectListItem { Value = "all", Text = "Referred By"},
-            new SelectListItem { Value = "range", Text = "Office"},
-            new SelectListItem { Value = "negative", Text = "BL Post Date"},
-            new SelectListItem { Value = "all", Text = "ETD"},
-            new SelectListItem { Value = "range", Text = "ΕΤΑ"},
-            new SelectListItem { Value = "negative", Text = "Freight Term"},
-            new SelectListItem { Value = "all", Text = "Incoterms"},
-            new SelectListItem { Value = "range", Text = "Service Term"},
-            new SelectListItem { Value = "all", Text = "Cargo Type"},
-            new SelectListItem { Value = "range", Text = "Sales Person"},
-            new SelectListItem { Value = "all", Text = "MB/L OP"},
-            new SelectListItem { Value = "range", Text = "Operation"},
-            new SelectListItem { Value = "all", Text = "OP/Co-op OP"},
-            new SelectListItem { Value = "range", Text = "Ship Line"},
-            new SelectListItem { Value = "all", Text = "POL"},
-            new SelectListItem { Value = "range", Text = "POD"},
-            new SelectListItem { Value = "all", Text = "Country of POL"},
-            new SelectListItem { Value = "all", Text = "Country of POD"},
-            new SelectListItem { Value = "all", Text = "DEL"},
-            new SelectListItem { Value = "all", Text = "Final Destination"},
-            new SelectListItem { Value = "all", Text = "Vessel / Flight"},
-            new SelectListItem { Value = "range", Text = "MBL/MAWB No./ Warehouse B/L No."},
-            new SelectListItem { Value = "range", Text = "HB/L | HAWB No."},
-            new SelectListItem { Value = "range", Text = "File No."},
-            new SelectListItem { Value = "range", Text = "Door Move"},
-            new SelectListItem { Value = "range", Text = "C.Clearance"},
-            new SelectListItem { Value = "range", Text = "ISF No."},
-            new SelectListItem { Value = "range", Text = "FBA FC"},
-            new SelectListItem { Value = "range", Text = "Sales Type"},
-            new SelectListItem { Value = "range", Text = "HB/L Referred By / Nominated Agent"},
-            new SelectListItem { Value = "range", Text = "E-Commerce"},
-            new SelectListItem { Value = "range", Text = "Forwarding Agent"},
-            new SelectListItem { Value = "all", Text = "Carrier Contract No."},
-            new SelectListItem { Value = "range", Text = "MBL Color Remark"},
-            new SelectListItem { Value = "all", Text = "HBL Color Remark"},
-            new SelectListItem { Value = "range", Text = "Co-Loader"},
-            new SelectListItem { Value = "all", Text = "B/L Type"},
-            new SelectListItem { Value = "range", Text = "Latest Gate In"}
+            new SelectListItem { Value = "Shipper", Text = "Shipper"},
+            new SelectListItem { Value = "OverseaAgent", Text = "Oversea Agent"},
+            new SelectListItem { Value = "Consignee", Text = "Consignee"},
+            new SelectListItem { Value = "Customer", Text = "Customer"},
+            new SelectListItem { Value = "Carrier", Text = "Carrier"},
+            new SelectListItem { Value = "CustomsBroker", Text = "Customs Broker"},
+            new SelectListItem { Value = "Trucker", Text = "Trucker"},
+            new SelectListItem { Value = "AccountGroup", Text = "Account Group"},
+            new SelectListItem { Value = "BillTo", Text = "Bill To"},
+            new SelectListItem { Value = "ReferredBy", Text = "Referred By"},
+            new SelectListItem { Value = "Office", Text = "Office"},
+            new SelectListItem { Value = "BLPostDate", Text = "BL Post Date"},
+            new SelectListItem { Value = "ETD", Text = "ETD"},
+            new SelectListItem { Value = "ΕΤΑ", Text = "ΕΤΑ"},
+            new SelectListItem { Value = "FreightTerm", Text = "Freight Term"},
+            new SelectListItem { Value = "Incoterms", Text = "Incoterms"},
+            new SelectListItem { Value = "ServiceTerm", Text = "Service Term"},
+            new SelectListItem { Value = "CargoType", Text = "Cargo Type"},
+            new SelectListItem { Value = "SalesPerson", Text = "Sales Person"},
+            new SelectListItem { Value = "MB/LOP", Text = "MB/L OP"},
+            new SelectListItem { Value = "Operation", Text = "Operation"},
+            new SelectListItem { Value = "OP/Co-opOP", Text = "OP/Co-op OP"},
+            new SelectListItem { Value = "ShipLine", Text = "Ship Line"},
+            new SelectListItem { Value = "POL", Text = "POL"},
+            new SelectListItem { Value = "POD", Text = "POD"},
+            new SelectListItem { Value = "CountryofPOL", Text = "Country of POL"},
+            new SelectListItem { Value = "CountryofPOD", Text = "Country of POD"},
+            new SelectListItem { Value = "DEL", Text = "DEL"},
+            new SelectListItem { Value = "FinalDestination", Text = "Final Destination"},
+            new SelectListItem { Value = "Vessel/Flight", Text = "Vessel / Flight"},
+            new SelectListItem { Value = "MBL/MAWB No./WarehouseB/LNo.", Text = "MBL/MAWB No./ Warehouse B/L No."},
+            new SelectListItem { Value = "HB/L|HAWB No.", Text = "HB/L | HAWB No."},
+            new SelectListItem { Value = "FileNo.", Text = "File No."},
+            new SelectListItem { Value = "DoorMove", Text = "Door Move"},
+            new SelectListItem { Value = "C.Clearance", Text = "C.Clearance"},
+            new SelectListItem { Value = "ISF No.", Text = "ISF No."},
+            new SelectListItem { Value = "FBAFC", Text = "FBA FC"},
+            new SelectListItem { Value = "SalesType", Text = "Sales Type"},
+            new SelectListItem { Value = "HB/LReferredBy/NominatedAgent", Text = "HB/L Referred By / Nominated Agent"},
+            new SelectListItem { Value = "E-Commerce", Text = "E-Commerce"},
+            new SelectListItem { Value = "ForwardingAgent", Text = "Forwarding Agent"},
+            new SelectListItem { Value = "CarrierContractNo.", Text = "Carrier Contract No."},
+            new SelectListItem { Value = "MBLColorRemark", Text = "MBL Color Remark"},
+            new SelectListItem { Value = "HBLColorRemark", Text = "HBL Color Remark"},
+            new SelectListItem { Value = "Co-Loader", Text = "Co-Loader"},
+            new SelectListItem { Value = "B/LType", Text = "B/L Type"},
+            new SelectListItem { Value = "LatestGateIn", Text = "Latest Gate In"}
 
         };
 
@@ -614,7 +618,7 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
         };
 
 
-
+        
 
     }
 }

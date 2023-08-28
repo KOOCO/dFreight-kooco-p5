@@ -130,6 +130,13 @@
             $("input[name='VPRM.Report']").eq(0).prop('checked', 'checked');
             $("input[name='VPRM.OutputFormat']").eq(0).prop('checked', 'checked');
             $("input[name='VPRM.Profit']").eq(0).prop('checked', 'checked');
+
+            var l = abp.localization.getResource('Freight');
+            $('#tradePartnerDDL').select2({
+                placeholder: l("Dropdown:Select"),
+                allowClear: true
+            });
+            $('#tradePartnerDDL').closest('div').css('margin-bottom', '50px');
         });
 
         $('#createForm').on('abp-ajax-success', function () {
@@ -395,15 +402,6 @@
             }
         });
 
-        document.addEventListener('DOMContentLoaded', function(){
-            var l = abp.localization.getResource('Freight');
-
-        //    $('#VPRM_FreightCode').select2({
-        //        placeholder: l("Dropdown:Select"),
-        //        allowClear: true
-        //    });
-        //});
-
         $("input[name='VPRM.Report']").on("change", function (){
             var selectedValue = $("input[name='VPRM.Report']:checked").val();
 
@@ -428,9 +426,19 @@
             if (!($("#VPRM_IsNA").prop('checked') || $("#VPRM_IsCOLoad").prop('checked') || $("#VPRM_IsFreeCargo").prop('checked') || $("#VPRM_IsNomi").prop('checked'))) {
                 $("#showResultBtn").prop('disabled', true);
             }
-            
         });
-        
+
+        $('#VPRM_OutputType').change(function () {
+            debugger;
+            var selectedVal = $('#VPRM_OutputType').val();
+
+            if (selectedVal == 'Shipper' || selectedVal == 'OverseaAgent' || selectedVal == 'Consignee' || selectedVal == 'Customer' || selectedVal == 'Carrier' || selectedVal == 'CustomsBroker' || selectedVal == 'Trucker' || selectedVal == 'AccountGroup' || selectedVal == 'BillTo' || selectedVal == 'ReferredBy') {
+
+                $('#tradePartnerDDL').closest('div').show();
+            }else{
+                $('#tradePartnerDDL').closest('div').hide();
+            }
+        });
 
     </script>
 }
@@ -510,7 +518,7 @@
                                 <abp-column size-md="Auto">
                                     <abp-input size-md="Auto" asp-for="VPRM.IsWarehouse" label="Warehouse" disabled />
                                 </abp-column>
-                            </abp-row>
+                            </abp-row>_dropdownService.trade
 
                         </abp-column>
                         <abp-column size-md="_3">
@@ -571,6 +579,14 @@
                         <abp-column size-md="_3">
                             <abp-select asp-for="VPRM.OutputType" size="Small" asp-items="@Model.OutputType">
                             </abp-select>
+                        </abp-column>
+                        <abp-column size-md="_12" id="tradePartnerDiv">
+                            <select id="tradePartnerDDL" multiple>    
+                                @foreach(var item in Model.TradePartnerLookupList)
+                                {
+                                    <option id="@item.Value">@item.Text</option>
+                                }
+                            </select>
                         </abp-column>
                         <abp-column size-md="_3">
                             <abp-select asp-for="VPRM.ServiceTermTypeFrom" size="Small" asp-items="@Model.ServiceTermStart"></abp-select>
