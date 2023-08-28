@@ -16,6 +16,37 @@
 
 <script>
 
+    $(document).ready(function () {
+        const ids = [
+            "HawbModel_FinalETA",
+            "HawbModel_LastFreeDay",
+            "HawbModel_StorageStartDate",
+            "HawbModel_ITDate",
+            "HawbModel_FrtRelease",
+            "HawbModel_CReleasedDate",
+            "HawbModel_DoorDelivered"
+        ];
+
+        ids.forEach(function (id) {
+            let dateElem = $('#' + id);
+
+            if (dateElem.length === 0) {
+                return;
+            }
+
+            dateElem.removeAttr('type').datetimepicker({
+                format: 'Y-m-d H:i',
+                step: 15,
+                allowInput: false
+            });
+
+            let currentVal = dateElem.val();
+            if (currentVal.includes('T')) {
+                dateElem.val(currentVal.replace('T', ' '));
+            }
+        });
+    });
+
       $(document).ready(function () {
         if ($('#HawbCancelledDate').val() == '0001-01-01T00:00') {
             $('#HawbCancelledDate').val('');
@@ -264,7 +295,7 @@
                 @*<abp-input asp-for="@Model.HawbModel.FinalDestination" />*@
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.FinalETA" />
+                <abp-input asp-for="@Model.HawbModel.FinalETA" abp-data-datepicker="false" />
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.DeliveryLocation", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["DeliveryLocation"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.DeliveryLocation) })
@@ -278,10 +309,10 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.Trucker", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Trucker"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.Trucker) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.LastFreeDay" size="Small"  />
+                <abp-input asp-for="@Model.HawbModel.LastFreeDay" size="Small" abp-data-datepicker="false" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.StorageStartDate" size="Small" />
+                <abp-input asp-for="@Model.HawbModel.StorageStartDate" size="Small" abp-data-datepicker="false" />
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.Freight", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = "Freight", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.HawbModel.Freight) })
@@ -338,7 +369,7 @@
                 <abp-input asp-for="@Model.HawbModel.ClassOfEntry" size="Small"  />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.ITDate" size="Small"  />
+                <abp-input asp-for="@Model.HawbModel.ITDate" size="Small" abp-data-datepicker="false" />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="@Model.HawbModel.ITIssuedLocation" size="Small"  />
@@ -349,7 +380,7 @@
                 <input type="checkbox" id="chkFrtRelease" />
             </abp-column>
             <abp-column size-md="_2">
-                <abp-input asp-for="HawbModel.FrtRelease" size="Small" disabled />
+                <abp-input asp-for="HawbModel.FrtRelease" size="Small" abp-data-datepicker="false" disabled />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="HawbModel.ReleasedBy" size="Small" readonly="true" />
@@ -358,12 +389,12 @@
                 <abp-input asp-for="@Model.HawbModel.CargoReleasedto" size="Small" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.CReleasedDate" size="Small" />
+                <abp-input asp-for="@Model.HawbModel.CReleasedDate" size="Small" abp-data-datepicker="false" />
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.DoorDelivered" size="Small" />
+                <abp-input asp-for="@Model.HawbModel.DoorDelivered" size="Small" abp-data-datepicker="false" />
             </abp-column>
         </abp-row>
         <hr />
