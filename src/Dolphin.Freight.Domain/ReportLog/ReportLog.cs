@@ -7,6 +7,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 using Volo.Abp;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using NPOI.HSSF.Record.PivotTable;
 
 namespace Dolphin.Freight.ReportLog
 {
@@ -83,5 +84,12 @@ namespace Dolphin.Freight.ReportLog
         public string CargoType { get; set; }
         public string SalesPerson { get; set; } // Sales Person but don't get table 
         public DateTime BLPostDate { get; set; } //  Mawb post date
+    }
+
+    public class SysCodeForReport
+    {
+        public string   Id  { get; set; }
+        public string ShowName { get; set; }
+        public string CodeType { get; set; }
     }
 }

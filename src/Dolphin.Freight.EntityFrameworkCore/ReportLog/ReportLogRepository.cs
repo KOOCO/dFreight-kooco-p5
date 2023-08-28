@@ -3,6 +3,7 @@ using AutoMapper.Internal;
 using Dolphin.Freight.EntityFrameworkCore;
 using Dolphin.Freight.ImportExport.AirImports;
 using Microsoft.EntityFrameworkCore;
+using Scriban.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -56,12 +57,17 @@ namespace Dolphin.Freight.ReportLog
 
         public async Task<List<MawbReport>> GetMawbReport(MawbReportDto filter)
         {
+            
             var _dbContext = await _dbContextProvider.GetDbContextAsync();
+            var cargoTypes = _dbContext.SysCodes.Where(s => s.CodeType == "cargoTypeId")
+                .Select(s =>new SysCodeForReport { Id= s.Id.ToString() , ShowName =  s.ShowName, CodeType = s.CodeType });
 
             try
             {
-                var airImports = (from hb in _dbContext.AirImportHawbs
-                                  join mb in _dbContext.AirImportMawbs on hb.MawbId equals mb.Id
+
+                var airImports = (from mb in _dbContext.AirImportMawbs
+                                  join hb in _dbContext.AirImportHawbs on mb.Id equals hb.MawbId into hm
+                                  from subpet in hm.DefaultIfEmpty()
                                   select new MawbReport()
                                   {
                                       ReportType = "Air Import",
@@ -105,56 +111,57 @@ namespace Dolphin.Freight.ReportLog
                                       FreightTermId = Convert.ToString(mb.FreightType),
                                       SalesPerson = "",
                                       BLPostDate = mb.PostDate,
-                                      CargoType = "GENERAL CARGO"
+                                      CargoType = ""
 
                                   }).AsEnumerable();
-                            var airExports = (from hb in _dbContext.AirExportHawbs
-                                    join mb in _dbContext.AirExportMawbs on hb.MawbId equals mb.Id
-                                    select new MawbReport()
-                                    {
-                                        ReportType = "Air Export",
-                                        Id = mb.Id,
-                                        OverseaAgent = null,
-                                        OverseaAgentId = null,
-                                        ConsigneeId = Convert.ToString(mb.ConsigneeId),
-                                        OfficeId = Convert.ToString(mb.OfficeId),
-                                        Office = Convert.ToString((mb.Office != null) ? mb.Office.SubstationName : ""),
-                                        Consignee = Convert.ToString((mb.Consignee != null) ? mb.Consignee.TPName : ""),
-                                        SalesId = null,
-                                        SalesTypeId = null,
-                                        ServiceTermTypeFrom = Convert.ToInt32(mb.ServiceTermTypeFrom),
-                                        ServiceTermTypeTo = Convert.ToInt32(mb.ServiceTermTypeTo),
-                                        IsEcommerce = mb.IsECom ? "yes" : "no",
-                                        ShipperId = Convert.ToString(mb.ShipperId),
-                                        Shipper = Convert.ToString((mb.Shipper != null) ? mb.Shipper.TPName : ""),
-                                        CarrierId = Convert.ToString(mb.MawbCarrierId),
-                                        CarrierName = Convert.ToString((mb.MawbCarrier != null) ? mb.MawbCarrier.TPName : ""),
-                                        CustomerId = null,
-                                        CustomerName = Convert.ToString(mb.DVCustomer),
-                                        BillToId = null,
-                                        BillToName = null,
-                                        CustomerRefNo = null,
-                                        OpId = null,
-                                        OpName = null,
-                                        POLId = null,
-                                        POLName = null,
-                                        PODId = null,
-                                        PODName = null,
-                                        DestinationId = Convert.ToString(mb.DestinationId) ?? "",
-                                        DestinationName = Convert.ToString((mb.Destination != null) ? mb.Destination.AirportName : ""),
-                                        Vessel = null,
-                                        MawbNo = Convert.ToString(mb.MawbNo),
-                                        CoLoaderId = Convert.ToString(mb.CoLoaderId),
-                                        FileNo = Convert.ToString(mb.FilingNo),
-                                        ForwardingAgentId = null,
-                                        ForwardingAgentName = null,
-                                        ColorRemarkId = null,
-                                        ColorRemarkName = null,
-                                        FreightTermId = null,
-                                        SalesPerson = "",
-                                        BLPostDate = mb.PostDate,
-                                        CargoType = "GENERAL CARGO"
-                                    }).AsEnumerable();
+
+                var airExports = (from hb in _dbContext.AirExportHawbs
+                                  join mb in _dbContext.AirExportMawbs on hb.MawbId equals mb.Id
+                                  select new MawbReport()
+                                  {
+                                      ReportType = "Air Export",
+                                      Id = mb.Id,
+                                      OverseaAgent = null,
+                                      OverseaAgentId = null,
+                                      ConsigneeId = Convert.ToString(mb.ConsigneeId),
+                                      OfficeId = Convert.ToString(mb.OfficeId),
+                                      Office = Convert.ToString((mb.Office != null) ? mb.Office.SubstationName : ""),
+                                      Consignee = Convert.ToString((mb.Consignee != null) ? mb.Consignee.TPName : ""),
+                                      SalesId = null,
+                                      SalesTypeId = null,
+                                      ServiceTermTypeFrom = Convert.ToInt32(mb.ServiceTermTypeFrom),
+                                      ServiceTermTypeTo = Convert.ToInt32(mb.ServiceTermTypeTo),
+                                      IsEcommerce = mb.IsECom ? "yes" : "no",
+                                      ShipperId = Convert.ToString(mb.ShipperId),
+                                      Shipper = Convert.ToString((mb.Shipper != null) ? mb.Shipper.TPName : ""),
+                                      CarrierId = Convert.ToString(mb.MawbCarrierId),
+                                      CarrierName = Convert.ToString((mb.MawbCarrier != null) ? mb.MawbCarrier.TPName : ""),
+                                      CustomerId = null,
+                                      CustomerName = Convert.ToString(mb.DVCustomer),
+                                      BillToId = null,
+                                      BillToName = null,
+                                      CustomerRefNo = null,
+                                      OpId = null,
+                                      OpName = null,
+                                      POLId = null,
+                                      POLName = null,
+                                      PODId = null,
+                                      PODName = null,
+                                      DestinationId = Convert.ToString(mb.DestinationId) ?? "",
+                                      DestinationName = Convert.ToString((mb.Destination != null) ? mb.Destination.AirportName : ""),
+                                      Vessel = null,
+                                      MawbNo = Convert.ToString(mb.MawbNo),
+                                      CoLoaderId = Convert.ToString(mb.CoLoaderId),
+                                      FileNo = Convert.ToString(mb.FilingNo),
+                                      ForwardingAgentId = null,
+                                      ForwardingAgentName = null,
+                                      ColorRemarkId = null,
+                                      ColorRemarkName = null,
+                                      FreightTermId = null,
+                                      SalesPerson = "",
+                                      BLPostDate = mb.PostDate,
+                                      CargoType = cargoTypes.Where(c => c.Id == hb.CargoType).Select(c => c.ShowName).FirstOrDefault()
+                                  }).AsEnumerable();
 
                 var oceanImports = (from oih in _dbContext.OceanImportHbls
                                     join oi in _dbContext.OceanImportMbls on oih.MblId equals oi.Id
@@ -200,7 +207,7 @@ namespace Dolphin.Freight.ReportLog
                                         FreightTermId = Convert.ToString(oi.FreightTermId),
                                         SalesPerson = "",
                                         BLPostDate = oi.PostDate,
-                                        CargoType = "GENERAL CARGO"
+                                        CargoType = ""
                                     }).AsEnumerable();
 
                 var oceanExports = (from oeh in _dbContext.OceanExportHbls
@@ -247,7 +254,7 @@ namespace Dolphin.Freight.ReportLog
                                         FreightTermId = Convert.ToString(oe.FreightTermId),
                                         SalesPerson = "",
                                         BLPostDate = oe.PostDate,
-                                        CargoType = "GENERAL CARGO"
+                                        CargoType = ""
                                     }).AsEnumerable();
 
                 IEnumerable<MawbReport> result = new List<MawbReport>();
@@ -259,19 +266,19 @@ namespace Dolphin.Freight.ReportLog
                 if (filter.IsOceanImport)
                 {
                     if (result != null)
-                        result.Union(oceanImports);
+                       result =  result.Union(oceanImports);
                     else
                         result = oceanImports;
                 }
                 if (filter.IsAirExport) { 
                     if (result != null)
-                        result.Union(airExports);
+                        result =  result.Union(airExports);
                     else
                         result = airExports;
                 }
                 if (filter.IsAirImport) {
                     if (result != null)
-                        result.Union(airImports);
+                        result = result.Union(airImports);
                     else
                         result = airImports;
                 }

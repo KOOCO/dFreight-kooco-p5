@@ -231,6 +231,8 @@
                     scrollX: true,
                     processing: true,
                     data: data.items,
+                    scrollCollapse: true,
+                    scrollY: '50vh',
                     columnDefs: [
                         {
                             title: l('reportType'),
@@ -755,7 +757,6 @@
     <abp-row>
         <abp-card-body>
             <abp-table class="nowrap" striped-rows="true" id="mawReport" class="stripe row-border order-column" style="width:100%;">
-                
             </abp-table>
         </abp-card-body>
     </abp-row>
