@@ -126,6 +126,10 @@
 
             $("#VPRM_MinProfit").prop("disabled", true);
             $("#VPRM_MaxProfit").prop("disabled", true);
+
+            $("input[name='VPRM.Report']").eq(0).prop('checked', 'checked');
+            $("input[name='VPRM.OutputFormat']").eq(0).prop('checked', 'checked');
+            $("input[name='VPRM.Profit']").eq(0).prop('checked', 'checked');
         });
 
         $('#createForm').on('abp-ajax-success', function () {
@@ -394,10 +398,37 @@
         document.addEventListener('DOMContentLoaded', function(){
             var l = abp.localization.getResource('Freight');
 
-            $('#VPRM_FreightCode').select2({
-                placeholder: l("Dropdown:Select"),
-                allowClear: true
-            });
+        //    $('#VPRM_FreightCode').select2({
+        //        placeholder: l("Dropdown:Select"),
+        //        allowClear: true
+        //    });
+        //});
+
+        $("input[name='VPRM.Report']").on("change", function (){
+            var selectedValue = $("input[name='VPRM.Report']:checked").val();
+
+            if (selectedValue === "vp") {
+                $("input[name='VPRM.Profit']").prop('disabled', false);
+                $("#VPRM_IsProfitDetail").prop('disabled', false);
+            }
+            else {
+                $("input[name='VPRM.Profit']").prop('disabled', true);
+                $("#VPRM_IsProfitDetail").prop('disabled', true);
+            }
+        });
+
+        $("#VPRM_IsOceanImport, #VPRM_IsOceanExport, #VPRM_IsAirImport, #VPRM_IsAirExport, #VPRM_IsNA, #VPRM_IsCOLoad, #VPRM_IsFreeCargo, #VPRM_IsNomi").on('click', function () {
+            debugger;
+            $("#showResultBtn").prop('disabled', false);
+
+            if (!($("#VPRM_IsOceanImport").prop('checked') || $("#VPRM_IsOceanExport").prop('checked') || $("#VPRM_IsAirImport").prop('checked') || $("#VPRM_IsAirExport").prop('checked'))) {
+                $("#showResultBtn").prop('disabled', true);
+            }
+
+            if (!($("#VPRM_IsNA").prop('checked') || $("#VPRM_IsCOLoad").prop('checked') || $("#VPRM_IsFreeCargo").prop('checked') || $("#VPRM_IsNomi").prop('checked'))) {
+                $("#showResultBtn").prop('disabled', true);
+            }
+            
         });
         
 
@@ -459,7 +490,7 @@
                             <label asp-for="VPRM.ShippingType" class="form-label">Shipping Type</label>
                             <abp-row>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsOceanImport" label="Ocean Import" />
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsOceanImport" label="Ocean Import" checked/>
                                 </abp-column>
                                 <abp-column size-md="Auto">
                                     <abp-input size-md="Auto" checked asp-for="VPRM.IsOceanExport" label="Ocean Export" />
@@ -471,13 +502,13 @@
                                     <abp-input size-md="Auto" checked asp-for="VPRM.IsAirExport" label="Air Export" />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsTruck" label="Truck" />
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsTruck" label="Truck" disabled/>
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsMisc" label="Misc." />
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsMisc" label="Misc." disabled/>
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsWarehouse" label="Warehouse" />
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsWarehouse" label="Warehouse" disabled />
                                 </abp-column>
                             </abp-row>
 
@@ -562,7 +593,7 @@
                             <label asp-for="VPRM.SalesTypeId" class="form-label">Sales Type</label>
                             <abp-row>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsNA" label="N/A" />
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsNA" label="N/A" checked/>
                                 </abp-column>
                                 <abp-column size-md="Auto">
                                     <abp-input size-md="Auto" asp-for="VPRM.IsCOLoad" label="CO-LOAD" />
