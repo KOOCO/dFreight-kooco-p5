@@ -716,13 +716,11 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             public AWBType AwbType { get; set; }
 
             public string MawbNo { get; set; }
-            [DataType(DataType.Date)]
             public DateTime AwbDate { get; set; }
             public string ItnNo { get; set; }
             public String ShipperId { get; set; }
             public String ConsigneeId { get; set; }
             public String NotifyId { get; set; }
-            [DataType(DataType.DateTime)]
             public DateTime? PostDate { get; set; }
             [Required]
             public String OfficeId { get; set; }
@@ -734,7 +732,6 @@ namespace Dolphin.Freight.Web.Pages.AirExports
 
             public String DepatureId { get; set; }
             [Required]
-            [DataType(DataType.DateTime)]
             public DateTime? DepatureDate { get; set; }
             public string FlightNo { get; set; }
 
@@ -755,25 +752,19 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             public string Sci { get; set; }
 
             public String RouteTrans1Id { get; set; }
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans1ArrivalDate { get; set; }
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans1DepatureDate { get; set; }
             public string RouteTrans1FlightNo { get; set; }
             public String RouteTrans1CarrierId { get; set; }
 
             public String RouteTrans2Id { get; set; }
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans2ArrivalDate { get; set; }
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans2DepatureDate { get; set; }
             public string RouteTrans2FlightNo { get; set; }
             public String RouteTrans2CarrierId { get; set; }
 
             public String RouteTrans3Id { get; set; }
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans3ArrivalDate { get; set; }
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans3DepatureDate { get; set; }
             public string RouteTrans3FlightNo { get; set; }
             public String RouteTrans3CarrierId { get; set; }
@@ -811,7 +802,6 @@ namespace Dolphin.Freight.Web.Pages.AirExports
 
             public bool IsAwbCancelled { get; set; }
            
-            [DataType(DataType.Date)]
             public DateTime? AwbCancelledDate { get; set; }
             [SelectItems(nameof(TradePartnerLookupList))]
             public String AwbCancelledOpId { get; set; }

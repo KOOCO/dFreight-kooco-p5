@@ -764,7 +764,7 @@
                                     <abp-input asp-for="MawbModel.MawbNo" size="Small" suppress-label="true" required />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="MawbModel.AwbDate" size="Small" />
+                                    <abp-input asp-for="MawbModel.AwbDate" abp-data-datepicker="false" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="MawbModel.ItnNo" size="Small" />
@@ -812,7 +812,7 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label asp-for="MawbModel.DepatureDate" class="redStar form-label">@L["DepatureDate"]</label>
-                                    <abp-input asp-for="MawbModel.DepatureDate" suppress-label="true" size="Small" />
+                                    <abp-input asp-for="MawbModel.DepatureDate" abp-data-datepicker="false" suppress-label="true" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="MawbModel.FlightNo" size="Small" />
@@ -830,7 +830,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DestinationId", AspItems = _dropdown.PortsManagementLookupList,Selected=Model.MawbModel.DestinationId, IsShowLabel = true, FieldName = "DestinationId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.DestinationId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="MawbModel.ArrivalDate" size="Small" />
+                                    <abp-input asp-for="MawbModel.ArrivalDate" abp-data-datepicker="false" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="MawbModel.DVCarriage" size="Small" />
@@ -902,13 +902,13 @@
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans1Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans1Id) })
                                                     </td>
                                                     <td>
-                                                        <input asp-for="MawbModel.RouteTrans1ArrivalDate" size="Small" />
+                                                        <input asp-for="MawbModel.RouteTrans1ArrivalDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="MawbModel.RouteTrans1DepatureDate" size="Small" />
+                                                        <input asp-for="MawbModel.RouteTrans1DepatureDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="MawbModel.RouteTrans1FlightNo" size="Small" />
+                                                        <input asp-for="MawbModel.RouteTrans1FlightNo" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans1CarrierId", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1CarrierId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans1CarrierId) })
@@ -920,13 +920,13 @@
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans2Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans2Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans2Id) })
                                                     </td>
                                                     <td>
-                                                        <input asp-for="MawbModel.RouteTrans2ArrivalDate" size="Small" />
+                                                        <input asp-for="MawbModel.RouteTrans2ArrivalDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="MawbModel.RouteTrans2DepatureDate" size="Small" />
+                                                        <input asp-for="MawbModel.RouteTrans2DepatureDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="MawbModel.RouteTrans2FlightNo" size="Small" />
+                                                        <input asp-for="MawbModel.RouteTrans2FlightNo" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans2CarrierId", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans2CarrierId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans2CarrierId) })
@@ -938,13 +938,13 @@
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans3Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans3Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans3Id) })
                                                     </td>
                                                     <td>
-                                                        <input asp-for="MawbModel.RouteTrans3ArrivalDate" size="Small" />
+                                                        <input asp-for="MawbModel.RouteTrans3ArrivalDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="MawbModel.RouteTrans3DepatureDate" size="Small" />
+                                                        <input asp-for="MawbModel.RouteTrans3DepatureDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="MawbModel.RouteTrans3FlightNo" size="Small" />
+                                                        <input asp-for="MawbModel.RouteTrans3FlightNo" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans3CarrierId", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans3CarrierId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans3CarrierId) })
