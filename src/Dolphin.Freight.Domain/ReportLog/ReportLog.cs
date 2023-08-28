@@ -88,16 +88,8 @@ namespace Dolphin.Freight.ReportLog
         public ProfitReport Profit { get; set; }
     }
 
-    public class PackageSizeReport
-    {
-
-        public Guid ContainerId { get; set; }
-        public string ContainerCode { get; set; }
-        public Guid MblId { get; set; }
-    }
     public class VolumeReport
     {
-
         public int V20 { get; set; }
         public int V40 { get; set; }
         public int HC { get; set; }
@@ -106,6 +98,15 @@ namespace Dolphin.Freight.ReportLog
         public int SOC { get; set; }
         public int ETC { get; set; }
     }
+
+    public class PackageSizeReport
+    {
+
+        public Guid ContainerId { get; set; }
+        public string ContainerCode { get; set; }
+        public Guid MblId { get; set; }
+    }
+    
 
     public class ProfitReport
     {

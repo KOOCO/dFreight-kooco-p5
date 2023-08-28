@@ -120,7 +120,8 @@ namespace Dolphin.Freight.ReportLog
                                       FreightTermId = Convert.ToString(mb.FreightType),
                                       SalesPerson = "",
                                       BLPostDate = mb.PostDate,
-                                      CargoType = ""
+                                      CargoType = "",
+                                      Volume = new VolumeReport()
 
                                   }).AsEnumerable();
 
@@ -169,7 +170,8 @@ namespace Dolphin.Freight.ReportLog
                                       FreightTermId = null,
                                       SalesPerson = "",
                                       BLPostDate = mb.PostDate,
-                                      CargoType = cargoTypes.Where(c => c.Id == hb.CargoType).Select(c => c.ShowName).FirstOrDefault()
+                                      CargoType = cargoTypes.Where(c => c.Id == hb.CargoType).Select(c => c.ShowName).FirstOrDefault(),
+                                      Volume = new VolumeReport()
                                   }).AsEnumerable();
 
                 var oceanImports = (from oih in _dbContext.OceanImportHbls
@@ -216,7 +218,8 @@ namespace Dolphin.Freight.ReportLog
                                         FreightTermId = Convert.ToString(oi.FreightTermId),
                                         SalesPerson = "",
                                         BLPostDate = oi.PostDate,
-                                        CargoType = ""
+                                        CargoType = "",
+                                        Volume = GetContainerTypeCount(resultMawbs, oi.Id)
                                     }).AsEnumerable();
 
                 var oceanExports = (from oeh in _dbContext.OceanExportHbls
@@ -305,7 +308,7 @@ namespace Dolphin.Freight.ReportLog
 
         }
 
-        public VolumeReport GetContainerTypeCount(List<PackageSizeReport> result, Guid Id)
+        public static VolumeReport GetContainerTypeCount(List<PackageSizeReport> result, Guid Id)
         {
 
             var mblIds = result.Where(x => x.MblId == Id).ToList();

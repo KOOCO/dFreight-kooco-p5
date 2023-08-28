@@ -44,7 +44,7 @@ namespace Dolphin.Freight.ReportLog
 
             report = ApplyFilter(report, filter);
 
-            report = ApplyColumnFilter(report, filter);
+            //report = ApplyColumnFilter(report, filter);
 
             return new PagedResultDto<MawbReportDto>(report.Count, ObjectMapper.Map<List<MawbReport>, List<MawbReportDto>>(report));
         }
