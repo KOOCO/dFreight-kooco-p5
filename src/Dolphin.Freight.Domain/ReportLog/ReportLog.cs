@@ -82,7 +82,7 @@ namespace Dolphin.Freight.ReportLog
         public string ColorRemarkId { get; set; } = "";
         public string ColorRemarkName { get; set; } = "";
         public string CargoType { get; set; }
-        public string SalesPerson { get; set; } // Sales Person but don't get table 
+        public string SalesPerson { get; set; } // Sales Person but don't get table
         public DateTime BLPostDate { get; set; } //  Mawb post date
         public VolumeReport Volume { get; set; }
         public ProfitReport Profit { get; set; }
@@ -93,6 +93,7 @@ namespace Dolphin.Freight.ReportLog
 
         public Guid ContainerId { get; set; }
         public string ContainerCode { get; set; }
+        public Guid MblId { get; set; }
     }
     public class VolumeReport
     {

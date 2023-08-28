@@ -62,6 +62,15 @@ namespace Dolphin.Freight.ReportLog
             var cargoTypes = _dbContext.SysCodes.Where(s => s.CodeType == "cargoTypeId")
                 .Select(s =>new SysCodeForReport { Id= s.Id.ToString() , ShowName =  s.ShowName, CodeType = s.CodeType });
 
+            var resultMawbs = (from mb in _dbContext.Containers
+                              join hb in _dbContext.ContainerSizes on mb.ContainerSizeId equals hb.Id
+                              select new PackageSizeReport()
+                              {
+                                  ContainerId = mb.Id,
+                                  ContainerCode =  hb.ContainerCode,
+                                  MblId =  mb.MblId
+                              }).ToList();
+
             try
             {
 
@@ -254,7 +263,8 @@ namespace Dolphin.Freight.ReportLog
                                         FreightTermId = Convert.ToString(oe.FreightTermId),
                                         SalesPerson = "",
                                         BLPostDate = oe.PostDate,
-                                        CargoType = ""
+                                        CargoType = "",
+                                        Volume = GetContainerTypeCount(resultMawbs, oe.Id)
                                     }).AsEnumerable();
 
                 IEnumerable<MawbReport> result = new List<MawbReport>();
@@ -295,37 +305,39 @@ namespace Dolphin.Freight.ReportLog
 
         }
 
-        public async Task<VolumeReport> GetContainerTypeCount(Guid Id ,string idType)
+        public VolumeReport GetContainerTypeCount(List<PackageSizeReport> result, Guid Id)
         {
-            var _dbContext = await _dbContextProvider.GetDbContextAsync();
-            var cargoTypes = _dbContext.SysCodes.Where(s => s.CodeType == "cargoTypeId")
-                .Select(s => new SysCodeForReport { Id = s.Id.ToString(), ShowName = s.ShowName, CodeType = s.CodeType });
 
-            List<PackageSizeReport> result = new List<PackageSizeReport>();
-            if (idType == "Mawb")
-            {
-                result = (from mb in _dbContext.Containers
-                              join hb in _dbContext.ContainerSizes on mb.ContainerSizeId equals hb.Id
-                              where mb.MblId == Id
-                              select new PackageSizeReport()
-                              {
-                                  ContainerId = mb.Id,
-                                  ContainerCode =  hb.ContainerCode
-                              }).ToList();
-            }
-            else if (idType == "Hawb")
-            {
-                result = (from mb in _dbContext.Containers
-                           join hb in _dbContext.ContainerSizes on mb.ContainerSizeId equals hb.Id
-                           where mb.HblId == Id
-                           select new PackageSizeReport()
-                           {
-                               ContainerId = mb.Id,
-                               ContainerCode = hb.ContainerCode
-                           }).ToList();
-            }
+            var mblIds = result.Where(x => x.MblId == Id).ToList();
+            //var _dbContext = _dbContextProvider.GetDbContext();
+            //var cargoTypes = _dbContext.SysCodes.Where(s => s.CodeType == "cargoTypeId")
+            //    .Select(s => new SysCodeForReport { Id = s.Id.ToString(), ShowName = s.ShowName, CodeType = s.CodeType });
+
+            //List<PackageSizeReport> result = new List<PackageSizeReport>();
+            //if (idType == "Mawb")
+            //{
+            //    result = (from mb in _dbContext.Containers
+            //                  join hb in _dbContext.ContainerSizes on mb.ContainerSizeId equals hb.Id
+            //                  where mb.MblId == Id
+            //                  select new PackageSizeReport()
+            //                  {
+            //                      ContainerId = mb.Id,
+            //                      ContainerCode =  hb.ContainerCode
+            //                  }).ToList();
+            //}
+            //else if (idType == "Hawb")
+            //{
+            //    result = (from mb in _dbContext.Containers
+            //               join hb in _dbContext.ContainerSizes on mb.ContainerSizeId equals hb.Id
+            //               where mb.HblId == Id
+            //               select new PackageSizeReport()
+            //               {
+            //                   ContainerId = mb.Id,
+            //                   ContainerCode = hb.ContainerCode
+            //               }).ToList();
+            //}
             VolumeReport volume = new VolumeReport();
-            foreach (var item in result)
+            foreach (var item in mblIds)
             {
                 switch (item.ContainerCode)
                 {
