@@ -34,7 +34,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 發布日期
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? PostDate { get; set; }
         /// <summary>
         /// 船公司S/O號碼
