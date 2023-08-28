@@ -461,14 +461,24 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
 
         public List<SelectListItem> FreightCode { get; set; } = new List<SelectListItem>
         {
-            new SelectListItem { Value = "all", Text = "AE01A/F: AIR FREIGHT CHARGE"},
-             new SelectListItem { Value = "range", Text = "AE02FSC: FUEL SUR CHARGE"},
-              new SelectListItem { Value = "negative", Text = "AE03SECURI: SECURITY CHARGE"},
-              new SelectListItem { Value = "range", Text = "AE02FSC: FUEL SUR CHARGE"},
-              new SelectListItem { Value = "range", Text = "AE05DG: DANGEROUS GOOD HANDLING"},
-              new SelectListItem { Value = "range", Text = "AE06TRUCKI: TRUCKING CHARGE"},
-              new SelectListItem { Value = "range", Text = "AE07WHSETR: WAREHOUSE TRANSFER FEE"},
-              new SelectListItem { Value = "range", Text = "AE08L/C: LETTER OF CREDIT BANKING"},
+            new SelectListItem { Value = "03322EAC-7369-95F1-39B1-3A0AEF20C399", Text = "AE01A/F: AIR FREIGHT CHARGE"},
+            new SelectListItem { Value = "6ECBE3BE-AC03-B396-06F2-3A0AEF20C399", Text = "AE02FSC: FUEL SUR CHARGE"},
+            new SelectListItem { Value = "8CB45D76-81FD-2029-AFEE-3A0AEF20C399", Text = "AE03SECURI: SECURITY CHARGE"},
+            new SelectListItem { Value = "7ECCFA7D-7D05-3BCE-6717-3A0AEF20C399", Text = "AE04H/C: HANDLING CHARGE"},
+            new SelectListItem { Value = "4D95CCA0-30BA-99EA-F050-3A0AEF20C399", Text = "AE05DG: DANGEROUS GOOD HANDLING"},
+            new SelectListItem { Value = "4BEDC2EE-D6ED-1D78-3BD9-3A0AEF20C399", Text = "AE06TRUCKI: TRUCKING CHARGE"},
+            new SelectListItem { Value = "5F698F8B-4E35-3DC9-6324-3A0AEF20C399", Text = "AE07WHSETR: WAREHOUSE TRANSFER FEE"},
+            new SelectListItem { Value = "B3DBCDA5-A433-5C8B-BBAC-3A0AEF20C399", Text = "AE08L/C: LETTER OF CREDIT BANKING"},
+            new SelectListItem { Value = "B50C9F44-FD59-7968-6CA1-3A0AEF20C399", Text = "AE09C/O: CERTIFICATE OF ORIGIN"},
+            new SelectListItem { Value = "91E7D784-73FE-BFB7-0937-3A0AEF20C399", Text = "AE10INS: INSURANCE PREMIUM"},
+            new SelectListItem { Value = "708B7168-953D-887C-30BF-3A0AEF20C399", Text = "AE12MSG: SPECIAL MESSENGER FEE"},
+            new SelectListItem { Value = "C703FAEC-F4A7-DAE0-1746-3A0AEF20C399", Text = "AE13OTHER: OTHER CHARGES"},
+            new SelectListItem { Value = "8D47A13C-CDB1-3DC9-04C3-3A0AEF20C399", Text = "AE14COMM: COMMISSION FEE"},
+            new SelectListItem { Value = "C2FA41EC-EE02-0248-C7A8-3A0AEF20C399", Text = "AEDEST: DESTINATION CHARGES"},
+            new SelectListItem { Value = "03322EAC-7369-95F1-39B1-3A0AEF20C399", Text = "AI01A/F: AIR FREIGHT CHARGE"},
+            new SelectListItem { Value = "FF7AEE18-A039-0AE7-5B4E-3A0AEF20C399", Text = "AI02H/C: HANDLING CHARGE"},
+            new SelectListItem { Value = "E004439C-2CC5-3847-9ACF-3A0AEF20C399", Text = "AI03IMPORT: IMPORT SERVICE FEE TO AIRLINE"},
+            new SelectListItem { Value = "1ACB35D9-94A4-191A-7851-3A0AEF20C399", Text = "AI04TRUCKI: TRUCKING CHARGE"},
         };
 
         public List<SelectListItem> FreightTerm { get; set; } = new List<SelectListItem>
