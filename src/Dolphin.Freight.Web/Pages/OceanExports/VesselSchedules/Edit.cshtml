@@ -69,6 +69,40 @@
             initializeDropdownSearch("VesselSchedule_OblTypeId");
             initializeDropdownSearch("VesselSchedule_TransPort1Id");
 
+            $(document).ready(function () {
+                const ids = [
+                    "VesselSchedule_PolEtd",
+                    "VesselSchedule_PorEtd",
+                    "VesselSchedule_PodEta",
+                    "VesselSchedule_DelEta",
+                    "VesselSchedule_FdestEta",
+                    "VesselSchedule_RailCutOffTime",
+                    "VesselSchedule_PortCutOffTime",
+                    "VesselSchedule_VgmCutOffTime",
+                    "VesselSchedule_OnBoardDate",
+                    "VesselSchedule_Trans1Eta"
+                ];
+
+                ids.forEach(function (id) {
+                    let dateElem = $('#' + id);
+
+                    if (dateElem.length === 0) {
+                        return;
+                    }
+
+                    dateElem.removeAttr('type').datetimepicker({
+                        format: 'Y-m-d H:i',
+                        step: 15,
+                        allowInput: false
+                    });
+
+                    let currentVal = dateElem.val();
+                    if (currentVal.includes('T')) {
+                        dateElem.val(currentVal.replace('T', ' '));
+                    }
+                });
+            });
+
             //系統參數
             //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'BlTypeId' }).done(function (result) {
             //    if (result != null && result.length > 0) {
@@ -418,13 +452,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.PolId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PolEtd" />
+                                    <abp-input asp-for="VesselSchedule.PolEtd" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PorId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PorEtd" />
+                                    <abp-input asp-for="VesselSchedule.PorEtd" abp-data-datepicker="false" />
                                 </abp-column>
 
 
@@ -434,13 +468,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PodId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PodEta" />
+                                    <abp-input asp-for="VesselSchedule.PodEta" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.DelId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.DelEta" />
+                                    <abp-input asp-for="VesselSchedule.DelEta" abp-data-datepicker="false" />
                                 </abp-column>
 
                             </abp-row>
@@ -449,7 +483,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FdestId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.FdestEta" />
+                                    <abp-input asp-for="VesselSchedule.FdestEta" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_6">
                                     &nbsp;
@@ -481,18 +515,18 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OblTypeId", AspItems = Model.OblTypeList, IsShowLabel = true, FieldName = "OblTypeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.OblTypeId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.RailCutOffTime" />
+                                    <abp-input asp-for="VesselSchedule.RailCutOffTime" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PortCutOffTime" />
+                                    <abp-input asp-for="VesselSchedule.PortCutOffTime" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.VgmCutOffTime " />
+                                    <abp-input asp-for="VesselSchedule.VgmCutOffTime " abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.OnBoardDate" />
+                                    <abp-input asp-for="VesselSchedule.OnBoardDate" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_9">
 
@@ -514,7 +548,7 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.Trans1Eta" />
+                                    <abp-input asp-for="VesselSchedule.Trans1Eta" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_9">
 
