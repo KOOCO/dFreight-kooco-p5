@@ -10,7 +10,17 @@
             "MawbModel_RouteTrans3ArrivalDate",
             "MawbModel_RouteTrans1DepatureDate",
             "MawbModel_RouteTrans2DepatureDate",
-            "MawbModel_RouteTrans3DepatureDate"
+            "MawbModel_RouteTrans3DepatureDate",
+            "AirExportMawbDto_AwbDate",
+            "AirExportMawbDto_PostDate",
+            "AirExportMawbDto_DepatureDate",
+            "AirExportMawbDto_ArrivalDate",
+            "AirExportMawbDto_RouteTrans1ArrivalDate",
+            "AirExportMawbDto_RouteTrans2ArrivalDate",
+            "AirExportMawbDto_RouteTrans3ArrivalDate",
+            "AirExportMawbDto_RouteTrans1DepatureDate",
+            "AirExportMawbDto_RouteTrans2DepatureDate",
+            "AirExportMawbDto_RouteTrans3DepatureDate"
         ];
 
         ids.forEach(function (id) {

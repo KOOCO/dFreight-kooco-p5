@@ -154,7 +154,19 @@
             // Awb Cancel Area
             $("#checkboxAwbCancelled").change(function () {
                 if (this.checked) {
-                    $("#AwbCancelledDate").removeAttr("disabled").val(getDate());
+                    $("#AwbCancelledDate").removeAttr('type').datetimepicker({
+                        format: 'Y-m-d H:i',
+                        step: 15,
+                        allowInput: false,
+                        value: new Date()
+                    });
+
+                    let currentVal = $("#AwbCancelledDate").val();
+                    if (currentVal.includes('T')) {
+                        $("#AwbCancelledDate").val(currentVal.replace('T', ' '));
+                    }
+
+                    $("#AwbCancelledDate").removeAttr("disabled").val($("#AwbCancelledDate").val());
                     $("#AwbCancelledOpId").attr("disabled", "disabled").val('@(CurrentUser.Name + " " + CurrentUser.SurName)');
                     $("#ReasonForCancel").removeAttr("disabled");
                 } else {
@@ -1109,7 +1121,7 @@
                                     <abp-input asp-for="@Model.AirExportMawbDto.MawbNo" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="@Model.AirExportMawbDto.AwbDate" size="Small" />
+                                    <abp-input asp-for="@Model.AirExportMawbDto.AwbDate" abp-data-datepicker="false" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="@Model.AirExportMawbDto.ItnNo" size="Small" />
@@ -1128,7 +1140,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.NotifyId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.NotifyId.ToString(), IsShowLabel = true, FieldName = "Notify" })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="@Model.AirExportMawbDto.PostDate" size="Small" type="text" abp-data-datepicker="false" />
+                                    <abp-input asp-for="@Model.AirExportMawbDto.PostDate" size="Small" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.OfficeId", AspItems = Model.SubstationLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.OfficeId.ToString(), IsShowLabel = true, FieldName = "Office" })
@@ -1169,7 +1181,7 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label asp-for="AirExportMawbDto.DepatureDate" class="redStar form-label">@L["DepatureDate"]</label>
-                                    <abp-input asp-for="AirExportMawbDto.DepatureDate" suppress-label="true" size="Small" />
+                                    <abp-input asp-for="AirExportMawbDto.DepatureDate" suppress-label="true" size="Small" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="@Model.AirExportMawbDto.FlightNo" size="Small" />
@@ -1187,7 +1199,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DestinationId", AspItems = _dropdown.PortsManagementLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.DestinationId.ToString(), IsShowLabel = true, FieldName = @L["Destination"] })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="AirExportMawbDto.ArrivalDate" size="Small" />
+                                    <abp-input asp-for="AirExportMawbDto.ArrivalDate" size="Small" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="@Model.AirExportMawbDto.DVCarriage" size="Small" />
@@ -1263,13 +1275,13 @@
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans1Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans1Id) })
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans1ArrivalDate" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans1ArrivalDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans1DepatureDate" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans1DepatureDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans1FlightNo" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans1FlightNo" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans1CarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteTrans1CarrierId.ToString() })
@@ -1281,13 +1293,13 @@
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans2Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans1Id) })
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans2ArrivalDate" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans2ArrivalDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans2DepatureDate" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans2DepatureDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans2FlightNo" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans2FlightNo" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans2CarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteTrans2CarrierId.ToString() })
@@ -1299,13 +1311,13 @@
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans3Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans1Id) })
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans3ArrivalDate" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans3ArrivalDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans3DepatureDate" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans3DepatureDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans3FlightNo" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans3FlightNo" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans3CarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteTrans3CarrierId.ToString() })
@@ -1460,7 +1472,7 @@
                                 @if (Model.AirExportMawbDto.IsAwbCancelled == true)
                                 {
                                     <abp-column size-md="_3">
-                                        <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledDate" class="form-select-sm form-control" id="AwbCancelledDate" />
+                                        <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledDate" abp-data-datepicker="false" class="form-select-sm form-control" id="AwbCancelledDate" />
                                     </abp-column>
                                     <abp-column size-md="_3">
                                         <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledOpId" value="@(CurrentUser.Name + " " + CurrentUser.SurName)" disabled id="AwbCancelledOpId" />
@@ -1474,7 +1486,7 @@
                                 else
                                 {
                                     <abp-column size-md="_3">
-                                        <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledDate" class="form-select-sm form-control" disabled id="AwbCancelledDate" />
+                                        <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledDate" class="form-select-sm form-control" abp-data-datepicker="false" disabled id="AwbCancelledDate" />
                                     </abp-column>
                                     <abp-column size-md="_3">
                                         <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledOpId" disabled id="AwbCancelledOpId" />
