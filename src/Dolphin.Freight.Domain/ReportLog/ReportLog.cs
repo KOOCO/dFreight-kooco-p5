@@ -84,8 +84,35 @@ namespace Dolphin.Freight.ReportLog
         public string CargoType { get; set; }
         public string SalesPerson { get; set; } // Sales Person but don't get table 
         public DateTime BLPostDate { get; set; } //  Mawb post date
+        public VolumeReport Volume { get; set; }
+        public ProfitReport Profit { get; set; }
     }
 
+    public class PackageSizeReport
+    {
+
+        public Guid ContainerId { get; set; }
+        public string ContainerCode { get; set; }
+    }
+    public class VolumeReport
+    {
+
+        public int V20 { get; set; }
+        public int V40 { get; set; }
+        public int HC { get; set; }
+        public int V45 { get; set; }
+        public int RF { get; set; }
+        public int SOC { get; set; }
+        public int ETC { get; set; }
+    }
+
+    public class ProfitReport
+    {
+
+        public string AR { get; set; }
+        public string AP { get; set; }
+        public string DC { get; set; }
+    }
     public class SysCodeForReport
     {
         public string   Id  { get; set; }

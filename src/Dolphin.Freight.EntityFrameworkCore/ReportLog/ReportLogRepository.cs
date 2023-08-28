@@ -295,6 +295,113 @@ namespace Dolphin.Freight.ReportLog
 
         }
 
+        public async Task<VolumeReport> GetContainerTypeCount(Guid Id ,string idType)
+        {
+            var _dbContext = await _dbContextProvider.GetDbContextAsync();
+            var cargoTypes = _dbContext.SysCodes.Where(s => s.CodeType == "cargoTypeId")
+                .Select(s => new SysCodeForReport { Id = s.Id.ToString(), ShowName = s.ShowName, CodeType = s.CodeType });
+
+            List<PackageSizeReport> result = new List<PackageSizeReport>();
+            if (idType == "Mawb")
+            {
+                result = (from mb in _dbContext.Containers
+                              join hb in _dbContext.ContainerSizes on mb.ContainerSizeId equals hb.Id
+                              where mb.MblId == Id
+                              select new PackageSizeReport()
+                              {
+                                  ContainerId = mb.Id,
+                                  ContainerCode =  hb.ContainerCode
+                              }).ToList();
+            }
+            else if (idType == "Hawb")
+            {
+                result = (from mb in _dbContext.Containers
+                           join hb in _dbContext.ContainerSizes on mb.ContainerSizeId equals hb.Id
+                           where mb.HblId == Id
+                           select new PackageSizeReport()
+                           {
+                               ContainerId = mb.Id,
+                               ContainerCode = hb.ContainerCode
+                           }).ToList();
+            }
+            VolumeReport volume = new VolumeReport();
+            foreach (var item in result)
+            {
+                switch (item.ContainerCode)
+                {
+                    case "20":
+                        volume.V20 = +1;
+                        volume.ETC = +1;
+                        break;
+
+                    case "20DC":
+                        volume.V20 = +1;
+                        volume.ETC = +1;
+                        break;
+
+                    case "20FR":
+                        volume.V20 = +1;
+                        volume.ETC = +1;
+                        break;
+
+                    case "20FL":
+                        volume.V20 = +1;
+                        volume.ETC = +1;
+                        break;
+
+                    case "40DC":
+                        volume.V40 = +1;
+                        volume.ETC = +1;
+                        break;
+
+                    case "40FL":
+                        volume.V40 = +1;
+                        volume.ETC = +1;
+                        break;
+
+                    case "40FR":
+                        volume.V40 = +1;
+                        volume.ETC = +1;
+                        break;
+
+                    case "40GH":
+                        volume.V40 = +1;
+                        volume.ETC = +1;
+                        break;
+
+                    case "12RF":
+                        volume.V45 = +1;
+                        volume.ETC = +1;
+                        break;
+
+                    case "53FT":
+                        volume.ETC = +1;
+                        break;
+
+                    case "2":
+                        volume.ETC = +1;
+                        break;
+
+                    case "101":
+                        volume.ETC = +1;
+                        break;
+
+                    case "102":
+                        volume.ETC = +1;
+                        break;
+
+                    default:
+                        volume.HC = 0;
+                        volume.SOC = 0;
+                        break;
+                }
+            }
+
+            return volume;
+        }
+
+
+
         private List<MawbReport> ApplyFilter(List<MawbReport> report, MawbReport filter)
         {
             if (filter is not null)

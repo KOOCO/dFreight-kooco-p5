@@ -362,7 +362,50 @@
                             title: l('CoLoaderId'),
                             data: "coLoaderId",
                             visible: isCoLoaderChecked
+                        },
+                        {
+                            title : "20'",
+                            data: "V20",
+                            render: function (data) {
+                                return "1";
+                            }
+                        },
+                        {
+                            title: "40'",
+                            data: "V40",
+                            render: function (data) {
+                                return "0";
+                            }
+                        },                         
+                        {
+                            title: "HC",
+                            data: "HC",
+                            render: function (data) {
+                                return "0";
+                            }
+                        },
+                        {
+                            title: "V45'",
+                            data: "V45",
+                            render: function (data) {
+                                return "0";
+                            }
+                        },
+                        {
+                            title: "RF",
+                            data: "RF",
+                            render: function (data) {
+                                return "3";
+                            }
+                        },
+                        {
+                            title: "SOC",
+                            data: "SOC",
+                            render: function (data) {
+                                return "0";
+                            }
                         }
+                     
                     ]
                 })
             );
@@ -397,6 +440,7 @@
 
         document.addEventListener('DOMContentLoaded', function(){
             var l = abp.localization.getResource('Freight');
+        });
 
         //    $('#VPRM_FreightCode').select2({
         //        placeholder: l("Dropdown:Select"),
