@@ -45,15 +45,22 @@
                     <abp-input asp-for="Search" class="ml-4" />
                 </abp-column>
             </div>
-            <abp-button type="button" id="btnAirExportHawbListProfit" onclick="getHwabProfitReport()" class="btn btn-outline-secondary" disabled="true">
-                <span uib-tooltip="">
-                    <i class="fa fa-file-text-o"></i><font style="vertical-align: inherit;">
-                        <font style="">
-                            profit report
+            <div class="portlet-tool">
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                    <button type="button" class="btn btn-outline-secondary" onclick="selectedLock()" id="lockId" disabled>Lock</button>
+                    <button type="button" class="btn btn-outline-secondary" id="unlockId" onclick="selectedUnLock()" disabled>Unlock</button>
+                </div>
+
+                <abp-button type="button" id="btnAirExportHawbListProfit" onclick="getHwabProfitReport()" class="btn btn-outline-secondary" disabled="true">
+                    <span uib-tooltip="">
+                        <i class="fa fa-file-text-o"></i><font style="vertical-align: inherit;">
+                            <font style="">
+                                profit report
+                            </font>
                         </font>
-                    </font>
-                </span>
-            </abp-button>
+                    </span>
+                </abp-button>
+            </div>
             <abp-table class="nowrap" striped-rows="true" id="HawbListTable"></abp-table>
         </abp-card-body>
     </abp-card>

@@ -17,7 +17,21 @@ var columns = [{
         var filingNo = row.docNumber;
         $('#btnAirExportHawbListProfit').prop('disabled', true);
         $('#selectAllCheckbox').prop('checked', false);
-        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" data-filingNo="' + filingNo + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
+        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" data-mawbId="' + row.mawbId + '" data-filingNo="' + filingNo + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
+    }
+},
+{
+    title: '<div  style=" cursor: pointer;"><span><i class="fa fa-lock"></i></span></div>',
+    orderable: false,
+    "render": function (data, type, row) {
+        var isCkecked = row.isLocked;
+        var id = row.mawbId;
+        var hawbId = row.hawbId;
+        if (isCkecked) {
+            return '<input type="checkbox" class="lockUnlockCheckbox" data-hawbId="' + hawbId + '" data-id="' + id + '"  checked="' + isCkecked + '" onclick="lockCheckBox(this)"  style=" cursor: pointer;">';
+        } else {
+            return '<input type="checkbox" class="lockUnlockCheckbox" data-hawbId="' + hawbId + '" data-id="' + id + '" onclick="lockCheckBox(this)"   style=" cursor: pointer;">';
+        }
     }
 },
 {
@@ -64,18 +78,7 @@ var columns = [{
                 }
             ]
     }
-},
-{
-    //是否鎖定
-    title: l('IsLocked'),
-    orderable: false,
-    render: function (data, type, row, meta) {
-        if (row.isLocked)
-            return "<a href='javascript:lock(\"" + row.id + "\")' class='btn-lock' id='lock_" + row.id + "'><i class='fa-lg fa-solid fa-lock fa-lg'></i><span>解鎖</span></a>";
-        else
-            return "<a href='javascript:lock(\"" + row.id + "\")' class='btn-lock action' id='lock_" + row.id + "'><i class='fa-lg fa-solid fa-lock-open'></i><span>上鎖</span></a>";
-    }
-    }]
+}]
 
 var dataTable;
 
@@ -89,16 +92,76 @@ function selectAllCheckbox(element) {
         $('#btnAirExportHawbListProfit').prop('disabled', true);
     }
 }
-function selectCheckbox(checkbox) {
-    if ($("#HawbListTable input[type=checkbox]:checked").length > 0) {
-        $('#btnAirExportHawbListProfit').prop('disabled', false);
-        //check if all rows are selected then make main header checkbox selected
-        $('#selectAllCheckbox').prop('checked', false);
-        if ($("#HawbListTable input.selectCheckbox[type=checkbox]").length == $("#HawbListTable input[type=checkbox]:checked").length) {
-            $('#selectAllCheckbox').prop('checked', true);
+function lockCheckBox(checkbox) {
+    var selectedCheckboxes = $('#HawbListTable tbody input.lockUnlockCheckbox[type="checkbox"]:checked');
+
+    var id = checkbox.attributes[2].value;
+
+    var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+    abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+        if (confirmed) {
+            dolphin.freight.importExport.airExports.airExportHawb.lockedOrUnLockedAirExportHawb(id)
+                .done(function () {
+                    if (isLock) {
+                        abp.message.success(l('Message:SuccessUnlock'));
+                    } else {
+                        abp.message.success(l('Message:SuccessLock'));
+                    }
+                    dataTable.ajax.reload();
+                });
         }
+    });
+}
+function selectCheckbox(checkbox) {
+    var checkedCheckboxes = $('.selectCheckbox:checked');
+    if (checkbox.checked) {
+        var isAnyLocked = false;
+        var isAnyUnlocked = false
+        checkedCheckboxes.each(function (index, checkbox1) {
+            var id = $(checkbox1).data('id');
+
+            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+            if (isLock) {
+                isAnyLocked = true;
+            }
+            else {
+                isAnyUnlocked = true;
+
+            }
+
+        });
+        $('#lockId').prop('disabled', !isAnyUnlocked);
+        $('#unlockId').prop('disabled', !isAnyLocked);
     } else {
-        $('#btnAirExportHawbListProfit').prop('disabled', true);
+        var checkedCheckboxes = $('.selectCheckbox:checked');
+        checkedCheckboxes.each(function (index, checkbox1) {
+
+            var id = $(checkbox1).data('id');
+
+            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+            if (isLock) {
+                isAnyLocked = true;
+            }
+            else {
+                isAnyUnlocked = true;
+
+            }
+
+        });
+        $('#lockId').prop('disabled', !isAnyUnlocked);
+        $('#unlockId').prop('disabled', !isAnyLocked);
+    }
+    if (!$(checkbox).prop('checked')) {
+        $('#selectAllCheckbox').prop('checked', false);
+    } else {
+        var allChecked = true;
+        $('#HawbListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
+            if (!$(this).prop('checked')) {
+                allChecked = false;
+                return false;
+            }
+        });
+        $('#selectAllCheckbox').prop('checked', allChecked);
     }
 }
 function getHwabProfitReport(reportType) {
@@ -125,7 +188,49 @@ function getDateTimeForAWB(data) {
         }).toFormat('yyyy-MM-dd HH:mm');
 }
 
+function selectedLock() {
+    var ids = [];
+    var selectedCheckboxes = $('#HawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        var id = selectedCheckboxes[i].attributes[2].value;
+        var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
+        if (!isLock) {
+            ids.push(id);
+        }
+        abp.message.confirm(l('LockConfirmationMessage')).then(function (confirmed) {
+            if (confirmed) {
+                dolphin.freight.importExport.airExports.airExportHawb.selectedLockedAirExportHawb(ids)
+                    .done(function () {
+                        abp.message.success(l('Message:SuccessLock'));
+                        dataTable.ajax.reload();
+                    });
+            }
+        });
+    }
 
+}
+
+function selectedUnLock() {
+    var ids = [];
+    var selectedCheckboxes = $('#HawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        var id = selectedCheckboxes[i].attributes[2].value;
+        var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
+        if (isLock) {
+            ids.push(id);
+        }
+        abp.message.confirm(l('UnlockConfirmationMessage')).then(function (confirmed) {
+            if (confirmed) {
+                dolphin.freight.importExport.airExports.airExportHawb.selectedUnLockedAirExportHawb(ids)
+                    .done(function () {
+                        abp.message.success(l('Message:SuccessUnlock'));
+                        dataTable.ajax.reload();
+                    });
+            }
+        });
+    }
+
+}
 function onChangeSelection(e) {
     if ($("#HawbListTable input[type=checkbox]:checked").length > 0) {
         document.getElementById("btnAirExportHawbListProfit").style.display = 'block';;
@@ -135,57 +240,7 @@ $(function () {
     dolphin.freight.web.controllers.configuration.getJsonConfig('AirExportHawbList').done(function (data) {
         data.forEach(function (item) {
             if (!item.lock && item.checkable) {
-                var itemData = item.text;
-
-                var fieldMappings = {
-                    'File No.': 'docNumber',
-                    'HAWB Number': 'hawbNo',
-                    'MawbId': 'mawbId',
-                    'Departure': 'departureName',
-                    'Depature Date/Time': 'depatureDate',
-                    'Arrival Date/Time': 'arrivalDate',
-                    'AES': 'aes',
-                    'Destination': 'destinationName',
-                    'ActualShipper': 'shippperName',
-                    'Consignee (Oversea Agent)': 'consigneeName',
-                    'OverSea Agent': 'overSeaAgentName',
-                    'AR Balance': 'arTotal',
-                    'AP Balance': 'apTotal',
-                    'DC Balance': 'dcTotal',
-                    'Booking number': 'bookingNumber',
-                    'Operator': 'oP',
-                    'Status': 'status'
-                }
-
-                var dataFields = ['File No.', 'HAWB Number', 'MawbId', 'Departure', 'AES', 'Destination', 'ActualShipper', 'Consignee (Oversea Agent)', 'OverSea Agent', 'Booking number', 'Operator', 'Status'];
-                dataFields.forEach(function (field) {
-                    if (item.text.includes(field)) {
-                        var actualFieldName = fieldMappings[field];
-                        itemData = createGenericFunction('data', actualFieldName);
-                    }
-                });
-
-                var dateFields = ['Depature Date/Time', 'Arrival Date/Time'];
-                dateFields.forEach(function (field) {
-                    if (item.text.includes(field)) {
-                        var actualFieldName = fieldMappings[field];
-                        itemData = createGenericFunction('date', actualFieldName);
-                    }
-                });
-
-                var floatFields = ['AR Balance', 'AP Balance', 'DC Balance'];
-                floatFields.forEach(function (field) {
-                    if (item.text.includes(field)) {
-                        var actualFieldName = fieldMappings[field];
-                        itemData = createGenericFunction('float', actualFieldName);
-                    }
-                });
-
-                var column = {
-                    title: l(item.text),
-                    data: itemData
-                };
-                columns.push(column);
+                columns.push(createColumnBasedOnText(item.text));
             }
         });
 
@@ -207,7 +262,64 @@ $(function () {
             })
         );
     });
+    function createColumnBasedOnText(text) {
+        if (text.toLowerCase().includes('islocked')) {
+            return {
+                title: '<div style=" cursor: pointer;"><span><i class="fa fa-unlock"></i>Status</span></div>',
+                orderable: false,
+                render: function (data, type, row, meta) {
+                    let action = row.isLocked ? { icon: 'fa-lock', text: '解鎖', id: 'lock_' + row.hawbId } : { icon: 'fa-lock-open', text: '上鎖', id: 'lock_' + row.hawb };
+                    return `<a href='javascript:lock("${action.id}")' class='btn-lock action' id='${action.id}'><i class='fa-lg fa-solid ${action.icon} fa-lg'></i><span>${action.text}</span></a>`;
+                }
+            }
+        }
+        else {
+            const fieldMappings = {
+                'File No.': 'docNumber',
+                'HAWB Number': 'hawbNo',
+                'MawbId': 'mawbId',
+                'Departure': 'departureName',
+                'Depature Date/Time': 'depatureDate',
+                'Arrival Date/Time': 'arrivalDate',
+                'AES': 'aes',
+                'Destination': 'destinationName',
+                'ActualShipper': 'shippperName',
+                'Consignee (Oversea Agent)': 'consigneeName',
+                'OverSea Agent': 'overSeaAgentName',
+                'AR Balance': 'arTotal',
+                'AP Balance': 'apTotal',
+                'DC Balance': 'dcTotal',
+                'Booking number': 'bookingNumber',
+                'Operator': 'oP',
+                'Status': 'status'
+            };
 
+            const fieldTypes = {
+                data: ['File No.', 'HAWB Number', 'MawbId', 'Departure', 'AES', 'Destination', 'ActualShipper', 'Consignee (Oversea Agent)', 'OverSea Agent', 'Booking number', 'Operator', 'Status'],
+                date: ['Depature Date/Time', 'Arrival Date/Time'],
+                float: ['AR Balance', 'AP Balance', 'DC Balance']
+            }
+
+            let dataType = null;
+            let fieldName = null;
+
+            for (const type in fieldTypes) {
+                for (const field of fieldTypes[type]) {
+                    if (text.includes(field)) {
+                        dataType = type;
+                        fieldName = fieldMappings[field];
+                        break;
+                    }
+                }
+                if (dataType) break;
+            }
+
+            return {
+                title: l(text),
+                data: createGenericFunction(dataType, fieldName)
+            };
+        }
+    }
     function createGenericFunction(dataType, fieldName) {
         return function (row, type, set) {
             switch (dataType) {
@@ -215,16 +327,9 @@ $(function () {
                     return row[fieldName] || '-';
                 case 'date':
                     var dateValue = new Date(row[fieldName]);
-                    debugger;
-                    if (dateValue.getFullYear() == 1) {
-                        return '-';
-                    }
-                    return dateValue.toLocaleDateString();
+                    return (dateValue.getFullYear() == 1) ? '-' : dateValue.toLocaleDateString();
                 case 'float':
-                    if (!row[fieldName]) {
-                        return '-';
-                    }
-                    return parseFloat(row[fieldName]).toFixed(2);
+                    return row[fieldName] ? parseFloat(row[fieldName]).toFixed(2) : '-';
             }
         }
     }

@@ -459,9 +459,58 @@ namespace Dolphin.Freight.ImportExport.AirExports
         {
             try
             {
-                var mbl = await _repository.GetAsync(id);
-                mbl.IsLocked = !mbl.IsLocked;
-                await _repository.UpdateAsync(mbl);
+                var hawb = await _repository.GetAsync(id);
+                if (hawb.IsLocked == true)
+                {
+                    hawb.IsLocked = false;
+
+                    await _repository.UpdateAsync(hawb);
+                }
+                else
+                {
+                    hawb.IsLocked = true;
+
+                    await _repository.UpdateAsync(hawb);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+        }
+
+        public async Task SelectedLockedAirExportHawbAsync(Guid[] ids)
+        {
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var hawb = await _repository.GetAsync(id);
+
+                    hawb.IsLocked = true;
+
+                    await _repository.UpdateAsync(hawb);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+
+        }
+
+        public async Task SelectedUnLockedAirExportHawbAsync(Guid[] ids)
+        {
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var hawb = await _repository.GetAsync(id);
+
+                    hawb.IsLocked = false;
+
+                    await _repository.UpdateAsync(hawb);
+                }
             }
             catch (Exception ex)
             {
