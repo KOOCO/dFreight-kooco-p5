@@ -125,7 +125,6 @@
         });
 
         $('#createForm').on('abp-ajax-success', function (result, rs) {
-            event.preventDefault();
             abp.message.success('Successfully Added').then(function () {
                 location.href = "/AirImports/Index";
             });
@@ -359,7 +358,7 @@
     <div class="board-wrap">
         <form abp-model="MawbModel" submit-button="true" data-ajaxForm="true" id="createForm">
             <abp-row>
-                <abp-input asp-for="@Model.AirImportMawbDto.Id" type="hidden" suppress-label/>
+                @*<abp-input asp-for="@Model.AirImportMawbDto.Id" type="hidden" suppress-label/>*@
                 <abp-column size-md="_9" id="parentCard">
                     <abp-card border="Dark" id="mawbCard" class="card board-item">
                         <!-- 標題區域 -->
