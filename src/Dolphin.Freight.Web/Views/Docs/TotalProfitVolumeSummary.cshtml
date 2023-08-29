@@ -247,16 +247,6 @@ table thead td {
             <li>
                 <button type="button" style="width:120px; color:white" onclick="print()"><i class="fa fa-print">儲存PDF或列印</i></button>
             </li>
-            @*<li>
-        
-                <select disabled>
-                    <option value="en">English</option>
-                    <option value="zh-hans">简体中文 (Simplified Chinese)</option>
-                    <option value="zh-hant">繁體中文 (Traditional Chinese)</option>
-                </select>
-        
-            </li>*@<!-- end ngIf: vm.canSelectLanguage -->
-
         </ul>
 
         <div class="view-setting">
@@ -272,35 +262,12 @@ table thead td {
  @*}*@
 
     <form id="myForm" method="post">
-        @*<input type="hidden" name="reportType" value="HBLPrint" />
-        <input type="hidden" autocomplete="off">
-        <input type="hidden" asp-for="@Model.VesselName" />       
-        <input type="hidden" asp-for="@Model.Voyage" />
-        <input type="hidden" asp-for="@Model.ShippingAgentName" />
-        <input type="hidden" asp-for="@Model.DocNo" />
-        <input type="hidden" asp-for="@Model.HblNo" />
-        <input type="hidden" asp-for="@Model.HblConsigneeName" />
-        <input type="hidden" asp-for="@Model.ForwardingAgentName" />
-        <input type="hidden" asp-for="@Model.HblNotifyName" />
-        <input type="hidden" asp-for="@Model.PorName" />
-        <input type="hidden" asp-for="@Model.PolName" />
-        <input type="hidden" asp-for="@Model.PodName" />
-        <input type="hidden" asp-for="@Model.DelName" />
-        <input type="hidden" asp-for="@Model.BillOfLanding" />        
-        <input type="hidden" asp-for="@Model.DisplayUnit" />
-        <input type="hidden" asp-for="@Model.MblCarrierName" />
-        <input type="hidden" asp-for="@Model.ContainerNo" />
-        <input type="hidden" asp-for="@Model.Mark" />
-        <input type="hidden" asp-for="@Model.TotalPackage" />
-        <input type="hidden" asp-for="@Model.PackageUnitName" />
-        <input type="hidden" asp-for="@Model.Description" />*@
-
 <div id="main" class="edit ng-scope">              
    <div class="wrap report-volume-profit landscape">
         <div class="header _padding-0">
             <div class="text-center">
                 <div class="text-lg text-bold" id="largeSize">Volume Summary Report</div>
-                <h4 class="text-light margin-t-sm" id="periodsize">Period (05-31-2023 ~ 06-29-2023)</h4>
+                @*<h4 class="text-light margin-t-sm" id="periodsize">Period (05-31-2023 ~ 06-29-2023)</h4>*@
             </div>
         </div>
         
@@ -323,7 +290,7 @@ table thead td {
                     <td>Trucker</td>
                     <td class="text-bold">User</td>
                     <td>:</td>
-                    <td>Hanjun Lin</td>
+                    <td>@Model.Operator</td>
                 </tr>
                 <tr>
                     <td class="text-bold">Currency</td>
@@ -331,7 +298,7 @@ table thead td {
                     <td>USD</td>
                     <td class="text-bold">Period</td>
                     <td>:</td>
-                    <td>Master B/L Post Date (05-31-2023 ~ 06-29-2023)</td>
+                    <td>Master B/L Post Date</td>
                     <td class="text-bold">Date</td>
                     <td>:</td>
                     <td>08-21-2023</td>
@@ -346,68 +313,68 @@ table thead td {
                 
                     <!-- Volume Profit report (OI, OE, AI and AE)-->
                     
-                        <tbody><tr>
-                            <td colspan="2" height="3" class="_padding-b-0">
-                                <div class="text-12 text-bold">Department: Ocean Import</div>
-                            </td>
-                        </tr>
-                        <tr class="valign-top">
-                            <td>
+                <tbody><tr>
+                    <td colspan="2" height="3" class="_padding-b-0">
+                        <div class="text-12 text-bold">Department: Ocean Import</div>
+                    </td>
+                </tr>
+                <tr class="valign-top">
+                    <td>
                                 
-        <table class="table-padding-3 border text-center">
-            <colgroup>
-                <col class="w-9 border-r">
-                <col class="w-9 border-r">
-                <col class="w-9 border-r">
-                <col class="w-9 border-r">
-                <col class="w-9 border-r">
-                <col class="w-9 border-r">
-                <col class="w-9 border-r">
-                <col class="w-9 border-r">
-                <col class="w-9 border-r">
-                <col class="w-9 border-r">
-                <col class="w-10">
-            </colgroup>
-            <tbody><tr class="border-b bg-light __sub-title">
-                <td></td>
-                <td>20'</td>
-                <td>40'</td>
-                <td>HC</td>
-                <td>45'</td>
-                <td>RF</td>
-                <td>SOC</td>
-                <td>Etc.</td>
-                <td>LCL<br>CBM</td>
-                <td>FAK<br>CBM</td>
-                <td>BULK<br>CBM</td>
-            </tr>
-            <tr class="border-b">
-                <td class="text-left">CNTR</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>1.0</td>
-                <td>0</td>
-                <td>0</td>
-                <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
-                <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
-                <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
-            </tr>
-            <tr>
-                <td class="text-left">B/L(s)</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>2</td>
-                <td>0</td>
-                <td>0</td>
-                <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
-                <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
-                <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
-            </tr>
-        </tbody></table>
+                <table class="table-padding-3 border text-center">
+                    <colgroup>
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-10">
+                    </colgroup>
+                    <tbody><tr class="border-b bg-light __sub-title">
+                        <td></td>
+                        <td>20'</td>
+                        <td>40'</td>
+                        <td>HC</td>
+                        <td>45'</td>
+                        <td>RF</td>
+                        <td>SOC</td>
+                        <td>Etc.</td>
+                        <td>LCL<br>CBM</td>
+                        <td>FAK<br>CBM</td>
+                        <td>BULK<br>CBM</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="text-left">CNTR</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>1.0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">B/L(s)</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>2</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                    </tr>
+                </tbody></table>
     
                             </td>
                             <td>
@@ -743,15 +710,12 @@ table thead td {
                 
             </tbody></table>
 
-            
-
-            
                 <hr>
                 <div>
                     <div class="header">
                         <div class="text-center">
                             <div class="text-lg text-bold"  id="largeSize">Volume Summary Report</div>
-                            <h4 class="text-light margin-t-sm"  id="periodsize">Period (05-31-2023 ~ 06-29-2023)</h4>
+                            <h4 class="text-light margin-t-sm"  id="periodsize">Period</h4>
                         </div>
                     </div>
                     <table class="tabld-padding-double">
@@ -775,7 +739,7 @@ table thead td {
                             <td>Trucker</td>
                             <td class="text-bold">User</td>
                             <td>:</td>
-                            <td>Hanjun Lin</td>
+                            <td>@Model.Operator</td>
                         </tr>
                         <tr>
                             <td class="text-bold">Currency</td>
@@ -783,7 +747,7 @@ table thead td {
                             <td>USD</td>
                             <td class="text-bold">Period</td>
                             <td>:</td>
-                            <td>Master B/L Post Date (05-31-2023 ~ 06-29-2023)</td>
+                            <td>Master B/L Post Date</td>
                             <td class="text-bold">Date</td>
                             <td>:</td>
                             <td>08-21-2023</td>
@@ -921,14 +885,13 @@ table thead td {
                         </tr>
                     </tbody></table>
                 </div>
-            
-            
+
                 <hr>
                 <div>
                     <div class="header">
                         <div class="text-center">
                             <div class="text-lg text-bold">Volume Summary Report</div>
-                            <h4 class="text-light margin-t-sm">Period (05-31-2023 ~ 06-29-2023)</h4>
+                            <h4 class="text-light margin-t-sm">Period</h4>
                         </div>
                     </div>
                     <table class="tabld-padding-double">
@@ -952,7 +915,7 @@ table thead td {
                             <td>Trucker</td>
                             <td class="text-bold">User</td>
                             <td>:</td>
-                            <td>Hanjun Lin</td>
+                            <td>@Model.Operator</td>
                         </tr>
                         <tr>
                             <td class="text-bold">Currency</td>
@@ -1130,7 +1093,7 @@ table thead td {
                             <td>Trucker</td>
                             <td class="text-bold">User</td>
                             <td>:</td>
-                            <td>Hanjun Lin</td>
+                            <td>@Model.Operator</td>
                         </tr>
                         <tr>
                             <td class="text-bold">Currency</td>
@@ -1228,7 +1191,7 @@ table thead td {
                             <td>Trucker</td>
                             <td class="text-bold">User</td>
                             <td>:</td>
-                            <td>Hanjun Lin</td>
+                            <td>@Model.Operator</td>
                         </tr>
                         <tr>
                             <td class="text-bold">Currency</td>
@@ -1326,7 +1289,7 @@ table thead td {
                             <td>Trucker</td>
                             <td class="text-bold">User</td>
                             <td>:</td>
-                            <td>Hanjun Lin</td>
+                            <td>@Model.Operator</td>
                         </tr>
                         <tr>
                             <td class="text-bold">Currency</td>
@@ -1424,7 +1387,7 @@ table thead td {
                             <td>Trucker</td>
                             <td class="text-bold">User</td>
                             <td>:</td>
-                            <td>Hanjun Lin</td>
+                            <td>@Model.Operator</td>
                         </tr>
                         <tr>
                             <td class="text-bold">Currency</td>
@@ -1495,7 +1458,7 @@ table thead td {
                             <td>Trucker</td>
                             <td class="text-bold">User</td>
                             <td>:</td>
-                            <td>Hanjun Lin</td>
+                            <td>@Model.Operator</td>
                         </tr>
                         <tr>
                             <td class="text-bold">Currency</td>

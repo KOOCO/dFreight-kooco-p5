@@ -5627,6 +5627,8 @@ namespace Dolphin.Freight.Web.Controllers
         {
             VolumeReportSummaryViewModel InfoModel = new();
 
+            InfoModel.Operator = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
+
             var shippingTypes = shippingType.Split(',').ToList();
             var containerList = _dropdownService.ContainerLookupList;
             var shipLookupList = _dropdownService.ShipModeLookupList;
