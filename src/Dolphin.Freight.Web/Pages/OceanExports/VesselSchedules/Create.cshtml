@@ -7,6 +7,17 @@
 @model Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas.CreateModel
 @inject IStringLocalizer<FreightResource> L
 @inject IDropdownService _dropdown;
+@section styles {
+    <style type="text/css">
+        #ejo .btn-primary {
+            color: #fff;
+            background-color: rgb(0 123 255 / 52%);
+            border-color: #007bff;
+        }
+    </style>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
+}
 @section scripts
     {
     <script type="text/javascript">
@@ -38,6 +49,40 @@
             initializeDropdownSearch("VesselSchedule_TransPort1Id");
 
             var l = abp.localization.getResource('Freight');
+
+            $(document).ready(function () {
+                const ids = [
+                    "VesselSchedule_PolEtd",
+                    "VesselSchedule_PorEtd",
+                    "VesselSchedule_PodEta",
+                    "VesselSchedule_DelEta",
+                    "VesselSchedule_FdestEta",
+                    "VesselSchedule_RailCutOffTime",
+                    "VesselSchedule_PortCutOffTime",
+                    "VesselSchedule_VgmCutOffTime",
+                    "VesselSchedule_OnBoardDate",
+                    "VesselSchedule_Trans1Eta"
+                ];
+
+                ids.forEach(function (id) {
+                    let dateElem = $('#' + id);
+
+                    if (dateElem.length === 0) {
+                        return;
+                    }
+
+                    dateElem.removeAttr('type').datetimepicker({
+                        format: 'Y-m-d H:i',
+                        step: 15,
+                        allowInput: false
+                    });
+
+                    let currentVal = dateElem.val();
+                    if (currentVal.includes('T')) {
+                        dateElem.val(currentVal.replace('T', ' '));
+                    }
+                });
+            });
 
             $("#saveBtn").click(function () {
                 $('#createForm').submit();
@@ -254,13 +299,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PolId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PolEtd" required-symbol="false" />
+                                    <abp-input asp-for="VesselSchedule.PolEtd" abp-data-datepicker="false" required-symbol="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PorId.ToString() })
                                  </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PorEtd" required-symbol="false" />
+                                    <abp-input asp-for="VesselSchedule.PorEtd" abp-data-datepicker="false" required-symbol="false" />
                                 </abp-column>
 
 
@@ -270,13 +315,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PodId.ToString() })
                                    </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PodEta" />
+                                    <abp-input asp-for="VesselSchedule.PodEta" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.DelId.ToString() })
                                     </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.DelEta" />
+                                    <abp-input asp-for="VesselSchedule.DelEta" abp-data-datepicker="false" />
                                 </abp-column>
 
                             </abp-row>
@@ -285,7 +330,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FdestId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.FdestEta" />
+                                    <abp-input asp-for="VesselSchedule.FdestEta" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_6">
                                     &nbsp;
@@ -318,18 +363,18 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OblTypeId", AspItems = _dropdown.OblTypeLookupList, IsShowLabel = true, FieldName = "OblTypeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.OblTypeId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.RailCutOffTime" />
+                                    <abp-input asp-for="VesselSchedule.RailCutOffTime" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PortCutOffTime" />
+                                    <abp-input asp-for="VesselSchedule.PortCutOffTime" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.VgmCutOffTime " />
+                                    <abp-input asp-for="VesselSchedule.VgmCutOffTime " abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.OnBoardDate" />
+                                    <abp-input asp-for="VesselSchedule.OnBoardDate" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_9">
 
@@ -351,7 +396,7 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.Trans1Eta" />
+                                    <abp-input asp-for="VesselSchedule.Trans1Eta" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_9">
 
@@ -462,9 +507,11 @@
                 </div>
             </abp-column>
         </abp-row>
-        <abp-row class="mt-3">
+        <abp-row class="mt-3" id="ejo">
             <abp-column>
-                <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
+                <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
+                    <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
+                </div>
             </abp-column>
         </abp-row>
         <abp-row>

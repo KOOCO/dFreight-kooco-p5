@@ -16,12 +16,12 @@
 </div>
 <div class="page-content-area">
     <abp-card>
-        <abp-card-header>
-            <abp-row>
-                <abp-column>
+        <abp-card-header w-100>
+            <div class="d-flex justify-content-between w-100">
+                <abp-column >
                     <abp-card-title>@L["Menu:TradePartner.List"]</abp-card-title>
                 </abp-column>
-                <abp-column size-md="_6" class="text-end">
+                <abp-column  class="text-end">
                     <abp-button id="AddTradePartnerButton"
                                 text=@L["Display:Button:New"]
                                 icon="plus"
@@ -31,10 +31,10 @@
                                 icon="file-excel"
                                 button-type="Outline_Secondary" />
                 </abp-column>
-            </abp-row>
+            </div>
         </abp-card-header>
         <abp-card-body>
-            <div class="row col-12" style="text-align: center; margin:0!important">
+            <div class="row" style="text-align: center; margin:0!important">
                 <abp-column size="_9"></abp-column>
                 <abp-column size="_3" class="filterDiv">
                     <abp-input asp-for="Search" class="ml-4" />

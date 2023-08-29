@@ -13,6 +13,11 @@
 @inject IDropdownService _dropdown
 @section styles {
     <style type="text/css">
+        #ejo .btn-primary {
+            color: #fff;
+            background-color: rgb(0 123 255 / 52%);
+            border-color: #007bff;
+        }
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
@@ -665,7 +670,7 @@
                             </abp-row>
                             <abp-row class="mb-3">
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.PostDate" class="checkdate" type="text" abp-data-datepicker="false" readonly="true" />
+                                    <abp-input asp-for="OceanExportMbl.PostDate" readonly="true" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportMbl.SoNo" />
@@ -776,7 +781,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorName", SelectType = 0, ShowFiledContentValue = Model.OceanExportMbl.PorId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.PorEtd" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanExportMbl.PorEtd" type="datetime-local" />
                                 </abp-column>
                             </abp-row>
                             <abp-row class="mb-3">
@@ -784,13 +789,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolName", SelectType = 0, ShowFiledContentValue = Model.OceanExportMbl.PolId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.PolEtd" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanExportMbl.PolEtd" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodName", SelectType = 0, ShowFiledContentValue = Model.OceanExportMbl.PodId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.PodEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanExportMbl.PodEta" />
                                 </abp-column>
                             </abp-row> 
                             <abp-row class="mb-3">
@@ -798,13 +803,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelName", SelectType = 0, ShowFiledContentValue = Model.OceanExportMbl.DelId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.DelEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanExportMbl.DelEta" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 0, ShowFiledContentValue = Model.OceanExportMbl.FdestId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.FdestEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanExportMbl.FdestEta" />
                                 </abp-column>
                             </abp-row>
                             <abp-row class="mb-3">
@@ -863,17 +868,17 @@
                             </abp-row>
                             <abp-row class="mb-3">
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.DocCutOffTime" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.DocCutOffTime" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.PortCutOffTime" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.PortCutOffTime" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.VgmCutOffTime" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.VgmCutOffTime" />
                                 </abp-column>
                                 <abp-column size-md="_3">
 
-                                    <abp-input asp-for="OceanExportMbl.RailCutOffTime" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.RailCutOffTime" />
 
                                 </abp-column>
 
@@ -953,7 +958,7 @@
                                     &nbsp;
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.OnBoardDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.OnBoardDate" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <button type="button" id="checkHideBtn">
@@ -981,7 +986,7 @@
                             </abp-row>
                             <abp-row class="hideArea mb-3">
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.Trans1Eta" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.Trans1Eta" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportMbl.EctNo" />
@@ -1025,9 +1030,11 @@
                 </abp-column>
             </abp-row>
 
-            <abp-row class="mt-3">
+        <abp-row class="mt-3" id="ejo">
                 <abp-column>
+                <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
                     <abp-button class="btn btn-primary me-md-2" type="button" id="saveEditBtn">@L["Save"].Value</abp-button>
+                </div>
                 </abp-column>
             </abp-row>
         </form>

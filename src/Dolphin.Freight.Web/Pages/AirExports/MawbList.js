@@ -1,5 +1,10 @@
-﻿$(function () {
-    var l = abp.localization.getResource('Freight');
+﻿var l = abp.localization.getResource('Freight');
+var dataTable;
+var copyModalMawbList = new abp.ModalManager({
+    viewUrl: '/AirExports/CopyModalMawbList',
+});
+$(function () {
+   
     var _changeInterval = null;
     var queryListFilter = function () {
         return {
@@ -23,7 +28,14 @@
         title: '<div  style=" cursor: pointer;"><span><i class="fa fa-lock"></i></span></div>',
         orderable: false,
         "render": function (data, type, row) {
-            return '<input type="checkbox"  style=" cursor: pointer;">';
+            var isCkecked = row.isLocked;
+            var id = row.id;
+            debugger;
+            if (isCkecked) {
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + id + '"  checked="' + isCkecked + '" onclick="lockCheckBox(this)"  style=" cursor: pointer;">';
+            } else {
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + id + '" onclick="lockCheckBox(this)"   style=" cursor: pointer;">';
+            }
         }
     },
     {
@@ -72,15 +84,16 @@
                 ]
         }
     },
-    {
-        title: '<div  style=" cursor: pointer;"><span><i class="fa fa-unlock"></i>Status</span></div>',
-        orderable: false,
-        render: function (data) {
-            if (!data) {
-                return '';
-            }
-        }
-    }]
+    //{
+    //    title: '<div  style=" cursor: pointer;"><span><i class="fa fa-unlock"></i>Status</span></div>',
+    //    orderable: false,
+    //    render: function (data) {
+    //        if (!data) {
+    //            return '';
+    //        }
+    //    }
+    //    }
+    ]
 
     var otherFixedColumns = [{
             title: l('GrossWeight'),
@@ -97,54 +110,80 @@
             }
         }];
 
-    var dataTable;
+ 
 
     dolphin.freight.web.controllers.configuration.getJsonConfig('AirExportMawbList').done(function (data) {
         data.forEach(function (item) {
             if (!item.lock && item.checkable) {
-                var itemData = item.name;
 
-                var dataFields = ['mawbNo', 'officeName', 'depatureAirportName', 'destinationAirportName', 'shipper', 'consigneeName', 'carrierTPName', 'flightNo', 'hawbNos', 'awbAccountCarrierName', 'sales', 'oP'];
-                dataFields.forEach(function (field) {
-                    if (item.name.includes(field)) {
-                        itemData = function (row, type, set) {
-                            if (!row[field]) {
-                                return '-';
-                            }
-                            return row[field];
+                if (item.text.toLowerCase().includes('islocked')) {
+                    column = {
+                        //是否鎖定
+                        title: '<div  style=" cursor: pointer;"><span><i class="fa fa-unlock"></i>Status</span></div>',
+                        orderable: false,
+                        render: function (data, type, row, meta) {
+                            if (row.isLocked)
+                                return "<a href='javascript:lock(\"" + row.id + "\")' class='btn-lock' id='lock_" + row.id + "'><i class='fa-lg fa-solid fa-lock fa-lg'></i><span>解鎖</span></a>";
+                            else
+                                return "<a href='javascript:lock(\"" + row.id + "\")' class='btn-lock action' id='lock_" + row.id + "'><i class='fa-lg fa-solid fa-lock-open'></i><span>上鎖</span></a>";
                         }
                     }
-                });
+                }
+                else {
+                    var itemData = item.text;
 
-                var dateFields = ['depatureDate', 'arrivalDate', 'awbDate', 'postDate'];
-                dateFields.forEach(function (field) {
-                    if (item.name.includes(field)) {
-                        itemData = function (row, type, set) {
-                            var dateValue = new Date(row[field]);
-                            if (dateValue.getFullYear() == 1) {
-                                return '-';
-                            }
-                            return dateValue.toLocaleDateString();
-                        }
+                    var fieldMappings = {
+                        'File No.': 'filingNo',
+                        'MAWB No.': 'mawbNo',
+                        'Office': 'officeName',
+                        'Departure Date/Time': 'depatureDate',
+                        'Arrival Date/Time': 'arrivalDate',
+                        'Departure': 'depatureAirportName',
+                        'Destination': 'destinationAirportName',
+                        'B/L Date': 'awbDate',
+                        'Shipper (Shipping Agent)': 'shipper',
+                        'Consignee (Oversea Agent)': 'consigneeName',
+                        'Carrier': 'carrierTPName',
+                        'Flight No.': 'flightNo',
+                        'Hawb Number': 'hawbNos',
+                        'Bill To': 'awbAccountCarrierName',
+                        'A/R Balance': 'arTotal',
+                        'A/P Balance': 'apTotal',
+                        'D/C Balance': 'dcTotal',
+                        'Post Date': 'postDate',
+                        'Sales': 'sales',
+                        'Operator': 'oP'
                     }
-                });
 
-                var floatFields = ['arTotal', 'apTotal', 'dcTotal'];
-                floatFields.forEach(function (field) {
-                    if (item.name.includes(field)) {
-                        itemData = function (row, type, set) {
-                            if (!row[field]) {
-                                return '-';
-                            }
-                            return parseFloat(row[field]).toFixed(2);
+                    var dataFields = ['File No.', 'MAWB No.', 'Office', 'Departure', 'Destination', 'Shipper (Shipping Agent)', 'Consignee (Oversea Agent)', 'Carrier', 'Flight No.', 'Hawb Number', 'Bill To', 'Sales', 'Operator'];
+                    dataFields.forEach(function (field) {
+                        if (item.text.includes(field)) {
+                            var actualFieldName = fieldMappings[field];
+                            itemData = createGenericFunction('data', actualFieldName);
                         }
-                    }
-                });
+                    });
 
-                var column = {
-                    title: l(item.name),
-                    data: itemData
-                };
+                    var dateFields = ['Departure Date/Time', 'Arrival Date/Time', 'B/L Date', 'Post Date'];
+                    dateFields.forEach(function (field) {
+                        if (item.text.includes(field)) {
+                            var actualFieldName = fieldMappings[field];
+                            itemData = createGenericFunction('date', actualFieldName);
+                        }
+                    });
+
+                    var floatFields = ['A/R Balance', 'A/P Balance', 'D/C Balance'];
+                    floatFields.forEach(function (field) {
+                        if (item.text.includes(field)) {
+                            var actualFieldName = fieldMappings[field];
+                            itemData = createGenericFunction('float', actualFieldName);
+                        }
+                    });
+
+                    var column = {
+                        title: l(item.text),
+                        data: itemData
+                    };
+                }
                 columns.push(column);
             }
         });
@@ -174,7 +213,26 @@
         );
     });
 
-   
+    function createGenericFunction(dataType, fieldName) {
+        return function (row, type, set) {
+            switch (dataType) {
+                case 'data':
+                    return row[fieldName] || '-';
+                case 'date':
+                    var dateValue = new Date(row[fieldName]);
+                    if (dateValue.getFullYear() == 1) {
+                        return '-';
+                    }
+                    return dateValue.toLocaleDateString();
+                case 'float':
+                    if (!row[fieldName]) {
+                        return '-';
+                    }
+                    return parseFloat(row[fieldName]).toFixed(2);
+            }
+        }
+    }
+
     $('#Search').keyup(function () {
         clearInterval(_changeInterval)
         _changeInterval = setInterval(function () {
@@ -200,3 +258,19 @@
     })
 
 });
+var lock = function (id) {
+    var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+    abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+        if (confirmed) {
+            dolphin.freight.importExport.airExports.airExportMawb.lockedOrUnLockedAirExportMawb(id)
+                .done(function () {
+                    if (isLock) {
+                        abp.message.success(l('Message:SuccessUnlock'));
+                    } else {
+                        abp.message.success(l('Message:SuccessLock'));
+                    }
+                    dataTable.ajax.reload();
+                });
+        }
+    });
+}

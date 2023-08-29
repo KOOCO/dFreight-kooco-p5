@@ -15,6 +15,11 @@
     {
     @*<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" rel="stylesheet">*@
     <style>
+        #ejo .btn-primary {
+            color: #fff;
+            background-color: rgb(0 123 255 / 52%);
+            border-color: #007bff;
+        }
         .redStar::before {
             content: "*";
             color: red;
@@ -44,6 +49,16 @@
             } else {
                 abp.message.success('Successfully saved.');
             }
+              var url = new URL(window.location.href);
+    var result = url.searchParams.get('copyHawbMessage');
+    if (result == 'True') {
+        var id = '@Model.ResultedMawbId';
+        createModal.open({
+            id,
+
+        });
+
+    }
              isLocked = '@Model.MawbModel.IsLocked';
          
             const isDirectMasterChecked = document.querySelector('#isDirectMaster');
@@ -114,7 +129,9 @@
                 }
             })
         });
-
+            var createMemoModal = new abp.ModalManager({
+                viewUrl: '/AirImports/CopyMawbModal',
+            });
         $('#editForm').on('abp-ajax-success', function (result, rs) {
             console.log("enter here");
             event.preventDefault();
@@ -208,6 +225,11 @@
             }
         }
 
+    function cancelButton() {
+        window.location.href = window.location.href;
+    }
+
+
         function createHawbCard() {
             let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title text-light hblCardTitle" id="title_{{hawbNo}}"' +
                 ' onclick="onHawbCardClick(event,{{hblCardId}})">{{hawbNo}}</h5>' +
@@ -255,7 +277,19 @@
         function alertConfirmation2() {
             $('#saveBtn').click();
         }
-
+        function editMawbAirImport(prevMawbId, hawbId) {
+            debugger;
+            $.ajax({
+                url: abp.appPath + 'Docs/AirImportPartialView',
+                type: 'GET',
+                data: { prevMawbId: prevMawbId, hawbId: hawbId },
+                dataType: "html",
+                success: function (res) {
+                    $('.modal-content').html(res);
+                    $('.modal').modal('show');
+                }
+            });
+        }
         function deleteHawbAirImport() {
             islockedCheck = $('#HawbModel_IsLocked').val();
             debugger;
@@ -278,7 +312,9 @@
                     });
             }
         }
-
+              var createModal = new abp.ModalManager({
+        viewUrl: '/AirImports/CopyHawbResultModal',
+    });
         function deleteMawbAirImport() {
             if (isLocked) { 
              abp.message.error(l('Delete Error Data Is Locked'))
@@ -300,6 +336,7 @@
                     })
             }
             }
+
         function OpenInTrackTrace() {
             var MawbNo = $('#MawbModel_MawbNo').val();
             myWindow = window.open('https://www.track-trace.com/bol#' + MawbNo, '_blank', 'width=1200,height=1000');
@@ -555,7 +592,18 @@
                 });
             }
         }
-
+             function onCopyMawbClick(){
+            var id = '@Model.MawbModel.Id';
+                createMemoModal.open({
+                    id,
+                   
+                });
+          
+        
+        
+        }
+   
+  
     </script>
 
     <script id="commodityTemplate" type="text/x-jQuery-tmpl">
@@ -650,7 +698,7 @@
                                             <i class="fa fa-lock"></i> @L["Btn:Lock"]
                                         }
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="onCopyMawbClick()">
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="deleteMawbAirImport()">
@@ -757,7 +805,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DepatureId", AspItems = _dropdownService.PortsManagementLookupList, ShowFiledContentValue = Model.MawbModel.DepatureId, IsShowLabel = true, FieldName = "Depature" })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="MawbModel.DepatureDate" size="Small" type="text" id="AIMDepatureDate" />
+                                    <abp-input asp-for="MawbModel.DepatureDate" size="Small" id="AIMDepatureDate" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="MawbModel.FlightNo" size="Small" />
@@ -810,7 +858,7 @@
                                            <tr>
                                                     <th>Trans1</th>
                                                     <td>
-                                                          @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans1Id", AspItems = _dropdownService.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans1Id) })
+                                                          @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans1Id", AspItems = _dropdownService.AirportLookupList,Selected=Model.MawbModel.RouteTrans1Id, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans1Id) })
                                                    
                                                     </td>
                                                     <td>
@@ -829,7 +877,7 @@
                                                 <tr>
                                                     <th>Trans2</th>
                                                     <td>
-                                                       @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans2Id", AspItems = _dropdownService.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans2Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans2Id) })
+                                                       @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans2Id", AspItems = _dropdownService.AirportLookupList,Selected=Model.MawbModel.RouteTrans2Id, IsShowLabel = false, FieldName = "RouteTrans2Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans2Id) })
                                                    
                                                     </td>
                                                     <td>
@@ -848,7 +896,7 @@
                                                 <tr>
                                                     <th>Trans3</th>
                                                     <td>
-                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans3Id", AspItems = _dropdownService.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans3Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans3Id) })
+                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans3Id", AspItems = _dropdownService.AirportLookupList,Selected=Model.MawbModel.RouteTrans3Id, IsShowLabel = false, FieldName = "RouteTrans3Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteTrans3Id) })
                                                    
                                                     </td>
                                                     <td>
@@ -1019,9 +1067,11 @@
             </abp-row>
 
             <!-- 下方Save按鈕 -->
-            <abp-row class="mt-3">
+            <abp-row class="mt-3" id="ejo">
                 <abp-column>
-                    <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Display:Button:Submit"]</abp-button>
+                    <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
+                        <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Save"]</abp-button>
+                    </div>
                 </abp-column>
             </abp-row>
             <abp-row>

@@ -109,8 +109,9 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly IContainerAppService _containerAppService;
         private readonly IContainerSizeAppService _containerSizeAppService;
-      
         private readonly IOceanImportMblAppService _oceanImportMblAppService;
+        private IRepository<AirImportHawb, Guid> _airImportHawbRepository;
+        private IRepository<AirImportMawb, Guid> _airImportMawbRepository;
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
@@ -125,7 +126,8 @@ namespace Dolphin.Freight.Web.Controllers
           ImportExport.OceanImports.IOceanImportHblAppService oceanImportHblAppService,
           IContainerSizeAppService containerSizeAppService,
         
-          
+          IRepository<AirImportHawb, Guid> airImportHawbRepository,
+          IRepository<AirImportMawb, Guid> airImportMawbRepository,
           IOceanImportMblAppService oceanImportMblAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
@@ -145,7 +147,8 @@ namespace Dolphin.Freight.Web.Controllers
             _containerAppService = containerAppService;
             _oceanImportHblAppService = oceanImportHblAppService;
             _oceanImportMblAppService = oceanImportMblAppService;
-
+            _airImportHawbRepository = airImportHawbRepository;
+            _airImportMawbRepository = airImportMawbRepository;
           
             _containerSizeAppService = containerSizeAppService;
             ReportLog = new ReportLog.ReportLogDto();
@@ -2996,6 +2999,34 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/SecurityEndorsement.cshtml", model);
         }
 
+        public IActionResult AirImportPartialView(Guid prevMawbId, Guid hawbId)
+        { 
+            AirImportDetails airImportDetails = new();
+
+            airImportDetails.MawbId = prevMawbId;
+            airImportDetails.HawbId = hawbId;
+
+            return PartialView("Pages/Shared/_mblAirImportDropdownList.cshtml", airImportDetails);
+
+        }
+        public async Task<IActionResult> AirImportChangeMawbParent(Guid mawbId, Guid hawbId)
+        {
+            // Upate selcted mawb id for particular  hawb
+            await _airImportHawbAppService.UpdateMawbIdOfHawbAsync(hawbId, mawbId);
+
+            var mawb = await _airImportMawbAppService.GetAsync(mawbId);
+            var docNo = mawb.FilingNo;
+
+            return Json(new { id = mawbId, fileNo = docNo });
+        }
+        public IActionResult GetAirImportMawbPopUp(string id, string fileNo)
+        {
+            AirImportDetails ViewModel = new();
+            ViewModel.Id = Guid.Parse(id);
+            ViewModel.FilingNo = fileNo;
+
+            return PartialView("Pages/Shared/_airImportMawbPopUp.cshtml", ViewModel);
+        }
         public async Task<IActionResult> ManifestByAgentAirExportMawbPartial(Guid mawbId)
         {
             ManifestByAgentAirExportMawb InfoModel = new();
@@ -5618,6 +5649,20 @@ namespace Dolphin.Freight.Web.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> ProfitReportMawbListAirExport(ProfitReportViewModel model)
+        {
+            return await ProfitReport(model);
+        }
+
+        public IActionResult ProfitReportHawbListAirExport(FreightPageType pageType, string param)
+        {
+            AirExportDetails airExportDetails = new();
+
+            airExportDetails.DDLItems = param.Split(',').ToList();
+
+            return View(airExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ProfitReportHawbListAirExport(ProfitReportViewModel model)
         {
             return await ProfitReport(model);
         }

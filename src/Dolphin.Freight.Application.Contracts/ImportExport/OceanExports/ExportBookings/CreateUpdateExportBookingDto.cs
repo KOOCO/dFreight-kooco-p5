@@ -27,8 +27,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// </summary>
         public bool IsCreateBySystem { get; set; }
         [Required]
-        [DataType(DataType.Date)]
-        [DisplayFormat]
         public DateTime? SoNoDate { get; set; }
         /// <summary>
         /// HBL編號
@@ -177,7 +175,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 收貨地(POR) ETD
         /// </summary>
-        [DataType(DataType.Date)]
+        
         public DateTime? PorEtd { get; set; }
         /// <summary>
         /// 裝貨港(POL)ID
@@ -186,7 +184,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 裝貨港(POL) ETD
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? PolEtd { get; set; }
         /// <summary>
         /// 卸貨港(POD)ID
@@ -195,7 +192,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 卸貨港(POD) ETA
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? PodEta { get; set; }
         /// <summary>
         /// 交貨地(DEL)ID
@@ -204,7 +200,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 交貨地(DEL) ETA
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? DelEta { get; set; }
         /// <summary>
         /// 最終目的地ID
@@ -213,7 +208,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 最終目的地ETA
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime?FdestEta { get; set; }
         /// <summary>
         /// FBA倉儲ID
@@ -230,7 +224,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 中轉港ETA
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? Trans1Eta { get; set; }
         /// <summary>
         /// ECTN號碼 

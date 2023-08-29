@@ -30,6 +30,7 @@ using Dolphin.Freight.Settings.CurrencySetting;
 using Volo.Abp.AutoMapper;
 using static Dolphin.Freight.Web.Pages.ReportScreen.VolumeProfileReportModel;
 using Dolphin.Freight.ReportLog;
+using static Dolphin.Freight.Web.Pages.AirImports.CreateMawbModel;
 
 namespace Dolphin.Freight.Web;
 
@@ -91,6 +92,7 @@ public class FreightWebAutoMapperProfile : Profile
         CreateMap<Pages.AirImports.CreateMawbModel.CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>();
         CreateMap<AirImportMawbDto, Pages.AirImports.EditMawbModel.CreateAIMMawbViewModel>();
         CreateMap<Pages.AirImports.EditMawbModel.CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>();
+        CreateMap<AirImportMawbDto, CreateAIMMawbViewModel>();
 
         // 發票
         CreateMap<CreateUpdateOceanExportMblDto, InvoiceMblDto>();

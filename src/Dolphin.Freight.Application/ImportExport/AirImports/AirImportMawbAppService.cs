@@ -86,6 +86,10 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 foreach (var airImportMawb in airImportMawbList)
                 {
                     var airImportMawbDto = ObjectMapper.Map<AirImportMawb, AirImportMawbDto>(airImportMawb);
+                    if (airImportMawb.Id != Guid.Empty)
+                    {
+                        airImportMawbDto.Id = airImportMawb.Id;
+                    }
                     if (airImportMawb.DepatureId != null)
                     {
                         airImportMawbDto.DepatureAirportName = portManagementDictionary[airImportMawb.DepatureId.Value];
@@ -259,7 +263,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     var hbls = query.Where(x => x.MawbId == id).ToList();
                     foreach (var hbl in hbls)
                     {
-                        hbl.IsLocked = !mbl.IsLocked;
+                        hbl.IsLocked = mbl.IsLocked;
 
                         await _airImportHawbAppService.UpdateAsync(hbl);
                     }
@@ -270,6 +274,12 @@ namespace Dolphin.Freight.ImportExport.AirImports
             {
                 throw new UserFriendlyException(ex.Message);
             }
+        }
+        public async Task<List<AirImportMawbDto>> GetMawbListAsync() {
+
+            var query = await _repository.GetQueryableAsync();
+            return ObjectMapper.Map<List<AirImportMawb>, List<AirImportMawbDto>>(query.ToList());
+        
         }
 
     }

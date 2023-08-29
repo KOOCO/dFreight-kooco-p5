@@ -642,6 +642,12 @@
     #hblPackageTypeddl .select2-container{
         display: inline !important;
     }
+
+    #ejo .btn-primary {
+        color: #fff;
+        background-color: rgb(0 123 255 / 52%);
+        border-color: #007bff;
+    }
 </style>
 <div class="page-header">
     <div class="breadcrumb-wrapper">
@@ -1030,7 +1036,9 @@
                     <abp-row>
                         <abp-column>
                             <input type="hidden" name="OceanImportHbl.PoNo" id="mPoNo" value="@Model.OceanImportHbl.PoNo" />
-                            <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
+                            <div  id="ejo" style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
+                                <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
+                            </div>
                         </abp-column>
                     </abp-row>
                 </div>
