@@ -15,6 +15,7 @@ using Dolphin.Freight.TradePartners.Credits;
 using System.Linq;
 using Dolphin.Freight.TradePartners.TradeParties;
 using Volo.Abp.Data;
+using static Dolphin.Freight.Web.Pages.Sales.TradePartner.ModalWithCreateContactPersonModel;
 
 namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
 {
@@ -29,7 +30,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
         private readonly ICreditLimitGroupRepository _creditLimitGroupRepository;
         private readonly IAccountGroupAppService _accountGroupAppService;
         private readonly ITradePartyAppService _tradePartyAppService;
-
+        private readonly IContactPersonAppService _contactPersonAppService;
 
         [BindProperty]
         public CreateTradePartnerInfoViewModel TPInfoModel { get; set; }
@@ -42,11 +43,19 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
         [BindProperty]
         public List<CreateUpdateTradePartyDto> TradeParties { get; set; }
 
+        [BindProperty]
+        public List<CreateUpdateContactPersonDto> ContactPersonModel { get; set; }
+
+        [BindProperty]
+        public List<CreateContactInfoChildren> ContactPersonChildren { get; set; }
+
+
         public TradePartnerInfoModel(ITradePartnerAppService tradePartnerAppService,
             ICreditLimitGroupRepository creditLimitGroupRepository,
             ICreditLimitGroupAppService creditLimitGroupAppService,
             IAccountGroupAppService accountGroupAppService,
-            ITradePartyAppService tradePartyAppService
+            ITradePartyAppService tradePartyAppService,
+            IContactPersonAppService contactPersonAppService
             )
         {
             Logger = NullLogger<TradePartnerInfoModel>.Instance;
@@ -55,6 +64,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
             _creditLimitGroupAppService = creditLimitGroupAppService;
             _accountGroupAppService = accountGroupAppService;
             _tradePartyAppService = tradePartyAppService;
+            _contactPersonAppService = contactPersonAppService;
         }
 
         public async Task OnGetAsync()
@@ -78,6 +88,8 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
                                                 .ToList();
 
             TradeParties = new List<CreateUpdateTradePartyDto>();
+
+            ContactPersonModel = new List<CreateUpdateContactPersonDto>();
         }
 
         #region OnPostAsync()
@@ -104,14 +116,14 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
                 );
 
             string jsonString = System.Text.Json.JsonSerializer.Serialize(popUpTipsObj);
-           // Logger.LogDebug("jsonString:" + jsonString);
+            // Logger.LogDebug("jsonString:" + jsonString);
             TPInfoModel.PopUpTips = jsonString;
 
             var inputDto = await _tradePartnerAppService.CreateTPAsync(
                 ObjectMapper.Map<CreateTradePartnerInfoViewModel, CreateUpdateTradePartnerDto>(TPInfoModel)
                 );
 
-            if(TradeParties != null && TradeParties.Any())
+            if (TradeParties != null && TradeParties.Any())
             {
                 foreach (var tradeParty in TradeParties)
                 {
@@ -120,7 +132,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
                         tradeParty.ExtraProperties = new();
                     }
 
-                    if(tradeParty.TradePartyListDto != null)
+                    if (tradeParty.TradePartyListDto != null)
                     {
                         tradeParty.ExtraProperties.Add("TradePartyList", tradeParty.TradePartyListDto);
                     }
@@ -128,6 +140,20 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
                     tradeParty.TradePartnerId = inputDto.Id;
 
                     await _tradePartyAppService.SaveAsync(tradeParty);
+                }
+            }
+
+            if (ContactPersonModel != null && ContactPersonModel.Any())
+            {
+                foreach (var contactPerson in ContactPersonModel)
+                {
+                    if (contactPerson.ExtraProperties == null)
+                    {
+                        contactPerson.ExtraProperties = new();
+                    }
+                    contactPerson.ExtraProperties.Add("Children", ContactPersonChildren);
+                    contactPerson.TradePartnerId = inputDto.Id;
+                    var createDto = await _contactPersonAppService.CreateAsync(contactPerson);
                 }
             }
 
@@ -139,9 +165,18 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
         }
         #endregion
 
-        public async Task<IActionResult> OnGetSearch(string filter) {
+        public async Task<IActionResult> OnGetSearch(string filter)
+        {
             var result = await _tradePartnerAppService.SearchTradePartnersLookupAsync(filter);
             return new JsonResult(result);
+        }
+
+        public class CreateContactInfoChildren
+        {
+            public string Name { get; set; }
+            public int Age { get; set; }
+            public string School { get; set; }
+            public string Remark { get; set; }
         }
 
         public class CreateTradePartnerInfoViewModel

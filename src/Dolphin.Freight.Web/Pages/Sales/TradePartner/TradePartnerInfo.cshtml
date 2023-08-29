@@ -420,6 +420,53 @@
             resetTradePartyIndex();
         }
 
+        var contactIndex = 0;
+        function onCreateNewContactPersonInformation(){
+            var newRowData = {
+                contactIndex: contactIndex
+            };
+
+            var newRow = $('#contactPersonInfomationTemplate').tmpl(newRowData);
+            $('#contactPersonInformationBody').append(newRow);
+            contactIndex += 1;
+        }
+
+        function onRemoveContactPerson() {
+            $('[name="chk_ContactPerson"]:checked').each(function (i, elem) {
+                let nextTr = $(elem).closest('tr').next();
+                $(elem).closest('tr').remove();
+                if(nextTr.attr('id').includes('trUserMore')){
+                    nextTr.remove();
+                }
+            });
+        }
+
+        var childrenIndex = 0;
+        function onCreateNewContactPersonChildren(e, contactIndex) {
+            e && e.preventDefault();
+
+            var newRowData = {
+                contactIndex: contactIndex,
+                childrenIndex: childrenIndex
+            };
+
+            var newRow = $('#contactInfoChildrenTemplate').tmpl(newRowData);
+            $('#contactInfoChildrenBody_'+contactIndex).append(newRow);
+            childrenIndex += 1;
+        }
+
+        function onOpenMoreUserInfo(contactIndex){
+            if($('#btnOpenMoreUserInfo_'+contactIndex).html() == '+'){
+                $('#trUserMoreInfo_' + contactIndex).show();
+                $('#btnOpenMoreUserInfo_' + contactIndex).html('-');
+            }
+            else{
+                $('#trUserMoreInfo_' + contactIndex).hide();
+                $('#btnOpenMoreUserInfo_' + contactIndex).html('+');
+            }
+            //$('#trUserMoreInfo_'+contactIndex).toggle('show');
+        }
+
         var companyNames = [];
         function getDDLCompanyName(chkIndex) {
             dolphin.freight.tradePartners.tradePartner.getTradePartnersLookup({}).done(function (result)
@@ -609,6 +656,273 @@
           <td class="d-none"><input type="hidden" name="TradeParties[${chkIndex}].TradePartyType" value="${tradeParty}"/></td>
         </tr>
     </script>
+
+    <script id="contactPersonInfomationTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+            <td>
+                <div class="checker"><span><input type="checkbox" name="chk_ContactPerson"></span></div>
+            </td>
+            <td>
+                <div class="checker"><span><input type="checkbox" name="ContactPersonModel[${contactIndex}].IsRep" value="true"></span></div>
+            </td>
+            <td>
+                <div class="checker"><span class="checked"><input type="checkbox" name="ContactPersonModel[${contactIndex}].IsEmailNotification" value="true"></span></div>
+            </td>
+            <td>
+                <div class="form-group" show-errors="">
+                    <input type="text" name="ContactPersonModel[${contactIndex}].ContactName">
+                </div>
+            </td>
+            <td>
+                <a href="javascript:void(0)" id="btnOpenMoreUserInfo_${contactIndex}" onclick="onOpenMoreUserInfo(${contactIndex})" style="cursor:pointer">+</a>
+            </td>
+            <td>
+                <input type="text" name="ContactPersonModel[${contactIndex}].ContactTitle">
+            </td>
+            <td>
+                <input type="text" name="ContactPersonModel[${contactIndex}].ContactDivision">
+            </td>
+            <td>
+                <input type="text" name="ContactPersonModel[${contactIndex}].ContactCellPhone">
+            </td>
+            <td>
+                <input type="text" name="ContactPersonModel[${contactIndex}].ContactPhone">
+            </td>
+            <td>
+                <input type="text" name="ContactPersonModel[${contactIndex}].ContactFax">
+            </td>
+            <td>
+                <input type="text" name="ContactPersonModel[${contactIndex}].ContactEmailAddress">
+            </td>
+            <td>
+                <input type="text" name="ContactPersonModel[${contactIndex}].ContactRemark">
+            </td>
+        </tr>
+        <tr id="trUserMoreInfo_${contactIndex}" style="display:none">
+            <td colspan="3"></td>
+            <td colspan="9">
+                <table>
+                    <colgroup>
+                        <col class="td-50per">
+                        <col class="td-50per">
+                    </colgroup>
+                    <tbody><tr>
+                        <td class="_valign-top">
+                            <table class="table">
+                                <colgroup>
+                                    <col class="w-50">
+                                    <col class="w-50">
+                                </colgroup>
+                                <tbody><tr>
+                                    <td>
+                                        <div class="form-group form-sm">
+                                            <label class="name-sm control-label ng-binding">Gender</label>
+                                            <label class="radio-inline ng-binding">
+                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactGender" value="1"></span>Male
+                                            </label>
+                                            <label class="radio-inline ng-binding">
+                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactGender" value="2"></span>Female
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group form-sm">
+                                            <label>Age</label>
+                                            <input type="text" name="ContactPersonModel[${contactIndex}].ContactAge">
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="form-group form-sm">
+                                            <label>Marriage</label>
+                                            <label>
+                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactMarriage" value="1"></span>Yes
+                                            </label>
+                                            <label class="radio-inline ng-binding">
+                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactMarriage" value="2"></span>No
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group form-sm">
+                                            <label>Birthday</label>
+                                            <input type="date" name="ContactPersonModel[${contactIndex}].ContactBirthday">
+                                            <span class="input-group-addon right">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="form-group form-sm">
+                                            <label>Smoking</label>
+                                            <label>
+                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactSmokes" value="1"></span>Yes
+                                            </label>
+                                            <label>
+                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactSmokes" value="2"></span>No
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group form-sm">
+                                            <label>Clothing</label>
+                                            <input type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="form-group form-sm">
+                                            <label>Drink</label>
+                                            <label>
+                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactDrink" value="1"></span>Yes
+                                            </label>
+                                            <label>
+                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactDrink" value="2"></span>No
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group form-sm">
+                                            <label>Hobby</label>
+                                            <input type="text" name="ContactPersonModel[${contactIndex}].ContactHobby">
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="form-group form-sm">
+                                            <label>Constellation</label>
+                                            <select name="ContactPersonModel[${contactIndex}].ContactConstellation">
+                                                <option selected="selected"></option>
+                                                <option label="Aries" value="1">Aries</option>
+                                                <option label="Taurus" value="2">Taurus</option>
+                                                <option label="Gemini" value="3">Gemini</option>
+                                                <option label="Cancer" value="4">Cancer</option>
+                                                <option label="Leo" value="5">Leo</option>
+                                                <option label="Virgo" value="6">Virgo</option>
+                                                <option label="Libra" value="7">Libra</option>
+                                                <option label="Scorpio" value="8">Scorpio</option>
+                                                <option label="Sagittarius" value="9">Sagittarius</option>
+                                                <option label="Capricorn" value="10">Capricorn</option>
+                                                <option label="Aquarius" value="11">Aquarius</option>
+                                                <option label="Pisces" value="12">Pisces</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group form-sm">
+                                            <label>Interest</label>
+                                            <input type="text" name="ContactPersonModel[${contactIndex}].ContactInterest">
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="form-group form-sm">
+                                            <label>Anniversary</label>
+                                            <input type="date" name="ContactPersonModel[${contactIndex}].ContactMemorialDay">
+                                            <span class="input-group-addon right">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            </table>
+                        </td>
+                        <td class="table-responsive">
+                            <table>
+                                <tbody><tr>
+                                    <td>
+                                        <div>
+                                            <label>
+                                                Home Address
+                                            </label>
+                                            <div>
+                                                <input type="text" name="ContactPersonModel[${contactIndex}].ContactAddress">
+                                                <input type="text" name="ContactPersonModel[${contactIndex}].ContactCityCode">
+                                                <input type="text" name="ContactPersonModel[${contactIndex}].ContactStateCode"><br>
+                                                <input type="text" name="ContactPersonModel[${contactIndex}].ContactPostCode">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="form-group form-full _mg-top-sm">
+                                            <div>
+                                                Children
+                                            </div>
+                                            <div class="inline-block td-83per">
+                                                <div class="btn-group _mg-bottom-xs">
+                                                    <button class="btn btn-xs green" onclick="onCreateNewContactPersonChildren(event, ${contactIndex})">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                                <table class="table">
+                                                    <colgroup>
+                                                        <col class="td-5per">
+                                                        <col class="td-22per">
+                                                        <col class="td-9per">
+                                                        <col class="td-25per">
+                                                        <col class="td-39per">
+                                                    </colgroup>
+                                                    <thead>
+                                                         <tr>
+                                                            <th class="col-checkbox text-center">
+                                                                <div class="checker"><span><input id="chkAllChildren_${contactIndex}" type="checkbox"></span></div>
+                                                            </th>
+                                                            <th>Name</th>
+                                                            <th>Age</th>
+                                                            <th>School</th>
+                                                            <th>Remark</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="contactInfoChildrenBody_${contactIndex}">
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+            </td>
+        </tr>
+    </script>
+
+    <script id="contactInfoChildrenTemplate" type="text/x-jquery-tmpl">
+        <tr>
+            <td class="col-checkbox text-center">
+                <div class="checker"><span><input id="chkChildren_${contactIndex}_${childrenIndex}" type="checkbox"></span></div>
+            </td>
+            <td>
+                <input type="text" name="ContactPersonChildren[${childrenIndex}].Name">
+            </td>
+            <td>
+                <input type="text" name="ContactPersonChildren[${childrenIndex}].Age">
+            </td>
+            <td>
+                <input type="text" name="ContactPersonChildren[${childrenIndex}].School">
+            </td>
+            <td>
+                <input type="text" name="ContactPersonChildren[${childrenIndex}].Remark">
+            </td>
+        </tr>
+    </script>
 }
 <div class="page-header">
     <div class="breadcrumb-wrapper">
@@ -639,9 +953,6 @@
 
     <div class="board-wrap">
         <form abp-model="TPInfoModel" submit-button="true" data-ajaxForm="true" id="TPForm">
-
-
-
             <abp-card>
                 <abp-card-header>
                     <abp-row>
@@ -980,16 +1291,54 @@
             <abp-accordion>
                 <abp-accordion-item title="@L["Display:TradePartner:AccordionItem:ContactPersonInformation"]">
                     <abp-card>
-                        <abp-card-body>
+                        <abp-card-body class="table-responsive">
                             <abp-row>
                                 <abp-column>
                                     <abp-button id="AddContactPersonButton"
                                                 text=@L["Display:Button:New"]
                                                 icon="plus"
+                                                onclick="onCreateNewContactPersonInformation()"
                                                 button-type="Outline_Secondary" />
+
+                                    <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteContactPersonBtn" onclick="onRemoveContactPerson()">delete</abp-button>
                                 </abp-column>
                             </abp-row>
-                            <abp-table small="true" class="nowrap" border-style="Bordered" striped-rows="true" id="ContactPersonTable"></abp-table>      
+                            <table class="table">
+                                <colgroup>
+                                    <col class="td-3per"><!--Checkbox-->
+                                    <col class="td-3per"><!--Rep.-->
+                                    <col class="td-3per"><!--Email-->
+                                    <col class="td-12per"><!--Name-->
+                                    <col class="td-3per"><!--Name-->
+                                    <col class="td-12per"><!--Title-->
+                                    <col class="td-12per"><!--Division-->
+                                    <col class="td-12per"><!--Cell Phone-->
+                                    <col class="td-12per"><!--Phone-->
+                                    <col class="td-12per"><!--FAX-->
+                                    <col class="td-14per"><!--Email Address-->
+                                    <col class="td-14per"><!--Remark-->
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            <div class="checker"><span class=""><input type="checkbox"></span></div>
+                                        </th>
+                                        <th>Rep.</th>
+                                        <th>Email</th>
+                                        <th colspan="2">Name</th>
+                                        <th>Title</th>
+                                        <th>Division</th>
+                                        <th>Cell Phone</th>
+                                        <th>Phone</th>
+                                        <th>FAX</th>
+                                        <th>Email Address</th>
+                                        <th>Remark</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="contactPersonInformationBody">
+                                   
+                                </tbody>
+                            </table>      
                         </abp-card-body>
                     </abp-card>
                 </abp-accordion-item>

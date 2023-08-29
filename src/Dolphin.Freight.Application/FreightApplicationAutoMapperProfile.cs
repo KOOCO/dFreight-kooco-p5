@@ -158,8 +158,10 @@ public class FreightApplicationAutoMapperProfile : Profile
         // ContactPerson
         CreateMap<ContactPerson, ContactPersonDto>();
         CreateMap<ContactPersonPagedAndSortedResultRequestDto, ContactPersonFilter>();
+        CreateMap<CreateUpdateContactPersonDto, ContactPerson>();
+        CreateMap<ContactPerson, CreateUpdateContactPersonDto>();
 
-		// Country
+        // Country
         CreateMap<Country, CountryLookupDto>();
         // Currency
         CreateMap<Currency, CurrencyLookupDto>();

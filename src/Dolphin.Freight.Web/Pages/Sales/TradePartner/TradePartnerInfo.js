@@ -509,29 +509,6 @@
 
    /* var newTPId;*/
 
-    $('#AddContactPersonButton').click(function (e) {
-        var tpNameInput = $('#tpNameInput').val();
-        console.log("tpNameInput:" + tpNameInput);
-        if ((tpNameInput == null) || (tpNameInput == "")) {
-            abp.message.warn(l('Display:ContactPerson:WarnMsg'));
-        } else {
-            dolphin.freight.tradePartners.tradePartner.findByTpName(tpNameInput)
-                .then(function (result) {
-                    if (result == null) {
-                        abp.message.warn(l('Display:ContactPerson:WarnMsg'));
-                    } else {
-                        console.log("result:" + result.id);
-                        newTPId = result.id;
-                        console.log("newTPId:" + newTPId);
-                        e.preventDefault();
-                        createModal.open({
-                            tradePartnerId: result.id
-                        });
-                    }
-                    
-                });
-        }
-    });
 
     createModal.onResult(function () {
         console.log('open the ModalWithCreateCreditLimitGroup');

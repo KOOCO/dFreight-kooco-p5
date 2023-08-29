@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -141,6 +142,15 @@ namespace Dolphin.Freight.TradePartners
             entity.IsRep = dto.IsRep;
 
             await _contactPersonRepository.UpdateAsync(entity);
+        }
+
+        public async Task<List<CreateUpdateContactPersonDto>> GetListByTradePartnerId(Guid id)
+        {
+            var list = await Repository.GetListAsync();
+            var filtered = list.Where(w => w.TradePartnerId == id).ToList();
+            var dto = ObjectMapper.Map<List<ContactPerson>, List<CreateUpdateContactPersonDto>>(filtered);
+
+            return dto;
         }
     }
 }

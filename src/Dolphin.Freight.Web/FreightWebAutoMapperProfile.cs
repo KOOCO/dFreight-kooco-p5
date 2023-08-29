@@ -106,5 +106,6 @@ public class FreightWebAutoMapperProfile : Profile
         CreateMap<CreateUpdateDisplaySettingDTO, DisplaySettingDTO>();
         //貨幣表
         CreateMap<CurrencySettingDTO, CreateUpdateCurrencySettingDTO>();
+
     }
 }

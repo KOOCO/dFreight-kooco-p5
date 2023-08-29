@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dolphin.Freight.TradePartners.TradeParties;
 using Microsoft.AspNetCore.Components.Forms;
+using static Dolphin.Freight.Web.Pages.Sales.TradePartner.TradePartnerInfoModel;
 
 namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
 {
@@ -33,6 +34,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
         private readonly IAccountGroupAppService _accountGroupAppService;
         private readonly ICreditLimitGroupAppService _creditLimitGroupAppService;
         private readonly ITradePartyAppService _tradePartyAppService;
+        private readonly IContactPersonAppService _contactPersonAppService;
 
         [BindProperty]
         public CreateTradePartnerInfoViewModel TPInfoModel { get; set; }
@@ -49,9 +51,15 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
         [BindProperty]
         public List<CreateUpdateTradePartyDto> TradeParties { get; set; }
 
+        [BindProperty]
+        public List<CreateUpdateContactPersonDto> ContactPersonModel { get; set; }
+
+        [BindProperty]
+        public List<CreateContactInfoChildren> ContactPersonChildren { get; set; }
+
         public EditTradePartnerInfoModel(ITradePartnerAppService tradePartnerAppService, ITradePartnerMemoAppService tradePartnerMemoAppService,
             IAccountGroupAppService accountGroupAppService, ICreditLimitGroupAppService creditLimitGroupAppService,
-            ITradePartyAppService tradePartyAppService)
+            ITradePartyAppService tradePartyAppService, IContactPersonAppService contactPersonAppService)
         {
             Logger = NullLogger<EditTradePartnerInfoModel>.Instance;
             _tradePartnerAppService = tradePartnerAppService;
@@ -59,6 +67,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
             _accountGroupAppService = accountGroupAppService;
             _creditLimitGroupAppService = creditLimitGroupAppService;
             _tradePartyAppService = tradePartyAppService;
+            _contactPersonAppService = contactPersonAppService;
         }
 
         public async Task<IActionResult> OnGetAsync(Guid id)
@@ -118,6 +127,8 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
 
 
             TradeParties = await _tradePartyAppService.GetListByTradePartnerId(id);
+
+            ContactPersonModel = await _contactPersonAppService.GetListByTradePartnerId(id);
 
             return Page();
         }
