@@ -8,6 +8,7 @@ using Volo.Abp;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using NPOI.HSSF.Record.PivotTable;
+using Dolphin.Freight.Accounting.Invoices;
 
 namespace Dolphin.Freight.ReportLog
 {
@@ -118,10 +119,16 @@ namespace Dolphin.Freight.ReportLog
 
     public class ProfitReport
     {
-
-        public string AR { get; set; }
-        public string AP { get; set; }
-        public string DC { get; set; }
+        public double ARTotal { get; set; }
+        public double APTotal { get; set; }
+        public double DCTotal { get; set; }
+        public double ProfitMargin { get; set; }
+        public double Profit { get; set; }
+        public double Avg_Profit_Per_Cntr { get; set; }
+        public List<InvoiceDto> AR { get; set; }
+        public List<InvoiceDto> DC { get; set; }
+        public List<InvoiceDto> AP { get; set; }
+        public List<InvoiceDto> Invoices { get; set; }
     }
     public class SysCodeForReport
     {
