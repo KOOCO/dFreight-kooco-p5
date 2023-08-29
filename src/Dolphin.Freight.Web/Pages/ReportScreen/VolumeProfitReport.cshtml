@@ -371,52 +371,51 @@
                             title: l('CoLoaderId'),
                             data: "coLoaderId",
                             visible: isCoLoaderChecked
+                        },
+                        {
+                            title : "20'",
+                            data: "v20",
+                            render: function (data) {
+                                console.log(data);
+                                return data ? data : "0";
+                            }
+                        },
+                        {
+                            title: "40'",
+                            data: "v40",
+                            
+                        },                         
+                        {
+                            title: "HC",
+                            data: "hC",
+                            
+                        },
+                        {
+                            title: "V45'",
+                            data: "Volume",
+                            render: function (data) {
+                                console.log(data);
+                            }
+                            
+                        },
+                        {
+                            title: "RF",
+                            data: "rF",
+                            render: function (data) {
+                                console.log(data);
+                                return data  ? data : "0";
+                            }
+                        },
+                        {
+                            title: "SOC",
+                            data: "sOC",
+                            
+                        },
+                        {
+                            title: "Etc",
+                            data: "eTC",
+                            
                         }
-                        //{
-                        //    title : "20'",
-                        //    data: "volume",
-                        //    render: function (data) {
-                        //        console.log(data);
-                        //        return data ? data : "0";
-                        //    }
-                        //}  
-                        //,
-                        //{
-                        //    title: "40'",
-                        //    data: "volume.v40",
-                            
-                        //},                         
-                        //{
-                        //    title: "HC",
-                        //    data: "volume.hC",
-                            
-                        //},
-                        //{
-                        //    title: "V45'",
-                        //    data: "Volume",
-                        //    render: function (data) {
-                        //        console.log(data);
-                        //    }
-                            
-                        //},
-                        //{
-                        //    title: "RF",
-                        //    data: "volume",
-                        //    render: function (data) {
-                        //        console.log(data);
-                        //        return data  ? data : "0";
-                        //    }
-                        //},
-                        //{
-                        //    title: "SOC",
-                        //    data: "volume.sOC",
-                            
-                        //},
-                        //{
-                        //    title: "Etc",
-                        //    data: "volume.eTC",
-                            
-                        //}
                      
                     ]
                 })

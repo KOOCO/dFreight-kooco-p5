@@ -86,6 +86,14 @@ namespace Dolphin.Freight.ReportLog
         public DateTime BLPostDate { get; set; } //  Mawb post date
         public VolumeReport Volume { get; set; }
         public ProfitReport Profit { get; set; }
+        public int V20 { get; set; }
+        public int V40 { get; set; }
+        public int HC { get; set; }
+        public int V45 { get; set; }
+        public int RF { get; set; }
+        public int SOC { get; set; }
+        public int ETC { get; set; }
+
     }
 
     public class VolumeReport

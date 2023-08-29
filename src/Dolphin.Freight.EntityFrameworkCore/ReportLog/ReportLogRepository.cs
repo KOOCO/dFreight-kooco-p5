@@ -121,8 +121,13 @@ namespace Dolphin.Freight.ReportLog
                                       SalesPerson = "",
                                       BLPostDate = mb.PostDate,
                                       CargoType = "",
-                                      Volume = new VolumeReport()
-
+                                      V20 = 0,
+                                      V40 = 0,
+                                      HC  = 0,
+                                      V45 = 0,
+                                      RF  = 0,
+                                      SOC = 0,
+                                      ETC = 0
                                   }).AsEnumerable();
 
                 var airExports = (from hb in _dbContext.AirExportHawbs
@@ -171,7 +176,13 @@ namespace Dolphin.Freight.ReportLog
                                       SalesPerson = "",
                                       BLPostDate = mb.PostDate,
                                       CargoType = cargoTypes.Where(c => c.Id == hb.CargoType).Select(c => c.ShowName).FirstOrDefault(),
-                                      Volume = new VolumeReport()
+                                      V20 = 0,
+                                      V40 = 0,
+                                      HC = 0,
+                                      V45 = 0,
+                                      RF = 0,
+                                      SOC = 0,
+                                      ETC = 0
                                   }).AsEnumerable();
 
                 var oceanImports = (from oih in _dbContext.OceanImportHbls
@@ -219,7 +230,13 @@ namespace Dolphin.Freight.ReportLog
                                         SalesPerson = "",
                                         BLPostDate = oi.PostDate,
                                         CargoType = "",
-                                        Volume = GetContainerTypeCount(resultMawbs, oi.Id)
+                                        V20 = GetContainerTypeCount(resultMawbs, oi.Id).V20,
+                                        V40 = GetContainerTypeCount(resultMawbs, oi.Id).V40,
+                                        HC = GetContainerTypeCount(resultMawbs,  oi.Id).HC,
+                                        V45 = GetContainerTypeCount(resultMawbs, oi.Id).V45,
+                                        RF = GetContainerTypeCount(resultMawbs,  oi.Id).RF,
+                                        SOC = GetContainerTypeCount(resultMawbs, oi.Id).SOC,
+                                        ETC = GetContainerTypeCount(resultMawbs, oi.Id).ETC
                                     }).AsEnumerable();
 
                 var oceanExports = (from oeh in _dbContext.OceanExportHbls
@@ -267,7 +284,13 @@ namespace Dolphin.Freight.ReportLog
                                         SalesPerson = "",
                                         BLPostDate = oe.PostDate,
                                         CargoType = "",
-                                        Volume = GetContainerTypeCount(resultMawbs, oe.Id)
+                                        V20 = GetContainerTypeCount(resultMawbs, oe.Id).V20,
+                                        V40 = GetContainerTypeCount(resultMawbs, oe.Id).V40,
+                                        HC = GetContainerTypeCount(resultMawbs, oe.Id).HC,
+                                        V45 = GetContainerTypeCount(resultMawbs, oe.Id).V45,
+                                        RF = GetContainerTypeCount(resultMawbs, oe.Id).RF,
+                                        SOC = GetContainerTypeCount(resultMawbs, oe.Id).SOC,
+                                        ETC = GetContainerTypeCount(resultMawbs, oe.Id).ETC
                                     }).AsEnumerable();
 
                 IEnumerable<MawbReport> result = new List<MawbReport>();
