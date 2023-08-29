@@ -126,6 +126,8 @@ namespace Dolphin.Freight.ReportLog
                                       BLPostDate = mb.PostDate,
                                       CargoType = "",
                                       Profit = GetProfit(mb.Id, 0).Result
+                                      Volume = new VolumeReport()
+
                                   }).AsEnumerable();
 
                 var airExports = (from hb in _dbContext.AirExportHawbs
@@ -175,6 +177,7 @@ namespace Dolphin.Freight.ReportLog
                                       BLPostDate = mb.PostDate,
                                       CargoType = cargoTypes.Where(c => c.Id == hb.CargoType).Select(c => c.ShowName).FirstOrDefault(),
                                       Profit = GetProfit(mb.Id, 0).Result
+                                      Volume = new VolumeReport()
                                   }).AsEnumerable();
 
                 var oceanImports = (from oih in _dbContext.OceanImportHbls
@@ -223,8 +226,9 @@ namespace Dolphin.Freight.ReportLog
                                         BLPostDate = oi.PostDate,
                                         CargoType = "",
                                         Profit = GetProfit(oi.Id, 3).Result
+                                        Volume = GetContainerTypeCount(resultMawbs, oi.Id)
                                     }).AsEnumerable();
-
+                                    
                 var oceanExports = (from oeh in _dbContext.OceanExportHbls
                                     join oe in _dbContext.OceanExportMbls on oeh.MblId equals oe.Id
                                     select new MawbReport()

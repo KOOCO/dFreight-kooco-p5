@@ -144,5 +144,6 @@ namespace Dolphin.Freight.ReportLog
         public bool IsContainerDetail { get; set; }
         public bool IsVolByCntrAndSalesType { get; set; }
     }
+
 }
 

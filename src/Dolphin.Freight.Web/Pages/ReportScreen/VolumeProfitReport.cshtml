@@ -194,6 +194,7 @@
                 }
                 if (!isDataTable) {
                     dolphin.freight.reportLog.reportLog.getMawbReport(form.vPRM).done(function (res) {
+                        console.log(res);
                         LoadDataTable(res);
                     })
 
@@ -202,6 +203,7 @@
                 else {
                     var table = $('#mawReport').DataTable();
                     dolphin.freight.reportLog.reportLog.getMawbReport(form.vPRM).done(function (res) {
+                        console.log(res);
                         table.destroy();
                         LoadDataTable(res);
                     });
@@ -369,49 +371,52 @@
                             title: l('CoLoaderId'),
                             data: "coLoaderId",
                             visible: isCoLoaderChecked
-                        },
-                        {
-                            title : "20'",
-                            data: "V20",
-                            render: function (data) {
-                                return "1";
-                            }
-                        },
-                        {
-                            title: "40'",
-                            data: "V40",
-                            render: function (data) {
-                                return "0";
-                            }
-                        },                         
-                        {
-                            title: "HC",
-                            data: "HC",
-                            render: function (data) {
-                                return "0";
-                            }
-                        },
-                        {
-                            title: "V45'",
-                            data: "V45",
-                            render: function (data) {
-                                return "0";
-                            }
-                        },
-                        {
-                            title: "RF",
-                            data: "RF",
-                            render: function (data) {
-                                return "3";
-                            }
-                        },
-                        {
-                            title: "SOC",
-                            data: "SOC",
-                            render: function (data) {
-                                return "0";
-                            }
                         }
+                        //{
+                        //    title : "20'",
+                        //    data: "volume",
+                        //    render: function (data) {
+                        //        console.log(data);
+                        //        return data ? data : "0";
+                        //    }
+                        //}  
+                        //,
+                        //{
+                        //    title: "40'",
+                        //    data: "volume.v40",
+                            
+                        //},                         
+                        //{
+                        //    title: "HC",
+                        //    data: "volume.hC",
+                            
+                        //},
+                        //{
+                        //    title: "V45'",
+                        //    data: "Volume",
+                        //    render: function (data) {
+                        //        console.log(data);
+                        //    }
+                            
+                        //},
+                        //{
+                        //    title: "RF",
+                        //    data: "volume",
+                        //    render: function (data) {
+                        //        console.log(data);
+                        //        return data  ? data : "0";
+                        //    }
+                        //},
+                        //{
+                        //    title: "SOC",
+                        //    data: "volume.sOC",
+                            
+                        //},
+                        //{
+                        //    title: "Etc",
+                        //    data: "volume.eTC",
+                            
+                        //}
                      
                     ]
                 })
