@@ -94,6 +94,12 @@ namespace Dolphin.Freight.ReportLog
         public int RF { get; set; }
         public int SOC { get; set; }
         public int ETC { get; set; }
+        public double ARTotal { get; set; }
+        public double APTotal { get; set; }
+        public double DCTotal { get; set; }
+        public double ProfitMargin { get; set; }
+        public double ProfitAmt { get; set; }
+        public double Avg_Profit_Per_Cntr { get; set; }
 
     }
 
@@ -123,7 +129,7 @@ namespace Dolphin.Freight.ReportLog
         public double APTotal { get; set; }
         public double DCTotal { get; set; }
         public double ProfitMargin { get; set; }
-        public double Profit { get; set; }
+        public double ProfitAmt { get; set; }
         public double Avg_Profit_Per_Cntr { get; set; }
         public List<InvoiceDto> AR { get; set; }
         public List<InvoiceDto> DC { get; set; }

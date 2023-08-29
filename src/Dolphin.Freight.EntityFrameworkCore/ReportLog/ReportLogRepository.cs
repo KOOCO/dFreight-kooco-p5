@@ -75,6 +75,23 @@ namespace Dolphin.Freight.ReportLog
                                   MblId =  mb.MblId
                               }).ToList();
 
+            var airImportMawbsIds = await _dbContext.AirImportMawbs.Select(s => s.Id).ToListAsync();
+            var airExportMawbsIds = await _dbContext.AirExportMawbs.Select(s => s.Id).ToListAsync();
+            var oceanImportMblsIds = await _dbContext.OceanImportMbls.Select(s => s.Id).ToListAsync();
+            var oceanExportMblsIds = await _dbContext.OceanExportMbls.Select(s => s.Id).ToListAsync();
+
+            var allProfitData = new Dictionary<Guid, ProfitReport>();
+
+            foreach (var id in airImportMawbsIds.Concat(airExportMawbsIds))
+            {
+                allProfitData[id] = await GetProfit(id, 0, _invoiceAppService);
+            }
+
+            foreach (var id in oceanImportMblsIds.Concat(oceanExportMblsIds))
+            {
+                allProfitData[id] = await GetProfit(id, 3, _invoiceAppService);
+            }
+
             try
             {
 
@@ -125,7 +142,12 @@ namespace Dolphin.Freight.ReportLog
                                       SalesPerson = "",
                                       BLPostDate = mb.PostDate,
                                       CargoType = "",
-                                      Profit = GetProfit(mb.Id, 0).Result,
+                                      ARTotal = allProfitData[mb.Id].ARTotal,
+                                      APTotal = allProfitData[mb.Id].APTotal,
+                                      DCTotal = allProfitData[mb.Id].DCTotal,
+                                      ProfitAmt = allProfitData[mb.Id].ProfitAmt,
+                                      ProfitMargin = allProfitData[mb.Id].ProfitMargin,
+                                      Avg_Profit_Per_Cntr = allProfitData[mb.Id].Avg_Profit_Per_Cntr,
                                       V20 = 0,
                                       V40 = 0,
                                       HC  = 0,
@@ -181,7 +203,12 @@ namespace Dolphin.Freight.ReportLog
                                       SalesPerson = "",
                                       BLPostDate = mb.PostDate,
                                       CargoType = cargoTypes.Where(c => c.Id == hb.CargoType).Select(c => c.ShowName).FirstOrDefault(),
-                                      Profit = GetProfit(mb.Id, 0).Result,
+                                      ARTotal = allProfitData[mb.Id].ARTotal,
+                                      APTotal = allProfitData[mb.Id].APTotal,
+                                      DCTotal = allProfitData[mb.Id].DCTotal,
+                                      ProfitAmt = allProfitData[mb.Id]  .ProfitAmt,
+                                      ProfitMargin = allProfitData[mb.Id].ProfitMargin,
+                                      Avg_Profit_Per_Cntr = allProfitData[mb.Id].Avg_Profit_Per_Cntr,
                                       V20 = 0,
                                       V40 = 0,
                                       HC = 0,
@@ -236,7 +263,12 @@ namespace Dolphin.Freight.ReportLog
                                         SalesPerson = "",
                                         BLPostDate = oi.PostDate,
                                         CargoType = "",
-                                        Profit = GetProfit(oi.Id, 3).Result,
+                                        ARTotal = allProfitData[oi.Id].ARTotal,
+                                        APTotal = allProfitData[oi.Id].APTotal,
+                                        DCTotal = allProfitData[oi.Id].DCTotal,
+                                        ProfitAmt = allProfitData[oi.Id].ProfitAmt,
+                                        ProfitMargin = allProfitData[oi.Id].ProfitMargin,
+                                        Avg_Profit_Per_Cntr = allProfitData[oi.Id].Avg_Profit_Per_Cntr,
                                         V20 = GetContainerTypeCount(resultMawbs, oi.Id).V20,
                                         V40 = GetContainerTypeCount(resultMawbs, oi.Id).V40,
                                         HC = GetContainerTypeCount(resultMawbs,  oi.Id).HC,
@@ -291,6 +323,12 @@ namespace Dolphin.Freight.ReportLog
                                         SalesPerson = "",
                                         BLPostDate = oe.PostDate,
                                         CargoType = "",
+                                        ARTotal = allProfitData[oe.Id].ARTotal,
+                                        APTotal = allProfitData[oe.Id].APTotal,
+                                        DCTotal = allProfitData[oe.Id].DCTotal,
+                                        ProfitAmt = allProfitData[oe.Id].ProfitAmt,
+                                        ProfitMargin = allProfitData[oe.Id].ProfitMargin,
+                                        Avg_Profit_Per_Cntr = allProfitData[oe.Id].Avg_Profit_Per_Cntr,
                                         Volume = GetContainerTypeCount(resultMawbs, oe.Id)
                                     }).AsEnumerable();
 
@@ -332,13 +370,13 @@ namespace Dolphin.Freight.ReportLog
 
         }
         
-        public async Task<ProfitReport> GetProfit(Guid Id, int queryType)
+        public static async Task<ProfitReport> GetProfit(Guid Id, int queryType, IInvoiceAppService invoiceAppService)
         {
             ProfitReport data = new();
 
             QueryInvoiceDto query = new QueryInvoiceDto() { QueryType = queryType, ParentId = Id };
 
-            data.Invoices = (await _invoiceAppService.QueryInvoicesAsync(query)).ToList();
+            data.Invoices = (await invoiceAppService.QueryInvoicesAsync(query)).ToList();
 
             if (data.Invoices != null && data.Invoices.Count > 0)
             {
@@ -364,7 +402,6 @@ namespace Dolphin.Freight.ReportLog
                 if (data.AR.Any())
                 {
                     double arTotal = 0;
-                    var pporcc = Convert.ToString(data.AR.Select(s => s.InvoiceBillDtos.Select(s => s.PPOrCC)).FirstOrDefault());
                     foreach (var ar in data.AR)
                     {
                         arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
