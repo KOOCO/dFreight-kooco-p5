@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.Internal;
+using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.Common;
 using Dolphin.Freight.EntityFrameworkCore;
 using Dolphin.Freight.ImportExport.AirImports;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +19,13 @@ namespace Dolphin.Freight.ReportLog
 {
     public class ReportLogRepository : EfCoreRepository<FreightDbContext, ReportLog, Guid>, IReportLogRepository
     {
+        private readonly IInvoiceAppService _invoiceAppService;
         IDbContextProvider<FreightDbContext> _dbContextProvider;
-        public ReportLogRepository(IDbContextProvider<FreightDbContext> dbContextProvider)
+        public ReportLogRepository(IDbContextProvider<FreightDbContext> dbContextProvider, IInvoiceAppService invoiceAppService)
             : base(dbContextProvider)
         {
             _dbContextProvider = dbContextProvider;
+            _invoiceAppService = invoiceAppService;
         }
 
         public async Task<ReportLog> FindByReportIdAsync(Guid ReportId, string ReportName)
@@ -120,8 +124,8 @@ namespace Dolphin.Freight.ReportLog
                                       FreightTermId = Convert.ToString(mb.FreightType),
                                       SalesPerson = "",
                                       BLPostDate = mb.PostDate,
-                                      CargoType = ""
-
+                                      CargoType = "",
+                                      Profit = GetProfit(mb.Id, 0).Result
                                   }).AsEnumerable();
 
                 var airExports = (from hb in _dbContext.AirExportHawbs
@@ -169,7 +173,8 @@ namespace Dolphin.Freight.ReportLog
                                       FreightTermId = null,
                                       SalesPerson = "",
                                       BLPostDate = mb.PostDate,
-                                      CargoType = cargoTypes.Where(c => c.Id == hb.CargoType).Select(c => c.ShowName).FirstOrDefault()
+                                      CargoType = cargoTypes.Where(c => c.Id == hb.CargoType).Select(c => c.ShowName).FirstOrDefault(),
+                                      Profit = GetProfit(mb.Id, 0).Result
                                   }).AsEnumerable();
 
                 var oceanImports = (from oih in _dbContext.OceanImportHbls
@@ -216,7 +221,8 @@ namespace Dolphin.Freight.ReportLog
                                         FreightTermId = Convert.ToString(oi.FreightTermId),
                                         SalesPerson = "",
                                         BLPostDate = oi.PostDate,
-                                        CargoType = ""
+                                        CargoType = "",
+                                        Profit = GetProfit(oi.Id, 3).Result
                                     }).AsEnumerable();
 
                 var oceanExports = (from oeh in _dbContext.OceanExportHbls
@@ -264,7 +270,8 @@ namespace Dolphin.Freight.ReportLog
                                         SalesPerson = "",
                                         BLPostDate = oe.PostDate,
                                         CargoType = "",
-                                        Volume = GetContainerTypeCount(resultMawbs, oe.Id)
+                                        Volume = GetContainerTypeCount(resultMawbs, oe.Id),
+                                        Profit = GetProfit(oe.Id, 3).Result
                                     }).AsEnumerable();
 
                 IEnumerable<MawbReport> result = new List<MawbReport>();
@@ -304,8 +311,71 @@ namespace Dolphin.Freight.ReportLog
             }
 
         }
+        
+        public async Task<ProfitReport> GetProfit(Guid Id, int queryType)
+        {
+            ProfitReport data = new();
 
-        public VolumeReport GetContainerTypeCount(List<PackageSizeReport> result, Guid Id)
+            QueryInvoiceDto query = new QueryInvoiceDto() { QueryType = queryType, ParentId = Id };
+
+            data.Invoices = (await _invoiceAppService.QueryInvoicesAsync(query)).ToList();
+
+            if (data.Invoices != null && data.Invoices.Count > 0)
+            {
+                data.AR = new List<InvoiceDto>();
+                data.AP = new List<InvoiceDto>();
+                data.DC = new List<InvoiceDto>();
+                foreach (var dto in data.Invoices)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            data.AR.Add(dto);
+                            break;
+                        case 1:
+                            data.DC.Add(dto);
+                            break;
+                        case 2:
+                            data.AP.Add(dto);
+                            break;
+                    }
+                }
+
+                if (data.AR.Any())
+                {
+                    double arTotal = 0;
+                    var pporcc = Convert.ToString(data.AR.Select(s => s.InvoiceBillDtos.Select(s => s.PPOrCC)).FirstOrDefault());
+                    foreach (var ar in data.AR)
+                    {
+                        arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                    }
+                    data.ARTotal = arTotal;
+                }
+                if (data.AP.Any())
+                {
+                    double apTotal = 0;
+                    foreach (var ap in data.AP)
+                    {
+                        apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                    }
+
+                    data.APTotal = apTotal;
+                }
+                if (data.DC.Any())
+                {
+                    double dcTotal = 0;
+                    foreach (var dc in data.DC)
+                    {
+                        dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                    }
+                    data.DCTotal = dcTotal;
+                }
+            }
+
+            return data;
+        }
+
+        public static VolumeReport GetContainerTypeCount(List<PackageSizeReport> result, Guid Id)
         {
 
             var mblIds = result.Where(x => x.MblId == Id).ToList();
