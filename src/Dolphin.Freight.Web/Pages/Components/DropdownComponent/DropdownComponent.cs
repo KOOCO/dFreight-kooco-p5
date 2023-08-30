@@ -14,9 +14,9 @@ namespace Dolphin.Freight.Web.Pages.Components
     [ViewComponent(Name = "DropdownComponent")]
     public class DropdownComponent : AbpViewComponent
     {
-        public IViewComponentResult Invoke(string Name, List<SelectListItem> AspItems, string Selected = "", bool IsShowLabel = true, string fieldName = "", bool IsRequired = false, string Disabled= "", int SelectType = 0, string ShowFiledContentValue = "", string cssClass = "form-control")
+        public IViewComponentResult Invoke(string Name, List<SelectListItem> AspItems, string Selected = "", bool IsShowLabel = true, string fieldName = "", bool IsRequired = false, string Disabled= "", int SelectType = 0, string ShowFiledContentValue = "", string cssClass = "form-control", bool isMultipleSelection = false)
         {
-            ComponentData componentData = new ComponentData() { IsRequired = IsRequired, IsShowLabel = IsShowLabel, Disabled = Disabled, Name = Name, AspItems = AspItems, Selected = Selected, FieldName = fieldName, SelectType = SelectType, ShowFiledContentValue = ShowFiledContentValue == null ? "" : ShowFiledContentValue,CssClass=cssClass };
+            ComponentData componentData = new ComponentData() { IsRequired = IsRequired, IsShowLabel = IsShowLabel, Disabled = Disabled, Name = Name, AspItems = AspItems, Selected = Selected, FieldName = fieldName, SelectType = SelectType, ShowFiledContentValue = ShowFiledContentValue == null ? "" : ShowFiledContentValue,CssClass=cssClass, IsMultipleSelection = isMultipleSelection };
 
             return View("~/Pages/Components/DropdownComponent/Index.cshtml", componentData);
         }

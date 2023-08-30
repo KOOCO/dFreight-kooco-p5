@@ -1,0 +1,1500 @@
+﻿@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.ReportLog.VolumeReportSummaryViewModel
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    #periodsize{
+        font-size : 20px;
+    }
+    #largeSize{
+        font-size : 40px;
+    }
+    body{ font-family:Arial}
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+     .btn-sm, .btn-xs {
+            padding: 4px 10px 5px 10px;
+            font-size: 13px;
+            line-height: 1.5;
+            cursor:pointer;
+        }
+
+         .btn-sm :disabled {
+              cursor: not-allowed;
+              pointer-events: all !important;
+            }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+
+        .d-none{
+            display: none !important;
+        }
+
+    .w-10, .w-20, .w-100, .text-right, .text-center, .auto-font-size, textarea {
+        font-size:10px;
+    }
+    .edit {
+        background: #333 !important;
+        padding-bottom: 20px !important
+    }
+
+    .nav {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        border-bottom: 2px solid #111 !important;
+        background: #222 !important;
+        z-index: 1049 !important;
+        text-align: center !important;
+        font-size: 12px !important;
+    }
+
+    .nav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.nav ul li {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+}
+
+.nav ul li button {
+    width: 48px;
+    height: 38px;
+    background-size: 22px 22px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: #222;
+    border: none;
+    cursor: pointer;
+    opacity: .5;
+    transition: all ease-in .3s;
+}
+
+.view-setting {
+    position: fixed;
+    top: 8px;
+    right: 10px;
+    color: #c5c5c5;
+}
+
+.edit .wrap.landscape {
+    width: 1056px;
+}
+
+.edit .wrap {
+    width: 816px;
+    margin: auto;
+    background: #fff;
+    padding: 20pt;
+    position: relative;
+    margin-top: 34px;
+}
+
+.header {
+    font-size: 11px;
+    padding: 15px 0;
+}
+
+.edit .wrap table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.text-sm {
+    font-size: 9px;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+    width: 100%;
+}
+
+table tr {
+    page-break-inside: avoid;
+}
+
+.margin-t {
+    margin-top: 5px;
+}
+
+.text-bold {
+    font-weight: 700;
+}
+
+.border-t {
+    border-top: 0.25pt solid #000;
+}
+
+.td {
+    vertical-align: top;
+}
+
+.text-center {
+    text-align: center!important;
+}
+
+table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: #212529;
+}
+
+table th,
+table td {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-top: 1px solid #dee2e6;
+}
+
+table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #dee2e6;
+}
+
+table tbody + tbody {
+  border-top: 2px solid #dee2e6;
+}
+
+table-sm th,
+table-sm td {
+  padding: 0.3rem;
+}
+
+table {
+  border: 1px solid #dee2e6;
+}
+
+table th,
+table td {
+  border: 1px solid #dee2e6;
+}
+
+table thead th,
+table thead td {
+  border-bottom-width: 2px;
+}
+
+</style>
+
+<script>
+   var zoom = 1;
+    $(document).ready(function(){
+		document.getElementById('zin').onclick = function() {
+            zoom += 0.1;
+            document.getElementById('myForm').style.transform = 'scale('+zoom+')';
+            document.getElementById('zout').disabled = false;
+        }
+
+        document.getElementById('zout').onclick = function() {
+            if(zoom > 1){
+                zoom -= 0.1;
+                document.getElementById('myForm').style.transform = 'scale('+zoom+')';
+            }
+            else{
+                document.getElementById('zout').disabled = true;
+            }
+        }
+
+        $('#ddlDisplayUnit').trigger('change');
+    });
+
+    function print()
+    {
+        debugger;
+        document.getElementById("myForm").submit();
+    }
+
+</script>
+
+ @*@if (!Model.IsPDF && !Model.IsPartialView)
+ {*@
+    <div class="nav">
+        <ul>
+            <li>
+                <button type="button" style="width:120px; color:white" onclick="print()"><i class="fa fa-print">儲存PDF或列印</i></button>
+            </li>
+        </ul>
+
+        <div class="view-setting">
+            <div class="btn-group">
+                <button class="button btn-sm" title="Zoom Out" id="zout" disabled="disabled"><i class="fa fa-search-minus"></i>
+                </button>
+                <button class="button btn-sm" title="Zoom In" id="zin"><i class="fa fa-search-plus"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+ @*}*@
+
+    <form id="myForm" method="post">
+<div id="main" class="edit ng-scope">              
+   <div class="wrap report-volume-profit landscape">
+        <div class="header _padding-0">
+            <div class="text-center">
+                <div class="text-lg text-bold" id="largeSize">Volume Summary Report</div>
+                @*<h4 class="text-light margin-t-sm" id="periodsize">Period (05-31-2023 ~ 06-29-2023)</h4>*@
+            </div>
+        </div>
+        
+            <table class="tabld-padding border-b">
+                <colgroup>
+                    <col class="w-7">
+                    <col class="w-1">
+                    <col class="w-22">
+                    <col class="w-5">
+                    <col class="w-1">
+                    <col class="w-50">
+                    <col class="w-3">
+                    <col class="w-1">
+                    <col class="w-10">
+                </colgroup>
+                <tbody><tr>
+                    <td class="text-bold" colspan="3">Summary</td>
+                    <td class="text-bold">Sort by</td>
+                    <td>:</td>
+                    <td>Trucker</td>
+                    <td class="text-bold">User</td>
+                    <td>:</td>
+                    <td>@Model.Operator</td>
+                </tr>
+                <tr>
+                    <td class="text-bold">Currency</td>
+                    <td>:</td>
+                    <td>USD</td>
+                    <td class="text-bold">Period</td>
+                    <td>:</td>
+                    <td>Master B/L Post Date</td>
+                    <td class="text-bold">Date</td>
+                    <td>:</td>
+                    <td>08-21-2023</td>
+                </tr>
+            </tbody></table>
+            <table class="table-padding-3 margin-t text-11">
+                <colgroup>
+                    <col class="w-50">
+                    <col class="w-50">
+                </colgroup>
+                <!-- Volume Profit report and Volume report without volume by container type (OI, OE, AI and AE) -->
+                
+                    <!-- Volume Profit report (OI, OE, AI and AE)-->
+                    
+                <tbody><tr>
+                    <td colspan="2" height="3" class="_padding-b-0">
+                        <div class="text-12 text-bold">Department: Ocean Import</div>
+                    </td>
+                </tr>
+                <tr class="valign-top">
+                    <td>
+                                
+                <table class="table-padding-3 border text-center">
+                    <colgroup>
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-9 border-r">
+                        <col class="w-10">
+                    </colgroup>
+                    <tbody><tr class="border-b bg-light __sub-title">
+                        <td></td>
+                        <td>20'</td>
+                        <td>40'</td>
+                        <td>HC</td>
+                        <td>45'</td>
+                        <td>RF</td>
+                        <td>SOC</td>
+                        <td>Etc.</td>
+                        <td>LCL<br>CBM</td>
+                        <td>FAK<br>CBM</td>
+                        <td>BULK<br>CBM</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="text-left">CNTR</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>1.0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">B/L(s)</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>2</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                    </tr>
+                </tbody></table>
+    
+                            </td>
+                            <td>
+                                <table class="table-padding-3 border text-right">
+                                    <colgroup>
+                                        <col class="w-15 border-r">
+                                        <col class="w-21 border-r">
+                                        <col class="w-21 border-r">
+                                        <col class="w-21 border-r">
+                                        <col class="w-21 border-r">
+                                        <col class="w-21">
+                                    </colgroup>
+                                    <tbody><tr class="border-b bg-light __sub-title">
+                                        <td></td>
+                                        <td>Free</td>
+                                        <td>Nomi</td>
+                                        <td>Co-Load</td>
+                                        <td>Etc.</td>
+                                        <td>Total</td>
+                                    </tr>
+                                    
+                                        
+        <tr class="border-b">
+            <td class="text-left">Volume</td>
+            <td>0.00</td>
+            <td>0.00</td>
+            <td>1.00</td>
+            <td>0.00</td>
+            <td>1.00</td>
+        </tr>
+        <tr>
+            <td class="text-left">B/L(s)</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+        </tr>
+    
+                                    
+                                </tbody></table>
+                            </td>
+                        </tr>
+                    
+                    
+                        <tr>
+                            <td colspan="2" height="3" class="_padding-b-0">
+                                <div class="text-12 text-bold">Department: Ocean Export</div>
+                            </td>
+                        </tr>
+                        <tr class="valign-top">
+                            <td>
+                                
+        <table class="table-padding-3 border text-center">
+            <colgroup>
+                <col class="w-9 border-r">
+                <col class="w-9 border-r">
+                <col class="w-9 border-r">
+                <col class="w-9 border-r">
+                <col class="w-9 border-r">
+                <col class="w-9 border-r">
+                <col class="w-9 border-r">
+                <col class="w-9 border-r">
+                <col class="w-9 border-r">
+                <col class="w-9 border-r">
+                <col class="w-10">
+            </colgroup>
+            <tbody><tr class="border-b bg-light __sub-title">
+                <td></td>
+                <td>20'</td>
+                <td>40'</td>
+                <td>HC</td>
+                <td>45'</td>
+                <td>RF</td>
+                <td>SOC</td>
+                <td>Etc.</td>
+                <td>LCL<br>CBM</td>
+                <td>FAK<br>CBM</td>
+                <td>BULK<br>CBM</td>
+            </tr>
+            <tr class="border-b">
+                <td class="text-left">CNTR</td>
+                <td>0</td>
+                <td>3.0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td><div class="auto-font-size __width-xs"><span>18.6</span></div></td>
+                <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+            </tr>
+            <tr>
+                <td class="text-left">B/L(s)</td>
+                <td>0</td>
+                <td>5</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td><div class="auto-font-size __width-xs"><span>5</span></div></td>
+                <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+            </tr>
+        </tbody></table>
+    
+                            </td>
+                            <td>
+                                <table class="table-padding-3 border text-right">
+                                    <colgroup>
+                                        <col class="w-15 border-r">
+                                        <col class="w-21 border-r">
+                                        <col class="w-21 border-r">
+                                        <col class="w-21 border-r">
+                                        <col class="w-21 border-r">
+                                        <col class="w-21">
+                                    </colgroup>
+                                    <tbody><tr class="border-b bg-light __sub-title">
+                                        <td></td>
+                                        <td>Free</td>
+                                        <td>Nomi</td>
+                                        <td>Co-Load</td>
+                                        <td>Etc.</td>
+                                        <td>Total</td>
+                                    </tr>
+                                    
+                                        
+        <tr class="border-b">
+            <td class="text-left">Volume</td>
+            <td>0.00</td>
+            <td>0.00</td>
+            <td>0.28</td>
+            <td>40.32</td>
+            <td>40.60</td>
+        </tr>
+        <tr>
+            <td class="text-left">B/L(s)</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>6</td>
+            <td>7</td>
+        </tr>
+    
+                                    
+                                </tbody></table>
+                            </td>
+                        </tr>
+                    
+                    
+                        <tr>
+                            <td colspan="2" height="3" class="_padding-b-0">
+                                <div class="text-12 text-bold">Department: Air Import</div>
+                            </td>
+                        </tr>
+                        <tr class="valign-top">
+                            <td>
+                                
+        <table class="table-padding-3 border text-center">
+            <colgroup>
+                <col class="w-50 border-r">
+                <col class="w-50">
+            </colgroup>
+            <tbody><tr class="border-b bg-light">
+                <td>G/WT</td>
+                <td>C/WT</td>
+            </tr>
+            <tr>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+        </tbody></table>
+    
+                            </td>
+                            <td>
+                                
+                            </td>
+                        </tr>
+                    
+                    
+                        <tr>
+                            <td colspan="2" height="3" class="_padding-b-0">
+                                <div class="text-12 text-bold">Department: Air Export</div>
+                            </td>
+                        </tr>
+                        <tr class="valign-top">
+                            <td>
+                                
+        <table class="table-padding-3 border text-center">
+            <colgroup>
+                <col class="w-50 border-r">
+                <col class="w-50">
+            </colgroup>
+            <tbody><tr class="border-b bg-light">
+                <td>G/WT</td>
+                <td>C/WT</td>
+            </tr>
+            <tr>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+        </tbody></table>
+    
+                            </td>
+
+                            <td>
+                                
+                            </td>
+                        </tr>
+              
+                
+                <!-- Same tables in Volume Profit report and Volume report -->
+                
+                    <tr>
+                        <td colspan="2" height="3" class="_padding-b-0">
+                            <table class="text-12 text-bold">
+                                <tbody><tr>
+                                    <td class="w-50 _padding-0">Shipping Type: Truck</td>
+                                    <td class="w-50">
+                                        
+                                            Total Volume: 0
+                                        
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                        </td>
+                    </tr>
+                    <tr class="valign-top">
+                        <td>
+                            <table class="table-padding-3 border text-center">
+                                <colgroup>
+                                    <col class="w-14 border-r">
+                                    <col class="w-14 border-r">
+                                    <col class="w-14 border-r">
+                                    <col class="w-14 border-r">
+                                    <col class="w-14 border-r">
+                                    <col class="w-14 border-r">
+                                    <col class="w-15">
+                                </colgroup>
+                                <tbody><tr class="border-b bg-light">
+                                    <td>20'</td>
+                                    <td>40'</td>
+                                    <td>HC</td>
+                                    <td>45'</td>
+                                    <td>RF</td>
+                                    <td>SOC</td>
+                                    <td>Etc.</td>
+                                </tr>
+                                <tr>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                </tr>
+                            </tbody></table>
+                        </td>
+                        <td>
+                            <table class="table-padding-3 border text-right">
+                                <colgroup>
+                                    <col class="w-100 border-r">
+                                </colgroup>
+                                <tbody><tr class="border-b bg-light">
+                                    <td>Total</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td>
+                                        
+                                            0.00
+                                        
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                        </td>
+                    </tr>
+                
+                
+                    <tr>
+                        <td colspan="2" height="3" class="_padding-b-0">
+                            <table class="text-12 text-bold">
+                                <tbody><tr>
+                                    <td class="w-50 _padding-0">Shipping Type: Misc</td>
+                                    <td class="w-50">
+                                        
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <table class="table-padding-3 border text-right">
+                                <tbody><tr class="border-b bg-light">
+                                    <td>Total</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        
+                                            &nbsp;
+                                        
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                        </td>
+                    </tr>
+                
+                
+                <tr>
+                    <td colspan="2" height="3" class="_padding-b-0">
+                        <div class="text-12 text-bold">Shipping Type: Warehouse</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table class="table-padding-3 border text-right margin-t">
+                            <tbody><tr class="border-b bg-light">
+                                <td>Total</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    
+                                        &nbsp;
+                                    
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+                
+            </tbody></table>
+
+                <hr>
+                <div>
+                    <div class="header">
+                        <div class="text-center">
+                            <div class="text-lg text-bold"  id="largeSize">Volume Summary Report</div>
+                            <h4 class="text-light margin-t-sm"  id="periodsize">Period</h4>
+                        </div>
+                    </div>
+                    <table class="tabld-padding-double">
+                        <colgroup>
+                            <col class="w-7">
+                            <col class="w-1">
+                            <col class="w-22">
+                            <col class="w-5">
+                            <col class="w-1">
+                            <col class="w-50">
+                            <col class="w-3">
+                            <col class="w-1">
+                            <col class="w-10">
+                        </colgroup>
+                        <tbody><tr>
+                            <td class="text-bold">Shipping Type</td>
+                            <td>:</td>
+                            <td>Ocean Import</td>
+                            <td class="text-bold">Sort by</td>
+                            <td>:</td>
+                            <td>Trucker</td>
+                            <td class="text-bold">User</td>
+                            <td>:</td>
+                            <td>@Model.Operator</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Currency</td>
+                            <td>:</td>
+                            <td>USD</td>
+                            <td class="text-bold">Period</td>
+                            <td>:</td>
+                            <td>Master B/L Post Date</td>
+                            <td class="text-bold">Date</td>
+                            <td>:</td>
+                            <td>08-21-2023</td>
+                        </tr>
+                    </tbody></table>
+                    <table class="table-padding-3 margin-t">
+                        <colgroup>
+                            <col class="w-3">
+                            <col class="w-13">
+                            <col class="w-10">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                        </colgroup>
+                        <thead>
+                            <tr class="border-t border-b bg-light">
+                                <th class="border-r col-padding" rowspan="3">Block</th>
+                                <th class="border-r col-padding-double" rowspan="3" colspan="2">Trucker</th>
+                                <th class="col-padding-double" colspan="16">Ocean Total</th>
+                            </tr>
+                            <tr class="border-t border-b bg-light">
+                                <th class="border-r col-padding-double" colspan="7">Container Type</th>
+                                <th class="border-r col-padding-double" colspan="4">Volume(CBM) by Ship Mode</th>
+                                <th class="col-padding-double" colspan="5">
+                                    
+                                        Volume(CBM) by Sales Type
+                                    
+                                </th>
+                            </tr>
+                            <tr class="border-b bg-light">
+                                @foreach(var container in Model.ContainerList){
+                                    <th class="col-padding-double text-right border-r">@container.Name</th>
+                                }
+
+                                <th class="col-padding-double text-right border-r">LCL</th>
+                                <th class="col-padding-double text-right border-r">FAK</th>
+                                <th class="col-padding-double text-right border-r">BULK</th>
+                                <th class="col-padding-double text-right border-r">SUM</th>
+                                <th class="col-padding-double text-right border-r">Free</th>
+                                <th class="col-padding-double text-right border-r">Nomi</th>
+                                <th class="col-padding-double text-right border-r">Col.</th>
+                                <th class="col-padding-double text-right border-r">Etc.</th>
+                                <th class="col-padding-double text-right">Total</th>
+                            </tr>
+                        </thead>
+                        
+                            <tbody><tr class="text-right border-b">
+                                <td class="text-center">
+                                    
+                                </td>
+                                <td class="text-left"></td>
+                                <td class="text-left"><br>B/L: #</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>1.0<br>2</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+
+                                
+                                    <td>0<br>0</td>
+                                    <td>0<br>0</td>
+                                    <td>1.0<br>1</td>
+                                    <td>0.0<br>1</td>
+                                    <td>1.0<br>2</td>
+                                
+                            </tr>
+                        
+                            <tr class="text-right border-b">
+                                <td class="text-center">
+                                    
+                                </td>
+                                <td class="text-left">ACEVEDO, FRITZ AND PATTERSON</td>
+                                <td class="text-left"><br>B/L: #</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+
+                                
+                                    <td>0<br>0</td>
+                                    <td>0<br>0</td>
+                                    <td>0<br>0</td>
+                                    <td>0.0<br>1</td>
+                                    <td>0.0<br>1</td>
+                                
+                            </tr>
+                        
+                        <tr class="text-right border-b">
+                            <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
+                            <td class="text-left"><br>B/L: #</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>1.0<br>2</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>1.0<br>1</td>
+                                <td>0.0<br>2</td>
+                                <td>1.0<br>3</td>
+                            
+                        </tr>
+                    </tbody></table>
+                </div>
+
+                <hr>
+                <div>
+                    <div class="header">
+                        <div class="text-center">
+                            <div class="text-lg text-bold">Volume Summary Report</div>
+                            <h4 class="text-light margin-t-sm">Period</h4>
+                        </div>
+                    </div>
+                    <table class="tabld-padding-double">
+                        <colgroup>
+                            <col class="w-7">
+                            <col class="w-1">
+                            <col class="w-22">
+                            <col class="w-5">
+                            <col class="w-1">
+                            <col class="w-50">
+                            <col class="w-3">
+                            <col class="w-1">
+                            <col class="w-10">
+                        </colgroup>
+                        <tbody><tr>
+                            <td class="text-bold">Shipping Type</td>
+                            <td>:</td>
+                            <td>Ocean Export</td>
+                            <td class="text-bold">Sort by</td>
+                            <td>:</td>
+                            <td>Trucker</td>
+                            <td class="text-bold">User</td>
+                            <td>:</td>
+                            <td>@Model.Operator</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Currency</td>
+                            <td>:</td>
+                            <td>USD</td>
+                            <td class="text-bold">Period</td>
+                            <td>:</td>
+                            <td>Master B/L Post Date (05-31-2023 ~ 06-29-2023)</td>
+                            <td class="text-bold">Date</td>
+                            <td>:</td>
+                            <td>08-21-2023</td>
+                        </tr>
+                    </tbody></table>
+                    <table class="table-padding-double margin-t text-8">
+                        <colgroup>
+                            <col class="w-3">
+                            <col class="w-13">
+                            <col class="w-10">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                        </colgroup>
+                        <thead>
+                            <tr class="border-t border-b bg-light">
+                                <th class="border-r col-padding" rowspan="3">Block</th>
+                                <th class="border-r col-padding-double" rowspan="3" colspan="2">Trucker</th>
+                                <th class="col-padding-double" colspan="16">Ocean Total</th>
+                            </tr>
+                            <tr class="border-t border-b bg-light">
+                                <th class="border-r col-padding-double" colspan="7">Container Type</th>
+                                <th class="border-r col-padding-double" colspan="4">Volume(CBM) by Ship Mode</th>
+                                <th class="col-padding-double" colspan="5">
+                                    
+                                        Volume(CBM) by Sales Type
+                                    
+                                </th>
+                            </tr>
+                            <tr class="border-b bg-light">
+                                <th class="col-padding-double text-right border-r">20'</th>
+                                <th class="col-padding-double text-right border-r">40'</th>
+                                <th class="col-padding-double text-right border-r">HC</th>
+                                <th class="col-padding-double text-right border-r">45'</th>
+                                <th class="col-padding-double text-right border-r">RF</th>
+                                <th class="col-padding-double text-right border-r">SOC</th>
+                                <th class="col-padding-double text-right border-r">Etc.</th>
+                                <th class="col-padding-double text-right border-r">LCL</th>
+                                <th class="col-padding-double text-right border-r">FAK</th>
+                                <th class="col-padding-double text-right border-r">BULK</th>
+                                <th class="col-padding-double text-right border-r">SUM</th>
+                                <th class="col-padding-double text-right border-r">Free</th>
+                                <th class="col-padding-double text-right border-r">Nomi</th>
+                                <th class="col-padding-double text-right border-r">Col.</th>
+                                <th class="col-padding-double text-right border-r">Etc.</th>
+                                <th class="col-padding-double text-right">Total</th>
+                            </tr>
+                        </thead>
+                        
+                            <tbody><tr class="text-right border-b">
+                                <td class="text-center">
+                                    
+                                </td>
+                                <td class="text-left"></td>
+                                <td class="text-left"><br>B/L: #</td>
+                                <td>0<br>0</td>
+                                <td>3.0<br>5</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>18.32<br>4</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>18.32<br>4</td>
+                                
+                                    <td>0<br>0</td>
+                                    <td>0<br>0</td>
+                                    <td>0<br>0</td>
+                                    <td>40.32<br>6</td>
+                                    <td>40.32<br>6</td>
+                                
+                            </tr>
+                        
+                            <tr class="text-right border-b">
+                                <td class="text-center">
+                                    
+                                </td>
+                                <td class="text-left">ABBOTT, DIAZ AND GREEN</td>
+                                <td class="text-left"><br>B/L: #</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0.28<br>1</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0.28<br>1</td>
+                                
+                                    <td>0<br>0</td>
+                                    <td>0<br>0</td>
+                                    <td>0.28<br>1</td>
+                                    <td>0<br>0</td>
+                                    <td>0.28<br>1</td>
+                                
+                            </tr>
+                        
+                        <tr class="text-right border-b">
+                            <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
+                            <td class="text-left"><br>B/L: #</td>
+                            <td>0<br>0</td>
+                            <td>3.0<br>5</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>18.6<br>5</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>18.6<br>5</td>
+                            
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0.28<br>1</td>
+                                <td>40.32<br>6</td>
+                                <td>40.6<br>7</td>
+                            
+                        </tr>
+                    </tbody></table>
+                </div>
+            
+            
+                <hr>
+                <div>
+                    <div class="header">
+                        <div class="text-center">
+                            <div class="text-lg text-bold">Volume Summary Report</div>
+                            <h4 class="text-light margin-t-sm">Period (05-31-2023 ~ 06-29-2023)</h4>
+                        </div>
+                    </div>
+                    <table class="tabld-padding-double">
+                        <colgroup>
+                            <col class="w-7">
+                            <col class="w-1">
+                            <col class="w-22">
+                            <col class="w-5">
+                            <col class="w-1">
+                            <col class="w-50">
+                            <col class="w-3">
+                            <col class="w-1">
+                            <col class="w-10">
+                        </colgroup>
+                        <tbody><tr>
+                            <td class="text-bold">Shipping Type</td>
+                            <td>:</td>
+                            <td>Air Import</td>
+                            <td class="text-bold">Sort by</td>
+                            <td>:</td>
+                            <td>Trucker</td>
+                            <td class="text-bold">User</td>
+                            <td>:</td>
+                            <td>@Model.Operator</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Currency</td>
+                            <td>:</td>
+                            <td>USD</td>
+                            <td class="text-bold">Period</td>
+                            <td>:</td>
+                            <td>Master B/L Post Date (05-31-2023 ~ 06-29-2023)</td>
+                            <td class="text-bold">Date</td>
+                            <td>:</td>
+                            <td>08-21-2023</td>
+                        </tr>
+                    </tbody></table>
+                    <table class="table-padding-3 margin-t">
+                        <colgroup>
+                            <col class="w-3">
+                            <col class="w-13">
+                            <col class="w-15">
+                            <col class="w-10">
+                            <col class="w-10">
+                            <col class="w-10">
+                            <col class="w-10">
+                            <col class="w-10">
+                            <col class="w-10">
+                            <col class="w-10">
+                        </colgroup>
+                        <thead>
+                            <tr class="border-t border-b bg-light">
+                                <th class="border-r col-padding" rowspan="3">Block</th>
+                                <th class="border-r col-padding-double" rowspan="3" colspan="2">Trucker</th>
+                                <th class="col-padding-double" colspan="7">Air Total</th>
+                            </tr>
+                            <tr class="border-t border-b bg-light">
+                                <th class="border-r col-padding-double" colspan="2">WT</th>
+                                <th class="col-padding-double" colspan="5">
+                                    
+                                </th>
+                            </tr>
+                            <tr class="border-b bg-light">
+                                <th class="col-padding-double text-right border-r">G/WT</th>
+                                <th class="col-padding-double text-right border-r">C/WT</th>
+                                
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                
+                            </tr>
+                        </thead>
+                        
+                        <tbody><tr class="text-right border-b">
+                            <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
+                            <td class="text-left"><br>AWB: #</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            
+                        </tr>
+                    </tbody></table>
+                </div>
+            
+            
+                <hr>
+                <div>
+                    <div class="header">
+                        <div class="text-center">
+                            <div class="text-lg text-bold">Volume Summary Report</div>
+                            <h4 class="text-light margin-t-sm">Period (05-31-2023 ~ 06-29-2023)</h4>
+                        </div>
+                    </div>
+                    <table class="tabld-padding-double">
+                        <colgroup>
+                            <col class="w-7">
+                            <col class="w-1">
+                            <col class="w-22">
+                            <col class="w-5">
+                            <col class="w-1">
+                            <col class="w-50">
+                            <col class="w-3">
+                            <col class="w-1">
+                            <col class="w-10">
+                        </colgroup>
+                        <tbody><tr>
+                            <td class="text-bold">Shipping Type</td>
+                            <td>:</td>
+                            <td>Air Export</td>
+                            <td class="text-bold">Sort by</td>
+                            <td>:</td>
+                            <td>Trucker</td>
+                            <td class="text-bold">User</td>
+                            <td>:</td>
+                            <td>@Model.Operator</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Currency</td>
+                            <td>:</td>
+                            <td>USD</td>
+                            <td class="text-bold">Period</td>
+                            <td>:</td>
+                            <td>Master B/L Post Date (05-31-2023 ~ 06-29-2023)</td>
+                            <td class="text-bold">Date</td>
+                            <td>:</td>
+                            <td>08-21-2023</td>
+                        </tr>
+                    </tbody></table>
+                    <table class="table-padding-double margin-t">
+                        <colgroup>
+                            <col class="w-3">
+                            <col class="w-13">
+                            <col class="w-15">
+                            <col class="w-10">
+                            <col class="w-10">
+                            <col class="w-10">
+                            <col class="w-10">
+                            <col class="w-10">
+                            <col class="w-10">
+                            <col class="w-10">
+                        </colgroup>
+                        <thead>
+                            <tr class="border-t border-b bg-light">
+                                <th class="border-r col-padding" rowspan="3">Block</th>
+                                <th class="border-r col-padding-double" rowspan="3" colspan="2">Trucker</th>
+                                <th class="col-padding-double" colspan="7">Air Total</th>
+                            </tr>
+                            <tr class="border-t border-b bg-light">
+                                <th class="border-r col-padding-double" colspan="2">WT</th>
+                                <th class="col-padding-double" colspan="5">
+                                    
+                                </th>
+                            </tr>
+                            <tr class="border-b bg-light">
+                                <th class="col-padding-double text-right border-r">G/WT</th>
+                                <th class="col-padding-double text-right border-r">C/WT</th>
+                                
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                
+                            </tr>
+                        </thead>
+                        
+                        <tbody><tr class="text-right border-b">
+                            <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
+                            <td class="text-left"><br>AWB: #</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            
+                        </tr>
+                    </tbody></table>
+                </div>
+            
+            
+                <hr>
+                <div>
+                    <div class="header">
+                        <div class="text-center">
+                            <div class="text-lg text-bold">Volume Summary Report</div>
+                            <h4 class="text-light margin-t-sm">Period (05-31-2023 ~ 06-29-2023)</h4>
+                        </div>
+                    </div>
+                    <table class="tabld-padding-double">
+                        <colgroup>
+                            <col class="w-7">
+                            <col class="w-1">
+                            <col class="w-22">
+                            <col class="w-5">
+                            <col class="w-1">
+                            <col class="w-50">
+                            <col class="w-3">
+                            <col class="w-1">
+                            <col class="w-10">
+                        </colgroup>
+                        <tbody><tr>
+                            <td class="text-bold">Shipping Type</td>
+                            <td>:</td>
+                            <td>Truck</td>
+                            <td class="text-bold">Sort by</td>
+                            <td>:</td>
+                            <td>Trucker</td>
+                            <td class="text-bold">User</td>
+                            <td>:</td>
+                            <td>@Model.Operator</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Currency</td>
+                            <td>:</td>
+                            <td>USD</td>
+                            <td class="text-bold">Period</td>
+                            <td>:</td>
+                            <td>Master B/L Post Date (05-31-2023 ~ 06-29-2023)</td>
+                            <td class="text-bold">Date</td>
+                            <td>:</td>
+                            <td>08-21-2023</td>
+                        </tr>
+                    </tbody></table>
+                    <table class="table-padding-3 margin-t">
+                        <colgroup>
+                            <col class="w-3">
+                            <col class="w-12">
+                            <col class="w-13">
+                            <col class="w-9">
+                            <col class="w-9">
+                            <col class="w-9">
+                            <col class="w-9">
+                            <col class="w-9">
+                            <col class="w-9">
+                            <col class="w-9">
+                            <col class="w-9">
+                        </colgroup>
+                        <thead>
+                            <tr class="border-t border-b bg-light">
+                                <th class="border-r col-padding" rowspan="3">Block</th>
+                                <th class="border-r col-padding-double" rowspan="3" colspan="2">Trucker</th>
+                                <th class="col-padding-double" colspan="8">Truck Total</th>
+                            </tr>
+                            <tr class="border-t border-b bg-light">
+                                <th class="border-r col-padding-double" colspan="7">Container</th>
+                                <th class="col-padding-double text-right" rowspan="2">
+                                    
+                                </th>
+                            </tr>
+                            <tr class="border-b bg-light">
+                                <th class="col-padding-double text-right border-r">20'</th>
+                                <th class="col-padding-double text-right border-r">40'</th>
+                                <th class="col-padding-double text-right border-r">HC</th>
+                                <th class="col-padding-double text-right border-r">45'</th>
+                                <th class="col-padding-double text-right border-r">RF</th>
+                                <th class="col-padding-double text-right border-r">SOC</th>
+                                <th class="col-padding-double text-right border-r">Etc.</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody><tr class="text-right border-b">
+                            <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
+                            <td class="text-left"><br>Shipment: #</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>
+                                
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </div>
+            
+            
+                <hr>
+                <div>
+                    <div class="header">
+                        <div class="text-center">
+                            <div class="text-lg text-bold">Volume Summary Report</div>
+                            <h4 class="text-light margin-t-sm">Period (05-31-2023 ~ 06-29-2023)</h4>
+                        </div>
+                    </div>
+                    <table class="tabld-padding-double">
+                        <colgroup>
+                            <col class="w-7">
+                            <col class="w-1">
+                            <col class="w-22">
+                            <col class="w-5">
+                            <col class="w-1">
+                            <col class="w-50">
+                            <col class="w-3">
+                            <col class="w-1">
+                            <col class="w-10">
+                        </colgroup>
+                        <tbody><tr>
+                            <td class="text-bold">Shipping Type</td>
+                            <td>:</td>
+                            <td>Misc</td>
+                            <td class="text-bold">Sort by</td>
+                            <td>:</td>
+                            <td>Trucker</td>
+                            <td class="text-bold">User</td>
+                            <td>:</td>
+                            <td>@Model.Operator</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Currency</td>
+                            <td>:</td>
+                            <td>USD</td>
+                            <td class="text-bold">Period</td>
+                            <td>:</td>
+                            <td>Master B/L Post Date (05-31-2023 ~ 06-29-2023)</td>
+                            <td class="text-bold">Date</td>
+                            <td>:</td>
+                            <td>08-21-2023</td>
+                        </tr>
+                    </tbody></table>
+                    <table class="table-padding-3 margin-t-md w-70 border _margin-auto">
+                        <colgroup>
+                            <col class="w-5">
+                            <col class="w-30">
+                            <col class="w-15">
+                            <col class="w-50">
+                        </colgroup>
+                        <thead>
+                            <tr class="border-t border-b bg-light">
+                                <th class="border-r col-padding">Block</th>
+                                <th class="border-r col-padding-double" colspan="2">Trucker</th>
+                                <th class="col-padding-double">
+                                    
+                                </th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody><tr class="text-right border-b">
+                            <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
+                            <td class="text-left"><br>Operation: #</td>
+                            <td>
+                                
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </div>
+            
+            
+                <hr>
+                <div>
+                    <div class="header">
+                        <div class="text-center">
+                            <div class="text-lg text-bold">Volume Summary Report</div>
+                            <h4 class="text-light margin-t-sm">Period (05-31-2023 ~ 06-29-2023)</h4>
+                        </div>
+                    </div>
+                    <table class="tabld-padding-double">
+                        <colgroup>
+                            <col class="w-7">
+                            <col class="w-1">
+                            <col class="w-22">
+                            <col class="w-5">
+                            <col class="w-1">
+                            <col class="w-50">
+                            <col class="w-3">
+                            <col class="w-1">
+                            <col class="w-10">
+                        </colgroup>
+                        <tbody><tr>
+                            <td class="text-bold">Shipping Type</td>
+                            <td>:</td>
+                            <td>Warehouse</td>
+                            <td class="text-bold">Sort by</td>
+                            <td>:</td>
+                            <td>Trucker</td>
+                            <td class="text-bold">User</td>
+                            <td>:</td>
+                            <td>@Model.Operator</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Currency</td>
+                            <td>:</td>
+                            <td>USD</td>
+                            <td class="text-bold">Period</td>
+                            <td>:</td>
+                            <td>Master B/L Post Date (05-31-2023 ~ 06-29-2023)</td>
+                            <td class="text-bold">Date</td>
+                            <td>:</td>
+                            <td>08-21-2023</td>
+                        </tr>
+                    </tbody></table>
+                    <table class="table-padding-3 margin-t-md w-70 border _margin-auto">
+                        <colgroup>
+                            <col class="w-50">
+                            <col class="w-50">
+                        </colgroup>
+                        <thead>
+                            <tr class="border-t border-b bg-light">
+                                <th class="border-r col-padding-double">Trucker</th>
+                                <th class="col-padding-double">
+                                    
+                                </th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody><tr class="text-right border-b">
+                            <td class="text-center text-bold text-blue text-12">Total</td>
+                            <td>
+                                
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </div>
+            
+        </div>
+</div>
+</form>

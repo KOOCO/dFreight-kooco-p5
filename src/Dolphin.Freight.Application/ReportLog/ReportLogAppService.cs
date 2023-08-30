@@ -40,11 +40,11 @@ namespace Dolphin.Freight.ReportLog
 
         public async Task<PagedResultDto<MawbReportDto>> GetMawbReport(MawbReportDto filter)
         {
-            var report = await _ReportLogRepository.GetMawbReport();
+            var report = await _ReportLogRepository.GetMawbReport(filter);
 
             report = ApplyFilter(report, filter);
 
-            report = ApplyColumnFilter(report, filter);
+            //report = ApplyColumnFilter(report, filter);
 
             return new PagedResultDto<MawbReportDto>(report.Count, ObjectMapper.Map<List<MawbReport>, List<MawbReportDto>>(report));
         }
