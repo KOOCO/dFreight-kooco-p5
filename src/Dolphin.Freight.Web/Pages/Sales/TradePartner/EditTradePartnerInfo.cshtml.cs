@@ -25,7 +25,7 @@ using static Dolphin.Freight.Web.Pages.Sales.TradePartner.TradePartnerInfoModel;
 
 namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
 {
-    public class EditTradePartnerInfoModel : AbpPageModel
+    public class EditTradePartnerInfoModel : FreightPageModel
     {
         public ILogger<EditTradePartnerInfoModel> Logger { get; set; }
 
@@ -44,9 +44,9 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
         public List<SelectListItem> AccountGroupNameLookupList { get; set; }
         public List<SelectListItem> CurrencyLookupList { get; set; }
 
-        public bool HasHighlight { get; set; }
+        public bool? HasHighlight { get; set; }
 
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         [BindProperty]
         public List<CreateUpdateTradePartyDto> TradeParties { get; set; }
