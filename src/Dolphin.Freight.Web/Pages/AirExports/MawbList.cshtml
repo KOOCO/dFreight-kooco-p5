@@ -12,12 +12,222 @@
         width: 1100px;
         margin: 0 auto;
     }*/
+        td > .kg {
+            border-right: 1px solid #000;
+            padding-right: 10px;
+            display: inline-block;
+        }
+        td > .lb {
+            padding-left: 10px;
+            display: inline-block;
+        }
     </style>
 }
 @section scripts
 {
     <abp-script src="/Pages/AirExports/MawbList.js" />
 }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+     
+    $(document).ready(function () {
+
+    });
+
+    function selectAllCheckbox(element){
+        var isChecked = $(element).prop('checked');
+        $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+
+        if (isChecked){
+            $('#summaryId').prop('disabled', false);
+            $('#detailedId').prop('disabled', false);
+
+            
+        } else {
+            $('#summaryId').prop('disabled', true);
+            $('#detailedId').prop('disabled', true);
+        }
+    }
+
+    function selectCheckbox(checkbox) {
+      
+        debugger;
+         var checkedCheckboxes = $('.selectCheckbox:checked');
+        if (checkbox.checked){
+            $('#summaryId').prop('disabled', false);
+            $('#detailedId').prop('disabled', false);
+           
+            if (checkedCheckboxes.length == 1) {
+                $('#copyId').prop('disabled', false);
+            
+            }
+            else
+            {
+                $('#copyId').prop('disabled', true);
+            }
+             var isAnyLocked = false;
+                 var isAnyUnlocked=false
+             checkedCheckboxes.each(function(index, checkbox1) {
+      var id = $(checkbox1).data('id');
+                
+      var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+                 if (isLock) {
+                     isAnyLocked = true;
+                 }
+                 else { 
+                     isAnyUnlocked = true;
+                 
+                 }
+     
+    });
+       $('#lockId').prop('disabled', !isAnyUnlocked);
+            $('#unlockId').prop('disabled', !isAnyLocked);
+        } else{
+            $('#summaryId').prop('disabled', true);
+            $('#detailedId').prop('disabled', true);
+              var checkedCheckboxes = $('.selectCheckbox:checked');
+            if (checkedCheckboxes.length == 1) {
+                $('#copyId').prop('disabled', false);
+            
+            }
+            else
+            {
+                $('#copyId').prop('disabled', true);
+            }
+                  checkedCheckboxes.each(function(index, checkbox1) {
+
+      var id = $(checkbox1).data('id');
+                
+      var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+                 if (isLock) {
+                     isAnyLocked = true;
+                 }
+                 else { 
+                     isAnyUnlocked = true;
+                 
+                 }
+     
+    });
+       $('#lockId').prop('disabled', !isAnyUnlocked);
+            $('#unlockId').prop('disabled', !isAnyLocked);
+        }
+        if (!$(checkbox).prop('checked')) {
+            $('#selectAllCheckbox').prop('checked', false);
+        } else {
+            var allChecked = true;
+            $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
+                if (!$(this).prop('checked')) {
+                    allChecked = false;
+                    return false;
+                }
+            });
+            $('#selectAllCheckbox').prop('checked', allChecked);
+        }
+    }
+    function lockCheckBox(checkbox) {
+        debugger
+        var selectedCheckboxes = $('#MawbListTable tbody input.lockUnlockCheckbox[type="checkbox"]:checked');
+
+        var id = checkbox.attributes[2].value;
+
+
+        var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+        abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+            if (confirmed) {
+                dolphin.freight.importExport.airExports.airExportMawb.lockedOrUnLockedAirExportMawb(id)
+                    .done(function () {
+                        if (isLock) {
+                            abp.message.success(l('Message:SuccessUnlock'));
+                        } else {
+                            abp.message.success(l('Message:SuccessLock'));
+                        }
+                        dataTable.ajax.reload();
+                    });
+            }
+        });
+    }
+    function getProfitReport(reportType) {
+        debugger;
+
+        var params = "";
+        var selectedCheckboxes = $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+        for(var i = 0; i < selectedCheckboxes.length; i++ ){
+            var id = selectedCheckboxes[i].attributes[2].value;
+            var filingNo = selectedCheckboxes[i].attributes[3].value;
+
+            params += id + ' / ' + filingNo + ',';
+        }
+        params = params.replace(/^,|,$/g, '');
+
+        OpenWindow('/Docs/ProfitReportMawbListAirExport?reportType=' + reportType + '&pageType=@Dolphin.Freight.Common.FreightPageType.AEMBL&param='+ params);
+    }
+    function selectedLock() {
+        debugger;
+
+        var ids = []; 
+        var selectedCheckboxes = $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+        for(var i = 0; i < selectedCheckboxes.length; i++ ){
+            var id = selectedCheckboxes[i].attributes[2].value;
+            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
+            if (!isLock) { 
+            
+                ids.push(id);
+            
+            }
+              abp.message.confirm(l('LockConfirmationMessage')).then(function (confirmed) {
+            if (confirmed) {
+                dolphin.freight.importExport.airExports.airExportMawb.selectedLockedAirExportMawb(ids)
+                    .done(function () {
+                     
+                            abp.message.success(l('Message:SuccessLock'));
+                       
+                        dataTable.ajax.reload();
+                    });
+            }
+        });
+        }
+
+    }
+     function selectedUnLock() {
+        debugger;
+
+        var ids = []; 
+        var selectedCheckboxes = $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+        for(var i = 0; i < selectedCheckboxes.length; i++ ){
+            var id = selectedCheckboxes[i].attributes[2].value;
+            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
+            if (isLock) { 
+            
+                ids.push(id);
+            
+            }
+              abp.message.confirm(l('UnlockConfirmationMessage')).then(function (confirmed) {
+            if (confirmed) {
+                dolphin.freight.importExport.airExports.airExportMawb.selectedUnLockedAirExportMawb(ids)
+                    .done(function () {
+                     
+                            abp.message.success(l('Message:Message:SuccessUnlock'));
+                       
+                        dataTable.ajax.reload();
+                    });
+            }
+        });
+        }
+
+    }
+   function openCopyModal(){
+
+        var selectedCheckboxes = $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+
+        var id = selectedCheckboxes[0].attributes[2].value;
+         copyModalMawbList.open({
+                    id,
+                   
+                });
+    
+    
+    }
+</script>
 <div class="page-header">
     <div class="breadcrumb-wrapper">
         <abp-breadcrumb>
@@ -48,10 +258,34 @@
         </abp-card-header>
         <abp-card-body>
             <div class="row col-12" style="text-align: center; margin:0!important">
+                <abp-column size-md="_12">
+                    <abp-button id="btnConfiguration" 
+                                class="btn-sm"
+                                style="float: right;margin-top: -94px;"
+                                text="@L["Configuration"].Value"
+                                icon="gear"
+                                button-type="Primary" />
+                </abp-column>
+            </div>
+            <div class="row col-12" style="text-align: center; margin:0!important">
                 <abp-column size="_9"></abp-column>
                 <abp-column size="_3" class="filterDiv">
                     <abp-input asp-for="Search" class="ml-4" />
                 </abp-column>
+            </div>
+            <div class="portlet-tool">
+                <div class="btn-group" role="group" aria-label="Basic outlined example" >
+                    <button type="button" id="copyId" class="btn btn-outline-secondary" onclick="openCopyModal()" disabled><i class="fa fa-files-o me-0"></i></button>
+                    <button type="button" class="btn btn-outline-secondary" style="cursor: no-drop;" disabled><i class="fa fa-trash me-0"></i></button>
+                </div>
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                    <button type="button" class="btn btn-outline-secondary" onclick="selectedLock()" id="lockId" disabled>Lock</button>
+                    <button type="button" class="btn btn-outline-secondary" id="unlockId" onclick="selectedUnLock()" disabled>Unlock</button>
+                </div>
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                    <button type="button" id="summaryId" class="btn btn-outline-secondary" onclick="getProfitReport('Summary')" disabled><i class="fa fa-file-text-o me-0"></i>Profit Report - Summary</button>
+                    <button type="button" id="detailedId" class="btn btn-outline-secondary" onclick="getProfitReport('Detailed')" disabled><i class="fa fa-file-text-o me-0"></i>Profit Report - Detailed</button>
+                </div>
             </div>
             <abp-table class="nowrap"  striped-rows="true" id="MawbListTable" class="stripe row-border order-column" style="width:100%"></abp-table>
         </abp-card-body>

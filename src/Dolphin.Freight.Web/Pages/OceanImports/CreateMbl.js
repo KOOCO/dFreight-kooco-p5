@@ -1,116 +1,56 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
-    $("#OceanImportMbl_PorEtd").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportMbl_PolEtd").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportMbl_PodEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportMbl_DelEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportMbl_FdestEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportHbl_PorEtd").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportHbl_PolEtd").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportHbl_PodEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportHbl_DelEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportHbl_FdestEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportMbl_CanceledDate").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportHbl_PorEtd").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportHbl_PodEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportHbl_DelEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportHbl_FdestEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanImportHbl_CargoArrivalDate").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
+
+    $(document).ready(function () {
+        const ids = [
+            "OceanImportMbl_PostDate",
+            "OceanImportMbl_PolEtd",
+            "OceanImportMbl_PodEta",
+            "OceanImportMbl_DelEta",
+            "OceanImportMbl_FdestEta",
+            "OceanImportMbl_Etb",
+            "OceanImportMbl_LatestContainerEntryDate",
+            "OceanImportMbl_PorEtd",
+            "OceanImportMbl_ItDate",
+            "OceanImportHbl_PorEtd",
+            "OceanImportHbl_PodEta",
+            "OceanImportHbl_DelEta",
+            "OceanImportHbl_FdestEta",
+            "OceanImportHbl_CargoArrivalDate",
+            "OceanImportHbl_HblWhCutOffTime",
+            "OceanImportHbl_EarlyReturnDateTime",
+            "OceanImportHbl_LcIssueDate",
+            "OceanImportHbl_OnBoardDate",
+            "OceanImportHbl_HblReleaseDate",
+            "OceanImportHbl_CanceledDate"
+        ];
+
+        ids.forEach(function (id) {
+            let dateElem = $('#' + id);
+
+            if (dateElem.length === 0) {
+                return;
+            }
+
+            dateElem.removeAttr('type').datetimepicker({
+                format: 'Y-m-d H:i',
+                step: 15,
+                allowInput: false
+            });
+
+            let currentVal = dateElem.val();
+            if (currentVal.includes('T')) {
+                dateElem.val(currentVal.replace('T', ' '));
+            }
+        });
     });
 
-    $("#OceanImportMbl_Etb").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-
-    $("#OceanImportMbl_ItDate").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-
-    tempusDominus.extend(window.tempusDominus.plugins.customDateFormat)
-    $(".cdatetime").tempusDominus({
-        restrictions: {
-            minDate: '2023-02-10 00:00',
-            maxDate: '2023-04-10 00:00'
-        },
-        useCurrent: true,
-
-        localization: {
-            format: 'yyyy-MM-dd HH:mm',
-        }
-    });
     $(".cdatetime").change(function () {
         checkDateTime($(this).attr("id"), $(this).val())
     })
  
     $("#saveBtn").click(function () {
-        $("#mOfficeId").val($("#OfficeId").val());
+        $("#mOfficeId").val($("#OceanImportMbl_OfficeId").val());
         var OfficeId = $("#mOfficeId").val();
         if (OfficeId == "" || OfficeId == "00000000-0000-0000-0000-000000000000") {
             $("#err_OfficeId").show();

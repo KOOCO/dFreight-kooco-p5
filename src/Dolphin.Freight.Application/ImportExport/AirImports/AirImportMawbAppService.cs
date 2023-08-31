@@ -13,6 +13,7 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
 using Dolphin.Freight.TradePartners;
+using Volo.Abp;
 
 namespace Dolphin.Freight.ImportExport.AirImports
 {
@@ -85,6 +86,10 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 foreach (var airImportMawb in airImportMawbList)
                 {
                     var airImportMawbDto = ObjectMapper.Map<AirImportMawb, AirImportMawbDto>(airImportMawb);
+                    if (airImportMawb.Id != Guid.Empty)
+                    {
+                        airImportMawbDto.Id = airImportMawb.Id;
+                    }
                     if (airImportMawb.DepatureId != null)
                     {
                         airImportMawbDto.DepatureAirportName = portManagementDictionary[airImportMawb.DepatureId.Value];
@@ -246,6 +251,35 @@ namespace Dolphin.Freight.ImportExport.AirImports
             airImportDetails.ArrivalDate = data.ArrivalDate;
 
             return airImportDetails;
+        }
+        public async Task LockedOrUnLockedAirImportMawbAsync(Guid id)
+        {
+            try
+            {
+                var mbl = await _repository.GetAsync(id);
+               
+                    mbl.IsLocked = !mbl.IsLocked;
+                    var query = await _airImportHawbAppService.GetQueryableAsync();
+                    var hbls = query.Where(x => x.MawbId == id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = mbl.IsLocked;
+
+                        await _airImportHawbAppService.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+             
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+        }
+        public async Task<List<AirImportMawbDto>> GetMawbListAsync() {
+
+            var query = await _repository.GetQueryableAsync();
+            return ObjectMapper.Map<List<AirImportMawb>, List<AirImportMawbDto>>(query.ToList());
+        
         }
 
     }

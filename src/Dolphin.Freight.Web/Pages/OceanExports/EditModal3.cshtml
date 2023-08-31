@@ -11,42 +11,47 @@
     <abp-script src="/Pages/OceanExports/EditModel3.js" />
     @*<abp-script src="/Pages/OceanExports/CreateMbl.js" />*@
     <script type="text/javascript">
+        Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
         var l = abp.localization.getResource('Freight');
         var isLocked;
         $(document).ready(function () {
             isLocked = '@Model.OceanExportMbl.IsLocked';
-            
-            //var IsShowHbl = '@Model.IsShowHbl';
-            //if (IsShowHbl == 'True') $("#hblCard").show();
-            //else $("#hblCard").hide();
-            //$("#addHBtn").click(function () {
-            //    var url = "/OceanExports/EditModal?Id=@Model.Id&NewHbl=1";
-            //    location.href = url;
-            //})
-            if (isLocked == 'True') {
+            if (isLocked != 'True') {
                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
                 $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
             }
             else {
                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
-                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
             }
-         
+         Swal.clickCancel();
         });
         function lockUnlockMbl(id) {
             var isLock = $('#lockButtonMbl').find('i').hasClass('fa-lock');
             abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
                 if (confirmed) {
+                    Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
                     dolphin.freight.importExport.oceanExports.oceanExportMbl.lockedOrUnLockedOceanExportMbl({ MbId: id })
                         .done(function () {
+                            Swal.clickCancel();
                             if (isLock) {
                                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
-                                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
                                 abp.message.success(l('Message:SuccessUnlock'));
                             } else {
-                                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
                                  $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
-                                abp.message.success(l('Message:SuccessLock'));
+                            abp.message.success(l('Message:SuccessLock'));
                             }
                         });
                 }
@@ -57,16 +62,23 @@
             var isLock = $('#lockButtonHbl').find('i').hasClass('fa-lock');
             abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
                 if (confirmed) {
+                    Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
                     dolphin.freight.importExport.oceanExports.oceanExportHbl.lockedOrUnLockedOceanExportHbl({ HblId: id })
                         .done(function () {
-                            if (isLock) {
-                                $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                            Swal.clickCancel();
+                            if (!isLock) {
+                                $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
                                 $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
-                                abp.message.success(l('Message:SuccessUnlock'));
+                                abp.message.success(l('Message:SuccessLock'));
                             } else {
                                 $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
                                 $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
-                                abp.message.success(l('Message:SuccessLock'));
+                                abp.message.success(l('Message:SuccessUnlock'));
                             }
                         });
                 }

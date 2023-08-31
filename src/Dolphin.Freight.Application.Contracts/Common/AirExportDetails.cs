@@ -7,6 +7,7 @@ namespace Dolphin.Freight.Common
 {
     public class AirExportDetails
     {
+        public Guid HawbId { get; set; }
         public string ShippperName { get; set; }
         public string IssuingCarrierName { get; set; }
         public string NotifyName { get; set; }
@@ -21,6 +22,10 @@ namespace Dolphin.Freight.Common
         public string GrossWeight { get; set; }
         public string IATA { get; set; }
         public string DocNumber { get; set; }
+        public string BookingNumber { get; set; }
+        public double ARTotal { get; set; }
+        public double DCTotal { get; set; }
+        public double APTotal { get; set; }
         public string BillTo { get; set; }
         public string ArrivalDate { get; set; }
         public string NVD { get; set; }
@@ -40,6 +45,9 @@ namespace Dolphin.Freight.Common
         public Guid MawbId { get; set; }
         public DateTime? DepatureDate { get; set; }
         public string DestinationCountry { get; set; }
+        public string ReportType{ get; set; }
         public FreightPageType PageType { get; set; }
+        public bool IsLocked { get; set; }
+        public List<string> DDLItems { get; set; }
     }
 }

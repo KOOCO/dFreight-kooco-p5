@@ -2,8 +2,11 @@
 @using Dolphin.Freight.AirExports
 @using Dolphin.Freight.Localization
 @using Microsoft.Extensions.Localization
+@using Dolphin.Freight.Web.CommonService;
+@using Dolphin.Freight.Web.Pages.Components;
 @model Dolphin.Freight.Web.Pages.ReportScreen.VolumeProfileReportModel
 @inject IStringLocalizer<FreightResource> L
+@inject IDropdownService _dropdown
 @section styles
     {
     <style>
@@ -11,7 +14,71 @@
             content: "*";
             color: red;
         }
+
+        #mawReport thead tr.customProfitHeader th {
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+
+        #mawReport thead tr.customProfitChildHeader th {
+            text-align: center;
+            background-color: #e9e9e9;
+        }
+
+        /*.select2-container {
+            width: 100% !important;
+            padding: 0;
+        }
+
+        .select2-dropdown {
+            border: 1px solid #aaa;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .select2-search__field {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            outline: none;
+            border-radius: 2px;
+        }
+
+        .select2-selection__choice {
+            background-color: #007bff;
+            border-radius: 4px;
+            padding: 5px 10px;
+            color: white;
+            border: none;
+            margin-top: 5px;
+        }
+
+        .select2-selection__choice__remove {
+            color: white;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+
+        .select2-selection__choice:hover {
+            background-color: #0056b3;
+        }
+
+        .select2-selection__arrow {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .select2-results__option--highlighted {
+            background-color: #ebebeb;
+            color: #333;
+        }
+
+        .select2-results__option[aria-disabled=true] {
+            color: #999;
+            font-style: italic;
+        }*/
+
     </style>
+
 }
 @section scripts
     {
@@ -66,6 +133,20 @@
             $("#AwbChargeableWeightLb").on('keyup', function () {
                 $("#AwbChargeableWeightKg").val(Math.round($("#AwbChargeableWeightLb").val() * 0.45359237 * 100) / 100);
             });
+
+            $("#VPRM_MinProfit").prop("disabled", true);
+            $("#VPRM_MaxProfit").prop("disabled", true);
+
+            $("input[name='VPRM.Report']").eq(0).prop('checked', 'checked');
+            $("input[name='VPRM.OutputFormat']").eq(0).prop('checked', 'checked');
+            $("input[name='VPRM.Profit']").eq(0).prop('checked', 'checked');
+
+            var l = abp.localization.getResource('Freight');
+            $('#tradePartnerDDL').select2({
+                placeholder: l("Dropdown:Select"),
+                allowClear: true
+            });
+            $('#tradePartnerDDL').closest('div').css('margin-bottom', '50px');
         });
 
         $('#createForm').on('abp-ajax-success', function () {
@@ -83,33 +164,77 @@
         }
 
         function showTable() {
+            
+            var outputFormat = $("input[name='VPRM.OutputFormat']:checked").val();
 
-            var isDataTable = $.fn.dataTable.isDataTable('#mawReport');
+            if (outputFormat === "PDF") {
+                var shippingType = '';
+                var reportType = '';
+                var salesType = '';
 
-            var createForm = $('#createForm');
+                if ($('#VPRM_IsOceanImport')[0].checked) shippingType += 'OceanImport,';
+                if ($('#VPRM_IsOceanExport')[0].checked) shippingType += 'OceanExport,';
+                if ($('#VPRM_IsAirExport')[0].checked) shippingType += 'AirExport,';
+                if ($('#VPRM_IsAirImport')[0].checked) shippingType += 'AirImport,';
+                if ($('#VPRM_IsTruck')[0].checked) shippingType += 'Truck,';
+                if ($('#VPRM_IsMisc')[0].checked) shippingType += 'Misc,';
+                if ($('#VPRM_IsWarehouse')[0].checked) shippingType += 'Warehouse';
+                shippingType = shippingType.replace(/^,|,$/g, '');
 
-            var form = createForm.serializeFormToObject();
+                if ($("input[name='VPRM.Report']:checked").val() == 'vp') reportType = 'Volume & Profit';
+                if ($("input[name='VPRM.Report']:checked").val() == 'v') reportType = 'Volume Only';
 
-            if (!isDataTable) {
-                dolphin.freight.reportLog.reportLog.getMawbReport(form.vPRM).done(function (res) {
-                    LoadDataTable(res);
-                })
+                if ($('#VPRM_IsNA')[0].checked) salesType += 'N/A,';
+                if ($('#VPRM_IsCOLoad')[0].checked) salesType += 'CO-LOAD,';
+                if ($('#VPRM_IsFreeCargo')[0].checked) salesType += 'FREE CARGO,';
+                if ($('#VPRM_IsNomi')[0].checked) salesType += 'NOMI';
+                salesType = salesType.replace(/^,|,$/g, '');
 
-                $('#result').show();
+                OpenWindow('/Docs/TotalProfitVolumeSummary?shippingType=' + shippingType + '&reportType=' + reportType + '&salesType=' + salesType);
             }
             else {
-                var table = $('#mawReport').DataTable();
+                var isDataTable = $.fn.dataTable.isDataTable('#mawReport');
 
-                dolphin.freight.reportLog.reportLog.getMawbReport(form.vPRM).done(function (res) {
-                    table.destroy();
-                    LoadDataTable(res);
-                });
+                var createForm = $('#createForm');
+                var form = createForm.serializeFormToObject();
+                //Update freightCode for model
+                if (form != null && form.vPRM != null && form.vPRM.freightCode != null)
+                {
+                    form.vPRM.freightCode = $('#VPRM_FreightCode').val();
+                }
+                if (!isDataTable) {
+                    dolphin.freight.reportLog.reportLog.getMawbReport(form.vPRM).done(function (res) {
+                        console.log(res);
+                        LoadDataTable(res);
+                    })
+
+                    $('#result').show();
+                }
+                else {
+                    var table = $('#mawReport').DataTable();
+                    dolphin.freight.reportLog.reportLog.getMawbReport(form.vPRM).done(function (res) {
+                        console.log(res);
+                        table.destroy();
+                        LoadDataTable(res);
+                    });
+                }
             }
+        }
 
+        function renderNegativeInRed(data, type, row, meta) {
+            if (data != null) {
+                let formattedData = parseFloat(data).toFixed(2);
+                if (parseFloat(data) < 0) {
+                    return '<span style="color: red;">' + formattedData + '</span>';
+                } else {
+                    return formattedData;
+                }
+            }
+            return '-';
         }
 
         function LoadDataTable(data) {
-
+            debugger;
             var isOverSeaAgentChecked = $('#VPRM_IsOverseaAgent').prop('checked'),
                 isConsigneeChecked = $('#VPRM_IsConsignee').prop('checked'),
                 isShipperChecked = $('#VPRM_IsShipper').prop('checked'),
@@ -129,16 +254,23 @@
                 isColorRemarkChecked = $('#VPRM_IsMblColorRemark').prop('checked'),
                 isFreightTermIdChecked = $('#VPRM_IsOutputFreightTerm').prop('checked'),
                 isSalesTypeChecked = $('#VPRM_IsOutputSalesType').prop('checked');
+                isCargoType = $('#VPRM_IsCargoType').prop('checked');
+                isBLPostDate = $('#VPRM_IsBLPostDate').prop('checked');
+                isSalesPerson = $('#VPRM_IsSalesPerson').prop('checked');
+                isVolumeAndProfit = $('#VPRM\\.ReportRadiovp').prop('checked');
+                isVolumeOnly = $('#VPRM\\.ReportRadiov').prop('checked');
 
             var dataTable = $('#mawReport').DataTable(
                 abp.libs.datatables.normalizeConfiguration({
                     serverSide: false,
-                    paging: true,
+                    paging: false,
                     order: [[1, "asc"]],
                     searching: true,
                     scrollX: true,
                     processing: true,
                     data: data.items,
+                    scrollCollapse: true,
+                    scrollY: '50vh',
                     columnDefs: [
                         {
                             title: l('reportType'),
@@ -182,6 +314,28 @@
                             title: l('CustomerRefNo'),
                             data: "customerRefNo",
                             visible: isCustomerRefChecked
+                        },
+                        {
+                            title: l('PostDate'),
+                            data: "blPostDate",//<->//
+                            visible: isBLPostDate,
+                            render: function (data) {
+                            return luxon
+                                .DateTime
+                                .fromISO(data, {
+                                    locale: abp.localization.currentCulture.name
+                                }).toFormat('yyyy-MM-dd HH:mm');
+                            }
+                        },
+                        {
+                            title: l('CargoType'),
+                            data: "cargoType",//<->//
+                            visible: isCargoType
+                        },
+                        {
+                            title: l('SalesPerson'),
+                            data: "salesPerson",//<->//
+                            visible: isSalesPerson
                         },
                         {
                             title: l('FreightTermId'),
@@ -242,11 +396,165 @@
                             title: l('CoLoaderId'),
                             data: "coLoaderId",
                             visible: isCoLoaderChecked
+                        },
+                        { 
+                            title: 'AR',
+                            data: 'arTotal',
+                            className: 'profit-child-header',
+                            visible: isVolumeAndProfit,
+                            render: renderNegativeInRed
+                        },
+                        { 
+                            title: 'AP',
+                            data: 'apTotal',
+                            className: 'profit-child-header',
+                            visible: isVolumeAndProfit,
+                            render: renderNegativeInRed
+                        },
+                        { 
+                            title: 'DC',
+                            data: 'dcTotal',
+                            className: 'profit-child-header',
+                            visible: isVolumeAndProfit,
+                            render: renderNegativeInRed
+                        },
+                        {
+                            title: 'Profit Amount',
+                            data: 'profitAmt',
+                            className: 'profit-child-header',
+                            visible: isVolumeAndProfit,
+                            render: renderNegativeInRed
+                        },
+                        { 
+                            title: 'Profit Margin',
+                            data: null,
+                            className: 'profit-child-header',
+                            visible: isVolumeAndProfit,
+                            render: renderNegativeInRed
+                        },
+                        {
+                            title: 'Avg. Profit Per Container',
+                            data: null,
+                            className: 'profit-child-header',
+                            visible: isVolumeAndProfit,
+                            render: renderNegativeInRed
+                        },
+                        {
+                            title : "20'",
+                            data: "v20",
+                            render: function (data) {
+                                console.log(data);
+                                return data ? data : "0";
+                            }
+                        },
+                        {
+                            title: "40'",
+                            data: "v40",
+                            
+                        },                         
+                        {
+                            title: "HC",
+                            data: "hC",
+                            defaultContent: '-'
+                        },
+                        {
+                            title: "V45'",
+                            data: "Volume",
+                            render: function (data) {
+                                console.log(data);
+                            }
+                            
+                        },
+                        {
+                            title: "RF",
+                            data: "rF",
+                            render: function (data) {
+                                console.log(data);
+                                return data  ? data : "0";
+                            }
+                        },
+                        {
+                            title: "SOC",
+                            data: "sOC",
+                            
+                        },
+                        {
+                            title: "Etc",
+                            data: "eTC",
+                            
                         }
-                    ]
+                     
+                    ],
                 })
             );
-        }</script>
+        }
+
+        $("input[name='VPRM.Profit']").on("change", function () {
+            var selectedValue = $("input[name='VPRM.Profit']:checked").val();
+
+            if (selectedValue === "range") {
+                $("#VPRM_MinProfit").prop("disabled", false);
+                $("#VPRM_MaxProfit").prop("disabled", false);
+            } else {
+                $("#VPRM_MinProfit").prop("disabled", true);
+                $("#VPRM_MaxProfit").prop("disabled", true);
+            }
+        });
+
+        $("input[name='VPRM.OutputFormat']").on("change", function () {
+            var selectedValue = $("input[name='VPRM.OutputFormat']:checked").val();
+
+            if (selectedValue === "DS") {
+                $('#VPRM_IsVolumeDetail, #VPRM_IsProfitDetail, #VPRM_IsContainerDetail').prop('disabled', false);
+                $("#OutputBySection").show();
+                $("#result").show();
+            } 
+            else {
+                $('#VPRM_IsVolumeDetail, #VPRM_IsProfitDetail, #VPRM_IsContainerDetail').prop('disabled', true);
+                $("#OutputBySection").hide();
+                $("#result").hide();
+            }
+        });
+
+        $("input[name='VPRM.Report']").on("change", function (){
+            var selectedValue = $("input[name='VPRM.Report']:checked").val();
+
+            if (selectedValue === "vp") {
+                $("input[name='VPRM.Profit']").prop('disabled', false);
+                $("#VPRM_IsProfitDetail").prop('disabled', false);
+            }
+            else {
+                $("input[name='VPRM.Profit']").prop('disabled', true);
+                $("#VPRM_IsProfitDetail").prop('disabled', true);
+            }
+        });
+
+        $("#VPRM_IsOceanImport, #VPRM_IsOceanExport, #VPRM_IsAirImport, #VPRM_IsAirExport, #VPRM_IsNA, #VPRM_IsCOLoad, #VPRM_IsFreeCargo, #VPRM_IsNomi").on('click', function () {
+            debugger;
+            $("#showResultBtn").prop('disabled', false);
+
+            if (!($("#VPRM_IsOceanImport").prop('checked') || $("#VPRM_IsOceanExport").prop('checked') || $("#VPRM_IsAirImport").prop('checked') || $("#VPRM_IsAirExport").prop('checked'))) {
+                $("#showResultBtn").prop('disabled', true);
+            }
+
+            if (!($("#VPRM_IsNA").prop('checked') || $("#VPRM_IsCOLoad").prop('checked') || $("#VPRM_IsFreeCargo").prop('checked') || $("#VPRM_IsNomi").prop('checked'))) {
+                $("#showResultBtn").prop('disabled', true);
+            }
+        });
+
+        $('#VPRM_OutputType').change(function () {
+            debugger;
+            var selectedVal = $('#VPRM_OutputType').val();
+
+            if (selectedVal == 'Shipper' || selectedVal == 'OverseaAgent' || selectedVal == 'Consignee' || selectedVal == 'Customer' || selectedVal == 'Carrier' || selectedVal == 'CustomsBroker' || selectedVal == 'Trucker' || selectedVal == 'AccountGroup' || selectedVal == 'BillTo' || selectedVal == 'ReferredBy') {
+
+                $('#tradePartnerDDL').closest('div').show();
+            }else{
+                $('#tradePartnerDDL').closest('div').hide();
+            }
+        });
+
+    </script>
 }
 <form abp-model="MawbModel" submit-button="true" data-ajaxForm="true" id="createForm">
     <abp-row>
@@ -298,26 +606,55 @@
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
+                            @*<label asp-for="VPRM.ShippingType" class="form-label">Shipping Type</label>
+                            <input asp-for="VPRM.ShippingType" class="form-control" />*@
+
                             <label asp-for="VPRM.ShippingType" class="form-label">Shipping Type</label>
-                            <input asp-for="VPRM.ShippingType" class="form-control" />
+                            <abp-row>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsOceanImport" label="Ocean Import" checked/>
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsOceanExport" label="Ocean Export" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsAirImport" label="Air Import" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsAirExport" label="Air Export" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsTruck" label="Truck" disabled/>
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsMisc" label="Misc." disabled/>
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsWarehouse" label="Warehouse" disabled />
+                                </abp-column>
+                            </abp-row>
+
                         </abp-column>
                         <abp-column size-md="_3">
                             <abp-select asp-for="VPRM.Currency" size="Small" asp-items="@Model.Currency">
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
-                            <label asp-for="VPRM.Profit" class="form-label">Profite</label>
+                            <label asp-for="VPRM.Profit" class="form-label">Profit</label>
                             <abp-radio asp-for="VPRM.Profit" asp-items="Model.Profit" inline="true" />
+                            <div style="display:flex; padding-top:10px;">
+                                <input asp-for="VPRM.MinProfit" class="form-control" style="margin-right:10px;"/>
+                                <input asp-for="VPRM.MaxProfit" class="form-control" />
+                            </div>
                         </abp-column>
-                        <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.ShipMode" size="Small" asp-items="@Model.ShipMode">
-                            </abp-select>
+                        <abp-column size-md="_12">
+                            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VPRM.FreightCode", AspItems = @Model.FreightCode, IsShowLabel = true, IsMultipleSelection= true, FieldName = "FreightCode", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.FreightCode) })
                         </abp-column>
                     </abp-row>
                     <!--第三列-->
                     <abp-row>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.FreightCode" size="Small" asp-items="@Model.FreightCode">
+                            <abp-select asp-for="VPRM.ShipMode" size="Small" asp-items="@Model.ShipMode">
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
@@ -325,8 +662,25 @@
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
+                            @*<label asp-for="VPRM.Detail" class="form-label">Detail</label>
+                            <input asp-for="VPRM.Detail" class="form-control" />*@
+
                             <label asp-for="VPRM.Detail" class="form-label">Detail</label>
-                            <input asp-for="VPRM.Detail" class="form-control" />
+                            <abp-row>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsVolumeDetail" label="Show Volume Detail" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsProfitDetail" label="Show Profit Detail" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsContainerDetail" label="Show Container Detail" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsVolByCntrAndSalesType" label="Volume By Container Type And Sales Type" disabled/>
+                                </abp-column>
+                            </abp-row>
+
                         </abp-column>
                         <abp-column size-md="_3">
                             <abp-select asp-for="VPRM.Sales" size="Small" asp-items="@Model.Sales">
@@ -339,6 +693,14 @@
                         <abp-column size-md="_3">
                             <abp-select asp-for="VPRM.OutputType" size="Small" asp-items="@Model.OutputType">
                             </abp-select>
+                        </abp-column>
+                        <abp-column size-md="_12" id="tradePartnerDiv">
+                            <select id="tradePartnerDDL" multiple>    
+                                @foreach(var item in Model.TradePartnerLookupList)
+                                {
+                                    <option id="@item.Value">@item.Text</option>
+                                }
+                            </select>
                         </abp-column>
                         <abp-column size-md="_3">
                             <abp-select asp-for="VPRM.ServiceTermTypeFrom" size="Small" asp-items="@Model.ServiceTermStart"></abp-select>
@@ -354,9 +716,26 @@
                     </abp-row>
                     <!--第五列-->
                     <abp-row>
-                        <abp-column size-md="_3">
+                        <abp-column size-md="_6">
+                            @*<label asp-for="VPRM.SalesTypeId" class="form-label">Sales Type</label>
+                            <input asp-for="VPRM.SalesTypeId" class="form-control" />*@
+
                             <label asp-for="VPRM.SalesTypeId" class="form-label">Sales Type</label>
-                            <input asp-for="VPRM.SalesTypeId" class="form-control" />
+                            <abp-row>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsNA" label="N/A" checked/>
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsCOLoad" label="CO-LOAD" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsFreeCargo" label="FREE CARGO" />
+                                </abp-column>
+                                <abp-column size-md="Auto">
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsNomi" label="NOMI" />
+                                </abp-column>
+                            </abp-row>
+
                         </abp-column>
                         <abp-column size-md="_3">
                             <abp-select asp-for="VPRM.InvoiceType" size="Small" asp-items="@Model.InvoiceType">
@@ -369,7 +748,7 @@
 
                     </abp-row>
                     <!--第六列-->
-                    <abp-row>
+                    <abp-row id="OutputBySection">
                         <label asp-for="VPRM.OutputBy" class="form-label">Output By</label>
                         <abp-row>
                             <abp-column size-md="Auto">
@@ -406,6 +785,9 @@
                                 <abp-input size-md="Auto" asp-for="VPRM.IsOutputOffice" label="Output Office" />
                             </abp-column>
                             <abp-column size-md="Auto">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsBLPostDate" label="BL Post Date" />
+                            </abp-column>
+                            <abp-column size-md="Auto">
                                 <abp-input size-md="Auto" asp-for="VPRM.IsETD" label="ETD" />
                             </abp-column>
                             <abp-column size-md="Auto">
@@ -419,6 +801,12 @@
                             </abp-column>
                             <abp-column size-md="Auto">
                                 <abp-input size-md="Auto" asp-for="VPRM.IsServiceTerm" label="Service Term" />
+                            </abp-column>
+                            <abp-column size-md="Auto">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsCargoType" label="Cargo Type" />
+                            </abp-column>
+                            <abp-column size-md="Auto">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsSalesPerson" label="Sales Person" />
                             </abp-column>
                             <abp-column size-md="Auto">
                                 <abp-input size-md="Auto" asp-for="VPRM.IsMBLOP" label="MB/L OP" />
@@ -529,12 +917,11 @@
 <div id="result" style="display:none;">
     <abp-row>
         <abp-card-body>
-            <abp-table class="nowrap" striped-rows="true" id="mawReport" class="stripe row-border order-column" style="width:100%;">
-
-            </abp-table>
+            <div class="table-responsive">
+                <abp-table class="nowrap" striped-rows="true" id="mawReport" class="stripe row-border order-column" style="width:100%;">
+                </abp-table>
+            </div>
         </abp-card-body>
     </abp-row>
-
-
 </div>
 

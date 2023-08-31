@@ -88,6 +88,19 @@ namespace Dolphin.Freight.Common.Memos
                 await _repository.UpdateAsync(entity);
             }
         }
+        public async Task UpdateSourceIdAsync(Guid SourceId,FreightPageType fpageType)
+        {
+            var data = await _repository.GetQueryableAsync();
+            var list = data.Where(x => x.SourceId == Guid.Empty && x.FType == fpageType).ToList();
+            foreach (var item in list)
+            { 
+            item.SourceId= SourceId;
+                await _repository.UpdateAsync(item);
+            
+            
+            }
+        }
+
 
         public async Task SwitchHighlightAsync(SwitchHighlightDto dto)
         {

@@ -1,85 +1,51 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
-    $("#OceanExportMbl_PorEtd").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
+    $(document).ready(function () {
+        const ids = [
+            'OceanExportMbl_PostDate',
+            'OceanExportMbl_PorEtd',
+            'OceanExportMbl_PolEtd',
+            'OceanExportMbl_PodEta',
+            'OceanExportMbl_DelEta',
+            'OceanExportMbl_FdestEta',
+            'OceanExportMbl_DocCutOffTime',
+            'OceanExportMbl_PortCutOffTime',
+            'OceanExportMbl_VgmCutOffTime',
+            'OceanExportMbl_RailCutOffTime',
+            'OceanExportMbl_OnBoardDate', 
+            'OceanExportMbl_Trans1Eta',
+            'OceanExportHbl_PorEtd',
+            'OceanExportHbl_PodEta',
+            'OceanExportHbl_DelEta',
+            'OceanExportHbl_FdestEta',
+            'OceanExportHbl_CargoArrivalDate',
+            'OceanExportHbl_HblWhCutOffTime',
+            'OceanExportHbl_EarlyReturnDateTime',
+            'OceanExportHbl_LcIssueDate',
+            'OceanExportHbl_OnBoardDate',
+            'OceanExportHbl_HblReleaseDate'
+        ];
+        
+        ids.forEach(function (id) {
+            let dateElem = $('#' + id);
+
+            if (dateElem.length === 0) {
+                return;
+            }
+
+            dateElem.removeAttr('type').datetimepicker({
+                format: 'Y-m-d H:i',
+                step: 15,
+                allowInput: false
+            });
+
+            let currentVal = dateElem.val();
+            if (currentVal.includes('T')) {
+                dateElem.val(currentVal.replace('T', ' '));
+            }
+        });
     });
-    $("#OceanExportMbl_PolEtd").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanExportMbl_PodEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanExportMbl_DelEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanExportMbl_FdestEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanExportHbl_PorEtd").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanExportHbl_PolEtd").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanExportHbl_PodEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanExportHbl_DelEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanExportHbl_FdestEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanExportMbl_CanceledDate").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanExportHbl_PorEtd").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanExportHbl_PodEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanExportHbl_DelEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanExportHbl_FdestEta").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
-    $("#OceanExportHbl_CargoArrivalDate").datepicker({
-        format: "yyyy-mm-dd",
-        startDate: '-15d',
-        endDate: '+60d'
-    });
+
 
     tempusDominus.extend(window.tempusDominus.plugins.customDateFormat)
     $(".cdatetime").tempusDominus({
@@ -93,6 +59,8 @@
             format: 'yyyy-MM-dd HH:mm',
         }
     });
+
+
     $(".cdatetime").change(function () {
         checkDateTime($(this).attr("id"), $(this).val())
     })
@@ -173,6 +141,7 @@
         
     });
     $("#saveEditBtn").click(function () {
+        debugger;
         var OfficeId = $("#mOfficeId").val();
         if (OfficeId == "" || OfficeId == "00000000-0000-0000-0000-000000000000") {
             $("#err_OfficeId").show();

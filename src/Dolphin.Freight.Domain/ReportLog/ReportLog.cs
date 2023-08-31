@@ -7,6 +7,8 @@ using Volo.Abp.Domain.Entities.Auditing;
 using Volo.Abp;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using NPOI.HSSF.Record.PivotTable;
+using Dolphin.Freight.Accounting.Invoices;
 
 namespace Dolphin.Freight.ReportLog
 {
@@ -80,5 +82,64 @@ namespace Dolphin.Freight.ReportLog
         public string ForwardingAgentName { get; set; } = "";
         public string ColorRemarkId { get; set; } = "";
         public string ColorRemarkName { get; set; } = "";
+        public string CargoType { get; set; }
+        public string SalesPerson { get; set; } // Sales Person but don't get table
+        public DateTime BLPostDate { get; set; } //  Mawb post date
+        public VolumeReport Volume { get; set; }
+        public ProfitReport Profit { get; set; }
+        public int V20 { get; set; }
+        public int V40 { get; set; }
+        public int HC { get; set; }
+        public int V45 { get; set; }
+        public int RF { get; set; }
+        public int SOC { get; set; }
+        public int ETC { get; set; }
+        public double ARTotal { get; set; }
+        public double APTotal { get; set; }
+        public double DCTotal { get; set; }
+        public double ProfitMargin { get; set; }
+        public double ProfitAmt { get; set; }
+        public double Avg_Profit_Per_Cntr { get; set; }
+
+    }
+
+    public class VolumeReport
+    {
+        public int V20 { get; set; }
+        public int V40 { get; set; }
+        public int HC { get; set; }
+        public int V45 { get; set; }
+        public int RF { get; set; }
+        public int SOC { get; set; }
+        public int ETC { get; set; }
+    }
+
+    public class PackageSizeReport
+    {
+
+        public Guid ContainerId { get; set; }
+        public string ContainerCode { get; set; }
+        public Guid MblId { get; set; }
+    }
+    
+
+    public class ProfitReport
+    {
+        public double ARTotal { get; set; }
+        public double APTotal { get; set; }
+        public double DCTotal { get; set; }
+        public double ProfitMargin { get; set; }
+        public double ProfitAmt { get; set; }
+        public double Avg_Profit_Per_Cntr { get; set; }
+        public List<InvoiceDto> AR { get; set; }
+        public List<InvoiceDto> DC { get; set; }
+        public List<InvoiceDto> AP { get; set; }
+        public List<InvoiceDto> Invoices { get; set; }
+    }
+    public class SysCodeForReport
+    {
+        public string   Id  { get; set; }
+        public string ShowName { get; set; }
+        public string CodeType { get; set; }
     }
 }

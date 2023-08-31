@@ -414,17 +414,17 @@
         return false;
     });
 
-    $(document).on('click', '.add-trade-party', function (e) {
-        const self = $(this);
-        const tradePartyType = self.data('party-type');
+    //$(document).on('click', '.add-trade-party', function (e) {
+    //    const self = $(this);
+    //    const tradePartyType = self.data('party-type');
 
-        createTradePartyModal[tradePartyType].open({
-            tradePartnerId,
-            tradePartyType,
-        });
+    //    createTradePartyModal[tradePartyType].open({
+    //        tradePartnerId,
+    //        tradePartyType,
+    //    });
 
-        return false;
-    });
+    //    return false;
+    //});
     /* ==================== TradeParty End ==================== */
 
     $('#TPForm').on('abp-ajax-success', function () {

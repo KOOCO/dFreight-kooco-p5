@@ -419,3 +419,13 @@ function OpenWindow(url) {
     myWindow = window.open(url, 'Empty', 'width=1200,height=800');
     myWindow.focus();
 }
+
+function copyHawb(hawbId) {
+    let hawbcard = createHawbCard();
+    let index = $('.hbl_sm_area').find('.card').length;
+    hawbcard = setHawbCardValues(hawbcard, hawbId, '0', index);
+    $('#hblCards').append(hawbcard);
+    setTimeout(() => {
+        $('.hblCardTitle')[index].click();
+    }, 500);
+}

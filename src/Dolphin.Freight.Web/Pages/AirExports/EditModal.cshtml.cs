@@ -25,6 +25,7 @@ using Dolphin.Freight.Settings.Countries;
 using Volo.Abp.Uow;
 using System.Threading;
 using Newtonsoft.Json;
+using Dolphin.Freight.Accounting;
 
 namespace Dolphin.Freight.Web.Pages.AirExports
 {
@@ -39,6 +40,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         private readonly IAirExportHawbAppService _airExportHawbAppService;
         private readonly ICountryDisplayNameAppService _countryDisplayNameAppService;
         private readonly ICountryAppService _countryAppService;
+        [BindProperty]
+       public List<SelectListItem> EnumList { get; set; }
 
         public EditModalModel(ITradePartnerAppService tradePartnerAppService,
             ISubstationAppService substationAppService,
@@ -64,22 +67,27 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool ShowMsg { get; set; } = false;
         [BindProperty]
         public List<MoreInformation> MoreInformations { get; set; }
         [BindProperty]
         public MoreInformation MoreInformationPrepaid { get; set; }
         [BindProperty]
         public MoreInformation MoreInformationCollect { get; set; }
+        [BindProperty]
+        public List<AccountingInformation> AccountingInformation { get; set; }
+        public List<SelectListItem> ChargeItemList { get; set; }
 
         private static readonly Object lockObject = new object();
         public async Task OnGetAsync(Guid Id)
         {
             AirExportMawbDto = await _airExportMawbAppService.GetAsync(Id);
-            AirExportHawbDto = new AirExportHawbDto();
+            //AirExportHawbDto = new AirExportHawbDto();
             /*AirExportHawbDto = await _airExportHawbAppService.GetHblCardsById(Id);*/
             //if (AirExportMawbDto.ExtraProperties != null)
             //{
-                
+
 
             //     var extraproperty=AirExportMawbDto.ExtraProperties;
 
@@ -88,7 +96,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             //    MoreInformations = JsonConvert.DeserializeObject<List<MoreInformation>>(json.ToString());
 
             //}
-
+            EnumList = GetIncotermsSelectList();
+            ChargeItemList = GetChargeItemSelectList();
             await FillTradePartnerAsync();
             await FillSubstationAsync();
             await FillAirportAsync();
@@ -104,21 +113,39 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             {
                 updateItem.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
             }
-            if (MoreInformationPrepaid != null || MoreInformationCollect!=null)
+            if (AirExportMawbDto.Commodities != null )
+            {
+                updateItem.ExtraProperties.Remove("Commodites");
+                updateItem.ExtraProperties.Add("Commodities", AirExportMawbDto.Commodities);
+
+            }
+            if (AirExportMawbDto.OtherCharges != null)
+            {
+                updateItem.ExtraProperties.Remove("OtherCharges");
+                updateItem.ExtraProperties.Add("OtherCharges", AirExportMawbDto.OtherCharges);
+
+            }
+            if (AccountingInformation != null)
+            {
+                updateItem.ExtraProperties.Remove("AccountingInformation");
+                updateItem.ExtraProperties.Add("AccountingInformation", AccountingInformation);
+            }
+            if (MoreInformationPrepaid != null || MoreInformationCollect != null)
             {
                 MoreInformations.Add(MoreInformationPrepaid);
                 MoreInformations.Add(MoreInformationCollect);
-                
+
                 updateItem.ExtraProperties.Remove("MoreInformation");
-                updateItem.ExtraProperties.Add("MoreInformation",MoreInformations);
+                updateItem.ExtraProperties.Add("MoreInformation", MoreInformations);
 
             }
             _airExportMawbAppService.UpdateAsync(AirExportMawbDto.Id, updateItem).Wait();
 
-            if (AirExportHawbDto is not null)
+            if (AirExportHawbDto is not null && !string.IsNullOrEmpty(AirExportHawbDto.HawbNo))
             {
                 var updateHawb = ObjectMapper.Map<AirExportHawbDto, CreateUpdateAirExportHawbDto>(AirExportHawbDto);
                 updateHawb.MawbId = AirExportMawbDto.Id;
+                bool isUpdate = AirExportHawbDto.Id != Guid.Empty;
 
                 if (updateHawb.ExtraProperties == null)
                 {
@@ -138,8 +165,13 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                     updateHawb.ExtraProperties.Add("OtherCharges", AirExportHawbDto.OtherCharges);
                 }
 
+                if (string.IsNullOrEmpty(AirExportHawbDto.HawbNo) || AirExportHawbDto.HawbNo == "0")
+                {
+                    AirExportHawbDto.Id = Guid.NewGuid();
+                    isUpdate = false;
+                }
 
-                if (AirExportHawbDto.Id != Guid.Empty)
+                if (isUpdate)
                 {
                     _airExportHawbAppService.UpdateAsync(AirExportHawbDto.Id, updateHawb).Wait();
                 }
@@ -238,6 +270,33 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             return AEFileNo;
         }
         #endregion
+        private List<SelectListItem> GetIncotermsSelectList()
+        {
+            var enumValues = Enum.GetValues(typeof(AccountingInformationCode))
+                                  .Cast<AccountingInformationCode>()
+                                  .Select(e => new SelectListItem
+                                  {
+                                      Text =L["Enum:" + e.ToString()],
+                                      Value = e.ToString(),
+                                    
+                                  })
+                                  .ToList();
 
+            return enumValues;
+        }
+        private List<SelectListItem> GetChargeItemSelectList()
+        {
+            var enumValues = Enum.GetValues(typeof(ChargeItems))
+                                  .Cast<ChargeItems>()
+                                  .Select(e => new SelectListItem
+                                  {
+                                      Text = L["Enum:ItemCharge." + e.ToString()],
+                                      Value = e.ToString(),
+
+                                  })
+                                  .ToList();
+
+            return enumValues;
+        }
     }
 }

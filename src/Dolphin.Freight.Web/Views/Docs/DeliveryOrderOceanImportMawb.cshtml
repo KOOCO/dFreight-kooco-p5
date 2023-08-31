@@ -280,7 +280,7 @@ table td {
         </div>
 
         <div class="header header-normal padding-t-xs">
-            <table>
+            <table style="font-size:12px;">
                 <tbody><tr>
                     <td class="w-15 logo">
                         <img src="/img/hardcore-tech-logo.png">
@@ -309,7 +309,7 @@ table td {
             </tbody></table>
         </div>
         <div class="header header-horizontal-logo">
-            <table>
+            <table style="font-size:12px;"
                 <tbody><tr>
                     <td class="w-75">
                         <h1 class="text-blue-deep">DELIVERY ORDER</h1>
@@ -334,7 +334,7 @@ table td {
             </tbody></table>
         </div>
         <div class="con">
-            <table>
+            <table style="font-size:11px;">
                 <tbody><tr>
                     <td class="w-27 td text-center border col-padding-double">
                         <div class="title-oblique">DATE</div>
@@ -365,14 +365,15 @@ table td {
                 </tr>
             </tbody></table>
             <table class="margin-t-sm">
-                <tbody><tr>
+                <tbody>
+                    <tr>
                     <td class="w-48">
                         <table>
                             <tbody><tr>
                                 <td class="td highlight-block">
                                     <div class="title">
                                         <div class="item-edit">
-                                            <table>
+                                            <table  style="font-size:12px;">
                                                 <tbody><tr>
                                                     <td class="w-50">TRUCKER</td>
                                                     <td class="w-50 data">
@@ -402,7 +403,7 @@ table td {
                                 <td class="td highlight-block">
                                     <div class="title">
                                         <div class="item-edit">
-                                            <table>
+                                            <table  style="font-size:12px;">
                                                 <tbody><tr>
                                                     <td class="w-50">PICKUP</td>
                                                     <td class="w-40 data">
@@ -444,7 +445,7 @@ table td {
                                 <td class="td highlight-block">
                                     <div class="title">
                                         <div class="item-edit">
-                                            <table>
+                                            <table  style="font-size:12px;">
                                                 <tbody><tr>
                                                     <td class="w-50">DELIVERY</td>
                                                     <td class="w-50 data">
@@ -489,7 +490,7 @@ table td {
                                 <td class="td highlight-block">
                                     <div class="title">
                                         <div class="item-edit">
-                                            <table>
+                                            <table  style="font-size:12px;">
                                                 <tbody><tr>
                                                     <td class="w-50">BILL TO</td>
                                                     <td class="w-50 data">
@@ -517,7 +518,8 @@ table td {
                     <td class="w-4">&nbsp;</td>
                     <td class="w-48 td border-t data-lg">
                         <table>
-                            <tbody><tr>
+                            <tbody>
+                                <tr>
                                 <td class="td w-49 border-b border-l">
                                     <div class="title">MB/L NO.</div>
                                     <div class="data data--highlight">
@@ -534,6 +536,29 @@ table td {
                                     <div class="data data--highlight">
                                         <div class="item-edit hover-toggle-icon-text-template">
                                             <input type="text" name="HawbNo" value="@Model.HBL_NO" id="id_HBL_NO" class="ng-isolate-scope">
+                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 3px; left: 138px;"></span><!---->
+
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                            </tr>
+                             <tr>
+                                <td class="td w-49 border-b border-l">
+                                    <div class="title">VESSEL.</div>
+                                    <div class="data data--highlight">
+                                        <div class="item-edit hover-toggle-icon-text-template">
+                                            <input type="text" name="VESSEL" value="@Model.VESSEL_INFO" id="id_MBL_NO" class="ng-isolate-scope">
+                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 3px; left: 138px;"></span><!---->
+
+                                        </hc-input-template></div>
+                                    </div>
+                                </td>
+                                <td class="w-2">&nbsp;</td>
+                                <td class="td w-49 border-b border-r">
+                                    <div class="title">VOYAGE.</div>
+                                    <div class="data data--highlight">
+                                        <div class="item-edit hover-toggle-icon-text-template">
+                                            <input type="text" name="VOYAGE" value="@Model.VOVAGE_INFO" id="id_HBL_NO" class="ng-isolate-scope">
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 3px; left: 138px;"></span><!---->
 
                                         </hc-input-template></div>
@@ -657,23 +682,21 @@ table td {
 
                                <table class="margin-t">
          <tbody>
-            <tr class="border-b border-t bg-light text-8">
+            <tr class="border-b border-l border-r border-t bg-light text-8">
                <th class="w-5 border-r text-center col-padding-double item-edit">
                   <input type="checkbox" name="check_all_container" onClick="toggle(this)" checked>
                </th>
                <th class="w-15 border-r text-left col-padding-double">
                   CONTAINER NO.
                </th>
-               <th class="w-6 border-r text-center col-padding-double">
+               <th class="w-12 border-r text-center col-padding-double">
                   TYPE
                </th>
                <th class="w-12 border-r text-left col-padding-double">
                   SEAL NO.
                </th>
-               <th class="w-15 border-r text-right col-padding-double">
-                  PACKAGE
-               </th>
-               <th class="w-24 border-r text-right col-padding-double">
+              
+               <th class="w-22 border-r  col-padding-double">
                   WEIGHT
                </th>
                <th class="w-12 border-r text-left col-padding-double">
@@ -691,14 +714,14 @@ table td {
                                             {
                                                 var container = Model.ContainerList[i];
 
-                            <tr class="border-b">
-                               <td class="td td-item border-r text-center item-edit"><input type="checkbox" class="ContainerListCheck" name="ContainerList[@(i.ToString())].chk" value="true" checked=""></td>
-                               <td class="td td-item border-r">@container.CONTAINER_NO</td>
-                               <td class="td td-item text-center border-r">@container.TYPE</td>
-                               <td class="td td-item border-r">@container.SEAL_NO</td>
+                            <tr class="border-b border-l">
+                               <td class="td td-item text-center item-edit"><input type="checkbox" class="ContainerListCheck" name="ContainerList[@(i.ToString())].chk" value="true" checked=""></td>
+                               <td class="td td-item ">@container.CONTAINER_NO</td>
+                               <td class="td td-item text-center ">@container.TYPE</td>
+                               <td class="td td-item text-center">@container.SEAL_NO</td>
 
-                               <td class="td td-item text-right border-r">@container.WEIGHT</td>
-                               <td class="td td-item border-r">@container.PICKUP_NO</td>
+                               <td class="td td-item text-center ">@container.WEIGHT</td>
+                               <td class="td td-item text-center ">@container.PICKUP_NO</td>
                                <td class="td td-item text-center">@container.LFD</td>
 
                                 <input type="hidden" name="ContainerList[@(i.ToString())].CONTAINER_NO" value="@container.CONTAINER_NO" />
@@ -713,7 +736,7 @@ table td {
                                         }
                                         else
                                         {
-                    <tr class="border-b">
+                    <tr class="border-b border-l">
                        <td class="td td-item border-r text-center item-edit"><input type="checkbox" class="ContainerListCheck" name="ContainerList[0].chk" value="true" checked=""></td>
                        <td class="td td-item border-r"></td>
                        <td class="td td-item text-center border-r"></td>
@@ -758,48 +781,48 @@ table td {
                         PKGS
                     </th>
                     <th class="w-14 border-r text-right col-padding-double">
-                        GROSS WEIGHT
+                         WEIGHT
                     </th>
                     <th class="w-17 text-right col-padding-double">
-                        CHARGEABLE WEIGHT<br>MEASUREMENT
+                        MEASUREMENT
                     </th>
                 </tr>
                 <tr>
                     <td class="td td-item border-r">
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="mark" cols="40" rows="15" class="text-scroll ng-isolate-scope" id="id_mark"></textarea>
+                            <textarea name="mark" cols="40" rows="15" class="text-scroll ng-isolate-scope" id="id_mark">@Model.marks</textarea>
                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 142px;"></span><!---->
 
                         </hc-input-template></div>
                     </td>
                     <td class="td td-item border-r">
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="good_items" cols="40" rows="15" class="text-scroll ng-isolate-scope" id="id_good_items"></textarea>
+                            <textarea name="good_items" cols="40" rows="15" class="text-scroll ng-isolate-scope" id="id_good_items">@Model.description</textarea>
                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 228px;"></span><!---->
 
                         </hc-input-template></div>
                     </td>
                     <td class="td td-item border-r text-right">
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="package_area" cols="40" rows="15" class="text-scroll text-right ng-isolate-scope" id="id_package_area">@Model.total_packages_count @Model.package_unit</textarea>
+                            <textarea name="package_area" cols="40" rows="15" class="text-scroll text-right ng-isolate-scope" id="id_package_area">@Model.total_packages_count </textarea>
                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 59px;"></span><!---->
 
                         </hc-input-template></div>
                     </td>
                     <td class="td td-item text-right border-r">
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="gross_weight" cols="40" rows="15" class="text-scroll text-right ng-isolate-scope" id="id_gross_weight">@Model.gross_weight_kgs</textarea>
+                            <textarea name="gross_weight" cols="40" rows="15" class="text-scroll text-right ng-isolate-scope" id="id_gross_weight">@Model.gross_weight_kgs/@Model.gross_weight_lbs</textarea>
                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 81px;"></span><!---->
 
                         </hc-input-template></div>
                     </td>
                     <td class="td td-item text-right">
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="chargeable_weight" cols="40" rows="15" class="text-scroll text-right ng-isolate-scope" id="id_chargeable_weight">@Model.gross_weight_kgs</textarea>
-                            <label class="text-12">
+                            <textarea name="chargeable_weight" cols="40" rows="15" class="text-scroll text-right ng-isolate-scope" id="id_chargeable_weight">@Model.measurement_cbm/@Model.measurement_cft</textarea>
+                          @*   <label class="text-12">
                                 <input type="checkbox" name="show_volume_measure" ng-model="show_volume_measure" hc-user-preference="ai_delivery_order_show_volume_measure" id="id_show_volume_measure" class="ng-untouched ng-valid ng-empty ng-dirty"> Show Measurement
-                            </label>
-                            <textarea name="volume_measure" cols="40" rows="4" class="text-scroll text-right ng-isolate-scope" id="id_volume_measure">@Model.measurement_cbm</textarea>
+                            </label> *@
+                            @* <textarea name="volume_measure" cols="40" rows="4" class="text-scroll text-right ng-isolate-scope" id="id_volume_measure">@Model.measurement_cbm</textarea> *@
                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 104px;"></span><!---->
 
                         </hc-input-template><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 225px; left: 104px;"></span><!---->
@@ -808,7 +831,7 @@ table td {
                     </td>
                 </tr>
             </tbody></table>
-            <table class="margin-t-sm">
+            <table class="margin-t-sm"  style="font-size:12px;">
                 <tbody><tr>
                     <td class="w-50 td-remark border td">
                         <div class="auto-font-size auto-link __col-remark-lg">
@@ -825,7 +848,7 @@ table td {
                     </td>
                     <td class="w-2">&nbsp;</td>
                     <td class="w-48 td">
-                        <table>
+                        <table  style="font-size:12px;">
                             <tbody><tr>
                                 <td class="col-padding-double">
                                     <strong class="text-red">ORIGINAL DELIVERY ORDER</strong>
@@ -848,11 +871,11 @@ table td {
                             </tr>
                             <tr>
                                 <td>
-                                    <table>
+                                    <table  style="font-size:12px;">
                                         <tbody><tr>
                                             <td class="col-padding border">
                                                 <div class="text-bold padding-b-xs">HARD CORE TECHNOLOGY(GST/VAT)</div>
-                                                <table>
+                                                <table  style="font-size:12px;">
                                                     <tbody><tr>
                                                         <td class="w-22">PREPARED BY</td>
                                                         <td class="w-48">
@@ -870,11 +893,11 @@ table td {
                                             </td>
                                         </tr>
                                     </tbody></table>
-                                    <table class="margin-t">
+                                    <table class="margin-t"  style="font-size:12px;">
                                         <tbody><tr>
                                             <td class="col-padding col-signature border">
                                                 CARRIER SIGNATURE / DATE
-                                                <table>
+                                                <table  style="font-size:12px;">
                                                     <tbody><tr>
                                                         <td class="w-16 td">CARRIER :</td>
                                                         <td class="w-39 border-b"></td>
@@ -887,7 +910,7 @@ table td {
                                         <tr>
                                             <td class="col-padding col-signature border">
                                                 RECEIVED IN GOOD ORDER / DATE
-                                                <table>
+                                                <table style="font-size:12px;" >
                                                     <tbody><tr>
                                                         <td class="w-8 td">BY :</td>
                                                         <td class="w-47 border-b"></td>

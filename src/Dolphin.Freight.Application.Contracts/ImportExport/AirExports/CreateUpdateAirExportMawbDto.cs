@@ -1,5 +1,6 @@
 ﻿using Dolphin.Freight.AirExports;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Volo.Abp.Data;
@@ -153,6 +154,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
         
         public String BusinessReferredId { get; set; }
         public bool IsECom { get; set; }
+        public string PONo { get; set; }
+        public List<OtherCharges> OtherCharges { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

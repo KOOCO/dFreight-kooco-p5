@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using Dolphin.Freight.TradePartner;
 using Dolphin.Freight.TradePartners;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight
 {
@@ -40,5 +41,6 @@ namespace Dolphin.Freight
         public bool IsDeleted { get; set; }
         [Required]
         public Guid TradePartnerId { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

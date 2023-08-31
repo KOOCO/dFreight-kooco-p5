@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Dolphin.Freight.ImportExport.AirImports;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using SelectItems = Microsoft.AspNetCore.Mvc.Rendering.SelectListItem;
 
@@ -24,8 +25,11 @@ namespace Dolphin.Freight.Web.CommonService
         List<SelectItems> CargoTypeLookupList { get; }
         List<SelectItems> PortsManagementLookupList { get; }
         List<SelectItems> ContainerLookupList { get; }
-        List<SelectItems> CountryLookupList { get; }    
+        List<SelectItems> CountryLookupList { get; }
         List<SelectItems> PreCarriageVesselLookupList { get; }
         List<SelectItems> GiCodeLookupList { get; }
+        List<SelectItems> CreditLimitGroupNameLookupList { get; }
+        List<SelectItems> AccountGroupnameLookupList { get; }
+        List<SelectItems> AirImportMawbLookupList { get;}
     }
 }

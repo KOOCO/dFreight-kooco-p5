@@ -118,11 +118,10 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string BookingRemarks { get; set; }
         public string PickupInstruction { get; set; }
 
-
-
-
-
-
+        /// <summary>
+        /// 是否鎖定
+        /// </summary>
+        public bool IsLocked { get; set; }
 
         /// <summary>
         /// 是否刪除

@@ -11,6 +11,13 @@
 
 @section styles
     {
+    <style type="text/css">
+        #ejo .btn-primary {
+            color: #fff;
+            background-color: rgb(0 123 255 / 52%);
+            border-color: #007bff;
+        }
+    </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
     <link href="~/css/fix2.css" rel="stylesheet" />
 }
@@ -183,7 +190,7 @@
                                     <abp-input asp-for="OceanImportMbl.CarrierContractNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsDirect" class="form-label">@L["IsDirect"]<input type="checkbox" name="OceanImportMbl.IsDirect" id="OceanImportMbl_IsDirect" value="true" checked="@Model.OceanImportMbl.IsDirect" /></label>
+                                    <label for="OceanImportMbl_IsDirect" class="form-label customCheck">@L["IsDirect"]<input type="checkbox" name="OceanImportMbl.IsDirect" id="OceanImportMbl_IsDirect" value="true" checked="@Model.OceanImportMbl.IsDirect" /></label>
                                 </abp-column>
                                 <abp-column size-md="_3">
 
@@ -253,7 +260,7 @@
 
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.PolEtd" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportMbl.PolEtd" type="text" abp-data-datepicker="false" />
 
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -261,7 +268,7 @@
 
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.PodEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportMbl.PodEta" type="text" abp-data-datepicker="false" />
 
                                 </abp-column>
                             </abp-row>
@@ -271,21 +278,21 @@
 
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.DelEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportMbl.DelEta" type="text" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.FdestId) })
 
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.FdestEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportMbl.FdestEta" type="text" abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_9">
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.Etb" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportMbl.Etb" type="text" abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -323,12 +330,12 @@
                                     <input type="hidden" name="OceanImportMbl.OblTypeId" id="mOblTypeId" value="@Model.OceanImportMbl.OblTypeId" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsOblReceived" class="form-label">@L["IsOblReceived"]<input type="checkbox" name="OceanImportMbl.IsOblReceived" id="OceanImportMbl_IsOblReceived" value="true" /></label>
+                                    <label for="OceanImportMbl_IsOblReceived" class="form-label customCheck">@L["IsOblReceived"]<input type="checkbox" name="OceanImportMbl.IsOblReceived" id="OceanImportMbl_IsOblReceived" value="true" /></label>
                                     <abp-input label="" asp-for="OceanImportMbl.OblReceivedDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsReleased" class="form-label">@L["IsReleased"]<input type="checkbox" name="OceanImportMbl.IsReleased" id="OceanImportMbl_IsReleased" value="true" /></label>
-                                    <abp-input asp-for="OceanImportMbl.MblReleaseDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <label for="OceanImportMbl_IsReleased" class="form-label customCheck">@L["IsReleased"]<input type="checkbox" name="OceanImportMbl.IsReleased" id="OceanImportMbl_IsReleased" value="true" /></label>
+                                    <abp-input asp-for="OceanImportMbl.MblReleaseDate" type="text" abp-data-datetimepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -337,7 +344,7 @@
                                     <input type="hidden" name="OceanImportMbl.BusinessReferrerId" id="mBusinessReferrerId" value="@Model.OceanImportMbl.BusinessReferrerId" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input label="" asp-for="OceanImportMbl.LatestContainerEntryDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input label="" asp-for="OceanImportMbl.LatestContainerEntryDate" type="text" abp-data-datetimepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -361,7 +368,7 @@
 
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.PorEtd" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportMbl.PorEtd" type="text" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.ReturnLocationId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "ReturnLocationId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.ReturnLocationId) })
@@ -373,13 +380,13 @@
                             </abp-row>
                             <abp-row class="hideArea">
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.ItDate" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportMbl.ItDate" type="text" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.ItLocation", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "ItLocation", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.ItLocation) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsEcommerce" class="form-label">@L["IsEcommerce"]<input type="checkbox" name="OceanImportMbl.IsEcommerce" id="OceanImportMbl_IsEcommerce" value="true" checked="@Model.OceanImportMbl.IsEcommerce" /></label>
+                                    <label for="OceanImportMbl_IsEcommerce" class="form-label customCheck">@L["IsEcommerce"]<input type="checkbox" name="OceanImportMbl.IsEcommerce" id="OceanImportMbl_IsEcommerce" value="true" checked="@Model.OceanImportMbl.IsEcommerce" /></label>
                                 </abp-column>
                             </abp-row>
                         </abp-card-body>
@@ -499,13 +506,13 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
 
-                                    <abp-input asp-for="OceanImportHbl.PorEtd" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportHbl.PorEtd" type="text" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.PodId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportHbl.PodEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportHbl.PodEta" type="text" abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -513,13 +520,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.DelId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportHbl.DelEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportHbl.DelEta" type="text" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.FdestId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportHbl.FdestEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportHbl.FdestEta" type="text" abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -533,7 +540,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.DeliveryToId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DeliveryToId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.DeliveryToId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportHbl.CargoArrivalDate" />
+                                    <abp-input asp-for="OceanImportHbl.CargoArrivalDate" abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -576,12 +583,12 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.HblSalesTypeId", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "HblSalesTypeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.HblSalesTypeId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportHbl.HblWhCutOffTime" />
+                                    <abp-input asp-for="OceanImportHbl.HblWhCutOffTime" abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportHbl.EarlyReturnDateTime" />
+                                    <abp-input asp-for="OceanImportHbl.EarlyReturnDateTime" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanImportHbl.LcNo" />
@@ -590,12 +597,12 @@
                                     <abp-input asp-for="OceanImportHbl.LcIssueBank" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportHbl.LcIssueDate" />
+                                    <abp-input asp-for="OceanImportHbl.LcIssueDate" abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportHbl.OnBoardDate" />
+                                    <abp-input asp-for="OceanImportHbl.OnBoardDate" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanImportHbl.IsStackable" />
@@ -617,7 +624,7 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanImportHbl.IsReleased" id="OceanImportHbl_IsReleased" value="true" /> @L["IsReleased"] </label>
-                                    <abp-input asp-for="OceanImportHbl.HblReleaseDate" />
+                                    <abp-input asp-for="OceanImportHbl.HblReleaseDate" abp-data-datepicker="false"  />
                                 </abp-column>
                                 <abp-column size-md="_3">
 
@@ -626,7 +633,7 @@
                             <abp-row>
                                 <abp-column size-md="_3">
                                     <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanImportHbl.IsCanceled" /> @L["IsCanceled"] </label>
-                                    <abp-input asp-for="OceanImportHbl.CanceledDate" />
+                                    <abp-input asp-for="OceanImportHbl.CanceledDate" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
 
@@ -701,7 +708,7 @@
                 </div>
             </abp-column>
         </abp-row>
-        <abp-row class="mt-3">
+        <abp-row class="mt-3" id="ejo">
             <abp-column>
                 <input type="hidden" name="OceanImportMbl.OfficeId" id="mOfficeId" value="@Model.OceanImportMbl.OfficeId" />
                 <input type="hidden" name="OceanImportMbl.PreCarriageVesselNameId" id="mPreCarriageVesselNameId" value="@Model.OceanImportMbl.PreCarriageVesselNameId" />
@@ -741,7 +748,9 @@
                 <input type="hidden" name="OceanImportHbl.HDelId" id="hHDelId" value="@Model.OceanImportHbl.DelId" />
                 <input type="hidden" name="OceanImportHbl.FdestId" id="hHFdestId" value="@Model.OceanImportHbl.FdestId" />
                 <input type="hidden" name="OceanImportHbl.HblSalesTypeId" id="hHblSalesTypeId" value="@Model.OceanImportHbl.HblSalesTypeId" />
-                <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
+                <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
+                    <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Display:Button:New"].Value</abp-button>
+                </div>
             </abp-column>
         </abp-row>
         <abp-row>

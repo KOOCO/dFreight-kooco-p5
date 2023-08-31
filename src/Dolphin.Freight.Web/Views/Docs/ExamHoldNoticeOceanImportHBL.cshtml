@@ -167,12 +167,36 @@ table td {
             document.getElementById("myForm").submit();
         }
 
-        document.getElementById('chkCustomerRef').addEventListener('change', function(val){ 
-            var display = (this.checked)? 'block' : 'none';
-            document.getElementById('txtCustomerRef').style.display = display;
-            document.getElementById('txtCustomerRef').style.marginLeft='40px';
-        })
+        // document.getElementById('chkCustomerRef').addEventListener('change', function(val){ 
+        //     var display = (this.checked)? 'block' : 'none';
+        //     document.getElementById('txtCustomerRef').style.display = display;
+        //     document.getElementById('txtCustomerRef').style.marginLeft='40px';
+        // })
+        onSetCommodity();
     });
+        function onSetCommodity() {
+           
+            var extraProperties = '@Html.Raw(Json.Serialize(Model.ExtraProperties))';
+
+            if (extraProperties && extraProperties != 'null' && extraProperties != '{}') {
+                var commodities = JSON.parse(extraProperties).Commodities;
+
+                if (commodities && commodities.length) {
+                    var commodityIndex = 0;
+                    document.getElementById("id_commodity_descriptions").value = '';
+                    commodities.forEach(function (commodity) {
+                        commodity.chkIndex = commodityIndex;
+                        document.getElementById("id_commodity_descriptions").value =document.getElementById("id_commodity_descriptions").value+commodity.Description+'\n' ;
+                       
+                      
+
+                       
+                    });
+
+                   
+                }
+            }
+        }
 </script>
 
 @if (!Model.IsPDF)
@@ -205,7 +229,7 @@ table td {
     <div id="main" class="edit">
         <div class="wrap oi-exam-hold-notice">
         <div class="header margin-b-md header-normal">
-            <table>
+            <table class="text-11">
                 <tbody><tr>
                     <td class="w-15 logo">
                         <img src="/img/hardcore-tech-logo.png">
@@ -230,7 +254,7 @@ table td {
                     </td>
                 </tr>
             </tbody></table>
-            <table class="text-10 margin-t table-padding-double">
+            <table class="text-10 margin-t table-padding-double class="text-11"">
                 <tbody><tr>
                     <td class="w-52">&nbsp;</td>
                     <td class="w-6 border-l border-t border-b"><strong>DATE :</strong></td>
@@ -251,7 +275,7 @@ table td {
             </tbody></table>
         </div>
         <div class="header header-horizontal-logo margin-b-md">
-            <table>
+            <table class="text-11">
                 <tbody><tr>
                     <td class="w-75">
                         <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="title" value="EXAM HOLD NOTICE"  ng-model="vm.title" ng-change="vm.syncTitle()" to-upper-case="" id="id_title" class="ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty"></div>
@@ -313,10 +337,10 @@ table td {
                     </td>
                 </tr>
             </tbody></table>
-            <table>
+            <table class="text-12">
                 <tbody><tr class="text-11">
                     <td class="col-padding border-b">
-                        <table class="col-height margin-t-sm border-t">
+                        <table class="col-height margin-t-sm border-t text-11 ">
                             <tbody><tr>
                                 <td class="w-15"><strong>VESSEL NAME :</strong></td>
                                 <td class="w-22">
@@ -324,7 +348,7 @@ table td {
                                 </td>
                                 <td class="w-19"><strong>PORT OF LOADING :</strong></td>
                                 <td class="w-36">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="PolName" value="@Model.PolName"  id="id_POL_location" class="ng-isolate-scope"></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="PolName" value="@Model.MPolName"  id="id_POL_location" class="ng-isolate-scope"></div>
                                 </td>
                                 <td class="w-7"><strong>ETD :</strong></td>
                                 <td class="w-11">@(Model.PolEtd?.ToString("MM/dd/yyyy") ?? "")</td>
@@ -374,18 +398,18 @@ table td {
                             <tr>
                                 <td><strong>AMS B/L NO. :</strong></td>
                                 <td>
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="AMS_NO"  id="id_AMS_NO" class="ng-isolate-scope"></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="AMS_NO" value="@Model.HblSoNo"  id="id_AMS_NO" class="ng-isolate-scope"></div>
                                 </td>
                                 <td><strong>COMMODITY :</strong></td>
                                 <td class="td" rowspan="3">
-                                    <div class="item-edit hover-toggle-icon-text-template"><textarea name="commodity_descriptions" cols="40" rows="4" class="text-scroll no-adjustment ng-isolate-scope"  id="id_commodity_descriptions"></textarea></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><textarea name="commodity_descriptions" cols="40" rows="4" class="text-scroll no-adjustment ng-isolate-scope"  id="id_commodity_descriptions">@Model.CommoditiesJson</textarea></div>
                                 </td>
                                 <td>&nbsp;</td>
                             </tr>
                             <tr>
                                 <td><strong>I.T. NO. :</strong></td>
                                 <td>
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ItnNo" value="@Model.ItnNo" id="id_it_no" class="ng-isolate-scope"></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ItnNo" value="@Model.LCNo" id="id_it_no" class="ng-isolate-scope"></div>
                                 </td>
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
@@ -407,7 +431,7 @@ table td {
 
                         <div class="item-edit hover-toggle-icon-text-template"><textarea name="container_no_area" cols="40" rows="13" class="text-scroll no-adjustment ng-isolate-scope"  id="id_container_no_area">
                          @foreach(var container in Model.ContainerList) {
-            @Html.Raw(container.CONTAINER_NO + "/ " + container.TYPE + "/ " + container.SEAL_NO + "/ " + Model.PoNo + "\r\n")
+            @Html.Raw(container.CONTAINER_NO + "/"+ container.SEAL_NO + "\r\n")
         }
 
 
@@ -429,7 +453,7 @@ table td {
             <table class="border text-12">
                 <tbody><tr>
                     <td class="col-padding-double">
-                        <table>
+                        <table class="text-12">
                             <tbody><tr>
                                 <td class="col-padding-double w-5 text-center">
                                     <div class="item-edit"><input type="checkbox" name="commercial_invoice" id="id_commercial_invoice"></div>

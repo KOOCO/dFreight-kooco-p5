@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Data;
@@ -128,11 +129,19 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             listDto.TotalCount = dataQuery.Count();
             return listDto;
         }
-        public async void LockedOrUnLockedOceanExportMblAsync(QueryMblDto query) 
+        public async Task LockedOrUnLockedOceanExportMblAsync(QueryMblDto query) 
         {
-            var mbl = await _repository.GetAsync(query.MbId.Value);
-            mbl.IsLocked = !mbl.IsLocked;
-            await _repository.UpdateAsync(mbl);
+            try
+            {
+                var mbl = await _repository.GetAsync(query.MbId.Value);
+                mbl.IsLocked = !mbl.IsLocked;
+                await _repository.UpdateAsync(mbl);
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+           
         }
         public async Task<CreateUpdateOceanExportMblDto> GetCreateUpdateOceanExportMblDtoById(Guid Id) {
             var oceanExportMbl = await _repository.GetAsync(Id,true);

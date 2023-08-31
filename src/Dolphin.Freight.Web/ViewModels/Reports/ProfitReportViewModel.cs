@@ -50,5 +50,6 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public string PackageWeightName { get; set; }
         public string PackageCategoryName { get; set; }
         public string ShipModeName { get; set; }
+        public bool IsPartialView { get; set; } = false;
     }
 }

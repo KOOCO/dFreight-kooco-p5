@@ -14,6 +14,42 @@
 
 
 <script type="text/javascript">
+    
+    $(document).ready(function () {
+        const ids = [
+            "OceanImportHbl_PorEtd",
+            "OceanImportHbl_PodEta",
+            "OceanImportHbl_DelEta",
+            "OceanImportHbl_FdestEta",
+            "OceanImportHbl_CargoArrivalDate",
+            "OceanImportHbl_HblWhCutOffTime",
+            "OceanImportHbl_EarlyReturnDatetime",
+            "OceanImportHbl_LcIssueDate",
+            "OceanImportHbl_OnBoardDate",
+            "OceanImportHbl_HblReleaseDate",
+            "OceanImportHbl_CanceledDate"
+        ];
+
+        ids.forEach(function (id) {
+            let dateElem = $('#' + id);
+
+            if (dateElem.length === 0) {
+                return;
+            }
+            
+            dateElem.removeAttr('type').datetimepicker({
+                format: 'Y-m-d H:i',
+                step: 15,
+                allowInput: false
+            });
+
+            let currentVal = dateElem.val();
+            if (currentVal.includes('T')) {
+                dateElem.val(currentVal.replace('T', ' '));
+            }
+        });
+    });
+
     function OpenInTrackTrace() {
         var url = new URL(window.location.href);
         var mblId = url.searchParams.get('Id');
@@ -51,18 +87,20 @@
                     <i class="fa fa-share"></i> @L["Btn:Move"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
-                </a>
-                <a class='dropdown-item' href='#'>
+                @* <a class='dropdown-item' href='#'> *@
+               @*      <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
+                </a> *@
+             @*    <a class='dropdown-item' href='#'>
                     <i class="fa fa-file-text-o"></i> @L["Btn:Authority (ATME)"]
-                </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("DeliveryOrderOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id })')">
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
-                </a>
+                </a> *@
                 <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
+                </a>  
+              
+
+               @*  <a class='dropdown-item' href='#'>
                     <i class="fa fa-file-text-o"></i> @L["I.T/T.E"]
-                </a>
+                </a> *@
               
                 <a class='dropdown-item' href='javascript:void(0)'onclick="getPreliminaryClaim()" >
                     <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
@@ -77,6 +115,9 @@
                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("CarrierCertificateOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
                  </a>
+                   <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PickupDeliveryInstrucationOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Pickup Delivery Instruction"]
+                </a>
                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ForwarderCargoReceiptOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
                  </a>
@@ -175,13 +216,13 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.PorId) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanImportHbl.PorEtd" type="text" abp-data-datepicker="false" />
+                <abp-input asp-for="OceanImportHbl.PorEtd" abp-data-datepicker="false" />
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.PodId) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanImportHbl.PodEta" type="text" abp-data-datepicker="false" />
+                <abp-input asp-for="OceanImportHbl.PodEta" abp-data-datepicker="false" />
             </abp-column>
         </abp-row>
         <abp-row>
@@ -189,13 +230,13 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.DelId) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanImportHbl.DelEta" type="text" abp-data-datepicker="false" />
+                <abp-input asp-for="OceanImportHbl.DelEta" abp-data-datepicker="false" />
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.FdestId) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanImportHbl.FdestEta" type="text" abp-data-datepicker="false" />
+                <abp-input asp-for="OceanImportHbl.FdestEta" abp-data-datepicker="false" />
             </abp-column>
         </abp-row>
         <abp-row>
@@ -209,7 +250,7 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.DeliveryToId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DeliveryToId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.DeliveryToId) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanImportHbl.CargoArrivalDate" type="text" abp-data-datepicker="false" />
+                <abp-input asp-for="OceanImportHbl.CargoArrivalDate" abp-data-datepicker="false" />
             </abp-column>
         </abp-row>
         <abp-row>
@@ -252,12 +293,12 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.HblSalesTypeId", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "HblSalesTypeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.HblSalesTypeId) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanImportHbl.HblWhCutOffTime" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                <abp-input asp-for="OceanImportHbl.HblWhCutOffTime" abp-data-datetimepicker="false" />
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanImportHbl.EarlyReturnDatetime" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                <abp-input asp-for="OceanImportHbl.EarlyReturnDatetime" abp-data-datetimepicker="false" />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="OceanImportHbl.LcNo" />
@@ -266,12 +307,12 @@
                 <abp-input asp-for="OceanImportHbl.LcIssueBank" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanImportHbl.LcIssueDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                <abp-input asp-for="OceanImportHbl.LcIssueDate" abp-data-datetimepicker="false" />
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanImportHbl.OnBoardDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                <abp-input asp-for="OceanImportHbl.OnBoardDate" abp-data-datetimepicker="false" />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="OceanImportHbl.IsStackable" />
@@ -293,7 +334,7 @@
             </abp-column>
             <abp-column size-md="_3">
                 <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanImportHbl.IsReleased" id="OceanImportHbl_IsReleased" value="true" /> @L["IsReleased"] </label>
-                <abp-input asp-for="OceanImportHbl.HblReleaseDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                <abp-input asp-for="OceanImportHbl.HblReleaseDate" abp-data-datetimepicker="false" />
             </abp-column>
             <abp-column size-md="_3">
 
@@ -302,7 +343,7 @@
         <abp-row>
             <abp-column size-md="_3">
                 <label for="CareOfId" class="form-label"><input type="checkbox" name="OceanImportHbl.IsCanceled" id="OceanImportHbl_IsCanceled" value="true" /> @L["IsCanceled"] </label>
-                <abp-input asp-for="OceanImportHbl.CanceledDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                <abp-input asp-for="OceanImportHbl.CanceledDate" abp-data-datetimepicker="false" />
             </abp-column>
             <abp-column size-md="_3">
 

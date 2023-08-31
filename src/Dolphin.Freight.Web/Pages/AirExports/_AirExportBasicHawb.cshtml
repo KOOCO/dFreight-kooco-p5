@@ -15,24 +15,56 @@
 @inject IStringLocalizer<FreightResource> L
 
 <script>
-
+    var isHawbLocked;
     $(document).ready(function () {
         if ($('#HawbCancelledDate').val() == '0001-01-01T00:00') {
             $('#HawbCancelledDate').val('');
         }
+     
+    });
+
+    $(document).ready(function () {
+        const ids = [
+            "AirExportHawbDto_BookingDate",
+            "AirExportHawbDto_FinalEta"
+        ];
+
+        ids.forEach(function (id) {
+            let dateElem = $('#' + id);
+
+            if (dateElem.length === 0) {
+                return;
+            }
+
+            dateElem.removeAttr('type').datetimepicker({
+                format: 'Y-m-d H:i',
+                step: 15,
+                allowInput: false
+            });
+
+            let currentVal = dateElem.val();
+            if (currentVal.includes('T')) {
+                dateElem.val(currentVal.replace('T', ' '));
+            }
+        });
     });
 
     // Hawb Cancel Area
     $("#checkboxHawbCancelled").change(function () {
         if (this.checked) {
-            var currentDate = new Date();
-            var year = currentDate.getFullYear();
-            var month = String(currentDate.getMonth() + 1).padStart(2, '0');
-            var day = String(currentDate.getDate()).padStart(2, '0');
-            var hours = String(currentDate.getHours()).padStart(2, '0');
-            var minutes = String(currentDate.getMinutes()).padStart(2, '0');
-            var formattedDateTime = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
-            $("#HawbCancelledDate").removeAttr("disabled").val(formattedDateTime);
+            $('#HawbCancelledDate').removeAttr('type').datetimepicker({
+                format: 'Y-m-d H:i',
+                step: 15,
+                allowInput: false,
+                value: new Date()
+            });
+
+            let currentDate = $('#HawbCancelledDate').val();
+            if (currentDate.includes('T')) {
+                $('#HawbCancelledDate').val(currentDate.replace('T', ' '));
+            }
+
+            $("#HawbCancelledDate").removeAttr("disabled").val($('#HawbCancelledDate').val());
             $("#HawbCanceledBy").attr("disabled", "disabled").val('@(_currentUser.Name + " " + _currentUser.SurName)');
             $("#AirExportHawbDto_ReasonForCancel").removeAttr("disabled");
         } else {
@@ -92,6 +124,38 @@
         myWindow = window.open("@Url.Action("HawbPrintAirExportHawb", "Docs")", 'width=1200,height=800');
         myWindow.focus()
     }
+     isHawbLocked;
+        debugger;
+    function setHawbLockUnlock(isLockedCheck) {
+        var id = $('#AirExportHawbDto_Id').val();
+        isLockedCheck = isLockedCheck === "True";
+        if(isLockedCheck){
+            
+        abp.message.confirm(l('UnlockConfirmationMessage'))
+            .then(function (confirmed) {
+                if (confirmed) {
+                    dolphin.freight.importExport.airExports.airExportHawb
+                        .lockedOrUnLockedAirExportHawb(id)
+                        .then(function () {
+                            abp.message.success(l('SuccessfullyUnlocked'));
+                            window.location.reload();
+                        });
+                }
+            });
+        } else{
+            abp.message.confirm(l('LockConfirmationMessage'))
+            .then(function (confirmed) {
+                if (confirmed) {
+                    dolphin.freight.importExport.airExports.airExportHawb
+                        .lockedOrUnLockedAirExportHawb(id)
+                        .then(function () {
+                            abp.message.success(l('SuccessfullyLocked'));
+                            window.location.reload();
+                        });
+                }
+            });
+        }
+    }
 </script>
 
 
@@ -107,13 +171,29 @@
         </abp-card-title>
         <div class="btn-group dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                 @if(@Model.AirExportHawbDto.IsLocked)
+                                        {
+                                            <i class="fa fa-lock"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock-open"></i>
+                                        }
                 @L["Display:Function"]
             </button>
+            <input asp-for="@Model.AirExportHawbDto.IsLocked" type="hidden" />
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                </a>
-                <a class='dropdown-item' href='#'>
+                 <a class='dropdown-item' href='javascript:void(0)' onclick="setHawbLockUnlock('@Model.AirExportHawbDto.IsLocked')">
+                                        @if(@Model.AirExportHawbDto.IsLocked)
+                                        {
+                                            <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                        }
+                                    </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="copyHawb('@Model.AirExportHawbDto.Id')">
                     <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                 </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="deleteHawb()">
@@ -174,8 +254,8 @@
         <!--第一列-->
         <abp-row>
             <abp-column size-md="_3">
-                <label class="redStar" asp-for="AirExportHawbDto.HawbNo">@L["HawbNo"].Value</label>
-                <abp-input asp-for="AirExportHawbDto.HawbNo" suppress-label="true" required size="Small" />
+                <label class="" asp-for="AirExportHawbDto.HawbNo">@L["HawbNo"].Value</label>
+                <abp-input asp-for="AirExportHawbDto.HawbNo" suppress-label="true" size="Small" />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="AirExportHawbDto.BookingNo" size="Small" >
@@ -261,7 +341,7 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.ShipType", AspItems = Html.GetEnumSelectList(typeof(ShipType)).ToList(), IsShowLabel = true, FieldName = @L["ShipType"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.ShipType) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="AirExportHawbDto.FinalEta" size="Small" />
+                <abp-input asp-for="AirExportHawbDto.FinalEta" abp-data-datepicker="false" size="Small" />
             </abp-column>
         </abp-row>
         <!--第七列-->
@@ -307,14 +387,14 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <th>@L["Package"]</th>
+                                    <th class="packageTable">@L["Package"]</th>
                                     <td><input asp-for="AirExportHawbDto.Package" class="form-control form-control-sm"/></td>
                                     <td colspan="3">
                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.PackageUnitLookupList", AspItems = _dropdown.PackageUnitLookupList, FieldName = "PackageUnit", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.PackageUnit) })
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>@L["BuyingRate"]</th>
+                                    <th class="packageTable">@L["BuyingRate"]</th>
                                     <td><input asp-for="AirExportHawbDto.BuyingRate" class="form-control form-control-sm" /></td>
                                     <td>@L["per"]</td>
                                     <td>
@@ -323,7 +403,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <th>@L["SellingRate"]</th>
+                                    <th class="packageTable">@L["SellingRate"]</th>
                                     <td><abp-input asp-for="AirExportHawbDto.SellingRate" suppress-label="true" size="Small" /></td>
                                     <td>@L["per"]</td>
                                     <td>
@@ -332,7 +412,7 @@
                                     <td></td> 
                                 </tr>
                                 <tr>
-                                    <th>@L["VolumeWeight"]</th>
+                                    <th class="packageTable">@L["VolumeWeight"]</th>
                                     <td><input asp-for="AirExportHawbDto.ChargeableWeightCneeKG" class="form-control form-control-sm" /></td>
                                     <td>@L["KG"]</td>
                                     <td>
@@ -359,19 +439,19 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <th>@L["GrossWeight"]</th>
+                                    <th class="packageTable">@L["GrossWeight"]</th>
                                     <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprKG" class="form-control form-control-sm" id="GrossWeightKg" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprLB" class="form-control form-control-sm" id="GrossWeightLb" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprAmount" class="form-control form-control-sm" /></td>
                                 </tr>
                                 <tr>
-                                    <th>@L["ChargeableWeight"]</th>
+                                    <th class="packageTable">@L["ChargeableWeight"]</th>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprKG" class="form-control form-control-sm" id="ChargeableWeightKg" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprLB" class="form-control form-control-sm" id="ChargeableWeightLb" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprAmount" class="form-control form-control-sm" /></td>
                                 </tr>
                                 <tr>
-                                    <th>@L["AWBChargeableWeight"]</th>
+                                    <th class="packageTable">@L["AWBChargeableWeight"]</th>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeKG" class="form-control form-control-sm" id="AwbChargeableWeightKg" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeLB" class="form-control form-control-sm" id="AwbChargeableWeightLb" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeAmount" class="form-control form-control-sm" /></td>
@@ -404,7 +484,7 @@
             @if(Model.AirExportHawbDto.AWBCancelled == true)
             {
                 <abp-column size-md="_3">
-                    <abp-input asp-for="@Model.AirExportHawbDto.AWBCancelledDate" class="form-select-sm form-control" id="HawbCancelledDate" />
+                    <abp-input asp-for="@Model.AirExportHawbDto.AWBCancelledDate" class="form-select-sm form-control" id="HawbCancelledDate" abp-data-datepicker="false" />
                 </abp-column>
                 <abp-column size-md="_3">
                     <label class="">CancelledBy</label>
@@ -417,7 +497,7 @@
             else
             {
                 <abp-column size-md="_3">
-                    <abp-input asp-for="@Model.AirExportHawbDto.AWBCancelledDate" class="form-select-sm form-control" value="" id="HawbCancelledDate" disabled />
+                    <abp-input asp-for="@Model.AirExportHawbDto.AWBCancelledDate" class="form-select-sm form-control" value="" id="HawbCancelledDate" abp-data-datepicker="false" disabled />
                 </abp-column>
                 <abp-column size-md="_3">
                     <label class="">CancelledBy</label>
@@ -552,7 +632,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                        <td> @L["Prepaid"]</td>
+                                        <td class="packageTable"> @L["Prepaid"]</td>
                                     <td><input type="text" /></td>
                                     <td><input type="text" /></td>
                                     <td><input type="text" /></td>
@@ -560,7 +640,7 @@
                                     <td><input type="text" /></td>
                                 </tr>
                                 <tr>
-                                        <td> @L["Collect"]</td>
+                                        <td class="packageTable"> @L["Collect"]</td>
                                     <td><input type="text" /></td>
                                     <td><input type="text" /></td>
                                     <td><input type="text" /></td>
@@ -591,6 +671,7 @@
                 <abp-input asp-for="@Model.Id" type="hidden" />
                 <abp-input asp-for="AirExportHawbDto.ExtraProperties" value="@Json.Serialize(Model.AirExportHawbDto.ExtraProperties)" type="hidden" />
                 <abp-input asp-for="@Model.AirExportHawbDto.Id" type="hidden" />
+                <abp-input asp-for="@Model.AirExportHawbDto.CurrentHawbNo" type="hidden" />
             </abp-column>
         </abp-row>
     </abp-card-body>

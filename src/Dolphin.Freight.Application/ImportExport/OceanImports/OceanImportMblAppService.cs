@@ -216,6 +216,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     var EmptyPickup = tradePartners.Where(w => w.Id == data.EmptyPickupId).FirstOrDefault();
                     oceanImportDetails.EmptyPickupName = string.Concat(EmptyPickup?.TPName, "/", EmptyPickup?.TPCode)?.TrimStart('/');
                 }
+                if (data.CfsLocationId != null)
+                {
+                    var cfsLocation = countries.Where(w => w.Id == data.CfsLocationId).FirstOrDefault();
+                    oceanImportDetails.CfsLocation = string.Concat(cfsLocation?.CountryName)?.TrimStart('/');
+                }
                 if (data.FdestId != null)
                 {
                     var Fdest = portMangements.Where(w => w.Id == data.FdestId).FirstOrDefault();

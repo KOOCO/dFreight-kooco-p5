@@ -158,8 +158,10 @@ public class FreightApplicationAutoMapperProfile : Profile
         // ContactPerson
         CreateMap<ContactPerson, ContactPersonDto>();
         CreateMap<ContactPersonPagedAndSortedResultRequestDto, ContactPersonFilter>();
+        CreateMap<CreateUpdateContactPersonDto, ContactPerson>();
+        CreateMap<ContactPerson, CreateUpdateContactPersonDto>();
 
-		// Country
+        // Country
         CreateMap<Country, CountryLookupDto>();
         // Currency
         CreateMap<Currency, CurrencyLookupDto>();
@@ -188,6 +190,7 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<AirExportMawbDto, CreateUpdateAirExportMawbDto>();
         CreateMap<AirExportMawb, AirExportDetails>();
         CreateMap<AirExportHawbDto, AirExportDetails>();
+        CreateMap<AirExportDetails, AirExportHawbDto>();
 
         // AirExportHawb
         CreateMap<AirExportHawb, AirExportHawbDto>();
@@ -291,5 +294,7 @@ public class FreightApplicationAutoMapperProfile : Profile
 
         CreateMap<IdentityUserDto, UserData>();
         CreateMap<UserData, IdentityUserDto>();
+        CreateMap<TradeParty, CreateUpdateTradePartyDto>();
+        CreateMap<CreateUpdateTradePartyDto, TradeParty>();
     }
 }

@@ -37,7 +37,8 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public string ShowMsg { get; set; }
-
+        [BindProperty(SupportsGet = true)]
+        public Guid ResultedMawbId { get; set; }
         [BindProperty]
         public CreateAIMMawbViewModel MawbModel { get; set; }
 
@@ -223,8 +224,6 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             public String OfficeId { get; set; }
             
             public AWBType AwbType { get; set; }
-            
-            [DataType(DataType.Date)]
             public DateTime? PostDate { get; set; }
             
             [SelectItems(nameof(TradePartnerLookupList))]
@@ -264,19 +263,13 @@ namespace Dolphin.Freight.Web.Pages.AirImports
 
             [SelectItems(nameof(AirportLookupList))]
             public String DepatureId { get; set; }
-
-            [DataType(DataType.DateTime)]
             public DateTime? DepatureDate { get; set; }
             
             public string FlightNo { get; set; }
 
             [SelectItems(nameof(AirportLookupList))]
             public String RouteTrans1Id { get; set; }
-            
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans1ArrivalDate { get; set; }
-            
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans1DepatureDate { get; set; }
             
             public string RouteTrans1FlightNo { get; set; }
@@ -286,11 +279,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
 
             [SelectItems(nameof(AirportLookupList))]
             public String RouteTrans2Id { get; set; }
-            
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans2ArrivalDate { get; set; }
-            
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans2DepatureDate { get; set; }
             
             public string RouteTrans2FlightNo { get; set; }
@@ -300,11 +289,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
 
             [SelectItems(nameof(AirportLookupList))]
             public String RouteTrans3Id { get; set; }
-
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans3ArrivalDate { get; set; }
-
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans3DepatureDate { get; set; }
 
             public string RouteTrans3FlightNo { get; set; }
@@ -326,13 +311,10 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             public String DestinationId { get; set; }
 
             [Required]
-            [DataType(DataType.DateTime)]
             public DateTime? ArrivalDate { get; set; }
 
             [SelectItems(nameof(TradePartnerLookupList))]
             public String FreightLocationId { get; set; }
-            
-            [DataType(DataType.Date)]
             public DateTime? StorageStartDate { get; set; }
             
             public double Package { get; set; }
@@ -363,7 +345,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             public String BusinessReferredId { get; set; }
             
             public bool IsECom { get; set; }
-            
+            public bool IsLocked { get; set; }
             public DisplayUnitType DisplayUnit { get; set; }
         }
         #endregion

@@ -2,6 +2,7 @@
 using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Permissions;
+using Dolphin.Freight.Settings.Countries;
 using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
@@ -9,6 +10,7 @@ using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
@@ -39,8 +42,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IRepository<PortsManagement, Guid> _portsManagementRepository;
         private readonly ICurrentUser _currentUser;
-        private readonly IRepository<Container, Guid> _containerRepository; 
-        public OceanImportHblAppService(IRepository<OceanImportHbl, Guid> repository, IRepository<Container, Guid> containerRepository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanImportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<PortsManagement, Guid> portsManagementRepository, ICurrentUser currentUser)
+        private readonly IRepository<Container, Guid> _containerRepository;
+        private readonly IRepository<Country, Guid> _countryRepository;
+        public OceanImportHblAppService(IRepository<OceanImportHbl, Guid> repository, IRepository<Container, Guid> containerRepository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanImportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<PortsManagement, Guid> portsManagementRepository, ICurrentUser currentUser, IRepository<Country, Guid> countryRepository)
             : base(repository)
         {
             _repository = repository;
@@ -52,6 +56,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             _portsManagementRepository = portsManagementRepository;
             _currentUser = currentUser;
             _containerRepository = containerRepository;
+            _countryRepository = countryRepository;
             /*
             GetPolicyName = OceanImportPermissions.OceanImportHbls.Default;
             GetListPolicyName = OceanImportPermissions.OceanImportHbls.Default;
@@ -100,7 +105,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
             }
             //港口
-            var ports = await _portRepository.GetListAsync();
+            var ports = await _portsManagementRepository.GetListAsync();
             Dictionary<Guid, string> pdictionary = new();
             if (ports != null && ports.Count > 0)
             {
@@ -241,7 +246,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             var portMangements = ObjectMapper.Map<List<PortsManagement>, List<PortsManagementDTO>>(await _portsManagementRepository.GetListAsync());
             var sysCodes = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(await _sysCodeRepository.GetListAsync());
             var substations = ObjectMapper.Map<List<Substation>, List<SubstationDto>>(await _substationRepository.GetListAsync());
-           
+            var countries = await _countryRepository.GetListAsync();
             var data = await _repository.GetAsync(Id);
 
             if (data != null)
@@ -370,7 +375,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     var carrier = tradePartners.Where(w => w.Id == mbl.MblCarrierId).FirstOrDefault();
                     oceanImportDetails.MblCarrierName = carrier.TPName + "/" + carrier.TPCode;
                 }
-
+                if (mbl.CyLocationId != null)
+                {
+                    var cyLocation = countries.Where(w => w.Id == mbl.CyLocationId).FirstOrDefault();
+                    oceanImportDetails.CyLocationName = cyLocation?.CountryName;
+                }
                 if (data.PodId != null)
                 {
                     var pod = portMangements.Where(w => w.Id.Equals(data.PodId)).FirstOrDefault();
@@ -419,7 +428,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 oceanImportDetails.LCIssueDate = data.LcIssueDate;
                 oceanImportDetails.FdestEta = data.FdestEta;
                 oceanImportDetails.PolEtd = mbl.PolEtd;
-              
+
+           
                 oceanImportDetails.PorEtd = data.PorEtd;
                 oceanImportDetails.MPorEtd = mbl.PorEtd;
                 oceanImportDetails.PodEta = data.PodEta;
@@ -434,6 +444,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 oceanImportDetails.EarlyReturnDateTime = data.EarlyReturnDateTime;
                 oceanImportDetails.AgentRefNo = mbl.AgentRefNo;
                 oceanImportDetails.Description = data.Description;
+                oceanImportDetails.ExtraProperties = data.ExtraProperties;
+             
             }
 
             return oceanImportDetails;

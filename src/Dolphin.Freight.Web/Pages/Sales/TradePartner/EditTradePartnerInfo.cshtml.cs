@@ -19,6 +19,9 @@ using Volo.Abp.Data;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Linq;
+using Dolphin.Freight.TradePartners.TradeParties;
+using Microsoft.AspNetCore.Components.Forms;
+using static Dolphin.Freight.Web.Pages.Sales.TradePartner.TradePartnerInfoModel;
 
 namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
 {
@@ -30,6 +33,8 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
         private readonly ITradePartnerMemoAppService _tradePartnerMemoAppService;
         private readonly IAccountGroupAppService _accountGroupAppService;
         private readonly ICreditLimitGroupAppService _creditLimitGroupAppService;
+        private readonly ITradePartyAppService _tradePartyAppService;
+        private readonly IContactPersonAppService _contactPersonAppService;
 
         [BindProperty]
         public CreateTradePartnerInfoViewModel TPInfoModel { get; set; }
@@ -43,14 +48,26 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
 
         public Guid Id { get; set; }
 
+        [BindProperty]
+        public List<CreateUpdateTradePartyDto> TradeParties { get; set; }
+
+        [BindProperty]
+        public List<CreateUpdateContactPersonDto> ContactPersonModel { get; set; }
+
+        [BindProperty]
+        public List<CreateContactInfoChildren> ContactPersonChildren { get; set; }
+
         public EditTradePartnerInfoModel(ITradePartnerAppService tradePartnerAppService, ITradePartnerMemoAppService tradePartnerMemoAppService,
-            IAccountGroupAppService accountGroupAppService, ICreditLimitGroupAppService creditLimitGroupAppService)
+            IAccountGroupAppService accountGroupAppService, ICreditLimitGroupAppService creditLimitGroupAppService,
+            ITradePartyAppService tradePartyAppService, IContactPersonAppService contactPersonAppService)
         {
             Logger = NullLogger<EditTradePartnerInfoModel>.Instance;
             _tradePartnerAppService = tradePartnerAppService;
             _tradePartnerMemoAppService = tradePartnerMemoAppService;
             _accountGroupAppService = accountGroupAppService;
             _creditLimitGroupAppService = creditLimitGroupAppService;
+            _tradePartyAppService = tradePartyAppService;
+            _contactPersonAppService = contactPersonAppService;
         }
 
         public async Task<IActionResult> OnGetAsync(Guid id)
@@ -108,6 +125,11 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
             TPInfoModel.Nomination = popObj.Nomination;
             TPInfoModel.SeeMemoRemark = popObj.SeeMemoRemark;
 
+
+            TradeParties = await _tradePartyAppService.GetListByTradePartnerId(id);
+
+            ContactPersonModel = await _contactPersonAppService.GetListByTradePartnerId(id);
+
             return Page();
         }
 
@@ -137,6 +159,45 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
                 TPInfoModel.Id,
                 ObjectMapper.Map<CreateTradePartnerInfoViewModel, CreateUpdateTradePartnerDto>(TPInfoModel)
                 );
+
+                var currentTradeParties = await _tradePartyAppService.GetListByTradePartnerId(TPInfoModel.Id);
+                //var deleted =  currentTradeParties.ExceptBy(TradeParties, x => x);
+                var deleted =  currentTradeParties.Where(x => !TradeParties.Any(y=>y.Id == x.Id)).ToList();
+
+                if (TradeParties != null && TradeParties.Any())
+                {
+                    foreach (var tradeParty in TradeParties)
+                    {
+                        if (tradeParty.ExtraProperties == null)
+                        {
+                            tradeParty.ExtraProperties = new();
+                        }
+
+                        if (tradeParty.TradePartyListDto != null)
+                        {
+                            tradeParty.ExtraProperties.Remove("TradePartyList");
+                            tradeParty.ExtraProperties.Add("TradePartyList", tradeParty.TradePartyListDto);
+                        }
+
+                        tradeParty.TradePartnerId = TPInfoModel.Id;
+                        if(tradeParty.Id != Guid.Empty)
+                        {
+                            await _tradePartyAppService.UpdateAsync(tradeParty.Id, tradeParty);
+                        }
+                        else
+                        {
+                            await _tradePartyAppService.CreateAsync(tradeParty);
+                        }
+
+                        
+                    }
+                }
+
+                foreach (var item in deleted)
+                {
+                    await _tradePartyAppService.DeleteAsync(item.Id);
+                }
+
             }
             catch (DbUpdateConcurrencyException ex)
             {

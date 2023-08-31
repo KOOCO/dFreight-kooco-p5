@@ -27,5 +27,7 @@ namespace Dolphin.Freight.ImportExport.Containers
         Task<int> DeleteByBookingIdAsync(QueryContainerDto query);
         Task<List<ContainerDto>> QueryListBookingAsync(Guid bookingId);
         Task<CreateUpdateContainerDto> GetContainerByBookingId(Guid id);
+        Task<int> DeleteByVesselIdAsync(QueryContainerDto query);
+        Task<List<ContainerDto>> QueryListVesselAsync(Guid vesselId);
     }
 }

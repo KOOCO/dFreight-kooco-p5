@@ -57,7 +57,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
                 IsDefault = dto.IsDefault;
             }
 
-            TradePartnerLookupList = (await _tradePartnerAppService.GetTradePartnersLookupAsync()).Items.ToList();
+            //TradePartnerLookupList = (await _tradePartnerAppService.GetTradePartnersLookupAsync()).Items.ToList();
         }
 
         public async Task<IActionResult> OnPostAsync()

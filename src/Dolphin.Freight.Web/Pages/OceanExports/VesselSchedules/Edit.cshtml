@@ -7,14 +7,44 @@
 @model Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules.EditModel
 @inject IStringLocalizer<FreightResource> L
 @inject IDropdownService _dropdown;
+@section styles {
+    <style type="text/css">
+        #ejo .btn-primary {
+            color: #fff;
+            background-color: rgb(0 123 255 / 52%);
+            border-color: #007bff;
+        }
+    </style>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
+}
 @section scripts
     {
     <script type="text/javascript">
-
+          var trindex = 0;
+         var containerSizes = [];
         $(document).ready(function () {
             var l = abp.localization.getResource('Freight');
             var showMsg = '@Model.ShowMsg';
-            if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
+            if (showMsg == 'True') {
+                var EmptyGuid = '00000000-0000-0000-0000-000000000000';
+                dolphin.freight.common.memos.memo.getListByQuery({sourceId:EmptyGuid, fType:10 }).done(function (result) {
+                    debugger;
+                    var item = result;
+                    if (item.length>0) {
+                        dolphin.freight.common.memos.memo.updateSourceId('@Model.Id', 10).done(function (response) {
+                            memoDataTable.ajax.reload();
+                            abp.message.success(l("Message:SuccessAdd"));
+
+                        })
+                    } else {
+                       abp.message.success(l("Message:SuccessAdd"));
+                    }
+
+
+
+                })
+            }
 
             initializeDropdownSearch("VesselSchedule_OfficeId");
             initializeDropdownSearch("VesselSchedule_BlTypeId");
@@ -38,6 +68,40 @@
             initializeDropdownSearch("VesselSchedule_SvcTermToId");
             initializeDropdownSearch("VesselSchedule_OblTypeId");
             initializeDropdownSearch("VesselSchedule_TransPort1Id");
+
+            $(document).ready(function () {
+                const ids = [
+                    "VesselSchedule_PolEtd",
+                    "VesselSchedule_PorEtd",
+                    "VesselSchedule_PodEta",
+                    "VesselSchedule_DelEta",
+                    "VesselSchedule_FdestEta",
+                    "VesselSchedule_RailCutOffTime",
+                    "VesselSchedule_PortCutOffTime",
+                    "VesselSchedule_VgmCutOffTime",
+                    "VesselSchedule_OnBoardDate",
+                    "VesselSchedule_Trans1Eta"
+                ];
+
+                ids.forEach(function (id) {
+                    let dateElem = $('#' + id);
+
+                    if (dateElem.length === 0) {
+                        return;
+                    }
+
+                    dateElem.removeAttr('type').datetimepicker({
+                        format: 'Y-m-d H:i',
+                        step: 15,
+                        allowInput: false
+                    });
+
+                    let currentVal = dateElem.val();
+                    if (currentVal.includes('T')) {
+                        dateElem.val(currentVal.replace('T', ' '));
+                    }
+                });
+            });
 
             //系統參數
             //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'BlTypeId' }).done(function (result) {
@@ -138,6 +202,25 @@
                 addTr()
             })
         });
+         dolphin.freight.settings.containerSizes.containerSize.queryAllList({}).done(function (result) {
+                if (result != null && result.length > 0) {
+                    containerSizes = result;
+                    dolphin.freight.importExport.containers.container.queryListVessel( '@Model.Id' ).done(function (result) {
+                        if (result != null && result.length > 0) {
+                            for (var i = 0; i < result.length; i++) {
+                                var value1 = result[i].containerNo;
+                                var value2 = result[i].containerSizeId;
+                                var value3 = result[i].sealNo;
+                                var value4 = result[i].packageNum;
+                                var value5 = result[i].packageWeight;
+                                var value6 = result[i].packageMeasure;
+                                addTrTag(value1, value2, value3, value4, value5, value6);
+
+                            }
+                        }
+                    });
+                }
+            });
         var cardIndex = 0;
         function addHBtn() {
             if (cardIndex == 0) {
@@ -151,6 +234,26 @@
             }
 
         }
+         
+        function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8) {
+
+            var trhtml = "<tr id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
+            trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='exportDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
+            trhtml = trhtml + "<td> <input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Id' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='4' />";
+            trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' id='f5_" + trindex + "' class='form-control' value='" + value5 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' id='f7_" + trindex + "' class='form-control' value='" + value7 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' id='f8_" + trindex + "' class='form-control' value='" + value8 + "' /></td>"
+            trhtml = trhtml + "</tr>"
+            trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
+            trhtml = trhtml + "</tr>"
+            $("#trtbody").append(trhtml);
+             trindex++;
+        }
+           
         function addCardRight(hblId, hblNo, soNo, bgColor) {
             var cardHtml = "<div id='card_" + hblId + "' class='card mt-3' onclick=''>"
             cardHtml = cardHtml + "<div class='card-body'  style='background:" + bgColor + ";color:#FFFFFF;'>"
@@ -160,20 +263,42 @@
             return cardHtml;
         }
         function addTr() {
-            addTrTag("", "", "", "", "", "");
+            addTrTag("", "", "", "", "", "","","");
         }
-        function addTrTag(value1, value2, value3, value4, value5, value6) {
-            trindex++;
-            var trhtml = "<tr id='tr_" + trindex + "'><td><input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f1' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> </td>"
-            trhtml = trhtml + "<td><input type='text' name='f2' id='f2_" + trindex + "' class='form-control' value='" + value2 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f3' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f4' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f5' id='f5_" + trindex + "' class='form-control' value='" + value5 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f6' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
-            trhtml = trhtml + "</tr>"
-            $("#trtbody").append(trhtml);
+              function getcontainerSizeSelect(selectedId) {
+            var selectHtml = "<select name='CreateUpdateContainerDtos[" + trindex + "].ContainerSizeId' class='form-control' >";
+            for (var i = 0; i < containerSizes.length; i++) {
+                selectHtml = selectHtml + "<option value='" + containerSizes[i].id + "' ";
+                if (containerSizes[i].id == selectedId) selectHtml = selectHtml + " selected ";
+                selectHtml = selectHtml + ">" + containerSizes[i].containerCode + "</option>"
+            }
+            selectHtml = selectHtml + "</select>";
+            return selectHtml;
         }
+       
+              function exportDiv(trindex) {
+            $("#tr2_" + trindex).show();
+        }
+                $("#deleteBtn").click(function () {
+                    debugger;
+                $("input[name='f0']:checked").each(function () {
+                    var tid = $(this).val();
+                    $("#did_" + tid).val("1");
+                    $("#tr_" + $(this).val()).hide();
+                })
+            })
+        // function addTrTag(value1, value2, value3, value4, value5, value6) {
+        //     trindex++;
+        //     var trhtml = "<tr id='tr_" + trindex + "'><td><input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f1' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> </td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f2' id='f2_" + trindex + "' class='form-control' value='" + value2 + "' /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f3' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f4' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f5' id='f5_" + trindex + "' class='form-control' value='" + value5 + "' /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f6' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
+        //     trhtml = trhtml + "</tr>"
+        //     $("#trtbody").append(trhtml);
+        // }
     </script>
 }
 <div class="page-header">
@@ -327,13 +452,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.PolId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PolEtd" />
+                                    <abp-input asp-for="VesselSchedule.PolEtd" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PorId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PorEtd" />
+                                    <abp-input asp-for="VesselSchedule.PorEtd" abp-data-datepicker="false" />
                                 </abp-column>
 
 
@@ -343,13 +468,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PodId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PodEta" />
+                                    <abp-input asp-for="VesselSchedule.PodEta" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.DelId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.DelEta" />
+                                    <abp-input asp-for="VesselSchedule.DelEta" abp-data-datepicker="false" />
                                 </abp-column>
 
                             </abp-row>
@@ -358,7 +483,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FdestId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.FdestEta" />
+                                    <abp-input asp-for="VesselSchedule.FdestEta" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_6">
                                     &nbsp;
@@ -390,18 +515,18 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OblTypeId", AspItems = Model.OblTypeList, IsShowLabel = true, FieldName = "OblTypeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.OblTypeId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.RailCutOffTime" />
+                                    <abp-input asp-for="VesselSchedule.RailCutOffTime" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PortCutOffTime" />
+                                    <abp-input asp-for="VesselSchedule.PortCutOffTime" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.VgmCutOffTime " />
+                                    <abp-input asp-for="VesselSchedule.VgmCutOffTime " abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.OnBoardDate" />
+                                    <abp-input asp-for="VesselSchedule.OnBoardDate" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_9">
 
@@ -423,7 +548,7 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.Trans1Eta" />
+                                    <abp-input asp-for="VesselSchedule.Trans1Eta" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_9">
 
@@ -535,7 +660,7 @@
 
             </abp-column>
         </abp-row>
-        <abp-row class="mt-3">
+        <abp-row class="mt-3" id="ejo">
             <abp-column>
                 <input type="hidden" name="VesselSchedule.OfficeId" id="mOfficeId" value="@Model.VesselSchedule.OfficeId" />
                 <input type="hidden" name="VesselSchedule.SvcTermFromId" id="mSvcTermFromId" value="@Model.VesselSchedule.SvcTermFromId" />
@@ -561,7 +686,9 @@
                 <input type="hidden" name="VesselSchedule.FdestId" id="mFdestId" value="@Model.VesselSchedule.FdestId" />
                 <input type="hidden" name="VesselSchedule.TransPort1Id" id="mTransPort1Id" value="@Model.VesselSchedule.TransPort1Id" />
 
-                <abp-button class="btn btn-primary me-md-2" type="button" id="saveEditBtn">@L["Save"].Value</abp-button>
+                <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
+                    <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Save"].Value</abp-button>
+                </div>
             </abp-column>
         </abp-row>
         <abp-row>

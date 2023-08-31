@@ -81,7 +81,7 @@
         }
     });
 </script>
-@if (!Model.IsPDF)
+@if (!Model.IsPDF && !Model.IsPartialView)
         {
         <div class="nav">
            <ul>
@@ -103,6 +103,7 @@
     <abp-input type="hidden" asp-for="@Model.PageType" />
     <abp-input type="hidden" asp-for="@Model.ReportType" />
     <abp-input type="hidden" asp-for="@Model.AgentName" />
+    <abp-input type="hidden" asp-for="@Model.IsPartialView" />
 
     <div class="edit">
         <div class="wrap">

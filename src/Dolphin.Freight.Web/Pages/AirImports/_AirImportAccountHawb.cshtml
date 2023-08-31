@@ -31,6 +31,36 @@
             myWindow.focus();
         });
     }
+      function setHawbLockUnlock(isLockedCheck) {
+            var id = '@Model.AirImportHawbDto.Id';
+            isLockedCheck = isLockedCheck === "True";
+            if(isLockedCheck){
+                
+            abp.message.confirm(l('UnlockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airImports.airImportHawb
+                            .lockedOrUnLockedAirImportHawb(id)
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyUnlocked'));
+                                window.location.reload();
+                            });
+                    }
+                });
+            } else{
+                abp.message.confirm(l('LockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                      dolphin.freight.importExport.airImports.airImportHawb
+                            .lockedOrUnLockedAirImportHawb(id)
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyLocked'));
+                                window.location.reload();
+                            });
+                    }
+                });
+            }
+        }
 </script>
  
 <abp-card class="card board-item" id="hblCard">
@@ -44,12 +74,28 @@
 
         <div class="btn-group dropdown">
             <button class="btn btn-secondary dropdown-toggle" style="position: relative;" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                   @if(@Model.AirImportHawbDto.IsLocked)
+                         {
+                           <i class="fa fa-lock"></i>
+                                        }
+                           else
+                       {
+                           <i class="fa fa-lock-open"></i>
+                                        }
                 @L["Display:Function"]
             </button>
+            
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                </a>
+                  <a class='dropdown-item' href='javascript:void(0)' onclick="setHawbLockUnlock('@Model.AirImportHawbDto.IsLocked')">
+                                        @if(@Model.AirImportHawbDto.IsLocked)
+                                        {
+                                            <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                        }
+                                    </a>
                 <p class="dropdown-divider"></p>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ArrivalNoticeAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]

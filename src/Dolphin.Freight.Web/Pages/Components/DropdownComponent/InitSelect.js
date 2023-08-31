@@ -1,6 +1,5 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
-
 });
 
 function getFormat() {

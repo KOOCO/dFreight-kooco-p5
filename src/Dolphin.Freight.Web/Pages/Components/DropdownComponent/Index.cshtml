@@ -17,21 +17,39 @@
 }
 
 <div class="d-flex dropdown form-control form-control-fix">
-    
-<select name="@Model.Name" id="@Model.Id" class="filteredDropdown form-select form-control cursor-pointer" @Model.Disabled @(Model.IsRequired? "required": "")>
-    <option></option>
-    @foreach (SelectListItem item in Model.AspItems)
-    {
-        @if (item.Value == Model.ShowFiledContentValue)
+ @if(Model.IsMultipleSelection){
+    <select name="@Model.Name" multiple="multiple" id="@Model.Id" class="filteredDropdown form-select form-control cursor-pointer" @Model.Disabled @(Model.IsRequired? "required": "")>
+        <option></option>
+        @foreach (SelectListItem item in Model.AspItems)
         {
-            <option value="@item.Value" selected>@item.Text</option>
+            @if (item.Value == Model.ShowFiledContentValue)
+            {
+                <option value="@item.Value" selected>@item.Text</option>
+            }
+            else
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
         }
-        else
-        {
-            <option value="@item.Value">@item.Text</option>
-        }
+        </select>
     }
-</select>
+    else
+    {
+        <select name="@Model.Name" id="@Model.Id" class="filteredDropdown form-select form-control cursor-pointer" @Model.Disabled @(Model.IsRequired ? "required" : "")>
+            <option></option>
+            @foreach (SelectListItem item in Model.AspItems)
+            {
+                @if (item.Value == Model.ShowFiledContentValue)
+                {
+                    <option value="@item.Value" selected>@item.Text</option>
+                }
+                else
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            }
+        </select>
+    }
 
 @if (Model.SelectType == 1)
 {

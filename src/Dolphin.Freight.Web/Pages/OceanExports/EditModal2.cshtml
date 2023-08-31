@@ -9,28 +9,34 @@
     {
 
     <script type="text/javascript">
+        Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
         var trindex = 0;
         var containerSizes = [];
         var l = abp.localization.getResource('Freight');
         $(document).ready(function () {
             var isLocked = '@Model.OceanExportMbl.IsLocked';
             if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
-            if (isLocked == 'True') {
+            if (isLocked != 'True') {
                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
-                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
             }
             else {
                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
-                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
             }
             var isLockedHbl = '@Model.OceanExportHbl.IsLocked';
-            if (isLockedHbl == 'True') {
+            if (isLockedHbl != 'True') {
                 $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
-                $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
             }
             else {
                 $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
-                $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
             }
             dolphin.freight.settings.containerSizes.containerSize.queryAllList({}).done(function (result) {
                 if (result != null && result.length > 0) {
@@ -97,23 +103,33 @@
                 $('[name="OceanExportMbl.Description"]:eq(1)').val($('[name="OceanExportMbl.Description"]:eq(0)').val());
                 $('[name="OceanExportMbl.DomesticInstructions"]:eq(1)').val($('[name="OceanExportMbl.DomesticInstructions"]:eq(0)').val());
             })
+            Swal.clickCancel();
         });
 
         function lockUnlockMbl(id) {
             var isLock = $('#lockButtonMbl').find('i').hasClass('fa-lock');
             abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
                 if (confirmed) {
+                    Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
                     dolphin.freight.importExport.oceanExports.oceanExportMbl.lockedOrUnLockedOceanExportMbl({ MbId: id })
                         .done(function () {
-                            if (isLock) {
+                            Swal.clickCancel();
+                            if (!isLock) {
                                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
-                                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
-                                abp.message.success(l('Message:SuccessUnlock'));
-                            } else {
-                               $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
                                 $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
                                 abp.message.success(l('Message:SuccessLock'));
+                            } else {
+                               $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                                abp.message.success(l('Message:SuccessUnlock'));
                             }
+                            
+
                         });
                 }
             });
@@ -123,16 +139,23 @@
             var isLock = $('#lockButtonHbl').find('i').hasClass('fa-lock');
             abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
                 if (confirmed) {
+                    Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
                     dolphin.freight.importExport.oceanExports.oceanExportHbl.lockedOrUnLockedOceanExportHbl({ HblId: id })
                         .done(function () {
-                            if (isLock) {
+                            Swal.clickCancel();
+                            if (!isLock) {
                                 $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
-                                $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
-                                abp.message.success(l('Message:SuccessUnlock'));
+                                $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                               abp.message.success(l('Message:SuccessLock'));
                             } else {
                                $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
-                                $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
-                                abp.message.success(l('Message:SuccessLock'));
+                                $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                                abp.message.success(l('Message:SuccessUnlock'));
                             }
                         });
                 }
@@ -146,7 +169,7 @@
 
             var trhtml = "<tr id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
             trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='exportDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
-            trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
+            trhtml = trhtml + "<td> <input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
             trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
@@ -451,6 +474,12 @@
     <style>
         .color-black {
             color: black !important;
+        }
+
+        #ejo .btn-primary {
+            color: #fff;
+            background-color: rgb(0 123 255 / 52%);
+            border-color: #007bff;
         }
     </style>
 }
@@ -842,9 +871,11 @@
     </abp-row>
 </abp-card-body>
                     </abp-card>
-<abp-row>
+<abp-row id="ejo">
     <abp-column>
-        <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
+        <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
+            <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
+        </div>
     </abp-column>
 </abp-row>
                 </div>

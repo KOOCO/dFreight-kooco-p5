@@ -1,4 +1,4 @@
-using Dolphin.Freight.AirExports;
+﻿using Dolphin.Freight.AirExports;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -26,6 +26,7 @@ using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
 using Volo.Abp.Timing;
 using Dolphin.Freight.Web.Pages.AirExports;
 using Dolphin.Freight.ReportLog;
+using Dolphin.Freight.Web.CommonService;
 
 namespace Dolphin.Freight.Web.Pages.ReportScreen
 {
@@ -41,6 +42,7 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
         private readonly IPackageUnitAppService _packageUnitAppService;
         private readonly IAirExportMawbAppService _airExportMawbAppService;
         private readonly IReportLogRepository _reportLogRepository;
+        private readonly IDropdownService _dropdownService;
 
         [BindProperty]
         public CreateMawbViewModel MawbModel { get; set; }
@@ -61,7 +63,8 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             ISubstationAppService substationAppService,
             IAirportAppService airportAppService,
             IPackageUnitAppService packageUnitAppService,
-            IAirExportMawbAppService airExportMawbAppService
+            IAirExportMawbAppService airExportMawbAppService,
+            IDropdownService dropdownService
             )
         {
             Logger = NullLogger<CreateMawbModel>.Instance;
@@ -70,6 +73,7 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             _airportAppService = airportAppService;
             _packageUnitAppService = packageUnitAppService;
             _airExportMawbAppService = airExportMawbAppService;
+            _dropdownService = dropdownService;
         }
 
 
@@ -332,6 +336,9 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             [DisplayName("Output By")]
             public string OutputBy { get; set; }
 
+            public decimal? MinProfit { get; set; }
+            
+            public decimal? MaxProfit { get; set; }
 
             /// <summary>
             /// OUTPUT Options
@@ -347,11 +354,14 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             public bool IsBillTo { get; set; }
             public bool IsReferredBy { get; set; }
             public bool IsOutputOffice { get; set; }
+            public bool IsBLPostDate { get; set; }
             public bool IsETD { get; set; }
             public bool IsETA { get; set; }
             public bool IsOutputFreightTerm { get; set; }
             public bool IsIncoterms { get; set; }
             public bool IsServiceTerm { get; set; }
+            public bool IsCargoType { get; set; }
+            public bool IsSalesPerson { get; set; }
             public bool IsMBLOP { get; set; }
             public bool IsOperation { get; set; }
             public bool IsOPCOOPOP { get; set; }
@@ -382,6 +392,21 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             public bool IsLatestGateIn { get; set; }
 
 
+            public bool IsOceanImport { get; set; }
+            public bool IsOceanExport { get; set; }
+            public bool IsAirImport { get; set; }
+            public bool IsAirExport { get; set; }
+            public bool IsTruck { get; set; }
+            public bool IsMisc { get; set; }
+            public bool IsWarehouse { get; set; }
+            public bool IsVolumeDetail { get; set; }
+            public bool IsProfitDetail { get; set; }
+            public bool IsContainerDetail { get; set; }
+            public bool IsVolByCntrAndSalesType { get; set; }
+            public bool IsNA { get; set; }
+            public bool IsCOLoad { get; set; }
+            public bool IsFreeCargo { get; set; }
+            public bool IsNomi { get; set; }
 
         }
 
@@ -439,14 +464,24 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
 
         public List<SelectListItem> FreightCode { get; set; } = new List<SelectListItem>
         {
-            new SelectListItem { Value = "all", Text = "AE01A/F: AIR FREIGHT CHARGE"},
-             new SelectListItem { Value = "range", Text = "AE02FSC: FUEL SUR CHARGE"},
-              new SelectListItem { Value = "negative", Text = "AE03SECURI: SECURITY CHARGE"},
-              new SelectListItem { Value = "range", Text = "AE02FSC: FUEL SUR CHARGE"},
-              new SelectListItem { Value = "range", Text = "AE05DG: DANGEROUS GOOD HANDLING"},
-              new SelectListItem { Value = "range", Text = "AE06TRUCKI: TRUCKING CHARGE"},
-              new SelectListItem { Value = "range", Text = "AE07WHSETR: WAREHOUSE TRANSFER FEE"},
-              new SelectListItem { Value = "range", Text = "AE08L/C: LETTER OF CREDIT BANKING"},
+            new SelectListItem { Value = "03322EAC-7369-95F1-39B1-3A0AEF20C399", Text = "AE01A/F: AIR FREIGHT CHARGE"},
+            new SelectListItem { Value = "6ECBE3BE-AC03-B396-06F2-3A0AEF20C399", Text = "AE02FSC: FUEL SUR CHARGE"},
+            new SelectListItem { Value = "8CB45D76-81FD-2029-AFEE-3A0AEF20C399", Text = "AE03SECURI: SECURITY CHARGE"},
+            new SelectListItem { Value = "7ECCFA7D-7D05-3BCE-6717-3A0AEF20C399", Text = "AE04H/C: HANDLING CHARGE"},
+            new SelectListItem { Value = "4D95CCA0-30BA-99EA-F050-3A0AEF20C399", Text = "AE05DG: DANGEROUS GOOD HANDLING"},
+            new SelectListItem { Value = "4BEDC2EE-D6ED-1D78-3BD9-3A0AEF20C399", Text = "AE06TRUCKI: TRUCKING CHARGE"},
+            new SelectListItem { Value = "5F698F8B-4E35-3DC9-6324-3A0AEF20C399", Text = "AE07WHSETR: WAREHOUSE TRANSFER FEE"},
+            new SelectListItem { Value = "B3DBCDA5-A433-5C8B-BBAC-3A0AEF20C399", Text = "AE08L/C: LETTER OF CREDIT BANKING"},
+            new SelectListItem { Value = "B50C9F44-FD59-7968-6CA1-3A0AEF20C399", Text = "AE09C/O: CERTIFICATE OF ORIGIN"},
+            new SelectListItem { Value = "91E7D784-73FE-BFB7-0937-3A0AEF20C399", Text = "AE10INS: INSURANCE PREMIUM"},
+            new SelectListItem { Value = "708B7168-953D-887C-30BF-3A0AEF20C399", Text = "AE12MSG: SPECIAL MESSENGER FEE"},
+            new SelectListItem { Value = "C703FAEC-F4A7-DAE0-1746-3A0AEF20C399", Text = "AE13OTHER: OTHER CHARGES"},
+            new SelectListItem { Value = "8D47A13C-CDB1-3DC9-04C3-3A0AEF20C399", Text = "AE14COMM: COMMISSION FEE"},
+            new SelectListItem { Value = "C2FA41EC-EE02-0248-C7A8-3A0AEF20C399", Text = "AEDEST: DESTINATION CHARGES"},
+            new SelectListItem { Value = "03322EAC-7369-95F1-39B1-3A0AEF20C399", Text = "AI01A/F: AIR FREIGHT CHARGE"},
+            new SelectListItem { Value = "FF7AEE18-A039-0AE7-5B4E-3A0AEF20C399", Text = "AI02H/C: HANDLING CHARGE"},
+            new SelectListItem { Value = "E004439C-2CC5-3847-9ACF-3A0AEF20C399", Text = "AI03IMPORT: IMPORT SERVICE FEE TO AIRLINE"},
+            new SelectListItem { Value = "1ACB35D9-94A4-191A-7851-3A0AEF20C399", Text = "AI04TRUCKI: TRUCKING CHARGE"},
         };
 
         public List<SelectListItem> FreightTerm { get; set; } = new List<SelectListItem>
@@ -474,9 +509,58 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
 
         public List<SelectListItem> OutputType { get; set; } = new List<SelectListItem>
         {
-            new SelectListItem { Value = "all", Text = "ABBOTT, BROWN AND GARCIA"},
-             new SelectListItem { Value = "range", Text = "ABBOTT, BROWN AND MASON"},
-              new SelectListItem { Value = "negative", Text = "ABBOTT, DIAZ AND GREEN"}
+            //new SelectListItem { Value = "all", Text = "ABBOTT, BROWN AND GARCIA"},
+            //new SelectListItem { Value = "range", Text = "ABBOTT, BROWN AND MASON"},
+            //new SelectListItem { Value = "negative", Text = "ABBOTT, DIAZ AND GREEN"}
+
+            new SelectListItem { Value = "Shipper", Text = "Shipper"},
+            new SelectListItem { Value = "OverseaAgent", Text = "Oversea Agent"},
+            new SelectListItem { Value = "Consignee", Text = "Consignee"},
+            new SelectListItem { Value = "Customer", Text = "Customer"},
+            new SelectListItem { Value = "Carrier", Text = "Carrier"},
+            new SelectListItem { Value = "CustomsBroker", Text = "Customs Broker"},
+            new SelectListItem { Value = "Trucker", Text = "Trucker"},
+            new SelectListItem { Value = "AccountGroup", Text = "Account Group"},
+            new SelectListItem { Value = "BillTo", Text = "Bill To"},
+            new SelectListItem { Value = "ReferredBy", Text = "Referred By"},
+            new SelectListItem { Value = "Office", Text = "Office"},
+            new SelectListItem { Value = "BLPostDate", Text = "BL Post Date"},
+            new SelectListItem { Value = "ETD", Text = "ETD"},
+            new SelectListItem { Value = "ΕΤΑ", Text = "ΕΤΑ"},
+            new SelectListItem { Value = "FreightTerm", Text = "Freight Term"},
+            new SelectListItem { Value = "Incoterms", Text = "Incoterms"},
+            new SelectListItem { Value = "ServiceTerm", Text = "Service Term"},
+            new SelectListItem { Value = "CargoType", Text = "Cargo Type"},
+            new SelectListItem { Value = "SalesPerson", Text = "Sales Person"},
+            new SelectListItem { Value = "MB/LOP", Text = "MB/L OP"},
+            new SelectListItem { Value = "Operation", Text = "Operation"},
+            new SelectListItem { Value = "OP/Co-opOP", Text = "OP/Co-op OP"},
+            new SelectListItem { Value = "ShipLine", Text = "Ship Line"},
+            new SelectListItem { Value = "POL", Text = "POL"},
+            new SelectListItem { Value = "POD", Text = "POD"},
+            new SelectListItem { Value = "CountryofPOL", Text = "Country of POL"},
+            new SelectListItem { Value = "CountryofPOD", Text = "Country of POD"},
+            new SelectListItem { Value = "DEL", Text = "DEL"},
+            new SelectListItem { Value = "FinalDestination", Text = "Final Destination"},
+            new SelectListItem { Value = "Vessel/Flight", Text = "Vessel / Flight"},
+            new SelectListItem { Value = "MBL/MAWB No./WarehouseB/LNo.", Text = "MBL/MAWB No./ Warehouse B/L No."},
+            new SelectListItem { Value = "HB/L|HAWB No.", Text = "HB/L | HAWB No."},
+            new SelectListItem { Value = "FileNo.", Text = "File No."},
+            new SelectListItem { Value = "DoorMove", Text = "Door Move"},
+            new SelectListItem { Value = "C.Clearance", Text = "C.Clearance"},
+            new SelectListItem { Value = "ISF No.", Text = "ISF No."},
+            new SelectListItem { Value = "FBAFC", Text = "FBA FC"},
+            new SelectListItem { Value = "SalesType", Text = "Sales Type"},
+            new SelectListItem { Value = "HB/LReferredBy/NominatedAgent", Text = "HB/L Referred By / Nominated Agent"},
+            new SelectListItem { Value = "E-Commerce", Text = "E-Commerce"},
+            new SelectListItem { Value = "ForwardingAgent", Text = "Forwarding Agent"},
+            new SelectListItem { Value = "CarrierContractNo.", Text = "Carrier Contract No."},
+            new SelectListItem { Value = "MBLColorRemark", Text = "MBL Color Remark"},
+            new SelectListItem { Value = "HBLColorRemark", Text = "HBL Color Remark"},
+            new SelectListItem { Value = "Co-Loader", Text = "Co-Loader"},
+            new SelectListItem { Value = "B/LType", Text = "B/L Type"},
+            new SelectListItem { Value = "LatestGateIn", Text = "Latest Gate In"}
+
         };
 
         public List<SelectListItem> ServiceTermStart { get; set; } = new List<SelectListItem>
@@ -534,7 +618,7 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
         };
 
 
-
+        
 
     }
 }

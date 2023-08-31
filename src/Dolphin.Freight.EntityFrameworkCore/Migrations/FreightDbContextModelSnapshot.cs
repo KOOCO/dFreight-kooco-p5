@@ -1066,6 +1066,9 @@ namespace Dolphin.Freight.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
                     b.Property<string>("IssuingCarrier")
                         .HasColumnType("nvarchar(max)");
 
@@ -1314,6 +1317,9 @@ namespace Dolphin.Freight.Migrations
                     b.Property<bool>("IsECom")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
                     b.Property<Guid?>("IssuingCarrierId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1349,6 +1355,9 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Other")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PONo")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Package")
@@ -1622,6 +1631,9 @@ namespace Dolphin.Freight.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("LastFreeDay")
                         .HasColumnType("datetime2");
 
@@ -1821,6 +1833,9 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsECom")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsLocked")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModificationTime")
@@ -2333,6 +2348,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<DateTime>("GateOutDate")
                         .HasColumnType("datetime2");
 
+
                     b.Property<bool>("IsAvailableForPickup")
                         .HasColumnType("bit");
 
@@ -2383,11 +2399,16 @@ namespace Dolphin.Freight.Migrations
                     b.Property<double>("PackageMeasure")
                         .HasColumnType("float");
 
+
                     b.Property<int>("PackageNum")
                         .HasColumnType("int");
 
+
                     b.Property<double>("PackageWeight")
                         .HasColumnType("float");
+
+                    b.Property<string>("PackageWeightUnit")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PicupNo")
                         .HasMaxLength(50)
@@ -2422,6 +2443,9 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("VentilationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("VesselId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("YardLocation")
@@ -3947,6 +3971,7 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<string>("DomesticInstructions")
                         .HasColumnType("nvarchar(max)");
+
 
                     b.Property<DateTime?>("DoorDeliveryATA")
                         .HasColumnType("datetime2");

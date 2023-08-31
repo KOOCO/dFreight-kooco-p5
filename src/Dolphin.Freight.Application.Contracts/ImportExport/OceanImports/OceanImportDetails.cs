@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Volo.Abp.Users;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.OceanImports
 {
@@ -542,7 +543,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string MblFdestName { get; set; }
         public string PackageUnitName { get; set; }
         public string PackagpackageUnitName { get; set; }
-
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public List<HblList> HblLists { get; set; }
         public TradePartnerDto CargoPickUp { get; set; }
         public string CreateUpdateContainerJson { get; set; }
         public string HblsJson { get; set; }
@@ -557,6 +559,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public DateTime? EmptyPickUpDate { get; set; }
         public List<ContainerList> ContainerList { get; set; }
         public string MblFillingNo { get; set; }
+        public string CfsLocation { get; set; }
     }
     public class ContainerList
     {
@@ -568,6 +571,24 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string WEIGHT { get; set; }
         public string PICKUP_NO { get; set; }
         public string LFD { get; set; }
+    }
+    public class HblList
+    {
+        public int index { get; set; }
+        public string HblNo { get; set; }
+        public string HblSo_No { get; set; }
+        public string FDest { get; set; }
+        public string IT_No { get; set; }
+        public string ShipperName { get; set; }
+        public string CONSIGNEE { get; set; }
+        public string Mark { get; set; }
+        public string Package { get; set; }
+        public string WeightKgs { get; set;}
+        public string WeightLbs { get; set; }
+        public string MeasureCbm { get; set; }
+        public string MeasureCft { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public List<ManifestCommodity> Commodity { get; set; }
     }
 
 }

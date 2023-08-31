@@ -8,6 +8,8 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Users;
 using Dolphin.Freight.Common;
 using Volo.Abp.Data;
+using NPOI.SS.UserModel;
+using Dolphin.Freight.Accounting.Invoices;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -38,7 +40,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 提單日期
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime AwbDate { get; set; }
         /// <summary>
         /// ITN號碼
@@ -71,7 +72,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 發佈日期
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime PostDate { get; set; }
         /// <summary>
         /// 分站ID
@@ -117,12 +117,10 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 中轉航班1到達日期
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime RouteTrans1ArrivalDate { get; set; }
         /// <summary>
         /// 中轉航班1出發日期
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime RouteTrans1DepatureDate { get; set; }
         /// <summary>
         /// 中轉航班1航班號碼
@@ -139,7 +137,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 中轉航班2到達日期
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime RouteTrans2ArrivalDate { get; set; }
         /// <summary>
         /// 中轉航班2出發日期
@@ -161,12 +158,10 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 中轉航班3到達日期
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime RouteTrans3ArrivalDate { get; set; }
         /// <summary>
         /// 中轉航班3出發日期
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime RouteTrans3DepatureDate { get; set; }
         /// <summary>
         /// 中轉航班3航班號碼
@@ -200,6 +195,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// 航空公司報價單號
         /// </summary>
         public string CarrierSpotNo { get; set; }
+        public string HawbNos { get; set; }
         /// <summary>
         /// 運費及聲明價值費(PPD / COLL)
         /// </summary>
@@ -323,7 +319,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 提單取消日期
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? AwbCancelledDate { get; set; }
         /// <summary>
         /// 取消者Id
@@ -359,11 +354,25 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string Shipper { get; set; }
        
         public string OverseaAgentTPName { get; set; }
+        public string AwbAccountCarrierName { get; set; }
         public string DepatureAirportName { get; set; }
         public string DestinationAirportName { get; set; }
         public string CarrierTPName { get; set; }
         public string ConsigneeName { get; set; }
         public string NotifyName { get; set; }
+        public List<Commodity> Commodities { get; set; }
+        public List<OtherCharges> OtherCharges { get; set; }
+        public string PONo { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public bool IsLocked { get; set; }
+        public double ARTotal { get; set; }
+        public double DCTotal { get; set; }
+        public double APTotal { get; set; }
+        public double Total { get; set; }
+        public List<InvoiceDto> AR { get; set; }
+        public List<InvoiceDto> DC { get; set; }
+        public List<InvoiceDto> AP { get; set; }
+        public string InvoicesJson { get; set; }
+        public List<InvoiceDto> Invoices { get; set; }
     }
 }

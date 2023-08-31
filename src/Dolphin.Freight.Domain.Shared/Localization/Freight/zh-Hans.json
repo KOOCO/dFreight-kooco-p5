@@ -628,6 +628,8 @@
     "DisplayName:TPType": "贸易伙伴类别",
     "DisplayName:TPCode": "代码",
     "DisplayName:TPName": "名称",
+    "DisplayName:TPInfoModel.CreditLimitGroupId": "Credit Limit Group Name",
+    "DisplayName:TPInfoModel.AccountGroupId": "Account Group Name",
     "DisplayName:TPNamePrint": "列印名称",
     "DisplayName:TPNameLocal": "註册地名称 (发票抬头)",
     "DisplayName:TPLocalAddress": "註册地地址",
@@ -837,6 +839,7 @@
     "Enum:TPType.Trucker": "TRUCKER",
     "Enum:TPType.Vendor": "VENDOR",
     "Enum:TPType.Warehouse": "WAREHOUSE",
+    "Enum:TPType.FBAWarehouse": "FBA WAREHOUSE",
 
     // ErrorCodeMessage
     "Freight:CreditLimitGroupNameAlreadyExists": "目前已经存在一组相同的贸易伙伴群组名称 : \"{CreditLimitGroupName}\"",

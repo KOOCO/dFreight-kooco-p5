@@ -13,6 +13,11 @@
 @inject IDropdownService _dropdown
 @section styles {
     <style type="text/css">
+        #ejo .btn-primary {
+            color: #fff;
+            background-color: rgb(0 123 255 / 52%);
+            border-color: #007bff;
+        }
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
@@ -22,9 +27,16 @@
     <abp-script src="/Pages/OceanExports/CreateMbl.js" />
     <abp-script src="/Pages/OceanExports/EditModel.js" />
     <script type="text/javascript">
+        Swal.fire({
+            title: 'Loading...',
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        })
         var cardIndex = 0;
         var l = abp.localization.getResource('Freight');
         var isLocked;
+        
         $(document).ready(function () {
 
             //HB/l dropdown
@@ -34,13 +46,13 @@
             var showMsg = '@Model.ShowMsg';
             if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
             isLocked = '@Model.OceanExportMbl.IsLocked';
-            if (isLocked == 'True') {
+            if (isLocked != 'True') {
                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> '+l("Btn:Lock"));
-                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
             }
             else {
                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
-                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
             }
 
             console.log('@ViewData["HAVEHBL"]');
@@ -52,7 +64,7 @@
             }
 
             console.log('released by ' + '@Model.OceanExportMbl.ReleaseBy')
-
+            Swal.clickCancel();
         });
 
         $('#OceanExportMbl_IsReleased').change(function () {
@@ -108,18 +120,25 @@
 
         function lockUnlockMbl(id) {
             var isLock = $('#lockButtonMbl').find('i').hasClass('fa-lock');
-            abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+            abp.message.confirm(l(isLock ? 'LockConfirmationMessage' : 'UnlockConfirmationMessage')).then(function (confirmed) {
                 if (confirmed) {
+                    Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
                     dolphin.freight.importExport.oceanExports.oceanExportMbl.lockedOrUnLockedOceanExportMbl({ MbId: id })
                         .done(function () {
+                            Swal.clickCancel();
                             if (isLock) {
                                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
-                                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
-                                abp.message.success(l('Message:SuccessUnlock'));
-                            } else {
                                 $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
-                               $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
                                 abp.message.success(l('Message:SuccessLock'));
+                            } else {
+                                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                                $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                                abp.message.success(l('Message:SuccessUnlock'));
                             }
                         });
                 }
@@ -474,17 +493,27 @@
             var isLock = $('#lockButtonHbl').find('i').hasClass('fa-lock');
             abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
                 if (confirmed) {
+                    Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
                     dolphin.freight.importExport.oceanExports.oceanExportHbl.lockedOrUnLockedOceanExportHbl({ HblId: id })
                         .done(function () {
+                            Swal.clickCancel();
                             if (isLock) {
-                                $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
-                               $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
-                                abp.message.success(l('Message:SuccessUnlock'));
-                            } else {
                                 $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
-                                $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                                $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
                                 abp.message.success(l('Message:SuccessLock'));
+
+                            } else {
+                                $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                                $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                                abp.message.success(l('Message:SuccessUnlock'));
                             }
+                            
+                           
                         });
                 }
             });
@@ -567,7 +596,6 @@
                                 </button>
                                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDropMbl">
                                     <a class='dropdown-item' id="lockButtonMbl" href='javascript:void(0)' onclick="lockUnlockMbl('@Model.OceanExportMbl.Id')">
-                                        <i class=""></i> @L["Btn:Lock"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)'>
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]
@@ -642,7 +670,7 @@
                             </abp-row>
                             <abp-row class="mb-3">
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.PostDate" class="checkdate" type="text" abp-data-datepicker="false" readonly="true" />
+                                    <abp-input asp-for="OceanExportMbl.PostDate" readonly="true" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportMbl.SoNo" />
@@ -731,7 +759,7 @@
                                     <abp-input asp-for="OceanExportMbl.CarrierContractNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanExportMbl_IsDirect" class="">@L["IsDirect"]<input type="checkbox" name="OceanExportMbl.IsDirect" id="OceanExportMbl.IsDirect" value="true" checked="@Model.OceanExportMbl.IsDirect" /></label>
+                                    <label for="OceanExportMbl_IsDirect" class="customCheck">@L["IsDirect"]<input type="checkbox" name="OceanExportMbl.IsDirect" id="OceanExportMbl.IsDirect" value="true" checked="@Model.OceanExportMbl.IsDirect" /></label>
                                 </abp-column>
                                 <abp-column size-md="_6">
 
@@ -753,7 +781,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorName", SelectType = 0, ShowFiledContentValue = Model.OceanExportMbl.PorId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.PorEtd" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanExportMbl.PorEtd" type="datetime-local" />
                                 </abp-column>
                             </abp-row>
                             <abp-row class="mb-3">
@@ -761,13 +789,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolName", SelectType = 0, ShowFiledContentValue = Model.OceanExportMbl.PolId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.PolEtd" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanExportMbl.PolEtd" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodName", SelectType = 0, ShowFiledContentValue = Model.OceanExportMbl.PodId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.PodEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanExportMbl.PodEta" />
                                 </abp-column>
                             </abp-row> 
                             <abp-row class="mb-3">
@@ -775,13 +803,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelName", SelectType = 0, ShowFiledContentValue = Model.OceanExportMbl.DelId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.DelEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanExportMbl.DelEta" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 0, ShowFiledContentValue = Model.OceanExportMbl.FdestId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.FdestEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanExportMbl.FdestEta" />
                                 </abp-column>
                             </abp-row>
                             <abp-row class="mb-3">
@@ -803,7 +831,7 @@
                                            
                                         
                                             <div class="col-6 pl-0 pe-0">
-                                            <input class="form-control form-control-sm" type="text" value="@Model.OceanExportMbl.PrepreCarriageVoyage" name="OceanExportMbl.PrepreCarriageVoyage" />
+                                            <input class="form-control form-control-xl" type="text" value="@Model.OceanExportMbl.PrepreCarriageVoyage" name="OceanExportMbl.PrepreCarriageVoyage" />
                                      </div>   
                                         </div>
                                 </abp-column>
@@ -840,17 +868,17 @@
                             </abp-row>
                             <abp-row class="mb-3">
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.DocCutOffTime" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.DocCutOffTime" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.PortCutOffTime" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.PortCutOffTime" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.VgmCutOffTime" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.VgmCutOffTime" />
                                 </abp-column>
                                 <abp-column size-md="_3">
 
-                                    <abp-input asp-for="OceanExportMbl.RailCutOffTime" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.RailCutOffTime" />
 
                                 </abp-column>
 
@@ -886,7 +914,7 @@
                                     </div>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanExportMbl_IsBookingAgent" class="form-label">@L["IsBookingAgent"]<input type="checkbox" name="OceanExportMbl.IsBookingAgent" id="OceanExportMbl_IsBookingAgent" value="true" checked="" /></label>
+                                    <label for="OceanExportMbl_IsBookingAgent" class="form-label customCheck">@L["IsBookingAgent"]<input type="checkbox" name="OceanExportMbl.IsBookingAgent" id="OceanExportMbl_IsBookingAgent" value="true" checked="" /></label>
                                 </abp-column>
                                 @if (Model.OceanExportMbl.IsReleased == true)
                                 {
@@ -930,10 +958,10 @@
                                     &nbsp;
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.OnBoardDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.OnBoardDate" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <button type="button" id="checkHideBtn">
+                                    <button type="button" id="checkHideBtn" class="expandBtn">
                                         <i class="fa fa-plus" id="showLi"></i>
                                         <i class="fa fa-minus" id="hideLi"></i>
                                     </button>
@@ -958,7 +986,7 @@
                             </abp-row>
                             <abp-row class="hideArea mb-3">
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanExportMbl.Trans1Eta" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input asp-for="OceanExportMbl.Trans1Eta" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportMbl.EctNo" />
@@ -966,7 +994,7 @@
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportMbl.PrnNo" />
                                 </abp-column>
-                                <abp-column size-md="_3">
+                                <abp-column size-md="_3" class="expandCheck">
                                     <abp-input asp-for="OceanExportMbl.IsEcommerce" />
                                 </abp-column>
                             </abp-row>
@@ -1002,9 +1030,11 @@
                 </abp-column>
             </abp-row>
 
-            <abp-row class="mt-3">
+        <abp-row class="mt-3" id="ejo">
                 <abp-column>
+                <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
                     <abp-button class="btn btn-primary me-md-2" type="button" id="saveEditBtn">@L["Save"].Value</abp-button>
+                </div>
                 </abp-column>
             </abp-row>
         </form>
