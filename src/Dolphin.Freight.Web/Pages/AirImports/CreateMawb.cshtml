@@ -355,7 +355,7 @@
 </div>
 
 <div class="page-content-area">
-    <div class="board-wrap">
+    < class="board-wrap">
         <form abp-model="MawbModel" submit-button="true" data-ajaxForm="true" id="createForm">
             <abp-row>
                 @*<abp-input asp-for="@Model.AirImportMawbDto.Id" type="hidden" suppress-label/>*@
@@ -415,41 +415,14 @@
                                     <label asp-for="@Model.MawbModel.OPId" class="form-label">@L["OP"]</label>
                                     <input class="form-control form-control-sm" name="MawbModel.OPId" type="text" value="@(_currentUser.Name + " " + _currentUser.SurName)" disabled />
                                 </abp-column>
-                                <abp-column size-md="_3">
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                </abp-column>
-                            </abp-row>
-                            <!--第4列-->
-                            <abp-row>
-                                <abp-column size-md="_3">
+                                <abp-column size-md="_3" class="expandCheck">
                                     <abp-input asp-for="MawbModel.IsDirectMaster" id="isDirectMaster" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                   
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    
                                 </abp-column>
                             </abp-row>
-                            <!--第5列-->
-                            <abp-row>
-                                <abp-column size-md="_3">
-                                    
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                </abp-column>
-                            </abp-row>
-                            <br />
+ 
+    
                             <!--第6列-->
                             <abp-row>
                                 <abp-column size-md="_3">
@@ -459,10 +432,10 @@
                                     <abp-input asp-for="MawbModel.DepatureDate" abp-data-datepicker="false" class="form-control" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="MawbModel.FlightNo" size="Small" />
+                                    <abp-input asp-for="MawbModel.FlightNo" size="Medium" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapseRoute" role="button" aria-expanded="false" aria-controls="collapseRoute">
+                                    <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapseRoute" role="button" aria-expanded="false" aria-controls="collapseRoute" style="margin-top:2em;">
                                         <i class="fa fa-plane" aria-hidden="true"></i>
                                         @L["AddConnectingFlight"]
                                     </a>
@@ -482,7 +455,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.FreightLocationId", AspItems = _dropdown.TradePartnerLookupList,Selected=Model.MawbModel.FreightLocationId, IsShowLabel = true, FieldName = "FreightLocationId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.FreightLocationId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="MawbModel.StorageStartDate" abp-data-datepicker="false" size="Small" />
+                                    <abp-input asp-for="MawbModel.StorageStartDate" abp-data-datepicker="false" size="Medium" />
                                 </abp-column>
                             </abp-row>
                             <br />
@@ -564,9 +537,8 @@
                             </abp-row>
                             <br />
                             <!--第八列 Package, Weight Settings Area-->
-                            <abp-row>
-                                <div class="container">
-                                    <div class="row">
+              
+                                    <abp-row>
                                         <div class="col">
                                             <table class="table table-borderless">
                                                 <thead>
@@ -579,7 +551,7 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <th>@L["Package"]</th>
+                                                        <th class="packageTable">@L["Package"]</th>
                                                         <td><input asp-for="MawbModel.Package" class="form-control" /></td>
                                                         <td colspan="3">
                                                              <select asp-for="MawbModel.MawbPackageUnitId" class="form-select form-control form-control-sm">
@@ -591,7 +563,7 @@
                                                             </select>  </td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["VolumeWeight"]</th>
+                                                        <th class="packageTable">@L["VolumeWeight"]</th>
                                                         <td><input asp-for="MawbModel.VolumeWeightKg" class="form-control" /></td>
                                                         <td>@L["KG"]</td>
                                                         <td>
@@ -617,12 +589,12 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <th>@L["GrossWeight"]</th>
+                                                        <th class="packageTable">@L["GrossWeight"]</th>
                                                         <td><input asp-for="MawbModel.GrossWeightKg" class="form-control" id="GrossWeightKg" /></td>
                                                         <td><input asp-for="MawbModel.GrossWeightLb" class="form-control" id="GrossWeightLb" /></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["ChargeableWeight"]</th>
+                                                        <th class="packageTable">@L["ChargeableWeight"]</th>
                                                         <td><input asp-for="MawbModel.ChargeableWeightKg" class="form-control" id="ChargeableWeightKg" /></td>
                                                         <td><input asp-for="MawbModel.ChargeableWeightLb" class="form-control" id="ChargeableWeightLb" /></td>
                                                     </tr>
@@ -633,9 +605,8 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                    </div>
-                                </div>
-                            </abp-row>
+                                    </abp-row>
+                 
                             <!--第9列-->
                             <abp-row>
                                 <abp-column size-md="_3">
@@ -663,7 +634,7 @@
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DisplayUnit", AspItems = Html.GetEnumSelectList(typeof(DisplayUnitType)).ToList(),Selected=Convert.ToString(Model.MawbModel.DisplayUnit), IsRequired = true, IsShowLabel = true, FieldName = "DisplayUnit", ShowFiledContentValue = Convert.ToString((Model.MawbModel.DisplayUnit)) })
                                 </abp-column>
-                                <abp-column size-md="_3">
+                                <abp-column size-md="_3" class="expandCheck">
                                     <abp-input asp-for="MawbModel.IsECom" />
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -690,7 +661,7 @@
             <abp-row class="mt-3" id="ejo">
                 <abp-column>
                     <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
-                        <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Save"]</abp-button>
+                        <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Display:Button:New"]</abp-button>
                     </div>
                 </abp-column>
             </abp-row>

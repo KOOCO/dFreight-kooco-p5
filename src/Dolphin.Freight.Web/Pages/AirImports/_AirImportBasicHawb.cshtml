@@ -350,9 +350,6 @@
             <abp-column size-md="_2">
                 <abp-input asp-for="@Model.HawbModel.ChargeableWeightLB" size="Small" />
             </abp-column>
-
-        </abp-row>
-        <abp-row>
             <abp-column size-md="_2">
                 <abp-input asp-for="@Model.HawbModel.VolumeWeightKG" size="Small" />
             </abp-column>
@@ -360,6 +357,7 @@
                 <abp-input asp-for="@Model.HawbModel.VolumeWeightCBM" size="Small" />
             </abp-column>
         </abp-row>
+      
         <!--第八列-->
         <abp-row>
             <abp-column size-md="_3">
@@ -379,7 +377,9 @@
             <abp-column size-md="_1" class="align-self-center">
                 <input type="checkbox" id="chkFrtRelease" />
             </abp-column>
+
             <abp-column size-md="_2">
+
                 <abp-input asp-for="HawbModel.FrtRelease" size="Small" abp-data-datepicker="false" disabled />
             </abp-column>
             <abp-column size-md="_3">

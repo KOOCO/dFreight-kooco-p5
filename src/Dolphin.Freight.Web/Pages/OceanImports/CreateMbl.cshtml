@@ -190,7 +190,7 @@
                                     <abp-input asp-for="OceanImportMbl.CarrierContractNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsDirect" class="form-label">@L["IsDirect"]<input type="checkbox" name="OceanImportMbl.IsDirect" id="OceanImportMbl_IsDirect" value="true" checked="@Model.OceanImportMbl.IsDirect" /></label>
+                                    <label for="OceanImportMbl_IsDirect" class="form-label customCheck">@L["IsDirect"]<input type="checkbox" name="OceanImportMbl.IsDirect" id="OceanImportMbl_IsDirect" value="true" checked="@Model.OceanImportMbl.IsDirect" /></label>
                                 </abp-column>
                                 <abp-column size-md="_3">
 
@@ -330,11 +330,11 @@
                                     <input type="hidden" name="OceanImportMbl.OblTypeId" id="mOblTypeId" value="@Model.OceanImportMbl.OblTypeId" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsOblReceived" class="form-label">@L["IsOblReceived"]<input type="checkbox" name="OceanImportMbl.IsOblReceived" id="OceanImportMbl_IsOblReceived" value="true" /></label>
+                                    <label for="OceanImportMbl_IsOblReceived" class="form-label customCheck">@L["IsOblReceived"]<input type="checkbox" name="OceanImportMbl.IsOblReceived" id="OceanImportMbl_IsOblReceived" value="true" /></label>
                                     <abp-input label="" asp-for="OceanImportMbl.OblReceivedDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsReleased" class="form-label">@L["IsReleased"]<input type="checkbox" name="OceanImportMbl.IsReleased" id="OceanImportMbl_IsReleased" value="true" /></label>
+                                    <label for="OceanImportMbl_IsReleased" class="form-label customCheck">@L["IsReleased"]<input type="checkbox" name="OceanImportMbl.IsReleased" id="OceanImportMbl_IsReleased" value="true" /></label>
                                     <abp-input asp-for="OceanImportMbl.MblReleaseDate" type="text" abp-data-datetimepicker="false" />
                                 </abp-column>
                             </abp-row>
@@ -386,7 +386,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.ItLocation", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "ItLocation", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.ItLocation) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsEcommerce" class="form-label">@L["IsEcommerce"]<input type="checkbox" name="OceanImportMbl.IsEcommerce" id="OceanImportMbl_IsEcommerce" value="true" checked="@Model.OceanImportMbl.IsEcommerce" /></label>
+                                    <label for="OceanImportMbl_IsEcommerce" class="form-label customCheck">@L["IsEcommerce"]<input type="checkbox" name="OceanImportMbl.IsEcommerce" id="OceanImportMbl_IsEcommerce" value="true" checked="@Model.OceanImportMbl.IsEcommerce" /></label>
                                 </abp-column>
                             </abp-row>
                         </abp-card-body>
@@ -749,7 +749,7 @@
                 <input type="hidden" name="OceanImportHbl.FdestId" id="hHFdestId" value="@Model.OceanImportHbl.FdestId" />
                 <input type="hidden" name="OceanImportHbl.HblSalesTypeId" id="hHblSalesTypeId" value="@Model.OceanImportHbl.HblSalesTypeId" />
                 <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
-                    <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
+                    <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Display:Button:New"].Value</abp-button>
                 </div>
             </abp-column>
         </abp-row>

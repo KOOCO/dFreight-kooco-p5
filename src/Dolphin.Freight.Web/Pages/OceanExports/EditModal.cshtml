@@ -759,7 +759,7 @@
                                     <abp-input asp-for="OceanExportMbl.CarrierContractNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanExportMbl_IsDirect" class="">@L["IsDirect"]<input type="checkbox" name="OceanExportMbl.IsDirect" id="OceanExportMbl.IsDirect" value="true" checked="@Model.OceanExportMbl.IsDirect" /></label>
+                                    <label for="OceanExportMbl_IsDirect" class="customCheck">@L["IsDirect"]<input type="checkbox" name="OceanExportMbl.IsDirect" id="OceanExportMbl.IsDirect" value="true" checked="@Model.OceanExportMbl.IsDirect" /></label>
                                 </abp-column>
                                 <abp-column size-md="_6">
 
@@ -831,7 +831,7 @@
                                            
                                         
                                             <div class="col-6 pl-0 pe-0">
-                                            <input class="form-control form-control-sm" type="text" value="@Model.OceanExportMbl.PrepreCarriageVoyage" name="OceanExportMbl.PrepreCarriageVoyage" />
+                                            <input class="form-control form-control-xl" type="text" value="@Model.OceanExportMbl.PrepreCarriageVoyage" name="OceanExportMbl.PrepreCarriageVoyage" />
                                      </div>   
                                         </div>
                                 </abp-column>
@@ -914,7 +914,7 @@
                                     </div>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanExportMbl_IsBookingAgent" class="form-label">@L["IsBookingAgent"]<input type="checkbox" name="OceanExportMbl.IsBookingAgent" id="OceanExportMbl_IsBookingAgent" value="true" checked="" /></label>
+                                    <label for="OceanExportMbl_IsBookingAgent" class="form-label customCheck">@L["IsBookingAgent"]<input type="checkbox" name="OceanExportMbl.IsBookingAgent" id="OceanExportMbl_IsBookingAgent" value="true" checked="" /></label>
                                 </abp-column>
                                 @if (Model.OceanExportMbl.IsReleased == true)
                                 {
@@ -961,7 +961,7 @@
                                     <abp-input asp-for="OceanExportMbl.OnBoardDate" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <button type="button" id="checkHideBtn">
+                                    <button type="button" id="checkHideBtn" class="expandBtn">
                                         <i class="fa fa-plus" id="showLi"></i>
                                         <i class="fa fa-minus" id="hideLi"></i>
                                     </button>
@@ -994,7 +994,7 @@
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportMbl.PrnNo" />
                                 </abp-column>
-                                <abp-column size-md="_3">
+                                <abp-column size-md="_3" class="expandCheck">
                                     <abp-input asp-for="OceanExportMbl.IsEcommerce" />
                                 </abp-column>
                             </abp-row>

@@ -1187,7 +1187,7 @@
                                     <abp-input asp-for="@Model.AirExportMawbDto.FlightNo" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapseRoute" role="button" aria-expanded="false" aria-controls="collapseRoute">
+                                    <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapseRoute" role="button" aria-expanded="false" aria-controls="collapseRoute" style="margin-top:2em;">
                                         <i class="fa fa-plane" aria-hidden="true"></i>
                                         Add Connecting Flight
                                     </a>
@@ -1217,24 +1217,20 @@
                                     <abp-input asp-for="@Model.AirExportMawbDto.CarrierSpotNo" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-row>
-                                        <abp-column size-md="_3">
-                                            WT/VAL
-                                        </abp-column>
+
                                         <abp-column>
+                                            @L["WT/VAL"]
                                             <abp-radio asp-for="@Model.AirExportMawbDto.WtVal" asp-items="@Model.WtValOtherList" inline="true" />
                                         </abp-column>
-                                    </abp-row>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-row>
-                                        <abp-column size-md="_3">
-                                            Other
-                                        </abp-column>
-                                        <abp-column>
-                                            <abp-radio asp-for="@Model.AirExportMawbDto.Other" asp-items="@Model.WtValOtherList" inline="true" />
-                                        </abp-column>
-                                    </abp-row>
+                              
+
+                                    <abp-column>
+                                        @L["Other"]
+                                        <abp-radio asp-for="@Model.AirExportMawbDto.Other" asp-items="@Model.WtValOtherList" inline="true" />
+                                    </abp-column>
+    
                                 </abp-column>
                             </abp-row>
                             <!--第八列-->
@@ -1329,9 +1325,8 @@
                                 </div>
                             </abp-row>
                             <!--第九列 Package, Weight Settings Area-->
-                            <abp-row>
-                                <div class="container">
-                                    <div class="row">
+                 
+                                    <abp-row>
                                         <div class="col">
                                             <abp-table class="nowrap" class="table table-borderless">
                                                 <thead>
@@ -1344,7 +1339,7 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <th>@L["Package"]</th>
+                                                        <th class="packageTable">@L["Package"]</th>
                                                         <td><input asp-for="@Model.AirExportMawbDto.Package" class="form-control" /></td>
                                                         <td colspan="3">
                                                             <select asp-for="@Model.AirExportMawbDto.MawbPackageUnitId" class="form-select">
@@ -1357,7 +1352,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["BuyingRate"]</th>
+                                                        <th class="packageTable">@L["BuyingRate"]</th>
                                                         <td><input asp-for="@Model.AirExportMawbDto.BuyingRate" class="form-control" /></td>
                                                         <td>@L["per"]</td>
                                                         <td>
@@ -1368,7 +1363,7 @@
                                                         <td></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["SellingRate"]</th>
+                                                        <th class="packageTable">@L["SellingRate"]</th>
                                                         <td><input asp-for="@Model.AirExportMawbDto.SellingRate" class="form-control" /></td>
                                                         <td>@L["per"]</td>
                                                         <td>
@@ -1379,7 +1374,7 @@
                                                         <td></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["VolumeWeight"]</th>
+                                                        <th class="packageTable">@L["VolumeWeight"]</th>
                                                         <td><input asp-for="@Model.AirExportMawbDto.VolumeWeightKg" class="form-control" /></td>
                                                         <td>@L["KG"]</td>
                                                         <td>
@@ -1406,25 +1401,25 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <th>@L["GrossWeightKG"]</th>
+                                                        <th class="packageTable">@L["GrossWeightKG"]</th>
                                                         <td><input asp-for="@Model.AirExportMawbDto.GrossWeightKg" class="form-control" id="GrossWeightKg" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.GrossWeightLb" class="form-control" id="GrossWeightLb" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.GrossWeightAmount" class="form-control" /></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["AwbGrossWeight"]</th>
+                                                        <th class="packageTable">@L["AwbGrossWeight"]</th>
                                                         <td><input asp-for="@Model.AirExportMawbDto.AwbGrossWeightKg" class="form-control" id="AwbGrossWeightKg" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.AwbGrossWeightLb" class="form-control" id="AwbGrossWeightLb" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.AwbGrossWeightAmount" class="form-control" /></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["ChargeableWeight"]</th>
+                                                        <th class="packageTable">@L["ChargeableWeight"]</th>
                                                         <td><input asp-for="@Model.AirExportMawbDto.ChargeableWeightKg" class="form-control" id="ChargeableWeightKg" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.ChargeableWeightLb" class="form-control" id="ChargeableWeightLb" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.ChargeableWeightAmount" class="form-control" /></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["AwbChargeableWeight"]</th>
+                                                        <th class="packageTable">@L["AwbChargeableWeight"]</th>
                                                         <td><input asp-for="@Model.AirExportMawbDto.AwbChargeableWeightKg" class="form-control" id="AwbChargeableWeightKg" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.AwbChargeableWeightLb" class="form-control" id="AwbChargeableWeightLb" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.AwbChargeableWeightAmount" class="form-control" /></td>
@@ -1432,9 +1427,8 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                    </div>
-                                </div>
-                            </abp-row>
+                                    </abp-row>
+           
                             <!--第10列-->
                             <abp-row>
                                 <abp-column size-md="_3">
