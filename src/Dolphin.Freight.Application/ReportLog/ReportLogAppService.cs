@@ -43,10 +43,22 @@ namespace Dolphin.Freight.ReportLog
             var report = await _ReportLogRepository.GetMawbReport(filter);
 
             report = ApplyFilter(report, filter);
-
+            if (filter.MinProfit != null && filter.MaxProfit != null)
+            {
+                report = report.Where(x => x.ProfitAmt >= (double)filter.MinProfit && x.ProfitAmt <= (double)filter.MaxProfit).ToList();
+            
+            }
             //report = ApplyColumnFilter(report, filter);
 
-            return new PagedResultDto<MawbReportDto>(report.Count, ObjectMapper.Map<List<MawbReport>, List<MawbReportDto>>(report));
+            try
+            {
+                return new PagedResultDto<MawbReportDto>(report.Count, ObjectMapper.Map<List<MawbReport>, List<MawbReportDto>>(report));
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
         }
 
         private List<MawbReport> ApplyFilter(List<MawbReport> report, MawbReportDto filter)
@@ -59,6 +71,7 @@ namespace Dolphin.Freight.ReportLog
                 {
                     predictBuilder.And(w => (w.IsEcommerce != null) && w.IsEcommerce.ToLower().Equals(filter.IsEcommerce));
                 }
+            
                 if (!string.IsNullOrEmpty(filter.OfficeId))
                 {
                     predictBuilder.And(w => (w.OfficeId != null) && w.Office.ToLower().Equals(filter.Office));

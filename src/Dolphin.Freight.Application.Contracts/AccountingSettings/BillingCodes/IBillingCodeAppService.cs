@@ -30,5 +30,6 @@ namespace Dolphin.Freight.AccountingSettings.BillingCodes
 
         Task<PagedResultDto<BillingCodeDto>> QueryListAsync(QueryBillingCodeDto query);
         Task<List<BillingCodeDto>> QueryListForTagAsync(QueryBillingCodeDto query);
+        Task<List<BillingCodeDto>> GetLookUpListAsync();
     }
 }

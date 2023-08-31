@@ -202,6 +202,48 @@ namespace Dolphin.Freight.AccountingSettings.BillingCodes
             listDto.TotalCount = list.Count;
             return listDto;
         }
+        public async Task<List<BillingCodeDto>> GetLookUpListAsync()
+        {
+            var glCodes = await _glCodeRepository.GetListAsync();
+
+            Dictionary<Guid, string> dictionary = new Dictionary<Guid, string>();
+            if (glCodes != null)
+            {
+                foreach (var code in glCodes)
+                {
+                    dictionary.Add(code.Id, code.Code);
+                }
+            }
+
+            List<string> glCodesKeys = new List<string>();
+       
+            var resultQuery = await _repository.GetQueryableAsync();
+         
+            var rs = resultQuery.Where(x => x.IsDeleted == false).ToList();
+
+            List<BillingCodeDto> list = new List<BillingCodeDto>();
+           
+
+
+            if (rs != null && rs.Count > 0)
+            {
+
+                foreach (var r in rs)
+                {
+                    var bill = ObjectMapper.Map<BillingCode, BillingCodeDto>(r);
+                    if (r.RevenueId != null) bill.RevenueName = dictionary[r.RevenueId.Value];
+                    if (r.CostId != null) bill.CostName = dictionary[r.CostId.Value];
+                    if (r.CreditId != null) bill.CreditName = dictionary[r.CreditId.Value];
+                    if (r.DeitId != null) bill.DeitName = dictionary[r.DeitId.Value];
+                    list.Add(bill);
+                }
+            }
+
+        List<BillingCodeDto> listDto = new List<BillingCodeDto>();
+            listDto= list;
+            
+            return listDto;
+        }
         public async Task<List<BillingCodeDto>> QueryListForTagAsync(QueryBillingCodeDto query) 
         {
             var glCodes = await _glCodeRepository.GetListAsync();

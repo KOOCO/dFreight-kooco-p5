@@ -27,6 +27,7 @@ using Volo.Abp.Timing;
 using Dolphin.Freight.Web.Pages.AirExports;
 using Dolphin.Freight.ReportLog;
 using Dolphin.Freight.Web.CommonService;
+using Dolphin.Freight.AccountingSettings.BillingCodes;
 
 namespace Dolphin.Freight.Web.Pages.ReportScreen
 {
@@ -43,6 +44,7 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
         private readonly IAirExportMawbAppService _airExportMawbAppService;
         private readonly IReportLogRepository _reportLogRepository;
         private readonly IDropdownService _dropdownService;
+        private readonly IBillingCodeAppService _billingCodeAppService; 
 
         [BindProperty]
         public CreateMawbViewModel MawbModel { get; set; }
@@ -64,7 +66,8 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             IAirportAppService airportAppService,
             IPackageUnitAppService packageUnitAppService,
             IAirExportMawbAppService airExportMawbAppService,
-            IDropdownService dropdownService
+            IDropdownService dropdownService,
+            IBillingCodeAppService billingCodeAppService
             )
         {
             Logger = NullLogger<CreateMawbModel>.Instance;
@@ -74,6 +77,7 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             _packageUnitAppService = packageUnitAppService;
             _airExportMawbAppService = airExportMawbAppService;
             _dropdownService = dropdownService;
+            _billingCodeAppService= billingCodeAppService;
         }
 
 
@@ -98,6 +102,8 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             await FillAirportAsync();
             FillWtValOther();
             await FillPackageUnitAsync();
+            ShipMode = _dropdownService.ShipModeLookupList;
+            await FillFreightCodeAsync();
 
         }
 
@@ -110,7 +116,12 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
                                                 .ToList();
         }
         #endregion
-
+        private async Task FillFreightCodeAsync()
+        {
+            var freightCode = await _billingCodeAppService.GetLookUpListAsync();
+            FreightCode = freightCode.Select(x => new SelectListItem(x.Code ,x.Id.ToString() ,false))
+                                                .ToList();
+        }
         #region FillSubstationAsync()
         private async Task FillSubstationAsync()
         {
@@ -313,7 +324,7 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             public string Currency { get; set; }
             public string Profit { get; set; }
             [DisplayName("Ship Mode")]
-            public string ShipMode { get; set; }
+            public Guid? ShipModeId { get; set; }
             [DisplayName("Freight Code")]
             public string FreightCode { get; set; }
             [DisplayName("Freight Term")]
@@ -453,37 +464,15 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
               new SelectListItem { Value = "negative", Text = "Negative"}
 
         };
-        public List<SelectListItem> ShipMode { get; set; } = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "fcl", Text = "FCL"},
-             new SelectListItem { Value = "lcl", Text = "LCL"},
-              new SelectListItem { Value = "fak", Text = "FAK"},
-              new SelectListItem { Value = "bulk", Text = "BULK"}
+        public List<SelectListItem> ShipMode { get; set; }
+       
+           
 
-        };
+        
+    
 
-        public List<SelectListItem> FreightCode { get; set; } = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "03322EAC-7369-95F1-39B1-3A0AEF20C399", Text = "AE01A/F: AIR FREIGHT CHARGE"},
-            new SelectListItem { Value = "6ECBE3BE-AC03-B396-06F2-3A0AEF20C399", Text = "AE02FSC: FUEL SUR CHARGE"},
-            new SelectListItem { Value = "8CB45D76-81FD-2029-AFEE-3A0AEF20C399", Text = "AE03SECURI: SECURITY CHARGE"},
-            new SelectListItem { Value = "7ECCFA7D-7D05-3BCE-6717-3A0AEF20C399", Text = "AE04H/C: HANDLING CHARGE"},
-            new SelectListItem { Value = "4D95CCA0-30BA-99EA-F050-3A0AEF20C399", Text = "AE05DG: DANGEROUS GOOD HANDLING"},
-            new SelectListItem { Value = "4BEDC2EE-D6ED-1D78-3BD9-3A0AEF20C399", Text = "AE06TRUCKI: TRUCKING CHARGE"},
-            new SelectListItem { Value = "5F698F8B-4E35-3DC9-6324-3A0AEF20C399", Text = "AE07WHSETR: WAREHOUSE TRANSFER FEE"},
-            new SelectListItem { Value = "B3DBCDA5-A433-5C8B-BBAC-3A0AEF20C399", Text = "AE08L/C: LETTER OF CREDIT BANKING"},
-            new SelectListItem { Value = "B50C9F44-FD59-7968-6CA1-3A0AEF20C399", Text = "AE09C/O: CERTIFICATE OF ORIGIN"},
-            new SelectListItem { Value = "91E7D784-73FE-BFB7-0937-3A0AEF20C399", Text = "AE10INS: INSURANCE PREMIUM"},
-            new SelectListItem { Value = "708B7168-953D-887C-30BF-3A0AEF20C399", Text = "AE12MSG: SPECIAL MESSENGER FEE"},
-            new SelectListItem { Value = "C703FAEC-F4A7-DAE0-1746-3A0AEF20C399", Text = "AE13OTHER: OTHER CHARGES"},
-            new SelectListItem { Value = "8D47A13C-CDB1-3DC9-04C3-3A0AEF20C399", Text = "AE14COMM: COMMISSION FEE"},
-            new SelectListItem { Value = "C2FA41EC-EE02-0248-C7A8-3A0AEF20C399", Text = "AEDEST: DESTINATION CHARGES"},
-            new SelectListItem { Value = "03322EAC-7369-95F1-39B1-3A0AEF20C399", Text = "AI01A/F: AIR FREIGHT CHARGE"},
-            new SelectListItem { Value = "FF7AEE18-A039-0AE7-5B4E-3A0AEF20C399", Text = "AI02H/C: HANDLING CHARGE"},
-            new SelectListItem { Value = "E004439C-2CC5-3847-9ACF-3A0AEF20C399", Text = "AI03IMPORT: IMPORT SERVICE FEE TO AIRLINE"},
-            new SelectListItem { Value = "1ACB35D9-94A4-191A-7851-3A0AEF20C399", Text = "AI04TRUCKI: TRUCKING CHARGE"},
-        };
-
+        public List<SelectListItem> FreightCode { get; set; } 
+    
         public List<SelectListItem> FreightTerm { get; set; } = new List<SelectListItem>
         {
             new SelectListItem { Value = "all", Text = "All"},
