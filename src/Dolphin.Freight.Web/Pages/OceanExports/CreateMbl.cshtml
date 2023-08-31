@@ -236,7 +236,7 @@
                                     <abp-input asp-for="OceanExportMbl.CarrierContractNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanExportMbl_IsDirect" class="form-label">@L["IsDirect"]<input type="checkbox" name="OceanExportMbl.IsDirect" id="OceanExportMbl.IsDirect" value="true" checked="@Model.OceanExportMbl.IsDirect" /></label>
+                                    <label for="OceanExportMbl_IsDirect" class="form-label customCheck">@L["IsDirect"]<input type="checkbox" name="OceanExportMbl.IsDirect" id="OceanExportMbl.IsDirect" value="true" checked="@Model.OceanExportMbl.IsDirect" /></label>
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     
@@ -402,7 +402,7 @@
                                     </div>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanExportMbl_IsBookingAgent" class="form-label">@L["IsBookingAgent"]<input type="checkbox" name="OceanExportMbl.IsBookingAgent" id="OceanExportMbl_IsBookingAgent" value="true" checked="" /></label>
+                                    <label for="OceanExportMbl_IsBookingAgent" class="form-label customCheck">@L["IsBookingAgent"]<input type="checkbox" name="OceanExportMbl.IsBookingAgent" id="OceanExportMbl_IsBookingAgent" value="true" checked="" /></label>
                                 </abp-column>
                                 <abp-column size-md="_3" >
                                  <label for="CareOfId" class="form-label">@L["IsReleased"]<input type="checkbox" name="OceanExportMbl.IsReleased" id="OceanExportMbl_IsReleased" value="true" /></label>
@@ -440,7 +440,7 @@
                                     <abp-input asp-for="OceanExportMbl.OnBoardDate" abp-data-datetimepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <button type="button" id="checkHideBtn">
+                                    <button type="button" id="checkHideBtn" class="expandBtn">
                                         <i class="fa fa-plus" id="showLi"></i>
                                         <i class="fa fa-minus" id="hideLi"></i>
                                     </button>
@@ -473,7 +473,7 @@
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportMbl.PrnNo" />
                                 </abp-column>
-                                <abp-column size-md="_3">
+                                <abp-column size-md="_3" class="expandCheck">
                                     <abp-input asp-for="OceanExportMbl.IsEcommerce" />
                                 </abp-column>
                             </abp-row>

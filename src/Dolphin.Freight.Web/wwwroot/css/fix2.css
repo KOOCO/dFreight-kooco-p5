@@ -8,8 +8,8 @@
     }
 
     .customForm .form-label {
-        float: left;
-        width: 100px;
+/*        float: left;
+        width: 100px;*/
         text-align: left;
         display: flex;
         align-items: center;
@@ -33,6 +33,24 @@
         height: 38px;
     }
 
+    .customForm .select2-container .select2-selection--single {
+        height: 38px !important;
+    }
+
+    .customForm .select2-container--default .select2-selection--single .select2-selection__rendered{
+        line-height:36px;
+    }
+
+    .customForm .customCheck {
+        padding-top: 3em;
+    }
+    .customForm .expandBtn {
+        margin-top: 2.8em;
+    }
+    .expandCheck .form-check {
+        padding-top: 3em;
+    }   
+
 .form-label + .abp-widget-wrapper {
     display: flex;
 }
@@ -42,7 +60,6 @@
     display: flex;
     align-items: center;
     margin: 0;
-    width: 100px;
     padding: 0;
 }
 

@@ -26,7 +26,6 @@
         const currencies = ['TWD', 'USD', 'RMB', 'HKD'];
 
         $(document).ready(function () {
-            debugger;
             //initializeDropdownSearch('InvoiceDto_IncotermsId');
 
             dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'PPOrCC' }).done(function (result) {
@@ -127,7 +126,6 @@
 
                 switch (formControl) {
                     case 0:
-                    debugger;
                         if (@Model.MethodType == 0) abp.message.success('儲存成功', '系統訊息').then(function(){ location.href = '/OceanImports/EditModal3?Id=@Model.Mid'; });
                         if (@Model.MethodType == 1) abp.message.success('儲存成功', '系統訊息').then(function(){ location.href = '/OceanExports/EditModal3?Id=@Model.Mid'; });
                         if (@Model.MethodType == 2) abp.message.success('儲存成功', '系統訊息').then(function(){ location.href = '/AirImports/EditModal3?Id=@Model.MawbId'; });
@@ -321,7 +319,6 @@
 
         var index = 0;
         function addItems(bill) {
-            debugger;
             bill = bill || {};
             
             var url = window.location.href;
@@ -436,7 +433,6 @@
         }
         function getCurrencySelect(id, currency, value) {
             var selectHtml = "<select name='InvoiceBillDtos[" + index + "].Currency' onchange='onCurrencyChange(event)' id='Currency_" + id + "'><option value='0'>Select Currency</option>";
-            debugger;
             currency = currency || value;
             const set = new Set(CurrencyItems.map(item => JSON.stringify(item)));
             const test = [...set].map(item => JSON.parse(item));
@@ -597,10 +593,11 @@
                                         <abp-input asp-for="InvoiceMblDto.FilingNo" readonly="true" />
                                     </abp-column>
                                     <abp-column size-md="_3">
-
+                                        <label class="form-label" for=""></label>
                                         <abp-input suppress-label="true" type="text" id="AbbreviationName" asp-for="@Model.InvoiceBasicDto.AbbreviationName" class="form-control" readonly="true" />
                                     </abp-column>
                                     <abp-column size-md="_2">
+                                        <label class="form-label" for=""></label>
                                         <abp-button title="" class="btn btn-outline-info" type="button" id="exportBtn" data-busy-text="Processing..." data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top" onclick="goBlank()">
                                             <i class="fa fa-file-export"></i>
                                         </abp-button>
@@ -618,7 +615,7 @@
                                         <input type="number" id="Counts" name="Counts" value="" class="form-control " readonly="">
                                     </abp-column>
                                     <abp-column size-md="_4">
-
+                                        <label class="form-label" for=""></label>
                                         <input type="text" id="Ctype" name="Ctype" placeholder="CARTON(S)" class="form-control " readonly="">
                                     </abp-column>
                                 </abp-row>
