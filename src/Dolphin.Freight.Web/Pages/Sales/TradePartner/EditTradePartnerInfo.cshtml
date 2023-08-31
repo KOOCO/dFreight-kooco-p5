@@ -574,15 +574,16 @@
         function resetTradePartiesCount(){
             var url = new URL(window.location.href);
             var id = url.searchParams.get('id');
-            dolphin.freight.tradePartners.tradeParties.tradeParty.getListByTradePartnerId(id).then(function (res) {
-                if(res){
-                    chkIndex = res.length;
-                }
-            });
+            if (checkGuid(id)){
+                dolphin.freight.tradePartners.tradeParties.tradeParty.getListByTradePartnerId(id).then(function (res) {
+                    if (res) {
+                        chkIndex = res.length;
+                    }
+                });
+            }
         }
 
         function onSetTradeParties() {
-            debugger;
             var tradePartiesJSON = '@Html.Raw(Json.Serialize(Model.TradeParties))';
 
             if (tradePartiesJSON) {
