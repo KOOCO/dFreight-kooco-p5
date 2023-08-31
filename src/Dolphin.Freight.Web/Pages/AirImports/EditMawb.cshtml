@@ -792,7 +792,7 @@
                             </abp-row>
                             <!--第4列-->
                             <abp-row>
-                                <abp-column size-md="_3">
+                                <abp-column size-md="_3" class="expandCheck">
                                     <abp-input asp-for="MawbModel.IsDirectMaster" id="isDirectMaster" />
                                 </abp-column>
 
@@ -811,7 +811,7 @@
                                     <abp-input asp-for="MawbModel.FlightNo" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapseRoute" role="button" aria-expanded="false" aria-controls="collapseRoute">
+                                    <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapseRoute" role="button" aria-expanded="false" aria-controls="collapseRoute" style="margin-top:2em;">
                                         <i class="fa fa-plane" aria-hidden="true"></i>
                                         @L["AddConnectingFlight"]
                                     </a>
@@ -947,7 +947,7 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td>@L["Package"]</td>
+                                                        <td class="packageTable">@L["Package"]</td>
                                                         <td><input asp-for="MawbModel.Package" class="form-control form-control-sm" /></td>
                                                         <td colspan="3">
                                                             <select asp-for="MawbModel.MawbPackageUnitId" class="form-select form-control form-control-sm">
@@ -960,7 +960,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>@L["VolumeWeight"]</td>
+                                                        <td class="packageTable">@L["VolumeWeight"]</td>
                                                         <td><input asp-for="MawbModel.VolumeWeightKg" class="form-control form-control-sm" /></td>
                                                         <td>@L["KG"]</td>
                                                         <td>
@@ -981,17 +981,17 @@
                                                     <tr>
                                                         <td></td>
                                                         <td>@L["KG"]</td>
-                                                        <td>@L["LB"]</td>
+                                                        <td>@L["LB"]</td>sa
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td>@L["GrossWeight"]</td>
+                                                        <td class="packageTable">@L["GrossWeight"]</td>
                                                         <td><input asp-for="MawbModel.GrossWeightKg" class="form-control form-control-sm" id="GrossWeightKg" /></td>
                                                         <td><input asp-for="MawbModel.GrossWeightLb" class="form-control form-control-sm" id="GrossWeightLb" /></td>
                                                     </tr>
                                                     <tr>
-                                                        <td>@L["ChargeableWeight"]</td>
+                                                        <td class="packageTable">@L["ChargeableWeight"]</td>
                                                         <td><input asp-for="MawbModel.ChargeableWeightKg" class="form-control form-control-sm" id="ChargeableWeightKg" /></td>
                                                         <td><input asp-for="MawbModel.ChargeableWeightLb" class="form-control form-control-sm" id="ChargeableWeightLb" /></td>
                                                     </tr>
@@ -1070,7 +1070,7 @@
             <abp-row class="mt-3" id="ejo">
                 <abp-column>
                     <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
-                        <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Save"]</abp-button>
+                        <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Create"]</abp-button>
                     </div>
                 </abp-column>
             </abp-row>

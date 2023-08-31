@@ -42,7 +42,7 @@
     }
 
     .customForm .customCheck {
-        padding-top: 3em;
+        padding-top: 3em!important;
     }
     .customForm .expandBtn {
         margin-top: 2.8em;
@@ -99,12 +99,15 @@ label input[type="checkbox"] {
     margin-left: 10px;
 }
 
+.packageTable {
+    white-space: nowrap
+}
 
 
 @media (max-width:1550px) and (min-width:768px) {
     .customForm .form-label,
     .abp-widget-wrapper .form-label {
-        width: 70px;
+/*        width: 70px;*/
     }
 
     #createForm > .row > .col-md-10 {

@@ -387,14 +387,14 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <th>@L["Package"]</th>
+                                    <th class="packageTable">@L["Package"]</th>
                                     <td><input asp-for="AirExportHawbDto.Package" class="form-control form-control-sm"/></td>
                                     <td colspan="3">
                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.PackageUnitLookupList", AspItems = _dropdown.PackageUnitLookupList, FieldName = "PackageUnit", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.PackageUnit) })
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>@L["BuyingRate"]</th>
+                                    <th class="packageTable">@L["BuyingRate"]</th>
                                     <td><input asp-for="AirExportHawbDto.BuyingRate" class="form-control form-control-sm" /></td>
                                     <td>@L["per"]</td>
                                     <td>
@@ -403,7 +403,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <th>@L["SellingRate"]</th>
+                                    <th class="packageTable">@L["SellingRate"]</th>
                                     <td><abp-input asp-for="AirExportHawbDto.SellingRate" suppress-label="true" size="Small" /></td>
                                     <td>@L["per"]</td>
                                     <td>
@@ -412,7 +412,7 @@
                                     <td></td> 
                                 </tr>
                                 <tr>
-                                    <th>@L["VolumeWeight"]</th>
+                                    <th class="packageTable">@L["VolumeWeight"]</th>
                                     <td><input asp-for="AirExportHawbDto.ChargeableWeightCneeKG" class="form-control form-control-sm" /></td>
                                     <td>@L["KG"]</td>
                                     <td>
@@ -439,19 +439,19 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <th>@L["GrossWeight"]</th>
+                                    <th class="packageTable">@L["GrossWeight"]</th>
                                     <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprKG" class="form-control form-control-sm" id="GrossWeightKg" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprLB" class="form-control form-control-sm" id="GrossWeightLb" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprAmount" class="form-control form-control-sm" /></td>
                                 </tr>
                                 <tr>
-                                    <th>@L["ChargeableWeight"]</th>
+                                    <th class="packageTable">@L["ChargeableWeight"]</th>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprKG" class="form-control form-control-sm" id="ChargeableWeightKg" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprLB" class="form-control form-control-sm" id="ChargeableWeightLb" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprAmount" class="form-control form-control-sm" /></td>
                                 </tr>
                                 <tr>
-                                    <th>@L["AWBChargeableWeight"]</th>
+                                    <th class="packageTable">@L["AWBChargeableWeight"]</th>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeKG" class="form-control form-control-sm" id="AwbChargeableWeightKg" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeLB" class="form-control form-control-sm" id="AwbChargeableWeightLb" /></td>
                                     <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeAmount" class="form-control form-control-sm" /></td>
@@ -632,7 +632,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                        <td> @L["Prepaid"]</td>
+                                        <td class="packageTable"> @L["Prepaid"]</td>
                                     <td><input type="text" /></td>
                                     <td><input type="text" /></td>
                                     <td><input type="text" /></td>
@@ -640,7 +640,7 @@
                                     <td><input type="text" /></td>
                                 </tr>
                                 <tr>
-                                        <td> @L["Collect"]</td>
+                                        <td class="packageTable"> @L["Collect"]</td>
                                     <td><input type="text" /></td>
                                     <td><input type="text" /></td>
                                     <td><input type="text" /></td>

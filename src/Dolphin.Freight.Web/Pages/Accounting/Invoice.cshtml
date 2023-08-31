@@ -620,18 +620,14 @@
                                     </abp-column>
                                 </abp-row>
                             </abp-column>
-                            <abp-column size-md="_7">
-                                <abp-row>
-                                    <abp-column size-md="_7">
-                                        <abp-input asp-for="InvoiceMblDto.PorName" readonly="true" />
-                                    </abp-column>
-                                    <abp-column size-md="_5">
-                                        <abp-input type="text" id="InvoiceMblDto_PorEtd" asp-for="InvoiceMblDto.PorEtd" class="form-control " readonly="true" />
-                                    </abp-column>
-                                </abp-row>
-
+                        </abp-row>
+                        <abp-row>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceMblDto.PorName" readonly="true" />
                             </abp-column>
-
+                            <abp-column size-md="_3">
+                                <abp-input type="text" id="InvoiceMblDto_PorEtd" asp-for="InvoiceMblDto.PorEtd" class="form-control " readonly="true" />
+                            </abp-column>
                         </abp-row>
                         <abp-row>
                             <abp-column size-md="_3">
@@ -643,34 +639,27 @@
                             </abp-column>
 
                             <abp-column size-md="_3">
-                                <label class="form-label" for="ShipperName">@L["KOS"]</label>
+                                <label class="form-label" for="ShipperName">@L["KOS"]/Kg</label>
                                 <input type="text" id="Counts" name="KOS" value="" class="form-control " readonly="">
-                            </abp-column>
-                            <abp-column size-md="_1">
-                                K
-                            </abp-column>
-                            <abp-column size-md="_2">
-                                <div class="input-group">
+                            </abp-column>                 
+                            <abp-column size-md="_3">
+                                <label class="form-label" for="ShipperName">@L["KOS"]/Lb</label>
                                     <input type="text" id="Ctype" name="Ctype" value="" class="form-control " readonly="">
-                                    <div class="input-group-append">
-                                        &nbsp;&nbsp;L
-                                    </div>
-                                </div>
 
                             </abp-column>
                         </abp-row>
                         <abp-row>
-                            <abp-column size-md="_7">
-                                <abp-row>
-                                    <abp-column size-md="_7">
+                 
+                            
+                                    <abp-column size-md="_3">
                                         <abp-input asp-for="InvoiceMblDto.PolName" readonly="true" />
                                     </abp-column>
-                                    <abp-column size-md="_5">
+                                    <abp-column size-md="_3">
                                         <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
                                         <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PolEtd" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.PolEtd)" class="form-control " readonly="">
                                     </abp-column>
-                                </abp-row>
-                            </abp-column>
+                                
+                   
                         </abp-row>
 
                         <abp-row>
@@ -684,62 +673,47 @@
                             </abp-column>
                             <abp-column size-md="_3">
 
-                                <div class="input-group">
+                                <label class="form-label" for="">CBM</label>
                                     <input type="text" id="Cbm" name="Cbm" value="" class="form-control " readonly="">
-                                    <div class="input-group-append">
-                                        &nbsp;&nbsp; CBM
-                                    </div>
-                                </div>
+ 
                             </abp-column>
                             <abp-column size-md="_3">
-                                <div class="input-group">
-
+                               
+                                    <label class="form-label" for="">CBM</label>
                                     <input type="text" id="Cft" name="Cft" value="" class="form-control " readonly="">
-                                    <div class="input-group-append">
-                                        &nbsp;&nbsp; CFT
-                                    </div>
-                                </div>
+                            
+                           
                             </abp-column>
                         </abp-row>
                         <abp-row>
-                            <abp-column size-md="_7">
-                                <abp-row>
-                                    <abp-column size-md="_8">
+
+                                    <abp-column size-md="_3">
                                         <abp-input asp-for="InvoiceMblDto.PodName" readonly="true" />
                                     </abp-column>
-                                    <abp-column size-md="_4">
+                                    <abp-column size-md="_3">
                                         <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
                                         <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.PodEta)" class="form-control " readonly="">
                                     </abp-column>
-                                </abp-row>
-                            </abp-column>
+
                         </abp-row>
                         <abp-row>
-                            <abp-column size-md="_7">
-                                <abp-row>
-                                    <abp-column size-md="_8">
-                                        <abp-input asp-for="InvoiceMblDto.DelName" readonly="true" />
-                                    </abp-column>
-                                    <abp-column size-md="_4">
-                                        <label class="form-label" for="InvoiceMblDto_PolEtd"> ETA</label>
-                                        <input type="text" id="InvoiceMblDto_DelEta" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.DelEta)" class="form-control " readonly="">
-                                    </abp-column>
-                                </abp-row>
+
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceMblDto.DelName" readonly="true" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <label class="form-label" for="InvoiceMblDto_PolEtd"> ETA</label>
+                                <input type="text" id="InvoiceMblDto_DelEta" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.DelEta)" class="form-control " readonly="">
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceMblDto.FdestName" readonly="true" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
+                                <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.FdestEta)" class="form-control " readonly="">
                             </abp-column>
                         </abp-row>
-                        <abp-row>
-                            <abp-column size-md="_7">
-                                <abp-row>
-                                    <abp-column size-md="_8">
-                                        <abp-input asp-for="InvoiceMblDto.FdestName" readonly="true" />
-                                    </abp-column>
-                                    <abp-column size-md="_4">
-                                        <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
-                                        <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.FdestEta)" class="form-control " readonly="">
-                                    </abp-column>
-                                </abp-row>
-                            </abp-column>
-                        </abp-row>
+
                         <abp-row>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceMblDto.SoNo" readonly="true" />
@@ -831,7 +805,7 @@
                                 <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="CopyFromSpecification()">@L["Btn:CopyFromSpecification"]</abp-button>
                                 <textarea asp-for="InvoiceDto.Memorandum" name="InvoiceDto.Memorandum" id="Memorandum" class="form-control"></textarea>
                             </abp-column>
-                            <abp-column size-md="_3">
+                            <abp-column size-md="_3" class="expandCheck">
                                 <label for="InvoiceDto_IsAmountConfirmed" class="form-label">@L["IsAmountConfirmed"]<input type="checkbox" name="InvoiceDto.IsAmountConfirmed" id="InvoiceDto_IsAmountConfirmed" value="true" checked="@Model.InvoiceDto.IsAmountConfirmed" /></label>
                             </abp-column>
                             <abp-column size-md="_3">
