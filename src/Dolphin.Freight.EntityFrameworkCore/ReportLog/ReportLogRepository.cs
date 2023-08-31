@@ -66,8 +66,8 @@ namespace Dolphin.Freight.ReportLog
             var cargoTypes = _dbContext.SysCodes.Where(s => s.CodeType == "cargoTypeId")
                 .Select(s =>new SysCodeForReport { Id= s.Id.ToString() , ShowName =  s.ShowName, CodeType = s.CodeType });
 
-            var resultMawbs = (from mb in _dbContext.Containers
-                              join hb in _dbContext.ContainerSizes on mb.ContainerSizeId equals hb.Id
+            var resultMawbs = (from hb in _dbContext.ContainerSizes
+                               join mb in _dbContext.Containers on hb.Id equals mb.ContainerSizeId
                               select new PackageSizeReport()
                               {
                                   ContainerId = mb.Id,
@@ -155,10 +155,10 @@ namespace Dolphin.Freight.ReportLog
                                       RF  = 0,
                                       SOC = 0,
                                       ETC = 0
-                                  }).AsEnumerable();
+                                  }).Distinct().AsEnumerable();
 
-                var airExports = (from hb in _dbContext.AirExportHawbs
-                                  join mb in _dbContext.AirExportMawbs on hb.MawbId equals mb.Id
+                var airExports = (from mb in _dbContext.AirExportMawbs
+                                  join hb in _dbContext.AirExportHawbs on mb.Id equals hb.MawbId
                                   select new MawbReport()
                                   {
                                       ReportType = "Air Export",
@@ -182,6 +182,7 @@ namespace Dolphin.Freight.ReportLog
                                       CustomerName = Convert.ToString(mb.DVCustomer),
                                       BillToId = null,
                                       BillToName = null,
+                                      
                                       CustomerRefNo = null,
                                       OpId = null,
                                       OpName = null,
@@ -216,10 +217,10 @@ namespace Dolphin.Freight.ReportLog
                                       RF = 0,
                                       SOC = 0,
                                       ETC = 0
-                                  }).AsEnumerable();
+                                  }).Distinct().AsEnumerable();
 
-                var oceanImports = (from oih in _dbContext.OceanImportHbls
-                                    join oi in _dbContext.OceanImportMbls on oih.MblId equals oi.Id
+                var oceanImports = (from oi in _dbContext.OceanImportMbls
+                                    //join oih in _dbContext.OceanImportHbls on oi.Id equals oih.MblId
                                     select new MawbReport()
                                     {
                                         ReportType = "Ocean Import",
@@ -254,6 +255,8 @@ namespace Dolphin.Freight.ReportLog
                                         Vessel = Convert.ToString(oi.VesselName ?? ""),
                                         MawbNo = Convert.ToString(oi.MblNo),
                                         CoLoaderId = Convert.ToString(oi.CoLoaderId),
+                                        
+                                        ShipModeId=oi.ShipModeId,
                                         FileNo = Convert.ToString(oi.FilingNo),
                                         ForwardingAgentId = Convert.ToString(oi.ForwardingAgentId),
                                         ForwardingAgentName = Convert.ToString((oi.ForwardingAgent != null) ? oi.ForwardingAgent.TPName : ""),
@@ -278,8 +281,8 @@ namespace Dolphin.Freight.ReportLog
                                         ETC = GetContainerTypeCount(resultMawbs, oi.Id).ETC
                                     }).AsEnumerable();
                                     
-                var oceanExports = (from oeh in _dbContext.OceanExportHbls
-                                    join oe in _dbContext.OceanExportMbls on oeh.MblId equals oe.Id
+                var oceanExports = (from oe in _dbContext.OceanExportMbls
+                                    //join oeh in _dbContext.OceanExportHbls on oe.Id equals oeh.MblId
                                     select new MawbReport()
                                     {
                                         ReportType = "Ocean Export",
@@ -293,6 +296,7 @@ namespace Dolphin.Freight.ReportLog
                                         SalesTypeId = Convert.ToString(oe.MblSalesTypeId),
                                         ServiceTermTypeFrom = 0,
                                         ServiceTermTypeTo = 0,
+                                        ShipModeId=oe.ShipModeId,
                                         IsEcommerce = oe.IsEcommerce ? "yes" : "no",
                                         ShipperId = Convert.ToString(oe.ShippingAgentId),
                                         Shipper = Convert.ToString((oe.ShippingAgent != null) ? oe.ShippingAgent.TPName : ""),
@@ -336,14 +340,21 @@ namespace Dolphin.Freight.ReportLog
                 
 
                 if (filter.IsOceanExport)
-                        result = oceanExports;
+                    if (filter.ShipModeId != null)
+                    {
+                        oceanExports = oceanExports.Where(w => (w.ShipModeId != null) && w.ShipModeId.Equals(filter.ShipModeId)).ToList();
+
+                    }
+                result = oceanExports;
 
                 if (filter.IsOceanImport)
                 {
                     if (result != null)
-                       result =  result.Union(oceanImports);
+                    result = result.Union(oceanImports);
+                   
                     else
-                        result = oceanImports;
+                   result = oceanImports;
+                    
                 }
                 if (filter.IsAirExport) { 
                     if (result != null)
@@ -373,7 +384,7 @@ namespace Dolphin.Freight.ReportLog
         public static async Task<ProfitReport> GetProfit(Guid Id, int queryType, IInvoiceAppService invoiceAppService)
         {
             ProfitReport data = new();
-
+           
             QueryInvoiceDto query = new QueryInvoiceDto() { QueryType = queryType, ParentId = Id };
 
             data.Invoices = (await invoiceAppService.QueryInvoicesAsync(query)).ToList();
@@ -428,7 +439,16 @@ namespace Dolphin.Freight.ReportLog
                     data.DCTotal = dcTotal;
                 }
             }
-
+            if (data.ARTotal != 0)
+            {
+                data.ProfitMargin = (((data.ARTotal + data.DCTotal - data.APTotal) / data.ARTotal) * 100);
+            }
+            else
+            {
+                // Handle division by zero case, e.g., assign 0 or "N/A"
+                data.ProfitMargin = 0; // or "N/A"
+            }
+          
             return data;
         }
 
@@ -436,6 +456,7 @@ namespace Dolphin.Freight.ReportLog
         {
 
             var mblIds = result.Where(x => x.MblId == Id).ToList();
+
             //var _dbContext = _dbContextProvider.GetDbContext();
             //var cargoTypes = _dbContext.SysCodes.Where(s => s.CodeType == "cargoTypeId")
             //    .Select(s => new SysCodeForReport { Id = s.Id.ToString(), ShowName = s.ShowName, CodeType = s.CodeType });
@@ -469,64 +490,64 @@ namespace Dolphin.Freight.ReportLog
                 switch (item.ContainerCode)
                 {
                     case "20":
-                        volume.V20 = +1;
-                        volume.ETC = +1;
+                        volume.V20 += 1;
+                        volume.ETC += 1;
                         break;
 
                     case "20DC":
-                        volume.V20 = +1;
-                        volume.ETC = +1;
+                        volume.V20 += 1;
+                        volume.ETC += 1;
                         break;
 
                     case "20FR":
-                        volume.V20 = +1;
-                        volume.ETC = +1;
+                        volume.V20 += 1;
+                        volume.ETC += 1;
                         break;
 
                     case "20FL":
-                        volume.V20 = +1;
-                        volume.ETC = +1;
+                        volume.V20 += 1;
+                        volume.ETC += 1;
                         break;
 
                     case "40DC":
-                        volume.V40 = +1;
-                        volume.ETC = +1;
+                        volume.V40 += 1;
+                        volume.ETC += 1;
                         break;
 
                     case "40FL":
-                        volume.V40 = +1;
-                        volume.ETC = +1;
+                        volume.V40 += 1;
+                        volume.ETC += 1;
                         break;
 
                     case "40FR":
-                        volume.V40 = +1;
-                        volume.ETC = +1;
+                        volume.V40 += 1;
+                        volume.ETC += 1;
                         break;
 
                     case "40GH":
-                        volume.V40 = +1;
+                        volume.V40 += 1;
                         volume.ETC = +1;
                         break;
 
                     case "12RF":
-                        volume.V45 = +1;
-                        volume.ETC = +1;
+                        volume.V45 += 1;
+                        volume.ETC += 1;
                         break;
 
                     case "53FT":
-                        volume.ETC = +1;
+                        volume.ETC += 1;
                         break;
 
                     case "2":
-                        volume.ETC = +1;
+                        volume.ETC += 1;
                         break;
 
                     case "101":
-                        volume.ETC = +1;
+                        volume.ETC += 1;
                         break;
 
                     case "102":
-                        volume.ETC = +1;
+                        volume.ETC += 1;
                         break;
 
                     default:

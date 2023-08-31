@@ -131,7 +131,7 @@ namespace Dolphin.Freight.ReportLog
         public decimal? MinProfit { get; set; }
         public decimal? MaxProfit { get; set; }
         public string Profit { get; set; }
-
+        public Guid? ShipModeId { get; set; }
         public bool IsOceanImport { get; set; }
         public bool IsOceanExport { get; set; }
         public bool IsAirImport { get; set; }
