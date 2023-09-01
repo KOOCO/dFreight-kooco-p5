@@ -11,6 +11,8 @@ using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Web.Pages.AirImports;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
+using Dolphin.Freight.ImportExport.Containers;
 
 namespace Dolphin.Freight.Web.ViewModels.ImportExport
 {
@@ -21,9 +23,16 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public string ShowMsg { get; set; }
+        public string CabinateSize { get; set; }
+        public int Quantity { get; set; }
+        public int Index { get; set; }
         [BindProperty]
         public AirImportHawbDto HawbModel { get; set; }
         public OceanExportHblDto OceanExportHbl { get; set; }
+        public List<SelectListItem> RateUnitTypeLookupList { get; set; }
+        public List<SelectListItem> UnitTypeLookupList { get; set; }
+        public CreateUpdateExportBookingDto ExportBookingDto { get; set; }
+        public CreateUpdateContainerDto CreateUpdateContainerBooking { get; set; }
         public OceanImportHblDto OceanImportHbl { get; set; }
         public AirExportHawbDto AirExportHawbDto { get; set; }
         [BindProperty(SupportsGet = true)]

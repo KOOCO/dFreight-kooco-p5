@@ -51,6 +51,7 @@ public class FreightWebAutoMapperProfile : Profile
         CreateMap<GlCodeDto, CreateUpdateGlCodeDto>();
         CreateMap<VesselScheduleDto,CreateUpdateVesselScheduleDto>();
         CreateMap<ExportBookingDto,CreateUpdateExportBookingDto>();
+        CreateMap<ExportBooking, ExportBookingDto>();
 
         // TradePartner
         CreateMap<CreateEditCreditLimitGroupViewModel, CreateUpdateCreditLimitGroupDto>();

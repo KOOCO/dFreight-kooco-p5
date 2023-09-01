@@ -100,6 +100,7 @@ namespace Dolphin.Freight.ReportLog
         public double ProfitMargin { get; set; }
         public double ProfitAmt { get; set; }
         public double Avg_Profit_Per_Cntr { get; set; }
+        public Guid? ShipModeId { get; set; }
 
     }
 

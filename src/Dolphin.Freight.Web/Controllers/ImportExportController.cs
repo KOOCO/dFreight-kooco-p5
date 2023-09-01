@@ -42,6 +42,7 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly IPortsManagementAppService _portsManagementAppService;
         private readonly IVesselScheduleAppService _vesselScheduleAppService;
+        private readonly IExportBookingAppService _exportBookingAppService;
 
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
@@ -63,7 +64,8 @@ namespace Dolphin.Freight.Web.Controllers
             IAttachmentAppService attachmentAppService,
             IInvoiceAppService invoiceAppService,
             IPortsManagementAppService portsManagementAppService,
-            IVesselScheduleAppService vesselScheduleAppService
+            IVesselScheduleAppService vesselScheduleAppService,
+            IExportBookingAppService exportBookingAppService
             )
         {
             _tradePartnerAppService = tradePartnerAppService;
@@ -78,6 +80,7 @@ namespace Dolphin.Freight.Web.Controllers
             _invoiceAppService = invoiceAppService;
             _portsManagementAppService = portsManagementAppService;
             _vesselScheduleAppService = vesselScheduleAppService;
+            _exportBookingAppService = exportBookingAppService;
 
 
             FillCountryNameAsync().Wait();
@@ -313,6 +316,35 @@ namespace Dolphin.Freight.Web.Controllers
 
         #endregion
 
+
+        #region Export Bookings
+        [HttpGet]
+        [Route("ExportBookingBasic")]
+        public async Task<PartialViewResult> GetExportBookingBasic(Guid Id)
+        {
+            HawbHblViewModel model = new();
+
+            model.SubstationLookupList = SubstationLookupList;
+            model.AirportLookupList = AirportLookupList;
+            model.TradePartnerLookupList = TradePartnerLookupList;
+            model.PackageUnitLookupList = PackageUnitLookupList;
+            model.PortsManagementLookupList = PortsManagementLookupList;
+            model.RateUnitTypeLookupList = new List<SelectListItem>
+            {
+                new SelectListItem() { Text = "KG", Value = "KG" },
+                new SelectListItem() { Text = "LG", Value = "LG" }
+            };
+            model.UnitTypeLookupList = new List<SelectListItem>
+            {
+                new SelectListItem() { Text = "CBM", Value = "CBM" },
+                new SelectListItem() { Text = "CFT", Value = "CFT" }
+            };
+
+            model.ExportBookingDto = await _exportBookingAppService.GetBookingCardById(Id);
+
+            return PartialView("~/Pages/OceanExports/VesselSchedules/_ExportBookingBasic.cshtml", model);
+        }
+        #endregion
 
 
         [HttpGet]

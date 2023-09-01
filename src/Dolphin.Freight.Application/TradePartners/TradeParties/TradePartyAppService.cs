@@ -35,14 +35,6 @@ namespace Dolphin.Freight.TradePartners.TradeParties
 
             Logger = NullLogger<TradePartyAppService>.Instance;
         }
-
-        public async Task<TradePartyDto> GetAsync(Guid id)
-        {
-            TradeParty entity = await _repository.GetAsync(id);
-
-            return ObjectMapper.Map<TradeParty, TradePartyDto>(entity);
-        }
-
         public async Task<List<TradePartyListDto>> GetListByPartnerIdAndTypeAsync(Guid id, TradePartyType type)
         {
             IQueryable<TradeParty> query = await _repository.GetQueryableAsync();
