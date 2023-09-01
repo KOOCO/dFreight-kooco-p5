@@ -13,6 +13,8 @@ public class VolumeReportSummaryViewModel
     public string Operator { get; set; }
    public ReportPdfLogDto ContainerList { get; set; }
     public bool IsVolumeReport { get; set; }
+    public string OutPutType { get; set; }
+   
 }
 
 public class ShippingTypeList

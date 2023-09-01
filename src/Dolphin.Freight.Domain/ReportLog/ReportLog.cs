@@ -116,6 +116,7 @@ namespace Dolphin.Freight.ReportLog
         public int V45 { get; set; }
         public int RF { get; set; }
         public int SOC { get; set; }
+      
         public int ETC { get; set; }
     }
 

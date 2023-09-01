@@ -4,6 +4,7 @@ using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.EntityFrameworkCore;
 using Dolphin.Freight.ImportExport.AirImports;
+using Dolphin.Freight.ImportExport.Containers;
 using Microsoft.EntityFrameworkCore;
 using Scriban.Syntax;
 using System;
@@ -20,12 +21,14 @@ namespace Dolphin.Freight.ReportLog
     public class ReportLogRepository : EfCoreRepository<FreightDbContext, ReportLog, Guid>, IReportLogRepository
     {
         private readonly IInvoiceAppService _invoiceAppService;
+        private readonly IContainerAppService _containerAppService;
         IDbContextProvider<FreightDbContext> _dbContextProvider;
-        public ReportLogRepository(IDbContextProvider<FreightDbContext> dbContextProvider, IInvoiceAppService invoiceAppService)
+        public ReportLogRepository(IDbContextProvider<FreightDbContext> dbContextProvider, IInvoiceAppService invoiceAppService, IContainerAppService containerAppService)
             : base(dbContextProvider)
         {
             _dbContextProvider = dbContextProvider;
             _invoiceAppService = invoiceAppService;
+            _containerAppService = containerAppService;
         }
 
         public async Task<ReportLog> FindByReportIdAsync(Guid ReportId, string ReportName)
@@ -84,12 +87,12 @@ namespace Dolphin.Freight.ReportLog
 
             foreach (var id in airImportMawbsIds.Concat(airExportMawbsIds))
             {
-                allProfitData[id] = await GetProfit(id, 0, _invoiceAppService);
+                allProfitData[id] = await GetProfit(id, 0, _invoiceAppService, _containerAppService);
             }
 
             foreach (var id in oceanImportMblsIds.Concat(oceanExportMblsIds))
             {
-                allProfitData[id] = await GetProfit(id, 3, _invoiceAppService);
+                allProfitData[id] = await GetProfit(id, 3, _invoiceAppService, _containerAppService);
             }
 
             try
@@ -406,12 +409,12 @@ namespace Dolphin.Freight.ReportLog
 
             foreach (var id in airImportMawbsIds.Concat(airExportMawbsIds))
             {
-                allProfitData[id] = await GetProfit(id, 0, _invoiceAppService);
+                allProfitData[id] = await GetProfit(id, 0, _invoiceAppService,_containerAppService);
             }
 
             foreach (var id in oceanImportMblsIds.Concat(oceanExportMblsIds))
             {
-                allProfitData[id] = await GetProfit(id, 3, _invoiceAppService);
+                allProfitData[id] = await GetProfit(id, 3, _invoiceAppService, _containerAppService);
             }
             IEnumerable<MawbReport> OceanExports = new List<MawbReport>();
 
@@ -704,10 +707,17 @@ namespace Dolphin.Freight.ReportLog
 
 
 
-        public static async Task<ProfitReport> GetProfit(Guid Id, int queryType, IInvoiceAppService invoiceAppService)
+        public static async Task<ProfitReport> GetProfit(Guid Id, int queryType, IInvoiceAppService invoiceAppService,IContainerAppService containerAppService)
         {
+            int containerCont = 1;
             ProfitReport data = new();
-           
+            if (queryType == 3)
+            {
+                QueryContainerDto dto = new QueryContainerDto();
+                dto.QueryId = Id;
+                var containers = await containerAppService.QueryListAsync(dto);
+                containerCont = containers.Count > 0 ? containers.Count : 1;
+                    }
             QueryInvoiceDto query = new QueryInvoiceDto() { QueryType = queryType, ParentId = Id };
 
             data.Invoices = (await invoiceAppService.QueryInvoicesAsync(query)).ToList();
@@ -764,14 +774,14 @@ namespace Dolphin.Freight.ReportLog
             }
             if (data.ARTotal != 0)
             {
-                data.ProfitMargin = (((data.ARTotal + data.DCTotal - data.APTotal) / data.ARTotal) * 100);
+                data.ProfitMargin = (((data.ARTotal + data.DCTotal - data.APTotal) / data.ARTotal));
             }
             else
             {
                 // Handle division by zero case, e.g., assign 0 or "N/A"
                 data.ProfitMargin = 0; // or "N/A"
             }
-          
+            data.Avg_Profit_Per_Cntr = (data.ARTotal + data.DCTotal - data.APTotal) / containerCont;
             return data;
         }
 
@@ -853,7 +863,7 @@ namespace Dolphin.Freight.ReportLog
                         break;
 
                     case "12RF":
-                        volume.V45 += 1;
+                        volume.RF += 1;
                         volume.ETC += 1;
                         break;
 

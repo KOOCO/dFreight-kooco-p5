@@ -445,7 +445,7 @@ tbody {
                     <td class="text-bold" colspan="3">Summary</td>
                     <td class="text-bold">Sort by</td>
                     <td>:</td>
-                    <td>Trucker</td>
+                    <td>@Model.OutPutType</td>
                     <td class="text-bold">User</td>
                     <td>:</td>
                     <td>@Model.Operator</td>
@@ -459,7 +459,7 @@ tbody {
                     <td>Master B/L Post Date</td>
                     <td class="text-bold">Date</td>
                     <td>:</td>
-                    <td>08-21-2023</td>
+                    <td>@DateTime.Now.ToShortDateString()</td>
                 </tr>
             </tbody></table>
             <table class="table-padding-3 margin-t text-11">
@@ -471,7 +471,10 @@ tbody {
                 
                     <!-- Volume Profit report (OI, OE, AI and AE)-->
                     
-                <tbody><tr>
+                <tbody>
+                    @if(Model.ContainerList.OceanImports.Count>0)
+                    {
+                    <tr>
                     <td colspan="2" height="3" class="_padding-b-0">
                         <div class="text-12 text-bold">Department: Ocean Import</div>
                     </td>
@@ -508,6 +511,7 @@ tbody {
                     </tr>
                     <tr class="border-b">
                         <td class="text-left">CNTR</td>
+                         <td>@Model.ContainerList.OceanImports.Sum(x=>x.V20).ToString("N2")</td>
                           <td>@Model.ContainerList.OceanImports.Sum(x=>x.V40).ToString("N2")</td>
                         <td>@Model.ContainerList.OceanImports.Sum(x=>x.HC).ToString("N2")</td>
                         <td>@Model.ContainerList.OceanImports.Sum(x=>x.V45).ToString("N2")</td>
@@ -575,8 +579,9 @@ tbody {
                                 </tbody></table>
                             </td>
                         </tr>
-                    
-                    
+                    }
+                    @if(@Model.ContainerList.OceanExports.Count>0)
+                    {
                         <tr>
                             <td colspan="2" height="3" class="_padding-b-0">
                                 <div class="text-12 text-bold">Department: Ocean Export</div>
@@ -683,7 +688,9 @@ tbody {
                             </td>
                         </tr>
                     
-                    
+                    }
+                    @if(Model.ContainerList.AirImports.Count>0)
+                    {
                         <tr>
                             <td colspan="2" height="3" class="_padding-b-0">
                                 <div class="text-12 text-bold">Department: Air Import</div>
@@ -713,7 +720,9 @@ tbody {
                             </td>
                         </tr>
                     
-                    
+                    }
+                    @if(Model.ContainerList.AirExports.Count>0)
+                    {
                         <tr>
                             <td colspan="2" height="3" class="_padding-b-0">
                                 <div class="text-12 text-bold">Department: Air Export</div>
@@ -744,7 +753,7 @@ tbody {
                                 
                             </td>
                         </tr>
-              
+              }
                 
                 <!-- Same tables in Volume Profit report and Volume report -->
                 
@@ -753,6 +762,8 @@ tbody {
             </tbody></table>
 
                 <hr>
+                 @if(Model.ContainerList.OceanImports.Count>0)
+                    {
                 <div>
                     <div class="header">
                         <div class="text-center">
@@ -778,7 +789,7 @@ tbody {
                             <td>Ocean Import</td>
                             <td class="text-bold">Sort by</td>
                             <td>:</td>
-                            <td>Trucker</td>
+                            <td>@Model.OutPutType</td>
                             <td class="text-bold">User</td>
                             <td>:</td>
                             <td>@Model.Operator</td>
@@ -792,7 +803,7 @@ tbody {
                             <td>Master B/L Post Date</td>
                             <td class="text-bold">Date</td>
                             <td>:</td>
-                            <td>08-21-2023</td>
+                            <td>@DateTime.Now.ToShortDateString()</td>
                         </tr>
                     </tbody></table>
                     <table class="table-padding-double margin-t text-8">
@@ -820,7 +831,7 @@ tbody {
                         <thead>
                             <tr class="border-t border-b bg-light">
                                 <th class="border-r col-padding" rowspan="3">Block</th>
-                                <th class="border-r col-padding-double" rowspan="3" colspan="2">Trucker</th>
+                                <th class="border-r col-padding-double" rowspan="3" colspan="2">@Model.OutPutType</th>
                                 <th class="col-padding-double" colspan="16">Ocean Total</th>
                             </tr>
                             <tr class="border-t border-b bg-light">
@@ -891,6 +902,7 @@ tbody {
                         <tr class="text-right border-b">
                             <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
                             <td class="text-left"><br>B/L: #</td>
+                              <td>@Model.ContainerList.OceanImports.Sum(x=>x.V20).ToString("N2")</td>
                            <td>@Model.ContainerList.OceanImports.Sum(x=>x.V40).ToString("N2")</td>
                         <td>@Model.ContainerList.OceanImports.Sum(x=>x.HC).ToString("N2")</td>
                         <td>@Model.ContainerList.OceanImports.Sum(x=>x.V45).ToString("N2")</td>
@@ -911,7 +923,9 @@ tbody {
                         </tr>
                     </tbody></table>
                 </div>
-
+                }
+                 @if(Model.ContainerList.OceanExports.Count>0)
+                    {
                 <hr>
                 <div>
                     <div class="header">
@@ -938,7 +952,7 @@ tbody {
                             <td>Ocean Export</td>
                             <td class="text-bold">Sort by</td>
                             <td>:</td>
-                            <td>Trucker</td>
+                            <td>@Model.OutPutType</td>
                             <td class="text-bold">User</td>
                             <td>:</td>
                             <td>@Model.Operator</td>
@@ -949,10 +963,10 @@ tbody {
                             <td>USD</td>
                             <td class="text-bold">Period</td>
                             <td>:</td>
-                            <td>Master B/L Post Date (05-31-2023 ~ 06-29-2023)</td>
+                            <td>Master B/L Post Date </td>
                             <td class="text-bold">Date</td>
                             <td>:</td>
-                            <td>08-21-2023</td>
+                            <td>@DateTime.Now.ToShortDateString()</td>
                         </tr>
                     </tbody></table>
                     <table class="table-padding-double margin-t text-8">
@@ -980,7 +994,7 @@ tbody {
                         <thead>
                             <tr class="border-t border-b bg-light">
                                 <th class="border-r col-padding" rowspan="3">Block</th>
-                                <th class="border-r col-padding-double" rowspan="3" colspan="2">Trucker</th>
+                                <th class="border-r col-padding-double" rowspan="3" colspan="2">@Model.OutPutType</th>
                                 <th class="col-padding-double" colspan="16">Ocean Total</th>
                             </tr>
                             <tr class="border-t border-b bg-light">
@@ -1045,6 +1059,7 @@ tbody {
                         <tr class="text-right border-b">
                             <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
                             <td class="text-left"><br>B/L: #</td>
+                              <td>@Model.ContainerList.OceanImports.Sum(x=>x.V20).ToString("N2")</td>
                              <td>@Model.ContainerList.OceanImports.Sum(x=>x.V40).ToString("N2")</td>
                         <td>@Model.ContainerList.OceanImports.Sum(x=>x.HC).ToString("N2")</td>
                         <td>@Model.ContainerList.OceanImports.Sum(x=>x.V45).ToString("N2")</td>
@@ -1065,14 +1080,15 @@ tbody {
                         </tr>
                     </tbody></table>
                 </div>
-            
-            
+            }
+             @if(Model.ContainerList.AirImports.Count>0)
+                    {
                 <hr>
                 <div>
                     <div class="header">
                         <div class="text-center">
                             <div class="text-lg text-bold">Volume Summary Report</div>
-                            <h4 class="text-light margin-t-sm">Period (05-31-2023 ~ 06-29-2023)</h4>
+                            <h4 class="text-light margin-t-sm">Period </h4>
                         </div>
                     </div>
                     <table class="tabld-padding-double">
@@ -1093,7 +1109,7 @@ tbody {
                             <td>Air Import</td>
                             <td class="text-bold">Sort by</td>
                             <td>:</td>
-                            <td>Trucker</td>
+                            <td>@Model.OutPutType</td>
                             <td class="text-bold">User</td>
                             <td>:</td>
                             <td>@Model.Operator</td>
@@ -1104,10 +1120,10 @@ tbody {
                             <td>USD</td>
                             <td class="text-bold">Period</td>
                             <td>:</td>
-                            <td>Master B/L Post Date (05-31-2023 ~ 06-29-2023)</td>
+                            <td>Master B/L Post Date </td>
                             <td class="text-bold">Date</td>
                             <td>:</td>
-                            <td>08-21-2023</td>
+                            <td>@DateTime.Now.ToShortDateString()</td>
                         </tr>
                     </tbody></table>
                     <table class="table-padding-double margin-t text-8">
@@ -1126,7 +1142,7 @@ tbody {
                         <thead>
                             <tr class="border-t border-b bg-light">
                                 <th class="border-r col-padding" rowspan="3">Block</th>
-                                <th class="border-r col-padding-double" rowspan="3" colspan="2">Trucker</th>
+                                <th class="border-r col-padding-double" rowspan="3" colspan="2">@Model.OutPutType</th>
                                 <th class="col-padding-double" colspan="7">Air Total</th>
                             </tr>
                             <tr class="border-t border-b bg-light">
@@ -1180,14 +1196,15 @@ tbody {
                         </tr>
                     </tbody></table>
                 </div>
-            
-            
+            }
+             @if(Model.ContainerList.AirExports.Count>0)
+                    {
                 <hr>
                 <div>
                     <div class="header">
                         <div class="text-center">
                             <div class="text-lg text-bold">Volume Summary Report</div>
-                            <h4 class="text-light margin-t-sm">Period (05-31-2023 ~ 06-29-2023)</h4>
+                            <h4 class="text-light margin-t-sm">Period </h4>
                         </div>
                     </div>
                     <table class="tabld-padding-double">
@@ -1208,7 +1225,7 @@ tbody {
                             <td>Air Export</td>
                             <td class="text-bold">Sort by</td>
                             <td>:</td>
-                            <td>Trucker</td>
+                            <td>@Model.OutPutType</td>
                             <td class="text-bold">User</td>
                             <td>:</td>
                             <td>@Model.Operator</td>
@@ -1219,10 +1236,10 @@ tbody {
                             <td>USD</td>
                             <td class="text-bold">Period</td>
                             <td>:</td>
-                            <td>Master B/L Post Date (05-31-2023 ~ 06-29-2023)</td>
+                            <td>Master B/L Post Date </td>
                             <td class="text-bold">Date</td>
                             <td>:</td>
-                            <td>08-21-2023</td>
+                            <td>@DateTime.Now.ToShortDateString()</td>
                         </tr>
                     </tbody></table>
                     <table class="table-padding-double margin-t text-8">
@@ -1241,7 +1258,7 @@ tbody {
                         <thead>
                             <tr class="border-t border-b bg-light">
                                 <th class="border-r col-padding" rowspan="3">Block</th>
-                                <th class="border-r col-padding-double" rowspan="3" colspan="2">Trucker</th>
+                                <th class="border-r col-padding-double" rowspan="3" colspan="2">@Model.OutPutType</th>
                                 <th class="col-padding-double" colspan="7">Air Total</th>
                             </tr>
                             <tr class="border-t border-b bg-light">
@@ -1296,7 +1313,7 @@ tbody {
                         </tr>
                     </tbody></table>
                 </div>
-            
+            }
             
               @*   <hr>
                 <div>

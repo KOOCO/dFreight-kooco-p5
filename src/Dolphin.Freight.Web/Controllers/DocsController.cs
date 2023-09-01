@@ -5668,7 +5668,7 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> TotalProfitVolumeSummary(Guid id, string shippingType, string reportType, string salesType)
+        public async Task<IActionResult> TotalProfitVolumeSummary(Guid id, string shippingType, string reportType, string salesType,string outputType)
         {
             VolumeReportSummaryViewModel InfoModel = new();
 
@@ -5694,30 +5694,31 @@ namespace Dolphin.Freight.Web.Controllers
             //var containerList = _dropdownService.ContainerLookupList;
             //var shipLookupList = _dropdownService.ShipModeLookupList;
             InfoModel.ContainerList = await _reportLogAppService.GetMawbPdfReport(filter);
-            foreach(var item in shippingTypes)
-            {
-                var containersList = new List<ReportLog.ContainerList>();
-                //foreach(var container in containerList)
-                //{
-                //    var containers = new ReportLog.ContainerList
-                //    {
-                //        Name = container.Text
-                //    };
-                //    containersList.Add(containers);
-                //}
-                //InfoModel.ContainerList = containersList;
+            InfoModel.OutPutType = outputType;
+            //foreach(var item in shippingTypes)
+            //{
+            //    var containersList = new List<ReportLog.ContainerList>();
+            //    //foreach(var container in containerList)
+            //    //{
+            //    //    var containers = new ReportLog.ContainerList
+            //    //    {
+            //    //        Name = container.Text
+            //    //    };
+            //    //    containersList.Add(containers);
+            //    //}
+            //    //InfoModel.ContainerList = containersList;
 
-                var shipModeList = new List<ReportLog.ShipModeList>();
-                //foreach(var ship in shipLookupList)
-                //{
-                //    var shipMode = new ReportLog.ShipModeList
-                //    {
-                //        Name = ship.Text
-                //    };
-                //    shipModeList.Add(shipMode);
-                //}
-                InfoModel.ShipModeList = shipModeList;
-            }
+            //    var shipModeList = new List<ReportLog.ShipModeList>();
+            //    //foreach(var ship in shipLookupList)
+            //    //{
+            //    //    var shipMode = new ReportLog.ShipModeList
+            //    //    {
+            //    //        Name = ship.Text
+            //    //    };
+            //    //    shipModeList.Add(shipMode);
+            //    //}
+            //    InfoModel.ShipModeList = shipModeList;
+            //}
 
             return View(InfoModel);
         }
