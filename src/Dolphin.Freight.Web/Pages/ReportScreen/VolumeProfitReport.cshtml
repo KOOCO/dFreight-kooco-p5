@@ -172,6 +172,7 @@
                 var shippingType = '';
                 var reportType = '';
                 var salesType = '';
+                 var outputType = '';
 
                 if ($('#VPRM_IsOceanImport')[0].checked) shippingType += 'OceanImport,';
                 if ($('#VPRM_IsOceanExport')[0].checked) shippingType += 'OceanExport,';
@@ -190,8 +191,8 @@
                 if ($('#VPRM_IsFreeCargo')[0].checked) salesType += 'FREE CARGO,';
                 if ($('#VPRM_IsNomi')[0].checked) salesType += 'NOMI';
                 salesType = salesType.replace(/^,|,$/g, '');
-
-                OpenWindow('/Docs/TotalProfitVolumeSummary?shippingType=' + shippingType + '&reportType=' + reportType + '&salesType=' + salesType);
+                outputType = $('#VPRM_OutputType').val();
+                OpenWindow('/Docs/TotalProfitVolumeSummary?shippingType=' + shippingType + '&reportType=' + reportType + '&salesType=' + salesType+'&outputType='+outputType);
             }
             else {
                 var isDataTable = $.fn.dataTable.isDataTable('#mawReport');

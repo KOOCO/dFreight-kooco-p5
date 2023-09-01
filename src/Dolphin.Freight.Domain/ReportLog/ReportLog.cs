@@ -101,6 +101,10 @@ namespace Dolphin.Freight.ReportLog
         public double ProfitAmt { get; set; }
         public double Avg_Profit_Per_Cntr { get; set; }
         public Guid? ShipModeId { get; set; }
+        public double GrossWeightKG { get; set; }
+        public double GrossWeightLB { get; set; }
+        public double ChargeableWeightKG { get; set; }
+        public double ChargeableWeightLB { get; set; }
 
     }
 
@@ -112,6 +116,7 @@ namespace Dolphin.Freight.ReportLog
         public int V45 { get; set; }
         public int RF { get; set; }
         public int SOC { get; set; }
+      
         public int ETC { get; set; }
     }
 

@@ -16,5 +16,6 @@ namespace Dolphin.Freight.ReportLog
         Task UpdateReportLog(ReportLogDto reportLog);
         Task<ReportLogDto> QueryReportLog(ReportLogDto reportLog);
         Task<PagedResultDto<MawbReportDto>> GetMawbReport(MawbReportDto filter);
+        Task<ReportPdfLogDto> GetMawbPdfReport(MawbReportDto filter);
     }
 }

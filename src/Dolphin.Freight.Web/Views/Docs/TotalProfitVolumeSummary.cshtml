@@ -16,7 +16,7 @@
         font-size : 20px;
     }
     #largeSize{
-        font-size : 40px;
+        font-size : 25px;
     }
     body{ font-family:Arial}
     .btn {
@@ -27,7 +27,12 @@
         font-size: 16px;
         cursor: pointer;
     }
-
+    .w-7 {
+    width: 7%;
+}
+    .text-bold {
+    font-weight: 700;
+}
      .btn-sm, .btn-xs {
             padding: 4px 10px 5px 10px;
             font-size: 13px;
@@ -136,14 +141,14 @@
     font-size: 9px;
 }
 
-table {
+.table {
     border-collapse: collapse;
     border-spacing: 0;
     table-layout: fixed;
     width: 100%;
 }
 
-table tr {
+.table tr {
     page-break-inside: avoid;
 }
 
@@ -173,41 +178,194 @@ table {
   color: #212529;
 }
 
-table th,
-table td {
+.table th,
+.table td {
   padding: 0.75rem;
   vertical-align: top;
   border-top: 1px solid #dee2e6;
 }
 
-table thead th {
+.table .thead .th {
   vertical-align: bottom;
   border-bottom: 2px solid #dee2e6;
 }
 
-table tbody + tbody {
+.table .tbody + .tbody {
   border-top: 2px solid #dee2e6;
 }
 
-table-sm th,
-table-sm td {
+.table-sm th,
+.table-sm td {
   padding: 0.3rem;
 }
+.tabld-padding{
+    border:0px solid #dee2e6!important; 
 
-table {
+}
+.table {
   border: 1px solid #dee2e6;
 }
 
-table th,
-table td {
+.table th,
+.table td {
   border: 1px solid #dee2e6;
 }
-
-table thead th,
-table thead td {
+.border-b {
+    border-bottom: 0.25pt solid #000;
+}
+.table thead th,
+.table thead td {
   border-bottom-width: 2px;
 }
+.valign-top {
+    vertical-align: top!important;
+}
+.report-volume-profit .__sub-title {
+    height: 40px;
+}
 
+.bg-light {
+    background: #f0f0f0;
+}
+.w-9 {
+    width: 9%;
+}
+.border-r {
+    border-right: 0.25pt solid #000;
+}
+.margin-t-sm {
+    margin-top: 10px;
+}
+.col-padding-double {
+    padding: 4px;
+}
+._text-14 {
+    font-size: 14px!important;
+}
+.text-bold {
+    font-weight: 700;
+}
+.text-right {
+    text-align: right;
+}
+.text-red-deep {
+    color: #ad0000;
+}
+.border-t {
+    border-top: 0.25pt solid #000;
+}
+.edit .wrap table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.text-center {
+    text-align: center!important;
+}
+.border {
+    border: 0.25pt solid #000;
+}
+.text-lg {
+    font-size: 25px;
+}
+.text-bold {
+    font-weight: 700;
+}
+.margin-t {
+    margin-top: 5px;
+}
+
+.text-8, small {
+    font-size: 8px;
+}
+.w-3 {
+    width: 3%;
+}
+.w-13 {
+    width: 13%;
+}
+.w-10 {
+    width: 10%;
+}
+.w-4 {
+    width: 4%;
+}
+.w-5 {
+    width: 5%;
+}
+table td[class*=col-], table th[class*=col-] {
+    position: static;
+    display: table-cell;
+    float: none;
+}
+.col-padding-double {
+    padding: 4px;
+}
+.text-right {
+    text-align: right;
+}
+.border-r {
+    border-right: 0.25pt solid #000;
+}
+.text-right {
+    text-align: right;
+}
+.w-1 {
+    width: 1%;
+}
+.w-22 {
+    width: 22%;
+}
+.w-50 {
+    width: 50%!important;
+}
+.w-10 {
+    width: 10%;
+}
+.header h4 {
+    font-size: 15px;
+}
+.header {
+    font-size: 11px;
+    padding: 15px 0;
+}
+.margin-t-sm {
+    margin-top: 10px;
+}
+.text-light {
+    font-weight: 400;
+}
+.edit .wrap.landscape {
+    width: 1056px;
+}
+.margin-t-md {
+    margin-top: 20px;
+}
+._margin-auto {
+    margin: auto;
+}
+tbody {
+    display: table-row-group;
+    vertical-align: middle;
+    border-color: inherit;
+}
+.w-70 {
+    width: 70%!important;
+}
+.w-50 {
+    width: 50%!important;
+}
+.text-12 {
+    font-size: 12px;
+}
+.text-bold {
+    font-weight: 100;
+}
+.w-13 {
+    width: 13%;
+}
+.w-15 {
+    width: 15%;
+}
 </style>
 
 <script>
@@ -264,10 +422,10 @@ table thead td {
     <form id="myForm" method="post">
 <div id="main" class="edit ng-scope">              
    <div class="wrap report-volume-profit landscape">
-        <div class="header _padding-0">
+     <div class="header _padding-0">
             <div class="text-center">
-                <div class="text-lg text-bold" id="largeSize">Volume Summary Report</div>
-                @*<h4 class="text-light margin-t-sm" id="periodsize">Period (05-31-2023 ~ 06-29-2023)</h4>*@
+                <div class="text-lg text-bold" > Volume Summary Report</div>
+                <h4 class="text-light margin-t-sm">Period ( ~ )</h4>
             </div>
         </div>
         
@@ -287,7 +445,7 @@ table thead td {
                     <td class="text-bold" colspan="3">Summary</td>
                     <td class="text-bold">Sort by</td>
                     <td>:</td>
-                    <td>Trucker</td>
+                    <td>@Model.OutPutType</td>
                     <td class="text-bold">User</td>
                     <td>:</td>
                     <td>@Model.Operator</td>
@@ -301,7 +459,7 @@ table thead td {
                     <td>Master B/L Post Date</td>
                     <td class="text-bold">Date</td>
                     <td>:</td>
-                    <td>08-21-2023</td>
+                    <td>@DateTime.Now.ToShortDateString()</td>
                 </tr>
             </tbody></table>
             <table class="table-padding-3 margin-t text-11">
@@ -313,7 +471,10 @@ table thead td {
                 
                     <!-- Volume Profit report (OI, OE, AI and AE)-->
                     
-                <tbody><tr>
+                <tbody>
+                    @if(Model.ContainerList.OceanImports.Count>0)
+                    {
+                    <tr>
                     <td colspan="2" height="3" class="_padding-b-0">
                         <div class="text-12 text-bold">Department: Ocean Import</div>
                     </td>
@@ -350,13 +511,13 @@ table thead td {
                     </tr>
                     <tr class="border-b">
                         <td class="text-left">CNTR</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>1.0</td>
-                        <td>0</td>
-                        <td>0</td>
+                         <td>@Model.ContainerList.OceanImports.Sum(x=>x.V20).ToString("N2")</td>
+                          <td>@Model.ContainerList.OceanImports.Sum(x=>x.V40).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.HC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.V45).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.RF).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.SOC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.ETC).ToString("N2")</td>
                         <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
                         <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
                         <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
@@ -418,8 +579,9 @@ table thead td {
                                 </tbody></table>
                             </td>
                         </tr>
-                    
-                    
+                    }
+                    @if(@Model.ContainerList.OceanExports.Count>0)
+                    {
                         <tr>
                             <td colspan="2" height="3" class="_padding-b-0">
                                 <div class="text-12 text-bold">Department: Ocean Export</div>
@@ -457,13 +619,13 @@ table thead td {
             </tr>
             <tr class="border-b">
                 <td class="text-left">CNTR</td>
-                <td>0</td>
-                <td>3.0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
+               <td>@Model.ContainerList.OceanExports.Sum(x=>x.V20).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.V40).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.HC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.V45).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.RF).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.SOC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.ETC).ToString("N2")</td>
                 <td><div class="auto-font-size __width-xs"><span>18.6</span></div></td>
                 <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
                 <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
@@ -526,7 +688,9 @@ table thead td {
                             </td>
                         </tr>
                     
-                    
+                    }
+                    @if(Model.ContainerList.AirImports.Count>0)
+                    {
                         <tr>
                             <td colspan="2" height="3" class="_padding-b-0">
                                 <div class="text-12 text-bold">Department: Air Import</div>
@@ -545,8 +709,8 @@ table thead td {
                 <td>C/WT</td>
             </tr>
             <tr>
-                <td>0</td>
-                <td>0</td>
+                <td>@Model.ContainerList?.AirImports.Sum(x=>x.GrossWeightKG).ToString("N2")/@Model.ContainerList?.AirImports.Sum(x=>x.GrossWeightLB).ToString("N2")</td>
+                <td>@Model.ContainerList?.AirImports.Sum(x=>x.ChargeableWeightKG).ToString("N2")/@Model.ContainerList?.AirImports.Sum(x=>x.ChargeableWeightLB).ToString("N2")</td>
             </tr>
         </tbody></table>
     
@@ -556,7 +720,9 @@ table thead td {
                             </td>
                         </tr>
                     
-                    
+                    }
+                    @if(Model.ContainerList.AirExports.Count>0)
+                    {
                         <tr>
                             <td colspan="2" height="3" class="_padding-b-0">
                                 <div class="text-12 text-bold">Department: Air Export</div>
@@ -575,8 +741,9 @@ table thead td {
                 <td>C/WT</td>
             </tr>
             <tr>
-                <td>0</td>
-                <td>0</td>
+                   <td>@Model.ContainerList?.AirExports.Sum(x=>x.GrossWeightKG).ToString("N2")/@Model.ContainerList?.AirExports.Sum(x=>x.GrossWeightLB).ToString("N2")</td>
+                <td>@Model.ContainerList?.AirExports.Sum(x=>x.ChargeableWeightKG).ToString("N2")/@Model.ContainerList?.AirExports.Sum(x=>x.ChargeableWeightLB).ToString("N2")</td>
+           
             </tr>
         </tbody></table>
     
@@ -586,135 +753,21 @@ table thead td {
                                 
                             </td>
                         </tr>
-              
+              }
                 
                 <!-- Same tables in Volume Profit report and Volume report -->
                 
-                    <tr>
-                        <td colspan="2" height="3" class="_padding-b-0">
-                            <table class="text-12 text-bold">
-                                <tbody><tr>
-                                    <td class="w-50 _padding-0">Shipping Type: Truck</td>
-                                    <td class="w-50">
-                                        
-                                            Total Volume: 0
-                                        
-                                    </td>
-                                </tr>
-                            </tbody></table>
-                        </td>
-                    </tr>
-                    <tr class="valign-top">
-                        <td>
-                            <table class="table-padding-3 border text-center">
-                                <colgroup>
-                                    <col class="w-14 border-r">
-                                    <col class="w-14 border-r">
-                                    <col class="w-14 border-r">
-                                    <col class="w-14 border-r">
-                                    <col class="w-14 border-r">
-                                    <col class="w-14 border-r">
-                                    <col class="w-15">
-                                </colgroup>
-                                <tbody><tr class="border-b bg-light">
-                                    <td>20'</td>
-                                    <td>40'</td>
-                                    <td>HC</td>
-                                    <td>45'</td>
-                                    <td>RF</td>
-                                    <td>SOC</td>
-                                    <td>Etc.</td>
-                                </tr>
-                                <tr>
-                                    <td>0</td>
-                                    <td>0</td>
-                                    <td>0</td>
-                                    <td>0</td>
-                                    <td>0</td>
-                                    <td>0</td>
-                                    <td>0</td>
-                                </tr>
-                            </tbody></table>
-                        </td>
-                        <td>
-                            <table class="table-padding-3 border text-right">
-                                <colgroup>
-                                    <col class="w-100 border-r">
-                                </colgroup>
-                                <tbody><tr class="border-b bg-light">
-                                    <td>Total</td>
-                                </tr>
-                                <tr class="border-b">
-                                    <td>
-                                        
-                                            0.00
-                                        
-                                    </td>
-                                </tr>
-                            </tbody></table>
-                        </td>
-                    </tr>
-                
-                
-                    <tr>
-                        <td colspan="2" height="3" class="_padding-b-0">
-                            <table class="text-12 text-bold">
-                                <tbody><tr>
-                                    <td class="w-50 _padding-0">Shipping Type: Misc</td>
-                                    <td class="w-50">
-                                        
-                                    </td>
-                                </tr>
-                            </tbody></table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <table class="table-padding-3 border text-right">
-                                <tbody><tr class="border-b bg-light">
-                                    <td>Total</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        
-                                            &nbsp;
-                                        
-                                    </td>
-                                </tr>
-                            </tbody></table>
-                        </td>
-                    </tr>
-                
-                
-                <tr>
-                    <td colspan="2" height="3" class="_padding-b-0">
-                        <div class="text-12 text-bold">Shipping Type: Warehouse</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <table class="table-padding-3 border text-right margin-t">
-                            <tbody><tr class="border-b bg-light">
-                                <td>Total</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    
-                                        &nbsp;
-                                    
-                                </td>
-                            </tr>
-                        </tbody></table>
-                    </td>
-                </tr>
+               
                 
             </tbody></table>
 
                 <hr>
+                 @if(Model.ContainerList.OceanImports.Count>0)
+                    {
                 <div>
                     <div class="header">
                         <div class="text-center">
-                            <div class="text-lg text-bold"  id="largeSize">Volume Summary Report</div>
+                            <div class="text-lg text-bold"  >Volume Summary Report</div>
                             <h4 class="text-light margin-t-sm"  id="periodsize">Period</h4>
                         </div>
                     </div>
@@ -736,7 +789,7 @@ table thead td {
                             <td>Ocean Import</td>
                             <td class="text-bold">Sort by</td>
                             <td>:</td>
-                            <td>Trucker</td>
+                            <td>@Model.OutPutType</td>
                             <td class="text-bold">User</td>
                             <td>:</td>
                             <td>@Model.Operator</td>
@@ -750,183 +803,7 @@ table thead td {
                             <td>Master B/L Post Date</td>
                             <td class="text-bold">Date</td>
                             <td>:</td>
-                            <td>08-21-2023</td>
-                        </tr>
-                    </tbody></table>
-                    <table class="table-padding-3 margin-t">
-                        <colgroup>
-                            <col class="w-3">
-                            <col class="w-13">
-                            <col class="w-10">
-                            <col class="w-4">
-                            <col class="w-4">
-                            <col class="w-4">
-                            <col class="w-4">
-                            <col class="w-4">
-                            <col class="w-4">
-                            <col class="w-5">
-                            <col class="w-5">
-                            <col class="w-5">
-                            <col class="w-5">
-                            <col class="w-5">
-                            <col class="w-5">
-                            <col class="w-5">
-                            <col class="w-5">
-                            <col class="w-5">
-                            <col class="w-5">
-                        </colgroup>
-                        <thead>
-                            <tr class="border-t border-b bg-light">
-                                <th class="border-r col-padding" rowspan="3">Block</th>
-                                <th class="border-r col-padding-double" rowspan="3" colspan="2">Trucker</th>
-                                <th class="col-padding-double" colspan="16">Ocean Total</th>
-                            </tr>
-                            <tr class="border-t border-b bg-light">
-                                <th class="border-r col-padding-double" colspan="7">Container Type</th>
-                                <th class="border-r col-padding-double" colspan="4">Volume(CBM) by Ship Mode</th>
-                                <th class="col-padding-double" colspan="5">
-                                    
-                                        Volume(CBM) by Sales Type
-                                    
-                                </th>
-                            </tr>
-                            <tr class="border-b bg-light">
-                                @foreach(var container in Model.ContainerList){
-                                    <th class="col-padding-double text-right border-r">@container.Name</th>
-                                }
-
-                                <th class="col-padding-double text-right border-r">LCL</th>
-                                <th class="col-padding-double text-right border-r">FAK</th>
-                                <th class="col-padding-double text-right border-r">BULK</th>
-                                <th class="col-padding-double text-right border-r">SUM</th>
-                                <th class="col-padding-double text-right border-r">Free</th>
-                                <th class="col-padding-double text-right border-r">Nomi</th>
-                                <th class="col-padding-double text-right border-r">Col.</th>
-                                <th class="col-padding-double text-right border-r">Etc.</th>
-                                <th class="col-padding-double text-right">Total</th>
-                            </tr>
-                        </thead>
-                        
-                            <tbody><tr class="text-right border-b">
-                                <td class="text-center">
-                                    
-                                </td>
-                                <td class="text-left"></td>
-                                <td class="text-left"><br>B/L: #</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>1.0<br>2</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-
-                                
-                                    <td>0<br>0</td>
-                                    <td>0<br>0</td>
-                                    <td>1.0<br>1</td>
-                                    <td>0.0<br>1</td>
-                                    <td>1.0<br>2</td>
-                                
-                            </tr>
-                        
-                            <tr class="text-right border-b">
-                                <td class="text-center">
-                                    
-                                </td>
-                                <td class="text-left">ACEVEDO, FRITZ AND PATTERSON</td>
-                                <td class="text-left"><br>B/L: #</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-
-                                
-                                    <td>0<br>0</td>
-                                    <td>0<br>0</td>
-                                    <td>0<br>0</td>
-                                    <td>0.0<br>1</td>
-                                    <td>0.0<br>1</td>
-                                
-                            </tr>
-                        
-                        <tr class="text-right border-b">
-                            <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
-                            <td class="text-left"><br>B/L: #</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
-                            <td>1.0<br>2</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
-                            
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>1.0<br>1</td>
-                                <td>0.0<br>2</td>
-                                <td>1.0<br>3</td>
-                            
-                        </tr>
-                    </tbody></table>
-                </div>
-
-                <hr>
-                <div>
-                    <div class="header">
-                        <div class="text-center">
-                            <div class="text-lg text-bold">Volume Summary Report</div>
-                            <h4 class="text-light margin-t-sm">Period</h4>
-                        </div>
-                    </div>
-                    <table class="tabld-padding-double">
-                        <colgroup>
-                            <col class="w-7">
-                            <col class="w-1">
-                            <col class="w-22">
-                            <col class="w-5">
-                            <col class="w-1">
-                            <col class="w-50">
-                            <col class="w-3">
-                            <col class="w-1">
-                            <col class="w-10">
-                        </colgroup>
-                        <tbody><tr>
-                            <td class="text-bold">Shipping Type</td>
-                            <td>:</td>
-                            <td>Ocean Export</td>
-                            <td class="text-bold">Sort by</td>
-                            <td>:</td>
-                            <td>Trucker</td>
-                            <td class="text-bold">User</td>
-                            <td>:</td>
-                            <td>@Model.Operator</td>
-                        </tr>
-                        <tr>
-                            <td class="text-bold">Currency</td>
-                            <td>:</td>
-                            <td>USD</td>
-                            <td class="text-bold">Period</td>
-                            <td>:</td>
-                            <td>Master B/L Post Date (05-31-2023 ~ 06-29-2023)</td>
-                            <td class="text-bold">Date</td>
-                            <td>:</td>
-                            <td>08-21-2023</td>
+                            <td>@DateTime.Now.ToShortDateString()</td>
                         </tr>
                     </tbody></table>
                     <table class="table-padding-double margin-t text-8">
@@ -954,7 +831,170 @@ table thead td {
                         <thead>
                             <tr class="border-t border-b bg-light">
                                 <th class="border-r col-padding" rowspan="3">Block</th>
-                                <th class="border-r col-padding-double" rowspan="3" colspan="2">Trucker</th>
+                                <th class="border-r col-padding-double" rowspan="3" colspan="2">@Model.OutPutType</th>
+                                <th class="col-padding-double" colspan="16">Ocean Total</th>
+                            </tr>
+                            <tr class="border-t border-b bg-light">
+                                <th class="border-r col-padding-double" colspan="7">Container Type</th>
+                                <th class="border-r col-padding-double" colspan="4">Volume(CBM) by Ship Mode</th>
+                                <th class="col-padding-double" colspan="5">
+                                    
+                                        Volume(CBM) by Sales Type
+                                    
+                                </th>
+                            </tr>
+                            <tr class="border-b bg-light">
+                             @*    @foreach(var container in Model.ContainerList){
+                                    <th class="col-padding-double text-right border-r">@container.Name</th>
+                                } *@
+
+                              <th class="col-padding-double text-right border-r">20'</th>
+                                <th class="col-padding-double text-right border-r">40'</th>
+                                <th class="col-padding-double text-right border-r">HC</th>
+                                <th class="col-padding-double text-right border-r">45'</th>
+                                <th class="col-padding-double text-right border-r">RF</th>
+                                <th class="col-padding-double text-right border-r">SOC</th>
+                                <th class="col-padding-double text-right border-r">Etc.</th>
+                                <th class="col-padding-double text-right border-r">LCL</th>
+                                <th class="col-padding-double text-right border-r">FAK</th>
+                                <th class="col-padding-double text-right border-r">BULK</th>
+                                <th class="col-padding-double text-right border-r">SUM</th>
+                                <th class="col-padding-double text-right border-r">Free</th>
+                                <th class="col-padding-double text-right border-r">Nomi</th>
+                                <th class="col-padding-double text-right border-r">Col.</th>
+                                <th class="col-padding-double text-right border-r">Etc.</th>
+                                <th class="col-padding-double text-right">Total</th>
+                            </tr>
+                        </thead>
+                        
+                            <tbody>
+                                @foreach(var item in Model.ContainerList?.OceanImports)
+                                {
+                                <tr class="text-right border-b">
+                                <td class="text-center">
+                                    @item.Consignee
+                                </td>
+                                <td class="text-left"></td>
+                                <td class="text-left"><br>B/L: #</td>
+                                <td>@item.V20<br>0</td>
+                                <td>@item.V40<br>0</td>
+                                <td>@item.HC<br>0</td>
+                                <td>@item.V45<br>0</td>
+                                <td>@item.RF<br>2</td>
+                                <td>@item.SOC<br>0</td>
+                                <td>@item.ETC<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+
+                                
+                                    <td>0<br>0</td>
+                                    <td>0<br>0</td>
+                                    <td>1.0<br>1</td>
+                                    <td>0.0<br>1</td>
+                                    <td>1.0<br>2</td>
+                                
+                            </tr>
+                        
+                            }
+                        
+                        <tr class="text-right border-b">
+                            <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
+                            <td class="text-left"><br>B/L: #</td>
+                              <td>@Model.ContainerList.OceanImports.Sum(x=>x.V20).ToString("N2")</td>
+                           <td>@Model.ContainerList.OceanImports.Sum(x=>x.V40).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.HC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.V45).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.RF).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.SOC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.ETC).ToString("N2")</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            <td>0<br>0</td>
+                            
+                                <td>0<br>0</td>
+                                <td>0<br>0</td>
+                                <td>1.0<br>1</td>
+                                <td>0.0<br>2</td>
+                                <td>1.0<br>3</td>
+                            
+                        </tr>
+                    </tbody></table>
+                </div>
+                }
+                 @if(Model.ContainerList.OceanExports.Count>0)
+                    {
+                <hr>
+                <div>
+                    <div class="header">
+                        <div class="text-center">
+                            <div class="text-lg text-bold">Volume Summary Report</div>
+                            <h4 class="text-light margin-t-sm">Period</h4>
+                        </div>
+                    </div>
+                    <table class="tabld-padding-double">
+                        <colgroup>
+                            <col class="w-7">
+                            <col class="w-1">
+                            <col class="w-22">
+                            <col class="w-5">
+                            <col class="w-1">
+                            <col class="w-50">
+                            <col class="w-3">
+                            <col class="w-1">
+                            <col class="w-10">
+                        </colgroup>
+                        <tbody><tr>
+                            <td class="text-bold">Shipping Type</td>
+                            <td>:</td>
+                            <td>Ocean Export</td>
+                            <td class="text-bold">Sort by</td>
+                            <td>:</td>
+                            <td>@Model.OutPutType</td>
+                            <td class="text-bold">User</td>
+                            <td>:</td>
+                            <td>@Model.Operator</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Currency</td>
+                            <td>:</td>
+                            <td>USD</td>
+                            <td class="text-bold">Period</td>
+                            <td>:</td>
+                            <td>Master B/L Post Date </td>
+                            <td class="text-bold">Date</td>
+                            <td>:</td>
+                            <td>@DateTime.Now.ToShortDateString()</td>
+                        </tr>
+                    </tbody></table>
+                    <table class="table-padding-double margin-t text-8">
+                        <colgroup>
+                            <col class="w-3">
+                            <col class="w-13">
+                            <col class="w-10">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-4">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                            <col class="w-5">
+                        </colgroup>
+                        <thead>
+                            <tr class="border-t border-b bg-light">
+                                <th class="border-r col-padding" rowspan="3">Block</th>
+                                <th class="border-r col-padding-double" rowspan="3" colspan="2">@Model.OutPutType</th>
                                 <th class="col-padding-double" colspan="16">Ocean Total</th>
                             </tr>
                             <tr class="border-t border-b bg-light">
@@ -986,19 +1026,22 @@ table thead td {
                             </tr>
                         </thead>
                         
-                            <tbody><tr class="text-right border-b">
+                            <tbody>
+                                @foreach(var item in Model.ContainerList?.OceanExports)
+                                {
+                                <tr class="text-right border-b">
                                 <td class="text-center">
-                                    
+                                    @item.Consignee
                                 </td>
                                 <td class="text-left"></td>
                                 <td class="text-left"><br>B/L: #</td>
-                                <td>0<br>0</td>
-                                <td>3.0<br>5</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
+                                <td>@item.V20<br>0</td>
+                                <td>@item.V40<br>0</td>
+                                <td>@item.HC<br>0</td>
+                                <td>@item.V45<br>0</td>
+                                <td>@item.RF<br>2</td>
+                                <td>@item.SOC<br>0</td>
+                                <td>@item.ETC<br>0</td>
                                 <td>18.32<br>4</td>
                                 <td>0<br>0</td>
                                 <td>0<br>0</td>
@@ -1011,43 +1054,18 @@ table thead td {
                                     <td>40.32<br>6</td>
                                 
                             </tr>
-                        
-                            <tr class="text-right border-b">
-                                <td class="text-center">
-                                    
-                                </td>
-                                <td class="text-left">ABBOTT, DIAZ AND GREEN</td>
-                                <td class="text-left"><br>B/L: #</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0.28<br>1</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0.28<br>1</td>
-                                
-                                    <td>0<br>0</td>
-                                    <td>0<br>0</td>
-                                    <td>0.28<br>1</td>
-                                    <td>0<br>0</td>
-                                    <td>0.28<br>1</td>
-                                
-                            </tr>
+                        }
                         
                         <tr class="text-right border-b">
                             <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
                             <td class="text-left"><br>B/L: #</td>
-                            <td>0<br>0</td>
-                            <td>3.0<br>5</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
+                              <td>@Model.ContainerList.OceanImports.Sum(x=>x.V20).ToString("N2")</td>
+                             <td>@Model.ContainerList.OceanImports.Sum(x=>x.V40).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.HC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.V45).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.RF).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.SOC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.ETC).ToString("N2")</td>
                             <td>18.6<br>5</td>
                             <td>0<br>0</td>
                             <td>0<br>0</td>
@@ -1062,14 +1080,15 @@ table thead td {
                         </tr>
                     </tbody></table>
                 </div>
-            
-            
+            }
+             @if(Model.ContainerList.AirImports.Count>0)
+                    {
                 <hr>
                 <div>
                     <div class="header">
                         <div class="text-center">
                             <div class="text-lg text-bold">Volume Summary Report</div>
-                            <h4 class="text-light margin-t-sm">Period (05-31-2023 ~ 06-29-2023)</h4>
+                            <h4 class="text-light margin-t-sm">Period </h4>
                         </div>
                     </div>
                     <table class="tabld-padding-double">
@@ -1090,7 +1109,7 @@ table thead td {
                             <td>Air Import</td>
                             <td class="text-bold">Sort by</td>
                             <td>:</td>
-                            <td>Trucker</td>
+                            <td>@Model.OutPutType</td>
                             <td class="text-bold">User</td>
                             <td>:</td>
                             <td>@Model.Operator</td>
@@ -1101,13 +1120,13 @@ table thead td {
                             <td>USD</td>
                             <td class="text-bold">Period</td>
                             <td>:</td>
-                            <td>Master B/L Post Date (05-31-2023 ~ 06-29-2023)</td>
+                            <td>Master B/L Post Date </td>
                             <td class="text-bold">Date</td>
                             <td>:</td>
-                            <td>08-21-2023</td>
+                            <td>@DateTime.Now.ToShortDateString()</td>
                         </tr>
                     </tbody></table>
-                    <table class="table-padding-3 margin-t">
+                    <table class="table-padding-double margin-t text-8">
                         <colgroup>
                             <col class="w-3">
                             <col class="w-13">
@@ -1123,7 +1142,7 @@ table thead td {
                         <thead>
                             <tr class="border-t border-b bg-light">
                                 <th class="border-r col-padding" rowspan="3">Block</th>
-                                <th class="border-r col-padding-double" rowspan="3" colspan="2">Trucker</th>
+                                <th class="border-r col-padding-double" rowspan="3" colspan="2">@Model.OutPutType</th>
                                 <th class="col-padding-double" colspan="7">Air Total</th>
                             </tr>
                             <tr class="border-t border-b bg-light">
@@ -1145,11 +1164,28 @@ table thead td {
                             </tr>
                         </thead>
                         
-                        <tbody><tr class="text-right border-b">
+                        <tbody>
+                            @foreach(var item in Model.ContainerList?.AirImports)
+                            {
+                            <tr class="text-right border-b">
+                            <td class="text-center text-bold" colspan="2" >@item.Consignee</td>
+                            <td class="text-left"><br>AWB: #</td>
+                            <td>@item.GrossWeightKG.ToString("N2")/@item.GrossWeightLB.ToString("N2")<br>0</td>
+                            <td>@item.ChargeableWeightKG.ToString("N2")/@item.ChargeableWeightLB.ToString("N2")<br>0</td>
+                            
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            
+                        </tr>
+                        }
+                         <tr class="text-right border-b">
                             <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
                             <td class="text-left"><br>AWB: #</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
+                            <td>@Model.ContainerList?.AirImports.Sum(x=>x.GrossWeightKG).ToString("N2")/@Model.ContainerList?.AirImports.Sum(x=>x.GrossWeightLB).ToString("N2")<br>0</td>
+                            <td>@Model.ContainerList?.AirImports.Sum(x=>x.ChargeableWeightKG).ToString("N2")/@Model.ContainerList?.AirImports.Sum(x=>x.ChargeableWeightLB).ToString("N2")<br>0</td>
                             
                                 <td></td>
                                 <td></td>
@@ -1160,14 +1196,15 @@ table thead td {
                         </tr>
                     </tbody></table>
                 </div>
-            
-            
+            }
+             @if(Model.ContainerList.AirExports.Count>0)
+                    {
                 <hr>
                 <div>
                     <div class="header">
                         <div class="text-center">
                             <div class="text-lg text-bold">Volume Summary Report</div>
-                            <h4 class="text-light margin-t-sm">Period (05-31-2023 ~ 06-29-2023)</h4>
+                            <h4 class="text-light margin-t-sm">Period </h4>
                         </div>
                     </div>
                     <table class="tabld-padding-double">
@@ -1188,7 +1225,7 @@ table thead td {
                             <td>Air Export</td>
                             <td class="text-bold">Sort by</td>
                             <td>:</td>
-                            <td>Trucker</td>
+                            <td>@Model.OutPutType</td>
                             <td class="text-bold">User</td>
                             <td>:</td>
                             <td>@Model.Operator</td>
@@ -1199,13 +1236,13 @@ table thead td {
                             <td>USD</td>
                             <td class="text-bold">Period</td>
                             <td>:</td>
-                            <td>Master B/L Post Date (05-31-2023 ~ 06-29-2023)</td>
+                            <td>Master B/L Post Date </td>
                             <td class="text-bold">Date</td>
                             <td>:</td>
-                            <td>08-21-2023</td>
+                            <td>@DateTime.Now.ToShortDateString()</td>
                         </tr>
                     </tbody></table>
-                    <table class="table-padding-double margin-t">
+                    <table class="table-padding-double margin-t text-8">
                         <colgroup>
                             <col class="w-3">
                             <col class="w-13">
@@ -1221,7 +1258,7 @@ table thead td {
                         <thead>
                             <tr class="border-t border-b bg-light">
                                 <th class="border-r col-padding" rowspan="3">Block</th>
-                                <th class="border-r col-padding-double" rowspan="3" colspan="2">Trucker</th>
+                                <th class="border-r col-padding-double" rowspan="3" colspan="2">@Model.OutPutType</th>
                                 <th class="col-padding-double" colspan="7">Air Total</th>
                             </tr>
                             <tr class="border-t border-b bg-light">
@@ -1243,11 +1280,29 @@ table thead td {
                             </tr>
                         </thead>
                         
-                        <tbody><tr class="text-right border-b">
+                        <tbody>
+                             @foreach(var item in Model.ContainerList?.AirExports)
+                            {
+                            <tr class="text-right border-b">
+                            <td class="text-center text-bold" colspan="2" >@item.Consignee</td>
+                            <td class="text-left"><br>AWB: #</td>
+                            <td>@item.GrossWeightKG.ToString("N2")/@item.GrossWeightLB.ToString("N2")<br>0</td>
+                            <td>@item.ChargeableWeightKG.ToString("N2")/@item.ChargeableWeightLB.ToString("N2")<br>0</td>
+                            
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            
+                        </tr>
+                        }
+                            <tr class="text-right border-b">
                             <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
                             <td class="text-left"><br>AWB: #</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
+                             <td>@Model.ContainerList?.AirImports.Sum(x=>x.GrossWeightKG).ToString("N2")/@Model.ContainerList?.AirExports.Sum(x=>x.GrossWeightLB).ToString("N2")<br>0</td>
+                            <td>@Model.ContainerList?.AirImports.Sum(x=>x.ChargeableWeightKG).ToString("N2")/@Model.ContainerList?.AirExports.Sum(x=>x.ChargeableWeightLB).ToString("N2")<br>0</td>
+                            
                             
                                 <td></td>
                                 <td></td>
@@ -1258,9 +1313,9 @@ table thead td {
                         </tr>
                     </tbody></table>
                 </div>
+            }
             
-            
-                <hr>
+              @*   <hr>
                 <div>
                     <div class="header">
                         <div class="text-center">
@@ -1303,7 +1358,7 @@ table thead td {
                             <td>08-21-2023</td>
                         </tr>
                     </tbody></table>
-                    <table class="table-padding-3 margin-t">
+                    <table class="table-padding-double margin-t text-8">
                         <colgroup>
                             <col class="w-3">
                             <col class="w-12">
@@ -1355,11 +1410,11 @@ table thead td {
                             </td>
                         </tr>
                     </tbody></table>
-                </div>
+                </div> *@
             
             
                 <hr>
-                <div>
+            @*     <div>
                     <div class="header">
                         <div class="text-center">
                             <div class="text-lg text-bold">Volume Summary Report</div>
@@ -1493,7 +1548,7 @@ table thead td {
                             </td>
                         </tr>
                     </tbody></table>
-                </div>
+                </div> *@
             
         </div>
 </div>

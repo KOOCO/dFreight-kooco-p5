@@ -8,9 +8,13 @@ namespace Dolphin.Freight.ReportLog;
 public class VolumeReportSummaryViewModel
 {
     public List<ShippingTypeList> ShippingTypeList { get; set; }
-    public List<ContainerList> ContainerList { get; set; }
+    //public List<ContainerList> ContainerList { get; set; }
     public List<ShipModeList> ShipModeList { get; set; }
     public string Operator { get; set; }
+   public ReportPdfLogDto ContainerList { get; set; }
+    public bool IsVolumeReport { get; set; }
+    public string OutPutType { get; set; }
+   
 }
 
 public class ShippingTypeList

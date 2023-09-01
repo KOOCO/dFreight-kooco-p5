@@ -156,6 +156,10 @@ namespace Dolphin.Freight.ReportLog
         public double ProfitMargin { get; set; }
         public double ProfitAmt { get; set; }
         public double Avg_Profit_Per_Cntr { get; set; }
+        public double GrossWeightKG { get; set; }
+        public double GrossWeightLB { get; set; }
+        public double ChargeableWeightKG { get; set; }
+        public double ChargeableWeightLB { get; set; }
     }
 
 }

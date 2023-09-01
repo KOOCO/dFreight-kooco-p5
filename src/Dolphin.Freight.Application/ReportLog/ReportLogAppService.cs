@@ -60,7 +60,29 @@ namespace Dolphin.Freight.ReportLog
                 throw;
             }
         }
+        public async Task<ReportPdfLogDto> GetMawbPdfReport(MawbReportDto filter)
+        {
+            ReportPdfLogDto result = new ReportPdfLogDto();
+            var report = await _ReportLogRepository.GetMawbPdfReport(filter);
 
+            
+           
+            //report = ApplyColumnFilter(report, filter);
+
+            try
+            {
+                result.AirExports = ObjectMapper.Map<List<MawbReport>, List<MawbReportDto>>(report.AirExports);
+                result.AirImports = ObjectMapper.Map<List<MawbReport>, List<MawbReportDto>>(report.AirImports);
+                result.OceanExports = ObjectMapper.Map<List<MawbReport>, List<MawbReportDto>>(report.OceanExports);
+                result.OceanImports = ObjectMapper.Map<List<MawbReport>, List<MawbReportDto>>(report.OceanImports);
+                return result;
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
         private List<MawbReport> ApplyFilter(List<MawbReport> report, MawbReportDto filter)
         {
             var predictBuilder = PredicateBuilder.New<MawbReport>();

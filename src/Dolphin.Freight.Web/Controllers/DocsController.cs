@@ -5668,40 +5668,57 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult TotalProfitVolumeSummary(Guid id, string shippingType, string reportType, string salesType)
+        public async Task<IActionResult> TotalProfitVolumeSummary(Guid id, string shippingType, string reportType, string salesType,string outputType)
         {
             VolumeReportSummaryViewModel InfoModel = new();
 
             InfoModel.Operator = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
-
+            MawbReportDto filter = new MawbReportDto();
             var shippingTypes = shippingType.Split(',').ToList();
-            var containerList = _dropdownService.ContainerLookupList;
-            var shipLookupList = _dropdownService.ShipModeLookupList;
-
-            foreach(var item in shippingTypes)
+            if (shippingTypes.Contains("OceanImport"))
             {
-                var containersList = new List<ReportLog.ContainerList>();
-                foreach(var container in containerList)
-                {
-                    var containers = new ReportLog.ContainerList
-                    {
-                        Name = container.Text
-                    };
-                    containersList.Add(containers);
-                }
-                InfoModel.ContainerList = containersList;
-
-                var shipModeList = new List<ReportLog.ShipModeList>();
-                foreach(var ship in shipLookupList)
-                {
-                    var shipMode = new ReportLog.ShipModeList
-                    {
-                        Name = ship.Text
-                    };
-                    shipModeList.Add(shipMode);
-                }
-                InfoModel.ShipModeList = shipModeList;
+                filter.IsOceanImport = true;
             }
+            if (shippingTypes.Contains("OceanExport"))
+            {
+                filter.IsOceanExport = true;
+            }
+            if (shippingTypes.Contains("AirExport"))
+            {
+                filter.IsAirExport = true;
+            }
+            if (shippingTypes.Contains("AirImport"))
+            {
+                filter.IsAirImport = true;
+            }
+            //var containerList = _dropdownService.ContainerLookupList;
+            //var shipLookupList = _dropdownService.ShipModeLookupList;
+            InfoModel.ContainerList = await _reportLogAppService.GetMawbPdfReport(filter);
+            InfoModel.OutPutType = outputType;
+            //foreach(var item in shippingTypes)
+            //{
+            //    var containersList = new List<ReportLog.ContainerList>();
+            //    //foreach(var container in containerList)
+            //    //{
+            //    //    var containers = new ReportLog.ContainerList
+            //    //    {
+            //    //        Name = container.Text
+            //    //    };
+            //    //    containersList.Add(containers);
+            //    //}
+            //    //InfoModel.ContainerList = containersList;
+
+            //    var shipModeList = new List<ReportLog.ShipModeList>();
+            //    //foreach(var ship in shipLookupList)
+            //    //{
+            //    //    var shipMode = new ReportLog.ShipModeList
+            //    //    {
+            //    //        Name = ship.Text
+            //    //    };
+            //    //    shipModeList.Add(shipMode);
+            //    //}
+            //    InfoModel.ShipModeList = shipModeList;
+            //}
 
             return View(InfoModel);
         }
