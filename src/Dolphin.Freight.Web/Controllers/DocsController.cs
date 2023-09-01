@@ -5668,38 +5668,54 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult TotalProfitVolumeSummary(Guid id, string shippingType, string reportType, string salesType)
+        public async Task<IActionResult> TotalProfitVolumeSummary(Guid id, string shippingType, string reportType, string salesType)
         {
             VolumeReportSummaryViewModel InfoModel = new();
 
             InfoModel.Operator = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
-
+            MawbReportDto filter = new MawbReportDto();
             var shippingTypes = shippingType.Split(',').ToList();
-            var containerList = _dropdownService.ContainerLookupList;
-            var shipLookupList = _dropdownService.ShipModeLookupList;
-
+            if (shippingTypes.Contains("OceanImport"))
+            {
+                filter.IsOceanImport = true;
+            }
+            if (shippingTypes.Contains("OceanExport"))
+            {
+                filter.IsOceanExport = true;
+            }
+            if (shippingTypes.Contains("AirExport"))
+            {
+                filter.IsAirExport = true;
+            }
+            if (shippingTypes.Contains("AirImport"))
+            {
+                filter.IsAirImport = true;
+            }
+            //var containerList = _dropdownService.ContainerLookupList;
+            //var shipLookupList = _dropdownService.ShipModeLookupList;
+            InfoModel.ContainerList = await _reportLogAppService.GetMawbPdfReport(filter);
             foreach(var item in shippingTypes)
             {
                 var containersList = new List<ReportLog.ContainerList>();
-                foreach(var container in containerList)
-                {
-                    var containers = new ReportLog.ContainerList
-                    {
-                        Name = container.Text
-                    };
-                    containersList.Add(containers);
-                }
-                InfoModel.ContainerList = containersList;
+                //foreach(var container in containerList)
+                //{
+                //    var containers = new ReportLog.ContainerList
+                //    {
+                //        Name = container.Text
+                //    };
+                //    containersList.Add(containers);
+                //}
+                //InfoModel.ContainerList = containersList;
 
                 var shipModeList = new List<ReportLog.ShipModeList>();
-                foreach(var ship in shipLookupList)
-                {
-                    var shipMode = new ReportLog.ShipModeList
-                    {
-                        Name = ship.Text
-                    };
-                    shipModeList.Add(shipMode);
-                }
+                //foreach(var ship in shipLookupList)
+                //{
+                //    var shipMode = new ReportLog.ShipModeList
+                //    {
+                //        Name = ship.Text
+                //    };
+                //    shipModeList.Add(shipMode);
+                //}
                 InfoModel.ShipModeList = shipModeList;
             }
 

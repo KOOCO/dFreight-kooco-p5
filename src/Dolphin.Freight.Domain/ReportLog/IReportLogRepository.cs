@@ -14,5 +14,6 @@ namespace Dolphin.Freight.ReportLog
         public void UpdateByReportIdAsync(ReportLog reportLog);
 
         Task<List<MawbReport>> GetMawbReport(MawbReportDto filter);
+        Task<ReportLogPdf> GetMawbPdfReport(MawbReportDto filter);
     }
 }
