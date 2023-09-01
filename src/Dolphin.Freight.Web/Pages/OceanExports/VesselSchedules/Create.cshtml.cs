@@ -16,6 +16,7 @@ using NUglify.JavaScript.Visitors;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Settinngs.Ports;
 using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
 {
@@ -41,6 +42,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
         public List<SelectListItem> FreightTermLookupList { get; set; }
         [BindProperty]
         public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
+        public CreateUpdateExportBookingDto ExportBookingDto { get; set; }
 
         [BindProperty]
         public CreateUpdateVesselScheduleDto VesselSchedule { get; set; }

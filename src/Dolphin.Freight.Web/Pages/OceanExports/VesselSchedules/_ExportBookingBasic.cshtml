@@ -30,231 +30,6 @@
 @section scripts
     {
     <script type="text/javascript">
-        $(document).ready(function () {
-            var l = abp.localization.getResource('Freight');
-
-            $('#ExportBooking_SoNoDate').datetimepicker({
-                format: 'Y-m-d H:i',
-                step: 15,
-                allowInput: false,
-                value: new Date()
-            });
-
-            $(document).ready(function () {
-                const ids = [
-                    'ExportBooking_SoNoDate',
-                    'ExportBooking_PorEtd',
-                    'ExportBooking_PodEta',
-                    'ExportBooking_DelEta',
-                    'ExportBooking_FdestEta',
-                    'ExportBooking_WhCutOffTime',
-                    'ExportBooking_DocCutOffTime',
-                    'ExportBooking_PortCutOffTime',
-                    'ExportBooking_VgmCutOffTime',
-                    'ExportBooking_RailCutOffTime',
-                    'ExportBooking_EarlyReturnDatetime',
-                    'ExportBooking_Trans1Eta'
-                ];
-
-                ids.forEach(function (id) {
-                    let dateElem = $('#' + id);
-
-                    if (dateElem.length === 0) {
-                        return;
-                    }
-
-                    dateElem.removeAttr('type').datetimepicker({
-                        format: 'Y-m-d H:i',
-                        step: 15,
-                        allowInput: false
-                    });
-
-                    let currentVal = dateElem.val();
-                    if (currentVal.includes('T')) {
-                        dateElem.val(currentVal.replace('T', ' '));
-                    }
-                });
-            });
-
-            setPoValue();
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'CancelReason' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeI18nTag(result, "CancelReason", $("#mCancelReason").val())
-                }
-            });
-            dolphin.freight.common.ajaxDropdown.getReferenceItemsByType({}).done(function (result) {
-                console.log(result)
-                if (result != null && result.length > 0) {
-                    initReferenceTag(result, "ReferenceId", $("#mReferenceId").val())
-                }
-            });
-
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'ShipModeId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "ShipModeId", $("#mShipModeId").val())
-                }
-            });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'FreightTermId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "FreightTermForBuyerId", $("#mFreightTermForBuyerId").val())
-                    initSysCodeTag(result, "FreightTermForSalerId", $("#mFreightTermForSalerId").val())
-
-                }
-            });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'SvcTermFromId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "SvcTermFromId", $("#mSvcTermFromId").val())
-                    initSysCodeTag(result, "SvcTermToId", $("#mSvcTermToId").val())
-
-                }
-            });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'IncotermsId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "IncotermsId", $("#mIncotermsId").val())
-                }
-            });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'CargoTypeId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "CargoTypeId", $("#mCargoTypeId").val())
-                }
-            });
-            //貿易夥伴
-            dolphin.freight.tradePartners.tradePartner.getList({}).done(function (result) {
-                var selectItems = result.items;
-                initTradePartnerSelect(selectItems, "CarrierId", $("#mCarrierId").val());
-                initTradePartnerSelect(selectItems, "ShipperId", $("#mShipperId").val());
-                initTradePartnerSelect(selectItems, "CustomerId", $("#mCustomerId").val());
-                initTradePartnerSelect(selectItems, "BillToId", $("#mBillToId").val());
-                initTradePartnerSelect(selectItems, "ConsigneeId", $("#mConsigneeId").val());
-                initTradePartnerSelect(selectItems, "NotifyId", $("#mNotifyId").val());
-                initTradePartnerSelect(selectItems, "ShippingAgentId", $("#mShippingAgentId").val());
-                initTradePartnerSelect(selectItems, "CoLoaderId", $("#mCoLoaderId").val());
-                initTradePartnerSelect(selectItems, "FbaId", $("#mFbaId").val());
-                initTradePartnerSelect(selectItems, "CargoPickupId", $("#mCargoPickupId").val());
-                initTradePartnerSelect(selectItems, "TruckerId", $("#mTruckerId").val());
-                initTradePartnerSelect(selectItems, "DeliveryToId", $("#mDeliveryToId").val());
-
-
-            });
-            //港口
-            dolphin.freight.settings.ports.port.getList({}).done(function (result) {
-                console.log(result.items);
-                if (result != null && result.items != null && result.items.length > 0) {
-                    initPortsTag(result.items, "PorId", $("#mPorId").val())
-                    initPortsTag(result.items, "PolId", $("#mPolId").val())
-                    initPortsTag(result.items, "PodId", $("#mPodId").val())
-                    initPortsTag(result.items, "DelId", $("#mDelId").val())
-                    initPortsTag(result.items, "FdestId", $("#mFdestId").val())
-                    initPortsTag(result.items, "TransPort1Id", $("#mTransPort1Id").val())
-
-                }
-            });
-            //分站
-            dolphin.freight.settings.substations.substation.getSubstations({}).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSubstationsTag(result, "OfficeId", $("#mOfficeId").val())
-                }
-            });
-            initReasonStatus();
-            initHideBtn();
-            initRemark(0);
-            $("#checkHideBtn").click(function () {
-                initHideBtn();
-            });
-            $("#ExportBooking_IsCanceled").change(function () {
-                initReasonStatus()
-            });
-            $("#ExportBooking_IsCreateBySystem").change(function () {
-                $("#ExportBooking_SoNo").attr('readonly', $(this).is(":checked"));
-                if ($(this).is(":checked")) $("#ExportBooking_SoNo").val("");
-            })
-
-
-            $("#saveBtn").click(function () {
-                $("#mOfficeId").val($("#OfficeId").val());
-                $("#mMblSalesTypeId").val($("#MblSalesTypeId").val());
-                $("#mSvcTermFromId").val($("#SvcTermFromId").val());
-                $("#mSvcTermToId").val($("#SvcTermToId").val());
-                $("#mShipModeId").val($("#ShipModeId").val());
-                $("#mFreightTermId").val($("#FreightTermId").val());
-                $("#mBlTypeId").val($("#BlTypeId").val());
-                $("#mCarrierId").val($("#CarrierId").val());
-                $("#mFreightTermForBuyerId").val($("#FreightTermForBuyerId").val());
-                $("#mFreightTermForSalerId").val($("#FreightTermForSalerId").val());
-                $("#mIncotermsId").val($("#IncotermsId").val());
-                $("#mShipperId").val($("#ShipperId").val());
-                $("#mCustomerId").val($("#CustomerId").val());
-                $("#mBillToId").val($("#BillToId").val());
-                $("#mConsigneeId").val($("#ConsigneeId").val());
-                $("#mNotifyId").val($("#NotifyId").val());
-                $("#mShippingAgentId").val($("#ShippingAgentId").val());
-                $("#mHblAgentId").val($("#HblAgentId").val());
-                $("#mCoLoaderId").val($("#CoLoaderId").val());
-                $("#mPorId").val($("#PorId").val());
-                $("#mPolId").val($("#PolId").val());
-                $("#mPodId").val($("#PodId").val());
-                $("#mDelId").val($("#DelId").val());
-                $("#mFdestId").val($("#FdestId").val());
-                $("#mFbaId").val($("#FbaId").val());
-                $("#mTransPort1Id").val($("#TransPort1Id").val())
-                $("#mCargoTypeId").val($("#CargoTypeId").val())
-                $("#mReferralById").val($("#ReferralById").val());
-                $("#mCargoPickupId").val($("#CargoPickupId").val());
-                $("#mTruckerId").val($("#TruckerId").val());
-                $("#mDeliveryToId").val($("#DeliveryToId").val());
-                $("#mReferenceId").val($("#ReferenceId").val());
-                $("#mPoNo").val($("#PoNoTag").tagsStr());
-                $('#createForm').submit();
-            });
-            $('#createForm').on('abp-ajax-success', function (result, rs) {
-                debugger;
-                event.preventDefault();
-                debugger;
-                location.href = 'Edit?ShowMsg=true&Id=' + rs.responseText.id
-            });
-        });
-        function initRemark(remarkIndex) {
-            $(".remarkArea").hide();
-            switch (remarkIndex) {
-                default:
-                    $("#ExportBooking_BookingRemark").show();
-                    break;
-                case 1:
-                    $("#ExportBooking_ShippingRemark").show();
-                    break;
-                case 2:
-                    $("#ExportBooking_CargoRemark").show();
-                    break;
-
-            }
-        }
-        function initHideBtn() {
-            var isHide = $("#isHide").val();
-            if (isHide == 1) {
-                $(".hideArea").hide();
-                $("#hideLi").hide();
-                $("#showLi").show();
-                $("#isHide").val(0);
-            } else {
-                $(".hideArea").show();
-                $("#hideLi").show();
-                $("#showLi").hide();
-                $("#isHide").val(1);
-            }
-        }
-        function initReasonStatus() {
-            var locked = !$("#ExportBooking_IsCanceled").is(":checked");
-            $("#ExportBooking_CanceledDate").attr('readonly', locked);
-
-            $("#drop_CancelReason").attr('readonly', locked);
-            if (!locked) {
-                $("#ExportBooking_CancelName").val(abp.currentUser.userName);
-                $("#ExportBooking_CancelById").val(abp.currentUser.id);
-            } else {
-                $("#ExportBooking_CancelName").val("");
-                $("#ExportBooking_CancelById").val("");
-            }
-        }
         var cardIndex = 0;
         function addHBtn() {
             if (cardIndex == 0) {
@@ -385,159 +160,6 @@
                 }
             });
         });
-        var chkIndex = 0;
-        function onAddCommodity() {
-            debugger;
-            var newRowData = {
-                chkIndex: chkIndex
-            };
-
-            var newRow = $('#commodityTemplate').tmpl(newRowData);
-
-            $('#commodityBody').append(newRow);
-
-            chkIndex += 1;
-
-            resetCommodityIndex();
-
-            $('#btnCommodity').removeAttr('disabled');
-            $('#btnCommodityHTS').removeAttr('disabled');
-        }
-        function onRemoveCommodity() {
-            $('[name="chk_commodity"]:checked').each(function (i, elem) {
-                $(elem).closest('tr').remove();
-            });
-
-            resetCommodityIndex();
-
-            if (!$('[name="chk_commodity"]:checked').length) {
-                $('#btnCommodity').attr('disabled', 'disabled');
-                $('#btnCommodityHTS').attr('disabled', 'disabled');
-            }
-        }
-        //function onSetCommodity() {
-        //
-
-        //    if (extraProperties && extraProperties != 'null' && extraProperties != '{}') {
-        //        var commodities = JSON.parse(extraProperties).Commodities;
-
-        //        if (commodities && commodities.length) {
-        //            var commodityIndex = 0;
-        //            commodities.forEach(function (commodity) {
-        //                commodity.chkIndex = commodityIndex;
-
-        //                var newRow = $('#commodityTemplate').tmpl(commodity);
-        //                $('#commodityBody').append(newRow);
-
-        //                commodityIndex += 1;
-        //            });
-
-        //            $('#btnCommodity').removeAttr('disabled');
-        //            $('#btnCommodityHTS').removeAttr('disabled');
-        //        }
-        //    }
-        //}
-        function resetCommodityIndex() {
-            $('#commodityBody > tr').each(function (e, elem) {
-                $(elem).find('td').each(function (a, aelem) {
-                    var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
-
-                    $(aelem).find('input').attr('name', attrName);
-                    if ($(aelem).hasClass('d-none')) {
-                        var aelemVal = $(aelem).find('input').val();
-                        $(aelem).find('input').val(aelemVal.replace(/[0-9]/, e));
-                    }
-                })
-            })
-        }
-        function setPoValue() {
-            var tagOptions = {};
-
-            tagOptions.onDel = function () {
-                setTimeout(() => {
-                    var tags = $('#PoNoTag').tagsStr();
-                    $('#ExportBooking_PoNo').val(tags);
-                    if (!tags) {
-                        $('#btnPO').attr('disabled', 'disabled');
-                    }
-                }, 100)
-            }
-
-            $("#PoNoTag").tagsInit(tagOptions);
-
-            var poNos = '@Model.ExportBookingDto?.PoNo';
-
-            if (poNos) {
-                poNos.split(',').forEach((poNo) => $("#PoNoTag").tagsAdd(poNo, poNo));
-                $('#btnPO').removeAttr('disabled');
-            }
-
-            $('#PoNoTag_tag_input').keypress(function (event) {
-                var keycode = (event.keyCode ? event.keyCode : event.which);
-                if (keycode == '13') {
-                    $('#ExportBooking_PoNo').val($('#PoNoTag').tagsStr());
-                    $('#btnPO').removeAttr('disabled');
-                }
-            });
-        }
-        function addPONumberForDescription() {
-            var val = $('#ExportBooking_Description').val() || '';
-            var tagValue = $('#PoNoTag').tagsStr();
-
-            $('#ExportBooking_Description').val((val.concat('PO NO.\n' + tagValue + '\n')));
-
-            $('#ExportBooking_Description').attr('style', 'height: ' + document.getElementById('ExportBooking_Description').scrollHeight + 'px !important');
-        }
-        function addCommodityForDescription() {
-            var val = $('#ExportBooking_Description').val() || '';
-            var tagValue = $('#PoNoTag').tagsStr();
-
-            var trLength = $('#commodityBody tr').length;
-
-            if (trLength) {
-                var frm = $('#createForm').serializeFormToObject();
-
-                for (var i = 0; i < trLength; i++) {
-                    val = $('#ExportBooking_Description').val();
-                    $('#ExportBooking_Description').val((val.concat(frm['commodities[' + i + ']'].description + '\n')));
-                }
-            }
-            $('#ExportBooking_Description').attr('style', 'height: ' + document.getElementById('ExportBooking_Description').scrollHeight + 'px !important');
-        }
-
-        function addCommodityHTSForDescription() {
-            var val = $('#ExportBooking_Description').val() || '';
-            var tagValue = $('#PoNoTag').tagsStr();
-
-            var trLength = $('#commodityBody tr').length;
-
-            if (trLength) {
-                var frm = $('#createForm').serializeFormToObject();
-
-                for (var i = 0; i < trLength; i++) {
-                    val = $('#ExportBooking_Description').val();
-                    $('#ExportBooking_Description').val((val.concat(frm['commodities[' + i + ']'].description + ' ' + frm['commodities[' + i + ']'].hTSCode + '\n')));
-                }
-            }
-            $('#ExportBooking_Description').attr('style', 'height: ' + document.getElementById('ExportBooking_Description').scrollHeight + 'px !important');
-        }
-    </script>
-    <script id="commodityTemplate" type="text/x-jQuery-tmpl">
-        <tr>
-          <td>
-              <input type="checkbox" name="chk_commodity" id="Id" />
-          </td>
-          <td><input type="text" name="Commodities[${chkIndex}].Description" value="${Description}" /></td>
-          <td><input type="text" name="Commodities[${chkIndex}].PackagingType" value="${PackagingType}" /></td>
-          <td><input type="text" name="Commodities[${chkIndex}].HTSCode" value="${HTSCode}" /></td>
-          <td><input type="text" name="Commodities[${chkIndex}].NoOfPcs" value="${NoOfPcs}" /></td>
-          <td><input type="text" name="Commodities[${chkIndex}].NetWeight" value="${NetWeight}"  /></td>
-          <td><input type="text" name="Commodities[${chkIndex}].GrossWeight" value="${GrossWeight}" /></td>
-          <td><input type="text" name="Commodities[${chkIndex}].UnitPrice" value="${UnitPrice}" /></td>
-          <td><input type="text" name="Commodities[${chkIndex}].Amount" value="${Amount}"   /></td>
-          <td><input type="text" name="Commodities[${chkIndex}].Details" value="${Details}"  /></td>
-          <td><input type="text" name="Commodities[${chkIndex}].Container" value="${Container}" /></td>
-        </tr>
     </script>
 }
 
@@ -561,8 +183,11 @@
             </abp-column>
 
         </abp-row>
+
+        <button class="btn btn-collapse " type="button" data-bs-toggle="collapse" data-bs-target="#bookingDiv" aria-expanded="true" aria-controls="bookingDiv">
+        </button>
     </abp-card-header>
-    <abp-card-body class="collapse show customForm" id="mblDiv">
+    <abp-card-body class="collapse show customForm" id="bookingDiv">
         <abp-row>
             <abp-column size-md="_3">
                 <abp-card>
@@ -648,16 +273,16 @@
                         </abp-row>
                         <abp-row>
                             <abp-column size-md="_6">
-                                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "SvcTermFromId", FieldName = "SvcTermFromId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.SvcTermFromId", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, FieldName = @L["SvcTermFromId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBookingDto.SvcTermFromId) })
                             </abp-column>
                             <abp-column size-md="_6">
                                 <label for="SvcTermToId" class="form-label">&nbsp;&nbsp;</label>
-                                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "SvcTermToId", FieldName = "SvcTermToId",DefaultValue="" , IsShowLabel = false , IsRequired = false })
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.SvcTermToId", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, FieldName = @L["SvcTermToId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBookingDto.SvcTermToId) })
                             </abp-column>
                         </abp-row>
                         <abp-row>
                             <abp-column>
-                                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "IncotermsId", FieldName = "IncotermsId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.IncotermsId", AspItems = _dropdown.IncotermsLookupList, IsShowLabel = true, FieldName = @L["IncotermsId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBookingDto.IncotermsId) })
                             </abp-column>
                         </abp-row>
                         <abp-row>
@@ -892,7 +517,7 @@
                     <abp-card-body style="background:#eeeeee;">
                         <abp-row>
                             <abp-column>
-                                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CargoTypeId", FieldName = "CargoTypeId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                @await Component.InvokeAsync(typeof(DropdownComponent),new ComponentData { Name = "ExportBooking.CargoTypeId", AspItems = _dropdown.CargoTypeLookupList, IsShowLabel = true, FieldName = @L["CargoTypeId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBookingDto.CargoTypeId) })
                             </abp-column>
                         </abp-row>
                         <abp-row>
@@ -1121,9 +746,9 @@
                         </abp-row>
                         <abp-row class="mt-3">
                             <abp-column>
-                                <textarea id="ExportBooking_BookingRemark" name="ExportBookingDto.BookingRemark" class="form-control remarkArea">@Model.ExportBookingDto.BookingRemark a</textarea>
-                                <textarea id="ExportBooking_ShippingRemark" name="ExportBookingDto.ShippingRemark" class="form-control remarkArea">@Model.ExportBookingDto.ShippingRemark b</textarea>
-                                <textarea id="ExportBooking_CargoRemark" name="ExportBookingDto.CargoRemark" class="form-control remarkArea">@Model.ExportBookingDto.CargoRemark c</textarea>
+                                <textarea id="ExportBooking_BookingRemark" name="ExportBookingDto.BookingRemark" class="form-control remarkArea">@Model.ExportBookingDto.BookingRemark</textarea>
+                                <textarea id="ExportBooking_ShippingRemark" name="ExportBookingDto.ShippingRemark" class="form-control remarkArea">@Model.ExportBookingDto.ShippingRemark</textarea>
+                                <textarea id="ExportBooking_CargoRemark" name="ExportBookingDto.CargoRemark" class="form-control remarkArea">@Model.ExportBookingDto.CargoRemark</textarea>
                             </abp-column>
                         </abp-row>
                     </abp-card-body>
@@ -1131,34 +756,18 @@
             </abp-column>
 
         </abp-row>
-        <!--
         <abp-row>
-           <abp-column size-md="_12">
-               <div>
-                   集裝箱清單
-                   <abp-button class="btn btn-success me-md-2" type="button" id="addBtn">+</abp-button>
-                   <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn">-</abp-button>
-               </div>
-                       <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
-                           <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
-                               <th width="5%"><input type="checkbox" id="checkAll" /></th>
-                               <th width="12%">@L["Display:PackageNo"]</th>
-                               <th width="12%">@L["Display:PackageSize"]</th>
-                               <th width="12%">@L["Display:Seal"]</th>
-                               <th width="12%">@L["Display:SoNo"]</th>
-                               <th width="8%">@L["Display:PackageType"]</th>
-                               <th width="16%">@L["Display:Weight"]</th>
-                               <th width="16%">@L["Display:Volume"]</th>
-                               <th width="7%">@L["Display:Package"]</th>
-                           </tr>
-                           <tbody id="trtbody">
-                           </tbody>
-
-                       </table>
-
-                   </abp-column>
-               </abp-row>
-               -->
+            <abp-column>
+                <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                    @L["Title:Memo"]
+                </abp-card-header>
+                <abp-card>
+                    <abp-card-body>
+                        <partial name="Memos/_Memo" model="new _MemoModel(Model.Id, Dolphin.Freight.Common.FreightPageType.SO)" />
+                    </abp-card-body>
+                </abp-card>
+            </abp-column>
+        </abp-row>
     </abp-card-body>
 </abp-card>
 
