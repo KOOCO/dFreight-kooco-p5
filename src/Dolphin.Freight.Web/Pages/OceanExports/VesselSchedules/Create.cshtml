@@ -189,8 +189,44 @@
                         $('#partialContainer').html(partial);
                         $('#bookingCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
-                        if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
+                        //if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
                         setTimeout(() => {
+
+                            const ids = [
+                                'ExportBookingDto_SoNoDate',
+                                'ExportBookingDto_PorEtd',
+                                'ExportBookingDto_PodEta',
+                                'ExportBookingDto_DelEta',
+                                'ExportBookingDto_FdestEta',
+                                'ExportBookingDto_WhCutOffTime',
+                                'ExportBookingDto_DocCutOffTime',
+                                'ExportBookingDto_PortCutOffTime',
+                                'ExportBookingDto_VgmCutOffTime',
+                                'ExportBookingDto_RailCutOffTime',
+                                'ExportBookingDto_EarlyReturnDatetime',
+                                'ExportBookingDto_Trans1Eta'
+                            ];
+
+                            ids.forEach(function (id) {
+                                debugger;
+                                let dateElem = $('#' + id);
+
+                                if (dateElem.length === 0) {
+                                    return;
+                                }
+
+                                dateElem.removeAttr('type').datetimepicker({
+                                    format: 'Y-m-d H:i',
+                                    step: 15,
+                                    allowInput: false
+                                });
+
+                                let currentVal = dateElem.val();
+                                if (currentVal.includes('T')) {
+                                    dateElem.val(currentVal.replace('T', ' '));
+                                }
+                            });
+
                             initializeDropdownSearch("ExportBooking_CancelReason");
                             initializeDropdownSearch("ExportBooking_ReferenceId");
                             initializeDropdownSearch("ExportBooking_CarrierId");
@@ -220,7 +256,8 @@
                             initializeDropdownSearch("ExportBooking_PodId");
                             initializeDropdownSearch("ExportBooking_FdestId");
                             initializeDropdownSearch("ExportBooking_TransPort1Id");
-                            initializeDropdownSearch("ExportBooking_OfficeId");
+                            initializeDropdownSearch("ExportBookingDto_OfficeId");
+                            initializeDropdownSearch("ExportBooking_ReferralById");
                         }, 500);
                     })
 
@@ -250,7 +287,7 @@
 
         function setBookingCardValues(abpcard, cardId, bookingNo, index) {
             debugger;
-            let apbCardClass = 'card board-item hbl-sm-' + index;
+            let apbCardClass = 'card board-item booking-sm-' + index;
             let cardBodyId = 'bookingCard_' + index;
             cardId = "'" + cardId + "'";
 
