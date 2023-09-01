@@ -15,5 +15,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
     {
         Task<PagedResultDto<ExportBookingDto>> QueryListAsync(QueryExportBookingDto query);
         Task<List<ExportBookingDto>> GetSONo();
+        Task<CreateUpdateExportBookingDto> GetBookingCardById(Guid Id);
     }
 }

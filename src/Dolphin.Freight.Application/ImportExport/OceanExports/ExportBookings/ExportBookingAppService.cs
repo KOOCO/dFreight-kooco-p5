@@ -140,5 +140,16 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
             var list = ObjectMapper.Map<List<ExportBooking>, List<ExportBookingDto>>(exportBooking);
             return list;
         }
+
+        public async Task<CreateUpdateExportBookingDto> GetBookingCardById(Guid Id)
+        {
+            if (await _repository.AnyAsync(a => a.Id == Id))
+            {
+                var data = await _repository.GetAsync(a => a.Id == Id, true);
+                var retVal = ObjectMapper.Map<ExportBooking, CreateUpdateExportBookingDto>(data);
+                return retVal;
+            }
+            return new CreateUpdateExportBookingDto();
+        }
     }
 }
