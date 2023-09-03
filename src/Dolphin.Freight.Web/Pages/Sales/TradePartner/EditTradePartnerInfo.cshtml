@@ -94,6 +94,61 @@
 @section scripts{
     <abp-script src="/Pages/Sales/TradePartner/EditTradePartnerInfo.js" />
     <script>
+
+        var contactIndex = 0;
+        function onCreateNewContactPersonInformation() {
+            var newRowData = {
+                contactIndex: contactIndex
+            };
+
+            var newRow = $('#contactPersonInfomationTemplate').tmpl(newRowData);
+            $('#contactPersonInformationBody').append(newRow);
+            contactIndex += 1;
+        }
+
+        function onRemoveContactPerson() {
+            $('[name="chk_ContactPerson"]:checked').each(function (i, elem) {
+                let nextTr = $(elem).closest('tr').next();
+                $(elem).closest('tr').remove();
+                if (nextTr.attr('id').includes('trUserMore')) {
+                    nextTr.remove();
+                }
+            });
+        }
+
+        var childrenIndex = 0;
+        function onCreateNewContactPersonChildren(e, contactIndex) {
+            e && e.preventDefault();
+
+            var newRowData = {
+                contactIndex: contactIndex,
+                childrenIndex: childrenIndex
+            };
+
+            var newRow = $('#contactInfoChildrenTemplate').tmpl(newRowData);
+            $('#contactInfoChildrenBody_' + contactIndex).append(newRow);
+            childrenIndex += 1;
+        }
+
+        //function onRemoveContactPersonChildren() {
+        //    $('[name="chk_ContactPersonChildren"]:checked').each(function (i, elem) {
+        //        let nextTr = $(elem).closest('tr').next();
+        //        $(elem).closest('tr').remove();
+        //    });
+        //}
+
+        function onOpenMoreUserInfo(contactIndex) {
+            if ($('#btnOpenMoreUserInfo_' + contactIndex).html() == '+') {
+                $('#trUserMoreInfo_' + contactIndex).show();
+                $('#btnOpenMoreUserInfo_' + contactIndex).html('-');
+            }
+            else {
+                $('#trUserMoreInfo_' + contactIndex).hide();
+                $('#btnOpenMoreUserInfo_' + contactIndex).html('+');
+            }
+            //$('#trUserMoreInfo_'+contactIndex).toggle('show');
+        }
+        
         var companyList = [];
 
         function getCompanies(){
@@ -700,7 +755,7 @@
     <script id="contactPersonInfomationTemplate" type="text/x-jQuery-tmpl">
         <tr>
             <td>
-                <div class="checker"><span><input type="checkbox" ></span></div>
+                <div class="checker"><span><input type="checkbox" name="chk_ContactPerson"></span></div>
             </td>
             <td>
                 <div class="checker"><span><input type="checkbox" name="ContactPersonModel[${contactIndex}].IsRep" value="true"></span></div>
@@ -906,6 +961,9 @@
                                                     <button class="btn btn-xs green" onclick="onCreateNewContactPersonChildren(event, ${contactIndex})">
                                                         <i class="fa fa-plus"></i>
                                                     </button>
+                                                    @*<button class="btn btn-xs green" onclick="onRemoveContactPersonChildren(event, ${contactIndex})">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>*@
                                                 </div>
                                                 <table class="table">
                                                     <colgroup>
@@ -947,7 +1005,7 @@
     <script id="contactInfoChildrenTemplate" type="text/x-jquery-tmpl">
         <tr>
             <td class="col-checkbox text-center">
-                <div class="checker"><span><input id="chkChildren_${contactIndex}_${childrenIndex}" type="checkbox"></span></div>
+                <div class="checker"><span><input id="chkChildren_${contactIndex}_${childrenIndex}" name="chk_ContactPersonChildren" type="checkbox"></span></div>
             </td>
             <td>
                 <input type="text" name="ContactPersonChildren[${childrenIndex}].Name">
@@ -1335,16 +1393,57 @@
     <abp-accordion>
         <abp-accordion-item title="@L["Display:TradePartner:AccordionItem:ContactPersonInformation"]">
             <abp-card>
-                <abp-card-body>
+                <abp-card-body class="table-responsive">
                     <abp-row>
                         <abp-column>
                             <abp-button id="AddContactPersonButton"
                                         text=@L["Display:Button:New"]
                                         icon="plus"
+                                        onclick="onCreateNewContactPersonInformation()"
                                         button-type="Outline_Secondary" />
+
+                            <abp-button class="btn btn-outline-danger me-md-2"
+                                        type="button"
+                                        id="deleteContactPersonBtn"
+                                        onclick="onRemoveContactPerson()">delete
+                            </abp-button>
                         </abp-column>
                     </abp-row>
-                    <abp-table class="nowrap" small="true" border-style="Bordered" striped-rows="true" id="ContactPersonTable"></abp-table>
+                    <table class="table">
+                        <colgroup>
+                            <col class="td-3per"><!--Checkbox-->
+                            <col class="td-3per"><!--Rep.-->
+                            <col class="td-3per"><!--Email-->
+                            <col class="td-12per"><!--Name-->
+                            <col class="td-3per"><!--Name-->
+                            <col class="td-12per"><!--Title-->
+                            <col class="td-12per"><!--Division-->
+                            <col class="td-12per"><!--Cell Phone-->
+                            <col class="td-12per"><!--Phone-->
+                            <col class="td-12per"><!--FAX-->
+                            <col class="td-14per"><!--Email Address-->
+                            <col class="td-14per"><!--Remark-->
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th class="text-center">
+                                    <div class="checker"><span class=""><input type="checkbox"></span></div>
+                                </th>
+                                <th>Rep.</th>
+                                <th>Email</th>
+                                <th colspan="2">Name</th>
+                                <th>Title</th>
+                                <th>Division</th>
+                                <th>Cell Phone</th>
+                                <th>Phone</th>
+                                <th>FAX</th>
+                                <th>Email Address</th>
+                                <th>Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contactPersonInformationBody">
+                        </tbody>
+                    </table>
                 </abp-card-body>
             </abp-card>
         </abp-accordion-item>
