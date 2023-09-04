@@ -22,6 +22,7 @@ using System.Linq;
 using Dolphin.Freight.TradePartners.TradeParties;
 using Microsoft.AspNetCore.Components.Forms;
 using static Dolphin.Freight.Web.Pages.Sales.TradePartner.TradePartnerInfoModel;
+using Newtonsoft.Json;
 
 namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
 {
@@ -46,7 +47,9 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
 
         public bool? HasHighlight { get; set; }
 
-        public Guid? Id { get; set; }
+        
+
+        public Guid Id { get; set; }
 
         [BindProperty]
         public List<CreateUpdateTradePartyDto> TradeParties { get; set; }
@@ -111,7 +114,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
 
             TPInfoModel = ObjectMapper.Map<TradePartnerDto, CreateTradePartnerInfoViewModel>(tradePartnerDto);
             Logger.LogDebug("PopUpTips:" + TPInfoModel.PopUpTips);
-            PopUpTipsObj popObj = JsonSerializer.Deserialize<PopUpTipsObj>(TPInfoModel.PopUpTips);
+            PopUpTipsObj popObj = System.Text.Json.JsonSerializer.Deserialize<PopUpTipsObj>(TPInfoModel.PopUpTips);
 
             TPInfoModel.DoorToDoor = popObj.DoorToDoor;
             TPInfoModel.BadCustomer = popObj.BadCustomer;
@@ -129,6 +132,8 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
             TradeParties = await _tradePartyAppService.GetListByTradePartnerId(id);
 
             ContactPersonModel = await _contactPersonAppService.GetListByTradePartnerId(id);
+
+            TPInfoModel.ContactPersonInfoJSON = JsonConvert.SerializeObject(ContactPersonModel);
 
             return Page();
         }
@@ -193,6 +198,23 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
                     }
                 }
 
+                if (ContactPersonModel != null && ContactPersonModel.Any())
+                {
+                    ContactPersonModel = JsonConvert.DeserializeObject<List<CreateUpdateContactPersonDto>>(TPInfoModel.ContactPersonInfoJSON);
+                    foreach (var contactPerson in ContactPersonModel)
+                    {
+                        if (contactPerson.ExtraProperties == null)
+                        {
+                            contactPerson.ExtraProperties = new();
+                        }
+                        contactPerson.ExtraProperties.Remove("Children");
+                        contactPerson.ExtraProperties.Add("Children", ContactPersonChildren);
+                        contactPerson.TradePartnerId = TPInfoModel.Id;
+
+                        await _contactPersonAppService.UpdateAsync(contactPerson.Id, contactPerson);
+                    }
+                }
+
                 foreach (var item in deleted)
                 {
                     await _tradePartyAppService.DeleteAsync(item.Id);
@@ -223,6 +245,8 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
 
             [TextArea]
             public string TPLocalAddress { get; set; }
+
+            public string ContactPersonInfoJSON { get; set; }
             public string CityCode { get; set; } // �����N�X
             public string StateCode { get; set; }
             public string PostCode { get; set; }

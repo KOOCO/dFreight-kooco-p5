@@ -30,7 +30,7 @@
                                     //visible: abp.auth.isGranted('BookStore.Books.Edit'),
                                     action: function (data) {
                                         //editModal.open({ id: data.record.id });
-                                        console.log("id:" + data.record.id);
+                                        console.log(data);
                                         /*window.location = "\EditTradePartnerInfo?id=" + data.record.id;*/
                                         window.location = "\EditTradePartnerInfo\\" + data.record.id;
                                     }
@@ -123,7 +123,6 @@
                     render: function (data) {
                         if (data) {
                             console.log(data);
-                            debugger;
                             return l([
                                 "Enum:TPType.AirCarrier",
                                 "Enum:TPType.Bank",
