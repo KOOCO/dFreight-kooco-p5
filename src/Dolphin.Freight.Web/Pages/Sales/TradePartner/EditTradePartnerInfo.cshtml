@@ -100,10 +100,40 @@
             var newRowData = {
                 contactIndex: contactIndex
             };
-
+            
             var newRow = $('#contactPersonInfomationTemplate').tmpl(newRowData);
             $('#contactPersonInformationBody').append(newRow);
+
+            const contactIndices = contactIndex;
+
+            const birthDayElement = getElementById(contactIndices, 'ContactBirthday');
+            const memorialDayElement = getElementById(contactIndices, 'ContactMemorialDay');
+            
+            initializeDateTimePicker(birthDayElement);
+            initializeDateTimePicker(memorialDayElement);
+
             contactIndex += 1;
+        }
+
+        function getElementById(index, suffix) {
+            return $(document.getElementById('ContactPersonModel['+index+']_'+suffix+''));
+        }
+
+        function initializeDateTimePicker(element) {
+            if (element.length === 0) {
+                return;
+            }
+
+            element.removeAttr('type').datetimepicker({
+                format: 'Y-m-d H:i',
+                step: 15,
+                allowInput: false
+            });
+
+            let currentValue = element.val();
+            if (currentValue.includes('T')) {
+                element.val(currentValue.replace('T', ' '));
+            }
         }
 
         function onRemoveContactPerson() {
@@ -843,10 +873,7 @@
                                     <td>
                                         <div class="form-group form-sm">
                                             <label>Birthday</label>
-                                            <input type="date" name="ContactPersonModel[${contactIndex}].ContactBirthday">
-                                            <span class="input-group-addon right">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
+                                            <input type="date" name="ContactPersonModel[${contactIndex}].ContactBirthday" id="ContactPersonModel[${contactIndex}]_ContactBirthday">
                                         </div>
                                     </td>
                                 </tr>
@@ -923,10 +950,7 @@
                                     <td>
                                         <div class="form-group form-sm">
                                             <label>Anniversary</label>
-                                            <input type="date" name="ContactPersonModel[${contactIndex}].ContactMemorialDay">
-                                            <span class="input-group-addon right">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
+                                            <input type="date" name="ContactPersonModel[${contactIndex}].ContactMemorialDay" id="ContactPersonModel[${contactIndex}]_ContactMemorialDay">
                                         </div>
                                     </td>
                                 </tr>
