@@ -48,7 +48,7 @@ namespace Dolphin.Freight.ReportLog
                 report = report.Where(x => x.ProfitAmt >= (double)filter.MinProfit && x.ProfitAmt <= (double)filter.MaxProfit).ToList();
             
             }
-            report = ApplyColumnFilter(report, filter);
+            //report = ApplyColumnFilter(report, filter);
 
             try
             {
