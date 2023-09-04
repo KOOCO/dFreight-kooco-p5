@@ -420,7 +420,9 @@ tbody {
  @*}*@
 
     <form id="myForm" method="post">
-<div id="main" class="edit ng-scope">              
+<div id="main" class="edit ng-scope">  
+    @if(Model.IsVolumeReport)
+    {
    <div class="wrap report-volume-profit landscape">
      <div class="header _padding-0">
             <div class="text-center">
@@ -506,7 +508,7 @@ tbody {
                         <td>SOC</td>
                         <td>Etc.</td>
                         <td>LCL<br>CBM</td>
-                        <td>FAK<br>CBM</td>
+                        <td>Co-Loaded<br>CBM</td>
                         <td>BULK<br>CBM</td>
                     </tr>
                     <tr class="border-b">
@@ -518,22 +520,22 @@ tbody {
                         <td>@Model.ContainerList.OceanImports.Sum(x=>x.RF).ToString("N2")</td>
                         <td>@Model.ContainerList.OceanImports.Sum(x=>x.SOC).ToString("N2")</td>
                         <td>@Model.ContainerList.OceanImports.Sum(x=>x.ETC).ToString("N2")</td>
-                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
-                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
-                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanImports.Sum(x=>x.LCL).ToString("N2")</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanImports.Sum(x=>x.CoLoaded).ToString("N2")</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanImports.Sum(x=>x.Bulk).ToString("N2")</span></div></td>
                     </tr>
                     <tr>
                         <td class="text-left">B/L(s)</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>2</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
-                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
-                        <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                          <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblV20).ToString("N2")</td>
+                          <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblV40).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblHC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblV45).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblRF).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblSOC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblCntETC).ToString("N2")</td>
+                       <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanImports.Sum(x=>x.HblLCL).ToString("N2")</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanImports.Sum(x=>x.HblCoLoaded).ToString("N2")</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanImports.Sum(x=>x.HblBulk).ToString("N2")</span></div></td>
                     </tr>
                 </tbody></table>
     
@@ -552,7 +554,7 @@ tbody {
                                         <td></td>
                                         <td>Free</td>
                                         <td>Nomi</td>
-                                        <td>Co-Load</td>
+                                        <td>Co</td>
                                         <td>Etc.</td>
                                         <td>Total</td>
                                     </tr>
@@ -560,19 +562,19 @@ tbody {
                                         
         <tr class="border-b">
             <td class="text-left">Volume</td>
-            <td>0.00</td>
-            <td>0.00</td>
-            <td>1.00</td>
-            <td>0.00</td>
-            <td>1.00</td>
+            <td>@Model.ContainerList.OceanImports.Sum(x=>x.SaleFree).ToString("N2")</td>
+            <td>@Model.ContainerList.OceanImports.Sum(x=>x.SaleNomi).ToString("N2")</td>
+            <td>@Model.ContainerList.OceanImports.Sum(x=>x.SaleCo).ToString("N2")</td>
+            <td>@Model.ContainerList.OceanImports.Sum(x=>x.SaleETC).ToString("N2")</td>
+            <td>@((@Model.ContainerList.OceanImports.Sum(x=>x.SaleFree)+@Model.ContainerList.OceanImports.Sum(x=>x.SaleNomi)+@Model.ContainerList.OceanImports.Sum(x=>x.SaleCo)+@Model.ContainerList.OceanImports.Sum(x=>x.SaleETC)).ToString("N2"))</td>
         </tr>
         <tr>
             <td class="text-left">B/L(s)</td>
-            <td>0</td>
-            <td>0</td>
-            <td>1</td>
-            <td>2</td>
-            <td>3</td>
+               <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblFree).ToString("N2")</td>
+            <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblNomi).ToString("N2")</td>
+            <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblCo).ToString("N2")</td>
+            <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblETC).ToString("N2")</td>
+            <td>@((@Model.ContainerList.OceanImports.Sum(x=>x.HblFree)+@Model.ContainerList.OceanImports.Sum(x=>x.HblNomi)+@Model.ContainerList.OceanImports.Sum(x=>x.HblETC)+@Model.ContainerList.OceanImports.Sum(x=>x.HblCo)).ToString("N2"))</td>
         </tr>
     
                                     
@@ -614,7 +616,7 @@ tbody {
                 <td>SOC</td>
                 <td>Etc.</td>
                 <td>LCL<br>CBM</td>
-                <td>FAK<br>CBM</td>
+                <td>CO-Loaded<br>CBM</td>
                 <td>BULK<br>CBM</td>
             </tr>
             <tr class="border-b">
@@ -626,22 +628,22 @@ tbody {
                         <td>@Model.ContainerList.OceanExports.Sum(x=>x.RF).ToString("N2")</td>
                         <td>@Model.ContainerList.OceanExports.Sum(x=>x.SOC).ToString("N2")</td>
                         <td>@Model.ContainerList.OceanExports.Sum(x=>x.ETC).ToString("N2")</td>
-                <td><div class="auto-font-size __width-xs"><span>18.6</span></div></td>
-                <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
-                <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+                 <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanExports.Sum(x=>x.LCL).ToString("N2")</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanExports.Sum(x=>x.CoLoaded).ToString("N2")</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanExports.Sum(x=>x.Bulk).ToString("N2")</span></div></td>
             </tr>
             <tr>
                 <td class="text-left">B/L(s)</td>
-                <td>0</td>
-                <td>5</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td><div class="auto-font-size __width-xs"><span>5</span></div></td>
-                <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
-                <td><div class="auto-font-size __width-xs"><span>0</span></div></td>
+              <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblV20).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblV40).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblHC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblV45).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblRF).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblSOC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblCntETC).ToString("N2")</td>
+                <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanExports.Sum(x=>x.HblLCL).ToString("N2")</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanExports.Sum(x=>x.HblCoLoaded).ToString("N2")</span></div></td>
+                        <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanExports.Sum(x=>x.HblBulk).ToString("N2")</span></div></td>
             </tr>
         </tbody></table>
     
@@ -666,21 +668,21 @@ tbody {
                                     </tr>
                                     
                                         
-        <tr class="border-b">
+            <tr class="border-b">
             <td class="text-left">Volume</td>
-            <td>0.00</td>
-            <td>0.00</td>
-            <td>0.28</td>
-            <td>40.32</td>
-            <td>40.60</td>
+            <td>@Model.ContainerList.OceanExports.Sum(x=>x.SaleFree).ToString("N2")</td>
+            <td>@Model.ContainerList.OceanExports.Sum(x=>x.SaleNomi).ToString("N2")</td>
+            <td>@Model.ContainerList.OceanExports.Sum(x=>x.SaleCo).ToString("N2")</td>
+            <td>@Model.ContainerList.OceanExports.Sum(x=>x.SaleETC).ToString("N2")</td>
+            <td>@((@Model.ContainerList.OceanExports.Sum(x=>x.SaleFree)+@Model.ContainerList.OceanExports.Sum(x=>x.SaleNomi)+@Model.ContainerList.OceanExports.Sum(x=>x.SaleCo)+@Model.ContainerList.OceanExports.Sum(x=>x.SaleETC)).ToString("N2"))</td>
         </tr>
         <tr>
             <td class="text-left">B/L(s)</td>
-            <td>0</td>
-            <td>0</td>
-            <td>1</td>
-            <td>6</td>
-            <td>7</td>
+               <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblFree).ToString("N2")</td>
+            <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblNomi).ToString("N2")</td>
+            <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblCo).ToString("N2")</td>
+            <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblETC).ToString("N2")</td>
+            <td>@((@Model.ContainerList.OceanExports.Sum(x=>x.HblFree)+@Model.ContainerList.OceanExports.Sum(x=>x.HblNomi)+@Model.ContainerList.OceanExports.Sum(x=>x.HblETC)+@Model.ContainerList.OceanExports.Sum(x=>x.HblCo)).ToString("N2"))</td>
         </tr>
     
                                     
@@ -856,7 +858,7 @@ tbody {
                                 <th class="col-padding-double text-right border-r">SOC</th>
                                 <th class="col-padding-double text-right border-r">Etc.</th>
                                 <th class="col-padding-double text-right border-r">LCL</th>
-                                <th class="col-padding-double text-right border-r">FAK</th>
+                                <th class="col-padding-double text-right border-r">CoLoaded</th>
                                 <th class="col-padding-double text-right border-r">BULK</th>
                                 <th class="col-padding-double text-right border-r">SUM</th>
                                 <th class="col-padding-double text-right border-r">Free</th>
@@ -876,24 +878,24 @@ tbody {
                                 </td>
                                 <td class="text-left"></td>
                                 <td class="text-left"><br>B/L: #</td>
-                                <td>@item.V20<br>0</td>
-                                <td>@item.V40<br>0</td>
-                                <td>@item.HC<br>0</td>
-                                <td>@item.V45<br>0</td>
-                                <td>@item.RF<br>2</td>
-                                <td>@item.SOC<br>0</td>
-                                <td>@item.ETC<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
+                                <td>@item.V20<br>@item.HblV20</td>
+                                <td>@item.V40<br>@item.HblV40</td>
+                                <td>@item.HC<br>@item.HblHC</td>
+                                <td>@item.V45<br>@item.HblV45</td>
+                                <td>@item.RF<br>@item.HblRF</td>
+                                <td>@item.SOC<br>@item.HblSOC</td>
+                                <td>@item.ETC<br>@item.HblCntETC</td>
+                                <td>@item.LCL<br>@item.HblLCL</td>
+                                <td>@item.CoLoaded<br>@item.HblCoLoaded</td>
+                                <td>@item.Bulk<br>@item.HblCoLoaded</td>
+                                <td>@(@item.LCL+@item.CoLoaded+@item.Bulk)<br>@(@item.HblLCL+@item.HblCoLoaded+@item.HblBulk)</td>
 
                                 
-                                    <td>0<br>0</td>
-                                    <td>0<br>0</td>
-                                    <td>1.0<br>1</td>
-                                    <td>0.0<br>1</td>
-                                    <td>1.0<br>2</td>
+                                    <td>@item.SaleFree<br>@item.HblFree</td>
+                                    <td>@item.SaleNomi<br>@item.HblNomi</td>
+                                    <td>@item.SaleCo<br>@item.HblCo</td>
+                                    <td>@item.SaleETC<br>@item.HblETC</td>
+                                    <td>@(@item.SaleFree+@item.SaleNomi+@item.SaleCo+@item.SaleETC)<br>@(@item.HblFree+@item.HblNomi+@item.HblCo+@item.HblETC)</td>
                                 
                             </tr>
                         
@@ -902,23 +904,28 @@ tbody {
                         <tr class="text-right border-b">
                             <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
                             <td class="text-left"><br>B/L: #</td>
-                              <td>@Model.ContainerList.OceanImports.Sum(x=>x.V20).ToString("N2")</td>
-                           <td>@Model.ContainerList.OceanImports.Sum(x=>x.V40).ToString("N2")</td>
-                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.HC).ToString("N2")</td>
-                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.V45).ToString("N2")</td>
-                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.RF).ToString("N2")</td>
-                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.SOC).ToString("N2")</td>
-                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.ETC).ToString("N2")</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
+                              <td>@Model.ContainerList.OceanImports.Sum(x=>x.V20).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblV20).ToString("N2")</td>
+                           <td>@Model.ContainerList.OceanImports.Sum(x=>x.V40).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblV40).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.HC).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblHC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.V45).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblV45).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.RF).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblRF).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.SOC).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblSOC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.ETC).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblCntETC).ToString("N2")</td>
+                             
+           
+       
+                            <td>@Model.ContainerList.OceanImports.Sum(x=>x.LCL).ToString("N2")<br>@Model.ContainerList.OceanImports.Sum(x=>x.HblLCL).ToString("N2")</td>
+                            <td>@Model.ContainerList.OceanImports.Sum(x=>x.CoLoaded).ToString("N2")<br>@Model.ContainerList.OceanImports.Sum(x=>x.HblCoLoaded).ToString("N2")</td>
+                            <td>@Model.ContainerList.OceanImports.Sum(x=>x.Bulk).ToString("N2")<br>@Model.ContainerList.OceanImports.Sum(x=>x.HblBulk).ToString("N2")</td>
+                            <td>@((@Model.ContainerList.OceanImports.Sum(x=>x.LCL)+@Model.ContainerList.OceanImports.Sum(x=>x.CoLoaded)+@Model.ContainerList.OceanImports.Sum(x=>x.Bulk)).ToString("N2"));
+                                <br>@((@Model.ContainerList.OceanImports.Sum(x=>x.HblLCL)+@Model.ContainerList.OceanImports.Sum(x=>x.HblCoLoaded)+@Model.ContainerList.OceanImports.Sum(x=>x.HblBulk)).ToString("N2"))</td>
                             
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>1.0<br>1</td>
-                                <td>0.0<br>2</td>
-                                <td>1.0<br>3</td>
+                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.SaleFree).ToString("N2")<br>@Model.ContainerList.OceanImports.Sum(x=>x.HblFree).ToString("N2")</td>
+                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.SaleNomi).ToString("N2")<br>@Model.ContainerList.OceanImports.Sum(x=>x.HblNomi).ToString("N2")</td>
+                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.SaleCo).ToString("N2")<br>@Model.ContainerList.OceanImports.Sum(x=>x.HblCo).ToString("N2")</td>
+                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.SaleETC).ToString("N2")<br>@Model.ContainerList.OceanImports.Sum(x=>x.SaleETC).ToString("N2")</td>
+                                <td>@((@Model.ContainerList.OceanImports.Sum(x=>x.SaleFree)+@Model.ContainerList.OceanImports.Sum(x=>x.SaleNomi)+@Model.ContainerList.OceanImports.Sum(x=>x.SaleCo)+@Model.ContainerList.OceanImports.Sum(x=>x.SaleETC)).ToString("N2"))
+                                    <br>@((@Model.ContainerList.OceanImports.Sum(x=>x.HblFree)+@Model.ContainerList.OceanImports.Sum(x=>x.HblNomi)+@Model.ContainerList.OceanImports.Sum(x=>x.HblETC)+@Model.ContainerList.OceanImports.Sum(x=>x.HblCo)).ToString("N2"))</td>
                             
                         </tr>
                     </tbody></table>
@@ -1015,7 +1022,7 @@ tbody {
                                 <th class="col-padding-double text-right border-r">SOC</th>
                                 <th class="col-padding-double text-right border-r">Etc.</th>
                                 <th class="col-padding-double text-right border-r">LCL</th>
-                                <th class="col-padding-double text-right border-r">FAK</th>
+                                <th class="col-padding-double text-right border-r">Co-Loaded</th>
                                 <th class="col-padding-double text-right border-r">BULK</th>
                                 <th class="col-padding-double text-right border-r">SUM</th>
                                 <th class="col-padding-double text-right border-r">Free</th>
@@ -1035,23 +1042,25 @@ tbody {
                                 </td>
                                 <td class="text-left"></td>
                                 <td class="text-left"><br>B/L: #</td>
-                                <td>@item.V20<br>0</td>
-                                <td>@item.V40<br>0</td>
-                                <td>@item.HC<br>0</td>
-                                <td>@item.V45<br>0</td>
-                                <td>@item.RF<br>2</td>
-                                <td>@item.SOC<br>0</td>
-                                <td>@item.ETC<br>0</td>
-                                <td>18.32<br>4</td>
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>18.32<br>4</td>
+                                <td>@item.V20<br>@item.HblV20</td>
+                                <td>@item.V40<br>@item.HblV40</td>
+                                <td>@item.HC<br>@item.HblHC</td>
+                                <td>@item.V45<br>@item.HblV45</td>
+                                <td>@item.RF<br>@item.HblRF</td>
+                                <td>@item.SOC<br>@item.HblSOC</td>
+                                <td>@item.ETC<br>@item.HblCntETC</td>
                                 
-                                    <td>0<br>0</td>
-                                    <td>0<br>0</td>
-                                    <td>0<br>0</td>
-                                    <td>40.32<br>6</td>
-                                    <td>40.32<br>6</td>
+                              <td>@item.LCL<br>@item.HblLCL</td>
+                                <td>@item.CoLoaded<br>@item.HblCoLoaded</td>
+                                <td>@item.Bulk<br>@item.HblCoLoaded</td>
+                                <td>@(@item.LCL+@item.CoLoaded+@item.Bulk)<br>@(@item.HblLCL+@item.HblCoLoaded+@item.HblBulk)</td>
+
+                                
+                                    <td>@item.SaleFree<br>@item.HblFree</td>
+                                    <td>@item.SaleNomi<br>@item.HblNomi</td>
+                                    <td>@item.SaleCo<br>@item.HblCo</td>
+                                    <td>@item.SaleETC<br>@item.HblETC</td>
+                                    <td>@(@item.SaleFree+@item.SaleNomi+@item.SaleCo+@item.SaleETC)<br>@(@item.HblFree+@item.HblNomi+@item.HblCo+@item.HblETC)</td>
                                 
                             </tr>
                         }
@@ -1059,23 +1068,27 @@ tbody {
                         <tr class="text-right border-b">
                             <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
                             <td class="text-left"><br>B/L: #</td>
-                              <td>@Model.ContainerList.OceanImports.Sum(x=>x.V20).ToString("N2")</td>
-                             <td>@Model.ContainerList.OceanImports.Sum(x=>x.V40).ToString("N2")</td>
-                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.HC).ToString("N2")</td>
-                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.V45).ToString("N2")</td>
-                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.RF).ToString("N2")</td>
-                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.SOC).ToString("N2")</td>
-                        <td>@Model.ContainerList.OceanImports.Sum(x=>x.ETC).ToString("N2")</td>
-                            <td>18.6<br>5</td>
-                            <td>0<br>0</td>
-                            <td>0<br>0</td>
-                            <td>18.6<br>5</td>
+                               <td>@Model.ContainerList.OceanExports.Sum(x=>x.V20).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblV20).ToString("N2")</td>
+                           <td>@Model.ContainerList.OceanExports.Sum(x=>x.V40).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblV40).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.HC).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblHC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.V45).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblV45).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.RF).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblRF).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.SOC).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblSOC).ToString("N2")</td>
+                        <td>@Model.ContainerList.OceanExports.Sum(x=>x.ETC).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblCntETC).ToString("N2")</td>
+                             
+           
+                            <td>@Model.ContainerList.OceanExports.Sum(x=>x.LCL).ToString("N2")<br>@Model.ContainerList.OceanExports.Sum(x=>x.HblLCL).ToString("N2")</td>
+                            <td>@Model.ContainerList.OceanExports.Sum(x=>x.CoLoaded).ToString("N2")<br>@Model.ContainerList.OceanExports.Sum(x=>x.HblCoLoaded).ToString("N2")</td>
+                            <td>@Model.ContainerList.OceanExports.Sum(x=>x.Bulk).ToString("N2")<br>@Model.ContainerList.OceanExports.Sum(x=>x.HblBulk).ToString("N2")</td>
+                            <td>@((@Model.ContainerList.OceanExports.Sum(x=>x.LCL)+@Model.ContainerList.OceanExports.Sum(x=>x.CoLoaded)+@Model.ContainerList.OceanExports.Sum(x=>x.Bulk)).ToString("N2"));
+                                <br>@((@Model.ContainerList.OceanExports.Sum(x=>x.HblLCL)+@Model.ContainerList.OceanExports.Sum(x=>x.HblCoLoaded)+@Model.ContainerList.OceanExports.Sum(x=>x.HblBulk)).ToString("N2"))</td>
                             
-                                <td>0<br>0</td>
-                                <td>0<br>0</td>
-                                <td>0.28<br>1</td>
-                                <td>40.32<br>6</td>
-                                <td>40.6<br>7</td>
+                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.SaleFree).ToString("N2")<br>@Model.ContainerList.OceanExports.Sum(x=>x.HblFree).ToString("N2")</td>
+                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.SaleNomi).ToString("N2")<br>@Model.ContainerList.OceanExports.Sum(x=>x.HblNomi).ToString("N2")</td>
+                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.SaleCo).ToString("N2")<br>@Model.ContainerList.OceanExports.Sum(x=>x.HblCo).ToString("N2")</td>
+                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.SaleETC).ToString("N2")<br>@Model.ContainerList.OceanExports.Sum(x=>x.SaleETC).ToString("N2")</td>
+                                <td>@((@Model.ContainerList.OceanExports.Sum(x=>x.SaleFree)+@Model.ContainerList.OceanExports.Sum(x=>x.SaleNomi)+@Model.ContainerList.OceanExports.Sum(x=>x.SaleCo)+@Model.ContainerList.OceanExports.Sum(x=>x.SaleETC)).ToString("N2"))
+                                    <br>@((@Model.ContainerList.OceanExports.Sum(x=>x.HblFree)+@Model.ContainerList.OceanExports.Sum(x=>x.HblNomi)+@Model.ContainerList.OceanExports.Sum(x=>x.HblETC)+@Model.ContainerList.OceanExports.Sum(x=>x.HblCo)).ToString("N2"))</td>
                             
                         </tr>
                     </tbody></table>
@@ -1551,5 +1564,1020 @@ tbody {
                 </div> *@
             
         </div>
+        }
+        else{
+        <div class="wrap report-volume-profit landscape">
+        <div class="header _padding-0">
+            <div class="text-center">
+                <div class="text-lg text-bold">Total Profit &amp; Volume Summary Report</div>
+                <h4 class="text-light margin-t-sm">Period (~)</h4>
+            </div>
+        </div>
+        
+            <table class="tabld-padding border-b">
+                <colgroup>
+                    <col class="w-7">
+                    <col class="w-1">
+                    <col class="w-22">
+                    <col class="w-5">
+                    <col class="w-1">
+                    <col class="w-50">
+                    <col class="w-3">
+                    <col class="w-1">
+                    <col class="w-10">
+                </colgroup>
+                <tbody><tr>
+                    <td class="text-bold" colspan="3">Summary</td>
+                    <td class="text-bold">Sort by</td>
+                    <td>:</td>
+                    <td>@Model.OutPutType</td>
+                    <td class="text-bold">User</td>
+                    <td>:</td>
+                    <td>@Model.Operator</td>
+                </tr>
+                <tr>
+                    <td class="text-bold">Currency</td>
+                    <td>:</td>
+                    <td>USD</td>
+                    <td class="text-bold">Period</td>
+                    <td>:</td>
+                    <td>Master B/L Post Date </td>
+                    <td class="text-bold">Date</td>
+                    <td>:</td>
+                    <td>@DateTime.Now.ToShortDateString()</td>
+                </tr>
+            </tbody></table>
+            <table class="table-padding-3 margin-t text-11">
+                <colgroup>
+                    <col class="w-50">
+                    <col class="w-50">
+                </colgroup>
+                <!-- Volume Profit report and Volume report without volume by container type (OI, OE, AI and AE) -->
+                
+                    <!-- Volume Profit report (OI, OE, AI and AE)-->
+                    
+                        <tbody>
+                                   @if (Model.ContainerList?.OceanImports.Count > 0)
+                {
+                            <tr>
+                                <td colspan="2" height="3" class="_padding-b-0">
+                                    <div class="text-12 text-bold">Department: Ocean Import</div>
+                                </td>
+                            </tr>
+                            <tr class="valign-top">
+                                <td>
+
+                                    <table class="table-padding-3 border text-center">
+                                        <colgroup>
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-10">
+                                        </colgroup>
+                                        <tbody><tr class="border-b bg-light __sub-title">
+                                                <td></td>
+                                                <td>20'</td>
+                                                <td>40'</td>
+                                                <td>HC</td>
+                                                <td>45'</td>
+                                                <td>RF</td>
+                                                <td>SOC</td>
+                                                <td>Etc.</td>
+                                                <td>LCL<br>CBM</td>
+                                                <td>Co-Loaded<br>CBM</td>
+                                                <td>BULK<br>CBM</td>
+                                            </tr>
+                                            <tr class="border-b">
+                                                <td class="text-left">CNTR</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.V20).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.V40).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.HC).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.V45).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.RF).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.SOC).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.ETC).ToString("N2")</td>
+                                                <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanImports.Sum(x=>x.LCL).ToString("N2")</span></div></td>
+                                                <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanImports.Sum(x=>x.CoLoaded).ToString("N2")</span></div></td>
+                                                <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanImports.Sum(x=>x.Bulk).ToString("N2")</span></div></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-left">B/L(s)</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblV20).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblV40).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblHC).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblV45).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblRF).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblSOC).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblCntETC).ToString("N2")</td>
+                                                <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanImports.Sum(x=>x.HblLCL).ToString("N2")</span></div></td>
+                                                <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanImports.Sum(x=>x.HblCoLoaded).ToString("N2")</span></div></td>
+                                                <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanImports.Sum(x=>x.HblBulk).ToString("N2")</span></div></td>
+
+                                            </tr>
+                                        </tbody></table>
+
+                                </td>
+                                <td>
+                                    <table class="table-padding-3 border text-right">
+                                        <colgroup>
+                                            <col class="w-15 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21">
+                                        </colgroup>
+                                        <tbody><tr class="border-b bg-light __sub-title">
+                                                <td></td>
+                                                <td>Free</td>
+                                                <td>Nomi</td>
+                                                <td>Co-Load</td>
+                                                <td>Etc.</td>
+                                                <td>Total</td>
+                                            </tr>
+
+                                            <tr class="border-b">
+                                                <td class="text-left">Profit</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.FreeProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.NomiProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.CoProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.ETCProfit).ToString("N2")</td>
+                                                <td>@((@Model.ContainerList.OceanImports.Sum(x=>x.FreeProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.NomiProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.CoProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.ETCProfit)).ToString("N2"))</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-left">B/L(s)</td>
+                                                
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblFreeProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblNomiProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblCoProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.HblETCProfit).ToString("N2")</td>
+                                                <td>@((@Model.ContainerList.OceanImports.Sum(x=>x.HblFreeProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.HblNomiProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.HblCoProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.HblETCProfit)).ToString("N2"))</td>
+                                             </tr>
+
+                                        </tbody></table>
+                                </td>
+                            </tr>
+                        }
+                        @if (Model.ContainerList?.OceanExports.Count > 0)
+                {
+                            <tr>
+                                <td colspan="2" height="3" class="_padding-b-0">
+                                    <div class="text-12 text-bold">Department: Ocean Export</div>
+                                </td>
+                            </tr>
+                            <tr class="valign-top">
+                                <td>
+
+                                    <table class="table-padding-3 border text-center">
+                                        <colgroup>
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-9 border-r">
+                                            <col class="w-10">
+                                        </colgroup>
+                                        <tbody><tr class="border-b bg-light __sub-title">
+                                                <td></td>
+                                                <td>20'</td>
+                                                <td>40'</td>
+                                                <td>HC</td>
+                                                <td>45'</td>
+                                                <td>RF</td>
+                                                <td>SOC</td>
+                                                <td>Etc.</td>
+                                                <td>LCL<br>CBM</td>
+                                                <td>FAK<br>CBM</td>
+                                                <td>BULK<br>CBM</td>
+                                            </tr>
+                                            <tr class="border-b">
+                                                <td class="text-left">CNTR</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.V20).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.V40).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.HC).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.V45).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.RF).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.SOC).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.ETC).ToString("N2")</td>
+                                                <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanExports.Sum(x=>x.LCL).ToString("N2")</span></div></td>
+                                                <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanExports.Sum(x=>x.CoLoaded).ToString("N2")</span></div></td>
+                                                <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanExports.Sum(x=>x.Bulk).ToString("N2")</span></div></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-left">B/L(s)</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblV20).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblV40).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblHC).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblV45).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblRF).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblSOC).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblCntETC).ToString("N2")</td>
+                                                <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanExports.Sum(x=>x.HblLCL).ToString("N2")</span></div></td>
+                                                <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanExports.Sum(x=>x.HblCoLoaded).ToString("N2")</span></div></td>
+                                                <td><div class="auto-font-size __width-xs"><span>@Model.ContainerList.OceanExports.Sum(x=>x.HblBulk).ToString("N2")</span></div></td>
+
+                                            </tr>
+                                        </tbody></table>
+
+                                </td>
+                                <td>
+                                    <table class="table-padding-3 border text-right">
+                                        <colgroup>
+                                            <col class="w-15 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21">
+                                        </colgroup>
+                                        <tbody><tr class="border-b bg-light __sub-title">
+                                                <td></td>
+                                                <td>Free</td>
+                                                <td>Nomi</td>
+                                                <td>Co-Load</td>
+                                                <td>Etc.</td>
+                                                <td>Total</td>
+                                            </tr>
+
+                                            <tr class="border-b">
+                                                <td class="text-left">Profit</td>
+                                           <td>@Model.ContainerList.OceanExports.Sum(x=>x.FreeProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.NomiProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.CoProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.ETCProfit).ToString("N2")</td>
+                                                <td>@((@Model.ContainerList.OceanExports.Sum(x=>x.FreeProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.NomiProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.CoProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.ETCProfit)).ToString("N2"))</td>
+                                           </tr>
+                                            <tr>
+                                                <td class="text-left">B/L(s)</td>
+                                                  <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblFreeProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblNomiProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblCoProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.HblETCProfit).ToString("N2")</td>
+                                                <td>@((@Model.ContainerList.OceanExports.Sum(x=>x.HblFreeProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.HblNomiProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.HblCoProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.HblETCProfit)).ToString("N2"))</td>
+                                            </tr>
+
+                                        </tbody></table>
+                                </td>
+                            </tr>
+                        }
+                        @if (Model.ContainerList?.AirImports.Count > 0)
+                {
+                        <tr>
+                            <td colspan="2" height="3" class="_padding-b-0">
+                                <div class="text-12 text-bold">Department: Air Import</div>
+                            </td>
+                        </tr>
+                        <tr class="valign-top">
+                            <td>
+                                
+        <table class="table-padding-3 border text-center">
+            <colgroup>
+                <col class="w-50 border-r">
+                <col class="w-50">
+            </colgroup>
+            <tbody><tr class="border-b bg-light">
+                <td>G/WT</td>
+                <td>C/WT</td>
+            </tr>
+            <tr>
+                   <td>@Model.ContainerList?.AirImports.Sum(x=>x.GrossWeightKG).ToString("N2")/@Model.ContainerList?.AirImports.Sum(x=>x.GrossWeightLB).ToString("N2")</td>
+                <td>@Model.ContainerList?.AirImports.Sum(x=>x.ChargeableWeightKG).ToString("N2")/@Model.ContainerList?.AirImports.Sum(x=>x.ChargeableWeightLB).ToString("N2")</td>
+           
+            </tr>
+        </tbody></table>
+    
+                            </td>
+                            <td>
+                                
+                                    <table class="table-padding-3 border text-right">
+                                        <colgroup>
+                                            <col class="w-15 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21">
+                                        </colgroup>
+                                        <tbody><tr class="border-b bg-light">
+                                            <td></td>
+                                            <td>Free</td>
+                                            <td>Nomi</td>
+                                            <td>Co-Load</td>
+                                            <td>Etc.</td>
+                                            <td>Total</td>
+                                        </tr>
+                                        <tr class="border-b">
+                                            <td class="text-left">Profit</td>
+                                           <td>@Model.ContainerList.AirImports.Sum(x=>x.FreeProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirImports.Sum(x=>x.NomiProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirImports.Sum(x=>x.CoProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirImports.Sum(x=>x.ETCProfit).ToString("N2")</td>
+                                                <td>@((@Model.ContainerList.AirImports.Sum(x=>x.FreeProfit)+@Model.ContainerList.AirImports.Sum(x=>x.NomiProfit)+@Model.ContainerList.AirImports.Sum(x=>x.CoProfit)+@Model.ContainerList.AirImports.Sum(x=>x.ETCProfit)).ToString("N2"))</td>
+                                         </tr>
+                                        <tr>
+                                            <td class="text-left">B/L(s)</td>
+                                              <td>@Model.ContainerList.AirImports.Sum(x=>x.HblFreeProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirImports.Sum(x=>x.HblNomiProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirImports.Sum(x=>x.HblCoProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirImports.Sum(x=>x.HblETCProfit).ToString("N2")</td>
+                                                <td>@((@Model.ContainerList.AirImports.Sum(x=>x.HblFreeProfit)+@Model.ContainerList.AirImports.Sum(x=>x.HblNomiProfit)+@Model.ContainerList.AirImports.Sum(x=>x.HblCoProfit)+@Model.ContainerList.AirImports.Sum(x=>x.HblETCProfit)).ToString("N2"))</td>
+                                            </tr>
+                                    </tbody></table>
+                                
+                            </td>
+                        </tr>
+                        }
+                       @if (Model.ContainerList?.AirExports.Count > 0)
+                {
+
+                            <tr>
+                                <td colspan="2" height="3" class="_padding-b-0">
+                                    <div class="text-12 text-bold">Department: Air Export</div>
+                                </td>
+                            </tr>
+                            <tr class="valign-top">
+                                <td>
+
+                                    <table class="table-padding-3 border text-center">
+                                        <colgroup>
+                                            <col class="w-50 border-r">
+                                            <col class="w-50">
+                                        </colgroup>
+                                        <tbody><tr class="border-b bg-light">
+                                                <td>G/WT</td>
+                                                <td>C/WT</td>
+                                            </tr>
+                                            <tr>
+                                                <td>@Model.ContainerList?.AirExports.Sum(x=>x.GrossWeightKG).ToString("N2")/@Model.ContainerList?.AirExports.Sum(x=>x.GrossWeightLB).ToString("N2")</td>
+                                                <td>@Model.ContainerList?.AirExports.Sum(x=>x.ChargeableWeightKG).ToString("N2")/@Model.ContainerList?.AirExports.Sum(x=>x.ChargeableWeightLB).ToString("N2")</td>
+
+                                            </tr>
+                                        </tbody></table>
+
+                                </td>
+
+                                <td>
+
+                                    <table class="table-padding-3 border text-right">
+                                        <colgroup>
+                                            <col class="w-15 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21 border-r">
+                                            <col class="w-21">
+                                        </colgroup>
+                                        <tbody><tr class="border-b bg-light">
+                                                <td></td>
+                                                <td>Free</td>
+                                                <td>Nomi</td>
+                                                <td>Co-Load</td>
+                                                <td>Etc.</td>
+                                                <td>Total</td>
+                                            </tr>
+                                            <tr class="border-b">
+                                                <td class="text-left">Profit</td>
+                                                <td>@Model.ContainerList.AirExports.Sum(x=>x.FreeProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirExports.Sum(x=>x.NomiProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirExports.Sum(x=>x.CoProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirExports.Sum(x=>x.ETCProfit).ToString("N2")</td>
+                                                <td>@((@Model.ContainerList.AirExports.Sum(x=>x.FreeProfit)+@Model.ContainerList.AirExports.Sum(x=>x.NomiProfit)+@Model.ContainerList.AirExports.Sum(x=>x.CoProfit)+@Model.ContainerList.AirExports.Sum(x=>x.ETCProfit)).ToString("N2"))</td>
+                                        </tr>
+                                            <tr>
+                                                <td class="text-left">B/L(s)</td>
+                                                 <td>@Model.ContainerList.AirExports.Sum(x=>x.HblFreeProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirExports.Sum(x=>x.HblNomiProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirExports.Sum(x=>x.HblCoProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirExports.Sum(x=>x.HblETCProfit).ToString("N2")</td>
+                                                <td>@((@Model.ContainerList.AirExports.Sum(x=>x.HblFreeProfit)+@Model.ContainerList.AirExports.Sum(x=>x.HblNomiProfit)+@Model.ContainerList.AirExports.Sum(x=>x.HblCoProfit)+@Model.ContainerList.AirExports.Sum(x=>x.HblETCProfit)).ToString("N2"))</td>
+                                           
+                                            </tr>
+                                        </tbody></table>
+
+                                </td>
+                            </tr>
+
+                        }
+                <!-- Same tables in Volume Profit report and Volume report -->
+                
+                
+                
+            </tbody></table>
+
+            
+                <div class="_text-14 text-bold text-red-deep text-right col-padding-double border-t margin-t-sm">
+                    Total: @((@Model.ContainerList.OceanImports.Sum(x=>x.FreeProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.NomiProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.CoProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.ETCProfit)+
+                            @Model.ContainerList.OceanImports.Sum(x=>x.HblFreeProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.HblNomiProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.HblCoProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.HblETCProfit)+
+                            @Model.ContainerList.OceanExports.Sum(x=>x.FreeProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.NomiProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.CoProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.ETCProfit)+
+                            @Model.ContainerList.OceanExports.Sum(x=>x.HblFreeProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.HblNomiProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.HblCoProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.HblETCProfit)+
+                            @Model.ContainerList.AirImports.Sum(x=>x.FreeProfit)+@Model.ContainerList.AirImports.Sum(x=>x.NomiProfit)+@Model.ContainerList.AirImports.Sum(x=>x.CoProfit)+@Model.ContainerList.AirImports.Sum(x=>x.ETCProfit)+
+                            @Model.ContainerList.AirImports.Sum(x=>x.HblFreeProfit)+@Model.ContainerList.AirImports.Sum(x=>x.HblNomiProfit)+@Model.ContainerList.AirImports.Sum(x=>x.HblCoProfit)+@Model.ContainerList.AirImports.Sum(x=>x.HblETCProfit)+
+                             @Model.ContainerList.AirExports.Sum(x=>x.FreeProfit)+@Model.ContainerList.AirExports.Sum(x=>x.NomiProfit)+@Model.ContainerList.AirExports.Sum(x=>x.CoProfit)+@Model.ContainerList.AirExports.Sum(x=>x.ETCProfit)+
+                            @Model.ContainerList.AirExports.Sum(x=>x.HblFreeProfit)+@Model.ContainerList.AirExports.Sum(x=>x.HblNomiProfit)+@Model.ContainerList.AirExports.Sum(x=>x.HblCoProfit)+@Model.ContainerList.AirExports.Sum(x=>x.HblETCProfit)).ToString("N2"))
+                </div>
+            
+
+            
+                <hr>
+                   @if (Model.ContainerList?.OceanImports.Count > 0)
+                {
+                    <div>
+                        <div class="header">
+                            <div class="text-center">
+                                <div class="text-lg text-bold">Total Profit &amp; Volume Summary Report</div>
+                                <h4 class="text-light margin-t-sm">Period (09-03-2023 ~ 10-01-2023)</h4>
+                            </div>
+                        </div>
+                        <table class="tabld-padding-double">
+                            <colgroup>
+                                <col class="w-7">
+                                <col class="w-1">
+                                <col class="w-22">
+                                <col class="w-5">
+                                <col class="w-1">
+                                <col class="w-50">
+                                <col class="w-3">
+                                <col class="w-1">
+                                <col class="w-10">
+                            </colgroup>
+                            <tbody><tr>
+                                    <td class="text-bold">Shipping Type</td>
+                                    <td>:</td>
+                                    <td>Ocean Import</td>
+                                    <td class="text-bold">Sort by</td>
+                                    <td>:</td>
+                                    <td>@Model.OutPutType</td>
+                                    <td class="text-bold">User</td>
+                                    <td>:</td>
+                                    <td>@Model.Operator</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-bold">Currency</td>
+                                    <td>:</td>
+                                    <td>USD</td>
+                                    <td class="text-bold">Period</td>
+                                    <td>:</td>
+                                    <td>Master B/L Post Date ~ </td>
+                                    <td class="text-bold">Date</td>
+                                    <td>:</td>
+                                    <td>@DateTime.Now.ToShortDateString()</td>
+                                </tr>
+                            </tbody></table>
+                        <table class="table-padding-3 margin-t">
+                            <colgroup>
+                                <col class="w-3">
+                                <col class="w-13">
+                                <col class="w-10">
+                                <col class="w-4">
+                                <col class="w-4">
+                                <col class="w-4">
+                                <col class="w-4">
+                                <col class="w-4">
+                                <col class="w-4">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                            </colgroup>
+                            <thead>
+                                <tr class="border-t border-b bg-light">
+                                    <th class="border-r col-padding" rowspan="3">Block</th>
+                                    <th class="border-r col-padding-double" rowspan="3" colspan="2">Consignee</th>
+                                    <th class="col-padding-double" colspan="16">Ocean Total</th>
+                                </tr>
+                                <tr class="border-t border-b bg-light">
+                                    <th class="border-r col-padding-double" colspan="7">Container Type</th>
+                                    <th class="border-r col-padding-double" colspan="4">Volume(CBM) by Ship Mode</th>
+                                    <th class="col-padding-double" colspan="5">
+
+                                        Profit
+
+                                    </th>
+                                </tr>
+                                <tr class="border-b bg-light">
+                                    <th class="col-padding-double text-right border-r">20'</th>
+                                    <th class="col-padding-double text-right border-r">40'</th>
+                                    <th class="col-padding-double text-right border-r">HC</th>
+                                    <th class="col-padding-double text-right border-r">45'</th>
+                                    <th class="col-padding-double text-right border-r">RF</th>
+                                    <th class="col-padding-double text-right border-r">SOC</th>
+                                    <th class="col-padding-double text-right border-r">Etc.</th>
+                                    <th class="col-padding-double text-right border-r">LCL</th>
+                                    <th class="col-padding-double text-right border-r">FAK</th>
+                                    <th class="col-padding-double text-right border-r">BULK</th>
+                                    <th class="col-padding-double text-right border-r">SUM</th>
+                                    <th class="col-padding-double text-right border-r">Free</th>
+                                    <th class="col-padding-double text-right border-r">Nomi</th>
+                                    <th class="col-padding-double text-right border-r">Col.</th>
+                                    <th class="col-padding-double text-right border-r">Etc.</th>
+                                    <th class="col-padding-double text-right">Total</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var item in Model.ContainerList?.OceanImports)
+                                {
+                                    <tr class="text-right border-b">
+                                        <td class="text-center">
+                                            @item.Consignee
+                                        </td>
+                                        <td class="text-left"></td>
+                                        <td class="text-left"><br>B/L: #</td>
+                                        <td>@item.V20<br>@item.HblV20</td>
+                                        <td>@item.V40<br>@item.HblV40</td>
+                                        <td>@item.HC<br>@item.HblHC</td>
+                                        <td>@item.V45<br>@item.HblV45</td>
+                                        <td>@item.RF<br>@item.HblRF</td>
+                                        <td>@item.SOC<br>@item.HblSOC</td>
+                                        <td>@item.ETC<br>@item.HblCntETC</td>
+                                        <td>@item.LCL<br>@item.HblLCL</td>
+                                        <td>@item.CoLoaded<br>@item.HblCoLoaded</td>
+                                        <td>@item.Bulk<br>@item.HblCoLoaded</td>
+                                        <td>@(@item.LCL + @item.CoLoaded + @item.Bulk)<br>@(@item.HblLCL + @item.HblCoLoaded + @item.HblBulk)</td>
+
+                                        <td>@item.FreeProfit.ToString("N2")<br>@item.HblFreeProfit.ToString("N2")</td>
+                                        <td>@item.NomiProfit.ToString("N2")<br>@item.HblNomiProfit.ToString("N2")</td>
+                                        <td>@item.CoProfit.ToString("N2")<br>@item.HblCoProfit.ToString("N2")</td>
+                                        <td>@item.ETCProfit.ToString("N2")<br>@item.HblETCProfit.ToString("N2")</td>
+                                        <td>@((@item.FreeProfit+@item.NomiProfit+@item.CoProfit+@item.ETCProfit).ToString("N2"))<br>
+                                            @((@item.HblFreeProfit+@item.HblNomiProfit+@item.HblCoProfit+@item.HblETCProfit).ToString("N2"))</td>
+
+                                    </tr>
+                                }
+                                <tr class="text-right border-b">
+                                    <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
+                                    <td class="text-left"><br>B/L: #</td>
+                                    <td>@Model.ContainerList.OceanImports.Sum(x=>x.V20).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblV20).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanImports.Sum(x=>x.V40).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblV40).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanImports.Sum(x=>x.HC).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblHC).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanImports.Sum(x=>x.V45).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblV45).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanImports.Sum(x=>x.RF).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblRF).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanImports.Sum(x=>x.SOC).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblSOC).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanImports.Sum(x=>x.ETC).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblCntETC).ToString("N2")</td>
+
+
+
+                                    <td>@Model.ContainerList.OceanImports.Sum(x=>x.LCL).ToString("N2")<br>@Model.ContainerList.OceanImports.Sum(x=>x.HblLCL).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanImports.Sum(x=>x.CoLoaded).ToString("N2")<br>@Model.ContainerList.OceanImports.Sum(x=>x.HblCoLoaded).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanImports.Sum(x=>x.Bulk).ToString("N2")<br>@Model.ContainerList.OceanImports.Sum(x=>x.HblBulk).ToString("N2")</td>
+                                    <td>@((@Model.ContainerList.OceanImports.Sum(x => x.LCL) + @Model.ContainerList.OceanImports.Sum(x => x.CoLoaded) + @Model.ContainerList.OceanImports.Sum(x => x.Bulk)).ToString("N2"));
+                                        <br>@((@Model.ContainerList.OceanImports.Sum(x => x.HblLCL) + @Model.ContainerList.OceanImports.Sum(x => x.HblCoLoaded) + @Model.ContainerList.OceanImports.Sum(x => x.HblBulk)).ToString("N2"))</td>
+
+                            
+                             
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.FreeProfit).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblFreeProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.NomiProfit).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblNomiProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.CoProfit).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblCoProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanImports.Sum(x=>x.ETCProfit).ToString("N2")<br />@Model.ContainerList.OceanImports.Sum(x=>x.HblETCProfit).ToString("N2")</td>
+                                                <td>@((@Model.ContainerList.OceanImports.Sum(x=>x.FreeProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.NomiProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.CoProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.ETCProfit)).ToString("N2"))
+                                                    <br>
+                                                    @((@Model.ContainerList.OceanImports.Sum(x=>x.HblFreeProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.HblNomiProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.HblCoProfit)+@Model.ContainerList.OceanImports.Sum(x=>x.HblETCProfit)).ToString("N2"))
+                                                </td>
+                                      
+                            
+                        </tr>
+                    </tbody></table>
+                </div>
+            }
+               @if (Model.ContainerList?.OceanExports.Count > 0)
+                {
+                    <hr>
+                    <div>
+                        <div class="header">
+                            <div class="text-center">
+                                <div class="text-lg text-bold">Total Profit &amp; Volume Summary Report</div>
+                                <h4 class="text-light margin-t-sm">Period </h4>
+                            </div>
+                        </div>
+                        <table class="tabld-padding-double">
+                            <colgroup>
+                                <col class="w-7">
+                                <col class="w-1">
+                                <col class="w-22">
+                                <col class="w-5">
+                                <col class="w-1">
+                                <col class="w-50">
+                                <col class="w-3">
+                                <col class="w-1">
+                                <col class="w-10">
+                            </colgroup>
+                            <tbody><tr>
+                                    <td class="text-bold">Shipping Type</td>
+                                    <td>:</td>
+                                    <td>Ocean Export</td>
+                                    <td class="text-bold">Sort by</td>
+                                    <td>:</td>
+                                    <td>@Model.OutPutType</td>
+                                    <td class="text-bold">User</td>
+                                    <td>:</td>
+                                    <td>@Model.Operator</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-bold">Currency</td>
+                                    <td>:</td>
+                                    <td>USD</td>
+                                    <td class="text-bold">Period</td>
+                                    <td>:</td>
+                                    <td>Master B/L Post Date </td>
+                                    <td class="text-bold">Date</td>
+                                    <td>:</td>
+                                    <td>@DateTime.Now.ToShortDateString()</td>
+                                </tr>
+                            </tbody></table>
+                        <table class="table-padding-double margin-t text-8">
+                            <colgroup>
+                                <col class="w-3">
+                                <col class="w-13">
+                                <col class="w-10">
+                                <col class="w-4">
+                                <col class="w-4">
+                                <col class="w-4">
+                                <col class="w-4">
+                                <col class="w-4">
+                                <col class="w-4">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                                <col class="w-5">
+                            </colgroup>
+                            <thead>
+                                <tr class="border-t border-b bg-light">
+                                    <th class="border-r col-padding" rowspan="3">Block</th>
+                                    <th class="border-r col-padding-double" rowspan="3" colspan="2">Consignee</th>
+                                    <th class="col-padding-double" colspan="16">Ocean Total</th>
+                                </tr>
+                                <tr class="border-t border-b bg-light">
+                                    <th class="border-r col-padding-double" colspan="7">Container Type</th>
+                                    <th class="border-r col-padding-double" colspan="4">Volume(CBM) by Ship Mode</th>
+                                    <th class="col-padding-double" colspan="5">
+
+                                        Profit
+
+                                    </th>
+                                </tr>
+                                <tr class="border-b bg-light">
+                                    <th class="col-padding-double text-right border-r">20'</th>
+                                    <th class="col-padding-double text-right border-r">40'</th>
+                                    <th class="col-padding-double text-right border-r">HC</th>
+                                    <th class="col-padding-double text-right border-r">45'</th>
+                                    <th class="col-padding-double text-right border-r">RF</th>
+                                    <th class="col-padding-double text-right border-r">SOC</th>
+                                    <th class="col-padding-double text-right border-r">Etc.</th>
+                                    <th class="col-padding-double text-right border-r">LCL</th>
+                                    <th class="col-padding-double text-right border-r">FAK</th>
+                                    <th class="col-padding-double text-right border-r">BULK</th>
+                                    <th class="col-padding-double text-right border-r">SUM</th>
+                                    <th class="col-padding-double text-right border-r">Free</th>
+                                    <th class="col-padding-double text-right border-r">Nomi</th>
+                                    <th class="col-padding-double text-right border-r">Col.</th>
+                                    <th class="col-padding-double text-right border-r">Etc.</th>
+                                    <th class="col-padding-double text-right">Total</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var item in Model.ContainerList?.OceanExports)
+                                {
+                                    <tr class="text-right border-b">
+                                        <td class="text-center">
+                                            @item.Consignee
+                                        </td>
+                                        <td class="text-left"></td>
+                                        <td class="text-left"><br>B/L: #</td>
+                                        <td>@item.V20<br>@item.HblV20</td>
+                                        <td>@item.V40<br>@item.HblV40</td>
+                                        <td>@item.HC<br>@item.HblHC</td>
+                                        <td>@item.V45<br>@item.HblV45</td>
+                                        <td>@item.RF<br>@item.HblRF</td>
+                                        <td>@item.SOC<br>@item.HblSOC</td>
+                                        <td>@item.ETC<br>@item.HblCntETC</td>
+                                        <td>@item.LCL<br>@item.HblLCL</td>
+                                        <td>@item.CoLoaded<br>@item.HblCoLoaded</td>
+                                        <td>@item.Bulk<br>@item.HblCoLoaded</td>
+                                        <td>@(@item.LCL + @item.CoLoaded + @item.Bulk)<br>@(@item.HblLCL + @item.HblCoLoaded + @item.HblBulk)</td>
+
+                                        <td>@item.FreeProfit.ToString("N2")<br>@item.HblFreeProfit.ToString("N2")</td>
+                                        <td>@item.NomiProfit.ToString("N2")<br>@item.HblNomiProfit.ToString("N2")</td>
+                                        <td>@item.CoProfit.ToString("N2")<br>@item.HblCoProfit.ToString("N2")</td>
+                                        <td>@item.ETCProfit.ToString("N2")<br>@item.HblETCProfit.ToString("N2")</td>
+                                        <td>@((@item.FreeProfit+@item.NomiProfit+@item.CoProfit+@item.ETCProfit).ToString("N2"))<br>
+                                            @((@item.HblFreeProfit+@item.HblNomiProfit+@item.HblCoProfit+@item.HblETCProfit).ToString("N2"))</td>
+
+                                    </tr>
+                                }
+                                <tr class="text-right border-b">
+                                    <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
+                                    <td class="text-left"><br>B/L: #</td>
+                                    <td>@Model.ContainerList.OceanExports.Sum(x=>x.V20).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblV20).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanExports.Sum(x=>x.V40).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblV40).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanExports.Sum(x=>x.HC).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblHC).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanExports.Sum(x=>x.V45).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblV45).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanExports.Sum(x=>x.RF).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblRF).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanExports.Sum(x=>x.SOC).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblSOC).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanExports.Sum(x=>x.ETC).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblCntETC).ToString("N2")</td>
+
+
+                                    <td>@Model.ContainerList.OceanExports.Sum(x=>x.LCL).ToString("N2")<br>@Model.ContainerList.OceanExports.Sum(x=>x.HblLCL).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanExports.Sum(x=>x.CoLoaded).ToString("N2")<br>@Model.ContainerList.OceanExports.Sum(x=>x.HblCoLoaded).ToString("N2")</td>
+                                    <td>@Model.ContainerList.OceanExports.Sum(x=>x.Bulk).ToString("N2")<br>@Model.ContainerList.OceanExports.Sum(x=>x.HblBulk).ToString("N2")</td>
+                                    <td>@((@Model.ContainerList.OceanExports.Sum(x => x.LCL) + @Model.ContainerList.OceanExports.Sum(x => x.CoLoaded) + @Model.ContainerList.OceanExports.Sum(x => x.Bulk)).ToString("N2"));
+                                        <br>@((@Model.ContainerList.OceanExports.Sum(x => x.HblLCL) + @Model.ContainerList.OceanExports.Sum(x => x.HblCoLoaded) + @Model.ContainerList.OceanExports.Sum(x => x.HblBulk)).ToString("N2"))</td>
+
+                            
+                                 <td>@Model.ContainerList.OceanExports.Sum(x=>x.FreeProfit).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblFreeProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.NomiProfit).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblNomiProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.CoProfit).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblCoProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.OceanExports.Sum(x=>x.ETCProfit).ToString("N2")<br />@Model.ContainerList.OceanExports.Sum(x=>x.HblETCProfit).ToString("N2")</td>
+                                                <td>@((@Model.ContainerList.OceanExports.Sum(x=>x.FreeProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.NomiProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.CoProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.ETCProfit)).ToString("N2"))
+                                                    <br>
+                                                    @((@Model.ContainerList.OceanExports.Sum(x=>x.HblFreeProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.HblNomiProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.HblCoProfit)+@Model.ContainerList.OceanExports.Sum(x=>x.HblETCProfit)).ToString("N2"))
+                                                </td>
+                            
+                        </tr>
+                    </tbody></table>
+                </div>
+            }
+               @if (Model.ContainerList?.AirImports.Count > 0)
+                {
+                    <hr>
+                    <div>
+                        <div class="header">
+                            <div class="text-center">
+                                <div class="text-lg text-bold">Total Profit &amp; Volume Summary Report</div>
+                                <h4 class="text-light margin-t-sm">Period </h4>
+                            </div>
+                        </div>
+                        <table class="tabld-padding-double">
+                            <colgroup>
+                                <col class="w-7">
+                                <col class="w-1">
+                                <col class="w-22">
+                                <col class="w-5">
+                                <col class="w-1">
+                                <col class="w-50">
+                                <col class="w-3">
+                                <col class="w-1">
+                                <col class="w-10">
+                            </colgroup>
+                            <tbody><tr>
+                                    <td class="text-bold">Shipping Type</td>
+                                    <td>:</td>
+                                    <td>Air Import</td>
+                                    <td class="text-bold">Sort by</td>
+                                    <td>:</td>
+                                    <td>@Model.OutPutType</td>
+                                    <td class="text-bold">User</td>
+                                    <td>:</td>
+                                    <td>@Model.Operator</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-bold">Currency</td>
+                                    <td>:</td>
+                                    <td>USD</td>
+                                    <td class="text-bold">Period</td>
+                                    <td>:</td>
+                                    <td>Master B/L Post Date </td>
+                                    <td class="text-bold">Date</td>
+                                    <td>:</td>
+                                    <td>@DateTime.Now.ToShortDateString()</td>
+                                </tr>
+                            </tbody></table>
+                        <table class="table-padding-3 margin-t">
+                            <colgroup>
+                                <col class="w-3">
+                                <col class="w-13">
+                                <col class="w-15">
+                                <col class="w-10">
+                                <col class="w-10">
+                                <col class="w-10">
+                                <col class="w-10">
+                                <col class="w-10">
+                                <col class="w-10">
+                                <col class="w-10">
+                            </colgroup>
+                            <thead>
+                                <tr class="border-t border-b bg-light">
+                                    <th class="border-r col-padding" rowspan="3">Block</th>
+                                    <th class="border-r col-padding-double" rowspan="3" colspan="2">Consignee</th>
+                                    <th class="col-padding-double" colspan="7">Air Total</th>
+                                </tr>
+                                <tr class="border-t border-b bg-light">
+                                    <th class="border-r col-padding-double" colspan="2">WT</th>
+                                    <th class="col-padding-double" colspan="5">
+
+                                        Profit
+
+                                    </th>
+                                </tr>
+                                <tr class="border-b bg-light">
+                                    <th class="col-padding-double text-right border-r">G/WT</th>
+                                    <th class="col-padding-double text-right border-r">C/WT</th>
+
+                                    <th class="col-padding-double text-right border-r">Free</th>
+                                    <th class="col-padding-double text-right border-r">Nomi</th>
+                                    <th class="col-padding-double text-right border-r">Col.</th>
+                                    <th class="col-padding-double text-right border-r">Etc.</th>
+                                    <th class="col-padding-double text-right">Total</th>
+
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+
+                                @foreach (var item in Model.ContainerList?.AirImports)
+                                {
+                                    <tr class="text-right border-b">
+                                        <td class="text-center text-bold" colspan="2" >@item.Consignee</td>
+                                        <td class="text-left"><br>AWB: #</td>
+                                        <td>@item.GrossWeightKG.ToString("N2")/@item.GrossWeightLB.ToString("N2")<br>0</td>
+                                        <td>@item.ChargeableWeightKG.ToString("N2")/@item.ChargeableWeightLB.ToString("N2")<br>0</td>
+
+                                         <td>@item.FreeProfit.ToString("N2")<br>@item.HblFreeProfit.ToString("N2")</td>
+                                        <td>@item.NomiProfit.ToString("N2")<br>@item.HblNomiProfit.ToString("N2")</td>
+                                        <td>@item.CoProfit.ToString("N2")<br>@item.HblCoProfit.ToString("N2")</td>
+                                        <td>@item.ETCProfit.ToString("N2")<br>@item.HblETCProfit.ToString("N2")</td>
+                                        <td>@((@item.FreeProfit+@item.NomiProfit+@item.CoProfit+@item.ETCProfit).ToString("N2"))<br>
+                                            @((@item.HblFreeProfit+@item.HblNomiProfit+@item.HblCoProfit+@item.HblETCProfit).ToString("N2"))</td>
+
+                                    </tr>
+                                }
+                                <tr class="text-right border-b">
+                            <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
+                            <td class="text-left"><br>AWB: #</td>
+                             <td>@Model.ContainerList?.AirImports.Sum(x=>x.GrossWeightKG).ToString("N2")/@Model.ContainerList?.AirImports.Sum(x=>x.GrossWeightLB).ToString("N2")<br>0</td>
+                            <td>@Model.ContainerList?.AirImports.Sum(x=>x.ChargeableWeightKG).ToString("N2")/@Model.ContainerList?.AirImports.Sum(x=>x.ChargeableWeightLB).ToString("N2")<br>0</td>
+                           
+                            
+                               <td>@Model.ContainerList.AirImports.Sum(x=>x.FreeProfit).ToString("N2")<br />@Model.ContainerList.AirImports.Sum(x=>x.HblFreeProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirImports.Sum(x=>x.NomiProfit).ToString("N2")<br />@Model.ContainerList.AirImports.Sum(x=>x.HblNomiProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirImports.Sum(x=>x.CoProfit).ToString("N2")<br />@Model.ContainerList.AirImports.Sum(x=>x.HblCoProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirImports.Sum(x=>x.ETCProfit).ToString("N2")<br />@Model.ContainerList.AirImports.Sum(x=>x.HblETCProfit).ToString("N2")</td>
+                                                <td>@((@Model.ContainerList.AirImports.Sum(x=>x.FreeProfit)+@Model.ContainerList.AirImports.Sum(x=>x.NomiProfit)+@Model.ContainerList.AirImports.Sum(x=>x.CoProfit)+@Model.ContainerList.AirImports.Sum(x=>x.ETCProfit)).ToString("N2"))
+                                                    <br>
+                                                    @((@Model.ContainerList.AirImports.Sum(x=>x.HblFreeProfit)+@Model.ContainerList.AirImports.Sum(x=>x.HblNomiProfit)+@Model.ContainerList.AirImports.Sum(x=>x.HblCoProfit)+@Model.ContainerList.AirImports.Sum(x=>x.HblETCProfit)).ToString("N2"))
+                                                </td>
+                            
+                        </tr>
+                    </tbody></table>
+                </div>
+            }
+            
+                <hr>
+                @if (Model.ContainerList?.AirExports.Count > 0)
+                {
+                    <div>
+                        <div class="header">
+                            <div class="text-center">
+                                <div class="text-lg text-bold">Total Profit &amp; Volume Summary Report</div>
+                                <h4 class="text-light margin-t-sm">Period </h4>
+                            </div>
+                        </div>
+                        <table class="tabld-padding-double">
+                            <colgroup>
+                                <col class="w-7">
+                                <col class="w-1">
+                                <col class="w-22">
+                                <col class="w-5">
+                                <col class="w-1">
+                                <col class="w-50">
+                                <col class="w-3">
+                                <col class="w-1">
+                                <col class="w-10">
+                            </colgroup>
+                            <tbody><tr>
+                                    <td class="text-bold">Shipping Type</td>
+                                    <td>:</td>
+                                    <td>Air Export</td>
+                                    <td class="text-bold">Sort by</td>
+                                    <td>:</td>
+                                    <td>@Model.OutPutType</td>
+                                    <td class="text-bold">User</td>
+                                    <td>:</td>
+                                    <td>@Model.Operator</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-bold">Currency</td>
+                                    <td>:</td>
+                                    <td>USD</td>
+                                    <td class="text-bold">Period</td>
+                                    <td>:</td>
+                                    <td>Master B/L Post Date </td>
+                                    <td class="text-bold">Date</td>
+                                    <td>:</td>
+                                    <td>@DateTime.Now.ToShortDateString()</td>
+                                </tr>
+                            </tbody></table>
+                        <table class="table-padding-double margin-t">
+                            <colgroup>
+                                <col class="w-3">
+                                <col class="w-13">
+                                <col class="w-15">
+                                <col class="w-10">
+                                <col class="w-10">
+                                <col class="w-10">
+                                <col class="w-10">
+                                <col class="w-10">
+                                <col class="w-10">
+                                <col class="w-10">
+                            </colgroup>
+                            <thead>
+                                <tr class="border-t border-b bg-light">
+                                    <th class="border-r col-padding" rowspan="3">Block</th>
+                                    <th class="border-r col-padding-double" rowspan="3" colspan="2">Consignee</th>
+                                    <th class="col-padding-double" colspan="7">Air Total</th>
+                                </tr>
+                                <tr class="border-t border-b bg-light">
+                                    <th class="border-r col-padding-double" colspan="2">WT</th>
+                                    <th class="col-padding-double" colspan="5">
+
+                                        Profit
+
+                                    </th>
+                                </tr>
+                                <tr class="border-b bg-light">
+                                    <th class="col-padding-double text-right border-r">G/WT</th>
+                                    <th class="col-padding-double text-right border-r">C/WT</th>
+
+                                    <th class="col-padding-double text-right border-r">Free</th>
+                                    <th class="col-padding-double text-right border-r">Nomi</th>
+                                    <th class="col-padding-double text-right border-r">Col.</th>
+                                    <th class="col-padding-double text-right border-r">Etc.</th>
+                                    <th class="col-padding-double text-right">Total</th>
+
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                @foreach (var item in Model.ContainerList?.AirImports)
+                                {
+                                    <tr class="text-right border-b">
+                                        <td class="text-center text-bold" colspan="2" >@item.Consignee</td>
+                                        <td class="text-left"><br>AWB: #</td>
+                                        <td>@item.GrossWeightKG.ToString("N2")/@item.GrossWeightLB.ToString("N2")<br>0</td>
+                                        <td>@item.ChargeableWeightKG.ToString("N2")/@item.ChargeableWeightLB.ToString("N2")<br>0</td>
+
+                                        <td>@item.FreeProfit.ToString("N2")<br>@item.HblFreeProfit.ToString("N2")</td>
+                                        <td>@item.NomiProfit.ToString("N2")<br>@item.HblNomiProfit.ToString("N2")</td>
+                                        <td>@item.CoProfit.ToString("N2")<br>@item.HblCoProfit.ToString("N2")</td>
+                                        <td>@item.ETCProfit.ToString("N2")<br>@item.HblETCProfit.ToString("N2")</td>
+                                        <td>@((@item.FreeProfit+@item.NomiProfit+@item.CoProfit+@item.ETCProfit).ToString("N2"))<br>
+                                            @((@item.HblFreeProfit+@item.HblNomiProfit+@item.HblCoProfit+@item.HblETCProfit).ToString("N2"))</td>
+
+                                    </tr>
+                                }
+                                <tr class="text-right border-b">
+                            <td class="text-center text-bold text-blue text-12" colspan="2">Total</td>
+                            <td class="text-left"><br>AWB: #</td>
+                            <td>@Model.ContainerList?.AirExports.Sum(x=>x.GrossWeightKG).ToString("N2")/@Model.ContainerList?.AirExports.Sum(x=>x.GrossWeightLB).ToString("N2")<br>0</td>
+                            <td>@Model.ContainerList?.AirExports.Sum(x=>x.ChargeableWeightKG).ToString("N2")/@Model.ContainerList?.AirExports.Sum(x=>x.ChargeableWeightLB).ToString("N2")<br>0</td>
+                           
+                            
+                            <td>@Model.ContainerList.AirExports.Sum(x=>x.FreeProfit).ToString("N2")<br />@Model.ContainerList.AirExports.Sum(x=>x.HblFreeProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirExports.Sum(x=>x.NomiProfit).ToString("N2")<br />@Model.ContainerList.AirExports.Sum(x=>x.HblNomiProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirExports.Sum(x=>x.CoProfit).ToString("N2")<br />@Model.ContainerList.AirExports.Sum(x=>x.HblCoProfit).ToString("N2")</td>
+                                                <td>@Model.ContainerList.AirExports.Sum(x=>x.ETCProfit).ToString("N2")<br />@Model.ContainerList.AirExports.Sum(x=>x.HblETCProfit).ToString("N2")</td>
+                                                <td>@((@Model.ContainerList.AirExports.Sum(x=>x.FreeProfit)+@Model.ContainerList.AirExports.Sum(x=>x.NomiProfit)+@Model.ContainerList.AirExports.Sum(x=>x.CoProfit)+@Model.ContainerList.AirExports.Sum(x=>x.ETCProfit)).ToString("N2"))
+                                                    <br>
+                                                    @((@Model.ContainerList.AirExports.Sum(x=>x.HblFreeProfit)+@Model.ContainerList.AirExports.Sum(x=>x.HblNomiProfit)+@Model.ContainerList.AirExports.Sum(x=>x.HblCoProfit)+@Model.ContainerList.AirExports.Sum(x=>x.HblETCProfit)).ToString("N2"))
+                                                </td>
+                            
+                        </tr>
+                    </tbody></table>
+                </div>
+                }
+            
+            
+            
+            
+        </div>
+        
+        
+        }
 </div>
 </form>

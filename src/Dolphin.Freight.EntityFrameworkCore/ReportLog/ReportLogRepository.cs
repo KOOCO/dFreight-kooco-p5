@@ -1,20 +1,32 @@
 ﻿using AutoMapper;
 using AutoMapper.Internal;
 using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.AirImports;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.EntityFrameworkCore;
+using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.ImportExport.OceanExports;
+using Dolphin.Freight.ImportExport.OceanImports;
+using Dolphin.Freight.Settings.ContainerSizes;
+using Dolphin.Freight.Settinngs.ContainerSizes;
+using Dolphin.Freight.Settinngs.SysCodes;
 using Microsoft.EntityFrameworkCore;
+using NPOI.SS.UserModel;
 using Scriban.Syntax;
+using SixLabors.ImageSharp.ColorSpaces;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Common;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.Uow;
+using QueryHblDto = Dolphin.Freight.ImportExport.OceanExports.QueryHblDto;
 
 namespace Dolphin.Freight.ReportLog
 {
@@ -22,13 +34,28 @@ namespace Dolphin.Freight.ReportLog
     {
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly IContainerAppService _containerAppService;
+        private readonly IOceanExportHblAppService _oceanExportHblAppService;
+        private readonly IOceanImportHblAppService _oceanImportHblAppService;
+        private readonly IContainerSizeAppService _containerSizeAppService;
+        private readonly ISysCodeAppService _sysCodeAppService;
+        private readonly IAirExportHawbAppService _airExportHawbAppService;
+        private readonly IAirImportHawbAppService _airImportHawbAppService;
         IDbContextProvider<FreightDbContext> _dbContextProvider;
-        public ReportLogRepository(IDbContextProvider<FreightDbContext> dbContextProvider, IInvoiceAppService invoiceAppService, IContainerAppService containerAppService)
+        public ReportLogRepository(IDbContextProvider<FreightDbContext> dbContextProvider, IInvoiceAppService invoiceAppService, 
+            IContainerAppService containerAppService, IOceanExportHblAppService oceanExportHblAppService, 
+            IOceanImportHblAppService oceanImportHblAppService, ISysCodeAppService sysCodeAppService, IContainerSizeAppService containerSizeAppService,
+            IAirExportHawbAppService airExportHawbAppService,IAirImportHawbAppService airImportHawbAppService)
             : base(dbContextProvider)
         {
             _dbContextProvider = dbContextProvider;
             _invoiceAppService = invoiceAppService;
             _containerAppService = containerAppService;
+            _oceanExportHblAppService=oceanExportHblAppService;
+            _oceanImportHblAppService = oceanImportHblAppService;
+            _sysCodeAppService=sysCodeAppService;
+            _containerSizeAppService = containerSizeAppService;
+            _airExportHawbAppService = airExportHawbAppService;
+            _airImportHawbAppService=airImportHawbAppService;
         }
 
         public async Task<ReportLog> FindByReportIdAsync(Guid ReportId, string ReportName)
@@ -82,17 +109,18 @@ namespace Dolphin.Freight.ReportLog
             var airExportMawbsIds = await _dbContext.AirExportMawbs.Select(s => s.Id).ToListAsync();
             var oceanImportMblsIds = await _dbContext.OceanImportMbls.Select(s => s.Id).ToListAsync();
             var oceanExportMblsIds = await _dbContext.OceanExportMbls.Select(s => s.Id).ToListAsync();
+            var SaleTypes=await  _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "ShipModeId" });
 
             var allProfitData = new Dictionary<Guid, ProfitReport>();
 
             foreach (var id in airImportMawbsIds.Concat(airExportMawbsIds))
             {
-                allProfitData[id] = await GetProfit(id, 0, _invoiceAppService, _containerAppService);
+                allProfitData[id] = await GetProfit(id, 0, _invoiceAppService, _containerAppService,_oceanExportHblAppService,_oceanImportHblAppService,_airExportHawbAppService, _airImportHawbAppService, SaleTypes);
             }
 
             foreach (var id in oceanImportMblsIds.Concat(oceanExportMblsIds))
             {
-                allProfitData[id] = await GetProfit(id, 3, _invoiceAppService, _containerAppService);
+                allProfitData[id] = await GetProfit(id, 3, _invoiceAppService, _containerAppService, _oceanExportHblAppService, _oceanImportHblAppService, _airExportHawbAppService, _airImportHawbAppService, SaleTypes);
             }
 
             try
@@ -340,16 +368,17 @@ namespace Dolphin.Freight.ReportLog
                                     }).AsEnumerable();
 
                 IEnumerable<MawbReport> result = new List<MawbReport>();
-                
+
 
                 if (filter.IsOceanExport)
+                {
                     if (filter.ShipModeId != null)
                     {
                         oceanExports = oceanExports.Where(w => (w.ShipModeId != null) && w.ShipModeId.Equals(filter.ShipModeId)).ToList();
 
                     }
-                result = oceanExports;
-
+                    result = oceanExports;
+                }
                 if (filter.IsOceanImport)
                 {
                     if (result != null)
@@ -399,22 +428,30 @@ namespace Dolphin.Freight.ReportLog
                                    ContainerCode = hb.ContainerCode,
                                    MblId = mb.MblId
                                }).ToList();
-
-            var airImportMawbsIds = await _dbContext.AirImportMawbs.Select(s => s.Id).ToListAsync();
-            var airExportMawbsIds = await _dbContext.AirExportMawbs.Select(s => s.Id).ToListAsync();
-            var oceanImportMblsIds = await _dbContext.OceanImportMbls.Select(s => s.Id).ToListAsync();
-            var oceanExportMblsIds = await _dbContext.OceanExportMbls.Select(s => s.Id).ToListAsync();
-
+            List<Guid> airImportMawbsIds = new List<Guid>();
+            List<Guid> airExportMawbsIds = new List<Guid>();
+            List<Guid> oceanImportMblsIds = new List<Guid>();
+            List<Guid> oceanExportMblsIds = new List<Guid>();
+            if(filter.IsAirImport)
+            airImportMawbsIds = await _dbContext.AirImportMawbs.Select(s => s.Id).ToListAsync();
+            if(filter.IsAirExport)
+            airExportMawbsIds = await _dbContext.AirExportMawbs.Select(s => s.Id).ToListAsync();
+            if(filter.IsOceanImport)
+             oceanImportMblsIds = await _dbContext.OceanImportMbls.Select(s => s.Id).ToListAsync();
+            if(filter.IsOceanExport)
+             oceanExportMblsIds = await _dbContext.OceanExportMbls.Select(s => s.Id).ToListAsync();
+            var ShipModes = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "ShipModeId" });
+            var SalesType = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "MblSalesTypeId" });
             var allProfitData = new Dictionary<Guid, ProfitReport>();
-
+           if(filter.IsAirImport)
             foreach (var id in airImportMawbsIds.Concat(airExportMawbsIds))
             {
-                allProfitData[id] = await GetProfit(id, 0, _invoiceAppService,_containerAppService);
+                allProfitData[id] = await GetProfit(id, 0, _invoiceAppService,_containerAppService, _oceanExportHblAppService, _oceanImportHblAppService, _airExportHawbAppService,_airImportHawbAppService, SalesType);
             }
-
+           if(filter.IsOceanExport)
             foreach (var id in oceanImportMblsIds.Concat(oceanExportMblsIds))
             {
-                allProfitData[id] = await GetProfit(id, 3, _invoiceAppService, _containerAppService);
+                allProfitData[id] = await GetProfit(id, 3, _invoiceAppService, _containerAppService, _oceanExportHblAppService, _oceanImportHblAppService, _airExportHawbAppService, _airImportHawbAppService, SalesType);
             }
             IEnumerable<MawbReport> OceanExports = new List<MawbReport>();
 
@@ -478,6 +515,14 @@ namespace Dolphin.Freight.ReportLog
                                           ProfitAmt = allProfitData[mb.Id].ARTotal + allProfitData[mb.Id].DCTotal - allProfitData[mb.Id].APTotal,
                                           ProfitMargin = allProfitData[mb.Id].ProfitMargin,
                                           Avg_Profit_Per_Cntr = allProfitData[mb.Id].Avg_Profit_Per_Cntr,
+                                          FreeProfit = allProfitData[mb.Id].FreeProfit,
+                                          NomiProfit = allProfitData[mb.Id].NomiProfit,
+                                          CoProfit = allProfitData[mb.Id].CoProfit,
+                                          ETCProfit = allProfitData[mb.Id].ETCProfit,
+                                          HblFreeProfit = allProfitData[mb.Id].HblFreeProfit,
+                                          HblNomiProfit = allProfitData[mb.Id].HblNomiProfit,
+                                          HblCoProfit = allProfitData[mb.Id].HblCoProfit,
+                                          HblETCProfit = allProfitData[mb.Id].HblETCProfit,
                                           V20 = 0,
                                           V40 = 0,
                                           HC = 0,
@@ -547,6 +592,14 @@ namespace Dolphin.Freight.ReportLog
                                       ProfitAmt = allProfitData[mb.Id].ARTotal + allProfitData[mb.Id].DCTotal - allProfitData[mb.Id].APTotal,
                                       ProfitMargin = allProfitData[mb.Id].ProfitMargin,
                                       Avg_Profit_Per_Cntr = allProfitData[mb.Id].Avg_Profit_Per_Cntr,
+                                      FreeProfit = allProfitData[mb.Id].FreeProfit,
+                                      NomiProfit = allProfitData[mb.Id].NomiProfit,
+                                      CoProfit = allProfitData[mb.Id].CoProfit,
+                                      ETCProfit = allProfitData[mb.Id].ETCProfit,
+                                      HblFreeProfit = allProfitData[mb.Id].HblFreeProfit,
+                                      HblNomiProfit = allProfitData[mb.Id].HblNomiProfit,
+                                      HblCoProfit = allProfitData[mb.Id].HblCoProfit,
+                                      HblETCProfit = allProfitData[mb.Id].HblETCProfit,
                                       V20 = 0,
                                       V40 = 0,
                                       HC = 0,
@@ -614,6 +667,14 @@ namespace Dolphin.Freight.ReportLog
                                         ProfitAmt = allProfitData[oi.Id].ARTotal + allProfitData[oi.Id].DCTotal - allProfitData[oi.Id].APTotal,
                                         ProfitMargin = allProfitData[oi.Id].ProfitMargin,
                                         Avg_Profit_Per_Cntr = allProfitData[oi.Id].Avg_Profit_Per_Cntr,
+                                        FreeProfit = allProfitData[oi.Id].FreeProfit,
+                                        NomiProfit = allProfitData[oi.Id].NomiProfit,
+                                        CoProfit = allProfitData[oi.Id].CoProfit,
+                                        ETCProfit = allProfitData[oi.Id].ETCProfit,
+                                        HblFreeProfit = allProfitData[oi.Id].HblFreeProfit,
+                                        HblNomiProfit = allProfitData[oi.Id].HblNomiProfit,
+                                        HblCoProfit = allProfitData[oi.Id].HblCoProfit,
+                                        HblETCProfit = allProfitData[oi.Id].HblETCProfit,
                                         V20 = GetContainerTypeCount(resultMawbs, oi.Id).V20,
                                         V40 = GetContainerTypeCount(resultMawbs, oi.Id).V40,
                                         HC = GetContainerTypeCount(resultMawbs, oi.Id).HC,
@@ -677,6 +738,14 @@ namespace Dolphin.Freight.ReportLog
                                         ProfitAmt = allProfitData[oe.Id].ARTotal + allProfitData[oe.Id].DCTotal - allProfitData[oe.Id].APTotal,
                                         ProfitMargin = allProfitData[oe.Id].ProfitMargin,
                                         Avg_Profit_Per_Cntr = allProfitData[oe.Id].Avg_Profit_Per_Cntr,
+                                        FreeProfit= allProfitData[oe.Id].FreeProfit,
+                                        NomiProfit= allProfitData[oe.Id].NomiProfit,
+                                        CoProfit= allProfitData[oe.Id].CoProfit,
+                                        ETCProfit= allProfitData[oe.Id].ETCProfit,
+                                        HblFreeProfit = allProfitData[oe.Id].HblFreeProfit,
+                                        HblNomiProfit = allProfitData[oe.Id].HblNomiProfit,
+                                        HblCoProfit = allProfitData[oe.Id].HblCoProfit,
+                                        HblETCProfit = allProfitData[oe.Id].HblETCProfit,
                                         Volume = GetContainerTypeCount(resultMawbs, oe.Id),
                                         V20 = GetContainerTypeCount(resultMawbs, oe.Id).V20,
                                         V40 = GetContainerTypeCount(resultMawbs, oe.Id).V40,
@@ -684,13 +753,69 @@ namespace Dolphin.Freight.ReportLog
                                         V45 = GetContainerTypeCount(resultMawbs, oe.Id).V45,
                                         RF = GetContainerTypeCount(resultMawbs, oe.Id).RF,
                                         SOC = GetContainerTypeCount(resultMawbs, oe.Id).SOC,
-                                        ETC = GetContainerTypeCount(resultMawbs, oe.Id).ETC
+                                        ETC = GetContainerTypeCount(resultMawbs, oe.Id).ETC,
+                                       
                                     }).AsEnumerable();
             }
                 result.AirExports = AirExports.ToList();
                 result.AirImports = AirImports.ToList();
                 result.OceanExports = OceanExports.ToList();
                 result.OceanImports = OceanImports.ToList();
+                foreach (var item in result.OceanImports)
+                {
+
+                    item.ShipModeVolume = await GetShipModeVolumeCount(item.Id, item.ShipModeId, _oceanImportHblAppService, _oceanExportHblAppService, _containerAppService, ShipModes, true);
+                    item.LCL = (double)(item.ShipModeVolume?.Lcl);
+                    item.FCL = (double)(item.ShipModeVolume?.Fcl);
+                    item.CoLoaded = (double)(item.ShipModeVolume?.CoLoaded);
+                    item.Bulk = (double)(item.ShipModeVolume?.Bulk);
+                    item.HblLCL = (double)(item.ShipModeVolume?.HblLcl);
+                    item.HblFCL = (double)(item.ShipModeVolume?.HblFcl);
+                    item.HblCoLoaded = (double)(item.ShipModeVolume?.HblCoLoaded);
+                    item.HblBulk = (double)(item.ShipModeVolume?.HblBulk);
+                    item.HblVolumeReport = await GetHblContainerTypeCount(item.Id, _oceanExportHblAppService, _oceanImportHblAppService, _containerAppService, _containerSizeAppService, true);
+                    item.HblV20 = (int)(item.HblVolumeReport?.V20!=null? item.HblVolumeReport?.V20:0);
+                    item.HblV40 = (int)(item.HblVolumeReport?.V40 != null ? item.HblVolumeReport?.V40 : 0);
+                    item.HblV45 = (int)(item.HblVolumeReport?.V45 != null ? item.HblVolumeReport?.V45 : 0);
+                    item.HblHC = (int)(item.HblVolumeReport?.HC != null ? item.HblVolumeReport?.HC : 0);
+                    item.HblRF = (int)(item.HblVolumeReport?.RF != null ? item.HblVolumeReport?.RF : 0);
+                    item.HblSOC = (int)(item.HblVolumeReport?.SOC != null ? item.HblVolumeReport?.SOC : 0);
+                    item.HblCntETC = (int)(item.HblVolumeReport?.ETC != null ? item.HblVolumeReport?.ETC : 0);
+                    item.HblVolumeReport = await GetHblContainerTypeCount(item.Id, _oceanExportHblAppService, _oceanImportHblAppService, _containerAppService, _containerSizeAppService, true);
+                    item.HblV20 = (int)(item.HblVolumeReport?.V20 != null ? item.HblVolumeReport?.V20 : 0);
+                    item.HblV40 = (int)(item.HblVolumeReport?.V40 != null ? item.HblVolumeReport?.V40 : 0);
+                    item.HblV45 = (int)(item.HblVolumeReport?.V45 != null ? item.HblVolumeReport?.V45 : 0);
+                    item.HblHC = (int)(item.HblVolumeReport?.HC != null ? item.HblVolumeReport?.HC : 0);
+                    item.HblRF = (int)(item.HblVolumeReport?.RF != null ? item.HblVolumeReport?.RF : 0);
+                    item.HblSOC = (int)(item.HblVolumeReport?.SOC != null ? item.HblVolumeReport?.SOC : 0);
+                    item.HblCntETC = (int)(item.HblVolumeReport?.ETC != null ? item.HblVolumeReport?.ETC : 0);
+
+
+                }
+                foreach (var item in result.OceanExports)
+                {
+
+                    item.ShipModeVolume = await GetShipModeVolumeCount(item.Id, item.ShipModeId, _oceanImportHblAppService, _oceanExportHblAppService, _containerAppService, ShipModes, false);
+                    item.LCL = (double)(item.ShipModeVolume?.Lcl);
+                    item.FCL = (double)(item.ShipModeVolume?.Fcl);
+                    item.CoLoaded = (double)(item.ShipModeVolume?.CoLoaded);
+                    item.Bulk = (double)(item.ShipModeVolume?.Bulk);
+                    item.HblLCL = (double)(item.ShipModeVolume?.HblLcl);
+                    item.HblFCL = (double)(item.ShipModeVolume?.HblFcl);
+                    item.HblCoLoaded = (double)(item.ShipModeVolume?.HblCoLoaded);
+                    item.HblBulk = (double)(item.ShipModeVolume?.HblBulk);
+                    item.SaleVolume = await GetSaleTypeVolumeCount(item.Id, _oceanImportHblAppService, _oceanExportHblAppService, _containerAppService, SalesType, false);
+                    item.SaleFree = (double)(item.SaleVolume?.Free);
+                    item.SaleNomi = (double)(item.SaleVolume?.Nomi);
+                    item.SaleCo = (double)(item.SaleVolume?.Co);
+                    item.SaleETC = (double)(item.SaleVolume?.ETC);
+                    item.HblFree = (double)(item.SaleVolume?.HblFree);
+                    item.HblNomi = (double)(item.SaleVolume?.HblNomi);
+                    item.HblCo = (double)(item.SaleVolume?.HblCo);
+                    item.HblETC = (double)(item.SaleVolume?.HblETC);
+
+                }
+             
 
                 //if (filter.IsMisc)
                 //if (filter.IsWarehouse)
@@ -707,10 +832,11 @@ namespace Dolphin.Freight.ReportLog
 
 
 
-        public static async Task<ProfitReport> GetProfit(Guid Id, int queryType, IInvoiceAppService invoiceAppService,IContainerAppService containerAppService)
+        public static async Task<ProfitReport> GetProfit(Guid Id, int queryType, IInvoiceAppService invoiceAppService,IContainerAppService containerAppService,IOceanExportHblAppService oceanExportHblAppService,IOceanImportHblAppService oceanImportHblAppService,IAirExportHawbAppService airExportHawbAppService,IAirImportHawbAppService airImportHawbAppService,List<SysCodeDto> SaleTypes)
         {
             int containerCont = 1;
             ProfitReport data = new();
+            ProfitReport dataHbl = new();
             if (queryType == 3)
             {
                 QueryContainerDto dto = new QueryContainerDto();
@@ -742,7 +868,7 @@ namespace Dolphin.Freight.ReportLog
                             break;
                     }
                 }
-
+             
                 if (data.AR.Any())
                 {
                     double arTotal = 0;
@@ -771,10 +897,241 @@ namespace Dolphin.Freight.ReportLog
                     }
                     data.DCTotal = dcTotal;
                 }
+                if (queryType == 3)
+                {
+                    var hbls = await oceanImportHblAppService.QueryListByMidAsync(new ImportExport.OceanImports.QueryHblDto { MblId = Id });
+                    if (hbls.Count > 0)
+                    {
+                        foreach (var hbl in hbls)
+                        {
+                            QueryInvoiceDto Hblquery = new QueryInvoiceDto() { QueryType = 1, ParentId = Id };
+
+                            dataHbl.Invoices = (await invoiceAppService.QueryInvoicesAsync(Hblquery)).ToList();
+
+                            if (dataHbl.Invoices != null && dataHbl.Invoices.Count > 0)
+                            {
+                                dataHbl.AR = new List<InvoiceDto>();
+                                dataHbl.AP = new List<InvoiceDto>();
+                                dataHbl.DC = new List<InvoiceDto>();
+                                foreach (var dto in data.Invoices)
+                                {
+                                    switch (dto.InvoiceType)
+                                    {
+                                        default:
+                                            dataHbl.AR.Add(dto);
+                                            break;
+                                        case 1:
+                                            dataHbl.DC.Add(dto);
+                                            break;
+                                        case 2:
+                                            dataHbl.AP.Add(dto);
+                                            break;
+                                    }
+                                }
+
+                                if (dataHbl.AR.Any())
+                                {
+                                    double arTotal = 0;
+                                    foreach (var ar in dataHbl.AR)
+                                    {
+                                        arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                                    }
+                                    dataHbl.ARTotal = arTotal;
+                                }
+                                if (dataHbl.AP.Any())
+                                {
+                                    double apTotal = 0;
+                                    foreach (var ap in dataHbl.AP)
+                                    {
+                                        apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                                    }
+
+                                    dataHbl.APTotal = apTotal;
+                                }
+                                if (dataHbl.DC.Any())
+                                {
+                                    double dcTotal = 0;
+                                    foreach (var dc in dataHbl.DC)
+                                    {
+                                        dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                                    }
+                                    dataHbl.DCTotal = dcTotal;
+                                }
+                            }
+                                var saleType1 = SaleTypes.Where(x => x.Id == hbl.HblSalesTypeId).FirstOrDefault();
+                            if (saleType1?.CodeValue == "F")
+                            {
+                                dataHbl.FreeProfit = dataHbl.ARTotal + dataHbl.DCTotal - dataHbl.APTotal;
+
+                            }
+                            else
+                            if (saleType1?.CodeValue == "N")
+                            {
+                                dataHbl.NomiProfit = dataHbl.ARTotal + dataHbl.DCTotal - dataHbl.APTotal;
+                            }
+                            else
+                            if (saleType1?.CodeValue == "C")
+                            {
+                                dataHbl.CoProfit = dataHbl.ARTotal + dataHbl.DCTotal - dataHbl.APTotal;
+                            }
+                            else
+                            {
+                                dataHbl.ETCProfit = dataHbl.ARTotal + dataHbl.DCTotal - dataHbl.APTotal;
+                            }
+                        }
+                        var saleType = SaleTypes.Where(x => x.Id == hbls[0].HblSalesTypeId).FirstOrDefault();
+                        if (saleType?.CodeValue == "F")
+                        {
+                            data.FreeProfit = data.ARTotal + data.DCTotal - data.APTotal;
+
+                        }
+                        else
+                        if (saleType?.CodeValue == "N")
+                        {
+                            data.NomiProfit = data.ARTotal + data.DCTotal - data.APTotal;
+                        }
+                        else
+                        if (saleType?.CodeValue == "C")
+                        {
+                            data.CoProfit = data.ARTotal + data.DCTotal - data.APTotal;
+                        }
+                        else
+                        {
+                            data.ETCProfit = data.ARTotal + data.DCTotal - data.APTotal;
+                        }
+                    }
+                    else {
+
+                        data.ETCProfit = data.ARTotal + data.DCTotal - data.APTotal;
+
+                    }
+                }
+                else {
+
+                    var hbls = await oceanImportHblAppService.QueryListByMidAsync(new ImportExport.OceanImports.QueryHblDto { MblId = Id });
+                    if (hbls.Count > 0)
+                    {
+                        foreach (var hbl in hbls)
+                        {
+                            QueryInvoiceDto Hblquery = new QueryInvoiceDto() { QueryType = 4, ParentId = Id };
+
+                            dataHbl.Invoices = (await invoiceAppService.QueryInvoicesAsync(Hblquery)).ToList();
+
+                            if (dataHbl.Invoices != null && dataHbl.Invoices.Count > 0)
+                            {
+                                dataHbl.AR = new List<InvoiceDto>();
+                                dataHbl.AP = new List<InvoiceDto>();
+                                dataHbl.DC = new List<InvoiceDto>();
+                                foreach (var dto in data.Invoices)
+                                {
+                                    switch (dto.InvoiceType)
+                                    {
+                                        default:
+                                            dataHbl.AR.Add(dto);
+                                            break;
+                                        case 1:
+                                            dataHbl.DC.Add(dto);
+                                            break;
+                                        case 2:
+                                            dataHbl.AP.Add(dto);
+                                            break;
+                                    }
+                                }
+
+                                if (dataHbl.AR.Any())
+                                {
+                                    double arTotal = 0;
+                                    foreach (var ar in dataHbl.AR)
+                                    {
+                                        arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                                    }
+                                    dataHbl.ARTotal = arTotal;
+                                }
+                                if (dataHbl.AP.Any())
+                                {
+                                    double apTotal = 0;
+                                    foreach (var ap in dataHbl.AP)
+                                    {
+                                        apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                                    }
+
+                                    dataHbl.APTotal = apTotal;
+                                }
+                                if (dataHbl.DC.Any())
+                                {
+                                    double dcTotal = 0;
+                                    foreach (var dc in dataHbl.DC)
+                                    {
+                                        dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                                    }
+                                    dataHbl.DCTotal = dcTotal;
+                                }
+                            }
+                            var saleType1 = SaleTypes.Where(x => x.Id == hbl.HblSalesTypeId).FirstOrDefault();
+                            if (saleType1?.CodeValue == "F")
+                            {
+                                dataHbl.FreeProfit = dataHbl.ARTotal + dataHbl.DCTotal - dataHbl.APTotal;
+
+                            }
+                            else
+                            if (saleType1?.CodeValue == "N")
+                            {
+                                dataHbl.NomiProfit = dataHbl.ARTotal + dataHbl.DCTotal - dataHbl.APTotal;
+                            }
+                            else
+                            if (saleType1?.CodeValue == "C")
+                            {
+                                dataHbl.CoProfit = dataHbl.ARTotal + dataHbl.DCTotal - dataHbl.APTotal;
+                            }
+                            else
+                            {
+                                dataHbl.ETCProfit = dataHbl.ARTotal + dataHbl.DCTotal - dataHbl.APTotal;
+                            }
+                        }
+                        var saleType = SaleTypes.Where(x => x.Id == hbls[0].HblSalesTypeId).FirstOrDefault();
+                        if (saleType?.CodeValue == "F")
+                        {
+                            data.FreeProfit = data.ARTotal + data.DCTotal - data.APTotal;
+
+                        }
+                        else
+                        if (saleType?.CodeValue == "N")
+                        {
+                            data.NomiProfit = data.ARTotal + data.DCTotal - data.APTotal;
+                        }
+                        else
+                        if (saleType?.CodeValue == "C")
+                        {
+                            data.CoProfit = data.ARTotal + data.DCTotal - data.APTotal;
+                        }
+                        else
+                        {
+                            data.ETCProfit = data.ARTotal + data.DCTotal - data.APTotal;
+                        }
+                    }
+                    else
+                    {
+
+                        data.ETCProfit = data.ARTotal + data.DCTotal - data.APTotal;
+
+                    }
+
+                }
             }
             if (data.ARTotal != 0)
             {
-                data.ProfitMargin = (((data.ARTotal + data.DCTotal - data.APTotal) / data.ARTotal));
+                if (data.APTotal != 0)
+                {
+                    data.ProfitMargin = (((data.ARTotal - data.APTotal) / data.ARTotal));
+
+                }
+                else {
+
+                    data.ProfitMargin = (((data.ARTotal - data.DCTotal) / data.ARTotal));
+
+
+                }
+                
             }
             else
             {
@@ -864,7 +1221,7 @@ namespace Dolphin.Freight.ReportLog
 
                     case "12RF":
                         volume.RF += 1;
-                        volume.ETC += 1;
+                        
                         break;
 
                     case "53FT":
@@ -893,6 +1250,600 @@ namespace Dolphin.Freight.ReportLog
             return volume;
         }
 
+        public static async Task<HblVolumeReport> GetHblContainerTypeCount(Guid Id,IOceanExportHblAppService oceanExportHblAppService,IOceanImportHblAppService oceanImportHblAppService,IContainerAppService containerAppService,IContainerSizeAppService containerSizeAppService,bool IsOceanImport)
+        {
+            HblVolumeReport volume = new HblVolumeReport();
+            if (IsOceanImport)
+            {
+               var MblContainers= await containerAppService.QueryListAsync(new QueryContainerDto { QueryId = Id });
+                if (MblContainers.Count > 0)
+                {
+                    var containerSize = await containerSizeAppService.GetAsync(MblContainers.Select(x => x.ContainerSizeId).FirstOrDefault());
+                    var hbls = await oceanImportHblAppService.QueryListByMidAsync(new ImportExport.OceanImports.QueryHblDto { MblId = Id });
+
+                    foreach (var hbl in hbls)
+                    {
+                        var hblContainer = await containerAppService.GetContainerByHblId(hbl.Id);
+                        if (hblContainer != null)
+                        {
+                            switch (containerSize?.ContainerCode)
+                            {
+                                case "20":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "20DC":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "20FR":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "20FL":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40DC":
+                                    volume.V40 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40FL":
+                                    volume.V40 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40FR":
+                                    volume.V40 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40GH":
+                                    volume.V40 += 1;
+                                    volume.ETC = +1;
+                                    break;
+
+                                case "12RF":
+                                    volume.RF += 1;
+
+                                    break;
+
+                                case "53FT":
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "2":
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "101":
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "102":
+                                    volume.ETC += 1;
+                                    break;
+
+                                default:
+                                    volume.HC = 0;
+                                    volume.SOC = 0;
+                                    break;
+                            }
+
+
+                        }
+                    }
+
+
+
+                }
+                else {
+
+                    var hbls = await oceanImportHblAppService.QueryListByMidAsync(new ImportExport.OceanImports.QueryHblDto { MblId = Id });
+
+                    foreach (var hbl in hbls)
+                    {
+                        var hblContainer = await containerAppService.GetContainerByHblId(hbl.Id);
+                        
+                        if (hblContainer != null)
+                        {
+                            var containerSize = await containerSizeAppService.GetAsync(hblContainer.ContainerSizeId);
+                            switch (containerSize?.ContainerCode)
+                            {
+                                case "20":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "20DC":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "20FR":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "20FL":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40DC":
+                                    volume.V40 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40FL":
+                                    volume.V40 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40FR":
+                                    volume.V40 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40GH":
+                                    volume.V40 += 1;
+                                    volume.ETC = +1;
+                                    break;
+
+                                case "12RF":
+                                    volume.RF += 1;
+
+                                    break;
+
+                                case "53FT":
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "2":
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "101":
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "102":
+                                    volume.ETC += 1;
+                                    break;
+
+                                default:
+                                    volume.HC = 0;
+                                    volume.SOC = 0;
+                                    break;
+                            }
+
+
+                        }
+                    }
+
+
+                }
+            }
+
+            else
+            {
+                var MblContainers = await containerAppService.QueryListAsync(new QueryContainerDto { QueryId = Id });
+                if (MblContainers.Count > 0)
+                {
+                    var containerSize = await containerSizeAppService.GetAsync(MblContainers.Select(x => x.ContainerSizeId).FirstOrDefault());
+                    var hbls = await oceanExportHblAppService.QueryListByMidAsync(new ImportExport.OceanExports.QueryHblDto { MblId = Id });
+
+                    foreach (var hbl in hbls)
+                    {
+                        var hblContainer = await containerAppService.GetContainerByHblId(hbl.Id);
+                        if (hblContainer != null)
+                        {
+                            switch (containerSize?.ContainerCode)
+                            {
+                                case "20":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "20DC":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "20FR":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "20FL":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40DC":
+                                    volume.V40 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40FL":
+                                    volume.V40 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40FR":
+                                    volume.V40 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40GH":
+                                    volume.V40 += 1;
+                                    volume.ETC = +1;
+                                    break;
+
+                                case "12RF":
+                                    volume.RF += 1;
+
+                                    break;
+
+                                case "53FT":
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "2":
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "101":
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "102":
+                                    volume.ETC += 1;
+                                    break;
+
+                                default:
+                                    volume.HC = 0;
+                                    volume.SOC = 0;
+                                    break;
+                            }
+
+
+                        }
+                    }
+
+
+
+                }
+                else
+                {
+
+                    var hbls = await oceanExportHblAppService.QueryListByMidAsync(new ImportExport.OceanExports.QueryHblDto { MblId = Id });
+
+                    foreach (var hbl in hbls)
+                    {
+                        var hblContainer = await containerAppService.GetContainerByHblId(hbl.Id);
+                       
+                        if (hblContainer != null)
+                        {
+                            var containerSize = await containerSizeAppService.GetAsync(hblContainer.ContainerSizeId);
+                            switch (containerSize?.ContainerCode)
+                            {
+                                case "20":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "20DC":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "20FR":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "20FL":
+                                    volume.V20 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40DC":
+                                    volume.V40 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40FL":
+                                    volume.V40 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40FR":
+                                    volume.V40 += 1;
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "40GH":
+                                    volume.V40 += 1;
+                                    volume.ETC = +1;
+                                    break;
+
+                                case "12RF":
+                                    volume.RF += 1;
+
+                                    break;
+
+                                case "53FT":
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "2":
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "101":
+                                    volume.ETC += 1;
+                                    break;
+
+                                case "102":
+                                    volume.ETC += 1;
+                                    break;
+
+                                default:
+                                    volume.HC = 0;
+                                    volume.SOC = 0;
+                                    break;
+                            }
+
+
+                        }
+                    }
+
+
+                }
+            }
+
+
+
+            return volume;
+        }
+
+        public static async Task<ShipModeVolumeReport> GetShipModeVolumeCount(Guid Id,Guid? shipModeId,IOceanImportHblAppService oceanImportHblAppService,IOceanExportHblAppService oceanExportHblAppService,IContainerAppService containerAppService,List<SysCodeDto> ShipModes,bool IsOceanImport)
+        {
+            ShipModeVolumeReport report = new ShipModeVolumeReport();
+            if (IsOceanImport)
+            {
+                if (shipModeId != null)
+                {
+                    ImportExport.OceanImports.QueryHblDto dto = new ImportExport.OceanImports.QueryHblDto() { MblId = Id };
+
+                    var hbls = await oceanImportHblAppService.QueryListByMidAsync(dto);
+                    foreach (var hbl in hbls)
+                    {
+
+
+                        var container = await containerAppService.GetContainerByHblId(hbl.Id);
+                        var saleType = ShipModes.Where(x => x.Id == (Guid)shipModeId).FirstOrDefault();
+                        if (saleType.CodeValue == "FCL")
+                        {
+                            report.HblFcl += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+
+
+                        }
+                        if (saleType.CodeValue == "LCL")
+                        {
+                            report.HblLcl += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+
+                        }
+                        if (saleType.CodeValue == "FAK")
+                        {
+                            report.HblCoLoaded += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+
+                        }
+                        if (saleType.CodeValue == "BLK")
+                        {
+                            report.HblBulk += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+
+                        }
+
+
+                    }
+                    var MblContainers = await containerAppService.QueryListAsync(new QueryContainerDto { QueryId = Id });
+
+                    foreach (var mbl in MblContainers)
+                    {
+                        var saleType = ShipModes.Where(x => x.Id == (Guid)shipModeId).FirstOrDefault();
+                        if (saleType.CodeValue == "FCL")
+                        {
+                            report.Fcl += (mbl.PackageMeasure);
+
+
+                        }
+                        if (saleType.CodeValue == "LCL")
+                        {
+                            report.Lcl += mbl.PackageMeasure;
+
+                        }
+                        if (saleType.CodeValue == "FAK")
+                        {
+                            report.CoLoaded += mbl.PackageMeasure;
+
+                        }
+                        if (saleType.CodeValue == "BLK")
+                        {
+                            report.Bulk += mbl.PackageMeasure;
+                        }
+                    }
+
+                    return report;
+                }
+                return report;
+
+            }
+            else
+            {
+                if (shipModeId != null)
+                {
+                    QueryHblDto dto = new QueryHblDto() { MblId = Id };
+
+                    var hbls = await oceanExportHblAppService.QueryListByMidAsync(dto);
+                    foreach (var hbl in hbls)
+                    {
+
+
+                        var container = await containerAppService.GetContainerByHblId(hbl.Id);
+                        var saleType = ShipModes.Where(x => x.Id == (Guid)shipModeId).FirstOrDefault();
+                        if (saleType.CodeValue == "FCL")
+                        {
+                            report.HblFcl = (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+
+
+                        }
+                        if (saleType.CodeValue == "LCL")
+                        {
+                            report.HblLcl = (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+
+                        }
+                        if (saleType.CodeValue == "FAK")
+                        {
+                            report.HblCoLoaded = (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+
+                        }
+                        if (saleType.CodeValue == "BLK")
+                        {
+                            report.HblBulk = (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+
+                        }
+
+
+
+                    }
+                    var MblContainers = await containerAppService.QueryListAsync(new QueryContainerDto { QueryId = Id });
+
+                    foreach (var mbl in MblContainers)
+                    {
+                        var saleType = ShipModes.Where(x => x.Id == (Guid)shipModeId).FirstOrDefault();
+                        if (saleType.CodeValue == "FCL")
+                        {
+                            report.Fcl += (mbl.PackageMeasure);
+
+
+                        }
+                        if (saleType.CodeValue == "LCL")
+                        {
+                            report.Lcl += mbl.PackageMeasure;
+
+                        }
+                        if (saleType.CodeValue == "FAK")
+                        {
+                            report.CoLoaded += mbl.PackageMeasure;
+
+                        }
+                        if (saleType.CodeValue == "BLK")
+                        {
+                            report.Bulk += mbl.PackageMeasure;
+                        }
+                    }
+                    return report;
+                }
+                return report;
+            }
+           
+
+        }
+        public static async Task<SaleVolumeReport> GetSaleTypeVolumeCount(Guid Id,  IOceanImportHblAppService oceanImportHblAppService, IOceanExportHblAppService oceanExportHblAppService, IContainerAppService containerAppService, List<SysCodeDto> SaleTypes, bool IsOceanImport)
+        {
+            SaleVolumeReport report = new SaleVolumeReport();
+            if (IsOceanImport)
+            {
+                ImportExport.OceanImports.QueryHblDto dto = new ImportExport.OceanImports.QueryHblDto() { MblId = Id };
+
+                var hbls = await oceanImportHblAppService.QueryListByMidAsync(dto);
+                foreach (var hbl in hbls)
+                {
+
+
+                    var container = await containerAppService.GetContainerByHblId(hbl.Id);
+                    var saleType = SaleTypes.Where(x => x.Id == hbl.HblSalesTypeId).FirstOrDefault();
+                    if (saleType?.CodeValue == "F")
+                    {
+                        report.HblFree += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+                        report.Free += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+
+                    }
+                    else
+                    if (saleType?.CodeValue == "N")
+                    {
+                        report.HblNomi += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+                        report.Nomi += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+                    }
+                    else
+                    if (saleType?.CodeValue == "C")
+                    {
+                        report.HblCo += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+                        report.Co += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+                    }
+                    else 
+                    {
+                        report.HblETC += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+                        report.ETC += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+                    }
+
+
+                }
+             
+                return report;
+
+
+            }
+            else
+            {
+
+                QueryHblDto dto = new QueryHblDto() { MblId = Id };
+
+                var hbls = await oceanExportHblAppService.QueryListByMidAsync(dto);
+                foreach (var hbl in hbls)
+                {
+
+
+                    var container = await containerAppService.GetContainerByHblId(hbl.Id);
+                    var saleType = SaleTypes.Where(x => x.Id == hbl.HblSaleId).FirstOrDefault();
+                    if (saleType?.CodeValue == "F")
+                    {
+                        report.HblFree += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+                        report.Free += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+
+                    }
+                    else
+                    if (saleType?.CodeValue == "N")
+                    {
+                        report.HblNomi += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+                        report.Nomi += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+                    }
+                    else
+                    if (saleType?.CodeValue == "C")
+                    {
+                        report.HblCo += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+                        report.Co += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+                    }
+                    else
+                    {
+                        report.HblETC += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+                        report.ETC += (double)(container?.PackageMeasure != null ? container?.PackageMeasure : 0);
+                    }
+
+                }
+                return report;
+            }
+
+
+
+        }
 
 
         private List<MawbReport> ApplyFilter(List<MawbReport> report, MawbReport filter)

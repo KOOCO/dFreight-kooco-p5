@@ -160,6 +160,45 @@ namespace Dolphin.Freight.ReportLog
         public double GrossWeightLB { get; set; }
         public double ChargeableWeightKG { get; set; }
         public double ChargeableWeightLB { get; set; }
+        public double FCL { get; set; }
+        public double LCL { get; set; }
+        public double CoLoaded { get; set; }
+        public double Bulk { get; set; }
+        public double HblFCL { get; set; }
+        public double HblLCL { get; set; }
+        public double HblCoLoaded { get; set; }
+        public double HblBulk { get; set; }
+
+        public double SaleFree { get; set; }
+        public double SaleNomi { get; set; }
+        public double SaleCo { get; set; }
+
+
+        public double SaleETC { get; set; }
+        public double HblFree { get; set; }
+        public double HblNomi { get; set; }
+        public double HblCo { get; set; }
+
+
+        public double HblETC { get; set; }
+
+        public int HblV20 { get; set; }
+        public int HblV40 { get; set; }
+        public int HblHC { get; set; }
+        public int HblV45 { get; set; }
+        public int HblRF { get; set; }
+        public int HblSOC { get; set; }
+
+        public int HblCntETC { get; set; }
+
+        public double NomiProfit { get; set; }
+        public double FreeProfit { get; set; }
+        public double CoProfit { get; set; }
+        public double ETCProfit { get; set; }
+        public double HblNomiProfit { get; set; }
+        public double HblFreeProfit { get; set; }
+        public double HblCoProfit { get; set; }
+        public double HblETCProfit { get; set; }
     }
 
 }

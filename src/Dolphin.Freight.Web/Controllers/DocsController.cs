@@ -5675,6 +5675,10 @@ namespace Dolphin.Freight.Web.Controllers
             InfoModel.Operator = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
             MawbReportDto filter = new MawbReportDto();
             var shippingTypes = shippingType.Split(',').ToList();
+            if (reportType == "Volume Only")
+            {
+                InfoModel.IsVolumeReport = true;
+            }
             if (shippingTypes.Contains("OceanImport"))
             {
                 filter.IsOceanImport = true;
