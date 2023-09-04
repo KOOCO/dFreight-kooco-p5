@@ -152,5 +152,10 @@ namespace Dolphin.Freight.TradePartners
 
             return dto;
         }
+
+        //public async Task<Guid> GetContactPersonIdByTradePartnerId(Guid Id)
+        //{
+            
+        //}
     }
 }
