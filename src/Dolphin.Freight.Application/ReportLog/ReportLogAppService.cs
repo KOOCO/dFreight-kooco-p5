@@ -118,7 +118,7 @@ namespace Dolphin.Freight.ReportLog
             {
                 if (filter.IsOverseaAgent)
                 {
-                    predictBuilderOr.Or(w => w.OverseaAgentId == null);
+                    predictBuilderOr.Or(w => w.OverseaAgentId != null);
                 }
                 else
                 {
@@ -127,7 +127,7 @@ namespace Dolphin.Freight.ReportLog
 
                 if (filter.IsShipper)
                 {
-                    predictBuilderOr.Or(w => string.IsNullOrEmpty(w.ShipperId));
+                    predictBuilderOr.Or(w => !string.IsNullOrEmpty(w.ShipperId));
                 }
                 else
                 {
@@ -136,7 +136,7 @@ namespace Dolphin.Freight.ReportLog
 
                 if (filter.IsCarrier)
                 {
-                    predictBuilderOr.Or(w => string.IsNullOrEmpty(w.CarrierId));
+                    predictBuilderOr.Or(w => !string.IsNullOrEmpty(w.CarrierId));
                 }
                 else
                 {
@@ -163,7 +163,7 @@ namespace Dolphin.Freight.ReportLog
 
                 if (filter.IsMBLOP)
                 {
-                    predictBuilderOr.Or(w => w.OpId == null);
+                    predictBuilderOr.Or(w => w.OpId != null);
                 }
                 else
                 {
@@ -172,16 +172,16 @@ namespace Dolphin.Freight.ReportLog
 
                 if (filter.IsPOL)
                 {
-                    predictBuilderOr.Or(w => w.PODId == null);
+                    predictBuilderOr.Or(w => w.POLId != null);
                 }
                 else
                 {
-                    predictBuilderAnd.And(w => w.PODId == null);
+                    predictBuilderAnd.And(w => w.POLId == null);
                 }
 
                 if (filter.IsPOD)
                 {
-                    predictBuilderOr.Or(w => w.PODId == null);
+                    predictBuilderOr.Or(w => w.PODId != null);
                 }
                 else
                 {
