@@ -463,6 +463,7 @@ namespace Dolphin.Freight.ReportLog
                 if (filter.IsAirImport)
                 {
                     AirImports = (from mb in _dbContext.AirImportMawbs
+                                
                                       join hb in _dbContext.AirImportHawbs on mb.Id equals hb.MawbId into hm
                                       from subpet in hm.DefaultIfEmpty()
                                       select new MawbReport()
