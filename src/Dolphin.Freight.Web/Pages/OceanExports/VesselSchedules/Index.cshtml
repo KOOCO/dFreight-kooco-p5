@@ -13,7 +13,6 @@
     <script type="text/javascript">
         var _changeInterval = null;
         var queryListFilter = function () {
-            debugger;
             return {
                 search: $("#Keyword").val(),
                 officeId: $("#VesselSchedule_OfficeId").val() == '' ? null : $("#VesselSchedule_OfficeId").val(),
@@ -40,55 +39,65 @@
 
                                             
             var columns = [
-    {
-        title: l('Actions'),
-        orderable: false,
-        rowAction: {
-            items:
-                [
-                    {
-                          text: l('Edit'),
-                          visible: abp.auth.isGranted('Settings.ItNoRanges.Edit'), //CHECK for the PERMISSION
-                          action: function (data) {
-                              if (data.record.isLocked) {
+                {
+                    title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
+                    data: null,
+                    orderable: false,
+                    render: function (data, type, row) {
+                        var id = row.id;
+                        $('#selectAllCheckbox').prop('checked', false);
+                        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
+                    }
+                },
+                {
+                    title: l('Actions'),
+                    orderable: false,
+                    rowAction: {
+                        items:
+                            [
+                                {
+                                    text: l('Edit'),
+                                    visible: abp.auth.isGranted('Settings.ItNoRanges.Edit'), //CHECK for the PERMISSION
+                                    action: function (data) {
+                                        if (data.record.isLocked) {
+        
+                                        }
+                                        location.href = 'Edit?Id=' + data.record.id;
+        
+                                    }
+                                },
+                                {
+                                    text: l('Delete'),
+                                    visible: abp.auth.isGranted('Settings.ItNoRanges.Delete'),
 
-                              }
-                              location.href = 'Edit?Id=' + data.record.id;
-
-                          }
-                      },
-               {
-                          text: l('Delete'),
-                          visible: abp.auth.isGranted('Settings.ItNoRanges.Delete'),
-
-                          action: function (data) {
-                              abp.message.confirm(l('DeletionConfirmationMessage'))
-                                  .then(function (confirmed) {
-                                      if (confirmed) {
-                                          dolphin.freight.importExport.oceanExports.vesselScheduleas.vesselSchedule
-                                              .delete(data.record.id)
-                                              .then(function () {
-                                                  abp.message.success(l('SuccessfullyDeleted'));
-                                                  dataTable.ajax.reload();
-                                              });
-                                      }
-                                  });
+                                    action: function (data) {
+                                        abp.message.confirm(l('DeletionConfirmationMessage'))
+                                            .then(function (confirmed) {
+                                                if (confirmed) {
+                                                    dolphin.freight.importExport.oceanExports.vesselScheduleas.vesselSchedule
+                                                        .delete(data.record.id)
+                                                        .then(function () {
+                                                            abp.message.success(l('SuccessfullyDeleted'));
+                                                            dataTable.ajax.reload();
+                                                        });
+                                                }
+                                            });
 
 
-                          }
-                      }
+                                    }
+                                }
+                            ]
+                        }
+            
+                },
+             
             ]
-        }
-
-    },
- 
-]
 
 
 
             dolphin.freight.web.controllers.configuration.getJsonConfig('VesselSchedules').done(function (data) {
                 data.forEach(function (item) {
-                                if (!item.lock && item.checkable) {
+                    if (!item.lock && item.checkable) {
                     
                         var column;
 
@@ -98,8 +107,8 @@
                             data: item.name
                         };
                  
-                    columns.push(column);
-                                }
+                        columns.push(column);
+                    }
 
                 });
 
@@ -111,17 +120,17 @@
 
                dataTable = $('#VesselScheduleListTable').DataTable(
                     abp.libs.datatables.normalizeConfiguration({
-                        serverSide: true,
-                paging: true,
-                order: col,
-                searching: false,
-                scrollX: true,
-                processing: true,
-                responsive: {
-                    details: {
-                        type: 'column'
-                    }
-                },
+                    serverSide: true,
+                    paging: true,
+                    order: col,
+                    searching: false,
+                    scrollX: true,
+                    processing: true,
+                    responsive: {
+                        details: {
+                            type: 'column'
+                        }
+                    },
                         ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.oceanExports.vesselScheduleas.vesselSchedule.queryList, queryListFilter),
                         columnDefs: columns
                     })
@@ -172,6 +181,40 @@
 
         });
 
+        function selectAllCheckbox(element) {
+            var isChecked = $(element).prop('checked');
+            $('#VesselScheduleListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+        }
+
+        function selectCheckbox(checkbox) {
+            var checkedCheckboxes = $('.selectCheckbox:checked');
+            if (checkbox.checked) {
+                checkedCheckboxes.each(function (index, checkbox1) {
+                    $('#deleteBtn').prop('disabled', false);
+                });
+            } else {
+                var checkedCheckboxes = $('.selectCheckbox:checked');
+                
+                $('#deleteBtn').prop('disabled', true);
+            }
+            if (!$(checkbox).prop('checked')) {
+                $('#selectAllCheckbox').prop('checked', false);
+            } else {
+                var allChecked = true;
+                $('#VesselScheduleListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
+                    if (!$(this).prop('checked')) {
+                        allChecked = false;
+                        return false;
+                    }
+                });
+                $('#selectAllCheckbox').prop('checked', allChecked);
+            }
+        }
+
+        function createNew() {
+            window.location.href = "/OceanExports/VesselSchedules/Create";
+        }
+
     </script>
 
 }
@@ -197,10 +240,6 @@
                                 text="@L["Configuration"].Value"
                                 icon="gear"
                                 button-type="Primary" />
-            <abp-button id="NewVesselScheduleButton"
-                        text="@L["Create"].Value"
-                        icon="plus"
-                       button-type="Secondary" />
                         </abp-column>
                         </abp-row>
         </abp-card-header>
@@ -326,6 +365,13 @@
                             icon="filter"
                             class="btn btn-sm btn-success"
                             data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
+            </div>
+            <div class="portlet-tool">
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                    <button type="button" class="btn btn-outline-secondary fa fa-plus" onclick="createNew()" id="newBtn"></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-trash" id="deleteBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary" disabled><i class="fa fa-files-o me-0"></i></button>
+                </div>
             </div>
             <abp-table class="nowrap" striped-rows="true" id="VesselScheduleListTable"></abp-table>
         </abp-card-body>
