@@ -107,7 +107,6 @@ function selectAllCheckbox(element) {
 }
 
 function selectCheckbox(checkbox) {
-    debugger;
     var checkedCheckboxes = $('.selectCheckbox:checked');
     if (checkbox.checked) {
         var isAnyLocked = false;

@@ -15,6 +15,7 @@ using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Users;
 using System.Linq.Dynamic.Core;
 using Volo.Abp;
+using NPOI.HSSF.Record;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -464,6 +465,18 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             catch (Exception ex)
             {
                 throw new UserFriendlyException(ex.Message);
+            }
+        }
+
+        public async Task DeleteMultipleHblsAsync(Guid[] ids)
+        {
+            foreach (var id in ids)
+            {
+                var hbl = await _repository.GetAsync(id);
+
+                hbl.IsDeleted = true;
+
+                await _repository.UpdateAsync(hbl);
             }
         }
     }
