@@ -198,9 +198,16 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
                     }
                 }
 
+                var contactPersonsLists = await _contactPersonAppService.GetListByTradePartnerId(TPInfoModel.Id);
+
+                var deletedContactPersons = contactPersonsLists.Where(w => !ContactPersonModel.Any(a => a.Id == w.Id)).ToList();
+
                 if (ContactPersonModel != null && ContactPersonModel.Any())
                 {
-                    ContactPersonModel = JsonConvert.DeserializeObject<List<CreateUpdateContactPersonDto>>(TPInfoModel.ContactPersonInfoJSON);
+                    var contactPersonModel = JsonConvert.DeserializeObject<List<CreateUpdateContactPersonDto>>(TPInfoModel.ContactPersonInfoJSON);
+
+                    ContactPersonModel.AddRange(contactPersonModel);
+
                     foreach (var contactPerson in ContactPersonModel)
                     {
                         if (contactPerson.ExtraProperties == null)
@@ -211,7 +218,14 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
                         contactPerson.ExtraProperties.Add("Children", ContactPersonChildren);
                         contactPerson.TradePartnerId = TPInfoModel.Id;
 
-                        await _contactPersonAppService.UpdateAsync(contactPerson.Id, contactPerson);
+                        if (contactPerson.Id != Guid.Empty)
+                        {
+                            await _contactPersonAppService.UpdateAsync(contactPerson.Id, contactPerson);
+                        }
+                        else
+                        {
+                            await _contactPersonAppService.CreateAsync(contactPerson);
+                        }
                     }
                 }
 
@@ -220,6 +234,10 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
                     await _tradePartyAppService.DeleteAsync(item.Id);
                 }
 
+                foreach (var item in deletedContactPersons)
+                {
+                    await _contactPersonAppService.DeleteAsync(item.Id);
+                }
             }
             catch (DbUpdateConcurrencyException ex)
             {

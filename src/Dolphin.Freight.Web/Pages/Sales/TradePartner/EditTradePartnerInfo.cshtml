@@ -144,6 +144,7 @@
                     nextTr.remove();
                 }
             });
+            resetContactPersonIndexing();
         }
 
         var childrenIndex = 0;
@@ -668,6 +669,39 @@
             }
         }
 
+        function resetContactPersonIndexing() {
+            debugger;
+            $('.contact-person-block').find('tbody tr').each(function (e, elem) {
+                $(elem).find('td input[name]').each(function (a, aelem) {
+                    $(aelem).attr('name', $(aelem).attr('name').replace(/\d+/, e));
+                });
+                if ($(elem).next().attr('id') && $(elem).next().attr('id').includes('trUserMore')) {
+                    $(elem).next().find('tr').find('td input[name]').each(function (c, celem) {
+                        $(celem).attr('name',$(celem).attr('name').replace(/\d+/, e));
+                    });
+                }
+                
+            });
+            
+        }
+
+        function resetContactPersonsCount() {
+            var url = new URL(window.location.href);
+            var pathname = url.pathname; 
+
+            var segments = pathname.split('/');
+            var id = segments[segments.length - 1];
+
+            if (checkGuid(id)) {
+                dolphin.freight.tradePartners.contactPerson.getListByTradePartnerId(id).done(function (res) 
+                { 
+                    if (res) {
+                        contactIndex = res.length;
+                    }
+                });
+            }
+        }
+
         function onSetTradeParties() {
             var tradePartiesJSON = '@Html.Raw(Json.Serialize(Model.TradeParties))';
 
@@ -728,6 +762,8 @@
                     contactPersonInfoData.IsRep = contactPerson.isRep ? "checked" : "";
                     contactPersonInfoData.IsEmailNotification = contactPerson.isEmailNotification ? "checked" : "";
                     if (contactPerson){
+                        debugger;
+                         contactPersonInfoData.contactIndex = contactPersonIndex;
                         contactPersonInfoData.ContactName = contactPerson.contactName;
                         contactPersonInfoData.ContactTitle = contactPerson.contactTitle;
                         contactPersonInfoData.ContactDivision = contactPerson.contactDivision;
@@ -791,6 +827,7 @@
                     }
                 });
             }
+            resetContactPersonsCount();
         }
 
         function onRemoveTradePartner(index) {
@@ -1514,7 +1551,8 @@
                             </abp-button>
                         </abp-column>
                     </abp-row>
-                    <table class="table">
+                    <div class="table-responsive contact-person-block">
+                        <table class="table">
                         <colgroup>
                             <col class="td-3per"><!--Checkbox-->
                             <col class="td-3per"><!--Rep.-->
@@ -1549,6 +1587,7 @@
                         <tbody id="contactPersonInformationBody">
                         </tbody>
                     </table>
+                    </div>
                 </abp-card-body>
             </abp-card>
         </abp-accordion-item>
