@@ -14,6 +14,7 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Users;
 using System.Linq.Dynamic.Core;
+using Volo.Abp;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -440,6 +441,30 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }  
 
             return oceanExportDetails;
+        }
+
+        public async Task LockedOrUnLockedOceanExportHblAsync(Guid id)
+        {
+            try
+            {
+                var hbl = await _repository.GetAsync(id);
+                if (hbl.IsLocked == true)
+                {
+                    hbl.IsLocked = false;
+
+                    await _repository.UpdateAsync(hbl);
+                }
+                else
+                {
+                    hbl.IsLocked = true;
+
+                    await _repository.UpdateAsync(hbl);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
         }
     }
 }

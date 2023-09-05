@@ -409,5 +409,82 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 
             return oceanExportDetails;
         }
+
+        public async Task SelectedLockedOceanExportMblAsync(Guid[] ids)
+        {
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var mbl = await _repository.GetAsync(id);
+
+                    mbl.IsLocked = true;
+                    var query = await _oceanExportHblRepository.GetQueryableAsync();
+                    var hbls = query.Where(x => x.MblId == id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = true;
+
+                        await _oceanExportHblRepository.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+
+        }
+
+        public async Task SelectedUnLockedOceanExportMblAsync(Guid[] ids)
+        {
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var mbl = await _repository.GetAsync(id);
+
+                    mbl.IsLocked = false;
+                    var query = await _oceanExportHblRepository.GetQueryableAsync();
+                    var hbls = query.Where(x => x.MblId == id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = false;
+
+                        await _oceanExportHblRepository.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+
+        }
+
+        public async Task DeleteMultipleMblsAsync(Guid[] ids)
+        {
+            foreach(var id in ids)
+            {
+                var mbl = await _repository.GetAsync(id);
+
+                mbl.IsDeleted = true;
+                var query = await _oceanExportHblRepository.GetQueryableAsync();
+                var hbls = query.Where(w => w.MblId == id).ToList();
+                foreach (var hbl in hbls)
+                {
+                    hbl.IsDeleted = true;
+
+                    await _oceanExportHblRepository.UpdateAsync(hbl);
+                }
+                await _repository.UpdateAsync(mbl);
+            }
+        }
     }
 }

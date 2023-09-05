@@ -7,7 +7,30 @@ var queryListFilter = function () {
     };
 };
 
-var columns = [
+var columns = [{
+    title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
+    data: null,
+    orderable: false,
+    render: function (data, type, row) {
+        var id = row.id;
+        $('#selectAllCheckbox').prop('checked', false);
+        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
+    }
+},
+    {
+        title: '<div  style=" cursor: pointer;"><span><i class="fa fa-lock"></i></span></div>',
+        orderable: false,
+        "render": function (data, type, row) {
+            debugger;
+            var isCkecked = row.isLocked;
+            var Mblid = row.id;
+            if (isCkecked) {
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + Mblid + '"  checked="' + isCkecked + '" onclick="lockCheckBox(this)"  style=" cursor: pointer;">';
+            } else {                                                      
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + Mblid + '" onclick="lockCheckBox(this)"   style=" cursor: pointer;">';
+            }
+        }
+    },
     {
         title: l('Actions'),
         orderable: false,
@@ -55,6 +78,158 @@ var columns = [
     },
  
 ]
+
+function lockCheckBox(checkbox) {
+    debugger;
+    var selectedCheckboxes = $('#MblListTable tbody input.lockUnlockCheckbox[type="checkbox"]:checked');
+
+    var id = checkbox.attributes[2].value;
+
+    var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+    abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+        if (confirmed) {
+            dolphin.freight.importExport.oceanExports.oceanExportMbl.lockedOrUnLockedOceanExportMbl({ MbId: id })
+                .done(function () {
+                    if (isLock) {
+                        abp.message.success(l('Message:SuccessUnlock'));
+                    } else {
+                        abp.message.success(l('Message:SuccessLock'));
+                    }
+                    dataTable.ajax.reload();
+                });
+        }
+    });
+}
+
+function selectAllCheckbox(element) {
+    var isChecked = $(element).prop('checked');
+    $('#MblListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+}
+
+function selectCheckbox(checkbox) {
+    debugger;
+    var checkedCheckboxes = $('.selectCheckbox:checked');
+    if (checkbox.checked) {
+        var isAnyLocked = false;
+        var isAnyUnlocked = false
+        checkedCheckboxes.each(function (index, checkbox1) {
+            $('#deleteBtn').prop('disabled', false);
+            var id = $(checkbox1).data('id');
+
+            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+            if (isLock) {
+                isAnyLocked = true;
+            }
+            else {
+                isAnyUnlocked = true;
+
+            }
+
+        });
+        $('#lockId').prop('disabled', !isAnyUnlocked);
+        $('#unlockId').prop('disabled', !isAnyLocked);
+    } else {
+        var checkedCheckboxes = $('.selectCheckbox:checked');
+        checkedCheckboxes.each(function (index, checkbox1) {
+
+            var id = $(checkbox1).data('id');
+
+            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+            if (isLock) {
+                isAnyLocked = true;
+            }
+            else {
+                isAnyUnlocked = true;
+
+            }
+
+        });
+        $('#deleteBtn').prop('disabled', true);
+        $('#lockId').prop('disabled', !isAnyUnlocked);
+        $('#unlockId').prop('disabled', !isAnyLocked);
+    }
+    if (!$(checkbox).prop('checked')) {
+        $('#selectAllCheckbox').prop('checked', false);
+    } else {
+        var allChecked = true;
+        $('#MblListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
+            if (!$(this).prop('checked')) {
+                allChecked = false;
+                return false;
+            }
+        });
+        $('#selectAllCheckbox').prop('checked', allChecked);
+    }
+}
+
+function selectedLock() {
+    var ids = [];
+    var selectedCheckboxes = $('#MblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        var id = selectedCheckboxes[i].attributes[2].value;
+        var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
+        if (!isLock) {
+            ids.push(id);
+        }
+        abp.message.confirm(l('LockConfirmationMessage')).then(function (confirmed) {
+            if (confirmed) {
+                dolphin.freight.importExport.oceanExports.oceanExportMbl.selectedLockedOceanExportMbl(ids)
+                    .done(function () {
+                        abp.message.success(l('Message:SuccessLock'));
+                        dataTable.ajax.reload();
+                    });
+            }
+        });
+    }
+
+}
+
+function deleteMbls() {
+    var ids = [];
+    var selectedCheckboxes = $('#MblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        var id = selectedCheckboxes[i].attributes[2].value;
+        var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
+        if (!isLock) {
+            ids.push(id);
+        }
+        abp.message.confirm(l('DeleteConfirmationMessage')).then(function (confirmed) {
+            if (confirmed) {
+                dolphin.freight.importExport.oceanExports.oceanExportMbl.deleteMultipleMbls(ids)
+                    .done(function () {
+                        abp.message.success(l('Message:SuccessDelete'));
+                        dataTable.ajax.reload();
+                    });
+            }
+        });
+    }
+}
+
+function createNew() {
+    window.location.href = "/OceanExports/CreateMbl";
+}
+
+function selectedUnLock() {
+    var ids = [];
+    var selectedCheckboxes = $('#MblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        var id = selectedCheckboxes[i].attributes[2].value;
+        var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
+        if (isLock) {
+            ids.push(id);
+        }
+        abp.message.confirm(l('UnlockConfirmationMessage')).then(function (confirmed) {
+            if (confirmed) {
+                dolphin.freight.importExport.oceanExports.oceanExportMbl.selectedUnLockedOceanExportMbl(ids)
+                    .done(function () {
+                        abp.message.success(l('Message:SuccessUnlock'));
+                        dataTable.ajax.reload();
+                    });
+            }
+        });
+    }
+
+}
 
 $(function () {
     dolphin.freight.web.controllers.configuration.getJsonConfig('OceanExports').done(function (data) {

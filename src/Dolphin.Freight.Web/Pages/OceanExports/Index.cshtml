@@ -44,6 +44,15 @@
                     <abp-input asp-for="Search" class="ml-4" />
                 </abp-column>
             </div>
+            <div class="portlet-tool">
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                    <button type="button" class="btn btn-outline-secondary fa fa-plus" onclick="createNew()" id="newBtn"></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="deleteMbls()" id="deleteBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary" disabled><i class="fa fa-files-o me-0"></i></button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="selectedLock()" id="lockId" disabled>Lock</button>
+                    <button type="button" class="btn btn-outline-secondary" id="unlockId" onclick="selectedUnLock()" disabled>Unlock</button>
+                </div>
+            </div>
             <abp-table class="nowrap" striped-rows="true" id="MblListTable"></abp-table>
         </abp-card-body>
     </abp-card>
