@@ -113,7 +113,6 @@ $(function () {
                     data: null,
                     orderable: false,
                     render: function (data, type, row) {
-                        debugger;
                         var id = row.id;
                         $('#selectAllCheckbox').prop('checked', false);
                         return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';

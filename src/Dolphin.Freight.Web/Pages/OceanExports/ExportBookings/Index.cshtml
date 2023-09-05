@@ -9,7 +9,9 @@
 @inject IAuthorizationService AuthorizationService
 @section scripts{
     <script type="text/javascript">
+        var l = abp.localization.getResource('Freight');
         var _changeInterval = null;
+        var dataTable;
         $(document).ready(function () {
             var queryListFilter = function () {
                 return {
@@ -18,7 +20,7 @@
             };
 
             var l = abp.localization.getResource('Freight');
-            var dataTable = $('#ExportBookingListTable').DataTable(
+            dataTable = $('#ExportBookingListTable').DataTable(
                 abp.libs.datatables.normalizeConfiguration({
                     serverSide: true,
                     paging: true,
@@ -33,6 +35,16 @@
                     },
                     ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.queryList, queryListFilter),
                     columnDefs: [
+                        {
+                            title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
+                            data: null,
+                            orderable: false,
+                            render: function (data, type, row) {
+                                var id = row.id;
+                                $('#selectAllCheckbox').prop('checked', false);
+                                return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
+                            }
+                        },
                         {
                             title: l('Actions'),
                             rowAction: {
@@ -218,7 +230,36 @@
             });
 
         });
-       
+
+        function selectAllCheckbox(element) {
+            var isChecked = $(element).prop('checked');
+            $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+        }
+
+        function selectCheckbox(checkbox) {
+            var checkedCheckboxes = $('.selectCheckbox:checked');
+            if (checkbox.checked) {
+                checkedCheckboxes.each(function (index, checkbox1) {
+                    $('#deleteBtn').prop('disabled', false);
+                });
+            } else {
+                var checkedCheckboxes = $('.selectCheckbox:checked');
+                
+                $('#deleteBtn').prop('disabled', true);
+            }
+            if (!$(checkbox).prop('checked')) {
+                $('#selectAllCheckbox').prop('checked', false);
+            } else {
+                var allChecked = true;
+                $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
+                    if (!$(this).prop('checked')) {
+                        allChecked = false;
+                        return false;
+                    }
+                });
+                $('#selectAllCheckbox').prop('checked', allChecked);
+            }
+        }
 
         function closeModal() {
             $("#checkModal").modal("hide");
@@ -237,6 +278,29 @@
             location.href = url
         }
 
+        function createNew() {
+            window.location.href = "/OceanExports/ExportBookings/Create";
+        }
+
+        function deleteHbl() {
+            var ids = [];
+            var selectedCheckboxes = $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+            for (var i = 0; i < selectedCheckboxes.length; i++) {
+                var id = selectedCheckboxes[i].attributes[2].value;
+                ids.push(id);
+
+                abp.message.confirm(l('DeleteConfirmationMessage')).then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.deleteMultipleBookingsByIds(ids).done(function () 
+                        {
+                            abp.message.success(l('Message:SuccessDelete')).then(function () {
+                                dataTable.ajax.reload();
+                            });
+                        });
+                    }
+                });
+            }
+        }
 
     </script>
 }
@@ -261,10 +325,6 @@
             <div class="title">
                 @L["Menu:ExportBookings.Index"]
             </div>
-            <abp-button id="NewExportBookingButton"
-                        text="@L["Create"].Value"
-                        icon="plus"
-                        class="btn btn-add" />
         </abp-card-header>
         <abp-card-body>
             <div class="row col-12" style="text-align: center; margin:0!important">
@@ -272,6 +332,14 @@
                 <abp-column size="_3" class="filterDiv">
                     <abp-input asp-for="Search" class="ml-4" />
                 </abp-column>
+            </div>
+            <div class="portlet-tool">
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                    <button type="button" class="btn btn-outline-secondary fa fa-plus" onclick="createNew()" id="newBtn"></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="deleteHbl()" id="deleteBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-files-o me-0" id="copyBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary" id="copyBtn" disabled><i class="fa fa-plus"></i>Convert To Shipment</button>
+                </div>
             </div>
             <abp-table class="nowrap" striped-rows="true" id="ExportBookingListTable"></abp-table>
         </abp-card-body>
