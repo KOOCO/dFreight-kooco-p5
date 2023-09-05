@@ -81,7 +81,20 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
                                    .Contains(query.Search) || x.VesselName
                                    .Contains(query.Search) || x.Office.SubstationName
                                    .Contains(query.Search) || x.Voyage
-                                   .Contains(query.Search));
+                                   .Contains(query.Search))
+                                   .WhereIf(!string.IsNullOrWhiteSpace(query.Vessel),x=>x.VesselName==query.Vessel)
+                                   .WhereIf(query.OfficeId.HasValue,e=>e.OfficeId==query.OfficeId)
+                                   .WhereIf(query.CarrierId.HasValue,e=>e.MblCarrierId==query.CarrierId)
+                                   .WhereIf(query.ShippingAgentId.HasValue,e=>e.ShippingAgentId==query.ShippingAgentId)
+                                   .WhereIf(query.ForwardingAgentId.HasValue,e=>e.ForwardingAgentId==query.ForwardingAgentId)
+                                   .WhereIf(query.Pol.HasValue,e=>e.PolId==query.Pol)
+                                   .WhereIf(query.ShipModeId.HasValue,e=>e.ShipModeId==query.ShipModeId)
+                                   .WhereIf(query.OvearseaAgentId.HasValue, e => e.MblOverseaAgentId == query.OvearseaAgentId)
+                                   .WhereIf(query.BlTypeId.HasValue,e=>e.BlTypeId==query.BlTypeId)
+                                   .WhereIf(query.PostDate.HasValue,e=>e.PostDate==query.PostDate)
+                                   .WhereIf(query.Eta.HasValue,e=>e.PodEta==query.Eta)
+                                   .WhereIf(query.Etd.HasValue,e=>e.PolEtd==query.Etd);
+                                    
             List<VesselSchedule> rs = VesselSchedules.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<VesselScheduleDto> list = new List<VesselScheduleDto>();
 
