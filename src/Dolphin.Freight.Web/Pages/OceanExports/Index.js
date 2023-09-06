@@ -80,7 +80,6 @@ var columns = [{
 ]
 
 function lockCheckBox(checkbox) {
-    debugger;
     var selectedCheckboxes = $('#MblListTable tbody input.lockUnlockCheckbox[type="checkbox"]:checked');
 
     var id = checkbox.attributes[2].value;

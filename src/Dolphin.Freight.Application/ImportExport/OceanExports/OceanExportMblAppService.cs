@@ -135,6 +135,14 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             {
                 var mbl = await _repository.GetAsync(query.MbId.Value);
                 mbl.IsLocked = !mbl.IsLocked;
+                var queryHbl = await _oceanExportHblRepository.GetQueryableAsync();
+                var hbls = queryHbl.Where(w => w.MblId == mbl.Id).ToList();
+                foreach (var hbl in hbls)
+                {
+                    hbl.IsLocked = true;
+
+                    await _oceanExportHblRepository.UpdateAsync(hbl);
+                }
                 await _repository.UpdateAsync(mbl);
             }
             catch (Exception ex)
