@@ -7,6 +7,7 @@ using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Newtonsoft.Json;
+using NPOI.DDF;
 using NPOI.POIFS.Crypt.Dsig;
 using System;
 using System.Collections.Generic;
@@ -148,8 +149,31 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             try
             {
                 var mbl = await _repository.GetAsync(query.MbId.Value);
-                mbl.IsLocked = !mbl.IsLocked;
-                await _repository.UpdateAsync(mbl);
+                if (mbl.IsLocked == true)
+                {
+                    mbl.IsLocked = false;
+                    var queryHbl = await _oceanExportHblRepository.GetQueryableAsync();
+                    var hbls = queryHbl.Where(w => w.MblId == mbl.Id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = false;
+
+                        await _oceanExportHblRepository.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+                }
+                else
+                {
+                    mbl.IsLocked = true;
+                    var queryHbl = await _oceanExportHblRepository.GetQueryableAsync();
+                    var hbls = queryHbl.Where(w => w.MblId == mbl.Id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = true;
+                        await _oceanExportHblRepository.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+                }
             }
             catch (Exception ex)
             {
@@ -422,6 +446,83 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             oceanExportDetails.CurrentDate = DateTime.Now;
 
             return oceanExportDetails;
+        }
+
+        public async Task SelectedLockedOceanExportMblAsync(Guid[] ids)
+        {
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var mbl = await _repository.GetAsync(id);
+
+                    mbl.IsLocked = true;
+                    var query = await _oceanExportHblRepository.GetQueryableAsync();
+                    var hbls = query.Where(x => x.MblId == id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = true;
+
+                        await _oceanExportHblRepository.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+
+        }
+
+        public async Task SelectedUnLockedOceanExportMblAsync(Guid[] ids)
+        {
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var mbl = await _repository.GetAsync(id);
+
+                    mbl.IsLocked = false;
+                    var query = await _oceanExportHblRepository.GetQueryableAsync();
+                    var hbls = query.Where(x => x.MblId == id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = false;
+
+                        await _oceanExportHblRepository.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+
+        }
+
+        public async Task DeleteMultipleMblsAsync(Guid[] ids)
+        {
+            foreach(var id in ids)
+            {
+                var mbl = await _repository.GetAsync(id);
+
+                mbl.IsDeleted = true;
+                var query = await _oceanExportHblRepository.GetQueryableAsync();
+                var hbls = query.Where(w => w.MblId == id).ToList();
+                foreach (var hbl in hbls)
+                {
+                    hbl.IsDeleted = true;
+
+                    await _oceanExportHblRepository.UpdateAsync(hbl);
+                }
+                await _repository.UpdateAsync(mbl);
+            }
         }
     }
 }

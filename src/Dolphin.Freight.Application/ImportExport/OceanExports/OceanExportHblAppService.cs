@@ -14,6 +14,9 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Users;
 using System.Linq.Dynamic.Core;
+using Volo.Abp;
+using NPOI.HSSF.Record;
+using NPOI.DDF;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -259,8 +262,18 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public async Task LockedOrUnLockedOceanExportHblAsync(QueryHblDto query)
         {
             var Hbl = await _repository.GetAsync(query.HblId.Value);
-            Hbl.IsLocked = !Hbl.IsLocked;
-            await _repository.UpdateAsync(Hbl);
+            if (Hbl.IsLocked == true)
+            {
+                Hbl.IsLocked = false;
+
+                await _repository.UpdateAsync(Hbl);
+            }
+            else
+            {
+                Hbl.IsLocked = true;
+
+                await _repository.UpdateAsync(Hbl);
+            }
         }
 
         public async Task<OceanExportHblDto> GetHawbCardById(Guid Id)
@@ -461,6 +474,30 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }  
 
             return oceanExportDetails;
+        }
+
+        public async Task DeleteMultipleHblsAsync(Guid[] ids)
+        {
+            foreach (var id in ids)
+            {
+                var hbl = await _repository.GetAsync(id);
+
+                hbl.IsDeleted = true;
+
+                await _repository.UpdateAsync(hbl);
+            }
+        }
+
+        public async Task SetLockStatusOnOceanExportHblAsync(Guid[] ids, bool isLocked)
+        {
+            foreach (var id in ids)
+            {
+                var hbl = await _repository.GetAsync(id);
+
+                hbl.IsLocked = isLocked;
+
+                await _repository.UpdateAsync(hbl);
+            }
         }
     }
 }

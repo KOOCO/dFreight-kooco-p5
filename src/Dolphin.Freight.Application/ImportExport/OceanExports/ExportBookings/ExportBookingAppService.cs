@@ -167,5 +167,17 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
             }
             return new CreateUpdateExportBookingDto();
         }
+
+        public async Task DeleteMultipleBookingsByIdsAsync(Guid[] ids)
+        {
+            foreach (var id in ids)
+            {
+                var booking = await _repository.GetAsync(id);
+
+                booking.IsDeleted = true;
+
+                await _repository.UpdateAsync(booking);
+            }
+        }
     }
 }

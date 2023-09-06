@@ -12,9 +12,11 @@
 @inject IDropdownService _dropdown;
 @section scripts{
     <script type="text/javascript">
+        var l = abp.localization.getResource('Freight');
         var _changeInterval = null;
-       
-          var queryListFilter = function () {
+        var dataTable;
+        $(document).ready(function () {
+            var queryListFilter = function () {
                 return {
                      search: $("#Keyword").val(),
        
@@ -184,6 +186,38 @@
                     modalClass: 'ConfigurationViewModel'
                 });
 
+        });
+
+        function selectAllCheckbox(element) {
+            var isChecked = $(element).prop('checked');
+            $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+        }
+
+        function selectCheckbox(checkbox) {
+            var checkedCheckboxes = $('.selectCheckbox:checked');
+            if (checkbox.checked) {
+                checkedCheckboxes.each(function (index, checkbox1) {
+                    $('#deleteBtn').prop('disabled', false);
+                });
+            } else {
+                var checkedCheckboxes = $('.selectCheckbox:checked');
+                
+                $('#deleteBtn').prop('disabled', true);
+            }
+            if (!$(checkbox).prop('checked')) {
+                $('#selectAllCheckbox').prop('checked', false);
+            } else {
+                var allChecked = true;
+                $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
+                    if (!$(this).prop('checked')) {
+                        allChecked = false;
+                        return false;
+                    }
+                });
+                $('#selectAllCheckbox').prop('checked', allChecked);
+            }
+        }
+
                 _configurationModal.open({
                     src: 'OceanExportBookingList'
                 });
@@ -209,6 +243,29 @@
             location.href = url
         }
 
+        function createNew() {
+            window.location.href = "/OceanExports/ExportBookings/Create";
+        }
+
+        function deleteHbl() {
+            var ids = [];
+            var selectedCheckboxes = $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+            for (var i = 0; i < selectedCheckboxes.length; i++) {
+                var id = selectedCheckboxes[i].attributes[2].value;
+                ids.push(id);
+
+                abp.message.confirm(l('DeleteConfirmationMessage')).then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.deleteMultipleBookingsByIds(ids).done(function () 
+                        {
+                            abp.message.success(l('Message:SuccessDelete')).then(function () {
+                                dataTable.ajax.reload();
+                            });
+                        });
+                    }
+                });
+            }
+        }
 
     </script>
 }
@@ -399,6 +456,14 @@
                             icon="filter"
                             class="btn btn-sm btn-success"
                             data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
+            </div>
+            <div class="portlet-tool">
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                    <button type="button" class="btn btn-outline-secondary fa fa-plus" onclick="createNew()" id="newBtn"></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="deleteHbl()" id="deleteBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-files-o me-0" id="copyBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary" id="copyBtn" disabled><i class="fa fa-plus"></i>Convert To Shipment</button>
+                </div>
             </div>
             <abp-table class="nowrap" striped-rows="true" id="ExportBookingListTable"></abp-table>
         </abp-card-body>
