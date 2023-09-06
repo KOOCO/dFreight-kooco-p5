@@ -24,6 +24,7 @@ using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
 using Org.BouncyCastle.Asn1.Mozilla;
 using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.Accounting.InvoiceBills;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -46,6 +47,7 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IVesselScheduleAppService _vesselScheduleAppService;
         private readonly IExportBookingAppService _exportBookingAppService;
         private readonly IContainerAppService _containerAppService;
+        private readonly IInvoiceBillAppService _invoiceBillAppService;
 
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
@@ -70,7 +72,8 @@ namespace Dolphin.Freight.Web.Controllers
             IPortsManagementAppService portsManagementAppService,
             IVesselScheduleAppService vesselScheduleAppService,
             IExportBookingAppService exportBookingAppService,
-            IContainerAppService containerAppService
+            IContainerAppService containerAppService,
+            IInvoiceBillAppService invoiceBillAppService
             )
         {
             _tradePartnerAppService = tradePartnerAppService;
@@ -88,6 +91,7 @@ namespace Dolphin.Freight.Web.Controllers
             _vesselScheduleAppService = vesselScheduleAppService;
             _exportBookingAppService = exportBookingAppService;
             _containerAppService = containerAppService;
+            _invoiceBillAppService = invoiceBillAppService;
 
 
             FillCountryNameAsync().Wait();
@@ -519,11 +523,15 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CopyMblDetails(Guid id, string allHbl, string isContainer)
+        public async Task<IActionResult> CopyMblDetails(Guid id, string allHbl, string isContainer, string isInvoice)
         {
             var mbldata = await _oceanExportMblAppService.GetAsync(id);
             var hbldata = await _oceanExportHblAppService.GetHblCardsById(id);
             var containerdata = await _containerAppService.GetContainerByMblId(id);
+
+            QueryInvoiceDto queryInvoiceDto = new QueryInvoiceDto() { ParentId = id, QueryType = 3 };
+            var invoicedata = await _invoiceAppService.QueryInvoicesAsync(queryInvoiceDto);
+
             var updatedMbl = ObjectMapper.Map<OceanExportMblDto, CreateUpdateOceanExportMblDto>(mbldata);
 
             updatedMbl.Id = Guid.Empty;
@@ -541,6 +549,31 @@ namespace Dolphin.Freight.Web.Controllers
                     container.Id = Guid.Empty;
 
                     await _containerAppService.CreateAsync(container);
+                }
+            }
+
+            if (isInvoice == "invoices")
+            {
+                foreach (var invoice in invoicedata)
+                {
+                    invoice.MblId = newMblId;
+
+                    invoice.Id = Guid.Empty;
+
+                    var updatedInvoices = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+
+                    var newInvoice = await _invoiceAppService.CreateAsync(updatedInvoices);
+
+                    Guid newInvoiceId = newInvoice.Id;
+
+                    foreach (var invoicebilldto in invoice.InvoiceBillDtos)
+                    {
+                        invoicebilldto.InvoiceId = newInvoiceId;
+
+                        invoicebilldto.Id = Guid.Empty;
+
+                        await _invoiceBillAppService.CreateAsync(invoicebilldto);
+                    }
                 }
             }
 

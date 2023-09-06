@@ -85,6 +85,7 @@
             var allHbl;
             var firstHbl;
             var container;
+            var invoice;
             if ($('#CopyModel\\.CopyHawbRadioAllHAWB')[0].checked){
                 allHbl = 'true';
             } else if ($('#CopyModel\\.CopyHawbRadioFirstHawbOnly')[0].checked) {
@@ -93,9 +94,12 @@
             if ($('#CopyModel_CopyCommodity')[0].checked){
                 container = 'container';
             }
+            if ($('input[name="CopyModel.CopyAccountingInformation"]')[0].checked) {
+                invoice = 'invoices';
+            }
             var checkedCheckbox = $('.selectCheckbox:checked');
             var mblId = checkedCheckbox.attr('data-id');
-            dolphin.freight.web.controllers.importExport.copyMblDetails(mblId, allHbl, container).done(function (res)
+            dolphin.freight.web.controllers.importExport.copyMblDetails(mblId, allHbl, container, invoice).done(function (res)
             { 
                 window.location.href = "/OceanExports/EditModal?Id=" + res.newMblId;
             });
@@ -109,7 +113,6 @@
         var pathSegments = window.location.pathname.split('/');
         var lastSegment = pathSegments[pathSegments.length - 1];
 
-        // Trim and check in case there are any trailing spaces or slashes
         lastSegment = lastSegment.trim();
 
         return lastSegment.toLowerCase() === "index";
