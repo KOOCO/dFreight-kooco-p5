@@ -13,6 +13,8 @@
 @section scripts{
     <script type="text/javascript">
         var _changeInterval = null;
+        var l = abp.localization.getResource('Freight');
+        var dataTable;
         var queryListFilter = function () {
             return {
                 search: $("#Keyword").val(),
@@ -36,7 +38,7 @@
         $(document).ready(function () {
 
             var l = abp.localization.getResource('Freight');
-            var dataTable;
+          
            
 
                                             
@@ -187,7 +189,31 @@
         function selectAllCheckbox(element) {
             var isChecked = $(element).prop('checked');
             $('#VesselScheduleListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+            if (isChecked) {
+                $('#deleteBtn').prop('disabled', false);
+            }
+            else {
+            $('#deleteBtn').prop('disabled', true);
+            }
         }
+        function deleteVessels() {
+    var ids = [];
+    var selectedCheckboxes = $('#VesselScheduleListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        var id = selectedCheckboxes[i].attributes[2].value;
+    
+            ids.push(id);
+        }
+        abp.message.confirm(l('DeleteConfirmationMessage')).then(function (confirmed) {
+            if (confirmed) {
+                dolphin.freight.importExport.oceanExports.vesselScheduleas.vesselSchedule.deleteMultipleVessel(ids)
+                    .done(function () {
+                        abp.message.success(l('Message:SuccessDelete'));
+                        dataTable.ajax.reload();
+                    });
+            }
+        });
+    }
 
         function selectCheckbox(checkbox) {
             var checkedCheckboxes = $('.selectCheckbox:checked');
@@ -217,6 +243,8 @@
         function createNew() {
             window.location.href = "/OceanExports/VesselSchedules/Create";
         }
+
+      
 
     </script>
 
@@ -372,7 +400,7 @@
             <div class="portlet-tool">
                 <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
                     <button type="button" class="btn btn-outline-secondary fa fa-plus" onclick="createNew()" id="newBtn"></button>
-                    <button type="button" class="btn btn-outline-secondary fa fa-trash" id="deleteBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="deleteVessels()" id="deleteBtn" disabled></button>
                     <button type="button" class="btn btn-outline-secondary" disabled><i class="fa fa-files-o me-0"></i></button>
                 </div>
             </div>

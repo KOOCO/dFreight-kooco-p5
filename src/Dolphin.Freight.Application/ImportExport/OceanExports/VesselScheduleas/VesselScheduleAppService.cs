@@ -170,5 +170,16 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
             }
             return list;
         }
+        public async Task DeleteMultipleVesselAsync(Guid[] ids)
+        {
+            foreach (var id in ids)
+            {
+                await _repository.DeleteAsync(id);
+
+              
+               
+             
+            }
+        }
     }
 }
