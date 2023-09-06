@@ -45,6 +45,16 @@
              var dataTable;
             var l = abp.localization.getResource('Freight');
              var columns = [
+                    {
+                        title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            var id = row.id;
+                            $('#selectAllCheckbox').prop('checked', false);
+                            return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
+                        }
+                    },
    
                {
                             title: l('Actions'),
@@ -185,9 +195,12 @@
                     viewUrl: abp.appPath + 'Configuration',
                     modalClass: 'ConfigurationViewModel'
                 });
+                    _configurationModal.open({
+                        src: 'OceanExportBookingList'
+                    });
 
         });
-
+            });
         function selectAllCheckbox(element) {
             var isChecked = $(element).prop('checked');
             $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
@@ -218,12 +231,10 @@
             }
         }
 
-                _configurationModal.open({
-                    src: 'OceanExportBookingList'
-                });
+              
             })
     
-        });
+       
        
 
         function closeModal() {

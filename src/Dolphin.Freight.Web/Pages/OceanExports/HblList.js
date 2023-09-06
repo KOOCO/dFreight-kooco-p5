@@ -33,6 +33,33 @@ var queryListFilter = function () {
 };
 var columns = [
     {
+        title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
+        data: null,
+        orderable: false,
+        render: function (data, type, row) {
+            var id = row.id;
+            $('#selectAllCheckbox').prop('checked', false);
+            return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
+        }
+    },
+    {
+        title: '<div  style=" cursor: pointer;"><span><i class="fa fa-lock"></i></span></div>',
+        orderable: false,
+        "render": function (data, type, row) {
+            debugger;
+            var isCkecked = row.isLocked;
+            var Hblid = row.id;
+            if (isCkecked) {
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + Hblid + '"  checked="' + isCkecked + '" onclick="lockCheckBox(this)"  style=" cursor: pointer;">';
+            } else {
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + Hblid + '" onclick="lockCheckBox(this)"   style=" cursor: pointer;">';
+            }
+        }
+    },
+
+
+    {
+
         title: l('Actions'),
         rowAction: {
             items:
