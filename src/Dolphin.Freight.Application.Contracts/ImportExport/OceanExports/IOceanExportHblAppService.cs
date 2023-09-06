@@ -23,7 +23,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         Task<List<OceanExportHblDto>> GetHblCardsById(Guid Id);
         Task<OceanExportDetails> GetOceanExportDetailsById(Guid Id);
         Task LockedOrUnLockedOceanExportHblAsync(QueryHblDto query);
-        //Task LockedOrUnLockedOceanExportHblAsync(Guid id);
+        Task SetLockStatusOnOceanExportHblAsync(Guid[] ids, bool isLocked);
         Task DeleteMultipleHblsAsync(Guid[] ids);
     }
 }

@@ -455,30 +455,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             return oceanExportDetails;
         }
 
-        //public async Task LockedOrUnLockedOceanExportHblAsync(Guid id)
-        //{
-        //    try
-        //    {
-        //        var hbl = await _repository.GetAsync(id);
-        //        if (hbl.IsLocked == true)
-        //        {
-        //            hbl.IsLocked = false;
-
-        //            await _repository.UpdateAsync(hbl);
-        //        }
-        //        else
-        //        {
-        //            hbl.IsLocked = true;
-
-        //            await _repository.UpdateAsync(hbl);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new UserFriendlyException(ex.Message);
-        //    }
-        //}
-
         public async Task DeleteMultipleHblsAsync(Guid[] ids)
         {
             foreach (var id in ids)
@@ -486,6 +462,18 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 var hbl = await _repository.GetAsync(id);
 
                 hbl.IsDeleted = true;
+
+                await _repository.UpdateAsync(hbl);
+            }
+        }
+
+        public async Task SetLockStatusOnOceanExportHblAsync(Guid[] ids, bool isLocked)
+        {
+            foreach (var id in ids)
+            {
+                var hbl = await _repository.GetAsync(id);
+
+                hbl.IsLocked = isLocked;
 
                 await _repository.UpdateAsync(hbl);
             }

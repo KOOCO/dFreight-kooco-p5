@@ -21,7 +21,6 @@ var columns = [{
         title: '<div  style=" cursor: pointer;"><span><i class="fa fa-lock"></i></span></div>',
         orderable: false,
         "render": function (data, type, row) {
-            debugger;
             var isCkecked = row.isLocked;
             var Mblid = row.id;
             if (isCkecked) {

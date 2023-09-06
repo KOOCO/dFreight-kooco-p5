@@ -39,36 +39,36 @@ function selectCheckbox(checkbox) {
         var isAnyUnlocked = false
         checkedCheckboxes.each(function (index, checkbox1) {
             $('#deleteBtn').prop('disabled', false);
-            //var id = $(checkbox1).data('id');
+            var id = $(checkbox1).data('id');
 
-            //var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
-            //if (isLock) {
-            //    isAnyLocked = true;
-            //}
-            //else {
-            //    isAnyUnlocked = true;
+            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+            if (isLock) {
+                isAnyLocked = true;
+            }
+            else {
+                isAnyUnlocked = true;
 
-            //}
+            }
 
         });
         $('#lockId').prop('disabled', !isAnyUnlocked);
         $('#unlockId').prop('disabled', !isAnyLocked);
     } else {
         var checkedCheckboxes = $('.selectCheckbox:checked');
-        //checkedCheckboxes.each(function (index, checkbox1) {
+        checkedCheckboxes.each(function (index, checkbox1) {
 
-        //    var id = $(checkbox1).data('id');
+            var id = $(checkbox1).data('id');
 
-        //    var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
-        //    if (isLock) {
-        //        isAnyLocked = true;
-        //    }
-        //    else {
-        //        isAnyUnlocked = true;
+            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+            if (isLock) {
+                isAnyLocked = true;
+            }
+            else {
+                isAnyUnlocked = true;
 
-        //    }
+            }
 
-        //});
+        });
         $('#deleteBtn').prop('disabled', true);
         $('#lockId').prop('disabled', !isAnyUnlocked);
         $('#unlockId').prop('disabled', !isAnyLocked);
@@ -85,6 +85,54 @@ function selectCheckbox(checkbox) {
         });
         $('#selectAllCheckbox').prop('checked', allChecked);
     }
+}
+
+function setSelectedLockStatus(isLock) {
+    var ids = [];
+    var selectedCheckboxes = $('#HblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+    var lockCondition = isLock ? false : true;
+    var confirmationMessage = isLock ? l('LockConfirmationMessage') : l('UnlockConfirmationMessage');
+    var successMessage = isLock ? l('Message:SuccessLock') : l('Message:SuccessUnlock');
+
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        var id = selectedCheckboxes[i].attributes[2].value;
+        var currentLockStatus = $('#lock_' + id).find('i').hasClass('fa-lock');
+
+        if (currentLockStatus === lockCondition) {
+            ids.push(id);
+        }
+    }
+
+    abp.message.confirm(confirmationMessage).then(function (confirmed) {
+        if (confirmed) {
+            dolphin.freight.importExport.oceanExports.oceanExportHbl.setLockStatusOnOceanExportHbl(ids, isLock).done(function ()
+            {
+                abp.message.success(successMessage);
+                dataTable.ajax.reload();
+            });
+        }
+    });
+}
+
+function lockCheckBox(checkbox) {
+    var selectedCheckboxes = $('#HblListTable tbody input.lockUnlockCheckbox[type="checkbox"]:checked');
+
+    var id = checkbox.attributes[2].value;
+
+    var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+    abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+        if (confirmed) {
+            dolphin.freight.importExport.oceanExports.oceanExportHbl.lockedOrUnLockedOceanExportHbl({ HblId: id })
+                .done(function () {
+                    if (isLock) {
+                        abp.message.success(l('Message:SuccessUnlock'));
+                    } else {
+                        abp.message.success(l('Message:SuccessLock'));
+                    }
+                    dataTable.ajax.reload();
+                });
+        }
+    });
 }
 
 $(function () {
