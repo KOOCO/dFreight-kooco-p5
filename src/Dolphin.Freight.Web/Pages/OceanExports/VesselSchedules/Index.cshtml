@@ -9,6 +9,7 @@
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
 @inject IDropdownService _dropdown;
+
 @section scripts{
     <script type="text/javascript">
         var _changeInterval = null;
@@ -24,9 +25,10 @@
                 blTypeId: $("#VesselSchedule_BlTypeId").val() == '' ? null : $("#VesselSchedule_BlTypeId").val(),
                 pol: $("#VesselSchedule_PolId").val() == '' ? null : $("#VesselSchedule_PolId").val(),
                 shipModeId: $("#VesselSchedule_ShipModeId").val() == '' ? null : $("#VesselSchedule_ShipModeId").val(),
-                postDate: $("#PostDate").val(),
-                eta: $("#ETA").val(),
-                etd: $("#ETD").val(),
+                postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
+
+                eta: $("#ETA").val() == '' || $("#ETA").val() == null ? null : new Date($("#ETA").val()),
+                etd: $("#ETD").val() == '' || $("#ETD").val() == null ? null : new Date($("#ETD").val()),
                 vessel: $("#Vessel").val(),
               
                 
@@ -117,6 +119,7 @@
                 searching: false,
                 scrollX: true,
                 processing: true,
+                    
                 responsive: {
                     details: {
                         type: 'column'

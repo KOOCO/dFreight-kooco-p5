@@ -111,7 +111,28 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                                     .Contains(query.Search) || x.HblConsignee.TPName
                                     .Contains(query.Search))
                                     .WhereIf(query.MblId != null && query.MblId == Guid.Empty, x=>x.MblId.Value
-                                    .Equals(query.MblId));
+                                    .Equals(query.MblId))
+                                    
+                                    .WhereIf(query.ShipperId.HasValue, e => e.HblShipperId == query.ShipperId)
+                                   .WhereIf(query.NotifyId.HasValue, e => e.HblNotifyId == query.NotifyId)
+                                   .WhereIf(query.ConsigneeId.HasValue, e => e.HblConsigneeId == query.ConsigneeId)
+                                   .WhereIf(query.Pol.HasValue, e => e.PolId == query.Pol)
+                                   .WhereIf(query.PorId.HasValue, e => e.PorId == query.PorId)
+                                   .WhereIf(query.TruckerId.HasValue, e => e.TruckerId == query.TruckerId)
+                                   .WhereIf(query.SaleId.HasValue, e => e.HblSaleId == query.SaleId)
+                                   .WhereIf(query.CustomerId.HasValue, e => e.HblCustomerId == query.CustomerId)
+
+                                   .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
+                                   .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
+                                   .WhereIf(query.FinalDestId.HasValue, e => e.FdestId == query.FinalDestId)
+                                   .WhereIf(query.ShipModeId.HasValue, e => e.ShipModeId == query.ShipModeId)
+                                   .WhereIf(query.OvearseaAgentId.HasValue, e => e.AgentId == query.OvearseaAgentId)
+                                   .WhereIf(query.SvcTermId.HasValue, e => e.SvcTermToId == query.SvcTermId)
+                                 .WhereIf(query.DelEta.HasValue, e => e.DelEta.Value.Date == query.DelEta.Value.Date.AddDays(1))
+                                   .WhereIf(query.FinalDestEta.HasValue, e => e.FdestEta.Value.Date == query.FinalDestEta.Value.Date.AddDays(1))
+                                   .WhereIf(query.Eta.HasValue, e => e.PodEta.Value.Date == query.Eta.Value.Date.AddDays(1))
+                                   .WhereIf(query.Etd.HasValue, e => e.PolEtd.Value.Date == query.Etd.Value.Date.AddDays(1))
+                                   .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1));
             List<OceanExportHbl> rs = OceanExportHbls.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<OceanExportHblDto> list = new List<OceanExportHblDto>();
             if (rs != null && rs.Count > 0)

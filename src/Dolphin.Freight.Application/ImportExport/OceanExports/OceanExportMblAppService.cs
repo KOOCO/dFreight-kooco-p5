@@ -83,6 +83,20 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                                           .Contains(query.Search) || x.Office.AbbreviationName
                                           .Contains(query.Search) || x.SoNo
                                           .Contains(query.Search))
+                                             .WhereIf(query.CarrierId.HasValue, e => e.MblCarrierId == query.CarrierId)
+                                   .WhereIf(query.ShippingAgentId.HasValue, e => e.ShippingAgentId == query.ShippingAgentId)
+                                   .WhereIf(query.ForwardingAgentId.HasValue, e => e.ForwardingAgentId == query.ForwardingAgentId)
+                                   .WhereIf(query.Pol.HasValue, e => e.PolId == query.Pol)
+                                   .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
+                                   .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
+                                   .WhereIf(query.DeliverTo.HasValue, e => e.DeliveryToId == query.DeliverTo)
+                                   .WhereIf(query.ShipModeId.HasValue, e => e.ShipModeId == query.ShipModeId)
+                                   .WhereIf(query.OvearseaAgentId.HasValue, e => e.MblOverseaAgentId == query.OvearseaAgentId)
+                                   .WhereIf(query.BlCancelled.HasValue, e => e.IsCanceled == query.BlCancelled)
+                                   .WhereIf(query.PostDate.HasValue, e => e.PostDate.Date == query.PostDate.Value.Date.AddDays(1))
+                                   .WhereIf(query.Eta.HasValue, e => e.PodEta.Value.Date == query.Eta.Value.Date.AddDays(1))
+                                   .WhereIf(query.Etd.HasValue, e => e.PolEtd.Value.Date == query.Etd.Value.Date.AddDays(1))
+                                   .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1))
                                           .OrderByDescending(x => x.CreationTime);
 
 

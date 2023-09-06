@@ -91,9 +91,9 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
                                    .WhereIf(query.ShipModeId.HasValue,e=>e.ShipModeId==query.ShipModeId)
                                    .WhereIf(query.OvearseaAgentId.HasValue, e => e.MblOverseaAgentId == query.OvearseaAgentId)
                                    .WhereIf(query.BlTypeId.HasValue,e=>e.BlTypeId==query.BlTypeId)
-                                   .WhereIf(query.PostDate.HasValue,e=>e.PostDate==query.PostDate)
-                                   .WhereIf(query.Eta.HasValue,e=>e.PodEta==query.Eta)
-                                   .WhereIf(query.Etd.HasValue,e=>e.PolEtd==query.Etd);
+                                   .WhereIf(query.PostDate.HasValue,e=>e.PostDate.Date==query.PostDate.Value.Date.AddDays(1))
+                                   .WhereIf(query.Eta.HasValue,e=>e.PodEta.Value.Date==query.Eta.Value.Date.AddDays(1))
+                                   .WhereIf(query.Etd.HasValue,e=>e.PolEtd.Value.Date==query.Etd.Value.Date.AddDays(1));
                                     
             List<VesselSchedule> rs = VesselSchedules.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<VesselScheduleDto> list = new List<VesselScheduleDto>();
