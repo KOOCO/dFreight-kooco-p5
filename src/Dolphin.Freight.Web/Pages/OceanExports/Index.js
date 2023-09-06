@@ -1,4 +1,7 @@
 ﻿var l = abp.localization.getResource('Freight');
+var createMemoModal = new abp.ModalManager({
+    viewUrl: '/AirExports/CopyMawbModal',
+});
 var dataTable;
 var _changeInterval = null;
 var queryListFilter = function () {
@@ -122,6 +125,14 @@ function selectAllCheckbox(element) {
     $('#MblListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
 }
 
+function copyMbl() {
+    var checkedCheckboxes = $('.selectCheckbox:checked');
+    var mblId = checkedCheckboxes.attr('data-id');
+    createMemoModal.open({
+        mblId,
+    });
+}
+
 function selectCheckbox(checkbox) {
     var checkedCheckboxes = $('.selectCheckbox:checked');
     if (checkbox.checked) {
@@ -130,6 +141,12 @@ function selectCheckbox(checkbox) {
         checkedCheckboxes.each(function (index, checkbox1) {
             $('#deleteBtn').prop('disabled', false);
             var id = $(checkbox1).data('id');
+
+            if (checkedCheckboxes.length == 1) {
+                $('#copyBtn').prop('disabled', false);
+            } else {
+                $('#copyBtn').prop('disabled', true);
+            }
 
             var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
             if (isLock) {
@@ -145,6 +162,15 @@ function selectCheckbox(checkbox) {
         $('#unlockId').prop('disabled', !isAnyLocked);
     } else {
         var checkedCheckboxes = $('.selectCheckbox:checked');
+
+        if (checkedCheckboxes && checkedCheckboxes.length == 0) {
+            $('#deleteBtn').prop('disabled', true);
+            $('#copyBtn').prop('disabled', true);
+        }
+        else if (checkedCheckboxes.length == 1) {
+            $('#copyBtn').prop('disabled', false);
+        }
+
         checkedCheckboxes.each(function (index, checkbox1) {
 
             var id = $(checkbox1).data('id');

@@ -9,6 +9,7 @@
 }
 <script>
     $(document).ready(function () {
+
         // Get references to the checkboxes
         var accountingCheckbox = $('#accountingCheckbox');
         var apCheckbox = $('#apCheckbox');
@@ -77,10 +78,42 @@
         
     //     // You can now use the formData for your custom actions or AJAX request
     // });
+    
+
     $('#copyForm').on('abp-ajax-success', function (result, rs) {
-        debugger;
-        location.href = 'CreateMawb?Id=' + rs.responseText.Id + '&IsCopyFlightInfo=' + rs.responseText.IsCopyFlightInfo + '&CopyHawb=' + rs.responseText.CopyHawb + '&AccountingInfo=' + rs.responseText.CopyAccountingInformation + '&CopyCommodity=' + rs.responseText.CopyCommodity + '&IsAPCopy=' + rs.responseText.AP + '&IsARCopy=' + rs.responseText.AR + '&IsDCCopy=' + rs.responseText.DC
+        if (isIndexPage()) {
+            var allHbl;
+            var firstHbl;
+            var container;
+            if ($('#CopyModel\\.CopyHawbRadioAllHAWB')[0].checked){
+                allHbl = 'true';
+            } else if ($('#CopyModel\\.CopyHawbRadioFirstHawbOnly')[0].checked) {
+                allHbl = 'false';
+            }
+            if ($('#CopyModel_CopyCommodity')[0].checked){
+                container = 'container';
+            }
+            var checkedCheckbox = $('.selectCheckbox:checked');
+            var mblId = checkedCheckbox.attr('data-id');
+            dolphin.freight.web.controllers.importExport.copyMblDetails(mblId, allHbl, container).done(function (res)
+            { 
+                window.location.href = "/OceanExports/EditModal?Id=" + res.newMblId;
+            });
+        }
+        else{
+            location.href = 'CreateMawb?Id=' + rs.responseText.Id + '&IsCopyFlightInfo=' + rs.responseText.IsCopyFlightInfo + '&CopyHawb=' + rs.responseText.CopyHawb + '&AccountingInfo=' + rs.responseText.CopyAccountingInformation + '&CopyCommodity=' + rs.responseText.CopyCommodity + '&IsAPCopy=' + rs.responseText.AP + '&IsARCopy=' + rs.responseText.AR + '&IsDCCopy=' + rs.responseText.DC
+        }
     });
+
+    function isIndexPage() {
+        var pathSegments = window.location.pathname.split('/');
+        var lastSegment = pathSegments[pathSegments.length - 1];
+
+        // Trim and check in case there are any trailing spaces or slashes
+        lastSegment = lastSegment.trim();
+
+        return lastSegment.toLowerCase() === "index";
+    }
 </script>
 <form abp-model="CopyModel" id="copyForm" method="post" action="@Url.Page("/AirExports/CopyMawbModal")">
     <abp-modal size="Large">

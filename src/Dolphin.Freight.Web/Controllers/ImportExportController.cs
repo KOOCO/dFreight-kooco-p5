@@ -23,6 +23,7 @@ using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
 using Org.BouncyCastle.Asn1.Mozilla;
+using Dolphin.Freight.ImportExport.Containers;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -37,12 +38,14 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IAirImportHawbAppService _airImportHawbAppService;
         private readonly IAirExportHawbAppService _airExportHawbAppService;
         private readonly IOceanExportHblAppService _oceanExportHblAppService;
+        private readonly IOceanExportMblAppService _oceanExportMblAppService;
         private readonly IOceanImportHblAppService _oceanImportHblAppService;
         private readonly IAttachmentAppService _attachmentAppService;
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly IPortsManagementAppService _portsManagementAppService;
         private readonly IVesselScheduleAppService _vesselScheduleAppService;
         private readonly IExportBookingAppService _exportBookingAppService;
+        private readonly IContainerAppService _containerAppService;
 
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
@@ -60,12 +63,14 @@ namespace Dolphin.Freight.Web.Controllers
             IAirImportHawbAppService airImportHawbAppService,
             IAirExportHawbAppService airExportHawbAppService,
             IOceanExportHblAppService oceanExportHblAppService,
+            IOceanExportMblAppService oceanExportMblAppService,
             IOceanImportHblAppService oceanImportHblAppService,
             IAttachmentAppService attachmentAppService,
             IInvoiceAppService invoiceAppService,
             IPortsManagementAppService portsManagementAppService,
             IVesselScheduleAppService vesselScheduleAppService,
-            IExportBookingAppService exportBookingAppService
+            IExportBookingAppService exportBookingAppService,
+            IContainerAppService containerAppService
             )
         {
             _tradePartnerAppService = tradePartnerAppService;
@@ -75,12 +80,14 @@ namespace Dolphin.Freight.Web.Controllers
             _airImportHawbAppService = airImportHawbAppService;
             _airExportHawbAppService = airExportHawbAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
+            _oceanExportMblAppService = oceanExportMblAppService;
             _oceanImportHblAppService = oceanImportHblAppService;
             _attachmentAppService = attachmentAppService;
             _invoiceAppService = invoiceAppService;
             _portsManagementAppService = portsManagementAppService;
             _vesselScheduleAppService = vesselScheduleAppService;
             _exportBookingAppService = exportBookingAppService;
+            _containerAppService = containerAppService;
 
 
             FillCountryNameAsync().Wait();
@@ -509,6 +516,84 @@ namespace Dolphin.Freight.Web.Controllers
             info.EmptyPickupId = Vessels.Where(w => w.ReferenceNo == refNo).Select(s => s.EmptyPickupId).FirstOrDefault();
 
             return Json(new JsonResult(info));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CopyMblDetails(Guid id, string allHbl, string isContainer)
+        {
+            var mbldata = await _oceanExportMblAppService.GetAsync(id);
+            var hbldata = await _oceanExportHblAppService.GetHblCardsById(id);
+            var containerdata = await _containerAppService.GetContainerByMblId(id);
+            var updatedMbl = ObjectMapper.Map<OceanExportMblDto, CreateUpdateOceanExportMblDto>(mbldata);
+
+            updatedMbl.Id = Guid.Empty;
+
+            var newMbl = await _oceanExportMblAppService.CreateAsync(updatedMbl);
+
+            Guid newMblId = newMbl.Id;
+
+            if (isContainer == "container")
+            {
+                foreach (var container in containerdata)
+                {
+                    container.MblId = newMblId;
+
+                    container.Id = Guid.Empty;
+
+                    await _containerAppService.CreateAsync(container);
+                }
+            }
+
+            if (allHbl == "true")
+            {
+                foreach (var hbl in hbldata)
+                {
+                    var containerdataHbl = await _containerAppService.GetContainerListByHblId(hbl.Id);
+
+                    hbl.MblId = newMblId;
+
+                    hbl.Id = Guid.Empty;
+
+                    var updatedHbls = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl);
+
+                    var newHbl = await _oceanExportHblAppService.CreateAsync(updatedHbls);
+
+                    var newHblId = newHbl.Id;
+
+                    foreach (var containerHbl in containerdataHbl)
+                    {
+                        containerHbl.HblId = newHblId;
+
+                        containerHbl.Id = Guid.Empty;
+
+                        await _containerAppService.CreateAsync(containerHbl);
+                    }
+                }
+            }
+            else if (allHbl == "false")
+            {
+                var hbl = hbldata[0];
+                var containerdataHbl = await _containerAppService.GetContainerListByHblId(hbl.Id);
+                hbl.Id = Guid.Empty;
+                hbl.MblId = newMblId;
+
+                var updatedHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl);
+
+                var newHbl = await _oceanExportHblAppService.CreateAsync(updatedHbl);
+
+                var newHblId = newHbl.Id;
+
+                foreach (var containerHbl in containerdataHbl)
+                {
+                    containerHbl.HblId = newHblId;
+
+                    containerHbl.Id = Guid.Empty;
+
+                    await _containerAppService.CreateAsync(containerHbl);
+                }
+            }
+
+            return Json(new { NewMblId = newMblId });
         }
     }
 }
