@@ -7,6 +7,7 @@ using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Newtonsoft.Json;
+using NPOI.DDF;
 using NPOI.POIFS.Crypt.Dsig;
 using System;
 using System.Collections.Generic;
@@ -134,16 +135,31 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             try
             {
                 var mbl = await _repository.GetAsync(query.MbId.Value);
-                mbl.IsLocked = !mbl.IsLocked;
-                var queryHbl = await _oceanExportHblRepository.GetQueryableAsync();
-                var hbls = queryHbl.Where(w => w.MblId == mbl.Id).ToList();
-                foreach (var hbl in hbls)
+                if (mbl.IsLocked == true)
                 {
-                    hbl.IsLocked = true;
+                    mbl.IsLocked = false;
+                    var queryHbl = await _oceanExportHblRepository.GetQueryableAsync();
+                    var hbls = queryHbl.Where(w => w.MblId == mbl.Id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = false;
 
-                    await _oceanExportHblRepository.UpdateAsync(hbl);
+                        await _oceanExportHblRepository.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
                 }
-                await _repository.UpdateAsync(mbl);
+                else
+                {
+                    mbl.IsLocked = true;
+                    var queryHbl = await _oceanExportHblRepository.GetQueryableAsync();
+                    var hbls = queryHbl.Where(w => w.MblId == mbl.Id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = true;
+                        await _oceanExportHblRepository.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+                }
             }
             catch (Exception ex)
             {
