@@ -523,110 +523,138 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CopyMblDetails(Guid id, string allHbl, string isContainer, string isInvoice)
+        public async Task<IActionResult> CopyMblDetails(Guid id, bool allHbl, string containerOption, string invoiceOption)
         {
-            var mbldata = await _oceanExportMblAppService.GetAsync(id);
-            var hbldata = await _oceanExportHblAppService.GetHblCardsById(id);
-            var containerdata = await _containerAppService.GetContainerByMblId(id);
+            var newMblId = await CopyMbl(id);
 
-            QueryInvoiceDto queryInvoiceDto = new QueryInvoiceDto() { ParentId = id, QueryType = 3 };
-            var invoicedata = await _invoiceAppService.QueryInvoicesAsync(queryInvoiceDto);
-
-            var updatedMbl = ObjectMapper.Map<OceanExportMblDto, CreateUpdateOceanExportMblDto>(mbldata);
-
-            updatedMbl.Id = Guid.Empty;
-
-            var newMbl = await _oceanExportMblAppService.CreateAsync(updatedMbl);
-
-            Guid newMblId = newMbl.Id;
-
-            if (isContainer == "container")
+            if (containerOption == "container")
             {
-                foreach (var container in containerdata)
-                {
-                    container.MblId = newMblId;
-
-                    container.Id = Guid.Empty;
-
-                    await _containerAppService.CreateAsync(container);
-                }
+                await CopyContainers(id, newMblId);
             }
 
-            if (isInvoice == "invoices")
+            if (invoiceOption == "invoices")
             {
-                foreach (var invoice in invoicedata)
-                {
-                    invoice.MblId = newMblId;
-
-                    invoice.Id = Guid.Empty;
-
-                    var updatedInvoices = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
-
-                    var newInvoice = await _invoiceAppService.CreateAsync(updatedInvoices);
-
-                    Guid newInvoiceId = newInvoice.Id;
-
-                    foreach (var invoicebilldto in invoice.InvoiceBillDtos)
-                    {
-                        invoicebilldto.InvoiceId = newInvoiceId;
-
-                        invoicebilldto.Id = Guid.Empty;
-
-                        await _invoiceBillAppService.CreateAsync(invoicebilldto);
-                    }
-                }
+                await CopyInvoices(id, newMblId);
             }
 
-            if (allHbl == "true")
+            if (allHbl)
             {
-                foreach (var hbl in hbldata)
-                {
-                    var containerdataHbl = await _containerAppService.GetContainerListByHblId(hbl.Id);
-
-                    hbl.MblId = newMblId;
-
-                    hbl.Id = Guid.Empty;
-
-                    var updatedHbls = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl);
-
-                    var newHbl = await _oceanExportHblAppService.CreateAsync(updatedHbls);
-
-                    var newHblId = newHbl.Id;
-
-                    foreach (var containerHbl in containerdataHbl)
-                    {
-                        containerHbl.HblId = newHblId;
-
-                        containerHbl.Id = Guid.Empty;
-
-                        await _containerAppService.CreateAsync(containerHbl);
-                    }
-                }
+                await CopyAllHbl(id, newMblId, containerOption, invoiceOption);
             }
-            else if (allHbl == "false")
+            else
             {
-                var hbl = hbldata[0];
-                var containerdataHbl = await _containerAppService.GetContainerListByHblId(hbl.Id);
-                hbl.Id = Guid.Empty;
-                hbl.MblId = newMblId;
-
-                var updatedHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl);
-
-                var newHbl = await _oceanExportHblAppService.CreateAsync(updatedHbl);
-
-                var newHblId = newHbl.Id;
-
-                foreach (var containerHbl in containerdataHbl)
-                {
-                    containerHbl.HblId = newHblId;
-
-                    containerHbl.Id = Guid.Empty;
-
-                    await _containerAppService.CreateAsync(containerHbl);
-                }
+                await CopySingleHbl(id, newMblId, containerOption, invoiceOption);
             }
 
             return Json(new { NewMblId = newMblId });
         }
+
+        #region Private Functions
+
+        private async Task<Guid> CopyMbl(Guid id)
+        {
+            var mbldata = await _oceanExportMblAppService.GetAsync(id);
+            var updatedMbl = ObjectMapper.Map<OceanExportMblDto, CreateUpdateOceanExportMblDto>(mbldata);
+            updatedMbl.Id = Guid.Empty;
+
+            var newMbl = await _oceanExportMblAppService.CreateAsync(updatedMbl);
+            return newMbl.Id;
+        }
+
+        private async Task CopyContainers(Guid parentId, Guid newParentId, bool isHbl = false)
+        {
+            var containerdata = isHbl
+                ? await _containerAppService.GetContainerListByHblId(parentId)
+                : await _containerAppService.GetContainerByMblId(parentId);
+
+            foreach (var container in containerdata)
+            {
+                if (isHbl)
+                    container.HblId = newParentId;
+                else
+                    container.MblId = newParentId;
+
+                container.Id = Guid.Empty;
+                await _containerAppService.CreateAsync(container);
+            }
+        }
+
+        private async Task CopyInvoices(Guid parentId, Guid newParentId, int queryType = 3)
+        {
+            QueryInvoiceDto queryInvoiceDto = new QueryInvoiceDto() { ParentId = parentId, QueryType = queryType };
+            var invoicedata = await _invoiceAppService.QueryInvoicesAsync(queryInvoiceDto);
+
+            foreach (var invoice in invoicedata)
+            {
+                var updatedInvoices = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+                updatedInvoices.Id = Guid.Empty;
+
+                if (queryType == 3)
+                    updatedInvoices.MblId = newParentId;
+                else if (queryType == 1)
+                    updatedInvoices.HblId = newParentId;
+
+                var newInvoice = await _invoiceAppService.CreateAsync(updatedInvoices);
+                var newInvoiceId = newInvoice.Id;
+
+                foreach (var invoicebilldto in invoice.InvoiceBillDtos)
+                {
+                    invoicebilldto.InvoiceId = newInvoiceId;
+                    invoicebilldto.Id = Guid.Empty;
+
+                    await _invoiceBillAppService.CreateAsync(invoicebilldto);
+                }
+            }
+        }
+
+        private async Task CopyAllHbl(Guid parentId, Guid newMblId, string containerOption, string invoiceOption)
+        {
+            var hbldata = await _oceanExportHblAppService.GetHblCardsById(parentId);
+
+            foreach (var hbl in hbldata)
+            {
+                var updatedHbls = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl);
+                updatedHbls.MblId = newMblId;
+                updatedHbls.Id = Guid.Empty;
+
+                var newHbl = await _oceanExportHblAppService.CreateAsync(updatedHbls);
+                var newHblId = newHbl.Id;
+
+                if (containerOption == "container")
+                {
+                    await CopyContainers(hbl.Id, newHblId, true);
+                }
+
+                if (invoiceOption == "invoices")
+                {
+                    await CopyInvoices(hbl.Id, newHblId, 1);
+                }
+            }
+        }
+
+        private async Task CopySingleHbl(Guid parentId, Guid newMblId, string containerOption, string invoiceOption)
+        {
+            var hbldata = await _oceanExportHblAppService.GetHblCardsById(parentId);
+            var hbl = hbldata[0];
+
+            var updatedHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl);
+            updatedHbl.MblId = newMblId;
+            updatedHbl.Id = Guid.Empty;
+
+            var newHbl = await _oceanExportHblAppService.CreateAsync(updatedHbl);
+            var newHblId = newHbl.Id;
+
+            if (containerOption == "container")
+            {
+                await CopyContainers(hbl.Id, newHblId, true);
+            }
+
+            if (invoiceOption == "invoices")
+            {
+                await CopyInvoices(hbl.Id, newHblId, 1);
+            }
+        }
+
+        #endregion
     }
 }

@@ -115,7 +115,7 @@
 
         lastSegment = lastSegment.trim();
 
-        return lastSegment.toLowerCase() === "index";
+        return lastSegment.toLowerCase() === "index" || lastSegment.toLowerCase() === "mbllist";
     }
 </script>
 <form abp-model="CopyModel" id="copyForm" method="post" action="@Url.Page("/AirExports/CopyMawbModal")">
