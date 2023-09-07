@@ -125,8 +125,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
                 var exportBooking = await _exportBookingAppService.GetAsync(CopyId.Value);
                 query.ParentId = CopyId;
                 ExportBooking = ObjectMapper.Map<ExportBookingDto, CreateUpdateExportBookingDto>(exportBooking);
-                ExportBooking.SoNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "ExportBooking_SoNo" });
-                CreateUpdateExportBookingDto dto = new CreateUpdateExportBookingDto();
+               var SoNo=await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "ExportBooking_SoNo" });
+                ExportBooking.SoNo =SoNo!=null?SoNo:ExportBooking.SoNo+" Copy";
+               CreateUpdateExportBookingDto dto = new CreateUpdateExportBookingDto();
                 ExportBooking.Id = new Guid();
                 var booking = await _exportBookingAppService.CreateAsync(ExportBooking);
                 if (WithInvoice == 1) {

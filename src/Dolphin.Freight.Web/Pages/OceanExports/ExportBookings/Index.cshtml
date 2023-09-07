@@ -15,7 +15,7 @@
         var l = abp.localization.getResource('Freight');
         var _changeInterval = null;
         var dataTable;
-        $(document).ready(function () {
+      
             var queryListFilter = function () {
                 return {
                      search: $("#Keyword").val(),
@@ -72,15 +72,15 @@
 
                                             }
                                         },
-                                        {
-                                            text: l('Btn:Copy'),
+                                        // {
+                                        //     text: l('Btn:Copy'),
 
-                                            action: function (data) {
-                                                $("#CopyId").val(data.record.id);
-                                                $("#checkModal").modal("show");
+                                        //     action: function (data) {
+                                        //         $("#CopyId").val(data.record.id);
+                                        //         $("#checkModal").modal("show");
 
-                                            }
-                                        },
+                                        //     }
+                                        // },
                                         {
                                             text: l('Delete'),
                                             visible: function (data) {
@@ -212,10 +212,21 @@
                 checkedCheckboxes.each(function (index, checkbox1) {
                     $('#deleteBtn').prop('disabled', false);
                 });
+                 if (checkedCheckboxes.length == 1) {
+                $('#copyBtn').prop('disabled', false);
             } else {
-                var checkedCheckboxes = $('.selectCheckbox:checked');
-                
-                $('#deleteBtn').prop('disabled', true);
+                $('#copyBtn').prop('disabled', true);
+            }
+            } else {
+              
+              if (checkedCheckboxes && checkedCheckboxes.length == 0) {
+            $('#deleteBtn').prop('disabled', true);
+            $('#copyBtn').prop('disabled', true);
+        }
+        else if (checkedCheckboxes.length == 1) {
+            $('#copyBtn').prop('disabled', false);
+        }
+               
             }
             if (!$(checkbox).prop('checked')) {
                 $('#selectAllCheckbox').prop('checked', false);
@@ -230,9 +241,13 @@
                 $('#selectAllCheckbox').prop('checked', allChecked);
             }
         }
-
-              
-            })
+        function copyButtonClick() {
+            var selectedCheckboxes = $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+            var id = selectedCheckboxes[0].attributes[2].value;
+             $("#CopyId").val(id);
+            $("#checkModal").modal("show");  
+        }
+          
     
        
        
@@ -468,7 +483,7 @@
                 <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
                     <button type="button" class="btn btn-outline-secondary fa fa-plus" onclick="createNew()" id="newBtn"></button>
                     <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="deleteHbl()" id="deleteBtn" disabled></button>
-                    <button type="button" class="btn btn-outline-secondary fa fa-files-o me-0" id="copyBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-files-o me-0" onclick="copyButtonClick()" id="copyBtn" disabled></button>
                     <button type="button" class="btn btn-outline-secondary" id="copyBtn" disabled><i class="fa fa-plus"></i>Convert To Shipment</button>
                 </div>
             </div>
