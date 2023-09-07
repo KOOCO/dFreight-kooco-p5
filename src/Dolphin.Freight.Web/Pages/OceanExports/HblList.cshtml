@@ -32,6 +32,11 @@
             </div>
             </abp-column>
                <abp-column size-md="_6" class="text-end p-0">
+                     <abp-button id="FilterGlCodeButton"
+                            text="@L["Filter"].Value"
+                            icon="filter"
+                            button-type="Primary"
+                            data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
             <abp-button id="btnConfiguration"
                         text="@L["Configuration"].Value"
                         icon="gear"
@@ -205,14 +210,7 @@
             </abp-row>
             </abp-card-body>
         <abp-card-body>
-            <div class="text-end">
-              
-                <abp-button id="FilterGlCodeButton"
-                            text="@L["Filter"].Value"
-                            icon="filter"
-                            class="btn btn-sm btn-success"
-                            data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
-            </div>
+          
             <div class="portlet-tool">
                 <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
                     <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="deleteHbl()" id="deleteBtn" disabled></button>
