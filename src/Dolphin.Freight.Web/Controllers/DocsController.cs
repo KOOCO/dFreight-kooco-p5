@@ -5726,7 +5726,13 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(InfoModel);
         }
-       
+
+        [HttpGet]
+        public IActionResult CopyVesselSchedulePopupPartial()
+        {
+            return PartialView("Pages/OceanExports/VesselSchedules/_VesselScheduleCopyPopUp.cshtml");
+        }
+
         #region Private Functions
 
         private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)

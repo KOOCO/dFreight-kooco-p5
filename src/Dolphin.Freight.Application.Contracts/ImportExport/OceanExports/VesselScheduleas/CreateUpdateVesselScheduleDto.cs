@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Volo.Abp.Application.Dtos;
 
 namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
 {
-    public class CreateUpdateVesselScheduleDto
+    public class CreateUpdateVesselScheduleDto : AuditedEntityDto<Guid>
     {
       
+        public bool isNewVessel { get; set; }
         /// <summary>
         /// 船期編號 
         /// </summary>

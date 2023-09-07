@@ -549,6 +549,25 @@ namespace Dolphin.Freight.Web.Controllers
             return Json(new { NewMblId = newMblId });
         }
 
+        [HttpPost]
+        [Route("VesselSchedulesCopy")]
+        public async Task<IActionResult> VesselSchedulesCopy(Guid id, string copyVesselOnly)
+        {
+            if (copyVesselOnly == "vesselOnly")
+            {
+                var vesselData = await _vesselScheduleAppService.GetAsync(id);
+                var updatedVessel = ObjectMapper.Map<VesselScheduleDto, CreateUpdateVesselScheduleDto>(vesselData);
+                updatedVessel.Id = Guid.Empty;
+
+                var newVessel = await _vesselScheduleAppService.CreateAsync(updatedVessel);
+                newVessel.isNewVessel = true;
+
+                return Json(new { NewVesselId = newVessel.Id, status = newVessel.isNewVessel });
+            }
+
+            return Ok();
+        }
+
         #region Private Functions
 
         private async Task<Guid> CopyMbl(Guid id)

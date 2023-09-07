@@ -27,6 +27,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public bool ShowMsg { get; set; } = false;
+        [BindProperty(SupportsGet = true)]
+        public bool Status { get; set; }
         [BindProperty]
         public CreateUpdateVesselScheduleDto VesselSchedule { get; set; }
 
@@ -74,8 +76,15 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         }
         public async Task OnGetAsync()
         {
+            ViewData["Status"] = Status;
+
             var vesselSchedule = await _vesselScheduleAppService.GetAsync(Id);
             VesselSchedule  = ObjectMapper.Map<VesselScheduleDto, CreateUpdateVesselScheduleDto>(vesselSchedule);
+
+            if (Status)
+            {
+                VesselSchedule.ReferenceNo = string.Empty;
+            }
 
             await FillTradePartnerAsync();
             await FillSubstationAsync();

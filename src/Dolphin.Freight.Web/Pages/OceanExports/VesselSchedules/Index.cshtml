@@ -220,11 +220,21 @@
             if (checkbox.checked) {
                 checkedCheckboxes.each(function (index, checkbox1) {
                     $('#deleteBtn').prop('disabled', false);
+                    if(checkedCheckboxes.length == 1){
+                        $('#copyBtn').prop('disabled', false);
+                    }else{
+                        $('#copyBtn').prop('disabled', true);
+                    }
                 });
             } else {
                 var checkedCheckboxes = $('.selectCheckbox:checked');
                 
-                $('#deleteBtn').prop('disabled', true);
+                if (checkedCheckboxes && checkedCheckboxes.length == 0){
+                    $('#deleteBtn').prop('disabled', true);
+                    $('#copyBtn').prop('disabled', true);
+                } else if (checkedCheckboxes.length == 1){
+                    $('#copyBtn').prop('disabled', false);
+                }
             }
             if (!$(checkbox).prop('checked')) {
                 $('#selectAllCheckbox').prop('checked', false);
@@ -244,7 +254,52 @@
             window.location.href = "/OceanExports/VesselSchedules/Create";
         }
 
-      
+        $('#copyBtn').click(function(){ 
+            $.ajax({
+                url: '/Docs/CopyVesselSchedulePopupPartial',
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('#VesselSchlCopyModal').html(res);
+                    $('#VesselSchlCopyModal').modal('show');
+
+                    const checkbox = document.getElementById('HBLPrintCB');
+                    const button = document.getElementById('HBLDocPKGBtn');
+                    
+                    checkbox.addEventListener('change', function() {
+                        if (checkbox.checked) {
+                            button.removeAttribute('disabled');
+                        } else {
+                            button.setAttribute('disabled', 'disabled');
+                        }
+                    });
+                }
+            });
+        });
+
+        function Cancel(){
+            $('#VesselSchlCopyModal').modal('hide');
+        }
+
+        function onSave() {
+            var copyVesselOnly;
+
+            if ($('#HBLPrintCB')[0].checked){
+                copyVesselOnly = 'vesselOnly';
+            }
+
+            var checkedCheckbox = $('.selectCheckbox:checked');
+            var vesselId = $('.selectCheckbox:checked').attr('data-id');
+
+            var ajaxParams = undefined;
+
+            abp.ajax($.extend(true, {
+                        url: abp.appPath + 'api/ImportExport/VesselSchedulesCopy?id=' + vesselId +'&copyVesselOnly=' + copyVesselOnly,
+                        type: 'POST',
+                    }, ajaxParams)).done(function (res) {
+                        window.location.href = "/OceanExports/VesselSchedules/Edit?Id=" + res.newVesselId +'&status=' + res.status;
+                    });
+        }
 
     </script>
 
@@ -402,7 +457,7 @@
                 <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
                     <button type="button" class="btn btn-outline-secondary fa fa-plus" onclick="createNew()" id="newBtn"></button>
                     <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="deleteVessels()" id="deleteBtn" disabled></button>
-                    <button type="button" class="btn btn-outline-secondary" disabled><i class="fa fa-files-o me-0"></i></button>
+                    <button type="button" class="btn btn-outline-secondary" id="copyBtn" disabled><i class="fa fa-files-o me-0"></i></button>
                 </div>
             </div>
             <abp-table class="nowrap" striped-rows="true" id="VesselScheduleListTable"></abp-table>
@@ -410,3 +465,4 @@
     </abp-card>
 </div>
 
+<div class="modal" id="VesselSchlCopyModal"></div>
