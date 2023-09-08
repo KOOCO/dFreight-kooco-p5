@@ -9,6 +9,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
 {
     public class VesselScheduleDto : AuditedEntityDto<Guid>
     {
+        public bool isNewVessel { get; set; }
         /// <summary>
         /// 船期編號 
         /// </summary>

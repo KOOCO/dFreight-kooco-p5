@@ -438,12 +438,6 @@
 
    /* var newTPId;*/
 
-    $('#AddContactPersonButton').click(function (e) {
-        e.preventDefault();
-        createModal.open({
-            tradePartnerId: $('#tpId').val()
-        });
-    });
 
     createModal.onResult(function () {
         dataTable.ajax.reload();

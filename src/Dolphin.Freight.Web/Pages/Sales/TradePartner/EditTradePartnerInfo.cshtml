@@ -94,6 +94,92 @@
 @section scripts{
     <abp-script src="/Pages/Sales/TradePartner/EditTradePartnerInfo.js" />
     <script>
+
+        var contactIndex = 0;
+        function onCreateNewContactPersonInformation() {
+            var newRowData = {
+                contactIndex: contactIndex
+            };
+            
+            var newRow = $('#contactPersonInfomationTemplate').tmpl(newRowData);
+            $('#contactPersonInformationBody').append(newRow);
+
+            const contactIndices = contactIndex;
+
+            const birthDayElement = getElementById(contactIndices, 'ContactBirthday');
+            const memorialDayElement = getElementById(contactIndices, 'ContactMemorialDay');
+            
+            initializeDateTimePicker(birthDayElement);
+            initializeDateTimePicker(memorialDayElement);
+
+            contactIndex += 1;
+        }
+
+        function getElementById(index, suffix) {
+            return $(document.getElementById('ContactPersonModel['+index+']_'+suffix+''));
+        }
+
+        function initializeDateTimePicker(element) {
+            if (element.length === 0) {
+                return;
+            }
+
+            element.removeAttr('type').datetimepicker({
+                format: 'Y-m-d H:i',
+                step: 15,
+                allowInput: false
+            });
+
+            let currentValue = element.val();
+            if (currentValue.includes('T')) {
+                element.val(currentValue.replace('T', ' '));
+            }
+        }
+
+        function onRemoveContactPerson() {
+            $('[name="chk_ContactPerson"]:checked').each(function (i, elem) {
+                let nextTr = $(elem).closest('tr').next();
+                $(elem).closest('tr').remove();
+                if (nextTr.attr('id').includes('trUserMore')) {
+                    nextTr.remove();
+                }
+            });
+            resetContactPersonIndexing();
+        }
+
+        var childrenIndex = 0;
+        function onCreateNewContactPersonChildren(e, contactIndex) {
+            e && e.preventDefault();
+
+            var newRowData = {
+                contactIndex: contactIndex,
+                childrenIndex: childrenIndex
+            };
+
+            var newRow = $('#contactInfoChildrenTemplate').tmpl(newRowData);
+            $('#contactInfoChildrenBody_' + contactIndex).append(newRow);
+            childrenIndex += 1;
+        }
+
+        //function onRemoveContactPersonChildren() {
+        //    $('[name="chk_ContactPersonChildren"]:checked').each(function (i, elem) {
+        //        let nextTr = $(elem).closest('tr').next();
+        //        $(elem).closest('tr').remove();
+        //    });
+        //}
+
+        function onOpenMoreUserInfo(contactIndex) {
+            if ($('#btnOpenMoreUserInfo_' + contactIndex).html() == '+') {
+                $('#trUserMoreInfo_' + contactIndex).show();
+                $('#btnOpenMoreUserInfo_' + contactIndex).html('-');
+            }
+            else {
+                $('#trUserMoreInfo_' + contactIndex).hide();
+                $('#btnOpenMoreUserInfo_' + contactIndex).html('+');
+            }
+            //$('#trUserMoreInfo_'+contactIndex).toggle('show');
+        }
+        
         var companyList = [];
 
         function getCompanies(){
@@ -143,7 +229,7 @@
 
         $(document).ready(function () {
 
-            
+            onContactPersonInfo();
 
             onSetTradeParties();
 
@@ -583,6 +669,39 @@
             }
         }
 
+        function resetContactPersonIndexing() {
+            debugger;
+            $('.contact-person-block').find('tbody tr').each(function (e, elem) {
+                $(elem).find('td input[name]').each(function (a, aelem) {
+                    $(aelem).attr('name', $(aelem).attr('name').replace(/\d+/, e));
+                });
+                if ($(elem).next().attr('id') && $(elem).next().attr('id').includes('trUserMore')) {
+                    $(elem).next().find('tr').find('td input[name]').each(function (c, celem) {
+                        $(celem).attr('name',$(celem).attr('name').replace(/\d+/, e));
+                    });
+                }
+                
+            });
+            
+        }
+
+        function resetContactPersonsCount() {
+            var url = new URL(window.location.href);
+            var pathname = url.pathname; 
+
+            var segments = pathname.split('/');
+            var id = segments[segments.length - 1];
+
+            if (checkGuid(id)) {
+                dolphin.freight.tradePartners.contactPerson.getListByTradePartnerId(id).done(function (res) 
+                { 
+                    if (res) {
+                        contactIndex = res.length;
+                    }
+                });
+            }
+        }
+
         function onSetTradeParties() {
             var tradePartiesJSON = '@Html.Raw(Json.Serialize(Model.TradeParties))';
 
@@ -590,6 +709,7 @@
                 var tradeParties = JSON.parse(tradePartiesJSON);
                 var tradeIndex = 0;
                 tradeParties.forEach(function(tradeParty){
+                    debugger;
                     var extraProperties = tradeParty.extraProperties;
                     var tradePartyTemplateData = { 'IsDefault': tradeParty.isDefault, 'TradePartyDescription': tradeParty.tradePartyDescription, 'tradeParty':                                                      tradeParty.tradePartyType};
                         tradePartyTemplateData.DefaultValue = tradeParty.isDefault? "checked": "";
@@ -610,7 +730,7 @@
                         tradePartyTemplateData.RepValue = tradePartyInfo.IsRep? "checked": "";
                         tradePartyTemplateData.Id = tradeParty.id;
                         
-
+                        debugger;
                         var newRow = $('#tradePartyTemplate').tmpl(tradePartyTemplateData);
                         $('#tradePartyBody_' + tradeParty.tradePartyType).append(newRow);
 
@@ -625,6 +745,89 @@
                 })
             }
             resetTradePartiesCount();
+        }
+
+        function setCheckedStatus(prefix, value) {
+            $('#' + prefix + '_' + value).prop('checked', 'checked');
+        }
+
+        function onContactPersonInfo() {
+            var contactPersonInfoJSON = '@Html.Raw(Json.Serialize(Model.ContactPersonModel))';
+            
+            if (contactPersonInfoJSON) {
+                var contactPersonInfo = JSON.parse(contactPersonInfoJSON);
+                var contactPersonIndex = 0;
+                contactPersonInfo.forEach(function(contactPerson) {
+                    var contactPersonInfoData = {};
+                    contactPersonInfoData.IsRep = contactPerson.isRep ? "checked" : "";
+                    contactPersonInfoData.IsEmailNotification = contactPerson.isEmailNotification ? "checked" : "";
+                    if (contactPerson){
+                        debugger;
+                         contactPersonInfoData.contactIndex = contactPersonIndex;
+                        contactPersonInfoData.ContactName = contactPerson.contactName;
+                        contactPersonInfoData.ContactTitle = contactPerson.contactTitle;
+                        contactPersonInfoData.ContactDivision = contactPerson.contactDivision;
+                        contactPersonInfoData.ContactCellPhone = contactPerson.contactCellPhone;
+                        contactPersonInfoData.ContactPhone = contactPerson.contactPhone;
+                        contactPersonInfoData.ContactFax = contactPerson.contactFax;
+                        contactPersonInfoData.ContactEmailAddress = contactPerson.contactEmailAddress;
+                        contactPersonInfoData.ContactRemark = contactPerson.contactRemark;
+                        contactPersonInfoData.ContactAge = contactPerson.contactAge;
+                        contactPersonInfoData.ContactBirthday = contactPerson.contactBirthday;
+                        contactPersonInfoData.ContactHobby = contactPerson.contactHobby;
+                        contactPersonInfoData.ContactInterest = contactPerson.contactInterest;
+                        contactPersonInfoData.ContactMemorialDay = contactPerson.contactMemorialDay;
+                        contactPersonInfoData.ContactAddress = contactPerson.contactAddress;
+                        contactPersonInfoData.ContactCityCode = contactPerson.contactCityCode;
+                        contactPersonInfoData.ContactStateCode = contactPerson.contactStateCode;
+                        contactPersonInfoData.ContactPostCode = contactPerson.contactPostCode;
+                        contactPersonInfoData.ContactGender = contactPerson.contactGender;
+                        contactPersonInfoData.ContactMarriage = contactPerson.contactMarriage;
+                        contactPersonInfoData.ContactSmokes = contactPerson.contactSmokes;
+                        contactPersonInfoData.ContactDrink = contactPerson.contactDrink;
+                        contactPersonInfoData.ContactConstellation = contactPerson.contactConstellation;
+                        contactPersonInfoData.Id = contactPerson.id;
+
+                        var newRow = $('#contactPersonInfomationTemplate').tmpl(contactPersonInfoData);
+                        $('#contactPersonInformationBody').append(newRow);
+
+                        setCheckedStatus('ContactGender', contactPerson.contactGender);
+                        setCheckedStatus('ContactMarriage', contactPerson.contactMarriage);
+                        setCheckedStatus('ContactSmokes', contactPerson.contactSmokes);
+                        setCheckedStatus('ContactDrink', contactPerson.contactDrink);
+
+                        const birthDayElement = getElementById(contactPersonIndex, 'ContactBirthday');
+                        const memorialDayElement = getElementById(contactPersonIndex, 'ContactMemorialDay');
+                        
+                        initializeDateTimePicker(birthDayElement);
+                        initializeDateTimePicker(memorialDayElement);
+
+                        var constellationValue = contactPerson.contactConstellation;
+
+                        if (constellationValue) {
+                            $("select[name='ContactPersonModel[" + contactPersonIndex + "].ContactConstellation'] option[value='" + constellationValue + "']").prop('selected', true);
+                        }
+                        
+                        if (contactPerson.extraProperties) {
+                            contactPerson.extraProperties.Children.forEach(function (child) {
+                                var contactPersonInfoChildData = {};
+
+                                contactPersonInfoChildData.Name = child.Name;
+                                contactPersonInfoChildData.Age = child.Age;
+                                contactPersonInfoChildData.School = child.School;
+                                contactPersonInfoChildData.Remark = child.Remark;
+
+                                var newChildRow = $('#contactInfoChildrenTemplate').tmpl(contactPersonInfoChildData);
+                                $('#contactInfoChildrenBody_' + contactPersonIndex).append(newChildRow);
+                                childrenIndex += 1;
+                            });
+                        }
+
+                        contactPersonIndex += 1;
+                    }
+                });
+            }
+            resetContactPersonsCount();
         }
 
         function onRemoveTradePartner(index) {
@@ -700,42 +903,42 @@
     <script id="contactPersonInfomationTemplate" type="text/x-jQuery-tmpl">
         <tr>
             <td>
-                <div class="checker"><span><input type="checkbox" ></span></div>
+                <div class="checker"><span><input type="checkbox" name="chk_ContactPerson"></span></div>
             </td>
             <td>
-                <div class="checker"><span><input type="checkbox" name="ContactPersonModel[${contactIndex}].IsRep" value="true"></span></div>
+                <div class="checker"><span><input type="checkbox" name="ContactPersonModel[${contactIndex}].IsRep" ${IsRep}></span></div>
             </td>
             <td>
-                <div class="checker"><span class="checked"><input type="checkbox" name="ContactPersonModel[${contactIndex}].IsEmailNotification" value="true"></span></div>
+                <div class="checker"><span class="checked"><input type="checkbox" name="ContactPersonModel[${contactIndex}].IsEmailNotification" ${IsEmailNotification}></span></div>
             </td>
             <td>
                 <div class="form-group" show-errors="">
-                    <input type="text" name="ContactPersonModel[${contactIndex}].ContactName">
+                    <input type="text" name="ContactPersonModel[${contactIndex}].ContactName" value="${ContactName}">
                 </div>
             </td>
             <td>
                 <a href="javascript:void(0)" id="btnOpenMoreUserInfo_${contactIndex}" onclick="onOpenMoreUserInfo(${contactIndex})" style="cursor:pointer">+</a>
             </td>
             <td>
-                <input type="text" name="ContactPersonModel[${contactIndex}].ContactTitle">
+                <input type="text" name="ContactPersonModel[${contactIndex}].ContactTitle" value="${ContactTitle}">
             </td>
             <td>
-                <input type="text" name="ContactPersonModel[${contactIndex}].ContactDivision">
+                <input type="text" name="ContactPersonModel[${contactIndex}].ContactDivision" value="${ContactDivision}">
             </td>
             <td>
-                <input type="text" name="ContactPersonModel[${contactIndex}].ContactCellPhone">
+                <input type="text" name="ContactPersonModel[${contactIndex}].ContactCellPhone" value="${ContactCellPhone}">
             </td>
             <td>
-                <input type="text" name="ContactPersonModel[${contactIndex}].ContactPhone">
+                <input type="text" name="ContactPersonModel[${contactIndex}].ContactPhone" value="${ContactPhone}">
             </td>
             <td>
-                <input type="text" name="ContactPersonModel[${contactIndex}].ContactFax">
+                <input type="text" name="ContactPersonModel[${contactIndex}].ContactFax" value="${ContactFax}">
             </td>
             <td>
-                <input type="text" name="ContactPersonModel[${contactIndex}].ContactEmailAddress">
+                <input type="text" name="ContactPersonModel[${contactIndex}].ContactEmailAddress" value="${ContactEmailAddress}">
             </td>
             <td>
-                <input type="text" name="ContactPersonModel[${contactIndex}].ContactRemark">
+                <input type="text" name="ContactPersonModel[${contactIndex}].ContactRemark" value="${ContactRemark}">
             </td>
         </tr>
         <tr id="trUserMoreInfo_${contactIndex}" style="display:none">
@@ -758,17 +961,17 @@
                                         <div class="form-group form-sm">
                                             <label class="name-sm control-label ng-binding">Gender</label>
                                             <label class="radio-inline ng-binding">
-                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactGender" value="1"></span>Male
+                                                <span><input type="radio" id="ContactGender_1" name="ContactPersonModel[${contactIndex}].ContactGender" value="1"></span>Male
                                             </label>
                                             <label class="radio-inline ng-binding">
-                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactGender" value="2"></span>Female
+                                                <span><input type="radio" id="ContactGender_2" name="ContactPersonModel[${contactIndex}].ContactGender" value="2"></span>Female
                                             </label>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group form-sm">
                                             <label>Age</label>
-                                            <input type="text" name="ContactPersonModel[${contactIndex}].ContactAge">
+                                            <input type="text" name="ContactPersonModel[${contactIndex}].ContactAge" value="${ContactAge}">
                                         </div>
                                     </td>
                                 </tr>
@@ -778,20 +981,17 @@
                                         <div class="form-group form-sm">
                                             <label>Marriage</label>
                                             <label>
-                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactMarriage" value="1"></span>Yes
+                                                <span><input type="radio" id="ContactMarriage_1" name="ContactPersonModel[${contactIndex}].ContactMarriage" value="1"></span>Yes
                                             </label>
                                             <label class="radio-inline ng-binding">
-                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactMarriage" value="2"></span>No
+                                                <span><input type="radio" id="ContactMarriage_2" name="ContactPersonModel[${contactIndex}].ContactMarriage" value="2"></span>No
                                             </label>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group form-sm">
                                             <label>Birthday</label>
-                                            <input type="date" name="ContactPersonModel[${contactIndex}].ContactBirthday">
-                                            <span class="input-group-addon right">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
+                                            <input type="date" name="ContactPersonModel[${contactIndex}].ContactBirthday" id="ContactPersonModel[${contactIndex}]_ContactBirthday" value="${ContactBirthday}">
                                         </div>
                                     </td>
                                 </tr>
@@ -801,10 +1001,10 @@
                                         <div class="form-group form-sm">
                                             <label>Smoking</label>
                                             <label>
-                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactSmokes" value="1"></span>Yes
+                                                <span><input type="radio" id="ContactSmokes_1" name="ContactPersonModel[${contactIndex}].ContactSmokes" value="1"></span>Yes
                                             </label>
                                             <label>
-                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactSmokes" value="2"></span>No
+                                                <span><input type="radio" id="ContactSmokes_2" name="ContactPersonModel[${contactIndex}].ContactSmokes" value="2"></span>No
                                             </label>
                                         </div>
                                     </td>
@@ -820,17 +1020,17 @@
                                         <div class="form-group form-sm">
                                             <label>Drink</label>
                                             <label>
-                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactDrink" value="1"></span>Yes
+                                                <span><input type="radio" id="ContactDrink_1" name="ContactPersonModel[${contactIndex}].ContactDrink" value="1"></span>Yes
                                             </label>
                                             <label>
-                                                <span><input type="radio" name="ContactPersonModel[${contactIndex}].ContactDrink" value="2"></span>No
+                                                <span><input type="radio" id="ContactDrink_2" name="ContactPersonModel[${contactIndex}].ContactDrink" value="2"></span>No
                                             </label>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group form-sm">
                                             <label>Hobby</label>
-                                            <input type="text" name="ContactPersonModel[${contactIndex}].ContactHobby">
+                                            <input type="text" name="ContactPersonModel[${contactIndex}].ContactHobby" value="${ContactHobby}">
                                         </div>
                                     </td>
                                 </tr>
@@ -859,7 +1059,7 @@
                                     <td>
                                         <div class="form-group form-sm">
                                             <label>Interest</label>
-                                            <input type="text" name="ContactPersonModel[${contactIndex}].ContactInterest">
+                                            <input type="text" name="ContactPersonModel[${contactIndex}].ContactInterest" value="${ContactInterest}">
                                         </div>
                                     </td>
                                 </tr>
@@ -868,10 +1068,7 @@
                                     <td>
                                         <div class="form-group form-sm">
                                             <label>Anniversary</label>
-                                            <input type="date" name="ContactPersonModel[${contactIndex}].ContactMemorialDay">
-                                            <span class="input-group-addon right">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
+                                            <input type="date" name="ContactPersonModel[${contactIndex}].ContactMemorialDay" id="ContactPersonModel[${contactIndex}]_ContactMemorialDay" value="${ContactMemorialDay}">
                                         </div>
                                     </td>
                                 </tr>
@@ -887,10 +1084,10 @@
                                                 Home Address
                                             </label>
                                             <div>
-                                                <input type="text" name="ContactPersonModel[${contactIndex}].ContactAddress">
-                                                <input type="text" name="ContactPersonModel[${contactIndex}].ContactCityCode">
-                                                <input type="text" name="ContactPersonModel[${contactIndex}].ContactStateCode"><br>
-                                                <input type="text" name="ContactPersonModel[${contactIndex}].ContactPostCode">
+                                                <input type="text" name="ContactPersonModel[${contactIndex}].ContactAddress" value="${ContactAddress}">
+                                                <input type="text" name="ContactPersonModel[${contactIndex}].ContactCityCode" value="${ContactCityCode}">
+                                                <input type="text" name="ContactPersonModel[${contactIndex}].ContactStateCode" value="${ContactStateCode}"><br>
+                                                <input type="text" name="ContactPersonModel[${contactIndex}].ContactPostCode" value="${ContactPostCode}">
                                             </div>
                                         </div>
                                     </td>
@@ -906,6 +1103,9 @@
                                                     <button class="btn btn-xs green" onclick="onCreateNewContactPersonChildren(event, ${contactIndex})">
                                                         <i class="fa fa-plus"></i>
                                                     </button>
+                                                    @*<button class="btn btn-xs green" onclick="onRemoveContactPersonChildren(event, ${contactIndex})">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>*@
                                                 </div>
                                                 <table class="table">
                                                     <colgroup>
@@ -947,19 +1147,19 @@
     <script id="contactInfoChildrenTemplate" type="text/x-jquery-tmpl">
         <tr>
             <td class="col-checkbox text-center">
-                <div class="checker"><span><input id="chkChildren_${contactIndex}_${childrenIndex}" type="checkbox"></span></div>
+                <div class="checker"><span><input id="chkChildren_${contactIndex}_${childrenIndex}" name="chk_ContactPersonChildren" type="checkbox"></span></div>
             </td>
             <td>
-                <input type="text" name="ContactPersonChildren[${childrenIndex}].Name">
+                <input type="text" name="ContactPersonChildren[${childrenIndex}].Name" value="${Name}">
             </td>
             <td>
-                <input type="text" name="ContactPersonChildren[${childrenIndex}].Age">
+                <input type="text" name="ContactPersonChildren[${childrenIndex}].Age" value="${Age}">
             </td>
             <td>
-                <input type="text" name="ContactPersonChildren[${childrenIndex}].School">
+                <input type="text" name="ContactPersonChildren[${childrenIndex}].School" value="${School}">
             </td>
             <td>
-                <input type="text" name="ContactPersonChildren[${childrenIndex}].Remark">
+                <input type="text" name="ContactPersonChildren[${childrenIndex}].Remark" value="${Remark}">
             </td>
         </tr>
     </script>
@@ -990,7 +1190,6 @@
         <div class="page-content-area">
     <div class="board-wrap">
     <form abp-model="TPInfoModel" submit-button="true" data-ajaxForm="true" id="TPEditForm">
-    
         <abp-card>
             <abp-card-header>
                 <abp-row>
@@ -1009,6 +1208,7 @@
                 <abp-input asp-for="TPInfoModel.Id" id="tpId" type="hidden" />
                 <abp-row>
                     <abp-column>
+                        <abp-input type="hidden" asp-for="TPInfoModel.ContactPersonInfoJSON" />
                         <label asp-for="TPInfoModel.TPType" class="redStar form-label">@L["DisplayName:TPType"]</label>
                         <select asp-for="TPInfoModel.TPType" id="tpType" asp-items="Html.GetEnumSelectList(typeof(TPType))" class="form-select form-control">
                             <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
@@ -1335,16 +1535,59 @@
     <abp-accordion>
         <abp-accordion-item title="@L["Display:TradePartner:AccordionItem:ContactPersonInformation"]">
             <abp-card>
-                <abp-card-body>
+                <abp-card-body class="table-responsive">
                     <abp-row>
                         <abp-column>
                             <abp-button id="AddContactPersonButton"
                                         text=@L["Display:Button:New"]
                                         icon="plus"
+                                        onclick="onCreateNewContactPersonInformation()"
                                         button-type="Outline_Secondary" />
+
+                            <abp-button class="btn btn-outline-danger me-md-2"
+                                        type="button"
+                                        id="deleteContactPersonBtn"
+                                        onclick="onRemoveContactPerson()">delete
+                            </abp-button>
                         </abp-column>
                     </abp-row>
-                    <abp-table class="nowrap" small="true" border-style="Bordered" striped-rows="true" id="ContactPersonTable"></abp-table>
+                    <div class="table-responsive contact-person-block">
+                        <table class="table">
+                        <colgroup>
+                            <col class="td-3per"><!--Checkbox-->
+                            <col class="td-3per"><!--Rep.-->
+                            <col class="td-3per"><!--Email-->
+                            <col class="td-12per"><!--Name-->
+                            <col class="td-3per"><!--Name-->
+                            <col class="td-12per"><!--Title-->
+                            <col class="td-12per"><!--Division-->
+                            <col class="td-12per"><!--Cell Phone-->
+                            <col class="td-12per"><!--Phone-->
+                            <col class="td-12per"><!--FAX-->
+                            <col class="td-14per"><!--Email Address-->
+                            <col class="td-14per"><!--Remark-->
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th class="text-center">
+                                    <div class="checker"><span class=""><input type="checkbox"></span></div>
+                                </th>
+                                <th>Rep.</th>
+                                <th>Email</th>
+                                <th colspan="2">Name</th>
+                                <th>Title</th>
+                                <th>Division</th>
+                                <th>Cell Phone</th>
+                                <th>Phone</th>
+                                <th>FAX</th>
+                                <th>Email Address</th>
+                                <th>Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contactPersonInformationBody">
+                        </tbody>
+                    </table>
+                    </div>
                 </abp-card-body>
             </abp-card>
         </abp-accordion-item>

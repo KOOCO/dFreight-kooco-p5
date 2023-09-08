@@ -5675,6 +5675,10 @@ namespace Dolphin.Freight.Web.Controllers
             InfoModel.Operator = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
             MawbReportDto filter = new MawbReportDto();
             var shippingTypes = shippingType.Split(',').ToList();
+            if (reportType == "Volume Only")
+            {
+                InfoModel.IsVolumeReport = true;
+            }
             if (shippingTypes.Contains("OceanImport"))
             {
                 filter.IsOceanImport = true;
@@ -5722,7 +5726,13 @@ namespace Dolphin.Freight.Web.Controllers
 
             return View(InfoModel);
         }
-       
+
+        [HttpGet]
+        public IActionResult CopyVesselSchedulePopupPartial()
+        {
+            return PartialView("Pages/OceanExports/VesselSchedules/_VesselScheduleCopyPopUp.cshtml");
+        }
+
         #region Private Functions
 
         private async Task<AirExportDetails> GetAirExportDetailsByPageType(Guid Id, FreightPageType pageType)

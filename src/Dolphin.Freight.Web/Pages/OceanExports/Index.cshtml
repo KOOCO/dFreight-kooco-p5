@@ -4,9 +4,12 @@
 @using Dolphin.Freight.Web.Pages.AwbNoRanges
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
+@using Dolphin.Freight.Web.Pages.Components
+@using Dolphin.Freight.Web.CommonService
 @model Dolphin.Freight.Web.Pages.OceanExports.IndexModel
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
+@inject IDropdownService _dropdown;
 @section scripts{
     <abp-script src="/Pages/OceanExports/Index.js" />
 }
@@ -26,23 +29,157 @@
                     <abp-card-title>@L["Menu:AirImport.List"]</abp-card-title>
                 </abp-column>
                 <abp-column size-md="_6" class="text-end p-0">
+                    <abp-button id="FilterGlCodeButton"
+                            text="@L["Filter"].Value"
+                            icon="filter"
+                            button-type="Primary"
+                            data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
                     <abp-button id="btnConfiguration"
                                 text="@L["Configuration"].Value"
                                 icon="gear"
                                 button-type="Primary" />
-                    <abp-button id="NewMblButton"
-                                text="@L["Create"].Value"
-                                icon="plus"
-                                button-type="Primary" />
                 </abp-column>
             </abp-row>
         </abp-card-header>
-        <abp-card-body>
-            <div class="row col-12" style="text-align: center; margin:0!important">
-                <abp-column size="_9"></abp-column>
-                <abp-column size="_3" class="filterDiv">
-                    <abp-input asp-for="Search" class="ml-4" />
+      <abp-card-body class="collapse hide" id="mblDiv">
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["Keyword"].Value</label>
                 </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="Keyword" />
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Vessel"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                   <input class="form-control" id="Vessel" />
+                    
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["OvearseaAgent"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OverseaAgentId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "MblOverseaAgentId", SelectType = 2,ShowFiledContentValue=null})
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Carrier"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.CarrierId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "MblCarrierId", SelectType = 2,ShowFiledContentValue=null })
+                </abp-column>
+
+            </abp-row>
+         
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["POD"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PodId",Selected=null, AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = false, FieldName = "PodId", SelectType = 2,ShowFiledContentValue=null })
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["POL"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PolId",Selected=null, AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = false, FieldName = "PolId", SelectType = 2,ShowFiledContentValue=null })
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["ShippingAgent"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ShippingAgentId",Selected=null, AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "ShippingAgentId", SelectType = 2,ShowFiledContentValue=null })
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["ForwardingAgent"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ForwardingAgentId",Selected=null, AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "ForwardingAgentId", SelectType = 2,ShowFiledContentValue=null })
+                </abp-column>
+
+            </abp-row>
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["PostDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" type="date" id="PostDate" />
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["ShipMode"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ShipModeId",Selected=null, AspItems = Model.ShipModeLookupList, IsShowLabel = false, FieldName = "ShipModeId",ShowFiledContentValue=null })
+                </abp-column>
+               
+               
+                <abp-column size-md="_1">
+                    <label>@L["ETD"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="ETD" />
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["ETA"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="ETA" />
+                </abp-column>
+            </abp-row>
+            <abp-row class="mb-3">
+                
+                <abp-column size-md="_1">
+                    <label>@L["DEL"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = false, FieldName = "DelId"}) </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Deliver To"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DeliveryToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "DeliveryToId", })
+      
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["B/LCancelled"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+               <select id="BlCancelled" class="form-control" />
+                <option value=""></option>
+                   <option value="true">Yes</option>
+                    <option value="false">No</option>
+               </select>
+                
+                </abp-column>
+                  <abp-column size-md="_1">
+                    <label>@L["CreationDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+              <input type="date" id="CreationDate" class="form-control" />
+                
+                </abp-column>
+            </abp-row>
+            
+            <abp-row>
+                <abp-abp-column class="text-center">
+               
+                    <abp-button type="button" id="CancelFilter" text="@L["Cancel"]" button-type="Danger" />
+
+                    <abp-button type="button" id="Search" text="@L["Search"]" button-type="Primary" />
+               
+                </abp-abp-column>
+            </abp-row>
+            </abp-card-body>
+        <abp-card-body>
+           
+            <div class="portlet-tool">
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                    <button type="button" class="btn btn-outline-secondary fa fa-plus" onclick="createNew()" id="newBtn"></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="deleteMbls()" id="deleteBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary" id="copyBtn" onclick="copyMbl()" disabled><i class="fa fa-files-o me-0"></i></button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="selectedLock()" id="lockId" disabled>Lock</button>
+                    <button type="button" class="btn btn-outline-secondary" id="unlockId" onclick="selectedUnLock()" disabled>Unlock</button>
+                </div>
             </div>
             <abp-table class="nowrap" striped-rows="true" id="MblListTable"></abp-table>
         </abp-card-body>

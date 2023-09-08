@@ -4,36 +4,64 @@
 @using Dolphin.Freight.Web.Pages.AwbNoRanges
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
+@using Dolphin.Freight.Web.Pages.Components
+@using Dolphin.Freight.Web.CommonService
 @model Dolphin.Freight.Web.Pages.OceanExports.ExportBookings.IndexModel
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
+@inject IDropdownService _dropdown;
 @section scripts{
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.3/xlsx.full.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.2.0/js/tableexport.min.js"></script>
     <script type="text/javascript">
+        var l = abp.localization.getResource('Freight');
         var _changeInterval = null;
-        $(document).ready(function () {
+        var dataTable;
+      
             var queryListFilter = function () {
+                debugger
                 return {
-                    search: $("input[name='Search'").val()
+                    
+                     search: $("#Keyword").val(),
+       
+        fbaFcId: $("#VesselSchedule_FbaFcId").val() == '' ? null : $("#VesselSchedule_FbaFcId").val(),
+        carrierId: $("#VesselSchedule_CarrierId").val() == '' ? null : $("#VesselSchedule_CarrierId").val(),
+         shipperId: $("#VesselSchedule_ShipperId").val() == '' ? null : $("#VesselSchedule_ShipperId").val(),
+        notifyId: $("#VesselSchedule_NotifyId").val() == '' ? null : $("#VesselSchedule_NotifyId").val(),
+        consigneeId: $("#VesselSchedule_ConsigneeId").val() == '' ? null : $("#VesselSchedule_ConsigneeId").val(),
+        customerId: $("#VesselSchedule_CustomerId").val() == '' ? null : $("#VesselSchedule_CustomerId").val(),
+        pod: $("#VesselSchedule_PodId").val() == '' ? null : $("#VesselSchedule_PodId").val(),
+       officeId: $("#VesselSchedule_OfficeId").val() == '' ? null : $("#VesselSchedule_OfficeId").val(),
+        del: $("#VesselSchedule_DelId").val() == '' ? null : $("#VesselSchedule_DelId").val(),
+        deliverTo: $("#VesselSchedule_DeliverToId").val() == '' ? null : $("#VesselSchedule_DeliverToId").val(),
+        shipModeId: $("#VesselSchedule_ShipModeId").val() == '' ? null : $("#VesselSchedule_ShipModeId").val(),
+        blCancelled: $("#BlCancelled").val() == '' ? null : $("#BlCancelled").val(),
+        postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
+        
+        eta: $("#ETA").val() == '' || $("#ETA").val() == null? null : new Date($("#ETA").val()),
+        etd: $("#ETD").val() == '' || $("#ETD").val() == null ? null : new Date($("#ETD").val()),
+        creationDate: $("#CreationDate").val() == '' || $("#CreationDate").val() == null ? null : new Date($("#CreationDate").val()),
+       cargoReadyDate: $("#CargoReadyDate").val() == '' || $("#ETD").val() == null ? null : new Date($("#CargoReadyDate").val()),
                 };
             };
-
+        $(document).ready(function () {
+          
+             var dataTable;
             var l = abp.localization.getResource('Freight');
-            var dataTable = $('#ExportBookingListTable').DataTable(
-                abp.libs.datatables.normalizeConfiguration({
-                    serverSide: true,
-                    paging: true,
-                    order: [[2, "asc"]],
-                    searching: false,
-                    scrollX: true,
-                    processing: true,
-                    responsive: {
-                        details: {
-                            type: 'column'
+             var columns = [
+                    {
+                        title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            var id = row.id;
+                            $('#selectAllCheckbox').prop('checked', false);
+                            return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
                         }
                     },
-                    ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.queryList, queryListFilter),
-                    columnDefs: [
-                        {
+   
+               {
                             title: l('Actions'),
                             rowAction: {
                                 items:
@@ -49,15 +77,15 @@
 
                                             }
                                         },
-                                        {
-                                            text: l('Btn:Copy'),
+                                        // {
+                                        //     text: l('Btn:Copy'),
 
-                                            action: function (data) {
-                                                $("#CopyId").val(data.record.id);
-                                                $("#checkModal").modal("show");
+                                        //     action: function (data) {
+                                        //         $("#CopyId").val(data.record.id);
+                                        //         $("#checkModal").modal("show");
 
-                                            }
-                                        },
+                                        //     }
+                                        // },
                                         {
                                             text: l('Delete'),
                                             visible: function (data) {
@@ -82,127 +110,51 @@
                                         }
                                     ]
                             }
-                        },
-                        {
-                            //SO號碼
-                            title: l('SoNo'),
-                            data: "soNo"
-                        },
-                        {
-                            //HB/L號碼
-                            title: l('HblNo'),
-                            data: "hblNo"
-                        },
-                        {
-                            //實際託運人
-                            title: l('ShipperName'),
-                            data: "shipperName"
-                        },
-                        {
-                            //船期編號
-                            title: l('ReferenceNo'),
-                            data: "referenceNo"
-                        },
-                        {
-                            //分站
-                            title: l('OfficeId'),
-                            data: "officeName"
-                        },
-                        {
-                            //船公司
-                            title: l('CarrierName'),
-                            data: "carrierName"
-                        },
-                        {
-                            //船公司S/O
-                            title: l('CarrierBkgNo'),
-                            data: "carrierBkgNo"
-                        },
-                        {
-                            //代理
-                            title: l('ShippingAgentName'),
-                            data: "shippingAgentName"
-                        },
-                        {
-                            //船名
-                            title: l('VesselName'),
-                            data: "vesselName"
-                        },
-                        {
-                            //航次
-                            title: l('Voyage'),
-                            data: "voyage"
-                        },
-                        {
-                            //貨物就緒日期
-                            title: l('CargoArrivalDate'),
-                            data: "cargoArrivalDate"
-                        },
-                        {
-                            //ETD
-                            title: l('PolEtd'),
-                            data: "polEtd"
-                        },
-                        {
-                            //ETA
-                            title: l('PodEta'),
-                            data: "podEta"
-                        },
-                        {
-                            //收貨地(POR)
-                            title: l('PorName'),
-                            data: "porName"
-                        },
-                        {
-                            //裝貨地(POl)
-                            title: l('PolName'),
-                            data: "polName"
-                        },
-                        {
-                            //卸貨港(POD)
-                            title: l('PodName'),
-                            data: "podName"
-                        },
-                        {
-                            //交貨地(DEL)
-                            title: l('DelName'),
-                            data: "delName"
-                        },
-                        {
-                            //運輸條款
-                            title: l('SvcName'),
-                            data: "svcName"
-                        },
-                        {
-                            //文件結關日
-                            title: l('DocCutOffTime'),
-                            data: "docCutOffTime"
-                        },
-                        {
-                            //港口截關日
-                            title: l('PortCutOffTime'),
-                            data: "portCutOffTime"
-                        },
-                        {
-                            //VGM截關日期
-                            title: l('VgmCutOffTime'),
-                            data: "vgmCutOffTime"
-                        },
+                    
+       
 
-                        {
-                            //鐵路截關日
-                            title: l('RailCutOffTime'),
-                            data: "railCutOffTime"
-                        },
-                        {
-                            //最終目的地
-                            title: l('FdestName'),
-                            data: "fdestName"
-                        }
+    },
+ 
+]
+    dolphin.freight.web.controllers.configuration.getJsonConfig('OceanExportBookingList').done(function (data) {
+                data.forEach(function (item) {
+                                if (!item.lock && item.checkable) {
+                    
+                        var column;
 
-                    ]
-                })
-            );
+
+                        column = {
+                            title: l(item.text),
+                            data: item.name
+                        };
+                 
+                    columns.push(column);
+                                }
+
+                });
+
+                var col = (columns.length > 2) ? [[2, 'asc']] : [[0, 'asc']];
+              
+
+             dataTable = $('#ExportBookingListTable').DataTable(
+                    abp.libs.datatables.normalizeConfiguration({
+                        serverSide: true,
+                         pagingType: 'full_numbers',
+                order: col,
+                searching: false,
+                scrollX: true,
+                processing: true,
+                  
+                responsive: {
+                    details: {
+                        type: 'column'
+                    }
+                },
+                          ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.queryList, queryListFilter),
+                        columnDefs: columns
+                    })
+                );
+            });
 
 
             $('#NewExportBookingButton').click(function (e) {
@@ -216,8 +168,105 @@
                     clearInterval(_changeInterval)
                 }, 1000);
             });
+                      $('#Search').click(function (e) {
+        dataTable.ajax.reload();
+    });
+      $('#CancelFilter').click(function (e) {
+        $("#Keyword").val(null);
+       
+        // $("#VesselSchedule_OfficeId").val(null);
+        $("#VesselSchedule_OfficeId").val(null).trigger("change");
+        $("#VesselSchedule_CarrierId").val(null).trigger("change");
+         $("#VesselSchedule_CustomerId").val(null).trigger("change");
+        $("#VesselSchedule_ShipperId").val(null).trigger("change");
+        $("#VesselSchedule_NotifyId").val(null).trigger("change");
+        $("#VesselSchedule_FbaFcId").val(null).trigger("change");
+        $("#VesselSchedule_ConsigneeId").val(null).trigger("change");
+        $("#VesselSchedule_PodId").val(null).trigger("change");
+        $("#VesselSchedule_DelId").val(null).trigger("change");
+        $("#VesselSchedule_DeliverToId").val(null).trigger("change");
+        $("#VesselSchedule_ShipModeId").val(null).trigger("change");
+        $("#BlCancelled").val(null).trigger("change");
+        $("#PostDate").val(null);
+        $("#ETA").val(null);
+        $("#ETD").val(null);
+        $("#CreationDate").val(null);
+        $("#CargoReadyDate").val(null);
+        dataTable.ajax.reload();
+    });
+   
+            $('#btnConfiguration').click(function (e) {
+                var _configurationModal = new abp.ModalManager({
+                    viewUrl: abp.appPath + 'Configuration',
+                    modalClass: 'ConfigurationViewModel'
+                });
+                    _configurationModal.open({
+                        src: 'OceanExportBookingList'
+                    });
 
         });
+           
+                 $('#btnExcelConfiguration').click(function (e) {
+                var _excelExportConfigurationModal = new abp.ModalManager({
+                    viewUrl: abp.appPath + 'ExportExcelConfiguration',
+                    modalClass: 'ExcelExportConfigurationViewModel'
+                });
+                    _excelExportConfigurationModal.open({
+                        src: 'OceanExportBookingListExcel'
+                       
+                    });
+
+        });
+            });
+        function selectAllCheckbox(element) {
+            var isChecked = $(element).prop('checked');
+            $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+        }
+
+        function selectCheckbox(checkbox) {
+            var checkedCheckboxes = $('.selectCheckbox:checked');
+            if (checkbox.checked) {
+                checkedCheckboxes.each(function (index, checkbox1) {
+                    $('#deleteBtn').prop('disabled', false);
+                });
+                 if (checkedCheckboxes.length == 1) {
+                $('#copyBtn').prop('disabled', false);
+            } else {
+                $('#copyBtn').prop('disabled', true);
+            }
+            } else {
+              
+              if (checkedCheckboxes && checkedCheckboxes.length == 0) {
+            $('#deleteBtn').prop('disabled', true);
+            $('#copyBtn').prop('disabled', true);
+        }
+        else if (checkedCheckboxes.length == 1) {
+            $('#copyBtn').prop('disabled', false);
+        }
+               
+            }
+            if (!$(checkbox).prop('checked')) {
+                $('#selectAllCheckbox').prop('checked', false);
+            } else {
+                var allChecked = true;
+                $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
+                    if (!$(this).prop('checked')) {
+                        allChecked = false;
+                        return false;
+                    }
+                });
+                $('#selectAllCheckbox').prop('checked', allChecked);
+            }
+        }
+        function copyButtonClick() {
+            var selectedCheckboxes = $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+            var id = selectedCheckboxes[0].attributes[2].value;
+             $("#CopyId").val(id);
+            $("#checkModal").modal("show");  
+        }
+          
+    
+       
        
 
         function closeModal() {
@@ -237,6 +286,69 @@
             location.href = url
         }
 
+        function createNew() {
+            window.location.href = "/OceanExports/ExportBookings/Create";
+        }
+        function exportToExcel(){
+        
+       
+      var table = document.getElementById("ExportBookingListTable");
+  var columnsToExclude = [0, 1];
+
+// Create a new worksheet
+var ws = XLSX.utils.aoa_to_sheet([]);
+
+// Create a style object for the header row
+var headerStyle = {
+    font: { bold: true },
+    fill: { bgColor: { indexed: 23 }, fgColor: { indexed: 23 } }, // Blue color
+    alignment: { horizontal: "center" }, // Center-align text
+};
+
+// Iterate through table rows and build the new worksheet
+for (var rowIndex = 0; rowIndex < table.rows.length; rowIndex++) {
+    var row = table.rows[rowIndex];
+    var newRow = [];
+    for (var colIndex = 0; colIndex < row.cells.length; colIndex++) {
+        if (!columnsToExclude.includes(colIndex)) {
+            newRow.push(row.cells[colIndex].innerText);
+        }
+    }
+    XLSX.utils.sheet_add_aoa(ws, [newRow], { origin: -1 });
+}
+
+// Apply the header style to the first row
+XLSX.utils.format_cell(ws['A1'], headerStyle);
+XLSX.utils.format_cell(ws['B1'], headerStyle);
+XLSX.utils.format_cell(ws['C1'], headerStyle);
+// Add more cells as needed for additional columns
+
+// Create a new workbook and add the worksheet
+var wb = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    // Save the workbook as an Excel file
+    XLSX.writeFile(wb, "OceanExportBookingList.xlsx");
+        }
+        function deleteHbl() {
+            var ids = [];
+            var selectedCheckboxes = $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+            for (var i = 0; i < selectedCheckboxes.length; i++) {
+                var id = selectedCheckboxes[i].attributes[2].value;
+                ids.push(id);
+
+                abp.message.confirm(l('DeleteConfirmationMessage')).then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.deleteMultipleBookingsByIds(ids).done(function () 
+                        {
+                            abp.message.success(l('Message:SuccessDelete')).then(function () {
+                                dataTable.ajax.reload();
+                            });
+                        });
+                    }
+                });
+            }
+        }
 
     </script>
 }
@@ -258,20 +370,185 @@
 <div class="page-content-area">
     <abp-card>
         <abp-card-header>
+            <abp-row class="w-100">
+                <abp-column size-md="_6">
             <div class="title">
                 @L["Menu:ExportBookings.Index"]
             </div>
-            <abp-button id="NewExportBookingButton"
-                        text="@L["Create"].Value"
-                        icon="plus"
-                        class="btn btn-add" />
+            </abp-column>
+             <abp-column size-md="_6" class="text-end p-0">
+                 <abp-button id="FilterGlCodeButton"
+                            text="@L["Filter"].Value"
+                            icon="filter"
+                             button-type="Primary" 
+                            data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
+              <abp-button id="btnConfiguration"
+                                text="@L["Configuration"].Value"
+                                icon="gear"
+                                button-type="Primary" />
+                                <abp-dropdown>
+    <abp-dropdown-button icon="file-excel-o" text="Excel" button-type="Outline_Dark"   />
+    <abp-dropdown-menu>
+        <abp-dropdown-item href="javascript:void(0)" onclick="exportToExcel()"><i class="fa fa-cloud-download"></i>Download</abp-dropdown-item>
+        <abp-dropdown-item id="btnExcelConfiguration"  href="javascript:void(0)"><i class="fa fa-cogs"></i>Config</abp-dropdown-item>
+      
+    </abp-dropdown-menu>
+</abp-dropdown>
+                        </abp-column>
+                        </abp-row>
         </abp-card-header>
-        <abp-card-body>
-            <div class="row col-12" style="text-align: center; margin:0!important">
-                <abp-column size="_9"></abp-column>
-                <abp-column size="_3" class="filterDiv">
-                    <abp-input asp-for="Search" class="ml-4" />
+              <abp-card-body class="collapse hide" id="mblDiv">
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["Keyword"].Value</label>
                 </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="Keyword" />
+                </abp-column>
+                  <abp-column size-md="_1">
+                    <label>@L["Office"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                  @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OfficeId", AspItems =  _dropdown.SubstationLookupList, IsShowLabel = false, FieldName = "OfficeId", SelectType = 0,  })
+            </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Carrier"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.CarrierId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "CarrierId", SelectType = 2,ShowFiledContentValue=null})
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Shipper"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ShipperId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "ShipperId", SelectType = 2,ShowFiledContentValue=null })
+                </abp-column>
+
+            </abp-row>
+         <abp-row class="mb-3">
+                  <abp-column size-md="_1">
+                    <label>@L["Customer"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.CustomerId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "CustomerId", SelectType = 2,ShowFiledContentValue=null})
+                </abp-column>
+               <abp-column size-md="_1">
+                    <label>@L["Consignee"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ConsigneeId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "ConsigneeId", SelectType = 2,ShowFiledContentValue=null})
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Notify"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                  @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.NotifyId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "NotifyId", SelectType = 0,  })
+            </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["FBA FC"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FbaFcId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "FbaFcId", SelectType = 2,ShowFiledContentValue=null })
+                </abp-column>
+
+            </abp-row>
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["POL/POD"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PodId",Selected=null, AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = false, FieldName = "PodId", SelectType = 2,ShowFiledContentValue=null })
+                </abp-column>
+             
+                <abp-column size-md="_1">
+                    <label>@L["DEL"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = false, FieldName = "DelId"}) </abp-column>
+                          <abp-column size-md="_1">
+                    <label>@L["DeliverTo"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DeliverToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "DeliverToId"}) </abp-column>
+                  <abp-column size-md="_1">
+                    <label>@L["CargoReadyDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="CargoReadyDate" />
+                </abp-column>
+
+            </abp-row>
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["PostDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" type="date" id="PostDate" />
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["ShipMode"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ShipModeId",Selected=null, AspItems = Model.ShipModeLookupList, IsShowLabel = false, FieldName = "ShipModeId",ShowFiledContentValue=null })
+                </abp-column>
+               
+               
+                <abp-column size-md="_1">
+                    <label>@L["ETD"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="ETD" />
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["ETA"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="ETA" />
+                </abp-column>
+            </abp-row>
+            <abp-row class="mb-3">
+                
+          
+                   <abp-column size-md="_1">
+                    <label>@L["B/LCancelled"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+               <select id="BlCancelled" class="form-control" />
+                <option value=""></option>
+                   <option value="true">Yes</option>
+                    <option value="false">No</option>
+               </select>
+               </abp-column>
+                
+             
+                  <abp-column size-md="_1">
+                    <label>@L["CreationDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+              <input type="date" id="CreationDate" class="form-control" />
+                
+                </abp-column>
+            </abp-row>
+               
+            <abp-row>
+                <abp-abp-column class="text-center">
+               
+                    <abp-button type="button" id="CancelFilter" text="@L["Cancel"]" button-type="Danger" />
+
+                    <abp-button type="button" id="Search" text="@L["Search"]" button-type="Primary" />
+               
+                </abp-abp-column>
+            </abp-row>
+            </abp-card-body>
+        <abp-card-body>
+           
+            <div class="portlet-tool">
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                    <button type="button" class="btn btn-outline-secondary fa fa-plus" onclick="createNew()" id="newBtn"></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="deleteHbl()" id="deleteBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-files-o me-0" onclick="copyButtonClick()" id="copyBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary" id="copyBtn" disabled><i class="fa fa-plus"></i>Convert To Shipment</button>
+                </div>
             </div>
             <abp-table class="nowrap" striped-rows="true" id="ExportBookingListTable"></abp-table>
         </abp-card-body>

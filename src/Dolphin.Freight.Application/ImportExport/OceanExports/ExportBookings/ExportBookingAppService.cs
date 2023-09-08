@@ -99,7 +99,23 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
                                     .Contains(query.Search) || x.Office.SubstationName
                                     .Contains(query.Search) || x.ShippingAgent.TPName
                                     .Contains(query.Search) || x.Carrier.TPName
-                                    .Contains(query.Search));
+                                    .Contains(query.Search))
+                                .WhereIf(query.CarrierId.HasValue, e => e.CarrierId == query.CarrierId)
+                                .WhereIf(query.ShipperId.HasValue, e => e.ShipperId == query.ShipperId)
+                                .WhereIf(query.ConsigneeId.HasValue, e => e.ConsigneeId == query.ConsigneeId)
+                                   .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
+                                   .WhereIf(query.NotifyId.HasValue, e => e.NotifyId == query.NotifyId)
+                                   .WhereIf(query.FbaFcId.HasValue, e => e.FbaId == query.FbaFcId)
+                                   .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
+                                   .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
+                                   .WhereIf(query.DeliverTo.HasValue, e => e.DeliveryToId == query.DeliverTo)
+                                   .WhereIf(query.ShipModeId.HasValue, e => e.ShipModeId == query.ShipModeId)
+                                   .WhereIf(query.CustomerId.HasValue, e => e.CustomerId == query.CustomerId)
+                                   .WhereIf(query.BlCancelled.HasValue, e => e.IsCanceled == query.BlCancelled)
+                                   .WhereIf(query.CargoReadyDate.HasValue, e => e.CargoArrivalDate.Value.Date == query.CargoReadyDate.Value.Date.AddDays(1))
+                                   .WhereIf(query.Eta.HasValue, e => e.PodEta.Date == query.Eta.Value.Date.AddDays(1))
+                                   .WhereIf(query.Etd.HasValue, e => e.PolEtd.Date == query.Etd.Value.Date.AddDays(1))
+                                   .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1));
             List<ExportBooking> rs = ExportBookings.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<ExportBookingDto> list = new List<ExportBookingDto>();
 
@@ -150,6 +166,18 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
                 return retVal;
             }
             return new CreateUpdateExportBookingDto();
+        }
+
+        public async Task DeleteMultipleBookingsByIdsAsync(Guid[] ids)
+        {
+            foreach (var id in ids)
+            {
+                var booking = await _repository.GetAsync(id);
+
+                booking.IsDeleted = true;
+
+                await _repository.UpdateAsync(booking);
+            }
         }
     }
 }

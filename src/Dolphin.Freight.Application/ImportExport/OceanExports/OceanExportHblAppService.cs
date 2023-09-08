@@ -14,6 +14,9 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Users;
 using System.Linq.Dynamic.Core;
+using Volo.Abp;
+using NPOI.HSSF.Record;
+using NPOI.DDF;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -111,7 +114,28 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                                     .Contains(query.Search) || x.HblConsignee.TPName
                                     .Contains(query.Search))
                                     .WhereIf(query.MblId != null && query.MblId == Guid.Empty, x=>x.MblId.Value
-                                    .Equals(query.MblId));
+                                    .Equals(query.MblId))
+                                    
+                                    .WhereIf(query.ShipperId.HasValue, e => e.HblShipperId == query.ShipperId)
+                                   .WhereIf(query.NotifyId.HasValue, e => e.HblNotifyId == query.NotifyId)
+                                   .WhereIf(query.ConsigneeId.HasValue, e => e.HblConsigneeId == query.ConsigneeId)
+                                   .WhereIf(query.Pol.HasValue, e => e.PolId == query.Pol)
+                                   .WhereIf(query.PorId.HasValue, e => e.PorId == query.PorId)
+                                   .WhereIf(query.TruckerId.HasValue, e => e.TruckerId == query.TruckerId)
+                                   .WhereIf(query.SaleId.HasValue, e => e.HblSaleId == query.SaleId)
+                                   .WhereIf(query.CustomerId.HasValue, e => e.HblCustomerId == query.CustomerId)
+
+                                   .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
+                                   .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
+                                   .WhereIf(query.FinalDestId.HasValue, e => e.FdestId == query.FinalDestId)
+                                   .WhereIf(query.ShipModeId.HasValue, e => e.ShipModeId == query.ShipModeId)
+                                   .WhereIf(query.OvearseaAgentId.HasValue, e => e.AgentId == query.OvearseaAgentId)
+                                   .WhereIf(query.SvcTermId.HasValue, e => e.SvcTermToId == query.SvcTermId)
+                                 .WhereIf(query.DelEta.HasValue, e => e.DelEta.Value.Date == query.DelEta.Value.Date.AddDays(1))
+                                   .WhereIf(query.FinalDestEta.HasValue, e => e.FdestEta.Value.Date == query.FinalDestEta.Value.Date.AddDays(1))
+                                   .WhereIf(query.Eta.HasValue, e => e.PodEta.Value.Date == query.Eta.Value.Date.AddDays(1))
+                                   .WhereIf(query.Etd.HasValue, e => e.PolEtd.Value.Date == query.Etd.Value.Date.AddDays(1))
+                                   .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1));
             List<OceanExportHbl> rs = OceanExportHbls.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<OceanExportHblDto> list = new List<OceanExportHblDto>();
             if (rs != null && rs.Count > 0)
@@ -238,8 +262,18 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public async Task LockedOrUnLockedOceanExportHblAsync(QueryHblDto query)
         {
             var Hbl = await _repository.GetAsync(query.HblId.Value);
-            Hbl.IsLocked = !Hbl.IsLocked;
-            await _repository.UpdateAsync(Hbl);
+            if (Hbl.IsLocked == true)
+            {
+                Hbl.IsLocked = false;
+
+                await _repository.UpdateAsync(Hbl);
+            }
+            else
+            {
+                Hbl.IsLocked = true;
+
+                await _repository.UpdateAsync(Hbl);
+            }
         }
 
         public async Task<OceanExportHblDto> GetHawbCardById(Guid Id)
@@ -440,6 +474,30 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }  
 
             return oceanExportDetails;
+        }
+
+        public async Task DeleteMultipleHblsAsync(Guid[] ids)
+        {
+            foreach (var id in ids)
+            {
+                var hbl = await _repository.GetAsync(id);
+
+                hbl.IsDeleted = true;
+
+                await _repository.UpdateAsync(hbl);
+            }
+        }
+
+        public async Task SetLockStatusOnOceanExportHblAsync(Guid[] ids, bool isLocked)
+        {
+            foreach (var id in ids)
+            {
+                var hbl = await _repository.GetAsync(id);
+
+                hbl.IsLocked = isLocked;
+
+                await _repository.UpdateAsync(hbl);
+            }
         }
     }
 }

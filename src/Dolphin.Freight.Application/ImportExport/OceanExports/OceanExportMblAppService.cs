@@ -7,6 +7,7 @@ using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Newtonsoft.Json;
+using NPOI.DDF;
 using NPOI.POIFS.Crypt.Dsig;
 using System;
 using System.Collections.Generic;
@@ -83,6 +84,20 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                                           .Contains(query.Search) || x.Office.AbbreviationName
                                           .Contains(query.Search) || x.SoNo
                                           .Contains(query.Search))
+                                             .WhereIf(query.CarrierId.HasValue, e => e.MblCarrierId == query.CarrierId)
+                                   .WhereIf(query.ShippingAgentId.HasValue, e => e.ShippingAgentId == query.ShippingAgentId)
+                                   .WhereIf(query.ForwardingAgentId.HasValue, e => e.ForwardingAgentId == query.ForwardingAgentId)
+                                   .WhereIf(query.Pol.HasValue, e => e.PolId == query.Pol)
+                                   .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
+                                   .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
+                                   .WhereIf(query.DeliverTo.HasValue, e => e.DeliveryToId == query.DeliverTo)
+                                   .WhereIf(query.ShipModeId.HasValue, e => e.ShipModeId == query.ShipModeId)
+                                   .WhereIf(query.OvearseaAgentId.HasValue, e => e.MblOverseaAgentId == query.OvearseaAgentId)
+                                   .WhereIf(query.BlCancelled.HasValue, e => e.IsCanceled == query.BlCancelled)
+                                   .WhereIf(query.PostDate.HasValue, e => e.PostDate.Date == query.PostDate.Value.Date.AddDays(1))
+                                   .WhereIf(query.Eta.HasValue, e => e.PodEta.Value.Date == query.Eta.Value.Date.AddDays(1))
+                                   .WhereIf(query.Etd.HasValue, e => e.PolEtd.Value.Date == query.Etd.Value.Date.AddDays(1))
+                                   .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1))
                                           .OrderByDescending(x => x.CreationTime);
 
 
@@ -134,8 +149,31 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             try
             {
                 var mbl = await _repository.GetAsync(query.MbId.Value);
-                mbl.IsLocked = !mbl.IsLocked;
-                await _repository.UpdateAsync(mbl);
+                if (mbl.IsLocked == true)
+                {
+                    mbl.IsLocked = false;
+                    var queryHbl = await _oceanExportHblRepository.GetQueryableAsync();
+                    var hbls = queryHbl.Where(w => w.MblId == mbl.Id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = false;
+
+                        await _oceanExportHblRepository.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+                }
+                else
+                {
+                    mbl.IsLocked = true;
+                    var queryHbl = await _oceanExportHblRepository.GetQueryableAsync();
+                    var hbls = queryHbl.Where(w => w.MblId == mbl.Id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = true;
+                        await _oceanExportHblRepository.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+                }
             }
             catch (Exception ex)
             {
@@ -408,6 +446,83 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             oceanExportDetails.CurrentDate = DateTime.Now;
 
             return oceanExportDetails;
+        }
+
+        public async Task SelectedLockedOceanExportMblAsync(Guid[] ids)
+        {
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var mbl = await _repository.GetAsync(id);
+
+                    mbl.IsLocked = true;
+                    var query = await _oceanExportHblRepository.GetQueryableAsync();
+                    var hbls = query.Where(x => x.MblId == id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = true;
+
+                        await _oceanExportHblRepository.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+
+        }
+
+        public async Task SelectedUnLockedOceanExportMblAsync(Guid[] ids)
+        {
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var mbl = await _repository.GetAsync(id);
+
+                    mbl.IsLocked = false;
+                    var query = await _oceanExportHblRepository.GetQueryableAsync();
+                    var hbls = query.Where(x => x.MblId == id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = false;
+
+                        await _oceanExportHblRepository.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+
+        }
+
+        public async Task DeleteMultipleMblsAsync(Guid[] ids)
+        {
+            foreach(var id in ids)
+            {
+                var mbl = await _repository.GetAsync(id);
+
+                mbl.IsDeleted = true;
+                var query = await _oceanExportHblRepository.GetQueryableAsync();
+                var hbls = query.Where(w => w.MblId == id).ToList();
+                foreach (var hbl in hbls)
+                {
+                    hbl.IsDeleted = true;
+
+                    await _oceanExportHblRepository.UpdateAsync(hbl);
+                }
+                await _repository.UpdateAsync(mbl);
+            }
         }
     }
 }

@@ -9,6 +9,7 @@
 }
 <script>
     $(document).ready(function () {
+
         // Get references to the checkboxes
         var accountingCheckbox = $('#accountingCheckbox');
         var apCheckbox = $('#apCheckbox');
@@ -77,10 +78,45 @@
         
     //     // You can now use the formData for your custom actions or AJAX request
     // });
+    
+
     $('#copyForm').on('abp-ajax-success', function (result, rs) {
-        debugger;
-        location.href = 'CreateMawb?Id=' + rs.responseText.Id + '&IsCopyFlightInfo=' + rs.responseText.IsCopyFlightInfo + '&CopyHawb=' + rs.responseText.CopyHawb + '&AccountingInfo=' + rs.responseText.CopyAccountingInformation + '&CopyCommodity=' + rs.responseText.CopyCommodity + '&IsAPCopy=' + rs.responseText.AP + '&IsARCopy=' + rs.responseText.AR + '&IsDCCopy=' + rs.responseText.DC
+        if (isIndexPage()) {
+            var allHbl;
+            var firstHbl;
+            var container;
+            var invoice;
+            if ($('#CopyModel\\.CopyHawbRadioAllHAWB')[0].checked){
+                allHbl = 'true';
+            } else if ($('#CopyModel\\.CopyHawbRadioFirstHawbOnly')[0].checked) {
+                allHbl = 'false';
+            }
+            if ($('#CopyModel_CopyCommodity')[0].checked){
+                container = 'container';
+            }
+            if ($('input[name="CopyModel.CopyAccountingInformation"]')[0].checked) {
+                invoice = 'invoices';
+            }
+            var checkedCheckbox = $('.selectCheckbox:checked');
+            var mblId = checkedCheckbox.attr('data-id');
+            dolphin.freight.web.controllers.importExport.copyMblDetails(mblId, allHbl, container, invoice).done(function (res)
+            { 
+                window.location.href = "/OceanExports/EditModal?Id=" + res.newMblId;
+            });
+        }
+        else{
+            location.href = 'CreateMawb?Id=' + rs.responseText.Id + '&IsCopyFlightInfo=' + rs.responseText.IsCopyFlightInfo + '&CopyHawb=' + rs.responseText.CopyHawb + '&AccountingInfo=' + rs.responseText.CopyAccountingInformation + '&CopyCommodity=' + rs.responseText.CopyCommodity + '&IsAPCopy=' + rs.responseText.AP + '&IsARCopy=' + rs.responseText.AR + '&IsDCCopy=' + rs.responseText.DC
+        }
     });
+
+    function isIndexPage() {
+        var pathSegments = window.location.pathname.split('/');
+        var lastSegment = pathSegments[pathSegments.length - 1];
+
+        lastSegment = lastSegment.trim();
+
+        return lastSegment.toLowerCase() === "index" || lastSegment.toLowerCase() === "mbllist";
+    }
 </script>
 <form abp-model="CopyModel" id="copyForm" method="post" action="@Url.Page("/AirExports/CopyMawbModal")">
     <abp-modal size="Large">

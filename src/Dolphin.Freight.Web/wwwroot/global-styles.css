@@ -289,3 +289,41 @@
 .filteredDropdown > span:first-child {
     width: 100% !important;
 }
+#HblListTable td {
+    border-bottom: 0 !important;
+    border-left: 1px outset #dddddd75 !important;
+    border-right: 1px outset #dddddd75 !important;
+    padding: 8px 5px !important;
+    /* font-weight: 600;
+    font-size: 12px;*/
+}
+th {
+    border-bottom: 1px outset #dddddd75 !important;
+    border-left: 1px outset #dddddd75 !important;
+    border-right: 1px outset #dddddd75 !important;
+    /*padding: 8px 5px !important;*/
+}
+#ExportBookingListTable td {
+    border-bottom: 0 !important;
+    border-left: 1px outset #dddddd75 !important;
+    border-right: 1px outset #dddddd75 !important;
+    padding: 8px 5px !important;
+    /* font-weight: 600;
+    font-size: 12px;*/
+}
+#VesselScheduleListTable td {
+    border-bottom: 0 !important;
+    border-left: 1px outset #dddddd75 !important;
+    border-right: 1px outset #dddddd75 !important;
+    padding: 8px 5px !important;
+    /* font-weight: 600;
+    font-size: 12px;*/
+}
+#MblListTable td {
+    border-bottom: 0 !important;
+    border-left: 1px outset #dddddd75 !important;
+    border-right: 1px outset #dddddd75 !important;
+    padding: 8px 5px !important;
+    /* font-weight: 600;
+    font-size: 12px;*/
+}

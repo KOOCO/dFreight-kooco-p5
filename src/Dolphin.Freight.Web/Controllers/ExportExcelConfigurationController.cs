@@ -13,11 +13,11 @@ namespace Dolphin.Freight.Web.Controllers
 {
     [Route("[Controller]")]
     [ApiController]
-    public class ConfigurationController : AbpController
+    public class ExportExcelConfigurationController : AbpController
     {
         public IGridPreferenceAppService _gridPreferenceAppService { get; set; }
         public ICurrentUser _currentUser { get; set; }
-        public ConfigurationController(IGridPreferenceAppService gridPreferenceAppService, ICurrentUser currentUser)
+        public ExportExcelConfigurationController(IGridPreferenceAppService gridPreferenceAppService, ICurrentUser currentUser)
         {
             _gridPreferenceAppService = gridPreferenceAppService;
             _currentUser = currentUser;
@@ -27,13 +27,15 @@ namespace Dolphin.Freight.Web.Controllers
             return View();
         }
 
+       
+
         [HttpGet]
         public async Task<IActionResult> GetConfig(string src = "")
         {
 
             var data = await _gridPreferenceAppService.GetGridPreferenceBySrcAsync(src, _currentUser.Id.GetValueOrDefault());
 
-            ConfigurationViewModel viewModel = new();
+            ExcelExportConfigurationViewModel viewModel = new();
 
             if (data != null)
             {
@@ -47,13 +49,11 @@ namespace Dolphin.Freight.Web.Controllers
                     UserId = data.UserId
                 };
             }
-           
-            
-                return PartialView("Pages/Shared/_Configuration.cshtml", viewModel);
-            
-        }
 
-    
+
+            return PartialView("Pages/Shared/_ExcelExportConfiguration.cshtml", viewModel);
+
+        }
         [Route("PostConfig")]
         [HttpPost]
         public async Task PostConfig(Dictionary<string, object> jsonObject)

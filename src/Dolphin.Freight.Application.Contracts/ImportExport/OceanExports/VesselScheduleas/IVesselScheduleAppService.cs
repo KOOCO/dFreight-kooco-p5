@@ -16,5 +16,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
     {
         Task<PagedResultDto<VesselScheduleDto>> QueryListAsync(QueryVesselScheduleDto query);
         Task<List<VesselScheduleDto>> GetListAsync(QueryVesselScheduleDto query);
+        Task DeleteMultipleVesselAsync(Guid[] ids);
     }
 }

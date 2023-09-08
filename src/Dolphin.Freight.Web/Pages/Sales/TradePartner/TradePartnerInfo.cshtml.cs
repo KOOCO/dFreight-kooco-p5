@@ -100,6 +100,7 @@ namespace Dolphin.Freight.Web.Pages.Sales.TradePartner
             {
                 return Page();
             }
+
             // ±NPopUpTips²Õ¦¨Json¦r¦ê
             PopUpTipsObj popUpTipsObj = new PopUpTipsObj(
                 TPInfoModel.DoorToDoor,
