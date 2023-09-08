@@ -131,7 +131,7 @@
                     table.appendChild(thead);
                     table.appendChild(tbody);
 
-                    if (preferenceSrc = "OceanExportBookingListExcel") {
+                    if (preferenceSrc == "OceanExportBookingListExcel") {
                         var col = (columns1.length > 2) ? [[2, 'asc']] : [[0, 'asc']];
 
                         dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.queryList({
@@ -183,7 +183,7 @@
     
         
                     }
-                    if (preferenceSrc = "VesselSchedulesExcelList") { 
+                    if (preferenceSrc == "VesselSchedulesExcelList") { 
                       var col = (columns1.length > 2) ? [[2, 'asc']] : [[0, 'asc']];
 
                         dolphin.freight.importExport.oceanExports.vesselScheduleas.vesselSchedule.queryList({
