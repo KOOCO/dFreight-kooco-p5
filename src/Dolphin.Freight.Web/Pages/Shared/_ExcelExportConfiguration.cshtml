@@ -1,0 +1,241 @@
+﻿@using Dolphin.Freight.Localization;
+@using Microsoft.Extensions.Localization;
+@model Dolphin.Freight.Web.ViewModels.ExcelExportConfiguration.ExcelExportConfigurationViewModel
+@inject IStringLocalizer<FreightResource> L
+<style>
+    .sortable-list__item {
+        padding: 5px 22px 5px 7px;
+        color: #fff;
+        margin-bottom: 5px;
+        background: #AAAAAA url(data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjEwIiB2aWV3Qm94PSIwIDAgNyAxMCIgd2lkdGg9IjciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0ibTggMTdjLjU1MjI4NDc1IDAgMSAuNDQ3NzE1MyAxIDFzLS40NDc3MTUyNSAxLTEgMS0xLS40NDc3MTUzLTEtMSAuNDQ3NzE1MjUtMSAxLTF6bTUgMGMuNTUyMjg0NyAwIDEgLjQ0NzcxNTMgMSAxcy0uNDQ3NzE1MyAxLTEgMS0xLS40NDc3MTUzLTEtMSAuNDQ3NzE1My0xIDEtMXptLTUtNGMuNTUyMjg0NzUgMCAxIC40NDc3MTUzIDEgMXMtLjQ0NzcxNTI1IDEtMSAxLTEtLjQ0NzcxNTMtMS0xIC40NDc3MTUyNS0xIDEtMXptNSAwYy41NTIyODQ3IDAgMSAuNDQ3NzE1MyAxIDFzLS40NDc3MTUzIDEtMSAxLTEtLjQ0NzcxNTMtMS0xIC40NDc3MTUzLTEgMS0xem0tNS00Yy41NTIyODQ3NSAwIDEgLjQ0NzcxNTI1IDEgMSAwIC41NTIyODQ3LS40NDc3MTUyNSAxLTEgMXMtMS0uNDQ3NzE1My0xLTFjMC0uNTUyMjg0NzUuNDQ3NzE1MjUtMSAxLTF6bTUgMGMuNTUyMjg0NyAwIDEgLjQ0NzcxNTI1IDEgMSAwIC41NTIyODQ3LS40NDc3MTUzIDEtMSAxcy0xLS40NDc3MTUzLTEtMWMwLS41NTIyODQ3NS40NDc3MTUzLTEgMS0xeiIgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBvcGFjaXR5PSIuNTAzOTMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC03IC05KSIvPjwvc3ZnPg==) calc(100% - 8px) 10px no-repeat;
+    }
+</style>
+<form id="frmGridPreference" data-check-form-on-close="false">
+    <abp-modal>
+        <abp-modal-header title="Export Excel Configuration"></abp-modal-header>
+        <abp-modal-body class="overflow-auto" style="height:500px;">
+            <div class="row">
+                <div class="col-xs-12">
+                    <ul class="sortable-list ui-sortable">
+                        @if (Model is not null && Model.Preference != null)
+                        {
+                            @Html.HiddenFor(m => m.Id)
+                            @Html.HiddenFor(m => m.PreferenceSrc)
+                            @Html.HiddenFor(m => m.UserId)
+
+                            @for (int i = 0; i < Model.Preference.Count; i++)
+                            {
+                                <li class="sortable-list__item" data-name="@Model.Preference[i].Name">
+                                    <label class="">
+                                        <div class="checker">
+                                            <span class="checked">
+                                                @Html.Hidden($"Preference[{i}].Name", Model.Preference[i].Name)
+                                                @Html.Hidden($"Preference[{i}].Show", Model.Preference[i].Show)
+                                                @Html.Hidden($"Preference[{i}].Lock", Model.Preference[i].Lock)
+                                                @if (Model.Preference[i].Text != null) @Html.Hidden($"Preference[{i}].Text", Model.Preference[i].Text)
+                                                @Html.Hidden($"Preference[{i}].Width", Model.Preference[i].Width)
+                                                @Html.Hidden($"Preference[{i}].Freeze", Model.Preference[i].Freeze)
+                                                @Html.Hidden($"Preference[{i}].Configurable", Model.Preference[i].Configurable)
+
+                                                @if (!Model.Preference[i].Lock)
+                                                {
+                                                    @Html.CheckBox($"Preference[{i}].Checkable", Model.Preference[i].Checkable)
+                                                }
+                                                else
+                                                {
+                                                    @Html.Hidden($"Preference[{i}].Checkable", Model.Preference[i].Checkable)
+                                                }
+
+                                            </span>
+                                        </div>
+                                        <font style="vertical-align: inherit;">
+                                            @if (Model.Preference[i].Text != null)
+                                            {
+                                                @L[@Model.Preference[i].Text]
+                                            }
+                                        </font>
+                                    </label>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+            <abp-table hidden class="nowrap"  id="Table"></abp-table>
+        </abp-modal-body>
+        <abp-modal-footer>
+            <abp-button id="btnConfigurationCancel"
+                        text="Cancel"
+                        button-type="Default" />
+            <abp-button id="btnConfigurationSave"
+                        text="Save"
+                        button-type="Primary" />
+                          <abp-button id="btnConfigurationSaveDownload"
+                        text="Save & Download"
+                        button-type="Primary"
+                        />
+        </abp-modal-footer>
+    </abp-modal>
+</form>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $('#btnConfigurationCancel').on('click', function () {
+            $('.btn-close').click()
+        })
+        $('#btnConfigurationSave').on('click', function () {
+            var form = $('#frmGridPreference');
+            var data = form.serializeFormToObject();
+
+            dolphin.freight.web.controllers.configuration.postConfig(data).done(function () {
+                abp.message.success('Saved successfully').then(() => {
+                     $('.btn-close').click()
+                })
+            });
+        })
+         $('#btnConfigurationSaveDownload').on('click', function () {
+             $('#btnConfigurationSave').prop('disabled', true);
+             $('#btnConfigurationSaveDownload').prop('disabled', true);
+            var form = $('#frmGridPreference');
+            var data = form.serializeFormToObject();
+             debugger;
+              var preferenceSrc = '@Model.PreferenceSrc';
+             var dataTable1;
+             var columns1=[];
+            abp.ui.block();
+            dolphin.freight.web.controllers.configuration.postConfig(data).done(function () {
+                dolphin.freight.web.controllers.configuration.getJsonConfig(preferenceSrc).done(function (data) {
+                    var table = document.getElementById('Table');
+                    var thead = document.createElement('thead');
+                    var tbody = document.createElement('tbody');
+                    var tr = document.createElement('tr');
+
+                    data.forEach(function (item) {
+                        if (!item.lock && item.checkable) {
+                            var th = document.createElement('th');
+                            th.textContent = l(item.text);
+                            tr.appendChild(th);
+
+                            var column = {
+                                title: l(item.text),
+                                data: item.name
+                            };
+
+                            columns1.push(column);
+                        }
+                    });
+
+                    thead.appendChild(tr);
+                    table.appendChild(thead);
+                    table.appendChild(tbody);
+
+                    if (preferenceSrc = "OceanExportBookingListExcel") {
+                        var col = (columns1.length > 2) ? [[2, 'asc']] : [[0, 'asc']];
+
+                        dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.queryList({
+                     search:null,
+                     fbaFcId:  null,
+                       carrierId:  null ,
+                        shipperId:  null ,
+                        notifyId:null,
+                        consigneeId: null,
+                        customerId:  null,
+                         pod: null,
+                        officeId:  null,
+                         del:null ,
+                         deliverTo: null,
+                        shipModeId: null,
+                         blCancelled:null ,
+                        postDate:  null,
+        
+                             eta:null ,
+                        etd: null ,
+                        creationDate: null,
+                        cargoReadyDate:null ,
+                }).done(function (response) {
+                            response.items.forEach(function (item) {
+                                var tr = document.createElement('tr');
+                    columns1.forEach(function(column) {
+                        var td = document.createElement('td');
+                        td.textContent = item[column.data];
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+
+                            });
+                            var ws = XLSX.utils.table_to_sheet(table);
+
+    // Create a new workbook and add the worksheet
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    // Save the workbook as an Excel file
+    XLSX.writeFile(wb, "OceanExportBookingList.xlsx"); 
+    abp.ui.unblock();
+     $('#btnConfigurationSave').prop('disabled', true);
+             $('#btnConfigurationSaveDownload').prop('disabled', true);
+                    $('.btn-close').click();
+                        });
+                       
+                        
+    
+        
+                    }
+                    if (preferenceSrc = "VesselSchedulesExcelList") { 
+                      var col = (columns1.length > 2) ? [[2, 'asc']] : [[0, 'asc']];
+
+                        dolphin.freight.importExport.oceanExports.vesselScheduleas.vesselSchedule.queryList({
+                     search:null,
+                     ovearseaAgentId:  null,
+                       carrierId:  null ,
+                        shippingAgentId:  null ,
+                        forwardingAgentId:null,
+                        blTypeId:null,
+                        vessel: null,
+                       
+                         pol: null,
+                        officeId:  null,
+                        
+                        shipModeId: null,
+                      
+                        postDate:  null,
+        
+                             eta:null ,
+                        etd: null 
+                       
+                          }).done(function (response) {
+                            response.items.forEach(function (item) {
+                                var tr = document.createElement('tr');
+                    columns1.forEach(function(column) {
+                        var td = document.createElement('td');
+                        td.textContent = item[column.data];
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+
+                            });
+                            var ws = XLSX.utils.table_to_sheet(table);
+
+    // Create a new workbook and add the worksheet
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    // Save the workbook as an Excel file
+    XLSX.writeFile(wb, "VesselScheduleList.xlsx"); 
+    abp.ui.unblock();
+     $('#btnConfigurationSave').prop('disabled', false);
+             $('#btnConfigurationSaveDownload').prop('disabled', false);
+                    $('.btn-close').click();
+                        });
+                    
+                    }
+
+                })
+       
+            });
+       
+        })
+  
+    })</script>

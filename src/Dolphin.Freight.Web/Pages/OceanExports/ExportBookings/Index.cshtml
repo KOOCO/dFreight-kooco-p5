@@ -11,13 +11,18 @@
 @inject IAuthorizationService AuthorizationService
 @inject IDropdownService _dropdown;
 @section scripts{
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.3/xlsx.full.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.2.0/js/tableexport.min.js"></script>
     <script type="text/javascript">
         var l = abp.localization.getResource('Freight');
         var _changeInterval = null;
         var dataTable;
       
             var queryListFilter = function () {
+                debugger
                 return {
+                    
                      search: $("#Keyword").val(),
        
         fbaFcId: $("#VesselSchedule_FbaFcId").val() == '' ? null : $("#VesselSchedule_FbaFcId").val(),
@@ -134,12 +139,12 @@
              dataTable = $('#ExportBookingListTable').DataTable(
                     abp.libs.datatables.normalizeConfiguration({
                         serverSide: true,
-                paging: true,
+                         pagingType: 'full_numbers',
                 order: col,
                 searching: false,
                 scrollX: true,
                 processing: true,
-                    
+                  
                 responsive: {
                     details: {
                         type: 'column'
@@ -189,7 +194,7 @@
         $("#CargoReadyDate").val(null);
         dataTable.ajax.reload();
     });
-
+   
             $('#btnConfiguration').click(function (e) {
                 var _configurationModal = new abp.ModalManager({
                     viewUrl: abp.appPath + 'Configuration',
@@ -197,6 +202,18 @@
                 });
                     _configurationModal.open({
                         src: 'OceanExportBookingList'
+                    });
+
+        });
+           
+                 $('#btnExcelConfiguration').click(function (e) {
+                var _excelExportConfigurationModal = new abp.ModalManager({
+                    viewUrl: abp.appPath + 'ExportExcelConfiguration',
+                    modalClass: 'ExcelExportConfigurationViewModel'
+                });
+                    _excelExportConfigurationModal.open({
+                        src: 'OceanExportBookingListExcel'
+                       
                     });
 
         });
@@ -272,7 +289,47 @@
         function createNew() {
             window.location.href = "/OceanExports/ExportBookings/Create";
         }
+        function exportToExcel(){
+        
+       
+      var table = document.getElementById("ExportBookingListTable");
+  var columnsToExclude = [0, 1];
 
+// Create a new worksheet
+var ws = XLSX.utils.aoa_to_sheet([]);
+
+// Create a style object for the header row
+var headerStyle = {
+    font: { bold: true },
+    fill: { bgColor: { indexed: 23 }, fgColor: { indexed: 23 } }, // Blue color
+    alignment: { horizontal: "center" }, // Center-align text
+};
+
+// Iterate through table rows and build the new worksheet
+for (var rowIndex = 0; rowIndex < table.rows.length; rowIndex++) {
+    var row = table.rows[rowIndex];
+    var newRow = [];
+    for (var colIndex = 0; colIndex < row.cells.length; colIndex++) {
+        if (!columnsToExclude.includes(colIndex)) {
+            newRow.push(row.cells[colIndex].innerText);
+        }
+    }
+    XLSX.utils.sheet_add_aoa(ws, [newRow], { origin: -1 });
+}
+
+// Apply the header style to the first row
+XLSX.utils.format_cell(ws['A1'], headerStyle);
+XLSX.utils.format_cell(ws['B1'], headerStyle);
+XLSX.utils.format_cell(ws['C1'], headerStyle);
+// Add more cells as needed for additional columns
+
+// Create a new workbook and add the worksheet
+var wb = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    // Save the workbook as an Excel file
+    XLSX.writeFile(wb, "OceanExportBookingList.xlsx");
+        }
         function deleteHbl() {
             var ids = [];
             var selectedCheckboxes = $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]:checked');
@@ -329,6 +386,14 @@
                                 text="@L["Configuration"].Value"
                                 icon="gear"
                                 button-type="Primary" />
+                                <abp-dropdown>
+    <abp-dropdown-button icon="file-excel-o" text="Excel" button-type="Outline_Dark"   />
+    <abp-dropdown-menu>
+        <abp-dropdown-item href="javascript:void(0)" onclick="exportToExcel()"><i class="fa fa-cloud-download"></i>Download</abp-dropdown-item>
+        <abp-dropdown-item id="btnExcelConfiguration"  href="javascript:void(0)"><i class="fa fa-cogs"></i>Config</abp-dropdown-item>
+      
+    </abp-dropdown-menu>
+</abp-dropdown>
                         </abp-column>
                         </abp-row>
         </abp-card-header>
