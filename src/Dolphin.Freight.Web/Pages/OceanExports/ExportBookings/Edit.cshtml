@@ -62,7 +62,12 @@
             });
 
             var showCopyMsg = '@Model.ShowCopyMsg'
-            if (showCopyMsg == 'True') abp.message.success(l("Message:SuccessCopy"));
+            if (showCopyMsg == 'True') { 
+                var id = '@Model.Id';
+              
+            abp.message.success(l("Message:SuccessCopy"));
+             location.href = 'Edit?Id=' + id
+            }
             var showMsg = '@Model.ShowMsg';
             if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
             var l = abp.localization.getResource('Freight');
