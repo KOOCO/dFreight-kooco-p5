@@ -125,11 +125,12 @@ function selectAllCheckbox(element) {
     $('#MblListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
 }
 
-function copyMbl() {
+function copyMbl(shouldDisplayAlternativeTitle) {
     var checkedCheckboxes = $('.selectCheckbox:checked');
     var mblId = checkedCheckboxes.attr('data-id');
     createMemoModal.open({
         mblId,
+        ShouldDisplayAlternativeTitle: shouldDisplayAlternativeTitle
     });
 }
 

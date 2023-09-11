@@ -86,9 +86,9 @@
             var firstHbl;
             var container;
             var invoice;
-            if ($('#CopyModel\\.CopyHawbRadioAllHAWB')[0].checked){
+            if ($('#CopyModel\\.CopyHawbRadioAllHBL')[0].checked) {
                 allHbl = 'true';
-            } else if ($('#CopyModel\\.CopyHawbRadioFirstHawbOnly')[0].checked) {
+            } else if ($('#CopyModel\\.CopyHawbRadioFirstHblOnly')[0].checked) {
                 allHbl = 'false';
             }
             if ($('#CopyModel_CopyCommodity')[0].checked){
@@ -121,14 +121,21 @@
 <form abp-model="CopyModel" id="copyForm" method="post" action="@Url.Page("/AirExports/CopyMawbModal")">
     <abp-modal size="Large">
  
-            <abp-modal-header title="@L["CopyMawb"]"></abp-modal-header>
+            @*<abp-modal-header title="@L["CopyMawb"]"></abp-modal-header>*@
+        <abp-modal-header title="@(Model.ShouldDisplayAlternativeTitle ? @L["CopyMbl"] : @L["CopyMawb"])"></abp-modal-header>
       
-      
+
         <abp-modal-body>
           
                 <abp-input type="hidden" asp-for="@Model.Id" />
           <abp-column size="_12">
-            <p>Please Select How Would you like to Copy MAWB Information?</p>
+                @if (Model.ShouldDisplayAlternativeTitle)
+                {
+                    <p>Please Select How Would you like to Copy MBL Information?</p>
+                } else
+                {
+                    <p>Please Select How Would you like to Copy MAWB Information?</p>
+                }
 
                </abp-column>
             
@@ -137,20 +144,26 @@
             <label class="form-label">@L["Display:Copyflightinfo"]</label>
             </abp-column>
             <abp-column size="_12">
+
+                @if (Model.ShouldDisplayAlternativeTitle)
+                {
+                    <p>Please select how would you like to copy HBL under this MBL?</p>
+                } else
+                {
+                    <p>Please select how would you like to copy HAWB under this MAWB?</p>
+                }
                 
-            <p>Please select how would you like to copy HAWB under this MAWB?</p>
         </abp-column>
         <abp-column size="_12">
 
-                <abp-radio  asp-for="@Model.CopyModel.CopyHawb" asp-items="@Model.HblOptions" inline="true" />
+                @if (Model.ShouldDisplayAlternativeTitle)
+                {
+                    <abp-radio asp-for="@Model.CopyModel.CopyHawb" asp-items="@Model.HblsOptions" inline="true" />
+                } else
+                {
+                    <abp-radio asp-for="@Model.CopyModel.CopyHawb" asp-items="@Model.HblOptions" inline="true" />
+                }
           
-            
-                
-           
-           
-
-            
-                    
            </abp-column>
                  <abp-column size="_12">
                 <input type="checkbox" suppress-label asp-for="@Model.CopyModel.CopyCommodity" />

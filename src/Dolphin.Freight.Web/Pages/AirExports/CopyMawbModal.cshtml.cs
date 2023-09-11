@@ -18,22 +18,24 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public Guid Id { get; set; }
         [BindProperty]
         public CopyModelInfo CopyModel { get; set; }
-      public  List<SelectListItem> HblOptions { get; set; }
-
-       
-      
-
+        [BindProperty]
+        public bool ShouldDisplayAlternativeTitle { get; set; }
+        public  List<SelectListItem> HblOptions { get; set; }
+        public  List<SelectListItem> HblsOptions { get; set; }
+     
 
         public async Task OnGetAsync()
         {
             CopyModel = new CopyModelInfo();
             HblOptions = FillHblOptions();
+            HblsOptions = FillHblsDDL();
             CopyModel.CopyAccountingInformation = true;
             CopyModel.AP = true;
             CopyModel.AR = true;
             CopyModel.DC = true;
             CopyModel.CopyHawb = "FirstHawbOnly";
             CopyModel.IsCopyFlightInfo = true;
+            ShouldDisplayAlternativeTitle = bool.Parse(HttpContext.Request.Query["ShouldDisplayAlternativeTitle"].ToString());
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -62,6 +64,14 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                 new SelectListItem { Value = "AllHAWB", Text = "All HAWB"}
             };
         }
+        private List<SelectListItem> FillHblsDDL()
+        {
+            return new List<SelectListItem>
+            {
+                new SelectListItem { Value = "FirstHblOnly", Text = "First HBL Only"},
+                new SelectListItem { Value = "AllHBL", Text = "All HBL"}
+            };
+        }
 
 
 
@@ -82,7 +92,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
        
         public bool DC { get; set; }
 
-
+        public bool ShouldDisplayAlternativeTitle { get; set; }
 
     }
 }
