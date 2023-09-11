@@ -31,7 +31,9 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
         public OceanExportHblDto OceanExportHbl { get; set; }
         public List<SelectListItem> RateUnitTypeLookupList { get; set; }
         public List<SelectListItem> UnitTypeLookupList { get; set; }
+        [BindProperty]
         public CreateUpdateExportBookingDto ExportBookingDto { get; set; }
+        [BindProperty]
         public CreateUpdateContainerDto CreateUpdateContainerBooking { get; set; }
         public OceanImportHblDto OceanImportHbl { get; set; }
         public AirExportHawbDto AirExportHawbDto { get; set; }

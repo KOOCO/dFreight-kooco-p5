@@ -99,7 +99,6 @@
             });
 
             $('#addHBtn').on('click', function () {
-                debugger;
                 if ($('#mawbDiv')[0].classList.contains('show')) {
                     $('#btnMawbCollapse').click();
                 }
@@ -355,7 +354,7 @@
 </div>
 
 <div class="page-content-area">
-    < class="board-wrap">
+    <div class="board-wrap">
         <form abp-model="MawbModel" submit-button="true" data-ajaxForm="true" id="createForm">
             <abp-row>
                 @*<abp-input asp-for="@Model.AirImportMawbDto.Id" type="hidden" suppress-label/>*@

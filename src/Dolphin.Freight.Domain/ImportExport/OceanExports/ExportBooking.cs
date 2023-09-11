@@ -23,6 +23,11 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 對應的ID，可能是船期也可能是MBL
         /// </summary>
+        public Guid? VesselScheduleId { get; set; }
+
+        [ForeignKey("VesselScheduleId")]
+        public virtual VesselSchedule VesselSchedule { get; set; }
+
         public Guid? ReferenceId { get; set; }
         /// <summary>
         /// 0：船期，1：MBL

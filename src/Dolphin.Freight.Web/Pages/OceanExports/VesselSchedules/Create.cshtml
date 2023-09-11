@@ -140,16 +140,24 @@
         }
 
         $('#addHBtn').on('click', function () {
-            let bookingcard = createBookingCard();
+            if ($('#vesselDiv')[0].classList.contains('show')) {
+                $('#btnVesselCollapse').click();
+            }
 
-            let index = $('.cardAnchor').find('.card').length;
-            bookingcard = setBookingCardValues(bookingcard, '00000000-0000-0000-0000-000000000000', '0', index);
+            if ($('#btnBookingCardCollapse_0').length) {
+                showAlert(alertConfirmation2, 'Store');
+            } else {
+                let bookingcard = createBookingCard();
 
-            $('#hblCardDiv').append(bookingcard);
+                let index = $('.booking_sm_area').find('.card').length;
+                bookingcard = setBookingCardValues(bookingcard, '00000000-0000-0000-0000-000000000000', '0', index);
 
-            setTimeout(() => {
-                $('.bookingCardTitle')[index].click();
-            }, 500);
+                $('#bookingCards').append(bookingcard);
+
+                setTimeout(() => {
+                    $('.bookingCardTitle')[index].click();
+                }, 500);
+            }
         });
 
         function initRemark(remarkIndex) {
@@ -310,7 +318,6 @@
 
         function setPoValue() {
             var tagOptions = {};
-            debugger
             tagOptions.onDel = function () {
                 setTimeout(() => {
                     var tags = $('#PoNoTag').tagsStr();
@@ -369,7 +376,6 @@
                 showAlert(alertConfirmation, 'Continue');
             }
             else {
-
                 var color = getComputedStyle(element.parentElement.parentElement).backgroundColor;
 
                 if (!$('#btnBookingCardCollapse_' + bookingNo).attr('class').includes('collapsed')) {
@@ -441,37 +447,38 @@
                                 }
                             });
 
-                            initializeDropdownSearch("ExportBooking_CancelReason");
-                            initializeDropdownSearch("ExportBooking_ReferenceId");
-                            initializeDropdownSearch("ExportBooking_CarrierId");
-                            initializeDropdownSearch("ExportBooking_ShipModeId");
-                            initializeDropdownSearch("ExportBooking_FreightTermForBuyerId");
-                            initializeDropdownSearch("ExportBooking_FreightTermForSalerId");
-                            initializeDropdownSearch("ExportBooking_SvcTermFromId");
-                            initializeDropdownSearch("ExportBooking_SvcTermToId");
-                            initializeDropdownSearch("ExportBooking_IncotermsId");
-                            initializeDropdownSearch("ExportBooking_CargoTypeId");
-                            initializeDropdownSearch("ExportBooking_ShipperId");
-                            initializeDropdownSearch("ExportBooking_CustomerId");
-                            initializeDropdownSearch("ExportBooking_BillToId");
-                            initializeDropdownSearch("ExportBooking_ConsigneeId");
-                            initializeDropdownSearch("ExportBooking_NotifyId");
-                            initializeDropdownSearch("ExportBooking_ShippingAgentId");
-                            initializeDropdownSearch("ExportBooking_HblAgentId");
-                            initializeDropdownSearch("ExportBooking_CoLoaderId");
-                            initializeDropdownSearch("ExportBooking_FbaId");
-                            initializeDropdownSearch("ExportBooking_CargoPickupId");
-                            initializeDropdownSearch("ExportBooking_TruckerId");
-                            initializeDropdownSearch("ExportBooking_DeliveryToId");
-                            initializeDropdownSearch("ExportBooking_DelId");
-                            initializeDropdownSearch("ExportBooking_SalespersonId");
-                            initializeDropdownSearch("ExportBooking_PorId");
-                            initializeDropdownSearch("ExportBooking_PolId");
-                            initializeDropdownSearch("ExportBooking_PodId");
-                            initializeDropdownSearch("ExportBooking_FdestId");
-                            initializeDropdownSearch("ExportBooking_TransPort1Id");
+                            initializeDropdownSearch("ExportBookingDto_CancelReason");
+                            initializeDropdownSearch("ExportBookingDto_ReferenceId");
+                            initializeDropdownSearch("ExportBookingDto_CarrierId");
+                            initializeDropdownSearch("ExportBookingDto_ShipModeId");
+                            initializeDropdownSearch("ExportBookingDto_FreightTermForBuyerId");
+                            initializeDropdownSearch("ExportBookingDto_FreightTermForSalerId");
+                            initializeDropdownSearch("ExportBookingDto_SvcTermFromId");
+                            initializeDropdownSearch("ExportBookingDto_SvcTermToId");
+                            initializeDropdownSearch("ExportBookingDto_IncotermsId");
+                            initializeDropdownSearch("ExportBookingDto_CargoTypeId");
+                            initializeDropdownSearch("ExportBookingDto_ShipperId");
+                            initializeDropdownSearch("ExportBookingDto_CustomerId");
+                            initializeDropdownSearch("ExportBookingDto_BillToId");
+                            initializeDropdownSearch("ExportBookingDto_ConsigneeId");
+                            initializeDropdownSearch("ExportBookingDto_NotifyId");
+                            initializeDropdownSearch("ExportBookingDto_ShippingAgentId");
+                            initializeDropdownSearch("ExportBookingDto_HblAgentId");
+                            initializeDropdownSearch("ExportBookingDto_CoLoaderId");
+                            initializeDropdownSearch("ExportBookingDto_FbaId");
+                            initializeDropdownSearch("ExportBookingDto_CargoPickupId");
+                            initializeDropdownSearch("ExportBookingDto_TruckerId");
+                            initializeDropdownSearch("ExportBookingDto_DeliveryToId");
+                            initializeDropdownSearch("ExportBookingDto_DelId");
+                            initializeDropdownSearch("ExportBookingDto_SalespersonId");
+                            initializeDropdownSearch("ExportBookingDto_PorId");
+                            initializeDropdownSearch("ExportBookingDto_PolId");
+                            initializeDropdownSearch("ExportBookingDto_PodId");
+                            initializeDropdownSearch("ExportBookingDto_FdestId");
+                            initializeDropdownSearch("ExportBookingDto_TransPort1Id");
                             initializeDropdownSearch("ExportBookingDto_OfficeId");
-                            initializeDropdownSearch("ExportBooking_ReferralById");
+                            initializeDropdownSearch("ExportBookingDto_ReferralById");
+                            initializeDropdownSearch("ExportBookingDto_EmptyPickupId");
 
                             $("#checkHideBtn").click(function () {
                                 initHideBtn();
@@ -557,7 +564,7 @@
         }
 
         function setBookingCardValues(abpcard, cardId, bookingNo, index) {
-            let apbCardClass = 'card board-item hbl-sm-' + index;
+            let apbCardClass = 'card board-item booking-sm-' + index;
             let cardBodyId = 'bookingCard_' + index;
             cardId = "'" + cardId + "'";
 
@@ -568,6 +575,28 @@
             abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
 
             return abpcard;
+        }
+
+        function showAlert(funName, buttonName) {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, are you sure you want to ' + buttonName.toLowerCase() + '?',
+                showCancelButton: true,
+                confirmButtonText: buttonName,
+            }).then(funName)
+        }
+
+        function alertConfirmation(result) {
+            if (result.isConfirmed) {
+                let indx = $('.booking_sm_area').find('.card').length;
+                $('#btnBookingCardCollapse_0').parent().parent().remove();
+                if (BOOKINGNO) {
+                    $('#title_' + BOOKINGNO).click()
+                }
+                else {
+                    $('#bookingCard_' + (indx - 2)).parent().find('.card-title').click();
+                }
+            }
         }
 
         //function addCardRight(hblId, hblNo, soNo, bgColor) {
@@ -690,10 +719,10 @@
                                 <span id="title5" style="font-size:0.8em;"> </span>
                             </abp-card-title>
 
-                            <button class="btn btn-collapse " type="button" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
+                            <button class="btn btn-collapse " id="btnVesselCollapse" type="button" data-bs-toggle="collapse" data-bs-target="#vesselDiv" aria-expanded="true" aria-controls="vesselDiv">
                             </button>
                         </abp-card-header>
-                        <abp-card-body class="collapse show customForm" id="mblDiv">
+                        <abp-card-body class="collapse show customForm" id="vesselDiv">
                             <abp-row>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.ReferenceNo" required-symbol="false" />
@@ -917,11 +946,11 @@
 
                 <div class="card-wrap">
 
-                    <button class="btn btn-block btn-add" id="addHBtn">
+                    <button class="btn btn-block btn-add" type="button" id="addHBtn">
                         <i class="fa-solid fa-plus"></i>@L["Btn:AddBooking"]
                     </button>
 
-                    <div class="hbl_sm_area" id="hblCardDiv">
+                    <div class="booking_sm_area" id="bookingCards">
                     </div>
 
                 </div>
@@ -930,7 +959,7 @@
         <abp-row class="mt-3" id="ejo">
             <abp-column>
                 <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
-                    <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Display:Button:New"].Value</abp-button>
+                    <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Display:Button:New"].Value</abp-button>
                 </div>
             </abp-column>
         </abp-row>

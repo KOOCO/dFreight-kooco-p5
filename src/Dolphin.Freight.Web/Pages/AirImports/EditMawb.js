@@ -42,13 +42,14 @@
             if (hblCards && hblCards.length) {
                 hblCards.forEach(function (hblCard, index) {
                    
-
+                    debugger;
                     let abpcard = createHawbCard();
 
                     abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hawbNo, index);
 
                     $('#hblCards').append(abpcard);
 
+                    debugger;
                     if (hblCard.id == url.searchParams.get('Hid')) {
                         selectedHblNo = hblCard.hawbNo;
                     }

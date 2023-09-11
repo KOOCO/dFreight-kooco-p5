@@ -1,6 +1,5 @@
 ﻿$(function () {
     $("#saveBtn").click(function () {
-        debugger;
         $("#createForm").submit();
     })
 })
