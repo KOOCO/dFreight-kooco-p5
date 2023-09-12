@@ -917,7 +917,9 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column>
-                                    @L["Title:Memo"]
+                                    <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                                        @L["Title:Memo"]
+                                    </abp-card-header>
                                     <abp-card>
                                         <abp-card-body>
                                             <partial name="Memos/_Memo" model="new _MemoModel(Model.Id, Dolphin.Freight.Common.FreightPageType.VS)" />
