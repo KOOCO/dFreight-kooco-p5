@@ -530,3 +530,6 @@ th {
     /* font-weight: 600;
     font-size: 12px;*/
 }
+.row.dt-row {
+    margin-top: 0px !important;
+}
