@@ -16,5 +16,6 @@ namespace Dolphin.Freight.Settinngs.SysCodes
     {
         Task<List<SysCodeDto>> GetSysCodeDtosByTypeAsync(QueryDto query);
         Task<string> GetSystemNoAsync(QueryDto query);
+        Task<string> GetSystemBookingNoAsync(QueryDto query);
     }
 }

@@ -474,9 +474,17 @@
                             $("#ExportBooking_IsCanceled").change(function () {
                                 initReasonStatus()
                             });
-                            $("#ExportBooking_IsCreateBySystem").change(function () {
-                                $("#ExportBooking_SoNo").attr('readonly', $(this).is(":checked"));
-                                if ($(this).is(":checked")) $("#ExportBooking_SoNo").val("");
+                            $('#ExportBooking_IsCreateBySystem').on('click', function (res) {
+                                var l = abp.localization.getResource('Freight');
+                                if (res.currentTarget.checked) {
+                                    abp.message.confirm(l('SystemBookingNoConfirm')).then(function (confirmed) {
+                                        if (confirmed) {
+                                            dolphin.freight.settings.sysCodes.sysCode.getSystemBookingNo({ queryType: 'ExportBooking_SoNo' }).done(function (rs) {
+                                                $('#ExportBooking_SoNo').val(rs);
+                                            });
+                                        }
+                                    });
+                                }
                             })
 
                             onSetCommodity();

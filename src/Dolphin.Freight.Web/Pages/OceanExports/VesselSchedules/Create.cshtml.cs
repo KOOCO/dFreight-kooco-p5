@@ -103,8 +103,13 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
                 if (dto.Status == 0) await _containerAppService.CreateAsync(dto);
             }
 
-            if (ExportBookingDto is not null && !string.IsNullOrEmpty(ExportBookingDto.SoNo))
+            if (ExportBookingDto is not null)
             {
+                if (ExportBookingDto.IsCreateBySystem)
+                {
+                    ExportBookingDto.SoNo = await _sysCodeAppService.GetSystemBookingNoAsync(new() { QueryType = "ExportBooking_SoNo" });
+                }
+
                 ExportBookingDto.Id = Guid.Empty;
                 if (ExportBookingDto.ExtraProperties == null)
                 {
