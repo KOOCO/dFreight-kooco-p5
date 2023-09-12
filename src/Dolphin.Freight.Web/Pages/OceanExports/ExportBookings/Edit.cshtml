@@ -168,10 +168,7 @@
             $("#ExportBooking_IsCanceled").change(function () {
                 initReasonStatus()
             });
-            $("#ExportBooking_IsCreateBySystem").change(function () {
-                $("#ExportBooking_SoNo").attr('readonly', $(this).is(":checked"));
-                if ($(this).is(":checked")) $("#ExportBooking_SoNo").val("");
-            })
+
             $("#saveBtn").click(function () {
                 $("#mOfficeId").val($("#OfficeId").val());
                 $("#mMblSalesTypeId").val($("#MblSalesTypeId").val());
@@ -215,6 +212,19 @@
                     window.location.href = '/OceanExports/ExportBookings/Index';
                 });
             });
+
+            $('#ExportBooking_IsCreateBySystem').on('click', function (res) {
+                var l = abp.localization.getResource('Freight');
+                if (res.currentTarget.checked) {
+                    abp.message.confirm(l('SystemBookingNoConfirm')).then(function (confirmed) {
+                        if (confirmed){
+                            dolphin.freight.settings.sysCodes.sysCode.getSystemBookingNo({ queryType: 'ExportBooking_SoNo' }).done(function (rs) {
+                                $('#ExportBooking_SoNo').val(rs);
+                            });
+                        }
+                    });
+                }
+            })
         });
         function initRemark(remarkIndex) {
             $(".remarkArea").hide();
@@ -630,7 +640,8 @@
                                         <abp-card-body style="background:#eeeeee;">
                                             <abp-row>
                                                 <abp-column>
-                                                    <label for="ExportBooking_SoNo" class="form-label">@L["SoCode"] </label>
+                                                    @*<label for="ExportBooking_SoNo" class="form-label">@L["SoCode"] </label>*@
+                                                    <label for="ExportBooking_SoNo" class="form-label">@L["SoCode"] <input type="checkbox" name="ExportBooking.IsCreateBySystem" id="ExportBooking_IsCreateBySystem" /></label>
                                                     <input type="text" name="ExportBooking.SoNo" class="form-control" id="ExportBooking_SoNo" value="@Model.ExportBooking.SoNo" readonly />
                                                     <input type="hidden" name="ExportBooking.IsCreateBySystem" class="form-control" id="ExportBooking_SoNo" value="@Model.ExportBooking.IsCreateBySystem" />
                                                 </abp-column>

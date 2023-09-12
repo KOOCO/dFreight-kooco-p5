@@ -56,7 +56,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         public async Task<JsonResult> OnPostAsync()
         {
             if (ExportBooking.IsCreateBySystem) {
-                ExportBooking.SoNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "ExportBooking_SoNo" });
+                ExportBooking.SoNo = await _sysCodeAppService.GetSystemBookingNoAsync(new() { QueryType = "ExportBooking_SoNo" });
             }
 
             if (ExportBooking.ExtraProperties == null)
