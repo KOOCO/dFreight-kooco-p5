@@ -654,23 +654,27 @@ namespace Dolphin.Freight.Web.Controllers
         private async Task CopySingleHbl(Guid parentId, Guid newMblId, string containerOption, string invoiceOption)
         {
             var hbldata = await _oceanExportHblAppService.GetHblCardsById(parentId);
-            var hbl = hbldata[0];
-
-            var updatedHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl);
-            updatedHbl.MblId = newMblId;
-            updatedHbl.Id = Guid.Empty;
-
-            var newHbl = await _oceanExportHblAppService.CreateAsync(updatedHbl);
-            var newHblId = newHbl.Id;
-
-            if (containerOption == "container")
+            
+            if (hbldata.Any())
             {
-                await CopyContainers(hbl.Id, newHblId, true);
-            }
+                var hbl = hbldata[0];
 
-            if (invoiceOption == "invoices")
-            {
-                await CopyInvoices(hbl.Id, newHblId, 1);
+                var updatedHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl);
+                updatedHbl.MblId = newMblId;
+                updatedHbl.Id = Guid.Empty;
+
+                var newHbl = await _oceanExportHblAppService.CreateAsync(updatedHbl);
+                var newHblId = newHbl.Id;
+
+                if (containerOption == "container")
+                {
+                    await CopyContainers(hbl.Id, newHblId, true);
+                }
+
+                if (invoiceOption == "invoices")
+                {
+                    await CopyInvoices(hbl.Id, newHblId, 1);
+                }
             }
         }
 
