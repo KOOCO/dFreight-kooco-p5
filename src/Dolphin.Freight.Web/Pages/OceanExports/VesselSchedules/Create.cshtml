@@ -1,11 +1,13 @@
 ﻿@page
 @using Dolphin.Freight.Localization
+@using Volo.Abp.Users
 @using Dolphin.Freight.Web.Pages.Components
 @using Microsoft.Extensions.Localization
 @using Dolphin.Freight.Web.CommonService
 @using Dolphin.Freight.Web.Pages.Shared.Memos;
 @model Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas.CreateModel
 @inject IStringLocalizer<FreightResource> L
+@inject ICurrentUser CurrentUser
 @inject IDropdownService _dropdown;
 @section styles {
     <style type="text/css">
@@ -497,46 +499,6 @@
                             initHideBtn();
                             initRemark(0);
 
-                            $("#saveBtn").click(function () {
-                                $("#mOfficeId").val($("#OfficeId").val());
-                                $("#mMblSalesTypeId").val($("#MblSalesTypeId").val());
-                                $("#mSvcTermFromId").val($("#SvcTermFromId").val());
-                                $("#mSvcTermToId").val($("#SvcTermToId").val());
-                                $("#mShipModeId").val($("#ShipModeId").val());
-                                $("#mFreightTermId").val($("#FreightTermId").val());
-                                $("#mBlTypeId").val($("#BlTypeId").val());
-                                $("#mCarrierId").val($("#CarrierId").val());
-                                $("#mFreightTermForBuyerId").val($("#FreightTermForBuyerId").val());
-                                $("#mFreightTermForSalerId").val($("#FreightTermForSalerId").val());
-                                $("#mIncotermsId").val($("#IncotermsId").val());
-                                $("#mShipperId").val($("#ShipperId").val());
-                                $("#mCustomerId").val($("#CustomerId").val());
-                                $("#mBillToId").val($("#BillToId").val());
-                                $("#mConsigneeId").val($("#ConsigneeId").val());
-                                $("#mNotifyId").val($("#NotifyId").val());
-                                $("#mShippingAgentId").val($("#ShippingAgentId").val());
-                                $("#mHblAgentId").val($("#HblAgentId").val());
-                                $("#mCoLoaderId").val($("#CoLoaderId").val());
-                                $("#mPorId").val($("#PorId").val());
-                                $("#mPolId").val($("#PolId").val());
-                                $("#mPodId").val($("#PodId").val());
-                                $("#mDelId").val($("#DelId").val());
-                                $("#mFdestId").val($("#FdestId").val());
-                                $("#mFbaId").val($("#FbaId").val());
-                                $("#mTransPort1Id").val($("#TransPort1Id").val())
-                                $("#mCargoTypeId").val($("#CargoTypeId").val())
-                                $("#mReferralById").val($("#ReferralById").val());
-                                $("#mCargoPickupId").val($("#CargoPickupId").val());
-                                $("#mTruckerId").val($("#TruckerId").val());
-                                $("#mDeliveryToId").val($("#DeliveryToId").val());
-                                $("#mReferenceId").val($("#ReferenceId").val());
-                                $("#mPoNo").val($("#PoNoTag").tagsStr());
-                                $('#createForm').submit();
-                            });
-                            $('#createForm').on('abp-ajax-success', function (result, rs) {
-                                event.preventDefault();
-                                location.href = 'Edit?ShowMsg=true&Id=' + rs.responseText.id
-                            });
                         }, 500);
                     })
 
@@ -769,60 +731,64 @@
                             </abp-row>
                             <abp-row class="mt-5">
                                 <abp-column size-md="_3">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.CoLoaderId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "CoLoaderId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.CoLoaderId.ToString() })
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <label class="form-label">@L["OP"]</label>
+                                    <input class="form-control" type="text" value="@(CurrentUser.Name + " " + CurrentUser.SurName)" disabled />
+                                </abp-column>
+                                <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.VesselName" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.Voyage" />
                                 </abp-column>
+
+
+                            </abp-row>
+                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DeliveryToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "DeliveryToId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.DeliveryToId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.EmptyPickupId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "EmptyPickupId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.EmptyPickupId.ToString() })
                                 </abp-column>
-
-
-                            </abp-row>
-                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PolId.ToString() })
-                                </abp-column>
+                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PolEtd" abp-data-datepicker="false" required-symbol="false" />
                                 </abp-column>
+
+
+                            </abp-row>
+                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PorId.ToString() })
-                                 </abp-column>
+                                </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PorEtd" abp-data-datepicker="false" required-symbol="false" />
                                 </abp-column>
-
-
-                            </abp-row>
-                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PodId.ToString() })
-                                   </abp-column>
+                                </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PodEta" abp-data-datepicker="false" />
                                 </abp-column>
-                                <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.DelId.ToString() })
-                                    </abp-column>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.DelEta" abp-data-datepicker="false" />
-                                </abp-column>
 
                             </abp-row>
                             <abp-row>
+                                <abp-column size-md="_3">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.DelId.ToString() })
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="VesselSchedule.DelEta" abp-data-datepicker="false" />
+                                </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FdestId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.FdestEta" abp-data-datepicker="false" />
-                                </abp-column>
-                                <abp-column size-md="_6">
-                                    &nbsp;
                                 </abp-column>
                             </abp-row>
                             <abp-row>

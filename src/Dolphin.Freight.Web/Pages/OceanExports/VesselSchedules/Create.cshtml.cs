@@ -43,7 +43,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
         [BindProperty]
         public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
         [BindProperty]
-        public CreateUpdateExportBookingDto ExportBookingDto { get; set; }
+        public CreateUpdateExportBookingDto ExportBookingDto { get; set; } = null;
         [BindProperty]
         public CreateUpdateContainerDto CreateUpdateContainerBooking { get; set; }
         [BindProperty]
@@ -103,7 +103,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
                 if (dto.Status == 0) await _containerAppService.CreateAsync(dto);
             }
 
-            if (ExportBookingDto is not null)
+            if (ExportBookingDto is not null && !string.IsNullOrEmpty(ExportBookingDto.SoNo) || ExportBookingDto.IsCreateBySystem)
             {
                 if (ExportBookingDto.IsCreateBySystem)
                 {

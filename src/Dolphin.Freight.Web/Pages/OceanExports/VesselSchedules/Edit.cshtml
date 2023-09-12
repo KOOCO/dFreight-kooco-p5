@@ -1,11 +1,13 @@
 ﻿@page
 @using Dolphin.Freight.Web.CommonService
+@using Volo.Abp.Users
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Web.Pages.Components
 @using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Microsoft.Extensions.Localization
 @model Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules.EditModel
 @inject IStringLocalizer<FreightResource> L
+@inject ICurrentUser CurrentUser
 @inject IDropdownService _dropdown;
 @section styles {
     <style type="text/css">
@@ -497,47 +499,6 @@
                                 var sono = res.soNo;
                                 $('#ExportBooking_SoNo').val(sono);
                             });
-
-                            $("#saveBtn").click(function () {
-                                $("#mOfficeId").val($("#OfficeId").val());
-                                $("#mMblSalesTypeId").val($("#MblSalesTypeId").val());
-                                $("#mSvcTermFromId").val($("#SvcTermFromId").val());
-                                $("#mSvcTermToId").val($("#SvcTermToId").val());
-                                $("#mShipModeId").val($("#ShipModeId").val());
-                                $("#mFreightTermId").val($("#FreightTermId").val());
-                                $("#mBlTypeId").val($("#BlTypeId").val());
-                                $("#mCarrierId").val($("#CarrierId").val());
-                                $("#mFreightTermForBuyerId").val($("#FreightTermForBuyerId").val());
-                                $("#mFreightTermForSalerId").val($("#FreightTermForSalerId").val());
-                                $("#mIncotermsId").val($("#IncotermsId").val());
-                                $("#mShipperId").val($("#ShipperId").val());
-                                $("#mCustomerId").val($("#CustomerId").val());
-                                $("#mBillToId").val($("#BillToId").val());
-                                $("#mConsigneeId").val($("#ConsigneeId").val());
-                                $("#mNotifyId").val($("#NotifyId").val());
-                                $("#mShippingAgentId").val($("#ShippingAgentId").val());
-                                $("#mHblAgentId").val($("#HblAgentId").val());
-                                $("#mCoLoaderId").val($("#CoLoaderId").val());
-                                $("#mPorId").val($("#PorId").val());
-                                $("#mPolId").val($("#PolId").val());
-                                $("#mPodId").val($("#PodId").val());
-                                $("#mDelId").val($("#DelId").val());
-                                $("#mFdestId").val($("#FdestId").val());
-                                $("#mFbaId").val($("#FbaId").val());
-                                $("#mTransPort1Id").val($("#TransPort1Id").val())
-                                $("#mCargoTypeId").val($("#CargoTypeId").val())
-                                $("#mReferralById").val($("#ReferralById").val());
-                                $("#mCargoPickupId").val($("#CargoPickupId").val());
-                                $("#mTruckerId").val($("#TruckerId").val());
-                                $("#mDeliveryToId").val($("#DeliveryToId").val());
-                                $("#mReferenceId").val($("#ReferenceId").val());
-                                $("#mPoNo").val($("#PoNoTag").tagsStr());
-                                $('#createForm').submit();
-                            });
-                            $('#createForm').on('abp-ajax-success', function (result, rs) {
-                                event.preventDefault();
-                                location.href = 'Edit?ShowMsg=true&Id=' + rs.responseText.id
-                            });
                         }, 500);
                     })
 
@@ -783,10 +744,10 @@
 
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.CoLoaderId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "CoLoaderId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.CoLoaderId.ToString() })
-
                                 </abp-column>
                                 <abp-column size-md="_3">
-
+                                    <label class="form-label">@L["OP"]</label>
+                                    <input class="form-control" type="text" value="@(CurrentUser.Name + " " + CurrentUser.SurName)" disabled />
                                 </abp-column>
                                 <abp-column size-md="_6">
 
@@ -806,7 +767,7 @@
                                     <abp-input asp-for="VesselSchedule.Voyage" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DeliveryToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "CoLoaderId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.DeliveryToId.ToString() })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DeliveryToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "DeliveryToId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.DeliveryToId.ToString() })
 
                                 </abp-column>
                                 <abp-column size-md="_3">
