@@ -611,7 +611,14 @@
                                         <abp-card-body style="background:#eeeeee;">
                                             <abp-row>
                                                 <abp-column>
-                                                    <label for="ExportBooking_CanceledDate" class="form-label">@L["IsBlCanceled"] <input type="checkbox" name="ExportBooking.IsCanceled" id="ExportBooking_IsCanceled" /></label>
+                                                    @if (Model.ExportBooking.IsCanceled)
+                                                    {
+                                                        <label for="ExportBooking_CanceledDate" class="form-label">@L["IsBlCanceled"] <input type="checkbox" name="ExportBooking.IsCanceled" id="ExportBooking_IsCanceled" value="true" checked /></label>
+                                                    }
+                                                    else
+                                                    {
+                                                        <label for="ExportBooking_CanceledDate" class="form-label">@L["IsBlCanceled"] <input type="checkbox" name="ExportBooking.IsCanceled" id="ExportBooking_IsCanceled" value="true" /></label>
+                                                    }
                                                     <input type="text" name="ExportBooking.CanceledDate" class="form-control" id="ExportBooking_CanceledDate" disabled />
                                                 </abp-column>
                                             </abp-row>
