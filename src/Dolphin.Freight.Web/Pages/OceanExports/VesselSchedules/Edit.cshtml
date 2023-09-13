@@ -784,11 +784,8 @@
                                     <label class="form-label">@L["OP"]</label>
                                     <input class="form-control" type="text" value="@(CurrentUser.Name + " " + CurrentUser.SurName)" disabled />
                                 </abp-column>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.VesselName" />
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.Voyage" />
+                                <abp-column size-md="_6">
+                                    
                                 </abp-column>
                             </abp-row>
 
@@ -799,6 +796,12 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
+                                    <abp-input asp-for="VesselSchedule.VesselName" />
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="VesselSchedule.Voyage" />
+                                </abp-column>
+                                <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DeliveryToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "DeliveryToId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.DeliveryToId.ToString() })
 
                                 </abp-column>
@@ -806,94 +809,90 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.EmptyPickupId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "EmptyPickupId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.EmptyPickupId.ToString() })
 
                                 </abp-column>
+                            </abp-row>
+                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.PolId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PolEtd" abp-data-datepicker="false" />
                                 </abp-column>
-                            </abp-row>
-                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PorId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PorEtd" abp-data-datepicker="false" />
                                 </abp-column>
+                            </abp-row>
+                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PodId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PodEta" abp-data-datepicker="false" />
                                 </abp-column>
-                            </abp-row>
-                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.DelId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.DelEta" abp-data-datepicker="false" />
                                 </abp-column>
+                            </abp-row>
+                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FdestId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.FdestEta" abp-data-datepicker="false" />
                                 </abp-column>
-                            </abp-row>
-                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FreightTermId", AspItems = Model.FreightTermLookupList, IsShowLabel = true, FieldName = "FreightTermId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FreightTermId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ShipModeId", AspItems = Model.ShipModeLookupList, IsShowLabel = true, FieldName = "ShipModeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.ShipModeId.ToString() })
                                 </abp-column>
+
+                            </abp-row>
+                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.SvcTermFromId", AspItems = Model.SvgTermLookupList, IsShowLabel = true, FieldName = "SvcTermFromId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.SvcTermFromId.ToString() })
-
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.SvcTermToId", AspItems = Model.SvgTermLookupList, IsShowLabel = true, FieldName = "SvcTermToId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.SvcTermToId.ToString() })
                                 </abp-column>
-
-                            </abp-row>
-                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OblTypeId", AspItems = Model.OblTypeList, IsShowLabel = true, FieldName = "OblTypeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.OblTypeId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.RailCutOffTime" abp-data-datepicker="false" />
                                 </abp-column>
+                            </abp-row>
+                            <abp-row>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PortCutOffTime" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.VgmCutOffTime " abp-data-datepicker="false" />
                                 </abp-column>
-                            </abp-row>
-                            <abp-row>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.OnBoardDate" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.SubBlNo" />
                                 </abp-column>
+                            </abp-row>
+                            <abp-row>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.ServiceContactNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.ForwardRefNo" />
                                 </abp-column>
-                            </abp-row>
-                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.TransPort1Id", AspItems = Model.TransPortList, IsShowLabel = true, FieldName = "TransPort1Id", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.TransPort1Id.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.Trans1Eta" abp-data-datepicker="false" />
-                                </abp-column>
-                                <abp-column size-md="_6">
-                                    
                                 </abp-column>
                             </abp-row>
                             <abp-row>
