@@ -319,6 +319,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 交貨地(DEL) ETA
         /// </summary>
         public DateTime DelEta { get; set; }
+        public DateTime? CargoReadyDate { get; set; }
         /// <summary>
         /// 最終目的地ID
         /// </summary>

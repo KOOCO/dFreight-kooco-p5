@@ -33,6 +33,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// HBL編號
         /// </summary>
         public string HblNo { get; set; }
+        public DateTime? CargoReadyDate { get; set; }
         /// <summary>
         /// Itn編號
         /// </summary>
