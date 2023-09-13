@@ -6,6 +6,7 @@ using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NPOI.DDF;
 using NPOI.POIFS.Crypt.Dsig;
@@ -35,6 +36,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
     {
         private readonly IRepository<OceanExportMbl, Guid> _repository;
         private readonly IRepository<SysCode, Guid> _sysCodeRepository;
+        private readonly ISysCodeAppService _sysCodeAppService;
         private readonly IRepository<Substation, Guid> _substationRepository;
         private readonly PortsManagementAppService _portRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
@@ -42,10 +44,11 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         private readonly IRepository<OceanExportHbl, Guid> _oceanExportHblRepository;
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly ContainerAppService _containerRepository;
+        private readonly IRepository<Container, Guid> _containerAppService;
         public OceanExportMblAppService(IRepository<OceanExportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository, PortsManagementAppService portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
             IIdentityUserAppService identityUserAppService, IRepository<OceanExportHbl, Guid> oceanExportHblRepository,
             IInvoiceAppService invoiceAppService,
-            ContainerAppService containerRepository)
+            ContainerAppService containerRepository, ISysCodeAppService sysCodeAppService, IRepository<Container, Guid> containerAppService)
             : base(repository)
         {
             _repository = repository;
@@ -57,6 +60,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             _oceanExportHblRepository = oceanExportHblRepository;
             _invoiceAppService = invoiceAppService;
             _containerRepository = containerRepository;
+            _sysCodeAppService = sysCodeAppService;
+            _containerAppService = containerAppService;
             /*
             GetPolicyName = OceanExportPermissions.OceanExportMbls.Default;
             GetListPolicyName = OceanExportPermissions.OceanExportMbls.Default;
@@ -475,6 +480,59 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 throw new UserFriendlyException(ex.Message);
             }
 
+        }
+
+        public async Task<JsonResult> CreateOneMBLWithContainerAsync(Guid[] ids)
+        {
+            CreateUpdateOceanExportMblDto OceanExportMbl = new CreateUpdateOceanExportMblDto();
+
+            OceanExportMbl.PostDate = DateTime.Now;
+            OceanExportMbl.FilingNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "OceanExportMbl_FilingNo" });
+            OceanExportMbl.OfficeId = Guid.Parse("d7972f83-91d9-9f5d-d038-3a0ada6a3515");
+
+            var newMbl = ObjectMapper.Map<CreateUpdateOceanExportMblDto, OceanExportMbl>(OceanExportMbl);
+
+            var mbl = await _repository.InsertAsync(newMbl);
+
+            foreach (var id in ids)
+            {
+                var containers = await _containerAppService.GetAsync(id);
+
+                containers.MblId = mbl.Id;
+
+                await _containerAppService.UpdateAsync(containers);
+            }
+
+            return new JsonResult(new { id = mbl.Id, filingNo = mbl.FilingNo });
+        }
+
+        public async Task<JsonResult> CreateMblWithDiffContainersAsync(Guid[] ids)
+        {
+            var MblIds = new List<Guid>();
+            var FilingNos = new List<string>();
+            foreach (var id in ids)
+            {
+                CreateUpdateOceanExportMblDto OceanExportMbl = new CreateUpdateOceanExportMblDto();
+
+                OceanExportMbl.PostDate = DateTime.Now;
+                OceanExportMbl.FilingNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "OceanExportMbl_FilingNo" });
+                OceanExportMbl.OfficeId = Guid.Parse("d7972f83-91d9-9f5d-d038-3a0ada6a3515");
+
+                var newMbl = ObjectMapper.Map<CreateUpdateOceanExportMblDto, OceanExportMbl>(OceanExportMbl);
+
+                var mbl = await _repository.InsertAsync(newMbl);
+
+                MblIds.Add(mbl.Id);
+                FilingNos.Add(mbl.FilingNo);
+
+                var containers = await _containerAppService.GetAsync(id);
+
+                containers.MblId = mbl.Id;
+
+                await _containerAppService.UpdateAsync(containers);
+            }
+
+            return new JsonResult(new { ids = MblIds, filingNos = FilingNos });
         }
 
         public async Task SelectedUnLockedOceanExportMblAsync(Guid[] ids)

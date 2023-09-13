@@ -12,6 +12,7 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// 集裝箱號
         /// </summary>
         public string ContainerNo { get; set; }
+        public Guid? MblId { get; set; }
         /// <summary>
         /// 櫃型/尺寸ID
         /// </summary>

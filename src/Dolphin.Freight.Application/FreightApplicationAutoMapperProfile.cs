@@ -111,6 +111,7 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<Container, ContainerDto>();
         CreateMap<ContainerDto, Container>();
         CreateMap<CreateUpdateContainerDto, Container>();
+        CreateMap<ContainerDto, CreateUpdateContainerDto>();
         CreateMap<Memo, MemoDto>();
         CreateMap<MemoDto, Memo>();
         CreateMap<CreateUpdateMemoDto, Memo>();

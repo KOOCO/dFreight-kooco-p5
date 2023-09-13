@@ -206,24 +206,21 @@
             })
         });
         dolphin.freight.settings.containerSizes.containerSize.queryAllList({}).done(function (result) {
-            debugger;
                 if (result != null && result.length > 0) {
-                    debugger;
                     containerSizes = result;
                     dolphin.freight.importExport.containers.container.queryListVessel( '@Model.Id' ).done(function (result) {
-                        debugger;
-                        if (result != null && result.length > 0) {
-                            debugger;
+                        if (result != null && result.length > 0) {                          
                             for (var i = 0; i < result.length; i++) {
-                                var value0 = result[i].id
-                                var value1 = result[i].containerNo;
-                                var value2 = result[i].containerSizeId;
-                                var value3 = result[i].sealNo;
-                                var value4 = result[i].packageNum;
-                                var value5 = result[i].packageWeight;
-                                var value6 = result[i].packageMeasure;
-                                addTrTag(value0, value1, value2, value3, value4, value5, value6);
-
+                                if (result[i].mblId == '00000000-0000-0000-0000-000000000000') {
+                                    var value0 = result[i].id
+                                    var value1 = result[i].containerNo;
+                                    var value2 = result[i].containerSizeId;
+                                    var value3 = result[i].sealNo;
+                                    var value4 = result[i].packageNum;
+                                    var value5 = result[i].packageWeight;
+                                    var value6 = result[i].packageMeasure;
+                                    addTrTag(value0, value1, value2, value3, value4, value5, value6);
+                                }
                             }
                         }
                     });
@@ -600,7 +597,7 @@
 
         function addTrTag(value0, value1, value2, value3, value4, value5, value6, value7, value8) {
             var serialNo = trindex+1;
-            var trhtml = "<tr id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
+            var trhtml = "<tr id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' data-id='" + value0 + "' onclick='checkDataId(\""+value0+"\", event)' name='f0' id='f0_" + trindex + "'  value='" + trindex + "' /></td>"
             trhtml = trhtml + "<td>"+ serialNo +"</td>"
             trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='exportDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
             trhtml = trhtml + "<td> <input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Id' value='" + value0 + "' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='4' />";
@@ -906,11 +903,10 @@
                                         <abp-button class="btn btn-success me-md-2" type="button" id="addBtn">+</abp-button>
                                         <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn">-</abp-button>
                                         <abp-dropdown>
-                                            <abp-dropdown-button text="Create MB/L" button-type="Outline_Dark" />
+                                            <abp-dropdown-button text="Create MB/L" button-type="Outline_Dark" id="createMblBtn" disabled="true" />
                                             <abp-dropdown-menu>
-                                                <abp-dropdown-item href="javascript:void(0)" onclick="createMbl()"><i class="fas fa-compress-alt"></i>Create 1 MB/L</abp-dropdown-item>
-                                                <abp-dropdown-item id="btnExcelConfiguration" href="javascript:void(0)" onclick="createMblforEachBooking()"><i class="fas fa-expand-alt"></i>Create 1 MB/L for each booking</abp-dropdown-item>
-                                                  
+                                                <abp-dropdown-item href="javascript:void(0)" onclick="createOneMbl()"><i class="fas fa-compress-alt"></i>Create 1 MB/L</abp-dropdown-item>
+                                                <abp-dropdown-item id="btnExcelConfiguration" href="javascript:void(0)" onclick="createOneMblforEachBooking()"><i class="fas fa-expand-alt"></i>Create 1 MB/L for each booking</abp-dropdown-item>
                                             </abp-dropdown-menu>
                                         </abp-dropdown>
                                     </div>
