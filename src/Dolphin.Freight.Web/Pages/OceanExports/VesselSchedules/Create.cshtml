@@ -22,6 +22,7 @@
 }
 @section scripts
     {
+    <abp-script src="/Pages/OceanExports/VesselSchedules/CreateVessel.js" />
     <script type="text/javascript">
         var trindex = 0;
          var containerSizes = [];
@@ -569,20 +570,45 @@
         //    cardHtml = cardHtml + " </div> </div>"
         //    return cardHtml;
         //}
-         $("#addBtn").click(function () {
-          
-                addTr()
-            })
-                $("#deleteBtn").click(function () {
-                $("input[name='f0']:checked").each(function () {
-                    var tid = $(this).val();
-                    $("#did_" + tid).val("1");
-                    $("#tr_" + $(this).val()).hide();
-                })
-            })
+        $("#addBtn").click(function () {
+            addTr();
+        })
+        $("#deleteBtn").click(function () {
+            $("input[name='f0']:checked").each(function () {
+                var tid = $(this).val();
+                $("#did_" + tid).val("1");
+                $("#tr_" + $(this).val()).hide();
+            });
+            resetIndexes();
+        });
         function addTr() {
             addTrTag("", "", "", "", "", "","","");
         }
+
+        function resetIndexes() {
+            var newIndex = 0;
+            $("#trtbody tr:visible").each(function () {
+                if ($(this).attr("id").startsWith("tr_")) {
+                    $(this).attr("id", "tr_" + newIndex);
+
+                    $(this).find("input, div.input-group").each(function () {
+                        if (this.name) {
+                            this.name = this.name.replace(/\[.*?\]/, "[" + newIndex + "]");
+                        }
+                        if (this.id) {
+                            var parts = this.id.split("_");
+                            this.id = parts[0] + "_" + newIndex;
+                        }
+                    });
+
+                    $(this).find("td:eq(1)").text(newIndex + 1);
+                    newIndex++;
+                }
+            });
+
+            trindex = newIndex;
+        }
+
         // function addTrTag(value1, value2, value3, value4, value5, value6) {
         //     trindex++;
         //     var trhtml = "<tr id='tr_" + trindex + "'><td><input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
@@ -595,25 +621,26 @@
         //     trhtml = trhtml + "</tr>"
         //     $("#trtbody").append(trhtml);
         // }
-            function addTrTag(value1, value2, value3, value4, value5, value6, value7,value8) {
-
-            var trhtml = "<tr id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
-            trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='exportDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
-                trhtml = trhtml + "<td>";
-          /*   <input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' /> */
+        function addTrTag(value1, value2, value3, value4, value5, value6, value7,value8) {
+            var serialNo = trindex + 1;
+            var trhtml = "<tr id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' data-id='' name='f0' onclick='checkCreateMbl(event)' id='f0_" + trindex + "'  value='" + trindex + "' /></td>"
+            trhtml = trhtml + "<td>"+ serialNo +"</td>"
+            trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> </div></td>"
+            trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' /> ";
             trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
-             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' id='f5_" + trindex + "' class='form-control' value='" + value5 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' id='f7_" + trindex + "' class='form-control' value='" + value7 + "' /></td>"
-               trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' id='f8_" + trindex + "' class='form-control' value='" + value8 + "' /></td>"
+            trhtml = trhtml + "<td></td>"
+            //trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' id='f5_" + trindex + "' class='form-control' value='" + value5 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' id='f4_" + trindex + "' class='form-control' value='0' disabled /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' id='f5_" + trindex + "' class='form-control' value='0' disabled /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' id='f6_" + trindex + "' class='form-control' value='0' disabled /></td>"
             trhtml = trhtml + "</tr>"
             trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
             trhtml = trhtml + "</tr>"
             $("#trtbody").append(trhtml);
             trindex++;
         }
+
         function getcontainerSizeSelect(selectedId) {
             var selectHtml = "<select name='CreateUpdateContainerDtos[" + trindex + "].ContainerSizeId' class='form-control' >";
             for (var i = 0; i < containerSizes.length; i++) {
@@ -860,22 +887,36 @@
                                         集裝箱清單
                                         <abp-button class="btn btn-success me-md-2" type="button" id="addBtn">+</abp-button>
                                         <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn">-</abp-button>
+                                        <abp-dropdown>
+                                            <abp-dropdown-button text="Create MB/L" button-type="Outline_Dark" id="createMblBtn" disabled="true" />
+                                            <abp-dropdown-menu>
+                                                <abp-dropdown-item href="javascript:void(0)" onclick="createOneMbl()"><i class="fas fa-compress-alt"></i>Create 1 MB/L</abp-dropdown-item>
+                                                <abp-dropdown-item id="btnExcelConfiguration" href="javascript:void(0)" onclick="createOneMblforEachBooking()"><i class="fas fa-expand-alt"></i>Create 1 MB/L for each booking</abp-dropdown-item>
+                                            </abp-dropdown-menu>
+                                        </abp-dropdown>
                                     </div>
-                                    <table width="100%" style="border-block-color:#333333;padding-left:10px;margin:4px;">
-                                        <tr style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                    <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                                        <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
                                             <th width="5%"><input type="checkbox" id="checkAll" /></th>
-                                            <th width="12%">@L["Display:PackageNo"]</th>
-                                            <th width="12%">@L["Display:PackageSize"]</th>
-                                            <th width="12%">@L["Display:Seal"]</th>
-                                            <th width="12%">@L["Display:SoNo"]</th>
-                                            <th width="8%">@L["Display:PackageType"]</th>
+                                            <th width="5%" class="text-center"><b>#</b></th>
+                                            <th width="12%">@L["Display:ContainerNo"]</th>
+                                            <th width="12%">@L["Display:TP/SZ"]</th>
+                                            <th width="12%">@L["Display:Seal No"]</th>
+                                            <th width="12%">@L["Display:BookingNo"]</th>
+                                            <th width="8%">@L["PKG"]</th>
                                             <th width="16%">@L["Display:Weight"]</th>
                                             <th width="16%">@L["Display:Volume"]</th>
-                                            <th width="7%">@L["Display:Package"]</th>
                                         </tr>
                                         <tbody id="trtbody">
                                         </tbody>
-
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="6" align="right"><strong>Total:</strong></td>
+                                                <td id="totalPackageType">0</td>
+                                                <td id="totalWeight">0</td>
+                                                <td id="totalVolume">0</td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
 
                                 </abp-column>

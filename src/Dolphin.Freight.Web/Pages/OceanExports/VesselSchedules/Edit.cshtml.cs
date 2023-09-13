@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
@@ -165,11 +166,16 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
             QueryContainerDto query = new QueryContainerDto() { QueryId = Id };
             foreach (var dto in CreateUpdateContainerDtos)
             {
-                var a = dto.IsDeleted;
-                if (dto.Status == 0)
-                {
+                if (dto.Id != Guid.Empty) {
                     dto.VesselId = Id;
-                    await _containerAppService.CreateAsync(dto);
+                    await _containerAppService.UpdateAsync(dto.Id, dto);
+                } else {
+                    var a = dto.IsDeleted;
+                    if (dto.Status == 0)
+                    {
+                        dto.VesselId = Id;
+                        await _containerAppService.CreateAsync(dto);
+                    }
                 }
             }
             return NoContent();

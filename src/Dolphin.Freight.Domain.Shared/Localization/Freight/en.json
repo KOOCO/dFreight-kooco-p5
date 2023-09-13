@@ -282,6 +282,7 @@
     "Title:UpdateTime": "Last modified time",
     //message
     "Message:LockConfirmation": "Lock Confirmation",
+    "Message:WarningCreateMblForContainers": "You need to save current editing first before doing this. Do you want to save now?",
     "Message:CreateOneMBLConfirmation": "The container(s) you selected will be transmitted to MB/L(s)and this action cannot be reversed. Do you want to continue?",
     "Message:CreatedMBLConfirmation": "<p style='font-size: 25px; text-align: left;'>The MB/L below has been created successfully. You can click the link(s) below to go to the MB/L directly.</p>",
     "Message:SuccessLock": "Lock Success",
