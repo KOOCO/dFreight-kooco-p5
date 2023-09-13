@@ -5,6 +5,8 @@
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.AirExports
 @using Dolphin.Freight.Web.Pages.Components
+@using Dolphin.Freight.Web.Pages.Shared;
+@using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Microsoft.Extensions.Localization
 @model Dolphin.Freight.Web.Pages.OceanExports.CreateMblModel
 @inject IStringLocalizer<FreightResource> L
@@ -24,6 +26,7 @@
 }
 @section scripts
     {
+          @* <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script> *@
     @*<abp-script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js" />*@
     <abp-script src="/Pages/OceanExports/CreateMbl.js" />
 @*
@@ -47,13 +50,14 @@
             $("#addHBtn").click(function () {
                 addHBtn();
             });
-            tempusDominus.extend(window.tempusDominus.plugins.customDateFormat)
+//             tempusDominus.extend(window.tempusDominus.plugins.customDateFormat)
+// const formattedDate = moment('02/25/2023', 'MM/DD/YYYY').format('L LT');
 
-            $('#OceanExportMbl_VgmCutOffTime').tempusDominus({
-                restrictions: {
-                    minDate: '2023-02-25'
-                }
-            });
+// $('#OceanExportMbl_VgmCutOffTime').tempusDominus({
+//     restrictions: {
+//         minDate: formattedDate
+//     }
+// });
 
             $('#OceanExportMbl_IsReleased').on('change', function (e, val) { 
                 if (this.checked) { 
@@ -477,7 +481,18 @@
                                     <abp-input asp-for="OceanExportMbl.IsEcommerce" />
                                 </abp-column>
                             </abp-row>
-
+                              <abp-row>
+                                <abp-column>
+                                    <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                                        @L["Title:Memo"]
+                                    </abp-card-header>
+                                    <abp-card>
+                                        <abp-card-body>
+                                            <partial  name="Memos/_Memo" model="new _MemoModel(Model.MblId, Dolphin.Freight.Common.FreightPageType.OEMBL)" />
+                                        </abp-card-body>
+                                    </abp-card>
+                                </abp-column>
+                            </abp-row>
                         </abp-card-body>
                     </abp-card>
                     <br />
@@ -758,6 +773,18 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.MblReferralById", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblReferralById", ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.MblReferralById) })
                                 </abp-column>
                             </abp-row>
+                          @*   <abp-row>
+                                <abp-column>
+                                    <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                                        @L["Title:Memo"]
+                                    </abp-card-header>
+                                    <abp-card>
+                                        <abp-card-body>
+                                            <partial id="HblMemo" name="Memos/_MemoHbl" model="new _MemoHblModel(Model.HblId, Dolphin.Freight.Common.FreightPageType.OEHBL)" />
+                                        </abp-card-body>
+                                    </abp-card>
+                                </abp-column>
+                            </abp-row> *@
                         </abp-card-body>
                     </abp-card>
                 </div>
