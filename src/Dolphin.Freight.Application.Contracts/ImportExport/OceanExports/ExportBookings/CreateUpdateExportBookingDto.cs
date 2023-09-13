@@ -254,6 +254,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// 卡車ID
         /// </summary>
         public Guid? TruckerId { get; set; }
+        public DateTime? CargoReadyDate { get; set; }
         /// <summary>
         /// 卡車交貨地ID
         /// </summary>
