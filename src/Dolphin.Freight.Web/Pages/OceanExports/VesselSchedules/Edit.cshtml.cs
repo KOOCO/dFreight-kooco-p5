@@ -117,7 +117,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
             {
                 var vesselSchedule = await _vesselScheduleAppService.UpdateAsync(Id, VesselSchedule);
 
-                if (ExportBookingDto is not null)
+                if (ExportBookingDto is not null && !string.IsNullOrEmpty(ExportBookingDto.SoNo) || ExportBookingDto.IsCreateBySystem)
                 {
                     if (ExportBookingDto.ExtraProperties == null)
                     {
