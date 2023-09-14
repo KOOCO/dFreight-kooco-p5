@@ -20,6 +20,23 @@
         .fas {
             margin-right: 10px;
         }
+
+        .shipmentStatus {
+            left: 767px;
+        }
+
+        #shipmentbody {
+            border-collapse: collapse;
+        }
+
+        #shipmentbody tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+        #shipmentbody td {
+            border: 1px solid #ddd; 
+            padding: 8px; 
+        }
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
@@ -206,27 +223,32 @@
             })
         });
         dolphin.freight.settings.containerSizes.containerSize.queryAllList({}).done(function (result) {
-                if (result != null && result.length > 0) {
-                    containerSizes = result;
-                    dolphin.freight.importExport.containers.container.queryListVessel( '@Model.Id' ).done(function (result) {
-                        if (result != null && result.length > 0) {                          
-                            for (var i = 0; i < result.length; i++) {
-                                if (result[i].mblId == '00000000-0000-0000-0000-000000000000') {
-                                    var value0 = result[i].id
-                                    var value1 = result[i].containerNo;
-                                    var value2 = result[i].containerSizeId;
-                                    var value3 = result[i].sealNo;
-                                    var value4 = result[i].packageNum;
-                                    var value5 = result[i].packageWeight;
-                                    var value6 = result[i].packageMeasure;
-                                    if (value3 == null) value3 = '';
-                                    addTrTag(value0, value1, value2, value3, value4, value5, value6);
-                                }
+            if (result != null && result.length > 0) {
+                containerSizes = result;
+                dolphin.freight.importExport.containers.container.queryListVessel( '@Model.Id' ).done(function (result) {
+                    if (result != null && result.length > 0) {                          
+                        for (var i = 0; i < result.length; i++) {
+                            if (result[i].mblId == '00000000-0000-0000-0000-000000000000') {
+                                var value0 = result[i].id
+                                var value1 = result[i].containerNo;
+                                var value2 = result[i].containerSizeId;
+                                var value3 = result[i].sealNo;
+                                var value4 = result[i].packageNum;
+                                var value5 = result[i].packageWeight;
+                                var value6 = result[i].packageMeasure;
+                                if (value3 == null) value3 = '';
+                                addTrTag(value0, value1, value2, value3, value4, value5, value6);
                             }
                         }
-                    });
-                }
-            });
+                    }
+                });
+            }
+        });
+
+        var url = new URL(window.location.href);
+        var vesselId = url.searchParams.get('Id');
+        getMblContainersByVesselId(vesselId);
+
         var cardIndex = 0;
         //function addHBtn() {
         //    if (cardIndex == 0) {
@@ -944,7 +966,29 @@
                                             </tr>
                                         </tfoot>
                                     </table>
-
+                                    <br />
+                                    <abp-column class="shipmentStatus">
+                                        <input type="radio" class="btn-check" name="ViewStatus" id="ViewStatus" value="0" checked>
+                                        <label class="btn btn-outline-secondary btn-sm checkLabel" for="ViewStatus" onclick="checkStatus(0)">@L["Btn:ViewStatus"]</label>
+                                        <input type="radio" class="btn-check" name="EditStatus" id="EditStatus" value="1">
+                                        <label class="btn btn-outline-secondary btn-sm checkLabel" for="EditStatus" onclick="checkStatus(1)">@L["Btn:EditStatus"]</label>
+                                    </abp-column>
+                                    <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                                        <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                            <th width="5%" style="background-color: #f4f4f4; text-align: center;" style="color: #333333;"><i class="fa fa-lock"></i></th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["FileNo"]</th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["Manifest:MBLNo"]</th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["Display:ContainerNo"]</th>
+                                            <th width="16%" style="background-color: #f4f4f4;"><button type="button" onclick="displayHblBookingBtn(event)">@L["HblNo"]</button></th>
+                                            <th width="16%" style="background-color: #f4f4f4; display: none;"><button type="button" onclick="displayHblBookingBtn(event)">@L["SoCode"]</button></th>
+                                            <th width="8%" style="background-color: #f4f4f4;">@L["Display:TP/SZ"]</th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["Display:Seal No"]</th>
+                                            <th width="16%" style="background-color: #f4f4f4;">@L["CreateDate"]</th>
+                                        </tr>
+                                        <tbody id="shipmentbody">
+                                        </tbody>
+                                    </table>
+                                    <br />
                                 </abp-column>
                             </abp-row>
                             <abp-row>

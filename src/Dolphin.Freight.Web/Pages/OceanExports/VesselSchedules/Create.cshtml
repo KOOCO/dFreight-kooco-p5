@@ -16,6 +16,9 @@
             background-color: rgb(0 123 255 / 52%);
             border-color: #007bff;
         }
+        .shipmentStatus {
+            left: 767px;
+        }
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
@@ -928,7 +931,27 @@
                                             </tr>
                                         </tfoot>
                                     </table>
-
+                                    <br />
+                                    <abp-column class="shipmentStatus">
+                                        <input type="radio" class="btn-check" name="ViewStatus" id="ViewStatus" value="0" checked>
+                                        <label class="btn btn-outline-secondary btn-sm checkLabel" for="ViewStatus" onclick="checkStatus(0)">@L["Btn:ViewStatus"]</label>
+                                        <input type="radio" class="btn-check" name="EditStatus" id="EditStatus" value="1">
+                                        <label class="btn btn-outline-secondary btn-sm checkLabel" for="EditStatus" onclick="checkStatus(1)">@L["Btn:EditStatus"]</label>
+                                    </abp-column>
+                                    <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                                        <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                            <th width="10%" style="background-color: #f4f4f4; text-align: center;" style="color: #333333;"><i class="fa fa-lock"></i></th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["FileNo"]</th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["Manifest:MBLNo"]</th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["Display:ContainerNo"]</th>
+                                            <th width="16%" style="background-color: #f4f4f4;"><button type="button" onclick="displayHblBookingBtn(event)">@L["HblNo"]</button></th>
+                                            <th width="16%" style="background-color: #f4f4f4; display: none;"><button type="button" onclick="displayHblBookingBtn(event)">@L["SoCode"]</button></th>
+                                            <th width="8%" style="background-color: #f4f4f4;">@L["Display:TP/SZ"]</th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["Display:Seal No"]</th>
+                                            <th width="16%" style="background-color: #f4f4f4;">@L["CreateDate"]</th>
+                                        </tr>
+                                    </table>
+                                    <br />
                                 </abp-column>
                             </abp-row>
 

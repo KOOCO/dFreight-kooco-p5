@@ -1,4 +1,5 @@
 ﻿var l = abp.localization.getResource('Freight');
+
 function checkCreateMbl(e) {
     if ($(e.currentTarget).prop('checked') || $(e.target).prop('checked') || $(e.srcElement).prop('checked')) {
         $('#createMblBtn').attr('disabled', false);
@@ -49,5 +50,28 @@ function createOneMblforEachBooking() {
             });
             return;
         }
+    }
+}
+
+function checkStatus(value) {
+    if (value === 0) {
+        $('#ViewStatus').prop('checked', true);
+        $('#EditStatus').prop('checked', false);
+    } else if (value === 1) {
+        $('#EditStatus').prop('checked', true);
+        $('#ViewStatus').prop('checked', false);
+    }
+}
+
+function displayHblBookingBtn(event) {
+    var $parent = $(event.currentTarget).parent();
+
+    if ($parent.text().trim() === "HB/L No") {
+        $parent.hide();
+        $("th:contains('Booking No.')").show();
+    }
+    else if ($parent.text().trim() === "Booking No.") {
+        $parent.hide(); 
+        $("th:contains('HB/L No')").show();
     }
 }

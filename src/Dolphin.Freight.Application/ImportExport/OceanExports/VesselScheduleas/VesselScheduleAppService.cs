@@ -11,6 +11,12 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using System.Linq.Dynamic.Core;
+using Dolphin.Freight.ImportExport.Containers;
+using JetBrains.Annotations;
+using Dolphin.Freight.Common;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Dolphin.Freight.Settinngs.ContainerSizes;
+using Dolphin.Freight.Settings.ContainerSizes;
 
 namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
 {
@@ -29,8 +35,15 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         private readonly IPortsManagementAppService _portsManagementAppService;
         private IRepository<Substation, Guid> _substationRepository;
         private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
+        private readonly IContainerAppService _containerAppService;
+        private readonly IOceanExportMblAppService _oceanExportMblAppService;
+        private readonly IRepository<OceanExportMbl, Guid> _oceanExportMblRepository;
+        private readonly IContainerSizeAppService _containerSizeAppService;
+        private readonly IRepository<ContainerSize, Guid> _containerSizeRepository;
         public VesselScheduleAppService(IRepository<VesselSchedule, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Port, Guid> portRepository, IRepository<Substation, Guid> substationRepository, 
-                                        IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IPortsManagementAppService portsManagementAppService)
+                                        IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IPortsManagementAppService portsManagementAppService, IContainerAppService containerAppService,
+                                        IOceanExportMblAppService oceanExportMblAppService, IRepository<OceanExportMbl, Guid> oceanExportMblRepository, IContainerSizeAppService containerSizeAppService,
+                                        IRepository<ContainerSize, Guid> containerSizeRepository)
             : base(repository)
         {
             _repository = repository;
@@ -39,6 +52,11 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
             _substationRepository = substationRepository;
             _tradePartnerRepository = tradePartnerRepository;
             _portsManagementAppService = portsManagementAppService;
+            _containerAppService = containerAppService;
+            _oceanExportMblAppService = oceanExportMblAppService;
+            _oceanExportMblRepository = oceanExportMblRepository;
+            _containerSizeAppService = containerSizeAppService;
+            _containerSizeRepository = containerSizeRepository;
             /*
             GetPolicyName = OceanExportPermissions.VesselScheduleas.Default;
             GetListPolicyName = OceanExportPermissions.VesselScheduleas.Default;
@@ -180,6 +198,48 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
                
              
             }
+        }
+
+        public async Task<JsonResult> GetMblContainersByVesselIdAsync(Guid id)
+        {
+            var containersList = await _containerAppService.QueryListVesselAsync(id);
+            var containerSizeList = await _containerSizeRepository.GetListAsync();
+            var containersData = new List<CreateUpdateContainerDto>();
+
+            foreach (var container in containersList)
+            {
+                var containerData = new CreateUpdateContainerDto()
+                {
+                    Id = container.Id,
+                    MblId = (Guid)container.MblId,
+                    ContainerNo = container.ContainerNo,
+                    ContainerSizeId = container.ContainerSizeId,
+                    ContainerSizeName = containerSizeList.Where(w => w.Id == container.ContainerSizeId).Select(s => s.ContainerCode).FirstOrDefault(),
+                    SealNo = container.SealNo,
+                    CreationTime = container.CreationTime,
+                };
+                containersData.Add(containerData);
+            }
+
+            var mbls = new List<CreateUpdateOceanExportMblDto>();
+
+            foreach (var container in containersList)
+            {
+                var mblid = container.MblId;
+                var mbl = await _oceanExportMblAppService.GetAsync((Guid)mblid);
+
+                var mblData = new CreateUpdateOceanExportMblDto()
+                {
+                    Id = mbl.Id,
+                    IsLocked = mbl.IsLocked,
+                    FilingNo = mbl.FilingNo,
+                    MblNo = mbl.MblNo
+                };
+
+                mbls.Add(mblData);
+            }
+
+            return new JsonResult(new { containerList = containersData, mblList = mbls });
         }
     }
 }
