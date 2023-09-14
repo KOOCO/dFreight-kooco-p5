@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
@@ -55,7 +56,11 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         [BindProperty]
         public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
         [BindProperty]
+        public List<CreateUpdateOceanExportMblDto> CreateUpdateOceanExportMblDto { get; set; }
+        [BindProperty]
         public CreateUpdateContainerDto CreateUpdateContainerBooking { get; set; }
+        [BindProperty]
+        public List<ContainerDto> ContainerDtos { get; set; }
         [BindProperty]
         public List<ManifestCommodity> Commodities { get; set; }
         private readonly IVesselScheduleAppService _vesselScheduleAppService;
@@ -67,10 +72,12 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         private readonly IPortAppService _portAppService;
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly IContainerAppService _containerAppService;
+        private readonly IRepository<Container, Guid> _containerRepository;
         private readonly IExportBookingAppService _exportBookingAppService;
+        private readonly IRepository<OceanExportMbl, Guid> _oceanExportMblRepository;
         public EditModel(VesselScheduleAppService vesselScheduleAppService, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService,
             IAirportAppService airportAppService, IPackageUnitAppService packageUnitAppService, ISysCodeAppService sysCodeAppService, IPortAppService portAppService, IAjaxDropdownAppService ajaxDropdownAppService,
-            IContainerAppService containerAppService, IExportBookingAppService exportBookingAppService)
+            IContainerAppService containerAppService, IExportBookingAppService exportBookingAppService, IRepository<OceanExportMbl, Guid> oceanExportMblRepository, IRepository<Container, Guid> containerRepository)
         {
             _vesselScheduleAppService = vesselScheduleAppService;
             _tradePartnerAppService = tradePartnerAppService;
@@ -81,7 +88,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
             _portAppService = portAppService;
             _ajaxDropdownAppService = ajaxDropdownAppService;
             _containerAppService = containerAppService;
+            _containerRepository = containerRepository;
             _exportBookingAppService = exportBookingAppService;
+            _oceanExportMblRepository = oceanExportMblRepository;
         }
         public async Task OnGetAsync()
         {
@@ -137,7 +146,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
                     {
                         var updatedBooking = await _exportBookingAppService.UpdateAsync(ExportBookingDto.Id, addBooking);
 
-                        if (CreateUpdateContainerBooking is not null)
+                        if (CreateUpdateContainerBooking is not null && CreateUpdateContainerBooking.Id != Guid.Empty)
                         {
                             QueryContainerDto queryContainerDto = new QueryContainerDto() { QueryId = updatedBooking.Id };
                             await _containerAppService.DeleteByBookingIdAsync(queryContainerDto);
@@ -163,6 +172,27 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
 
                 throw;
             }
+
+            foreach (var item in CreateUpdateOceanExportMblDto)
+            {
+                var mbl = await _oceanExportMblRepository.GetAsync(item.Id);
+
+                mbl.MblNo = item.MblNo;
+
+                await _oceanExportMblRepository.UpdateAsync(mbl);
+            }
+
+            foreach (var item in ContainerDtos)
+            {
+                var container = await _containerRepository.GetAsync(item.Id);
+
+                container.ContainerNo = item.ContainerNo;
+
+                container.ContainerSizeId = item.ContainerSizeId;
+
+                await _containerRepository.UpdateAsync(container);
+            }
+
             QueryContainerDto query = new QueryContainerDto() { QueryId = Id };
             foreach (var dto in CreateUpdateContainerDtos)
             {
@@ -178,6 +208,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
                     }
                 }
             }
+
             return NoContent();
         }
 
