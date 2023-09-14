@@ -88,7 +88,7 @@
                                 <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id','',1)">@L["Btn:AddDC"]</abp-button>
                                 <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id','',2)">@L["Btn:AddAP"]</abp-button>
                             </div>
-                            <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:0.5em;">
+                            <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:10px;">
                                 <tr border="1" style="font-size: 10px;">
                                     <th width="15%"></th>
                                     <th width=" 10%">@L["Display:InvoiceNo"]</th>
@@ -119,8 +119,8 @@
                                                     @foreach(var invBill in dto.InvoiceBillDtos){
                                                         j = j + @invBill.Quantity;
                                                     }
-                                                    <td>@j</td>
-                                                    <td>0.00</td>
+                                                    <td style="text-align: right;">@j</td>
+                                                    <td style="text-align: right;">0.00</td>
                                                     @{
                                                         double r = 0;
                                                     }
@@ -128,10 +128,10 @@
                                                     {
                                                         r += @invRate.Quantity * @invRate.Rate;
                                                     }
-                                                    <td>@r.ToString("0.00")</td>
+                                                    <td style="text-align: right;">@r.ToString("0.00")</td>
                                                     <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
+                                                    <td style="text-align: right;">@dto.PostDate</td>
+                                                    <td style="text-align: right;">@dto.InvoiceDate</td>
                                                     <td></td>
                                             </tr>
                                         }
@@ -146,8 +146,8 @@
                                                     @foreach(var invBill in dto.InvoiceBillDtos){
                                                         j = j + @invBill.Quantity;
                                                     }
-                                                    <td>@j</td>
-                                                    <td>0.00</td>
+                                                    <td style="text-align: right;">@j</td>
+                                                    <td style="text-align: right;">0.00</td>
                                                     @{
                                                         double r = 0;
                                                     }
@@ -155,10 +155,10 @@
                                                     {
                                                         r += @invRate.Quantity * @invRate.Rate;
                                                     }
-                                                    <td>@r.ToString("0.00")</td>
+                                                    <td style="text-align: right;">@r.ToString("0.00")</td>
                                                     <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
+                                                    <td style="text-align: right;">@dto.PostDate</td>
+                                                    <td style="text-align: right;">@dto.InvoiceDate</td>
                                                     <td></td>                                           </tr>
                                         }
 
@@ -183,8 +183,8 @@
                                                     {
                                                         j = j + @invBill.Quantity;
                                                     }
-                                                    <td>@j</td>
-                                                    <td>0.00</td>
+                                                    <td style="text-align: right;">@j</td>
+                                                    <td style="text-align: right;">0.00</td>
                                                     @{
                                                         double r = 0;
                                                     }
@@ -192,10 +192,10 @@
                                                     {
                                                         r += invRate.Quantity * invRate.Rate;
                                                     }
-                                                    <td>@r.ToString("0.00")</td>
+                                                    <td style="text-align: right;">@r.ToString("0.00")</td>
                                                     <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
+                                                    <td style="text-align: right;">@dto.PostDate</td>
+                                                    <td style="text-align: right;">@dto.InvoiceDate</td>
                                                     <td></td>                                           </tr>
                                         }
                                         else
@@ -210,8 +210,8 @@
                                                     {
                                                         j = j + @invBill.Quantity;
                                                     }
-                                                    <td>@j</td>
-                                                    <td>0.00</td>
+                                                    <td style="text-align: right;">@j</td>
+                                                    <td style="text-align: right;">0.00</td>
                                                     @{
                                                         double r = 0;
                                                     }
@@ -219,10 +219,10 @@
                                                     {
                                                         r += invRate.Quantity * invRate.Rate;
                                                     }
-                                                    <td>@r.ToString("0.00")</td>
+                                                    <td style="text-align: right;">@r.ToString("0.00")</td>
                                                     <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
+                                                    <td style="text-align: right;">@dto.PostDate</td>
+                                                    <td style="text-align: right;">@dto.InvoiceDate</td>
                                                     <td></td>                                           
                                                 </tr>
                                         }
@@ -241,7 +241,7 @@
                                                 <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m2invoiceDtos.Count">@L["Menu:AccountingAP"]</td>
                                                 <td><a href="/Accounting/Invoice?MethodType=4&Bid=@Model.Id&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                             @*    <td>@dto.InvoiceCompanyName</td>*@
-                                                 <td>@dto.ShipTo</td>
+                                                 <td style="text-align: right;">@dto.ShipTo</td>
                                                     @{
                                                         double j = 0;
                                                     }
@@ -249,18 +249,18 @@
                                                     {
                                                         j = j + @invBill.Quantity;
                                                     }
-                                                    <td>@j</td>
-                                                    <td>0.00</td>
+                                                    <td style="text-align: right;">@j</td>
+                                                    <td style="text-align: right;">0.00</td>
                                                     @{
                                                         double r = 0;
                                                     }
                                                     @foreach(var invRate in dto.InvoiceBillDtos){
                                                         r += invRate.Quantity * invRate.Rate;
                                                     }
-                                                    <td>@r.ToString("0.00")</td>
+                                                    <td style="text-align: right;">@r.ToString("0.00")</td>
                                                     <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
+                                                    <td style="text-align: right;">@dto.PostDate</td>
+                                                    <td style="text-align: right;">@dto.InvoiceDate</td>
                                                     <td></td>
                                             </tr>
                                         }
@@ -269,25 +269,25 @@
                                             <tr style="font-size: 10px;">
                                                 <td><a href="/Accounting/Invoice?MethodType=4&Bid=@Model.Id&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                @* <td>@dto.InvoiceCompanyName</td>*@
-                                                <td>@dto.ShipTo</td>
+                                                <td style="text-align: right;">@dto.ShipTo</td>
                                                     @{
                                                         double j = 0;
                                                     }
                                                     @foreach(var invBill in dto.InvoiceBillDtos){
                                                         j = j + @invBill.Quantity;
                                                     }
-                                                    <td>@j</td>
-                                                    <td>0.00</td>
+                                                    <td style="text-align: right;">@j</td>
+                                                    <td style="text-align: right;">0.00</td>
                                                     @{
                                                         double r = 0;
                                                     }
                                                     @foreach(var invRate in dto.InvoiceBillDtos){
                                                         r += invRate.Quantity * invRate.Rate;
                                                     }
-                                                    <td>@r.ToString("0.00")</td>
+                                                    <td style="text-align: right;">@r.ToString("0.00")</td>
                                                     <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
+                                                    <td style="text-align: right;">@dto.PostDate</td>
+                                                    <td style="text-align: right;">@dto.InvoiceDate</td>
                                                     <td></td>
                                             </tr>
                                         }
