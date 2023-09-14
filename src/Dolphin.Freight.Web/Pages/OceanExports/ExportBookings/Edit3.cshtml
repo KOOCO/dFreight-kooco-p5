@@ -67,7 +67,9 @@
                 var files = $('#uploadFile').prop("files");
                 var url = "Edit3?handler=MyUploader";
                 formData = new FormData();
-                formData.append("MyUploader", files[0]);
+               for (var i = 0; i < files.length; i++) {
+        formData.append("MyUploader", files[i]);
+    }
                 formData.append("fid", fid);
                 jQuery.ajax({
                     type: 'POST',
@@ -223,15 +225,17 @@
                   </abp-card-header>
                   <abp-card-body>
              
-                                <table>
+                                <table class="table">
+                                     <thead>
                                     <tr>
-                                        <th width="32%">@L["Display:Name"]</th>
-                                        <th width="14%">@L["Display:Date"]</th>
-                                        <th width="7%">@L["Display:FileSize"]</th>
-                                        <th width="7%">@L["Display:Type"]</th>
-                                        <th width="13%">@L["Display:Action"]</th>
-                                        <th width="7%">@L["Display:Creator"]</th>
+                                        <th width="32%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Name"]</th>
+                                        <th width="14%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Date"]</th>
+                                        <th width="7%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:FileSize"]</th>
+                                        <th width="7%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Type"]</th>
+                                        <th width="16%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Action"]</th>
+                                        <th width="7%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Creator"]</th>
                                     </tr>
+                                    </thead>
                                     <tbody id="ftbody">
                                     </tbody>
 
