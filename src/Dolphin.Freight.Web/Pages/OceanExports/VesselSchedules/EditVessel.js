@@ -139,11 +139,11 @@ var index = 0;
 
 function getMblContainersByVesselId(id) {
     dolphin.freight.importExport.oceanExports.vesselScheduleas.vesselSchedule.getMblContainersByVesselId(id).done(function (res) {
-        debugger;
         if (res != null && res.containerList.length > 0 && res.mblList.length > 0) {
-            debugger;
             for (var i = 0; i < Math.min(res.containerList.length, res.mblList.length); i++) {
                 var mblId = res.mblList[i] ? res.mblList[i].id : '';
+                var containerId = res.containerList[i] ? res.containerList[i].id : '';
+                var containerSizeId = res.containerList[i] ? res.containerList[i].containerSizeId : '';
                 var value0 = res.mblList[i] ? res.mblList[i].isLocked : '';
                 var value1 = res.mblList[i] ? res.mblList[i].filingNo : '';
                 var value2 = res.mblList[i] ? res.mblList[i].mblNo : '';
@@ -152,25 +152,25 @@ function getMblContainersByVesselId(id) {
                 var value5 = res.containerList[i] ? res.containerList[i].sealNo : '';
                 var value6 = res.containerList[i] ? res.containerList[i].creationTime.split('T')[0] : '';
                 if (value2 == null) value2 = ''; if (value1 == null) value1 = ''; if (value5 == null) value5 = '';
-                addShipmentTr(mblId, value0, value1, value2, value3, value4, value5, value6);
+                addShipmentTr(mblId, containerId, containerSizeId, value0, value1, value2, value3, value4, value5, value6);
             }
         }
     });
 }
 
-function addShipmentTr(mblId, value0, value1, value2, value3, value4, value5, value6) {
-    const containerSizeSelectHtml = getcontainersSizeSelection(value4);
+function addShipmentTr(mblId, containerId, containerSizeId, value0, value1, value2, value3, value4, value5, value6) {
+    const containerSizeSelectHtml = getcontainersSizeSelection(containerSizeId);
 
     const trhtml = `
         <tr id='tr_${index}' style='background-color: #f4f4f4;'>
             <td style='text-align: center;'>${value0 ? "<i class='fa fa-lock'></i>" : ""}</td>
-            <td><a href='/OceanExports/EditModal?Id=${mblId}'>${value1}</a><input type='hidden' name='CreateUpdateOceanExportMblDto[${index}].FilingNo' id='f1_${index}' class='form-control form-control-sm' value='${value1}' /></td>
+            <td><a href='/OceanExports/EditModal?Id=${mblId}'>${value1}</a><input type='hidden' name='CreateUpdateOceanExportMblDto[${index}].Id' id='f1_${index}' class='form-control form-control-sm' value='${mblId}' /></td>
             <td><label id='lbl2_${index}'><a href='/OceanExports/EditModal?Id=${mblId}'>${value2}</a></label><input type='text' style='display: none;' name='CreateUpdateOceanExportMblDto[${index}].MblNo' id='f2_${index}' class='form-control form-control-sm' value='${value2}' /></td>
-            <td><label id='lbl3_${index}'>${value3}</label><input type='text' style="display:none;" name='CreateUpdateContainerDtos[${index}].ContainerNo' id='f3_${index}' class='form-control form-control-sm' value='${value3}' /></td>
+            <td><label id='lbl3_${index}'>${value3}</label><input type='text' style="display:none;" name='ContainerDtos[${index}].ContainerNo' id='f3_${index}' class='form-control form-control-sm' value='${value3}' /></td>
             <td></td>
             <td><label id='lbl4_${index}'>${value4}</label>${containerSizeSelectHtml}</td>
-            <td>${value5}<input type='text' style='display: none;' name='CreateUpdateContainerDtos[${index}].SealNo' id='f5_${index}' class='form-control form-control-sm' value='${value5}' /></td>
-            <td>${value6}<input type='text' style='display: none;' name='CreateUpdateContainerDtos[${index}].ContainerSizeName' id='f6_${index}' class='form-control form-control-sm' value='${value6}' /></td>
+            <td>${value5}<input type='text' style='display: none;' name='ContainerDtos[${index}].SealNo' id='f5_${index}' class='form-control form-control-sm' value='${value5}' /></td>
+            <td>${value6}<input type='text' style='display: none;' name='ContainerDtos[${index}].Id' id='f6_${index}' class='form-control form-control-sm' value='${containerId}' /></td>
         </tr>`;
 
     $("#shipmentbody").append(trhtml);
@@ -178,7 +178,7 @@ function addShipmentTr(mblId, value0, value1, value2, value3, value4, value5, va
 }
 
 function getcontainersSizeSelection(selectedId) {
-    var selectHtml = "<select name='CreateUpdateContainerDtos[" + index + "].ContainerSizeId' class='form-select form-select-sm' style='display: none;' >";
+    var selectHtml = "<select name='ContainerDtos[" + index + "].ContainerSizeId' class='form-select form-select-sm' style='display: none;' >";
     for (var i = 0; i < containerSizes.length; i++) {
         selectHtml = selectHtml + "<option value='" + containerSizes[i].id + "' ";
         if (containerSizes[i].id == selectedId) selectHtml = selectHtml + " selected ";
@@ -215,13 +215,13 @@ function displayHblBookingBtn(event) {
 
 function toggleEditMode(isEditMode) {
     $('#shipmentbody tr').each(function () {
-        const containerNoInput = $(this).find('input[name^="CreateUpdateContainerDtos["][name$="].ContainerNo"]');
+        const containerNoInput = $(this).find('input[name^="ContainerDtos["][name$="].ContainerNo"]');
         const associatedLabelContainerNo = $(this).find('#lbl3_' + containerNoInput.attr('id').split('_')[1]);
 
         const mblNoInput = $(this).find('input[name^="CreateUpdateOceanExportMblDto["][name$="].MblNo"]');
         const associatedLabelMblNo = $(this).find('#lbl2_' + mblNoInput.attr('id').split('_')[1]);
 
-        const containerSizeSelect = $(this).find('select[name^="CreateUpdateContainerDtos["][name$="].ContainerSizeId"]');
+        const containerSizeSelect = $(this).find('select[name^="ContainerDtos["][name$="].ContainerSizeId"]');
         const associatedLabelContainerSize = $(this).find('#lbl4_' + containerSizeSelect.attr('name').split('[')[1].split(']')[0]);
 
         if (isEditMode) {

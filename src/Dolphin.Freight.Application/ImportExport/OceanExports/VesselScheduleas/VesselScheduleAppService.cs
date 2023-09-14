@@ -204,11 +204,11 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         {
             var containersList = await _containerAppService.QueryListVesselAsync(id);
             var containerSizeList = await _containerSizeRepository.GetListAsync();
-            var containersData = new List<CreateUpdateContainerDto>();
+            var containersData = new List<ContainerDto>();
 
             foreach (var container in containersList)
             {
-                var containerData = new CreateUpdateContainerDto()
+                var containerData = new ContainerDto()
                 {
                     Id = container.Id,
                     MblId = (Guid)container.MblId,
@@ -225,18 +225,21 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
 
             foreach (var container in containersList)
             {
-                var mblid = container.MblId;
-                var mbl = await _oceanExportMblAppService.GetAsync((Guid)mblid);
-
-                var mblData = new CreateUpdateOceanExportMblDto()
+                if (container.MblId != Guid.Empty)
                 {
-                    Id = mbl.Id,
-                    IsLocked = mbl.IsLocked,
-                    FilingNo = mbl.FilingNo,
-                    MblNo = mbl.MblNo
-                };
+                    var mblid = container.MblId;
+                    var mbl = await _oceanExportMblAppService.GetAsync((Guid)mblid);
 
-                mbls.Add(mblData);
+                    var mblData = new CreateUpdateOceanExportMblDto()
+                    {
+                        Id = mbl.Id,
+                        IsLocked = mbl.IsLocked,
+                        FilingNo = mbl.FilingNo,
+                        MblNo = mbl.MblNo
+                    };
+
+                    mbls.Add(mblData);
+                }
             }
 
             return new JsonResult(new { containerList = containersData, mblList = mbls });
