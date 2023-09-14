@@ -27,6 +27,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid? Hid { get; set; }
+     
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> PortsManagementLookupList { get; set; }
