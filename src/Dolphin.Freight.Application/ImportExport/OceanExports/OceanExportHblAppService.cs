@@ -17,6 +17,8 @@ using System.Linq.Dynamic.Core;
 using Volo.Abp;
 using NPOI.HSSF.Record;
 using NPOI.DDF;
+using Volo.Abp.Validation.Localization;
+using Volo.Abp.Auditing;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -242,10 +244,55 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             return rs;
         }
 
-        public async Task<List<OceanExportHblDto>> GetHblCardsById(Guid Id) {
+        public async Task<List<OceanExportHblDto>> GetHblCardsById(Guid Id,bool isAsc=true,int sortType=1) {
             var data = await _repository.GetListAsync(f => f.MblId == Id);
-            var retVal = ObjectMapper.Map<List<OceanExportHbl>, List<OceanExportHblDto>>(data);
+            var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
 
+            if (!isAsc)
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderByDescending(x => x.HblNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderByDescending(x => x.CreationTime).ToList();
+
+                }
+            }
+            else {
+
+                if (sortType == 1)
+                {
+                    data = data.OrderBy(x => x.HblNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(x => x.CreationTime).ToList();
+
+                }
+            }
+
+
+            
+            var retVal = ObjectMapper.Map<List<OceanExportHbl>, List<OceanExportHblDto>>(data);
+            foreach (var item in retVal)
+            {
+
+                if (item.HblShipperId != null)
+                {
+                    var shipper = tradePartners.Where(w => w.Id == item.HblShipperId).FirstOrDefault();
+                    item.HblShipperName = shipper.TPName;
+                }
+
+                if (item.HblConsigneeId != null)
+                {
+                    var consignee = tradePartners.Where(w => w.Id == item.HblConsigneeId).FirstOrDefault();
+                    item.HblConsigneeName = consignee.TPName;
+                }
+
+
+            }
             return retVal;
         }
 
