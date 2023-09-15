@@ -40,7 +40,7 @@
         $(document).ready(function () {
 
             //HB/l dropdown
-
+            $('#cardSettingArea').hide();
             var isPageLoad = true;
 
             var showMsg = '@Model.ShowMsg';
@@ -107,6 +107,7 @@
             location.href = url;
         }
         function addCardRight(hblNo, soNo, cladClass) {
+           
             var cardHtml = "<div class='borad-anchor focus' ><div class='borad-cont' >"
             cardHtml = cardHtml + "<a class='link' href='#javascript:void(0)'></a>"
             cardHtml = cardHtml + "<span class='label label-HBL'>HB/L</span><span class='MBLnumber'>Add</span>"
@@ -449,6 +450,7 @@
         }
 
         function createHawbCard() {
+             $('#cardSettingArea').show();
             var check='False';
             if ($('#cardCheck').prop('checked')) {
                 check = 'True';
@@ -1155,11 +1157,12 @@
                         <button class="btn btn-block btn-add" type="button" id="addHBtn">
                             <i class="fa-solid fa-plus"></i>@L["Btn:AddHbl"]
                         </button>
-                        <div class="d-flex flex-row">
+                        <div id="cardSettingArea">     
+                            <div class="d-flex flex-row">
                         <div class="p-2"><label>Sort By</label>
                         <select id="sortType">
-                            <option value="1">HblNo</option>
-                             <option value="2">CreatedDate</option>
+                            <option selected value="1">HB/L No</option>
+                             <option value="2">Created Date</option>
                         </select>    
                         </div>
                         <div class="p-2">
@@ -1170,7 +1173,8 @@
                         </div>
                             </div>
                             <div class="d-flex flex-row">
-                        <div class="p-2" style="font-size:12px;"><a href='javascript:void(0)' class="text-muted" onclick="cardSettingClick()"><i class="fa fa-cogs">Card Setting</i> </a>
+                        <div class="p-2" ><a href='javascript:void(0)' class="text-muted" onclick="cardSettingClick()"><i class="fa fa-cogs"></i> Card Setting</a>
+                            </div>
                             </div>
                             </div>
                         <div id="hblCards" class="hbl_sm_area">

@@ -118,7 +118,7 @@
                 var files = $('#uploadHFile').prop("files");
                 var url = "EditModal4?handler=MyUploader";
                 formData = new FormData();
-                          for (var i = 0; i < files.length; i++) {
+               for (var i = 0; i < files.length; i++) {
         formData.append("MyUploader", files[i]);
     }
                 formData.append("fid", fid);
@@ -605,7 +605,7 @@
                                 
                              <div class="form-group files">
                
-                                <input type="file"  id="uploadFile" multiple>
+                                <input type="file" id="uploadHFile" multiple>
                               </div>
                             </abp-column>
                            

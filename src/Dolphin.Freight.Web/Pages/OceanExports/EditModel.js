@@ -5,6 +5,7 @@
     dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(url.searchParams.get('Id'))
         .done(function (hblCards) {
             if (hblCards && hblCards.length) {
+                $('#cardSettingArea').show();
                 hblCards.forEach(function (hblCard, index) {
 
                     let abpcard = createHawbCard();
