@@ -470,5 +470,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public string SvcTermFromName { get; set; }
+        public string SvcTermToName { get; set; }
+            public string ShipModeName { get; set; }
     }
 }

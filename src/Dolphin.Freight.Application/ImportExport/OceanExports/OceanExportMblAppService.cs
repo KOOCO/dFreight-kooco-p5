@@ -1,5 +1,6 @@
 ﻿using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.ImportExport.OceanImports;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
@@ -190,6 +191,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             var oceanExportMbl = await _repository.GetAsync(Id,true);
             var dto = ObjectMapper.Map<OceanExportMbl, CreateUpdateOceanExportMblDto>(oceanExportMbl);
             var ports = await _portRepository.QueryListAsync();
+            var sysCodes = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(await _sysCodeRepository.GetListAsync());
             Dictionary<Guid, string> pdictionary = new();
             if (ports != null && ports.Count > 0)
             {
@@ -216,7 +218,22 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 if (dto.FdestId != null) dto.FdestName = pdictionary[dto.FdestId.Value];
                 if (dto.MblCarrierId != null)dto.MblCarrierName = tdictionary[dto.MblCarrierId.Value];
                 if(dto.MblOverseaAgentId != null)dto.MblOverseaAgentName = tdictionary[dto.MblOverseaAgentId.Value];
-                if(dto.ReleaseById != null)
+                if (dto.SvcTermFromId != null)
+                {
+                    var SvcTermFrom = sysCodes.Where(w => w.Id == dto.SvcTermFromId).FirstOrDefault();
+                    dto.SvcTermFromName = SvcTermFrom?.ShowName;
+                }
+                if (dto.SvcTermToId != null)
+                {
+                    var SvcTermTo = sysCodes.Where(w => w.Id == dto.SvcTermToId).FirstOrDefault();
+                    dto.SvcTermToName = SvcTermTo?.ShowName;
+                }
+                if (dto.ShipModeId != null)
+                {
+                    var SvcTermTo = sysCodes.Where(w => w.Id == dto.SvcTermToId).FirstOrDefault();
+                    dto.ShipModeName = SvcTermTo?.ShowName;
+                }
+                if (dto.ReleaseById != null)
                     dto.ReleaseBy = ObjectMapper.Map<IdentityUserDto, UserData>(await _identityUserAppService.GetAsync(dto.ReleaseById.GetValueOrDefault()));
             }
             return dto;
