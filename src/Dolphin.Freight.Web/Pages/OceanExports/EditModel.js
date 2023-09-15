@@ -5,11 +5,12 @@
     dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(url.searchParams.get('Id'))
         .done(function (hblCards) {
             if (hblCards && hblCards.length) {
+                $('#cardSettingArea').show();
                 hblCards.forEach(function (hblCard, index) {
 
                     let abpcard = createHawbCard();
 
-                    abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index);
+                    abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index, hblCard.hblConsigneeName, hblCard.hblShipperName);
 
                     $('#hblCards').append(abpcard);
 

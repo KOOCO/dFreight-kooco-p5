@@ -2,6 +2,7 @@ using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanExports;
+using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
 using Dolphin.Freight.Settinngs.PackageUnits;
 using Dolphin.Freight.Settinngs.Ports;
@@ -14,8 +15,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
@@ -31,7 +34,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         public bool Status { get; set; }
         [BindProperty]
         public CreateUpdateVesselScheduleDto VesselSchedule { get; set; }
-
+        [BindProperty]
+        public CreateUpdateExportBookingDto ExportBookingDto { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> AirportLookupList { get; set; }
@@ -51,6 +55,14 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         public List<SelectListItem> FreightTermLookupList { get; set; }
         [BindProperty]
         public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
+        [BindProperty]
+        public List<CreateUpdateOceanExportMblDto> CreateUpdateOceanExportMblDto { get; set; }
+        [BindProperty]
+        public CreateUpdateContainerDto CreateUpdateContainerBooking { get; set; }
+        [BindProperty]
+        public List<ContainerDto> ContainerDtos { get; set; }
+        [BindProperty]
+        public List<ManifestCommodity> Commodities { get; set; }
         private readonly IVesselScheduleAppService _vesselScheduleAppService;
         private readonly ITradePartnerAppService _tradePartnerAppService;
         private readonly ISubstationAppService _substationAppService;
@@ -60,9 +72,12 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         private readonly IPortAppService _portAppService;
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly IContainerAppService _containerAppService;
+        private readonly IRepository<Container, Guid> _containerRepository;
+        private readonly IExportBookingAppService _exportBookingAppService;
+        private readonly IRepository<OceanExportMbl, Guid> _oceanExportMblRepository;
         public EditModel(VesselScheduleAppService vesselScheduleAppService, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService,
             IAirportAppService airportAppService, IPackageUnitAppService packageUnitAppService, ISysCodeAppService sysCodeAppService, IPortAppService portAppService, IAjaxDropdownAppService ajaxDropdownAppService,
-            IContainerAppService containerAppService)
+            IContainerAppService containerAppService, IExportBookingAppService exportBookingAppService, IRepository<OceanExportMbl, Guid> oceanExportMblRepository, IRepository<Container, Guid> containerRepository)
         {
             _vesselScheduleAppService = vesselScheduleAppService;
             _tradePartnerAppService = tradePartnerAppService;
@@ -73,6 +88,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
             _portAppService = portAppService;
             _ajaxDropdownAppService = ajaxDropdownAppService;
             _containerAppService = containerAppService;
+            _containerRepository = containerRepository;
+            _exportBookingAppService = exportBookingAppService;
+            _oceanExportMblRepository = oceanExportMblRepository;
         }
         public async Task OnGetAsync()
         {
@@ -80,7 +98,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
 
             var vesselSchedule = await _vesselScheduleAppService.GetAsync(Id);
             VesselSchedule  = ObjectMapper.Map<VesselScheduleDto, CreateUpdateVesselScheduleDto>(vesselSchedule);
-
+            
             if (Status)
             {
                 VesselSchedule.ReferenceNo = string.Empty;
@@ -105,20 +123,91 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         {
             try
             {
-                await _vesselScheduleAppService.UpdateAsync(Id, VesselSchedule);
+                var vesselSchedule = await _vesselScheduleAppService.UpdateAsync(Id, VesselSchedule);
+
+                if (ExportBookingDto is not null && !string.IsNullOrEmpty(ExportBookingDto.SoNo) || ExportBookingDto.IsCreateBySystem)
+                {
+                    if (ExportBookingDto.ExtraProperties == null)
+                    {
+                        ExportBookingDto.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                    }
+
+                    if (Commodities != null && Commodities.Any())
+                    {
+                        ExportBookingDto.ExtraProperties.Remove("Commodities");
+                        ExportBookingDto.ExtraProperties.Add("Commodities", Commodities);
+                    }
+
+                    var addBooking = ObjectMapper.Map<CreateUpdateExportBookingDto, CreateUpdateExportBookingDto>(ExportBookingDto);
+                    addBooking.VesselScheduleId = vesselSchedule.Id;
+
+                    if (ExportBookingDto.Id != Guid.Empty)
+                    {
+                        var updatedBooking = await _exportBookingAppService.UpdateAsync(ExportBookingDto.Id, addBooking);
+
+                        if (CreateUpdateContainerBooking is not null && CreateUpdateContainerBooking.Id != Guid.Empty)
+                        {
+                            QueryContainerDto queryContainerDto = new QueryContainerDto() { QueryId = updatedBooking.Id };
+                            await _containerAppService.DeleteByBookingIdAsync(queryContainerDto);
+                            CreateUpdateContainerBooking.BookingId = updatedBooking.Id;
+                            await _containerAppService.CreateAsync(CreateUpdateContainerBooking);
+                        }
+                    } else
+                    {
+                        var updatedBooking = await _exportBookingAppService.CreateAsync(addBooking);
+
+                        if (CreateUpdateContainerBooking is not null)
+                        {
+                            QueryContainerDto queryContainerDto = new QueryContainerDto() { QueryId = updatedBooking.Id };
+                            await _containerAppService.DeleteByBookingIdAsync(queryContainerDto);
+                            CreateUpdateContainerBooking.BookingId = updatedBooking.Id;
+                            await _containerAppService.CreateAsync(CreateUpdateContainerBooking);
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {
 
                 throw;
             }
+
+            foreach (var item in CreateUpdateOceanExportMblDto)
+            {
+                var mbl = await _oceanExportMblRepository.GetAsync(item.Id);
+
+                mbl.MblNo = item.MblNo;
+
+                await _oceanExportMblRepository.UpdateAsync(mbl);
+            }
+
+            foreach (var item in ContainerDtos)
+            {
+                var container = await _containerRepository.GetAsync(item.Id);
+
+                container.ContainerNo = item.ContainerNo;
+
+                container.ContainerSizeId = item.ContainerSizeId;
+
+                await _containerRepository.UpdateAsync(container);
+            }
+
             QueryContainerDto query = new QueryContainerDto() { QueryId = Id };
-            var rs = await _containerAppService.DeleteByVesselIdAsync(query);
             foreach (var dto in CreateUpdateContainerDtos)
             {
-                var a = dto.IsDeleted;
-                if (dto.Status == 0) await _containerAppService.CreateAsync(dto);
+                if (dto.Id != Guid.Empty) {
+                    dto.VesselId = Id;
+                    await _containerAppService.UpdateAsync(dto.Id, dto);
+                } else {
+                    var a = dto.IsDeleted;
+                    if (dto.Status == 0)
+                    {
+                        dto.VesselId = Id;
+                        await _containerAppService.CreateAsync(dto);
+                    }
+                }
             }
+
             return NoContent();
         }
 

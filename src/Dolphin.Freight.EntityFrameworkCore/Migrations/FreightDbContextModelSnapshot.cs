@@ -2485,6 +2485,9 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("CargoPickupId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("CargoReadyDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CargoRemark")
                         .HasColumnType("nvarchar(max)");
 

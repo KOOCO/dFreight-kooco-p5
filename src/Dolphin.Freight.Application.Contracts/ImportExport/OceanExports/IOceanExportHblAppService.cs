@@ -20,7 +20,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         Task<IList<OceanExportHblDto>> QueryListByMidAsync(QueryHblDto query);
         Task<CreateUpdateOceanExportHblDto> GetHblById(QueryHblDto query);
         Task<OceanExportHblDto> GetHblCardById(Guid Id);
-        Task<List<OceanExportHblDto>> GetHblCardsById(Guid Id);
+        Task<List<OceanExportHblDto>> GetHblCardsById(Guid Id, bool isAsc = true, int sortType = 1);
         Task<OceanExportDetails> GetOceanExportDetailsById(Guid Id);
         Task LockedOrUnLockedOceanExportHblAsync(QueryHblDto query);
         Task SetLockStatusOnOceanExportHblAsync(Guid[] ids, bool isLocked);

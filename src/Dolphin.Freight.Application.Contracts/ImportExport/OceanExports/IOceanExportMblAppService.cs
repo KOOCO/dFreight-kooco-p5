@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.Common;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -19,5 +20,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 
         Task<CreateUpdateOceanExportMblDto> GetMblById(QueryMblDto query);
         Task<OceanExportDetails> GetOceanExportDetailsById(Guid Id);
+        Task<JsonResult> CreateOneMBLWithContainerAsync(Guid[] ids);
+        Task<JsonResult> CreateMblWithDiffContainersAsync(Guid[] ids);
     }
 }

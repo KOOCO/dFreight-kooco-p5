@@ -3,9 +3,11 @@
 @using Dolphin.Freight.Web.Pages.Components
 @using Dolphin.Freight.Web.CommonService
 @using Microsoft.Extensions.Localization
+@using Volo.Abp.Users;
 @model Dolphin.Freight.Web.Pages.OceanExports.ExportBookings.CreateModel
 @inject IStringLocalizer<FreightResource> L
 @inject IDropdownService _dropdown;
+@inject ICurrentUser _currentUser;
 @section styles {
     <style type="text/css">
         #ejo .btn-primary {
@@ -43,7 +45,8 @@
                     'ExportBooking_VgmCutOffTime',
                     'ExportBooking_RailCutOffTime',
                     'ExportBooking_EarlyReturnDatetime',
-                    'ExportBooking_Trans1Eta'
+                    'ExportBooking_Trans1Eta',
+                    'ExportBooking_CargoReadyDate'
                 ];
 
                 ids.forEach(function (id) {
@@ -197,9 +200,7 @@
                 $('#createForm').submit();
             });
             $('#createForm').on('abp-ajax-success', function (result, rs) {
-                debugger;
                 event.preventDefault();
-                debugger;
                 location.href = 'Edit?ShowMsg=true&Id=' + rs.responseText.id
             });
         });
@@ -584,35 +585,77 @@
                                         <abp-card-body style="background:#eeeeee;">
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     <label for="ExportBooking_SoNo" class="form-label">@L["SoCode"] <input type="checkbox" name="ExportBooking.IsCreateBySystem" id="ExportBooking_IsCreateBySystem" value="true" /></label>
                                                     <input type="text" name="ExportBooking.SoNo" class="form-control" id="ExportBooking_SoNo" />
+                                                </div>
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row >
                                                 <abp-column>
+
                                                     <abp-input asp-for="ExportBooking.SoNoDate" abp-data-datepicker="false" required-symbol="false" />
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row >
+                                                <abp-column>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">@L["QuotationNo"] </label>
+                                                       <select class="filteredDropdown form-select form-control cursor-pointer " placeholder="Select" disabled>
+                                                           <option value=""></option>
+                                                       </select>
+                                                        </div>
+                                                    
+                                                </abp-column>
+                                            </abp-row>
+                                            <abp-row >
                                                 <abp-column>
                                                     <abp-input asp-for="ExportBooking.ItnNo" />
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row style="margin-top: 0.3rem;">
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.SalespersonId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "sales", ShowFiledContentValue = Convert.ToString(Model.ExportBooking.SalespersonId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
+                                            <abp-row >
+                                                <abp-column>
+                                                     <div class="mb-3">
+                                                <label  class="form-label">@L["OP"]</label>
+                                    <input class="form-control form-control-sm" type="text" value="@(_currentUser.Name + " " + _currentUser.SurName)" disabled />
+                                 </div>
+                                                </abp-column>
+                                            </abp-row>
+                                             <abp-row >
+                                                 <abp-column >
+                                                      <div class="mb-3">
 
+                                                          &nbsp;
+                                                          </div>
+                                                     </abp-column>
+                                                     </abp-row>
                                         </abp-card-body>
                                     </abp-card>
                                     <br />
                                     <abp-card>
                                         <abp-card-body style="background:#eeeeee;">
-                                            <abp-row>
+                                            
+                                            <abp-row >
+                                                
                                                 <abp-column>
-                                                    <label for="ExportBooking_CanceledDate" class="form-label">@L["IsBlCanceled"] <input type="checkbox" name="ExportBooking.IsCanceled" id="ExportBooking_IsCanceled" /></label>
+                                                <div class="mb-3">
+                                                    @if (Model.ExportBooking.IsCanceled)
+                                                    {
+                                                        <label for="ExportBooking_CanceledDate" class="form-label">@L["IsBlCanceled"] <input type="checkbox" name="ExportBooking.IsCanceled" id="ExportBooking_IsCanceled" value="true" checked /></label>
+                                                    }
+                                                    else
+                                                    {
+                                                        <label for="ExportBooking_CanceledDate" class="form-label">@L["IsBlCanceled"] <input type="checkbox" name="ExportBooking.IsCanceled" id="ExportBooking_IsCanceled" value="true" /></label>
+                                                    }
                                                     <input type="text" name="ExportBooking.CanceledDate" class="form-control" id="ExportBooking_CanceledDate" disabled />
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -620,9 +663,11 @@
                                                     <abp-input asp-for="ExportBooking.CancelName" readonly="true" />
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row >
                                                 <abp-column>
+                                                    <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.CancelReason", AspItems = _dropdown.CancelReasonLookupList, IsShowLabel = true, FieldName = @L["CancelReason"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.CancelReason), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
                                         </abp-card-body>
@@ -633,86 +678,127 @@
                                         <abp-card-body style="background:#eeeeee;">
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ReferenceId", AspItems = _dropdown.ReferenceLookupList, IsShowLabel = true, FieldName = @L["ReferenceId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ReferenceId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row style="margin-top: 1.5rem;">
                                                 <abp-column>
                                                     <abp-input asp-for="ExportBooking.CarrierBkgNo" />
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row >
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.CarrierId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["CarrierId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.CarrierId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row >
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ShipModeId", AspItems = _dropdown.ShipModeLookupList, IsShowLabel = true, FieldName = @L["ShipModeId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ShipModeId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.FreightTermForBuyerId", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = @L["FreightTermForBuyerId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.FreightTermForBuyerId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.FreightTermForSalerId", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = @L["FreightTermForSalerId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.FreightTermForSalerId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column size-md="_6">
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "SvcTermFromId", FieldName = "SvcTermFromId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                               </div>
                                                 </abp-column>
-                                                <abp-column size-md="_6">
-                                                    <label for="SvcTermToId" class="form-label">&nbsp;&nbsp;</label>
+                                                <abp-column size-md="_6" style="margin-top: 1rem!important;">
+                                                     <div class="mb-3 mt-3">
+                                                    
                                                     @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "SvcTermToId", FieldName = "SvcTermToId",DefaultValue="" , IsShowLabel = false , IsRequired = false })
+                                            
+                                                </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "IncotermsId", FieldName = "IncotermsId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                                </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ShipperId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ShipperId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ShipperId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row style="margin-top: 2rem;">
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.CustomerId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["CustomerId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.CustomerId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.BillToId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["BillToId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.BillToId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row style="margin-top: 1.5rem;">
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ConsigneeId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ConsigneeId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ConsigneeId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.NotifyId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["NotifyId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.NotifyId), IsRequired = false })
+                                                </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ShippingAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ShippingAgentId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ShippingAgentId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.HblAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["HblAgentId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.HblAgentId), IsRequired = false })
+                                               </div>
+                                                </abp-column>
+                                            </abp-row>
+                                             <abp-row>
+                                                <abp-column>
+                                                     <div class="mb-3">
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ForwardingAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ForwardingAgentId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ForwardingAgentId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.CoLoaderId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["CoLoaderId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.CoLoaderId), IsRequired = false })
+                                               
+                                                </div>
                                                 </abp-column>
                                             </abp-row>
 
@@ -724,7 +810,7 @@
                                         <abp-card-body style="background:#eeeeee;">
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.VesselName" />
+                                                    <abp-input  class="form-control" asp-for="ExportBooking.VesselName" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -737,7 +823,7 @@
                                                     <abp-input asp-for="ExportBooking.ContainerQtyInputText" readonly="true" />
                                                 </abp-column>
                                                 <abp-column size-md="_3" class="pl-1">
-
+                                                     <div class="mb-3">
                                                     <button title="" class="btn btn-info align-self-end" style="color:#ffffff;margin-top:29px" onclick="onBtnContainerQtyClick(event)" type="button" data-target="#modal_ExportBooking_ContainerQtyInputText">
                                                         <i class="fas fa-plus"></i>
                                                     </button>
@@ -818,46 +904,57 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = @L["PolId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.PolId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = @L["PorId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.PorId), IsRequired = false })
+                                                </div>
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row style="margin-top: 1.5rem;">
                                                 <abp-column>
                                                     <abp-input asp-for="ExportBooking.PorEtd" abp-data-datepicker="false" />
                                                 </abp-column>
-                                            </abp-row>
-                                            <abp-row>
+                                            </abp-row >
+                                            <abp-row >
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = @L["PodId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.PodId), IsRequired = false })
+                                                </div>
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row >
                                                 <abp-column>
                                                     <abp-input asp-for="ExportBooking.PodEta" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row >
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = @L["DelId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.DelId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row >
                                                 <abp-column>
                                                     <abp-input asp-for="ExportBooking.DelEta" abp-data-datepicker="false"  />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = @L["FdestId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.FdestId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -867,21 +964,27 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.FbaId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["FbaId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.FbaId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row class="mt-3">
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     <button type="button" id="checkHideBtn">
                                                         <i class="fa fa-plus" id="showLi"></i>
                                                         <i class="fa fa-minus" id="hideLi"></i>
                                                     </button>
                                                     <input type="hidden" id="isHide" value="@Model.ExportBooking.GetHideCheck()" />
+                                                    </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row class="hideArea">
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.TransPort1Id", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = @L["TransPort1Id"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.TransPort1Id), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row class="hideArea">
@@ -907,47 +1010,66 @@
                                         <abp-card-body style="background:#eeeeee;">
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CargoTypeId", FieldName = "CargoTypeId",DefaultValue="" , IsShowLabel = true , IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row style="margin-top: 1.5rem;">
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ReferralById", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ReferralById"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ReferralById), IsRequired = false })
                                                     @*<abp-input asp-for="ExportBooking.ReferralById" />*@
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row style="margin-top: 1.5rem;">
                                                 <abp-column>
                                                     <abp-input asp-for="ExportBooking.ContainerPickupNo" />
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row style="margin-top: 0.2rem;">
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.CargoPickupId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["CargoPickupId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.CargoPickupId), IsRequired = false })
+                                               </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.TruckerId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["TruckerId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.TruckerId), IsRequired = false })
+                                                </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.DeliveryToId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["DeliveryToId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.DeliveryToId), IsRequired = false })
+                                                </div>
+                                                </abp-column>
+                                            </abp-row>
+                                             <abp-row>
+                                                <abp-column>
+                                                    <abp-input asp-for="ExportBooking.CargoReadyDate" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
+                                                     <div >
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.EmptyPickupId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["EmptyPickupId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.EmptyPickupId), IsRequired = false })
                                                     @*<abp-input asp-for="ExportBooking.CargoArrivalDate" />*@
+                                                </div>
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                           @*  <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3"> *@
                                                     <hr />
+                                              @*       </div>
                                                 </abp-column>
-                                            </abp-row>
-                                            <abp-row>
+                                            </abp-row> *@
+                                            <abp-row style="margin-top:1.5rem;">
                                                 <abp-column>
                                                     <abp-input asp-for="ExportBooking.WhCutOffTime" abp-data-datepicker="false" />
                                                 </abp-column>
@@ -962,7 +1084,7 @@
                                                     <abp-input asp-for="ExportBooking.PortCutOffTime" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                            <abp-row style="margin-top: 0.5rem;">
                                                 <abp-column>
                                                     <abp-input asp-for="ExportBooking.VgmCutOffTime" abp-data-datepicker="false" />
                                                 </abp-column>
@@ -977,21 +1099,27 @@
                                                     <abp-input asp-for="ExportBooking.EarlyReturnDatetime" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                           @*  <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3"> *@
                                                     <hr />
+                                              @*       </div>
                                                 </abp-column>
-                                            </abp-row>
+                                            </abp-row> *@
                                             <abp-row>
                                                 <abp-column>
+                                                     <div >
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.OfficeId", AspItems = _dropdown.SubstationLookupList, IsShowLabel = true, FieldName = @L["OfficeId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.OfficeId), IsRequired = false })
+                                              </div>
                                                 </abp-column>
                                             </abp-row>
-                                            <abp-row>
+                                           @*  <abp-row>
                                                 <abp-column>
+                                                     <div class="mb-3"> *@
                                                     <hr />
+                                             @*        </div>
                                                 </abp-column>
-                                            </abp-row>
+                                            </abp-row> *@
                                             <abp-row>
                                                 <abp-column>
                                                     <abp-input asp-for="ExportBooking.IsStackable" />
@@ -1131,7 +1259,6 @@
                                                     <label class="btn btn-outline-secondary checkLabel" for="ShippingRemark" onclick="initRemark(1);">@L["Btn:ShippingRemark"]</label>
                                                     <input type="radio" class="btn-check" name="RemarkBtn" id="CargoRemark" value="2">
                                                     <label class="btn btn-outline-secondary checkLabel" for="CargoRemark" onclick="initRemark(2);">@L["Btn:CargoRemark"]</label>
-
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row class="mt-3">

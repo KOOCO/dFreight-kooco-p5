@@ -47,7 +47,6 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         public bool ShowCopyMsg { get; set; } = false;
         [BindProperty]
         public CreateUpdateExportBookingDto ExportBooking { get; set; }
-
         public List<SelectListItem> ReferenceLookupList { get; set; }
         public List<SelectListItem> CancelReasonLookupList { get; set; }
         public List<SelectListItem> ShipModeLookupList { get; set; }

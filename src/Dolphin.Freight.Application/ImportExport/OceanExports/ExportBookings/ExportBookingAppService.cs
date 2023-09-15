@@ -10,6 +10,7 @@ using Volo.Abp.Application.Services;
 using System.Linq.Dynamic.Core;
 using Volo.Abp.Domain.Repositories;
 using static Volo.Abp.Identity.IdentityPermissions;
+using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
 
 namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
 {
@@ -157,6 +158,14 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
             return list;
         }
 
+        public async Task<List<ExportBookingDto>> GetBookingCardsById(Guid Id)
+        {
+            var data = await _repository.GetListAsync(f => f.VesselScheduleId == Id);
+            var retVal = ObjectMapper.Map<List<ExportBooking>, List<ExportBookingDto>>(data);
+
+            return retVal;
+        }
+
         public async Task<CreateUpdateExportBookingDto> GetBookingCardById(Guid Id)
         {
             if (await _repository.AnyAsync(a => a.Id == Id))
@@ -178,6 +187,17 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
 
                 await _repository.UpdateAsync(booking);
             }
+        }
+
+        public async Task<bool> IsBookingContainsByVesselId(Guid id)
+        {
+            var bookings = await _repository.GetListAsync(f => f.VesselScheduleId == id);
+
+            if (bookings.Any())
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

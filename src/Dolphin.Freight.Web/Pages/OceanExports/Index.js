@@ -125,11 +125,12 @@ function selectAllCheckbox(element) {
     $('#MblListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
 }
 
-function copyMbl() {
+function copyMbl(shouldDisplayAlternativeTitle) {
     var checkedCheckboxes = $('.selectCheckbox:checked');
     var mblId = checkedCheckboxes.attr('data-id');
     createMemoModal.open({
         mblId,
+        ShouldDisplayAlternativeTitle: shouldDisplayAlternativeTitle
     });
 }
 
@@ -308,6 +309,7 @@ $(function () {
         dataTable = $('#MblListTable').DataTable(
             abp.libs.datatables.normalizeConfiguration({
                 serverSide: true,
+                paging: true,
                 pagingType: 'full_numbers',
                 order: col,
                 searching: false,

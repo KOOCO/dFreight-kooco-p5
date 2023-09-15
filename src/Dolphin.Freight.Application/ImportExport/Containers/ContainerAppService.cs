@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.ObjectMapping;
 
 namespace Dolphin.Freight.ImportExport.Containers
 {
@@ -155,6 +156,13 @@ namespace Dolphin.Freight.ImportExport.Containers
             var containerDto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
 
             return containerDto;
+        }
+        public async Task<List<CreateUpdateContainerDto>> GetContainersListByBookingId(Guid Id)
+        {
+            var list = await Repository.GetListAsync();
+            var containerList = list.Where(w => w.BookingId == Id).ToList();
+
+            return ObjectMapper.Map<List<Container>, List<CreateUpdateContainerDto>>(containerList);
         }
     }
 }

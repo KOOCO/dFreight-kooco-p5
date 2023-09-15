@@ -58,6 +58,7 @@
 
             $("#addBtn").click(function () {
                 addTr();
+                debugger;
                 if ($('#packageTypeSelect > .select2-container--default').length === 0){
                     addPackageUnitNameddl();
                 }
@@ -171,7 +172,7 @@
                         selectHtml = selectHtml + ">" + packageUnitsName[i].packageName + "</option>"
                     }
                     selectHtml = selectHtml + "</select>";
-                    $('#PackagingUnit').append(selectHtml).find('.select-search').select2();
+                    $('#packageTypeSelect').append(selectHtml).find('.select-search').select2();
                     $('#hblPackageTypeddl').append(selectHtml).find('.select-search').select2();
                 }
             });
@@ -790,7 +791,7 @@
                                             <th width="15%">@L["Display:Seal No"]</th>
                                             <th width="15%">@L["Display:PackageType"]</th>
                                             <th width="15%">@L["Display:Weight"]</th>
-                                            <th width="15%">@L["Measurement"]></th>
+                                            <th width="15%">@L["Measurement"]</th>
                                         </tr>
                                         <tr>
                                             <td></td>

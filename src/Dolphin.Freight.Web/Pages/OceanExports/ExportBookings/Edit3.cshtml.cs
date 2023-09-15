@@ -33,27 +33,30 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
             var exportBooking = await _exportBookingAppService.GetAsync(Id);
             SoNo = exportBooking.SoNo;
         }
-        public async Task<IActionResult> OnPostMyUploader(IFormFile MyUploader, Guid fid)
+        public async Task<IActionResult> OnPostMyUploader(List<IFormFile> MyUploader, Guid fid)
         {
             string fname = "";
             if (MyUploader != null)
             {
-                
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload");
-                if (!Directory.Exists(uploadsFolder))
+                foreach (var file in MyUploader)
                 {
-                    DirectoryInfo folder = Directory.CreateDirectory(uploadsFolder);
-                }
-                string filePath = Path.Combine(uploadsFolder, MyUploader.FileName);
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        DirectoryInfo folder = Directory.CreateDirectory(uploadsFolder);
+                    }
+                    string filePath = Path.Combine(uploadsFolder, file.FileName);
 
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    MyUploader.CopyTo(fileStream);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                    fname = file.FileName;
+                    CreateUpdateAttachmentDto dto = new CreateUpdateAttachmentDto() { FileName = fname, ShowName = fname, Ftype = 8, Fid = fid, Size = file.Length / 1024 };
+                    await _attachmentAppService.CreateAsync(dto);
+                    
                 }
-                fname = MyUploader.FileName;
-                CreateUpdateAttachmentDto dto = new CreateUpdateAttachmentDto() { FileName=fname, ShowName = fname, Ftype =8,Fid= fid, Size = MyUploader.Length / 1024  };
-                await _attachmentAppService.CreateAsync(dto);
-                return new ObjectResult(new { status = "success", fname = fname, udate = DateTime.Now.ToString("yyyy-MM-dd"), size = MyUploader.Length / 1024 });
+                return new ObjectResult(new { status = "success", fname = fname, udate = DateTime.Now.ToString("yyyy-MM-dd"), size = 1024 });
             }
             return new ObjectResult(new { status = "fail" });
 

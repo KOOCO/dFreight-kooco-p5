@@ -53,7 +53,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public bool ShowMsg { get; set; } = false;
-
+        [BindProperty(SupportsGet = true)]
+        public bool ISToolTipShow { get; set; }
         [BindProperty(SupportsGet = true)]
         public Guid? Hid { get; set; }
         public bool IsShowHbl { get; set; } = false;

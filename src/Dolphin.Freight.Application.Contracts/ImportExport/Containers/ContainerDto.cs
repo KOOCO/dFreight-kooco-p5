@@ -12,11 +12,12 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// 集裝箱號
         /// </summary>
         public string ContainerNo { get; set; }
+        public Guid? MblId { get; set; }
         /// <summary>
         /// 櫃型/尺寸ID
         /// </summary>
         public Guid ContainerSizeId { get; set; }
-
+        public string ContainerSizeName { get; set; }
         /// <summary>
         /// 封條號碼
         /// </summary>
@@ -145,5 +146,6 @@ namespace Dolphin.Freight.ImportExport.Containers
         public Guid? PackageUnitId { get; set; }
         public string PackageWeightUnit { get; set; }
         public string PackageMeasureUnit { get; set; }
+        public Guid? VesselId { get; set; }
     }
 }

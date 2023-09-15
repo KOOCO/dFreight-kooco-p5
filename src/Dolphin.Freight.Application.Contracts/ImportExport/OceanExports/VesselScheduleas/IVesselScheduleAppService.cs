@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
 {
@@ -17,5 +18,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         Task<PagedResultDto<VesselScheduleDto>> QueryListAsync(QueryVesselScheduleDto query);
         Task<List<VesselScheduleDto>> GetListAsync(QueryVesselScheduleDto query);
         Task DeleteMultipleVesselAsync(Guid[] ids);
+        Task<JsonResult> GetMblContainersByVesselIdAsync(Guid id);
     }
 }

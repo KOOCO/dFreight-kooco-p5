@@ -10,15 +10,19 @@
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
 @inject IDropdownService _dropdown;
+
 @section scripts{
    
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.3/xlsx.full.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.2.0/js/tableexport.min.js"></script>
+      
     <script type="text/javascript">
         var l = abp.localization.getResource('Freight');
         var _changeInterval = null;
         var dataTable;
-      
+        var BookingId;
             var queryListFilter = function () {
                 debugger
                 return {
@@ -46,7 +50,135 @@
                 };
             };
         $(document).ready(function () {
-          
+    
+            $("#postMblButton").click(function () { 
+
+                   abp.message.confirm(l('New MB/L and HB/L will be created. Do you want to continue?')).then(function (confirmed) {
+                if (confirmed) {
+                    var selectedCheckboxes = $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+                    var id = selectedCheckboxes[0].attributes[2].value;
+                     var url = "Index?handler=CreateBookingMbl";
+                       formData = new FormData();
+                     formData.append("id", id);
+                    // Replace with the actual ID you want to send
+            jQuery.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("XSRF-TOKEN",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    success: function (repo) {
+                      window.location.href = '/OceanExports/EditModal?Id='+repo.id;
+
+                    },
+                    error: function (rs) {
+                        console.log(rs)
+                        alert("Error occurs");
+                    }
+                });
+
+                       
+                }
+            })
+        });
+         $("#assignMblButton").click(function () { 
+
+                   
+               
+                   
+                     var url = "Index?handler=AssignMbl";
+                       formData = new FormData();
+                     formData.append("id", BookingId);
+                      formData.append("mblId", $("#MblId").val());
+                       formData.append("isShipMode", $("#checkboxShip").prop('checked')==true?true:false);
+                        formData.append("isSvcFrom", $("#checkboxFrom").prop('checked')==true?true:false);
+                         formData.append("isSvcTo", $("#checkboxTo").prop('checked')==true?true:false);
+                    // Replace with the actual ID you want to send
+            jQuery.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("XSRF-TOKEN",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    success: function (repo) {
+                        $("#assignMblModal").modal("hide");
+                         abp.message.success(l('Successfully Assign MB/L'));
+                        location.reload();
+                         dataTable.ajax.reload();
+                           
+
+                    },
+                    error: function (rs) {
+                        console.log(rs)
+                         $("#assignMblModal").modal("hide");
+                        abp.message.error("Error occurs");
+                    }
+                });
+
+                       
+                
+            
+        });
+$('#checkAll').change(function() {
+    if ($(this).prop('checked')) {
+        $('#checkboxShip').prop('checked', true);
+        $('#checkboxFrom').prop('checked', true);
+        $('#checkboxTo').prop('checked', true);
+    } else {
+        $('#checkboxShip').prop('checked', false);
+        $('#checkboxFrom').prop('checked', false);
+        $('#checkboxTo').prop('checked', false);
+    }
+});
+
+        $('#ExportBooking_ReferenceId').change(function() {
+    // Get the selected value
+    const selectedValue = $(this).val();
+       $('#mblValue').empty();
+            debugger;
+            if (selectedValue) {
+                dolphin.freight.importExport.oceanExports.oceanExportMbl.getCreateUpdateOceanExportMblDtoById(selectedValue).done(function (data) {
+
+                    debugger;
+                    $('#heading').show(true);
+
+                    $('#mblTable').show(true);
+                    var htmlTable = '<tr><td><input type="checkbox" onclick="selectMblCheckBox(this)" id="checkboxShip"/><input type="hidden" id="MblId" value="{{MblId}}"/><td>Ship Mode</td><td>{{shipMode}}</td></tr>';
+                    htmlTable = htmlTable + '<tr><td><input type="checkbox" onclick="selectMblCheckBox(this)" id="checkboxFrom"/><td>Service Term From</td><td>{{termFrom}}</td></tr>';
+                    htmlTable = htmlTable + '<tr><td><input type="checkbox" onclick="selectMblCheckBox(this)" id="checkboxTo"/><td>Service Term To</td><td>{{termTo}}</td></tr>';
+                     htmlTable = htmlTable.replaceAll("{{MblId}}", data.id);
+                    if (data.shipModeName !== null) {
+                        htmlTable = htmlTable.replaceAll("{{shipMode}}", data.shipModeName);
+                    } else {
+                        htmlTable = htmlTable.replaceAll("{{shipMode}}", "");
+                    }
+
+                    if (data.svcTermFromName !== null) {
+                        htmlTable = htmlTable.replaceAll("{{termFrom}}", data.svcTermFromName);
+                    } else {
+                        abpcard = abpcard.replaceAll("{{termFrom}}", "");
+                    }
+                    if (data.svcTermToName !== null) {
+                        htmlTable = htmlTable.replaceAll("{{termTo}}", data.svcTermToName);
+                    } else {
+                        htmlTable = htmlTable.replaceAll("{{termTo}}", "");
+                    }
+                    $('#mblValue').append(htmlTable);
+                    // Do something with the selected value
+                    console.log('Selected Value: ' + selectedValue);
+                });
+            }
+  });
              var dataTable;
             var l = abp.localization.getResource('Freight');
              var columns = [
@@ -139,7 +271,10 @@
              dataTable = $('#ExportBookingListTable').DataTable(
                     abp.libs.datatables.normalizeConfiguration({
                         serverSide: true,
+                        paging: true,
                          pagingType: 'full_numbers',
+                        
+ 
                 order: col,
                 searching: false,
                 scrollX: true,
@@ -222,7 +357,15 @@
             var isChecked = $(element).prop('checked');
             $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
         }
-
+        function selectMblCheckBox(checkbox) { 
+            debugger;
+        
+         if ($('#checkboxShip').prop('checked') && $('#checkboxFrom').prop('checked') && $('#checkboxTo').prop('checked')) {
+            $('#checkAll').prop('checked', true);
+        } else { 
+            $('#checkAll').prop('checked', false);
+        }
+        }
         function selectCheckbox(checkbox) {
             var checkedCheckboxes = $('.selectCheckbox:checked');
             if (checkbox.checked) {
@@ -231,17 +374,43 @@
                 });
                  if (checkedCheckboxes.length == 1) {
                 $('#copyBtn').prop('disabled', false);
+               var id= checkedCheckboxes[0].attributes[2].value;
+                     dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.get(id).done(function (data) { 
+                     
+                         if (!data.referenceId) { 
+                          $('#addMbl').prop('disabled', false);
+                         
+                         }
+                     
+                     
+                     });
+                       
+                 
             } else {
                 $('#copyBtn').prop('disabled', true);
+                 $('#addMbl').prop('disabled', true);
+
             }
             } else {
               
               if (checkedCheckboxes && checkedCheckboxes.length == 0) {
             $('#deleteBtn').prop('disabled', true);
             $('#copyBtn').prop('disabled', true);
+            $('#addMbl').prop('disabled', true);
         }
         else if (checkedCheckboxes.length == 1) {
             $('#copyBtn').prop('disabled', false);
+             var id= checkedCheckboxes[0].attributes[2].value;
+                     dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.get(id).done(function (data) { 
+                     
+                         if (!data.referenceId) { 
+                          $('#addMbl').prop('disabled', false);
+                         
+                         }
+                     
+                     
+                     });
+                       
         }
                
             }
@@ -265,12 +434,24 @@
             $("#checkModal").modal("show");  
         }
           
-    
+     function chooseMblClick() {
+         debugger;
+            var selectedCheckboxes = $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+            var id = selectedCheckboxes[0].attributes[2].value;
+         BookingId = id;
+         $('#heading').hide(true);
+         
+         $('#mblTable').hide(true);
+            $("#assignMblModal").modal("show");  
+        }
        
        
 
         function closeModal() {
             $("#checkModal").modal("hide");
+        }
+         function closeMblModal() {
+            $("#assignMblModal").modal("hide");
         }
         function doCopy() {
             var WithInvoice = 0;
@@ -285,7 +466,17 @@
             var url = 'Edit?WithInvoice=' + WithInvoice + "&IsAR=" + IsAR + "&IsAP=" + IsAP + "&IsDC=" + IsDC + '&CopyId=' + CopyId;
             location.href = url
         }
+          document.addEventListener("DOMContentLoaded", function () {
+            // Initialize Bootstrap tooltips
+            var tooltipTrigger = document.getElementById('dropdownContainer');
+            var button = document.getElementById('addMbl');
 
+            if (button && button.hasAttribute('disabled')) {
+                // Button is disabled, show tooltip
+                var tooltip = new bootstrap.Tooltip(tooltipTrigger);
+                tooltip.show();
+            }
+        });
         function createNew() {
             window.location.href = "/OceanExports/ExportBookings/Create";
         }
@@ -330,6 +521,9 @@ XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
     // Save the workbook as an Excel file
     XLSX.writeFile(wb, "OceanExportBookingList.xlsx");
         }
+     
+
+
         function deleteHbl() {
             var ids = [];
             var selectedCheckboxes = $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]:checked');
@@ -357,6 +551,10 @@ XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
         display: flex;
         padding: 0 !important;
     }
+       
+        
+     
+
 </style>
 
 <div class="page-header">
@@ -542,12 +740,21 @@ XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
             </abp-card-body>
         <abp-card-body>
            
-            <div class="portlet-tool">
+        
                 <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
                     <button type="button" class="btn btn-outline-secondary fa fa-plus" onclick="createNew()" id="newBtn"></button>
                     <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="deleteHbl()" id="deleteBtn" disabled></button>
                     <button type="button" class="btn btn-outline-secondary fa fa-files-o me-0" onclick="copyButtonClick()" id="copyBtn" disabled></button>
-                    <button type="button" class="btn btn-outline-secondary" id="copyBtn" disabled><i class="fa fa-plus"></i>Convert To Shipment</button>
+                    @* <button type="button" class="btn btn-outline-secondary" id="copyBtn" disabled><i class="fa fa-plus"></i>Convert To Shipment</button> *@
+                 <div id="dropdownContainer" class="tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="This dropdown is disabled.">
+                    <abp-dropdown-button id="addMbl" icon="plus" text="@L["ConvertToShipment"]" button-type="Outline_Secondary"  disabled   />
+    <abp-dropdown-menu>
+        <abp-dropdown-item href="javascript:void(0)" id="postMblButton" ><i class="fa fa-plus"></i>@L["CreateNewMB/L&HB/L"]</abp-dropdown-item>
+        <abp-dropdown-item onclick="chooseMblClick()"  href="javascript:void(0)"><i class="fa fa-clipboard"></i>@L["AttachtoanexistingMB/L"]</abp-dropdown-item>
+      
+    </abp-dropdown-menu>
+  
+     
                 </div>
             </div>
             <abp-table class="nowrap" striped-rows="true" id="ExportBookingListTable"></abp-table>
@@ -588,6 +795,47 @@ XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" onclick="doCopy()">@L["Btn:Ok"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+      <div id="assignMblModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Choose MB/L No.</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeMblModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+               <div class="modal-body">
+    <div class="form-group">
+        <label class="control-label name-sm font-md w-auto _font-12">MB/L No.</label>
+          @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ReferenceId", AspItems = Model.ReferenceLookupList, IsShowLabel = false, FieldName = @L["ReferenceId"], SelectType = 0})
+                                               
+    </div>
+
+    
+    
+        <h5 style="font-size:12px;" class="text-muted" id="heading">Do you want to apply the item(s) below from the MB/L to this booking?</h5>
+        <table id="mblTable" class="table table-bordered ">
+          <thead  class="th-bg">
+            <tr>
+                <th >
+                    <div class="checker"><span><input type="checkbox" id="checkAll"  ></span></div>
+                </th>
+                <th>Field</th>
+                <th>Data</th>
+            </tr>
+            </thead>
+            <tbody id="mblValue">
+                </tbody>
+        </table>
+    <!----><!---->
+</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="assignMblButton">@L["Btn:Ok"]</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
                 </div>
             </div>

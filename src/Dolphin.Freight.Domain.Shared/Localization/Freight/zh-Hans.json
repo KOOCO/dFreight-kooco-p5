@@ -83,7 +83,7 @@
     "Tab:Basic": "基本",
     "Tab:Container": "集装箱与商品",
     "Tab:Accounting": "会计",
-    "Tab:Doc": "文件",
+    "Tab:Doc": "文件中心",
     //Dropdown
     "Dropdown:Select": "请选择",
     //Btn
@@ -287,7 +287,7 @@
     "Voyage": "航次",
     "PorId": "收货地(POR)",
     "PorName": "收货地(POR)",
-    "PorEtd": "收货地(POR) ETD",
+    "PorEtd": "ETD",
     "PolId": "装货港(POL)",
     "PolName": "装货港(POL)",
     "PolEtd": "ETD",
@@ -505,7 +505,7 @@
     "Trans1Eta": "中转港ETA",
     "EctNo": "ECTN 号码 ",
     "PrnNo": "PRN 号码 ",
-    "ReferralById": "业务推荐人",
+    "ReferralById": "客户联系窗口",
     "ContainerPickupNo": "领交柜编号",
     "CargoArrivalDate": "货物就绪日期",
     "WhCutOffTime": "仓库截关日",
@@ -975,7 +975,7 @@
     "AwbCancelledDate": "取消日期",
     "AwbCancelledOpId": "取消者",
     "ReasonForCancel": "取消原因",
-    "BusinessReferredId": "业务推荐人",
+    "BusinessReferredId": "客户联系窗口",
     "OverseaAgentId": "海外代理",
     "OPId": "操作员",
     "BillToId": "收票人",
@@ -992,6 +992,7 @@
     "GlGroupId": "群组",
 
 
+    "CargoReadyDate": "货物就绪日期",
     "Manifest:CargoManifest": "货物舱单",
     "Manifest:MBLNo": "MB/L号码",
     "Manifest:MasterAgent": "主代理",
@@ -1003,6 +1004,11 @@
     "Manifest:BY_CONTAINER": "依集装箱显示",
     "Manifest:BY_MBL": "依MBL显示",
 
-    "PackageUnitAlreadyExist": "相同的代码 {0} 已存在于系统中."
+    "PackageUnitAlreadyExist": "相同的代码 {0} 已存在于系统中.",
+    "ConvertToShipment": "转换为运输",
+    "CreateNewMB/L&HB/L": "新增MB/L和HB/L",
+    "AttachtoanexistingMB/L": "关联到既有的MB/L"
+
+
   }
 }

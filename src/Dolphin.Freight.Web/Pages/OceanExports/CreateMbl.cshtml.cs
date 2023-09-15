@@ -19,12 +19,15 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
 {
     public class CreateMblModel : FreightPageModel
     {
+        public Guid MblId { get; set; }
+        public Guid HblId { get; set; }
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid? Hid { get; set; }
+     
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> PortsManagementLookupList { get; set; }

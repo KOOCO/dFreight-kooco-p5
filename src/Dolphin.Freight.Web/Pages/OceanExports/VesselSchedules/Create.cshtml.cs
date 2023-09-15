@@ -42,10 +42,14 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
         public List<SelectListItem> FreightTermLookupList { get; set; }
         [BindProperty]
         public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
-        public CreateUpdateExportBookingDto ExportBookingDto { get; set; }
-
+        [BindProperty]
+        public CreateUpdateExportBookingDto ExportBookingDto { get; set; } = null;
+        [BindProperty]
+        public CreateUpdateContainerDto CreateUpdateContainerBooking { get; set; }
         [BindProperty]
         public CreateUpdateVesselScheduleDto VesselSchedule { get; set; }
+        [BindProperty]
+        public List<ManifestCommodity> Commodities { get; set; }
         private readonly IVesselScheduleAppService _vesselScheduleAppService;
         private readonly ITradePartnerAppService _tradePartnerAppService;
         private readonly ISubstationAppService _substationAppService;
@@ -55,9 +59,10 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
         private readonly IPortAppService _portAppService;
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly IContainerAppService _containerAppService;
+        private readonly IExportBookingAppService _exportBookingAppService;
         public CreateModel(VesselScheduleAppService vesselScheduleAppService, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService,
             IAirportAppService airportAppService, IPackageUnitAppService packageUnitAppService, ISysCodeAppService sysCodeAppService, IPortAppService portAppService, IAjaxDropdownAppService ajaxDropdownAppService,
-            IContainerAppService containerAppService) 
+            IContainerAppService containerAppService, IExportBookingAppService exportBookingAppService) 
         {
             _vesselScheduleAppService = vesselScheduleAppService;
             _tradePartnerAppService = tradePartnerAppService;
@@ -68,6 +73,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
             _portAppService = portAppService;
             _ajaxDropdownAppService = ajaxDropdownAppService;
             _containerAppService= containerAppService;
+            _exportBookingAppService = exportBookingAppService;
         }
         public async Task OnGetAsync()
         {
@@ -96,6 +102,40 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
                 dto.VesselId = vesselSchedule.Id;
                 if (dto.Status == 0) await _containerAppService.CreateAsync(dto);
             }
+
+            if (ExportBookingDto is not null && !string.IsNullOrEmpty(ExportBookingDto.SoNo) || ExportBookingDto.IsCreateBySystem)
+            {
+                if (ExportBookingDto.IsCreateBySystem)
+                {
+                    ExportBookingDto.SoNo = await _sysCodeAppService.GetSystemBookingNoAsync(new() { QueryType = "ExportBooking_SoNo" });
+                }
+
+                ExportBookingDto.Id = Guid.Empty;
+                if (ExportBookingDto.ExtraProperties == null)
+                {
+                    ExportBookingDto.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                }
+
+                if (Commodities != null && Commodities.Any())
+                {
+                    ExportBookingDto.ExtraProperties.Remove("Commodities");
+                    ExportBookingDto.ExtraProperties.Add("Commodities", Commodities);
+                }
+
+                var addBooking = ObjectMapper.Map<CreateUpdateExportBookingDto, CreateUpdateExportBookingDto>(ExportBookingDto);
+                addBooking.VesselScheduleId = vesselSchedule.Id;
+
+                var updatedBooking = await _exportBookingAppService.CreateAsync(addBooking);
+
+                if (CreateUpdateContainerBooking is not null)
+                {
+                    QueryContainerDto queryContainerDto = new QueryContainerDto() { QueryId = updatedBooking.Id };
+                    await _containerAppService.DeleteByBookingIdAsync(queryContainerDto);
+                    CreateUpdateContainerBooking.BookingId = updatedBooking.Id;
+                    await _containerAppService.CreateAsync(CreateUpdateContainerBooking);
+                }
+            }
+
             Dictionary<string, Guid> rs = new Dictionary<string, Guid>
             {
                 { "id", vesselSchedule.Id }

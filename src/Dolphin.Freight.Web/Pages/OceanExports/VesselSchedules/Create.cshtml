@@ -1,11 +1,13 @@
 ﻿@page
 @using Dolphin.Freight.Localization
+@using Volo.Abp.Users
 @using Dolphin.Freight.Web.Pages.Components
 @using Microsoft.Extensions.Localization
 @using Dolphin.Freight.Web.CommonService
 @using Dolphin.Freight.Web.Pages.Shared.Memos;
 @model Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas.CreateModel
 @inject IStringLocalizer<FreightResource> L
+@inject ICurrentUser CurrentUser
 @inject IDropdownService _dropdown;
 @section styles {
     <style type="text/css">
@@ -20,6 +22,7 @@
 }
 @section scripts
     {
+    <abp-script src="/Pages/OceanExports/VesselSchedules/CreateVessel.js" />
     <script type="text/javascript">
         var trindex = 0;
          var containerSizes = [];
@@ -140,16 +143,24 @@
         }
 
         $('#addHBtn').on('click', function () {
-            let bookingcard = createBookingCard();
+            if ($('#vesselDiv')[0].classList.contains('show')) {
+                $('#btnVesselCollapse').click();
+            }
 
-            let index = $('.cardAnchor').find('.card').length;
-            bookingcard = setBookingCardValues(bookingcard, '00000000-0000-0000-0000-000000000000', '0', index);
+            if ($('#btnBookingCardCollapse_0').length) {
+                showAlert(alertConfirmation2, 'Store');
+            } else {
+                let bookingcard = createBookingCard();
 
-            $('#hblCardDiv').append(bookingcard);
+                let index = $('.booking_sm_area').find('.card').length;
+                bookingcard = setBookingCardValues(bookingcard, '00000000-0000-0000-0000-000000000000', '0', index);
 
-            setTimeout(() => {
-                $('.bookingCardTitle')[index].click();
-            }, 500);
+                $('#bookingCards').append(bookingcard);
+
+                setTimeout(() => {
+                    $('.bookingCardTitle')[index].click();
+                }, 500);
+            }
         });
 
         function initRemark(remarkIndex) {
@@ -310,7 +321,6 @@
 
         function setPoValue() {
             var tagOptions = {};
-            debugger
             tagOptions.onDel = function () {
                 setTimeout(() => {
                     var tags = $('#PoNoTag').tagsStr();
@@ -369,7 +379,6 @@
                 showAlert(alertConfirmation, 'Continue');
             }
             else {
-
                 var color = getComputedStyle(element.parentElement.parentElement).backgroundColor;
 
                 if (!$('#btnBookingCardCollapse_' + bookingNo).attr('class').includes('collapsed')) {
@@ -441,37 +450,38 @@
                                 }
                             });
 
-                            initializeDropdownSearch("ExportBooking_CancelReason");
-                            initializeDropdownSearch("ExportBooking_ReferenceId");
-                            initializeDropdownSearch("ExportBooking_CarrierId");
-                            initializeDropdownSearch("ExportBooking_ShipModeId");
-                            initializeDropdownSearch("ExportBooking_FreightTermForBuyerId");
-                            initializeDropdownSearch("ExportBooking_FreightTermForSalerId");
-                            initializeDropdownSearch("ExportBooking_SvcTermFromId");
-                            initializeDropdownSearch("ExportBooking_SvcTermToId");
-                            initializeDropdownSearch("ExportBooking_IncotermsId");
-                            initializeDropdownSearch("ExportBooking_CargoTypeId");
-                            initializeDropdownSearch("ExportBooking_ShipperId");
-                            initializeDropdownSearch("ExportBooking_CustomerId");
-                            initializeDropdownSearch("ExportBooking_BillToId");
-                            initializeDropdownSearch("ExportBooking_ConsigneeId");
-                            initializeDropdownSearch("ExportBooking_NotifyId");
-                            initializeDropdownSearch("ExportBooking_ShippingAgentId");
-                            initializeDropdownSearch("ExportBooking_HblAgentId");
-                            initializeDropdownSearch("ExportBooking_CoLoaderId");
-                            initializeDropdownSearch("ExportBooking_FbaId");
-                            initializeDropdownSearch("ExportBooking_CargoPickupId");
-                            initializeDropdownSearch("ExportBooking_TruckerId");
-                            initializeDropdownSearch("ExportBooking_DeliveryToId");
-                            initializeDropdownSearch("ExportBooking_DelId");
-                            initializeDropdownSearch("ExportBooking_SalespersonId");
-                            initializeDropdownSearch("ExportBooking_PorId");
-                            initializeDropdownSearch("ExportBooking_PolId");
-                            initializeDropdownSearch("ExportBooking_PodId");
-                            initializeDropdownSearch("ExportBooking_FdestId");
-                            initializeDropdownSearch("ExportBooking_TransPort1Id");
+                            initializeDropdownSearch("ExportBookingDto_CancelReason");
+                            initializeDropdownSearch("ExportBookingDto_ReferenceId");
+                            initializeDropdownSearch("ExportBookingDto_CarrierId");
+                            initializeDropdownSearch("ExportBookingDto_ShipModeId");
+                            initializeDropdownSearch("ExportBookingDto_FreightTermForBuyerId");
+                            initializeDropdownSearch("ExportBookingDto_FreightTermForSalerId");
+                            initializeDropdownSearch("ExportBookingDto_SvcTermFromId");
+                            initializeDropdownSearch("ExportBookingDto_SvcTermToId");
+                            initializeDropdownSearch("ExportBookingDto_IncotermsId");
+                            initializeDropdownSearch("ExportBookingDto_CargoTypeId");
+                            initializeDropdownSearch("ExportBookingDto_ShipperId");
+                            initializeDropdownSearch("ExportBookingDto_CustomerId");
+                            initializeDropdownSearch("ExportBookingDto_BillToId");
+                            initializeDropdownSearch("ExportBookingDto_ConsigneeId");
+                            initializeDropdownSearch("ExportBookingDto_NotifyId");
+                            initializeDropdownSearch("ExportBookingDto_ShippingAgentId");
+                            initializeDropdownSearch("ExportBookingDto_HblAgentId");
+                            initializeDropdownSearch("ExportBookingDto_CoLoaderId");
+                            initializeDropdownSearch("ExportBookingDto_FbaId");
+                            initializeDropdownSearch("ExportBookingDto_CargoPickupId");
+                            initializeDropdownSearch("ExportBookingDto_TruckerId");
+                            initializeDropdownSearch("ExportBookingDto_DeliveryToId");
+                            initializeDropdownSearch("ExportBookingDto_DelId");
+                            initializeDropdownSearch("ExportBookingDto_SalespersonId");
+                            initializeDropdownSearch("ExportBookingDto_PorId");
+                            initializeDropdownSearch("ExportBookingDto_PolId");
+                            initializeDropdownSearch("ExportBookingDto_PodId");
+                            initializeDropdownSearch("ExportBookingDto_FdestId");
+                            initializeDropdownSearch("ExportBookingDto_TransPort1Id");
                             initializeDropdownSearch("ExportBookingDto_OfficeId");
-                            initializeDropdownSearch("ExportBooking_ReferralById");
+                            initializeDropdownSearch("ExportBookingDto_ReferralById");
+                            initializeDropdownSearch("ExportBookingDto_EmptyPickupId");
 
                             $("#checkHideBtn").click(function () {
                                 initHideBtn();
@@ -490,46 +500,6 @@
                             initHideBtn();
                             initRemark(0);
 
-                            $("#saveBtn").click(function () {
-                                $("#mOfficeId").val($("#OfficeId").val());
-                                $("#mMblSalesTypeId").val($("#MblSalesTypeId").val());
-                                $("#mSvcTermFromId").val($("#SvcTermFromId").val());
-                                $("#mSvcTermToId").val($("#SvcTermToId").val());
-                                $("#mShipModeId").val($("#ShipModeId").val());
-                                $("#mFreightTermId").val($("#FreightTermId").val());
-                                $("#mBlTypeId").val($("#BlTypeId").val());
-                                $("#mCarrierId").val($("#CarrierId").val());
-                                $("#mFreightTermForBuyerId").val($("#FreightTermForBuyerId").val());
-                                $("#mFreightTermForSalerId").val($("#FreightTermForSalerId").val());
-                                $("#mIncotermsId").val($("#IncotermsId").val());
-                                $("#mShipperId").val($("#ShipperId").val());
-                                $("#mCustomerId").val($("#CustomerId").val());
-                                $("#mBillToId").val($("#BillToId").val());
-                                $("#mConsigneeId").val($("#ConsigneeId").val());
-                                $("#mNotifyId").val($("#NotifyId").val());
-                                $("#mShippingAgentId").val($("#ShippingAgentId").val());
-                                $("#mHblAgentId").val($("#HblAgentId").val());
-                                $("#mCoLoaderId").val($("#CoLoaderId").val());
-                                $("#mPorId").val($("#PorId").val());
-                                $("#mPolId").val($("#PolId").val());
-                                $("#mPodId").val($("#PodId").val());
-                                $("#mDelId").val($("#DelId").val());
-                                $("#mFdestId").val($("#FdestId").val());
-                                $("#mFbaId").val($("#FbaId").val());
-                                $("#mTransPort1Id").val($("#TransPort1Id").val())
-                                $("#mCargoTypeId").val($("#CargoTypeId").val())
-                                $("#mReferralById").val($("#ReferralById").val());
-                                $("#mCargoPickupId").val($("#CargoPickupId").val());
-                                $("#mTruckerId").val($("#TruckerId").val());
-                                $("#mDeliveryToId").val($("#DeliveryToId").val());
-                                $("#mReferenceId").val($("#ReferenceId").val());
-                                $("#mPoNo").val($("#PoNoTag").tagsStr());
-                                $('#createForm').submit();
-                            });
-                            $('#createForm').on('abp-ajax-success', function (result, rs) {
-                                event.preventDefault();
-                                location.href = 'Edit?ShowMsg=true&Id=' + rs.responseText.id
-                            });
                         }, 500);
                     })
 
@@ -557,7 +527,7 @@
         }
 
         function setBookingCardValues(abpcard, cardId, bookingNo, index) {
-            let apbCardClass = 'card board-item hbl-sm-' + index;
+            let apbCardClass = 'card board-item booking-sm-' + index;
             let cardBodyId = 'bookingCard_' + index;
             cardId = "'" + cardId + "'";
 
@@ -570,6 +540,28 @@
             return abpcard;
         }
 
+        function showAlert(funName, buttonName) {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, are you sure you want to ' + buttonName.toLowerCase() + '?',
+                showCancelButton: true,
+                confirmButtonText: buttonName,
+            }).then(funName)
+        }
+
+        function alertConfirmation(result) {
+            if (result.isConfirmed) {
+                let indx = $('.booking_sm_area').find('.card').length;
+                $('#btnBookingCardCollapse_0').parent().parent().remove();
+                if (BOOKINGNO) {
+                    $('#title_' + BOOKINGNO).click()
+                }
+                else {
+                    $('#bookingCard_' + (indx - 2)).parent().find('.card-title').click();
+                }
+            }
+        }
+
         //function addCardRight(hblId, hblNo, soNo, bgColor) {
         //    var cardHtml = "<div id='card_" + hblId + "' class='card mt-3' onclick=''>"
         //    cardHtml = cardHtml + "<div class='card-body'  style='background:" + bgColor + ";color:#FFFFFF;'>"
@@ -578,20 +570,45 @@
         //    cardHtml = cardHtml + " </div> </div>"
         //    return cardHtml;
         //}
-         $("#addBtn").click(function () {
-          
-                addTr()
-            })
-                $("#deleteBtn").click(function () {
-                $("input[name='f0']:checked").each(function () {
-                    var tid = $(this).val();
-                    $("#did_" + tid).val("1");
-                    $("#tr_" + $(this).val()).hide();
-                })
-            })
+        $("#addBtn").click(function () {
+            addTr();
+        })
+        $("#deleteBtn").click(function () {
+            $("input[name='f0']:checked").each(function () {
+                var tid = $(this).val();
+                $("#did_" + tid).val("1");
+                $("#tr_" + $(this).val()).hide();
+            });
+            resetIndexes();
+        });
         function addTr() {
             addTrTag("", "", "", "", "", "","","");
         }
+
+        function resetIndexes() {
+            var newIndex = 0;
+            $("#trtbody tr:visible").each(function () {
+                if ($(this).attr("id").startsWith("tr_")) {
+                    $(this).attr("id", "tr_" + newIndex);
+
+                    $(this).find("input, div.input-group").each(function () {
+                        if (this.name) {
+                            this.name = this.name.replace(/\[.*?\]/, "[" + newIndex + "]");
+                        }
+                        if (this.id) {
+                            var parts = this.id.split("_");
+                            this.id = parts[0] + "_" + newIndex;
+                        }
+                    });
+
+                    $(this).find("td:eq(1)").text(newIndex + 1);
+                    newIndex++;
+                }
+            });
+
+            trindex = newIndex;
+        }
+
         // function addTrTag(value1, value2, value3, value4, value5, value6) {
         //     trindex++;
         //     var trhtml = "<tr id='tr_" + trindex + "'><td><input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
@@ -604,27 +621,30 @@
         //     trhtml = trhtml + "</tr>"
         //     $("#trtbody").append(trhtml);
         // }
-            function addTrTag(value1, value2, value3, value4, value5, value6, value7,value8) {
-
-            var trhtml = "<tr id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
-            trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='exportDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
-                trhtml = trhtml + "<td>";
-          /*   <input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' /> */
+        function addTrTag(value1, value2, value3, value4, value5, value6, value7,value8) {
+            var serialNo = trindex + 1;
+            var trhtml = "<tr id='tr_" + trindex + "'><td style='text-align: center;'><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' data-id='' name='f0' onclick='checkCreateMbl(event)' id='f0_" + trindex + "'  value='" + trindex + "' /></td>"
+            trhtml = trhtml + "<td style='text-align: center;'>" + serialNo + "</td>"
+            trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> </div></td>"
+            trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' /> ";
             trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
-             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' id='f5_" + trindex + "' class='form-control' value='" + value5 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' id='f7_" + trindex + "' class='form-control' value='" + value7 + "' /></td>"
-               trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' id='f8_" + trindex + "' class='form-control' value='" + value8 + "' /></td>"
+            trhtml = trhtml + "<td></td>"
+            //trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' id='f5_" + trindex + "' class='form-control' value='" + value5 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum' id='f4_" + trindex + "' class='form-control' value='0' disabled /></td>"
+            trhtml = trhtml + "<td><input type='text' placeholder='KGS' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeightKGS' id='f5_kgs_" + trindex + "' class='form-control' value='0' disabled /></td>"
+            trhtml = trhtml + "<td><input type='text' placeholder='LBS' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeightLBS' id='f5_lbs_" + trindex + "' class='form-control' value='0' disabled /></td>"
+            trhtml = trhtml + "<td><input type='text' placeholder='CBM' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasureCBM' id='f6_cbm_" + trindex + "' class='form-control' value='0' disabled /></td>"
+            trhtml = trhtml + "<td><input type='text' placeholder='CFT' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasureCFT' id='f6_cft_" + trindex + "' class='form-control' value='0' disabled /></td>"
             trhtml = trhtml + "</tr>"
             trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
             trhtml = trhtml + "</tr>"
             $("#trtbody").append(trhtml);
             trindex++;
         }
+
         function getcontainerSizeSelect(selectedId) {
-            var selectHtml = "<select name='CreateUpdateContainerDtos[" + trindex + "].ContainerSizeId' class='form-control' >";
+            var selectHtml = "<select name='CreateUpdateContainerDtos[" + trindex + "].ContainerSizeId' class='form-select' >";
             for (var i = 0; i < containerSizes.length; i++) {
                 selectHtml = selectHtml + "<option value='" + containerSizes[i].id + "' ";
                 if (containerSizes[i].id == selectedId) selectHtml = selectHtml + " selected ";
@@ -690,10 +710,10 @@
                                 <span id="title5" style="font-size:0.8em;"> </span>
                             </abp-card-title>
 
-                            <button class="btn btn-collapse " type="button" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
+                            <button class="btn btn-collapse " id="btnVesselCollapse" type="button" data-bs-toggle="collapse" data-bs-target="#vesselDiv" aria-expanded="true" aria-controls="vesselDiv">
                             </button>
                         </abp-card-header>
-                        <abp-card-body class="collapse show customForm" id="mblDiv">
+                        <abp-card-body class="collapse show customForm" id="vesselDiv">
                             <abp-row>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.ReferenceNo" required-symbol="false" />
@@ -740,6 +760,20 @@
                             </abp-row>
                             <abp-row class="mt-5">
                                 <abp-column size-md="_3">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.CoLoaderId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "CoLoaderId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.CoLoaderId.ToString() })
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <label class="form-label">@L["OP"]</label>
+                                    <input class="form-control" type="text" value="@(CurrentUser.Name + " " + CurrentUser.SurName)" disabled />
+                                </abp-column>
+                                <abp-column size-md="_6">
+                                    
+                                </abp-column>
+
+
+                            </abp-row>
+                            <abp-row>
+                                <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.VesselName" />
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -749,51 +783,38 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DeliveryToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "DeliveryToId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.DeliveryToId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.EmptyPickupId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "EmptyPickupId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.EmptyPickupId.ToString() })
+                                    <abp-input asp-for="VesselSchedule.Trans1Eta" abp-data-datepicker="false" />
                                 </abp-column>
 
 
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PolId.ToString() })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.EmptyPickupId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "EmptyPickupId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.EmptyPickupId.ToString() })
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                   @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PolId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PolEtd" abp-data-datepicker="false" required-symbol="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PorId.ToString() })
-                                 </abp-column>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PorEtd" abp-data-datepicker="false" required-symbol="false" />
                                 </abp-column>
-
 
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
+                                    <abp-input asp-for="VesselSchedule.PorEtd" abp-data-datepicker="false" required-symbol="false" />
+                                </abp-column>
+                                <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PodId.ToString() })
-                                   </abp-column>
+                                </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PodEta" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.DelId.ToString() })
-                                    </abp-column>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.DelEta" abp-data-datepicker="false" />
-                                </abp-column>
-
-                            </abp-row>
-                            <abp-row>
-                                <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FdestId.ToString() })
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.FdestEta" abp-data-datepicker="false" />
-                                </abp-column>
-                                <abp-column size-md="_6">
-                                    &nbsp;
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -803,22 +824,35 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
+                                    <abp-input asp-for="VesselSchedule.DelEta" abp-data-datepicker="false" />
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FdestId.ToString() })
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="VesselSchedule.FdestEta" abp-data-datepicker="false" />
+                                </abp-column>
+                                <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FreightTermId", AspItems = Model.FreightTermLookupList, IsShowLabel = true, FieldName = "FreightTermId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FreightTermId.ToString() })
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ShipModeId", AspItems = Model.ShipModeLookupList, IsShowLabel = true, FieldName = "ShipModeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.ShipModeId.ToString() })
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.SvcTermFromId", AspItems = Model.SvcTermList, IsShowLabel = true, FieldName = "SvcTermFromId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.SvcTermFromId.ToString() })
-
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.SvcTermToId", AspItems = Model.SvcTermList, IsShowLabel = true, FieldName = "SvcTermToId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.SvcTermToId.ToString() })
                                 </abp-column>
 
                             </abp-row>
                             
                             <abp-row class="mt-5">
+                                <abp-column size-md="_3">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ShipModeId", AspItems = Model.ShipModeLookupList, IsShowLabel = true, FieldName = "ShipModeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.ShipModeId.ToString() })
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.SvcTermFromId", AspItems = Model.SvcTermList, IsShowLabel = true, FieldName = "SvcTermFromId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.SvcTermFromId.ToString() })
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.SvcTermToId", AspItems = Model.SvcTermList, IsShowLabel = true, FieldName = "SvcTermToId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.SvcTermToId.ToString() })
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="VesselSchedule.VgmCutOffTime " abp-data-datepicker="false" />
+                                </abp-column>
+                            </abp-row>
+                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OblTypeId", AspItems = _dropdown.OblTypeLookupList, IsShowLabel = true, FieldName = "OblTypeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.OblTypeId.ToString() })
                                 </abp-column>
@@ -829,15 +863,7 @@
                                     <abp-input asp-for="VesselSchedule.PortCutOffTime" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.VgmCutOffTime " abp-data-datepicker="false" />
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.OnBoardDate" abp-data-datepicker="false" />
-                                </abp-column>
-                                <abp-column size-md="_9">
-
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -855,15 +881,6 @@
                                 </abp-column>
                             </abp-row>
                             <abp-row>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.Trans1Eta" abp-data-datepicker="false" />
-                                </abp-column>
-                                <abp-column size-md="_9">
-
-                                </abp-column>
-
-                            </abp-row>
-                            <abp-row>
 
                             </abp-row>
                             <abp-row>
@@ -872,30 +889,79 @@
                                         集裝箱清單
                                         <abp-button class="btn btn-success me-md-2" type="button" id="addBtn">+</abp-button>
                                         <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn">-</abp-button>
+                                        <abp-dropdown>
+                                            <abp-dropdown-button text="Create MB/L" button-type="Outline_Dark" id="createMblBtn" disabled="true" />
+                                            <abp-dropdown-menu>
+                                                <abp-dropdown-item href="javascript:void(0)" onclick="createOneMbl()"><i class="fas fa-compress-alt"></i>Create 1 MB/L</abp-dropdown-item>
+                                                <abp-dropdown-item id="btnExcelConfiguration" href="javascript:void(0)" onclick="createOneMblforEachBooking()"><i class="fas fa-expand-alt"></i>Create 1 MB/L for each booking</abp-dropdown-item>
+                                            </abp-dropdown-menu>
+                                        </abp-dropdown>
                                     </div>
-                                    <table width="100%" style="border-block-color:#333333;padding-left:10px;margin:4px;">
-                                        <tr style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
-                                            <th width="5%"><input type="checkbox" id="checkAll" /></th>
-                                            <th width="12%">@L["Display:PackageNo"]</th>
-                                            <th width="12%">@L["Display:PackageSize"]</th>
-                                            <th width="12%">@L["Display:Seal"]</th>
-                                            <th width="12%">@L["Display:SoNo"]</th>
-                                            <th width="8%">@L["Display:PackageType"]</th>
-                                            <th width="16%">@L["Display:Weight"]</th>
-                                            <th width="16%">@L["Display:Volume"]</th>
-                                            <th width="7%">@L["Display:Package"]</th>
+                                    <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                                        <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                            <th width="5%" rowspan="2" style="background-color: #f4f4f4; text-align: center;" style="color: #333333;"><input type="checkbox" id="checkAll" /></th>
+                                            <th width="5%" rowspan="2" class="text-center" style="background-color: #f4f4f4;"><b>#</b></th>
+                                            <th width="12%" rowspan="2" style="background-color: #f4f4f4;">@L["Display:ContainerNo"]</th>
+                                            <th width="12%" rowspan="2" style="background-color: #f4f4f4;">@L["Display:TP/SZ"]</th>
+                                            <th width="12%" rowspan="2" style="background-color: #f4f4f4;">@L["Display:Seal No"]</th>
+                                            <th width="12%" rowspan="2" style="background-color: #f4f4f4;">@L["Display:BookingNo"]</th>
+                                            <th width="8%" rowspan="2" style="background-color: #f4f4f4;">@L["PKG"]</th>
+                                            <th width="16%" colspan="2" style="background-color: #f4f4f4; text-align: center;">@L["Display:Weight"]</th>
+                                            <th width="16%" colspan="2" style="background-color: #f4f4f4; text-align: center;">@L["Display:Volume"]</th>
+                                        </tr>
+                                        <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                            <th style="background-color: #f4f4f4;">KGS</th>
+                                            <th style="background-color: #f4f4f4;">LBS</th>
+                                            <th style="background-color: #f4f4f4;">CBM</th>
+                                            <th style="background-color: #f4f4f4;">CFT</th>
                                         </tr>
                                         <tbody id="trtbody">
                                         </tbody>
-
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="6" align="right"><strong>Total:</strong></td>
+                                                <td id="totalPackageType">0</td>
+                                                <td id="totalWeightKGS">0</td>
+                                                <td id="totalWeightLBS">0</td>
+                                                <td id="totalVolumeCBM">0</td>
+                                                <td id="totalVolumeCFT">0</td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
-
+                                    <br />
+                                    <abp-row>
+                                        <abp-column>
+                                            <div>
+                                                Shipment Status
+                                            </div>
+                                        </abp-column>
+                                        <abp-column class="shipmentStatus text-right">
+                                            <input type="radio" class="btn-check" name="ViewStatus" id="ViewStatus" value="0" checked>
+                                            <label class="btn btn-outline-secondary btn-sm checkLabel" for="ViewStatus" onclick="checkStatus(0)">@L["Btn:ViewStatus"]</label>
+                                            <input type="radio" class="btn-check" name="EditStatus" id="EditStatus" value="1">
+                                            <label class="btn btn-outline-secondary btn-sm checkLabel" for="EditStatus" onclick="checkStatus(1)">@L["Btn:EditStatus"]</label>
+                                        </abp-column>
+                                    </abp-row>
+                                    <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                                        <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                            <th width="10%" style="background-color: #f4f4f4; text-align: center;" style="color: #333333;"><i class="fa fa-lock"></i></th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["FileNo"]</th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["Manifest:MBLNo"]</th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["Display:ContainerNo"]</th>
+                                            <th width="16%" style="background-color: #f4f4f4;"><button type="button" onclick="displayHblBookingBtn(event)">@L["HblNo"]</button></th>
+                                            <th width="16%" style="background-color: #f4f4f4; display: none;"><button type="button" onclick="displayHblBookingBtn(event)">@L["SoCode"]</button></th>
+                                            <th width="8%" style="background-color: #f4f4f4;">@L["Display:TP/SZ"]</th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["Display:Seal No"]</th>
+                                            <th width="16%" style="background-color: #f4f4f4;">@L["CreateDate"]</th>
+                                        </tr>
+                                    </table>
+                                    <br />
                                 </abp-column>
                             </abp-row>
 
                                <abp-row>
                                 <abp-column>
-                                    <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                                     <abp-card-header style="background:#cccccc;color:#FFFFFF;">
                                         @L["Title:Memo"]
                                     </abp-card-header>
                                     <abp-card>
@@ -917,11 +983,11 @@
 
                 <div class="card-wrap">
 
-                    <button class="btn btn-block btn-add" id="addHBtn">
+                    <button class="btn btn-block btn-add" type="button" id="addHBtn">
                         <i class="fa-solid fa-plus"></i>@L["Btn:AddBooking"]
                     </button>
 
-                    <div class="hbl_sm_area" id="hblCardDiv">
+                    <div class="booking_sm_area" id="bookingCards">
                     </div>
 
                 </div>

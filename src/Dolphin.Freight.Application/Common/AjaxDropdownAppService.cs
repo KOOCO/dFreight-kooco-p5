@@ -179,5 +179,35 @@ namespace Dolphin.Freight.Common
             }
             return list;
         }
+        public async Task<List<ReferenceItemDto>> GetReferenceMblAsync(QueryDto query)
+        {
+            List<ReferenceItemDto> list = new();
+            ReferenceItemDto dto;
+            
+           
+                
+                var oceanExportMbls = await _oceanExportMblRepository.GetListAsync();
+               
+                    foreach (var item in oceanExportMbls)
+                    {
+                        dto = new ReferenceItemDto()
+                        {
+                            Id = item.Id,
+                            Pol = item.PolId,
+                            Pod = item.PodId,
+                            Eta = item.PodEta?.ToString("yyyy-MM-dd"),
+                            Etd = item.PolEtd?.ToString("yyyy-MM-dd"),
+                            ReferenceType = 1,
+                            ReferenceNo = item.FilingNo,
+                            MblNo = item.MblNo,
+                            CarrierId = item.MblCarrierId
+                        };
+                        list.Add(dto);
+                    }
+                
+            
+            
+            return list;
+        }
     }
 }

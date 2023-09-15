@@ -62,6 +62,36 @@ namespace Dolphin.Freight.Settings.SysCodes
             }
             return rs;
         }
+        public async Task<string> GetSystemBookingNoAsync(QueryDto query)
+        {
+            var sysCodes = await _repository.GetListAsync();
+            var sysCode = sysCodes.Where(x => x.CodeType.Equals(query.QueryType)).FirstOrDefault();
+            string rs = null;
+            if (sysCode != null)
+            {
+                var codes = sysCode.ShowName.Split("-");
+                if (codes != null && codes.Length >= 1)
+                {
+                    var codeValue = getIntValue(sysCode.CodeValue);
+
+                    if (codeValue > 9999)
+                    {
+                        codeValue = 0;
+
+                        DateTime oldSerial = new DateTime(int.Parse("20" + codes[0].Substring(0, 2)), int.Parse(codes[0].Substring(2)), 1);
+                        DateTime newSerial = oldSerial.AddMonths(1);
+
+                        sysCode.ShowName = newSerial.ToString("yyMM");
+                    } else
+                    {
+                        sysCode.CodeValue = codeValue.ToString();
+                        rs = sysCode.ShowName + codeValue.ToString().PadLeft(4, '0');
+                    }
+                }
+                await _repository.UpdateAsync(sysCode);
+            }
+            return rs;
+        }
         private int getIntValue(string value)
         {
             int rs = 1;

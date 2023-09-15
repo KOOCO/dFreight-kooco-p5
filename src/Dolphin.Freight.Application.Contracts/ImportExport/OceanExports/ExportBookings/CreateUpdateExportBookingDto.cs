@@ -12,6 +12,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 對應的ID，可能是船期也可能是MBL
         /// </summary>
+        public Guid? VesselScheduleId { get; set; }
         public Guid? ReferenceId { get; set; }
         /// <summary>
         /// 0：船期，1：MBL
@@ -253,6 +254,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// 卡車ID
         /// </summary>
         public Guid? TruckerId { get; set; }
+        public DateTime? CargoReadyDate { get; set; }
         /// <summary>
         /// 卡車交貨地ID
         /// </summary>

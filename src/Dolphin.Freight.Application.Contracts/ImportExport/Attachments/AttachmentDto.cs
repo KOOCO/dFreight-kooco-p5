@@ -38,5 +38,6 @@ namespace Dolphin.Freight.ImportExport.Attachments
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public string CreatorName { get; set; }
     }
 }
