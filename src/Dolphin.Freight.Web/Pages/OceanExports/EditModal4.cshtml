@@ -114,6 +114,7 @@
                 });
             });
             $("#uploadHFile").change(function () {
+                debugger;
                 var fid = '@Model.Hid';
                 var files = $('#uploadHFile').prop("files");
                 var url = "EditModal4?handler=MyUploader";
@@ -605,7 +606,7 @@
                                 
                              <div class="form-group files">
                
-                                <input type="file" id="uploadHFile" multiple>
+                                <input type="file" id="uploadFile" multiple>
                               </div>
                             </abp-column>
                            
@@ -744,7 +745,7 @@
 
                                 <div class="form-group files">
 
-                                    <input type="file" id="uploadFile" multiple>
+                                    <input type="file" id="uploadHFile" multiple>
                                 </div>
                             </abp-column>
 
