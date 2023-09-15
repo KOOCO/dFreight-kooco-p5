@@ -21,10 +21,6 @@
             margin-right: 10px;
         }
 
-        .shipmentStatus {
-            left: 767px;
-        }
-
         #shipmentbody {
             border-collapse: collapse;
         }
@@ -967,12 +963,19 @@
                                         </tfoot>
                                     </table>
                                     <br />
-                                    <abp-column class="shipmentStatus">
-                                        <input type="radio" class="btn-check" name="ViewStatus" id="ViewStatus" value="0" checked>
-                                        <label class="btn btn-outline-secondary btn-sm checkLabel" for="ViewStatus" onclick="checkStatus(0)">@L["Btn:ViewStatus"]</label>
-                                        <input type="radio" class="btn-check" name="EditStatus" id="EditStatus" value="1">
-                                        <label class="btn btn-outline-secondary btn-sm checkLabel" for="EditStatus" onclick="checkStatus(1)">@L["Btn:EditStatus"]</label>
-                                    </abp-column>
+                                    <abp-row>
+                                        <abp-column>
+                                            <div>
+                                                Shipment Status
+                                            </div>
+                                        </abp-column>
+                                        <abp-column class="shipmentStatus text-right">
+                                            <input type="radio" class="btn-check" name="ViewStatus" id="ViewStatus" value="0" checked>
+                                            <label class="btn btn-outline-secondary btn-sm checkLabel" for="ViewStatus" onclick="checkStatus(0)">@L["Btn:ViewStatus"]</label>
+                                            <input type="radio" class="btn-check" name="EditStatus" id="EditStatus" value="1">
+                                            <label class="btn btn-outline-secondary btn-sm checkLabel" for="EditStatus" onclick="checkStatus(1)">@L["Btn:EditStatus"]</label>
+                                        </abp-column>
+                                    </abp-row>
                                     <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
                                         <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
                                             <th width="5%" style="background-color: #f4f4f4; text-align: center;" style="color: #333333;"><i class="fa fa-lock"></i></th>
