@@ -118,7 +118,6 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         }
         public async Task<IActionResult> OnPostAsync()
         {
-
             if (OceanExportHbl.Id != Guid.Empty)
             {
                 QueryHblDto queryHbl = new QueryHblDto();
@@ -172,8 +171,6 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                 var a = dto.IsDeleted;
                 if (dto.Status == 0)await _containerAppService.CreateAsync(dto);
             }
-
-            
 
             return NoContent();
         }
