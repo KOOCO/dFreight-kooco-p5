@@ -10,11 +10,11 @@
 
     <script type="text/javascript">
         Swal.fire({
-                        title: 'Loading...',
-                        didOpen: () => {
-                            Swal.showLoading()
-                        }
-                    })
+            title: 'Loading...',
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        })
         var trindex = 0;
         var containerSizes = [];
         var l = abp.localization.getResource('Freight');
@@ -50,9 +50,16 @@
                                 var value4 = result[i].packageNum;
                                 var value5 = result[i].packageWeight;
                                 var value6 = result[i].packageMeasure;
-                                addTrTag(value1, value2, value3, value4, value5, value6);
+                                var value7 = result[i].isPP;
+                                var value8 = result[i].isCTF;
+                                if (value3 == null) value3 = '';
+                                addTrTag(value1, value2, value3, value4, value5, value6, value7, value8);
 
                             }
+                            addPackageUnitNameddl();
+                            countTotal('MBL');
+                            countTotalVolume('MBL');
+                            countPackageType('MBL');
                         }
                     });
                 }
@@ -84,7 +91,8 @@
                     var tid = $(this).val();
                     $("#did_" + tid).val("1");
                     $("#tr_" + $(this).val()).hide();
-                })
+                });
+                resetIndexes();
             })
             $("#saveBtn").click(function () {
                 $("#mPoNo").val($("#PoNoTag").tagsStr());
@@ -162,27 +170,235 @@
             });
         }
 
+        function countTotal(module) {
+            switch (module) {
+                case 'MBL':
+                    var totalWgt = 0;
+
+                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                        var cells = parseFloat($('#f5_' + i).val());
+                        if (!isNaN(cells)) {
+                            totalWgt += cells;
+                        }
+                    }
+
+                    $('#totalWeight').text(parseFloat(totalWgt).toFixed(2));
+                break;
+
+                case 'HBL':
+                    var value = parseFloat($('#OceanImportHbl_PackageWeight').val()).toFixed(2);
+
+                    if (!isNaN(value)) {
+                        $('#htotalWeight').text(value);
+                    } else {
+                        $('#htotalWeight').text('0.00');
+                    }
+                break;
+
+                default:
+                    var totalWgt = 0;
+
+                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                        var cells = parseFloat($('#f5_' + i).val());
+                        if (!isNaN(cells)) {
+                            totalWgt += cells;
+                        }
+                    }
+
+                    $('#totalWeight').text(parseFloat(totalWgt).toFixed(2));
+                break;
+            }
+        }
+
+        function countTotalVolume(module) {
+            switch (module) {
+                case 'MBL':
+                    var totalVol = 0;
+
+                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                        var cells = parseFloat($('#f6_' + i).val());
+                        if (!isNaN(cells)) {
+                            totalVol += cells;
+                        }
+                    }
+
+                    $('#totalVolume').text(parseFloat(totalVol).toFixed(2));
+                break;
+
+                case 'HBL':
+                    var value = parseFloat($('#OceanImportHbl_PackageMeasurement').val()).toFixed(2);
+
+                    if (!isNaN(value)) {
+                        $('#htotalVolume').text(value);
+                    } else {
+                        $('#htotalVolume').text('0.00');
+                    }
+                break;
+
+                default:
+                    var totalVol = 0;
+
+                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                        var cells = parseFloat($('#f6_' + i).val());
+                        if (!isNaN(cells)) {
+                            totalVol += cells;
+                        }
+                    }
+
+                    $('#totalVolume').text(parseFloat(totalVol).toFixed(2));
+                break;
+            }
+        }
+
+        function countPackageType(module) {
+            switch (module) {
+                case 'MBL':
+                    var totalPKG = 0;
+
+                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                        var cells = parseFloat($('#f4_' + i).val());
+                        if (!isNaN(cells)) {
+                            totalPKG += cells;
+                        }
+                    }
+
+                    $('#totalPackageType').text(parseFloat(totalPKG).toFixed(2));
+                    break;
+
+                case 'HBL':
+                    var value = parseFloat($('#oceanImportHbl_PackageType').val()).toFixed(2);
+
+                    if (!isNaN(value)) {
+                        $('#htotalPackageType').text(value);
+                    } else { $('#htotalPackageType').text('0.00'); }
+                    break;
+
+                default:
+                    var totalPKG = 0;
+
+                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                        var cells = parseFloat($('#f4_' + i).val());
+                        if (!isNaN(cells)) {
+                            totalPKG += cells;
+                        }
+                    }
+
+                    $('#totalPackageType').text(parseFloat(totalPKG).toFixed(2));
+                    break;
+            }
+        }
+
+        function convertUnit(value, module) {
+            switch (module) {
+                case 'MBL':
+                    if (value === 'LB') {
+                        for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
+                            $('#f5_' + i).val(parseFloat($('#f5_' + i).val() * 2.20462).toFixed(2));
+                        }
+                        countTotal('MBL');
+                    } else if (value === 'KG') {
+                        for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
+                            $('#f5_' + i).val(parseFloat($('#f5_' + i).val() / 2.20462).toFixed(2));
+                        }
+                        countTotal('MBL');
+                    } else if (value === 'CFT') {
+                        for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
+                            $('#f6_' + i).val(parseFloat($('#f6_' + i).val() * 35.315).toFixed(2));
+                        }
+                        countTotalVolume('MBL');
+                    } else if (value === 'CBM') {
+                        for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
+                            $('#f6_' + i).val(parseFloat($('#f6_' + i).val() / 35.315).toFixed(2));
+                        }
+                        countTotalVolume('MBL');
+                    }
+                break;
+
+                case 'HBL':
+                    if (value === 'LB') {
+                        $('#OceanExportHbl_PackageWeight').val(parseFloat($('#OceanExportHbl_PackageWeight').val() * 2.20462).toFixed(2));
+                        countTotal('HBL');
+                    }
+                    else if (value === 'KG') {
+                        $('#OceanExportHbl_PackageWeight').val(parseFloat($('#OceanExportHbl_PackageWeight').val() / 2.20462).toFixed(2));
+                        countTotal('HBL');
+                    }
+                    else if (value === 'CFT') {
+                        $('#OceanExportHbl_PackageMeasurement').val(parseFloat($('#OceanExportHbl_PackageMeasurement').val() * 35.315).toFixed(2));
+                        countTotalVolume('HBL');
+                    }
+                    else if (value === 'CBM') {
+                        $('#OceanExportHbl_PackageMeasurement').val(parseFloat($('#OceanExportHbl_PackageMeasurement').val() / 35.315).toFixed(2));
+                        countTotalVolume('HBL');
+                    }
+                break;
+            }
+        }
+
+        function addPackageUnitNameddl() {
+            dolphin.freight.settings.packageUnits.packageUnit.getPackageUnitsLookup({}).done(function (res) {
+                if (res.items != null && res.items.length > 0) {
+                    packageUnitsName = res.items;
+                    var selectHtml = "<select id='PackagingUnit' name='PackagingUnit' class='form-control select-search' >";
+                    for (var i = 0; i < packageUnitsName.length; i++) {
+                        selectHtml = selectHtml + "<option value='" + packageUnitsName[i].id + "' ";
+                        selectHtml = selectHtml + ">" + packageUnitsName[i].packageName + "</option>"
+                    }
+                    selectHtml = selectHtml + "</select>";
+                    $('#packageTypeSelect').append(selectHtml).find('.select-search').select2();
+                }
+            });
+        }
+
         function addTr() {
             addTrTag("", "", "", "", "", "");
         }
-        function addTrTag(value1, value2, value3, value4, value5, value6) {
 
-            var trhtml = "<tr id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
+        function resetIndexes() {
+            var newIndex = 0;
+            $("#trtbody tr:visible").each(function () {
+                if ($(this).attr("id").startsWith("tr_")) {
+                    $(this).attr("id", "tr_" + newIndex);
+
+                    $(this).find("input, div.input-group, select").each(function () {
+                        if (this.name) {
+                            this.name = this.name.replace(/\[.*?\]/, "[" + newIndex + "]");
+                        }
+                        if (this.id) {
+                            var parts = this.id.split("_");
+                            this.id = parts[0] + "_" + newIndex;
+                        }
+                    });
+
+                    $(this).find("td:eq(1)").text(newIndex + 1);
+                    newIndex++;
+                }
+            });
+
+            trindex = newIndex;
+        }
+
+        function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8) {
+            var serialNo = trindex + 1;
+            var trhtml = "<tr id='tr_" + trindex + "'><td style='text-align: center;'><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "' /></td>"
+            trhtml = trhtml + "<td style='text-align: center;'>" + serialNo + "</td>"
+            trhtml = trhtml + `<td>${value7 === true ? '√' : ''}</td>`;
+            trhtml = trhtml + `<td>${value8 === true ? '√' : ''}</td>`;
             trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='exportDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
             trhtml = trhtml + "<td> <input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
-            trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
+            trhtml = trhtml + getcontainerSizeSelect(trindex, value2) + "</td>";
             trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' id='f5_" + trindex + "' class='form-control' value='" + value5 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
             trhtml = trhtml + "</tr>"
             trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
             trhtml = trhtml + "</tr>"
             $("#trtbody").append(trhtml);
             trindex++;
         }
-        function getcontainerSizeSelect(selectedId) {
-            var selectHtml = "<select name='CreateUpdateContainerDtos[" + trindex + "].ContainerSizeId' class='form-control' >";
+        function getcontainerSizeSelect(index, selectedId) {
+            var selectHtml = "<select name='CreateUpdateContainerDtos[" + index + "].ContainerSizeId' class='form-control' >";
             for (var i = 0; i < containerSizes.length; i++) {
                 selectHtml = selectHtml + "<option value='" + containerSizes[i].id + "' ";
                 if (containerSizes[i].id == selectedId) selectHtml = selectHtml + " selected ";
@@ -472,6 +688,10 @@
 @section styles
     {
     <style>
+        #packageTypeSelect .select2-container {
+            display: inline !important;
+        }
+
         .color-black {
             color: black !important;
         }
@@ -480,6 +700,14 @@
             color: #fff;
             background-color: rgb(0 123 255 / 52%);
             border-color: #007bff;
+        }
+
+        .table tbody + tbody {
+            border-top: 2px solid #dee2e6 !important;
+        }
+
+        tfoot {
+            border-width: 0 !important;
         }
     </style>
 }
@@ -617,19 +845,30 @@
                                         <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn">delete</abp-button>
                                         <abp-button class="btn btn-outline-danger me-md-2" type="button" id="classificationBtn">分配集裝箱</abp-button>
                                     </div>
-                                    <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
-                                        <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                    <br />
+                                    <table width="100%" class="table table-bordered" id="trttable">
+                                        <tr>
                                             <th width="5%"></th>
-                                            <th width="20%">@L["Display:PackageNo"]</th>
-                                            <th width="15%">@L["Display:PackageSize"]</th>
-                                            <th width="15%">@L["Display:SmallSeal"]</th>
-                                            <th width="15%">@L["Display:PackageType"]</th>
-                                            <th width="15%">@L["Display:Weight"]</th>
-                                            <th width="15%">@L["Display:Volume"]</th>
+                                            <th width="5%" style="text-align: center;"><b>#</b></th>
+                                            <th width="5%">PP</th>
+                                            <th width="5%">CTF</th>
+                                            <th width="20%">@L["Display:ContainerNo"]</th>
+                                            <th width="15%">@L["Display:TP/SZ"]</th>
+                                            <th width="15%">@L["Display:Seal No"]</th>
+                                            <th width="15%" id="packageTypeSelect"><span class="d-block">@L["PKG"]</span></th>
+                                            <th width="15%"><span class="d-block">@L["Display:Weight"]</span><select id="selectWeight" class="form-select form-select-sm" onchange="convertUnit($(this).val(), 'MBL')" name="selectWeight" style="width: 100%;"><option value="KG" id="wkg">KG</option><option value="LB" id="wlb">LB</option></select></th>
+                                            <th width="15%"><span class="d-block">@L["Measurement"]</span><select id="selectMeasurement" class="form-select form-select-sm" onchange="convertUnit($(this).val(), 'MBL')" name="selectMeasurement" style="width: 100%;"><option value="CBM" id="mcbm">CBM</option><option value="CFT" id="mcft">CFT</option></select></th>
                                         </tr>
                                         <tbody id="trtbody">
                                         </tbody>
-
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="7" align="right"><strong>Total:</strong></td>
+                                                <td id="totalPackageType"></td>
+                                                <td id="totalWeight"></td>
+                                                <td id="totalVolume"></td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
 
                                 </abp-column>
@@ -645,13 +884,13 @@
                                     <textarea id="t1" name="OceanExportMbl.Mark" class="form-control">@Model.OceanExportMbl.Mark</textarea>
                                 </abp-column>
                                 <abp-column size-md="_6">
-                                    <label for="t2">@L["Display:DeionOfGoods"]</label>
+                                    <label for="t2">@L["Description"]</label>
                                     <textarea id="t2" name="OceanExportMbl.Description" class="form-control">@Model.OceanExportMbl.Description</textarea>
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-collum>
-                                    <label for="t3">@L["Display:Ot"]</label>
+                                    <label for="t3">@L["Display:DomesticRouting/ExportInstructions"]</label>
                                     <textarea id="t3" name="OceanExportMbl.DomesticInstructions" class="form-control">@Model.OceanExportMbl.DomesticInstructions</textarea>
                                 </abp-collum>
                             </abp-row>
