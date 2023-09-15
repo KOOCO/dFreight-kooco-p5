@@ -99,7 +99,6 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
             var vesselSchedule = await _vesselScheduleAppService.GetAsync(Id);
             VesselSchedule  = ObjectMapper.Map<VesselScheduleDto, CreateUpdateVesselScheduleDto>(vesselSchedule);
             
-
             if (Status)
             {
                 VesselSchedule.ReferenceNo = string.Empty;

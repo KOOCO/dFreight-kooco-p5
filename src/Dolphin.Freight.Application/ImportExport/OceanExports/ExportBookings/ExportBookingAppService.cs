@@ -188,5 +188,16 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
                 await _repository.UpdateAsync(booking);
             }
         }
+
+        public async Task<bool> IsBookingContainsByVesselId(Guid id)
+        {
+            var bookings = await _repository.GetListAsync(f => f.VesselScheduleId == id);
+
+            if (bookings.Any())
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

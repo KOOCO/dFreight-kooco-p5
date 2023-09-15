@@ -87,6 +87,7 @@ using Dolphin.Freight.Settinngs.ContainerSizes;
 using Dolphin.Freight.Web.ViewModels.DeliveryOrder;
 using Dolphin.Freight.ImportExport.OceanImports;
 using NPOI.POIFS.Crypt.Dsig;
+using Dolphin.Freight.Web.ViewModels.VesselSchedules;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -5728,9 +5729,13 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult CopyVesselSchedulePopupPartial()
+        public IActionResult CopyVesselSchedulePopupPartial(bool isBookingExists)
         {
-            return PartialView("Pages/OceanExports/VesselSchedules/_VesselScheduleCopyPopUp.cshtml");
+            VesselSchedulePopUpViewModel Model = new();
+
+            Model.IsBookingExists = isBookingExists;
+
+            return PartialView("Pages/OceanExports/VesselSchedules/_VesselScheduleCopyPopUp.cshtml", Model);
         }
 
         #region Private Functions

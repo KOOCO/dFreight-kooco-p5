@@ -25,6 +25,7 @@ using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
 using Org.BouncyCastle.Asn1.Mozilla;
 using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.Accounting.InvoiceBills;
+using Dolphin.Freight.Settinngs.SysCodes;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -48,6 +49,7 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IExportBookingAppService _exportBookingAppService;
         private readonly IContainerAppService _containerAppService;
         private readonly IInvoiceBillAppService _invoiceBillAppService;
+        private readonly ISysCodeAppService _sysCodeAppService;
 
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
@@ -73,7 +75,8 @@ namespace Dolphin.Freight.Web.Controllers
             IVesselScheduleAppService vesselScheduleAppService,
             IExportBookingAppService exportBookingAppService,
             IContainerAppService containerAppService,
-            IInvoiceBillAppService invoiceBillAppService
+            IInvoiceBillAppService invoiceBillAppService,
+            ISysCodeAppService sysCodeAppService
             )
         {
             _tradePartnerAppService = tradePartnerAppService;
@@ -92,7 +95,7 @@ namespace Dolphin.Freight.Web.Controllers
             _exportBookingAppService = exportBookingAppService;
             _containerAppService = containerAppService;
             _invoiceBillAppService = invoiceBillAppService;
-
+            _sysCodeAppService = sysCodeAppService;
 
             FillCountryNameAsync().Wait();
             FillTradePartnerAsync().Wait();
@@ -551,9 +554,9 @@ namespace Dolphin.Freight.Web.Controllers
 
         [HttpPost]
         [Route("VesselSchedulesCopy")]
-        public async Task<IActionResult> VesselSchedulesCopy(Guid id, string copyVesselOnly)
+        public async Task<IActionResult> VesselSchedulesCopy(Guid id, string copyType)
         {
-            if (copyVesselOnly == "vesselOnly")
+            if (copyType == "vesselOnly")
             {
                 var vesselData = await _vesselScheduleAppService.GetAsync(id);
                 var updatedVessel = ObjectMapper.Map<VesselScheduleDto, CreateUpdateVesselScheduleDto>(vesselData);
@@ -561,6 +564,44 @@ namespace Dolphin.Freight.Web.Controllers
 
                 var newVessel = await _vesselScheduleAppService.CreateAsync(updatedVessel);
                 newVessel.isNewVessel = true;
+
+                return Json(new { NewVesselId = newVessel.Id, status = newVessel.isNewVessel });
+            } 
+            else if (copyType == "vesselAndBookings")
+            {
+                var vesselData = await _vesselScheduleAppService.GetAsync(id);
+                var updatedVessel = ObjectMapper.Map<VesselScheduleDto, CreateUpdateVesselScheduleDto>(vesselData);
+                updatedVessel.Id = Guid.Empty;
+
+                var newVessel = await _vesselScheduleAppService.CreateAsync(updatedVessel);
+                newVessel.isNewVessel = true;
+
+                var bookingData = await _exportBookingAppService.GetBookingCardsById(id);
+
+                foreach (var item in bookingData)
+                {
+                    var updatedBooking = ObjectMapper.Map<ExportBookingDto, CreateUpdateExportBookingDto>(item);
+
+                    var containerData = await _containerAppService.GetContainersListByBookingId(updatedBooking.Id);
+
+                    updatedBooking.VesselScheduleId = newVessel.Id;
+
+                    Common.QueryDto queryDto = new() { QueryType = "ExportBooking_SoNo" };
+                    updatedBooking.SoNo = await _sysCodeAppService.GetSystemBookingNoAsync(queryDto);
+
+                    updatedBooking.Id = Guid.Empty;
+
+                    var newBooking = await _exportBookingAppService.CreateAsync(updatedBooking);
+
+                    foreach (var container in containerData)
+                    {
+                        container.BookingId = newBooking.Id;
+
+                        container.Id = Guid.Empty;
+
+                        await _containerAppService.CreateAsync(container);
+                    }
+                }
 
                 return Json(new { NewVesselId = newVessel.Id, status = newVessel.isNewVessel });
             }
