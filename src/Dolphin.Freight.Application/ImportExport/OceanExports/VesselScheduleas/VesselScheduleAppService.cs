@@ -17,6 +17,8 @@ using Dolphin.Freight.Common;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Dolphin.Freight.Settinngs.ContainerSizes;
 using Dolphin.Freight.Settings.ContainerSizes;
+using Dolphin.Freight.Accounting.Invoices;
+using Volo.Abp;
 
 namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
 {
@@ -40,10 +42,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         private readonly IRepository<OceanExportMbl, Guid> _oceanExportMblRepository;
         private readonly IContainerSizeAppService _containerSizeAppService;
         private readonly IRepository<ContainerSize, Guid> _containerSizeRepository;
+        private IRepository<Invoice, Guid> _invoiceRepository;
         public VesselScheduleAppService(IRepository<VesselSchedule, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Port, Guid> portRepository, IRepository<Substation, Guid> substationRepository, 
                                         IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IPortsManagementAppService portsManagementAppService, IContainerAppService containerAppService,
                                         IOceanExportMblAppService oceanExportMblAppService, IRepository<OceanExportMbl, Guid> oceanExportMblRepository, IContainerSizeAppService containerSizeAppService,
-                                        IRepository<ContainerSize, Guid> containerSizeRepository)
+                                        IRepository<ContainerSize, Guid> containerSizeRepository, IRepository<Invoice, Guid> invoiceRepository)
+                                       
             : base(repository)
         {
             _repository = repository;
@@ -57,6 +61,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
             _oceanExportMblRepository = oceanExportMblRepository;
             _containerSizeAppService = containerSizeAppService;
             _containerSizeRepository = containerSizeRepository;
+            _invoiceRepository = invoiceRepository;
             /*
             GetPolicyName = OceanExportPermissions.VesselScheduleas.Default;
             GetListPolicyName = OceanExportPermissions.VesselScheduleas.Default;
@@ -192,14 +197,33 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         {
             foreach (var id in ids)
             {
-                await _repository.DeleteAsync(id);
+                var rs = await _invoiceRepository.GetListAsync(true);
+                var check = rs.Where(x => x.VesselScheduleId.Equals(id)).Any();
+                if (!check)
+                {
+                    await _repository.DeleteAsync(id);
+                }
+                else
+                {
+                    throw new UserFriendlyException("Enable To Delete Data have Accounting");
+                }
 
-              
-               
-             
+
+
             }
         }
-
+        public override async Task DeleteAsync(Guid id)
+        {
+            var rs = await _invoiceRepository.GetListAsync(true);
+            var  check= rs.Where(x => x.VesselScheduleId.Equals(id)).Any();
+            if (!check)
+            {
+                 await base.DeleteAsync(id);
+            }
+            else {
+                throw new UserFriendlyException("Enable To Delete Data have Accounting");
+            }
+        }
         public async Task<JsonResult> GetMblContainersByVesselIdAsync(Guid id)
         {
             var containersList = await _containerAppService.QueryListVesselAsync(id);

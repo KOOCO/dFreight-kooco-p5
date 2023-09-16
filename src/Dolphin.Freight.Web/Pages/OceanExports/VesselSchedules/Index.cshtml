@@ -230,41 +230,113 @@
         });
     }
 
+        // function selectCheckbox(checkbox) {
+        //     var checkedCheckboxes = $('.selectCheckbox:checked');
+        //     if (checkbox.checked) {
+        //         checkedCheckboxes.each(function (index, checkbox1) {
+        //             var id = checkbox1.attributes[2].value;
+        //             dolphin.freight.accounting.invoices.invoice.queryInvoices({ queryType: 5, parentId:id }).done(function (data) { 
+        //                 if (data.length > 0) { 
+                        
+        //                  $('#deleteBtn').prop('disabled', true);
+        //                 }
+        //                 else{
+        //                  $('#deleteBtn').prop('disabled', false);
+        //                 }
+        //             })
+                   
+        //             if(checkedCheckboxes.length == 1){
+        //                 $('#copyBtn').prop('disabled', false);
+        //             }else{
+        //                 $('#copyBtn').prop('disabled', true);
+        //             }
+        //         });
+        //     } else {
+        //         var checkedCheckboxes = $('.selectCheckbox:checked');
+        //         if (checkedCheckboxes && checkedCheckboxes.length > 1) { 
+        //          checkedCheckboxes.each(function (index, checkbox1) {
+        //             var id = checkbox1.attributes[2].value;
+        //             dolphin.freight.accounting.invoices.invoice.queryInvoices({ queryType: 5, parentId:id }).done(function (data) { 
+        //                 if (data.length > 0) { 
+                        
+        //                  $('#deleteBtn').prop('disabled', true);
+        //                 }
+        //                 else{
+        //                  $('#deleteBtn').prop('disabled', false);
+        //                 }
+        //             })
+        //             })
+        //         }
+        //         if (checkedCheckboxes && checkedCheckboxes.length == 0){
+        //             $('#deleteBtn').prop('disabled', true);
+        //             $('#copyBtn').prop('disabled', true);
+        //         } else if (checkedCheckboxes.length == 1){
+        //             $('#copyBtn').prop('disabled', false);
+        //              var id = checkedCheckboxes[0].attributes[2].value;
+        //             dolphin.freight.accounting.invoices.invoice.queryInvoices({ queryType: 5, parentId:id }).done(function (data) { 
+        //                 if (data.length > 0) { 
+                        
+        //                  $('#deleteBtn').prop('disabled', true);
+        //                 }
+        //                 else{
+        //                  $('#deleteBtn').prop('disabled', false);
+        //                 }
+        //             })
+        //         }
+        //     }
+        //     if (!$(checkbox).prop('checked')) {
+        //         $('#selectAllCheckbox').prop('checked', false);
+        //     } else {
+        //         var allChecked = true;
+        //         $('#VesselScheduleListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
+        //             if (!$(this).prop('checked')) {
+        //                 allChecked = false;
+        //                 return false;
+        //             }
+        //         });
+        //         $('#selectAllCheckbox').prop('checked', allChecked);
+        //     }
+        // }
         function selectCheckbox(checkbox) {
-            var checkedCheckboxes = $('.selectCheckbox:checked');
-            if (checkbox.checked) {
-                checkedCheckboxes.each(function (index, checkbox1) {
-                    $('#deleteBtn').prop('disabled', false);
-                    if(checkedCheckboxes.length == 1){
+    var checkedCheckboxes = $('.selectCheckbox:checked');
+
+    var disableDeleteBtn = false; // Initialize a flag
+
+            checkedCheckboxes.each(function (index, checkbox1) {
+                var id = checkbox1.attributes[2].value;
+
+                dolphin.freight.accounting.invoices.invoice.queryInvoicesCheck({ queryType: 5, parentId: id }).done(function (data) {
+                    if (data) {
+                        disableDeleteBtn = true; // Set the flag if data.length > 0
+                    }
+                    $('#deleteBtn').prop('disabled', disableDeleteBtn);
+                    // Check the number of checked checkboxes
+                    if (checkedCheckboxes.length === 1) {
                         $('#copyBtn').prop('disabled', false);
-                    }else{
+                    } else {
                         $('#copyBtn').prop('disabled', true);
                     }
-                });
-            } else {
-                var checkedCheckboxes = $('.selectCheckbox:checked');
-                
-                if (checkedCheckboxes && checkedCheckboxes.length == 0){
-                    $('#deleteBtn').prop('disabled', true);
-                    $('#copyBtn').prop('disabled', true);
-                } else if (checkedCheckboxes.length == 1){
-                    $('#copyBtn').prop('disabled', false);
-                }
-            }
-            if (!$(checkbox).prop('checked')) {
-                $('#selectAllCheckbox').prop('checked', false);
-            } else {
-                var allChecked = true;
-                $('#VesselScheduleListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
-                    if (!$(this).prop('checked')) {
-                        allChecked = false;
-                        return false;
-                    }
-                });
-                $('#selectAllCheckbox').prop('checked', allChecked);
-            }
-        }
 
+                    // Update the select all checkbox status
+                    if (!$(checkbox).prop('checked')) {
+                        $('#selectAllCheckbox').prop('checked', false);
+                    } else {
+                        var allChecked = true;
+                        $('#VesselScheduleListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
+                            if (!$(this).prop('checked')) {
+                                allChecked = false;
+                                return false;
+                            }
+                        });
+                        $('#selectAllCheckbox').prop('checked', allChecked);
+                    }
+                })
+            })
+            if (checkedCheckboxes.length === 0) { 
+             $('#copyBtn').prop('disabled', true);
+              $('#deleteBtn').prop('disabled', true);
+            }
+}
         function createNew() {
             window.location.href = "/OceanExports/VesselSchedules/Create";
         }
