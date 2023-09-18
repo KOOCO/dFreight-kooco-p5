@@ -4,7 +4,31 @@ var dataTable;
 var _changeInterval = null;
 var queryListFilter = function () {
     return {
-        search: $("input[name='Search'").val()
+        search: $("#Keyword").val(),
+
+        ovearseaAgentId: $("#VesselSchedule_OverseaAgentId").val() == '' ? null : $("#VesselSchedule_OverseaAgentId").val(),
+        shipperId: $("#VesselSchedule_ShipperId").val() == '' ? null : $("#VesselSchedule_ShipperId").val(),
+        notify: $("#VesselSchedule_NotifyId").val() == '' ? null : $("#VesselSchedule_NotifyAgentId").val(),
+        consigneeId: $("#VesselSchedule_ConsigneeId").val() == '' ? null : $("#VesselSchedule_ConsigneeId").val(),
+        finalDestId: $("#VesselSchedule_FinalDestId").val() == '' ? null : $("#VesselSchedule_FinalDestId").val(),
+        truckerId: $("#VesselSchedule_TruckerId").val() == '' ? null : $("#VesselSchedule_TruckerId").val(),
+        svcTermId: $("#VesselSchedule_SvcTermId").val() == '' ? null : $("#VesselSchedule_SvcTermId").val(),
+        customerId: $("#VesselSchedule_CustomerId").val() == '' ? null : $("#VesselSchedule_CustomerId").val(),
+        porId: $("#VesselSchedule_PorId").val() == '' ? null : $("#VesselSchedule_PorId").val(),
+        pod: $("#VesselSchedule_PodId").val() == '' ? null : $("#VesselSchedule_PodId").val(),
+
+        pol: $("#VesselSchedule_PolId").val() == '' ? null : $("#VesselSchedule_PolId").val(),
+        del: $("#VesselSchedule_DelId").val() == '' ? null : $("#VesselSchedule_DelId").val(),
+
+        shipModeId: $("#VesselSchedule_ShipModeId").val() == '' ? null : $("#VesselSchedule_ShipModeId").val(),
+        saleId: $("#VesselSchedule_SaleId").val() == '' ? null : $("#VesselSchedule_SaleId").val(),
+       
+        eta: $("#ETA").val() == '' || $("#ETA").val() == null ? null : new Date($("#ETA").val()),
+        etd: $("#ETD").val() == '' || $("#ETD").val() == null ? null : new Date($("#ETD").val()),
+        delEta: $("#DelEta").val() == '' || $("#DelEta").val() == null ? null : new Date($("#DelEta").val()),
+        finalDestEta: $("#FinalDestEta").val() == '' || $("#FinalDestEta").val() == null ? null : new Date($("#FinalDestEta").val()),
+        creationDate: $("#CreationDate").val() == '' || $("#CreationDate").val() == null ? null : new Date($("#CreationDate").val()),
+
     };
 };
 
@@ -229,6 +253,36 @@ $(function () {
             dataTable.ajax.reload();
             clearInterval(_changeInterval)
         }, 1000);
+    });
+    $('#Search').click(function (e) {
+        dataTable.ajax.reload();
+    });
+    $('#CancelFilter').click(function (e) {
+        $("#Keyword").val(null);
+
+        // $("#VesselSchedule_OfficeId").val(null);
+        $("select[name='VesselSchedule_OverseaAgentId']").val(null);
+        $("select[name ='ShipperId']").val(null).trigger("change");
+        $("select[name='VesselSchedule_NotifyId']").val(null).trigger("change");
+        $("select[name='VesselSchedule_ConsigneeId']").val(null).trigger("change");
+        $("select[name='VesselSchedule_PorId']").val(null).trigger("change");
+        $("select[name='VesselSchedule_PolId']").val(null).trigger("change");
+        $("select[name='VesselSchedule_PodId']").val(null).trigger("change");
+        $("select[name='VesselSchedule_DelId']").val(null).trigger("change");
+        $("select[name='VesselSchedule_DeliverToId']").val(null).trigger("change");
+        $("select[name='VesselSchedule_ShipModeId']").val(null).trigger("change");
+        $("select[name='VesselSchedule_CustomerId']").val(null).trigger("change");
+        $("select[name='VesselSchedule_SvcTermId']").val(null).trigger("change");
+        $("select[name='VesselSchedule_SaleId']").val(null).trigger("change");
+        $("select[name='VesselSchedule_FinalDestId']").val(null).trigger("change");
+        $("#PostDate").val(null);
+        $("#ETA").val(null);
+        $("#ETD").val(null);
+        $("#DelEta").val(null);
+        $("#FinalDestEta").val(null);
+        $("#CreationDate").val(null);
+        $("#Vessel").val(null);
+        dataTable.ajax.reload();
     });
 });
 
