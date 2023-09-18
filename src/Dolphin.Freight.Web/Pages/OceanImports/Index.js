@@ -3,7 +3,23 @@ var dataTable;
 var _changeInterval = null;
 var queryListFilter = function () {
     return {
-        search: $("input[name='Search'").val()
+        search: $("#Keyword").val(),
+
+        ovearseaAgentId: $("#VesselSchedule_OverseaAgentId").val() == '' ? null : $("#VesselSchedule_OverseaAgentId").val(),
+        carrierId: $("#VesselSchedule_CarrierId").val() == '' ? null : $("#VesselSchedule_CarrierId").val(),
+        shippingAgentId: $("#VesselSchedule_ShipperId").val() == '' ? null : $("#VesselSchedule_ShipperId").val(),
+        cyLocationId: $("#VesselSchedule_CyLocationId").val() == '' ? null : $("#VesselSchedule_CyLocationId").val(),
+        pod: $("#VesselSchedule_PodId").val() == '' ? null : $("#VesselSchedule_PodId").val(),
+        pol: $("#VesselSchedule_PolId").val() == '' ? null : $("#VesselSchedule_PolId").val(),
+        pol: $("#VesselSchedule_PolId").val() == '' ? null : $("#VesselSchedule_PolId").val(),
+        del: $("#VesselSchedule_DelId").val() == '' ? null : $("#VesselSchedule_DelId").val(),
+        saleId: $("#VesselSchedule_SaleId").val() == '' ? null : $("#VesselSchedule_SaleId").val(),
+       
+        postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
+
+
+        creationDate: $("#CreationDate").val() == '' || $("#CreationDate").val() == null ? null : new Date($("#CreationDate").val()),
+        vessel: $("#Vessel").val(),
     };
 };
 
@@ -108,12 +124,8 @@ $(function () {
         );
     })
 
-    $('#Search').keyup(function () {
-        clearInterval(_changeInterval)
-        _changeInterval = setInterval(function () {
-            dataTable.ajax.reload();
-            clearInterval(_changeInterval)
-        }, 1000);
+    $('#Search').click(function (e) {
+        dataTable.ajax.reload();
     });
 
     $('#NewMblButton').click(function (e) {

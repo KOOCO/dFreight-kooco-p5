@@ -88,7 +88,23 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             OceanImportMbls = OceanImportMbls.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.MblNo
                                               .Contains(query.Search) || x.Office.SubstationName
                                               .Contains(query.Search) || x.Office.AbbreviationName
-                                              .Contains(query.Search)).OrderByDescending(x => x.CreationTime);
+                                               .Contains(query.Search) || x.SoNo
+                                          .Contains(query.Search))
+                                             .WhereIf(query.CarrierId.HasValue, e => e.MblCarrierId == query.CarrierId)
+                                   .WhereIf(query.ShippingAgentId.HasValue, e => e.ShippingAgentId == query.ShippingAgentId)
+                                   .WhereIf(query.CyLocationId.HasValue, e => e.CyLocationId == query.CyLocationId)
+                                   .WhereIf(query.CyLocationId.HasValue, e => e.CfsLocationId == query.CyLocationId)
+                                   .WhereIf(query.Pol.HasValue, e => e.PolId == query.Pol)
+                                   .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
+                                   .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
+                                    .WhereIf(!string.IsNullOrWhiteSpace(query.Vessel),x=>x.VesselName==query.Vessel)
+                                   .WhereIf(query.SaleId.HasValue, e => e.MblSaleId == query.SaleId)
+                                   .WhereIf(query.OvearseaAgentId.HasValue, e => e.MblOverseaAgentId == query.OvearseaAgentId)
+                                   
+                                   .WhereIf(query.PostDate.HasValue, e => e.PostDate.Date == query.PostDate.Value.Date.AddDays(1))
+                                   
+                                   .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1))
+                                          .OrderByDescending(x => x.CreationTime);
             List<OceanImportMbl> rs = OceanImportMbls.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<OceanImportMblDto> list = new List<OceanImportMblDto>();
 
