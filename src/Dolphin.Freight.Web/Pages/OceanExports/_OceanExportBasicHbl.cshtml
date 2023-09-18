@@ -17,6 +17,7 @@
 @inject IStringLocalizer<FreightResource> L
 
 <script type="text/javascript">
+    var l = abp.localization.getResource('Freight');
     function OpenInTrackTrace() {
         var url = new URL(window.location.href);
         var mblId = url.searchParams.get('Id');
@@ -48,40 +49,40 @@
             $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
         }
 
-        $(document).ready(function () {
-            const ids = [
-                'OceanExportHbl_PolEtd',
-                'OceanExportHbl_PorEtd',
-                'OceanExportHbl_PodEta',
-                'OceanExportHbl_DelEta',
-                'OceanExportHbl_FdestEta',
-                'OceanExportHbl_CargoArrivalDate',
-                'OceanExportHbl_HblWhCutOffTime',
-                'OceanExportHbl_EarlyReturnDatetime',
-                'OceanExportHbl_LcIssueDate',
-                'OceanExportHbl_OnBoardDate',
-                'OceanExportHbl_HblReleaseDate'
-            ];
+        //$(document).ready(function () {
+        //    const ids = [
+        //        'OceanExportHbl_PolEtd',
+        //        'OceanExportHbl_PorEtd',
+        //        'OceanExportHbl_PodEta',
+        //        'OceanExportHbl_DelEta',
+        //        'OceanExportHbl_FdestEta',
+        //        'OceanExportHbl_CargoArrivalDate',
+        //        'OceanExportHbl_HblWhCutOffTime',
+        //        'OceanExportHbl_EarlyReturnDatetime',
+        //        'OceanExportHbl_LcIssueDate',
+        //        'OceanExportHbl_OnBoardDate',
+        //        'OceanExportHbl_HblReleaseDate'
+        //    ];
             
-            ids.forEach(function (id) {
-                let dateElem = $('#' + id);
+        //    ids.forEach(function (id) {
+        //        let dateElem = $('#' + id);
 
-                if (dateElem.length === 0) {
-                    return;
-                }
+        //        if (dateElem.length === 0) {
+        //            return;
+        //        }
 
-                dateElem.removeAttr('type').datetimepicker({
-                    format: 'Y-m-d H:i',
-                    step: 15,
-                    allowInput: false
-                });
+        //        dateElem.removeAttr('type').datetimepicker({
+        //            format: 'Y-m-d H:i',
+        //            step: 15,
+        //            allowInput: false
+        //        });
 
-                let currentVal = dateElem.val();
-                if (currentVal.includes('T')) {
-                    dateElem.val(currentVal.replace('T', ' '));
-                }
-            });
-        });
+        //        let currentVal = dateElem.val();
+        //        if (currentVal.includes('T')) {
+        //            dateElem.val(currentVal.replace('T', ' '));
+        //        }
+        //    });
+        //});
     });
         
 
@@ -311,13 +312,13 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.PorId", AspItems = Model.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorName", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.PorId) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanExportHbl.PorEtd" />
+                <abp-input asp-for="OceanExportHbl.PorEtd" abp-data-datepicker="false" />
             </abp-column>
             <abp-column size-md="_3">
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.PolId", AspItems = Model.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolName", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.OceanExportHbl.PolId) })
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanExportHbl.PolEtd" />
+                <abp-input asp-for="OceanExportHbl.PolEtd" abp-data-datepicker="false" />
             </abp-column>
         </abp-row>
         <abp-row class="mb-3">
@@ -457,8 +458,8 @@
                     </abp-column>
                 </abp-row>*@
                 <label for="CareOfId" class="form-label"> <input type="checkbox" name="OceanExportHbl.IsCanceled" id="OceanExportHbl_IsCanceled" value="true" /> @L["IsCanceled"]</label>
-
-                <input type="text" id="OceanExportHbl_CanceledDate" name="OceanExportHbl.CanceledDate" value="" class="form-control " abp-data-datetimepicker="false">
+                <abp-input asp-for="OceanExportHbl.CanceledDate" />
+                @*<input type="text" id="OceanExportHbl_CanceledDate" name="OceanExportHbl.CanceledDate" value="" class="form-control " abp-data-datetimepicker="false">*@
 
             </abp-column>
             <abp-column size-md="_3">

@@ -10,7 +10,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 {
     public class CreateUpdateOceanExportMblDto : AuditedEntityDto<Guid>
     {
-        public Guid Mid { get; set; }
+        public Guid? Mid { get; set; }
         /// <summary>
         /// 運輸編號
         /// </summary>

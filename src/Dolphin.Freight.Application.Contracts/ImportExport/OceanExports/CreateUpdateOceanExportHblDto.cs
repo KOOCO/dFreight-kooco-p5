@@ -107,15 +107,15 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 收貨地(POR) ETD
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? PolEtd { get; set; }
         public Guid? PorId { get; set; }
         /// <summary>
         /// 收貨地(POR) ETD
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? PorEtd { get; set; }
         /// <summary>
         /// 卸貨港(POD)ID
@@ -124,8 +124,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 卸貨港(POD) ETA
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? PodEta { get; set; }
         /// <summary>
         /// 交貨地(DEL)ID
@@ -134,8 +134,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 交貨地(DEL) ETA
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? DelEta { get; set; }
         /// <summary>
         /// 最終目的地ID
@@ -144,8 +144,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 最終目的地ETA
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? FdestEta { get; set; }
         /// <summary>
         /// FBA倉庫ID
@@ -163,8 +163,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 貨物就緒日期
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? CargoArrivalDate { get; set; }
         /// <summary>
         /// 卡車收貨地ID
@@ -209,12 +209,14 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 倉儲結關日
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? HblWhCutOffTime { get; set; }
         /// <summary>
         /// 最早收櫃日
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? EarlyReturnDateTime { get; set; }
         /// <summary>
         /// 信用狀編號
@@ -227,12 +229,14 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 信用狀開立日期
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? LcIssueDate { get; set; }
         /// <summary>
         /// 裝船日期
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? OnBoardDate { get; set; }
         /// <summary>
         /// 是否可堆積
@@ -257,7 +261,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 放貨日期
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? HblReleaseDate { get; set; }
         /// <summary>
         /// 放貨人ID
@@ -270,7 +275,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 取消日期
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
+        //[DataType(DataType.DateTime)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? CanceledDate { get; set; }
         /// <summary>
         /// 取消者ID
@@ -319,22 +325,26 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 預計最終交付時間
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? DoorDeliveryETA { get; set; }
         /// <summary>
         /// 實際最終交付時間
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? DoorDeliveryATA { get; set; }
         /// <summary>
         /// 出口報關時間
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? CustomClearance { get; set; }
         /// <summary>
         /// 進口清關時間
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? CustomDeclaration { get; set; }
         /// <summary>
         /// 卡片顏色標記ID
