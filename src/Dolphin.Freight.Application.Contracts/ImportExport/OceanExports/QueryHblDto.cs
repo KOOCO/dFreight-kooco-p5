@@ -43,5 +43,21 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public DateTime? DelEta { get; set; }
         public DateTime? FinalDestEta { get; set; }
         public DateTime? CreationDate { get; set; }
+       
+        public string FlightNo { get; set; }
+        public Guid? DepatureId { get; set; }
+        public Guid? DestinationId { get; set; }
+
+        public Guid? CarrierId { get; set; }
+      
+
+        public Guid? OfficeId { get; set; }
+        public bool? AwbCancelled { get; set; }
+        public bool? DirectMaster { get; set; }
+        public DateTime? DepatureDate { get; set; }
+        public DateTime? ArrivalDate { get; set; }
+        public DateTime? PostDate { get; set; }
+
+      
     }
 }
