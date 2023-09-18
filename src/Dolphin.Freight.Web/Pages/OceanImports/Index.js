@@ -14,7 +14,8 @@ var queryListFilter = function () {
         pol: $("#VesselSchedule_PolId").val() == '' ? null : $("#VesselSchedule_PolId").val(),
         del: $("#VesselSchedule_DelId").val() == '' ? null : $("#VesselSchedule_DelId").val(),
         saleId: $("#VesselSchedule_SaleId").val() == '' ? null : $("#VesselSchedule_SaleId").val(),
-       
+        coLoaderId: $("#VesselSchedule_CoLoaderId").val() == '' ? null : $("#VesselSchedule_CoLoaderId").val(),
+        officeId: $("#VesselSchedule_officeId").val() == '' ? null : $("#VesselSchedule_officeId").val(),
         postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
 
 

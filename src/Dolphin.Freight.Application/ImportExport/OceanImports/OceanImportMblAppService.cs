@@ -100,7 +100,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                                     .WhereIf(!string.IsNullOrWhiteSpace(query.Vessel),x=>x.VesselName==query.Vessel)
                                    .WhereIf(query.SaleId.HasValue, e => e.MblSaleId == query.SaleId)
                                    .WhereIf(query.OvearseaAgentId.HasValue, e => e.MblOverseaAgentId == query.OvearseaAgentId)
-                                   
+                                   .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
+                                   .WhereIf(query.CoLoaderId.HasValue, e => e.CoLoaderId == query.CoLoaderId)
                                    .WhereIf(query.PostDate.HasValue, e => e.PostDate.Date == query.PostDate.Value.Date.AddDays(1))
                                    
                                    .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1))

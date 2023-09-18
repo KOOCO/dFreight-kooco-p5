@@ -21,7 +21,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public Guid? Pol { get; set; }
         public Guid? Pod { get; set; }
         public Guid? Del { get; set; }
-       
+        public Guid? OfficeId { get; set; }
+        public Guid? CoLoaderId { get; set; }
         public Guid? ShippingAgentId { get; set; }
         public Guid? CyLocationId { get; set; }
         public DateTime? PostDate { get; set; }
