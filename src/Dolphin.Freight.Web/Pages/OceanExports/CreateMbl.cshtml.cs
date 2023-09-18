@@ -75,24 +75,17 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             else OceanExportMbl.PostDate = OceanExportMbl.PolEtd;
             OceanExportMbl.FilingNo = await _sysCodeAppService.GetSystemNoAsync(new (){ QueryType= "OceanExportMbl_FilingNo" });
             var mbl = await _oceanExportMblAppService.CreateAsync(OceanExportMbl);
-            OceanExportHbl.MblId = mbl.Id;
             Id = mbl.Id;
-            if (AddHbl == 1)
+            if (OceanExportHbl is not null && !string.IsNullOrEmpty(OceanExportHbl.HblNo))
             {
-                //if (OceanExportHbl.IsCreateBySystem)
-                //{
-                //    OceanExportHbl.HblNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "OceanExportHbl_HblNo" });
-                //}
-                QueryDto query  = new QueryDto();
-                query.QueryType = "CardColorId";
-                var syscodes = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(query);
-                if (syscodes != null && syscodes.Count >0) 
+                if (OceanExportHbl.ExtraProperties == null)
                 {
-                    var syscode = syscodes[0];
-                    OceanExportHbl.CardColorId = syscode.Id;
+                    OceanExportHbl.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
                 }
-                var hbl= await _oceanExportHblAppService.CreateAsync(OceanExportHbl);
-                Hid = hbl.Id;
+
+                OceanExportHbl.MblId = Id;
+
+                await _oceanExportHblAppService.CreateAsync(OceanExportHbl);
             }
 
             Dictionary<string, object> rs = new()

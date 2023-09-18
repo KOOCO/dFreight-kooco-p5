@@ -139,7 +139,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 收貨地(POR) ETD
         /// </summary>
-        public DateTime PorEtd { get; set; }
+        public DateTime? PorEtd { get; set; }
         /// <summary>
         /// 裝貨港(POL)ID
         /// </summary>
@@ -157,7 +157,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 卸貨港(POD) ETA
         /// </summary>
-        public DateTime PodEta { get; set; }
+        public DateTime? PodEta { get; set; }
         /// <summary>
         /// 交貨地(DEL)ID
         /// </summary>
@@ -166,7 +166,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 交貨地(DEL) ETA
         /// </summary>
-        public DateTime DelEta { get; set; }
+        public DateTime? DelEta { get; set; }
         /// <summary>
         /// 最終目的地ID
         /// </summary>
@@ -175,7 +175,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 最終目的地ETA
         /// </summary>
-        public DateTime FdestEta { get; set; }
+        public DateTime? FdestEta { get; set; }
         /// <summary>
         /// FBA倉庫ID
         /// </summary>
@@ -192,7 +192,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 貨物就緒日期
         /// </summary>
-        public DateTime CargoArrivalDate { get; set; }
+        public DateTime? CargoArrivalDate { get; set; }
         /// <summary>
         /// 卡車收貨地ID
         /// </summary>
@@ -236,11 +236,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 倉儲結關日
         /// </summary>
-        public DateTime HblWhCutOffTime { get; set; }
+        public DateTime? HblWhCutOffTime { get; set; }
         /// <summary>
         /// 最早收櫃日
         /// </summary>
-        public DateTime EarlyReturnDatetime { get; set; }
+        public DateTime? EarlyReturnDatetime { get; set; }
         /// <summary>
         /// 信用狀編號
         /// </summary>
@@ -252,11 +252,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 信用狀開立日期
         /// </summary>
-        public DateTime LcIssueDate { get; set; }
+        public DateTime? LcIssueDate { get; set; }
         /// <summary>
         /// 裝船日期
         /// </summary>
-        public DateTime OnBoardDate { get; set; }
+        public DateTime? OnBoardDate { get; set; }
         /// <summary>
         /// 是否可堆積
         /// </summary>
@@ -280,7 +280,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 放貨日期
         /// </summary>
-        public DateTime HblReleaseDate { get; set; }
+        public DateTime? HblReleaseDate { get; set; }
         /// <summary>
         /// 放貨人ID
         /// </summary>
@@ -292,7 +292,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 取消日期
         /// </summary>
-        public DateTime CanceledDate { get; set; }
+        public DateTime? CanceledDate { get; set; }
         /// <summary>
         /// 取消者ID
         /// </summary>
@@ -340,19 +340,19 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 預計最終交付時間
         /// </summary>
-        public DateTime DoorDeliveryETA { get; set; }
+        public DateTime? DoorDeliveryETA { get; set; }
         /// <summary>
         /// 實際最終交付時間
         /// </summary>
-        public DateTime DoorDeliveryATA { get; set; }
+        public DateTime? DoorDeliveryATA { get; set; }
         /// <summary>
         /// 出口報關時間
         /// </summary>
-        public DateTime CustomClearance { get; set; }
+        public DateTime? CustomClearance { get; set; }
         /// <summary>
         /// 進口清關時間
         /// </summary>
-        public DateTime CustomDeclaration { get; set; }
+        public DateTime? CustomDeclaration { get; set; }
         /// <summary>
         /// 卡片顏色標記ID
         /// </summary>
