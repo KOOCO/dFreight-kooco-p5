@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dolphin.Freight.AirExports;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Volo.Abp.Application.Dtos;
@@ -45,5 +46,25 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public DateTime? DelEta { get; set; }
         public DateTime? FinalDestEta { get; set; }
         public DateTime? CreationDate { get; set; }
+
+
+       
+
+
+       
+
+        public string FlightNo { get; set; }
+        public Guid? DepatureId { get; set; }
+        public Guid? DestinationId { get; set; }
+
+        public Guid? CarrierId { get; set; }
+        public Guid? FreightLocationId { get; set; }
+
+       
+        public AWBType? AwbType { get; set; }
+        public bool? DirectMaster { get; set; }
+        public DateTime? DepatureDate { get; set; }
+        public DateTime? ArrivalDate { get; set; }
+        public DateTime? PostDate { get; set; }
     }
 }
