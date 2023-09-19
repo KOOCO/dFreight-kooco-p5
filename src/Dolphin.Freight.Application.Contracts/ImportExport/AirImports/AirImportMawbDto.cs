@@ -25,6 +25,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 分站ID
         /// </summary>
         public Guid? OfficeId { get; set; }
+        public string OfficeName { get; set; }
         /// <summary>
         /// 提單類別
         /// </summary> 
@@ -83,6 +84,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 操作員Id
         /// </summary>
         public Guid? SalesId { get; set; }
+        public string SalesName { get; set; }
         /// <summary>
         ///  出發地Id
         /// </summary>
@@ -272,6 +274,9 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public FreightPageType PageType { get; set; }
         public bool IsLocked { get; set; }
         public List<AllHawbListAirImport> AllHawbListAirImports { get; set; }
+        public string ARBalance { get; set; }
+        public string APBalance { get; set; }
+        public string DCBalance { get; set; }
     }
     public class AllHawbListAirImport
     {
