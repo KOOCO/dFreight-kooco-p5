@@ -6,87 +6,34 @@
 @using Volo.Abp.Account.Localization
 @model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
 @inject IStringLocalizer<FreightResource> L
-
-<script>
-    function gotoInvoiceHawb(MawbId, HawbId, InvoiceType) {
-        if (HawbId != '00000000-0000-0000-0000-000000000000') {
-            location.href = '/Accounting/Invoice?MethodType=6&MawbId=' + MawbId + "&HawbId=" + HawbId + "&InvoiceType=" + InvoiceType;
-        }
-        else {
-            Swal.fire({
-                icon: 'error',
-                text: 'The data has not been saved, Please save the data!',
-                showCancelButton: true,
-                confirmButtonText: "Continue",
-            });
-        }
-    }
-
-    function OpenInTrackTrace() {
-        var url = new URL(window.location.href);
-        var mawbId = url.searchParams.get('Id');
-        dolphin.freight.importExport.airImports.airImportMawb.get(mawbId).done(function (res) {
-            myWindow = window.open('https://www.track-trace.com/bol#' + res.mawbNo, '_blank', 'width=1200,height=1000');
-            myWindow.focus();
-        });
-    }
-      function setHawbLockUnlock(isLockedCheck) {
-            var id = '@Model.AirImportHawbDto.Id';
-            isLockedCheck = isLockedCheck === "True";
-            if(isLockedCheck){
-                
-            abp.message.confirm(l('UnlockConfirmationMessage'))
-                .then(function (confirmed) {
-                    if (confirmed) {
-                        dolphin.freight.importExport.airImports.airImportHawb
-                            .lockedOrUnLockedAirImportHawb(id)
-                            .then(function () {
-                                abp.message.success(l('SuccessfullyUnlocked'));
-                                window.location.reload();
-                            });
-                    }
-                });
-            } else{
-                abp.message.confirm(l('LockConfirmationMessage'))
-                .then(function (confirmed) {
-                    if (confirmed) {
-                      dolphin.freight.importExport.airImports.airImportHawb
-                            .lockedOrUnLockedAirImportHawb(id)
-                            .then(function () {
-                                abp.message.success(l('SuccessfullyLocked'));
-                                window.location.reload();
-                            });
-                    }
-                });
-            }
-        }
+@section scripts{
+    <script type="text/javascript">
+    
 </script>
- 
+}
+
+
 <abp-card class="card board-item" id="hblCard">
     <abp-card-header id="hblCardHeader" style="background:#555555;color:white;">
-
         <abp-card-title>
-            HAWB
-            <span id="title0">@Model.AirImportHawbDto.HawbNo </span>
-            <input type="hidden" asp-for="@Model.AirImportHawbDto.Id" />
+            HAWB  @Model.AirExportHawbDto.HawbNo
         </abp-card-title>
-
+        <input type="hidden" name="AirExportHawbDto.Id" id="AirExportHawbDto_Id" value="@Model.AirExportHawbDto.Id" />
         <div class="btn-group dropdown">
-            <button class="btn btn-secondary dropdown-toggle" style="position: relative;" type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                   @if(@Model.AirImportHawbDto.IsLocked)
-                         {
-                           <i class="fa fa-lock"></i>
-                                        }
-                           else
-                       {
-                           <i class="fa fa-lock-open"></i>
-                                        }
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                @if (@Model.AirExportHawbDto.IsLocked)
+                {
+                    <i class="fa fa-lock"></i>
+                }
+                else
+                {
+                    <i class="fa fa-lock-open"></i>
+                }
                 @L["Display:Function"]
             </button>
-            
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                <a class='dropdown-item' href='javascript:void(0)' onclick="setHawbLockUnlock('@Model.AirImportHawbDto.IsLocked')">
-                    @if(@Model.AirImportHawbDto.IsLocked)
+                <a class='dropdown-item' href='javascript:void(0)' onclick="setHawbLockUnlock('@Model.AirExportHawbDto.IsLocked', '@Model.AirExportHawbDto.Id')">
+                    @if (@Model.AirExportHawbDto.IsLocked)
                     {
                         <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
                     }
@@ -96,29 +43,47 @@
                     }
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ArrivalNoticeAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
+                <a class='dropdown-item' href='javascript:void(0)' onclick="DocumentPackage('@Url.Action("DocumentPackage", "Docs", new { id = Model.AirExportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEHBL })')">
+                    <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HawbAuthority", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL, reportType = "Summary" })')">
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Authority (ATME)"]
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getHawbPrintAirExportHawb()">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Print HAWB"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("DeliveryOrderAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getCommercialInvoiceAirExportHawb('@Url.Action("CommercialInvoiceAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ITTE", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL})')">
-                    <i class="fa fa-file-text-o"></i> @L["I.T/T.E"]
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPackingListAirExportHawb('@Model.AirExportHawbDto.Id')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ReleaseOrderAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getCertificateOfOrigin('@Model.AirExportHawbDto.Id')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Certificate of Origin"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PreliminaryClaimAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getBookingConfirmationAirExportHawb('@Model.AirExportHawbDto.Id')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:S/O Confirmation"]
                 </a>
-                <a class='dropdown-item' href='javascript:void()' onclick="OpenWindow('@Url.Action("CarrierCertificateAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getBankDraftAirExportHawb('@Url.Action("BankDraftAirExportHawb", "Docs", new { hawbId = @Model.AirExportHawbDto.Id })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPackageLabelAirExportHawb('@Model.AirExportHawbDto.Id')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Packaging Label"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPackageLabelListAirExportHawb('@Model.AirExportHawbDto.Id')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Package Label List"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPreAlertAirExportHawb('@Url.Action("PreAlertAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
+                    <i class="fa fa-file-text-o"></i> @L["Pre-Alert"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPackingListAirExportHawb('@Model.AirExportHawbDto.Id')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Dispatch List"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrderAirExportHawb('@Url.Action("PickupDeliveryOrderAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="DangerousGoods('@Url.Action("DangerousGoods", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods Declaration"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AirImportProfitReport", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL, reportType = "Summary" })')">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="ProfitReport($('#AirExportHawbDto_Id').val())">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                 </a>
                 <p class="dropdown-divider"></p>
@@ -132,15 +97,14 @@
         </button>
 
     </abp-card-header>
-    <abp-card-body class="collapse show" id="hblDiv">
-
+    <abp-card-body class="collapse show " id="hblDiv">
         <abp-row>
 
             <abp-column size-md="_12">
                 <div>
-                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoiceHawb('','@Model.AirImportHawbDto.Id',0)">@L["Add AR"]</abp-button>
-                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoiceHawb('','@Model.AirImportHawbDto.Id',1)">@L["Add DC"]</abp-button>
-                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoiceHawb('','@Model.AirImportHawbDto.Id',2)">@L["Add AP"]</abp-button>
+                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoHawbInvoice('@Model.AirExportHawbDto.Id',0)">@L["Btn:AddAR"]</abp-button>
+                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoHawbInvoice('@Model.AirExportHawbDto.Id',1)">@L["Btn:AddDC"]</abp-button>
+                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoHawbInvoice('@Model.AirExportHawbDto.Id',2)">@L["Btn:AddAP"]</abp-button>
                 </div>
                 <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:0.5em;">
                     <tr border="1">
@@ -165,7 +129,7 @@
                                 i++;
                                 <tr>
                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h0invoiceDtos.Count">@L["Menu:AccountingAR"]</td>
-                                    <td><a href="/Accounting/Invoice?MethodType=6&MawbId=&HawbId=@Model.AirImportHawbDto.Id&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td><a href="/Accounting/Invoice?MethodType=3&HawbId=@Model.Hid&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
                                     @{
                                         double j = 0;
@@ -181,7 +145,7 @@
                                     }
                                     @foreach (var invRate in dto.InvoiceBillDtos)
                                     {
-                                        r += invRate.Quantity * invRate.Rate;
+                                        r += @invRate.Quantity * @invRate.Rate;
                                     }
                                     <td>@r.ToString("0.00")</td>
                                     <td></td>
@@ -193,7 +157,7 @@
                             else
                             {
                                 <tr>
-                                    <td><a href="/Accounting/Invoice?MethodType=6&MawbId=&HawbId=@Model.AirImportHawbDto.Id&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td><a href="/Accounting/Invoice?MethodType=3&HawbId=@Model.Hid&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
                                     @{
                                         double j = 0;
@@ -209,7 +173,7 @@
                                     }
                                     @foreach (var invRate in dto.InvoiceBillDtos)
                                     {
-                                        r += invRate.Quantity * invRate.Rate;
+                                        r += @invRate.Quantity * @invRate.Rate;
                                     }
                                     <td>@r.ToString("0.00")</td>
                                     <td></td>
@@ -231,7 +195,7 @@
                                 i++;
                                 <tr>
                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h1invoiceDtos.Count">@L["Menu:AccountingDC"]</td>
-                                    <td><a href="/Accounting/Invoice?MethodType=6&MawbId=&HawbId=@Model.AirImportHawbDto.Id&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td><a href="/Accounting/Invoice?MethodType=3&HawbId=@Model.Hid&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
                                     @{
                                         double j = 0;
@@ -259,7 +223,7 @@
                             else
                             {
                                 <tr>
-                                    <td><a href="/Accounting/Invoice?MethodType=6&MawbId=&HawbId=@Model.AirImportHawbDto.Id&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td><a href="/Accounting/Invoice?MethodType=3&HawbId=@Model.Hid&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
                                     @{
                                         double j = 0;
@@ -297,7 +261,8 @@
                                 i++;
                                 <tr>
                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h2invoiceDtos.Count">@L["Menu:AccountingAP"]</td>
-                                    <td><a href="/Accounting/Invoice?MethodType=6&MawbId=&HawbId=@Model.AirImportHawbDto.Id&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td><a href="/Accounting/Invoice?MethodType=3&HawbId=@Model.Hid&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    @*  <td>@dto.InvoiceCompanyName</td>*@
                                     <td>@dto.ShipTo</td>
                                     @{
                                         double j = 0;
@@ -325,7 +290,8 @@
                             else
                             {
                                 <tr>
-                                    <td><a href="/Accounting/Invoice?MethodType=6&MawbId=&HawbId=@Model.AirImportHawbDto.Id&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td><a href="/Accounting/Invoice?MethodType=3&HawbId=@Model.Hid&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    @* <td>@dto.InvoiceCompanyName</td>*@
                                     <td>@dto.ShipTo</td>
                                     @{
                                         double j = 0;
@@ -370,7 +336,7 @@
                 </abp-card-header>
                 <abp-card>
                     <abp-card-body>
-                        <partial name="Memos/_Memo" model="new _MemoModel(Model.Id, Dolphin.Freight.Common.FreightPageType.AIMBL)" />
+                        <partial name="Memos/_Memo" model="new _MemoModel(Model.AirExportHawbDto.Id, Dolphin.Freight.Common.FreightPageType.OEMBL)" />
                     </abp-card-body>
                 </abp-card>
             </abp-column>
