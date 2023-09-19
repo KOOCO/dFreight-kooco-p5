@@ -79,7 +79,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                                    .WhereIf(input.ConsigneeId.HasValue, e => e.ConsigneeId == input.ConsigneeId)
                                   
                                    .WhereIf(input.DestinationId.HasValue, e => e.DestinationId == input.DestinationId)
-                                   .WhereIf(input.DestinationId.HasValue, e => e.DepatureId == input.DepatureId)
+                                   .WhereIf(input.DepatureId.HasValue, e => e.DepatureId == input.DepatureId)
                                    .WhereIf(!string.IsNullOrWhiteSpace(input.FlightNo), x => x.FlightNo == input.FlightNo)
                                    .WhereIf(input.OfficeId.HasValue, e => e.OfficeId == input.OfficeId)
                                    .WhereIf(input.AwbType.HasValue, e => e.AwbType == input.AwbType)
