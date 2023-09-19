@@ -22,7 +22,7 @@
             })
         });
         function gotoInvoice(Mid, Hid, InvoiceType) {
-
+            debugger;
             location.href = '/Accounting/Invoice?MethodType=0&Mid=' + Mid + "&Hid=" + Hid + "&InvoiceType=" + InvoiceType;
         }
         function changeHid(id, hid) {
@@ -165,7 +165,7 @@
                         $('#partialContainer').html(partial);
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
-                        if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"))
+                        //if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"))
                     })
 
                     $('.btnHawbCardCollapse').each(function (i, e) {

@@ -254,11 +254,23 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                 query.ParentId = Mid;
                 query.QueryType = 3;
             }
-            var createUpdateOceanImportMblDto = await _oceanImportMblAppService.GetCreateUpdateOceanImportMblDtoById(Mid.Value);
+            if (Hid == null)
+            {
+                var createUpdateOceanImportMblDto = await _oceanImportMblAppService.GetCreateUpdateOceanImportMblDtoById(Mid.Value);
 
-            InvoiceMblDto = ObjectMapper.Map<CreateUpdateOceanImportMblDto, InvoiceMblDto>(createUpdateOceanImportMblDto);
+                InvoiceMblDto = ObjectMapper.Map<CreateUpdateOceanImportMblDto, InvoiceMblDto>(createUpdateOceanImportMblDto);
 
-            backUrl = "/OceanImports/EditModal3?Id=" + Mid;
+                backUrl = "/OceanImports/EditModal3?Id=" + Mid;
+            }
+            else
+            {
+                var oceanImportHbl = ObjectMapper.Map<OceanImportHblDto, CreateUpdateOceanImportHblDto>(await _oceanImportHblAppService.GetAsync(Hid.Value));
+
+                InvoiceMblDto = ObjectMapper.Map<CreateUpdateOceanImportHblDto, InvoiceMblDto>(oceanImportHbl);
+
+                backUrl = "/OceanImports/EditModel3?Id=" + oceanImportHbl.MblId;
+                Mid = oceanImportHbl.MblId;
+            }
         }
         private async Task InitAirImport()
         {
