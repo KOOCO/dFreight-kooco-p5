@@ -8,6 +8,7 @@
 @section scripts
     {
     <abp-script src="/Pages/OceanImports/CreateMbl.js" />
+    <abp-script src="/Pages/OceanImports/EditModel3.js" />
     <script type="text/javascript">
         $(document).ready(function () {
             var isLocked = '@Model.OceanImportMbl.IsLocked';
@@ -589,9 +590,9 @@
                                     <i class="fa fa-lock"></i> @L["Btn:Lock"]
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                @* <a class='dropdown-item' href='#'>
+                                 <a class='dropdown-item' href='#'>
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
-                                </a> *@
+                                </a> 
               
                                              <a class='dropdown-item' href='#' >
                                                 <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
