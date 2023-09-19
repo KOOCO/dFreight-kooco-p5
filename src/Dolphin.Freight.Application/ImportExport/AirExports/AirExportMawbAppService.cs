@@ -81,7 +81,22 @@ namespace Dolphin.Freight.ImportExport.AirExports
                                            .Contains(query.Search) || x.Shipper.TPName
                                            .Contains(query.Search) || x.FilingNo
                                            .Contains(query.Search) || x.ConsigneeId
-                                           .ToString().Contains(query.Search));
+                                           .ToString().Contains(query.Search))
+                                           .WhereIf(query.CarrierId.HasValue, e => e.AwbAcctCarrierId == query.CarrierId)
+                                   .WhereIf(query.ConsigneeId.HasValue, e => e.ConsigneeId == query.ConsigneeId)
+                                   .WhereIf(query.ShipperId.HasValue, e => e.ShipperId == query.ShipperId)
+                                   .WhereIf(query.DestinationId.HasValue, e => e.DestinationId == query.DestinationId)
+                                   .WhereIf(query.DestinationId.HasValue, e => e.DepatureId == query.DepatureId)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(query.FlightNo), x => x.FlightNo == query.FlightNo)
+                                   .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
+                                   .WhereIf(query.IncotermsType.HasValue,e=>e.IncotermsType==query.IncotermsType)
+                                   .WhereIf(query.AwbCancelled.HasValue, e => e.IsAwbCancelled == query.AwbCancelled)
+                                   .WhereIf(query.DirectMaster.HasValue, e => e.IsDirectMaster == query.DirectMaster)
+                                   .WhereIf(query.PostDate.HasValue, e => e.PostDate.Date == query.PostDate.Value.Date.AddDays(1))
+                                   .WhereIf(query.DepatureDate.HasValue, e => e.DepatureDate.Date == query.DepatureDate.Value.Date.AddDays(1))
+                                   .WhereIf(query.ArrivalDate.HasValue, e => e.ArrivalDate.Value.Date == query.ArrivalDate.Value.Date.AddDays(1))
+                                   .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1))
+                                          .OrderByDescending(x => x.CreationTime);
 
             List<AirExportMawb> rs = airExportMawbs.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<AirExportMawbDto> list = new List<AirExportMawbDto>();
@@ -142,7 +157,21 @@ namespace Dolphin.Freight.ImportExport.AirExports
                                            .Contains(input.Search) || x.Shipper.TPName
                                            .Contains(input.Search) || x.FilingNo
                                            .Contains(input.Search) || x.ConsigneeId
-                                           .ToString().Contains(input.Search));
+                                           .ToString().Contains(input.Search))
+                                           .WhereIf(input.CarrierId.HasValue, e => e.AwbAcctCarrierId == input.CarrierId)
+                                   .WhereIf(input.ConsigneeId.HasValue, e => e.ConsigneeId == input.ConsigneeId)
+                                   .WhereIf(input.ShipperId.HasValue, e => e.ShipperId == input.ShipperId)
+                                   .WhereIf(input.DestinationId.HasValue, e => e.DestinationId == input.DestinationId)
+                                   .WhereIf(input.DestinationId.HasValue, e => e.DepatureId == input.DepatureId)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.FlightNo), x => x.FlightNo == input.FlightNo)
+                                   .WhereIf(input.OfficeId.HasValue, e => e.OfficeId == input.OfficeId)
+                                   .WhereIf(input.AwbCancelled.HasValue, e => e.IsAwbCancelled == input.AwbCancelled)
+                                   .WhereIf(input.DirectMaster.HasValue, e => e.IsDirectMaster == input.DirectMaster)
+                                   .WhereIf(input.PostDate.HasValue, e => e.PostDate.Date == input.PostDate.Value.Date.AddDays(1))
+                                   .WhereIf(input.DepatureDate.HasValue, e => e.DepatureDate.Date == input.DepatureDate.Value.Date.AddDays(1))
+                                   .WhereIf(input.ArrivalDate.HasValue, e => e.ArrivalDate.Value.Date == input.ArrivalDate.Value.Date.AddDays(1))
+                                   .WhereIf(input.CreationDate.HasValue, e => e.CreationTime.Date == input.CreationDate.Value.Date.AddDays(1))
+                                          .OrderByDescending(x => x.CreationTime);
             var query = queryable
                 .OrderBy(x => x.CreationTime)
                 .Skip(input.SkipCount)
