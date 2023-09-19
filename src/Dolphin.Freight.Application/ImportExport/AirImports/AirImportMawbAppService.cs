@@ -74,7 +74,23 @@ namespace Dolphin.Freight.ImportExport.AirImports
             var queryable = await Repository.GetQueryableAsync();
             queryable = queryable.WhereIf(!string.IsNullOrWhiteSpace(input.Search), x => x.MawbNo
                                  .Contains(input.Search) || x.FilingNo
-                                 .Contains(input.Search));
+                                 .Contains(input.Search))
+                                  .WhereIf(input.CarrierId.HasValue, e => e.AwbAcctCarrierId == input.CarrierId)
+                                   .WhereIf(input.ConsigneeId.HasValue, e => e.ConsigneeId == input.ConsigneeId)
+                                  
+                                   .WhereIf(input.DestinationId.HasValue, e => e.DestinationId == input.DestinationId)
+                                   .WhereIf(input.DestinationId.HasValue, e => e.DepatureId == input.DepatureId)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.FlightNo), x => x.FlightNo == input.FlightNo)
+                                   .WhereIf(input.OfficeId.HasValue, e => e.OfficeId == input.OfficeId)
+                                   .WhereIf(input.AwbType.HasValue, e => e.AwbType == input.AwbType)
+                                   .WhereIf(input.FreightLocationId.HasValue, e => e.FreightLocationId == input.FreightLocationId)
+                                   .WhereIf(input.DirectMaster.HasValue, e => e.IsDirectMaster == input.DirectMaster)
+                                   .WhereIf(input.PostDate.HasValue, e => e.PostDate.Date == input.PostDate.Value.Date.AddDays(1))
+                                   .WhereIf(input.DepatureDate.HasValue, e => e.DepatureDate.Date == input.DepatureDate.Value.Date.AddDays(1))
+                                   .WhereIf(input.ArrivalDate.HasValue, e => e.ArrivalDate.Date == input.ArrivalDate.Value.Date.AddDays(1))
+                                   .WhereIf(input.CreationDate.HasValue, e => e.CreationTime.Date == input.CreationDate.Value.Date.AddDays(1))
+                                          .OrderByDescending(x => x.CreationTime);
+
             var query = queryable
                 .OrderBy(x=>x.CreationTime)
                 .Skip(input.SkipCount)
