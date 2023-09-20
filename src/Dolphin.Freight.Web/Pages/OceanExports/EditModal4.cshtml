@@ -4,6 +4,9 @@
 @using Microsoft.Extensions.Localization
 @model Dolphin.Freight.Web.Pages.OceanExports.EditModal4Model
 @inject IStringLocalizer<FreightResource> L
+@{
+    string dynamicValue = L["OrDragItHere"]; // Replace with your actual dynamic value
+}
 @section styles
 {
      <style type="text/css">
@@ -37,14 +40,15 @@
     background-repeat: no-repeat;
 }
 .color input{ background-color:#f1f1f1;}
-.files:before {
+files:before {
     position: absolute;
     bottom: 10px;
-    left: 0;  pointer-events: none;
+    left: 0;
+    pointer-events: none;
     width: 100%;
     right: 0;
     height: 57px;
-    content: " or drag it here. ";
+    content: @L["OrDragItHere."];
     display: block;
     margin: 0 auto;
     color: #2ea591;
@@ -599,7 +603,7 @@
                           <abp-column size-md="_4">
               <abp-card class="card board-item">
                   <abp-card-header>
-                  <abp-card-title>Select Files <br /></abp-card-title>
+                  <abp-card-title>@L["SelectFiles"] <br /></abp-card-title>
                   </abp-card-header>
                   <abp-card-body>
              <abp-row>
@@ -618,7 +622,7 @@
                             <abp-column size-md="_8">
                                  <abp-card class="card board-item">
                   <abp-card-header>
-                  <abp-card-title>Document List <br /></abp-card-title>
+                  <abp-card-title>@L["DocumentList"] <br /></abp-card-title>
                   </abp-card-header>
                   <abp-card-body>
              
@@ -738,7 +742,7 @@
             <abp-column size-md="_4">
                 <abp-card class="card board-item">
                     <abp-card-header>
-                        <abp-card-title>Select Files <br /></abp-card-title>
+                        <abp-card-title>@L["SelectFiles"] <br /></abp-card-title>
                     </abp-card-header>
                     <abp-card-body>
                         <abp-row>
@@ -757,7 +761,7 @@
             <abp-column size-md="_8">
                 <abp-card class="card board-item">
                     <abp-card-header>
-                        <abp-card-title>Document List <br /></abp-card-title>
+                        <abp-card-title>@L["DocumentList"] <br /></abp-card-title>
                     </abp-card-header>
                     <abp-card-body>
 
