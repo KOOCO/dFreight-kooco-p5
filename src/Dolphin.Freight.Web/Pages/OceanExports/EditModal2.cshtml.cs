@@ -59,6 +59,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
             QueryHblDto query = new QueryHblDto() { MblId = Id };
             OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
+            OceanExportHbls = OceanExportHbls.Reverse().ToList();
             QueryHblDto queryHbl = new QueryHblDto();
             CreateUpdateContainerHawb = new CreateUpdateContainerDto() { Id = Guid.Empty };
             RateUnitTypeLookupList = new List<SelectListItem>
@@ -101,7 +102,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                     OceanExportHbl = new CreateUpdateOceanExportHblDto();
                     if (OceanExportHbls != null && OceanExportHbls.Count > 0)
                     {
+                        
                         OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(OceanExportHbls[0]);
+                        OceanExportHbl.CardColorValue = "0";
                         Hid = OceanExportHbl.Id;
                         CreateUpdateContainerHawb = await _containerAppService.GetContainerByHblId(Hid);
                         IsShowHbl = true;
@@ -112,7 +115,10 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             else
             {
                 queryHbl.Id = Hid;
-                OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
+               
+                int index = OceanExportHbls.IndexOf(OceanExportHbls.FirstOrDefault(x => x.Id == Hid));
+                OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(OceanExportHbls.Where(x=>x.Id==Hid).FirstOrDefault());
+                OceanExportHbl.CardColorValue = index.ToString();
                 IsShowHbl = true;
             }
         }
