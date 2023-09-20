@@ -173,7 +173,7 @@
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
-                        //$('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
+                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
                         if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
                     })
