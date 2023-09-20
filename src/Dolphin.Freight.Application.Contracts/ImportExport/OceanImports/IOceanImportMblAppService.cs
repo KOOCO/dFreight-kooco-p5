@@ -14,8 +14,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         CreateUpdateOceanImportMblDto> 
     {
         Task<PagedResultDto<OceanImportMblDto>> QueryListAsync(QueryMblDto query);
-        void LockedOrUnLockedOceanImportMblAsync(QueryMblDto query);
+        Task LockedOrUnLockedOceanImportMblAsync(QueryMblDto query);
         Task<CreateUpdateOceanImportMblDto> GetCreateUpdateOceanImportMblDtoById(Guid Id);
         Task<OceanImportDetails> GetOceanImportDetailsById(Guid Id);
+        Task SetLockOrUnlockStatusOceanImportMblAsync(Guid[] Ids, bool IsLocked);
     }
 }
