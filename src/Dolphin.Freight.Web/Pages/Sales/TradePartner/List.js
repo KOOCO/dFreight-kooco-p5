@@ -217,5 +217,47 @@
     //    console.log('open the CreditLimitGroup editModal');
     //    dataTable.ajax.reload();
     //});
-
+   
 });
+
+function exportToExcel() {
+
+
+    var table = document.getElementById("TPListTable");
+    var columnsToExclude = [1,2];
+
+    // Create a new worksheet
+    var ws = XLSX.utils.aoa_to_sheet([]);
+
+    // Create a style object for the header row
+    var headerStyle = {
+        font: { bold: true },
+        fill: { bgColor: { indexed: 23 }, fgColor: { indexed: 23 } }, // Blue color
+        alignment: { horizontal: "center" }, // Center-align text
+    };
+
+    // Iterate through table rows and build the new worksheet
+    for (var rowIndex = 0; rowIndex < table.rows.length; rowIndex++) {
+        var row = table.rows[rowIndex];
+        var newRow = [];
+        for (var colIndex = 0; colIndex < row.cells.length; colIndex++) {
+            if (columnsToExclude.includes(colIndex)) {
+                newRow.push(row.cells[colIndex].innerText);
+            }
+        }
+        XLSX.utils.sheet_add_aoa(ws, [newRow], { origin: -1 });
+    }
+
+    // Apply the header style to the first row
+    XLSX.utils.format_cell(ws['A1'], headerStyle);
+    XLSX.utils.format_cell(ws['B1'], headerStyle);
+    XLSX.utils.format_cell(ws['C1'], headerStyle);
+    // Add more cells as needed for additional columns
+
+    // Create a new workbook and add the worksheet
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    // Save the workbook as an Excel file
+    XLSX.writeFile(wb, "TradePartnerList.xlsx");
+}

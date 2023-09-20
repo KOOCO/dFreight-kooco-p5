@@ -4,6 +4,8 @@
 @model Dolphin.Freight.Web.Pages.Sales.TradePartner.ListModel
 @inject IStringLocalizer<FreightResource> L
 @section scripts{
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.3/xlsx.full.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.2.0/js/tableexport.min.js"></script>
     <abp-script src="/Pages/Sales/TradePartner/List.js" />
 }
 <div class="page-header">
@@ -29,7 +31,9 @@
                     <abp-button id="ExportTradePartnerExcelButton"
                                 text=@L["Display:Button:Excel"]
                                 icon="file-excel"
+                                onclick="exportToExcel()"
                                 button-type="Outline_Secondary" />
+                    
                 </abp-column>
             </div>
         </abp-card-header>
