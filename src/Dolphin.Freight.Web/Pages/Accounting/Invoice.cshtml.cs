@@ -4,6 +4,7 @@ using Dolphin.Freight.AccountingSettings.BillingCodes;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.OceanExports;
+using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 using Dolphin.Freight.ImportExport.OceanImports;
 using Dolphin.Freight.Settings.CurrencySetting;
 using Dolphin.Freight.Settings.Substations;
@@ -88,6 +89,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
         private readonly IAirExportHawbAppService _airExportHawbAppService;
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly ICurrencySettingAppService _currencySettingAppService;
+        private readonly IExportBookingAppService _exportBookingAppService;
         public InvoiceModel(ITradePartnerAppService tradePartnerAppService,
                             ISubstationAppService substationAppService,
                             IInvoiceAppService invoiceAppService, 
@@ -99,7 +101,8 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                             OceanImportMblAppService oceanImportMblAppService,
                             IAjaxDropdownAppService ajaxDropdownAppService,
                             ICurrencySettingAppService currencySettingAppService,
-                            IAirExportHawbAppService airExportHawbAppService
+                            IAirExportHawbAppService airExportHawbAppService,
+                            IExportBookingAppService exportBookingAppService
                             )
         {
             _invoiceAppService = invoiceAppService;
@@ -114,6 +117,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
             _ajaxDropdownAppService = ajaxDropdownAppService;
             _currencySettingAppService = currencySettingAppService;
             _airExportHawbAppService = airExportHawbAppService;
+            _exportBookingAppService = exportBookingAppService;
         }
         public async Task OnGetAsync()
         {
@@ -301,10 +305,22 @@ namespace Dolphin.Freight.Web.Pages.Accounting
         private async Task InitExportBooking() 
         {
             QueryInvoiceDto query = new QueryInvoiceDto() { QueryInvoiceType = InvoiceType };
-            var oceanExportMbl = new OceanExportMblDto();
-            InvoiceMblDto = ObjectMapper.Map<OceanExportMblDto, InvoiceMblDto>(oceanExportMbl);
+            if (Bid is not null)
+            {
+                var exportBooking = await _exportBookingAppService.GetAsync(Bid.Value);
 
-            backUrl = "/OceanExports/ExportBookings/Edit2?Id=" + Bid;
+                InvoiceMblDto = ObjectMapper.Map<ExportBookingDto, InvoiceMblDto>(exportBooking);
+
+                backUrl = "/OceanExports/ExportBookings/Edit2?Id=" + exportBooking.VesselScheduleId;
+                
+                VesselId = exportBooking.VesselScheduleId;
+            } else
+            {
+                var oceanExportMbl = new OceanExportMblDto();
+                InvoiceMblDto = ObjectMapper.Map<OceanExportMblDto, InvoiceMblDto>(oceanExportMbl);
+
+                backUrl = "/OceanExports/ExportBookings/Edit2?Id=" + Bid;
+            }
         }
         private async Task InitVesselSchedule()
         {

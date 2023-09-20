@@ -7,9 +7,13 @@
 @model Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules.Edit2Model
 @inject IStringLocalizer<FreightResource> L
 @section scripts {
+    <abp-script src="/Pages/OceanExports/VesselSchedules/Edit2.js" />
     <script>
         function gotoInvoice(Vid, InvoiceType) {
             location.href = '/Accounting/Invoice?MethodType=5&VesselId=' + Vid + "&InvoiceType=" + InvoiceType;
+        }
+        function onAddBookingClick() {
+            location.href = "/OceanExports/VesselSchedules/Edit?Id=@Model.VesselScheduleDto.Id&from=Accounting";
         }
     </script>
 }
@@ -299,6 +303,17 @@
                         </abp-card-body>
                     </abp-card>
                     <br />
+                    <div id="partialContainer">
+                    </div>
+                </div>
+            </abp-column>
+            <abp-column size-md="_3">
+                <div class="card-wrap">
+                    <button class="btn btn-block btn-add" type="button" id="addHBtn" onclick="onAddBookingClick()">
+                        <i class="fa-solid fa-plus"></i>@L["Btn:AddHawb"].Value
+                    </button>
+                    <div id="hblCardDiv" class="hbl_sm_area">
+                    </div>
                 </div>
             </abp-column>
         </abp-row>
