@@ -9,7 +9,6 @@
 
 <script>
     function gotoInvoiceHawb(MawbId, HawbId, InvoiceType) {
-        debugger;
         if (HawbId != '00000000-0000-0000-0000-000000000000') {
             location.href = '/Accounting/Invoice?MethodType=6&MawbId=' + MawbId + "&HawbId=" + HawbId + "&InvoiceType=" + InvoiceType;
         }
@@ -86,16 +85,16 @@
             </button>
             
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                  <a class='dropdown-item' href='javascript:void(0)' onclick="setHawbLockUnlock('@Model.AirImportHawbDto.IsLocked')">
-                                        @if(@Model.AirImportHawbDto.IsLocked)
-                                        {
-                                            <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
-                                        }
-                                        else
-                                        {
-                                            <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                                        }
-                                    </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="setHawbLockUnlock('@Model.AirImportHawbDto.IsLocked')">
+                    @if(@Model.AirImportHawbDto.IsLocked)
+                    {
+                        <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
+                    }
+                    else
+                    {
+                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                    }
+                </a>
                 <p class="dropdown-divider"></p>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ArrivalNoticeAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]

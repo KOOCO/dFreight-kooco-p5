@@ -220,5 +220,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+
+
     }
 }

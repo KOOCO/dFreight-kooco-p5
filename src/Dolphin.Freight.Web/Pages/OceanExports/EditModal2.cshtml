@@ -715,10 +715,11 @@
 }
 <div class="page-header">
     <div class="breadcrumb-wrapper">
-        <abp-breadcrumb>
-            <abp-breadcrumb-item title=@L["Menu:OceanExports"] />
-            <abp-breadcrumb-item title=@L["Menu:OceanExports.CreateMbl"] href="#" />
-        </abp-breadcrumb>
+       <abp-breadcrumb>
+        <abp-breadcrumb-item href="#" title=@L["Menu:Home"] />
+        <abp-breadcrumb-item title=@L["Menu:OceanExports"] />
+        <abp-breadcrumb-item title="@Model.OceanExportMbl.FilingNo" />
+    </abp-breadcrumb>
     </div>
     <nav class="submenu">
         <ol>
@@ -900,8 +901,8 @@
                     </abp-card>
                     <br />
 
-                    <abp-card class="card board-item color-black @Model.OceanExportHbl.CardColorValue " id="hblCard">
-                        <abp-card-header id="hblCardHeader" class="card-header active ">
+                    <abp-card class="card board-item color-black " id="hblCard">
+                        <abp-card-header id="hblCardHeader" class="card-header active hbl-sm-@Model.OceanExportHbl.CardColorValue ">
                             <abp-card-title>
                                 HB/L @Model.OceanExportHbl.HblNo
                                 <input type="hidden" name="OceanExportHbl.Id" id="OceanExportHbl_Id" value="@Model.OceanExportHbl.Id" />
@@ -1174,15 +1175,16 @@
 
         <div id="hblCardDiv" class="cardAnchor">
                         @if (Model.OceanExportHbls != null)
-                        {
+                        { var count = -1 ;
                             foreach (var hbl in Model.OceanExportHbls)
                             {
+                               count=count+1;
                                 var focusString = "";
                                 if (Model.Hid == hbl.Id)
                                 {
                                     focusString = " focus ";
                                 }
-                    <div class="borad-anchor  @hbl.CardColorValue @focusString">
+                    <div class="borad-anchor hbl-sm-@count @focusString">
                         <div class="borad-cont" onclick="changeHid('@Model.Id','@hbl.Id')">
                             <a class="link" href="#cardA"></a>
                             <span class="label label-HBL">HB/L</span>

@@ -173,7 +173,7 @@
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
-                        //$('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
+                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
                         if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
                     })
@@ -306,10 +306,11 @@
 }
 <div class="page-header">
     <div class="breadcrumb-wrapper">
-        <abp-breadcrumb>
-            <abp-breadcrumb-item title=@L["Menu:OceanExports"] />
-            <abp-breadcrumb-item title=@L["Menu:OceanExports.CreateMbl"] href="#" />
-        </abp-breadcrumb>
+          <abp-breadcrumb>
+        <abp-breadcrumb-item href="#" title=@L["Menu:Home"] />
+        <abp-breadcrumb-item title=@L["Menu:OceanExports"] />
+        <abp-breadcrumb-item title="@Model.OceanExportMbl.FilingNo" />
+    </abp-breadcrumb>
     </div>
     <nav class="submenu">
         <ol>

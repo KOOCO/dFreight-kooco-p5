@@ -147,6 +147,40 @@ namespace Dolphin.Freight.Accounting.Invoices
             }
             return list;
         }
+
+        public async Task<bool> QueryInvoicesCheckAsync(QueryInvoiceDto query)
+        {
+            
+            var rs = await _repository.GetListAsync(true);
+           
+            if (query != null && query.ParentId != null)
+            {
+                switch (query.QueryType)
+                {
+                    default:
+                        return rs.Where(x => x.MawbId.Equals(query.ParentId.Value)).Any();
+                        break;
+                    case 1:
+                        return rs.Where(x => x.HblId.Equals(query.ParentId.Value)).Any();
+                        break;
+                    case 2:
+                        return rs.Where(x => x.BookingId.Equals(query.ParentId.Value)).Any();
+                        break;
+                    case 3:
+                        return rs.Where(x => x.MblId.Equals(query.ParentId.Value)).Any();
+                        break;
+                    case 4:
+                        return rs.Where(x => x.HawbId.Equals(query.ParentId.Value)).Any();
+                        break;
+                    case 5:
+                         return rs.Where(x => x.VesselScheduleId.Equals(query.ParentId.Value)).Any();
+                        break;
+                }
+            }
+            return false;
+
+           
+        }
         public async Task<List<CopyIdDto>> CopyByBookingId(QueryInvoiceDto query, int IsAR, int IsAP, int IsDC) {
             List<CopyIdDto> list = new List<CopyIdDto>();
             var invoices = await _repository.GetListAsync();

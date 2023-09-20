@@ -382,6 +382,49 @@ function setFilteredDropdown() {
         })
     }, 400)
 }
+function setDateTimeforCards(card) {
+    setTimeout(() => {
+        switch (card) {
+            case 'OEHBL':
+                const ids = [
+                    'OceanExportHbl_PorEtd',
+                    'OceanExportHbl_PolEtd',
+                    'OceanExportHbl_PodEta',
+                    'OceanExportHbl_DelEta',
+                    'OceanExportHbl_FdestEta',
+                    'OceanExportHbl_CargoArrivalDate',
+                    'OceanExportHbl_HblWhCutOffTime',
+                    'OceanExportHbl_EarlyReturnDatetime',
+                    'OceanExportHbl_LcIssueDate',
+                    'OceanExportHbl_OnBoardDate',
+                    'OceanExportHbl_HblReleaseDate',
+                    'OceanExportHbl_CanceledDate'
+                ];
+
+                ids.forEach(function (id) {
+                    let dateElem = $('#' + id);
+
+                    if (dateElem.length === 0) {
+                        return;
+                    }
+
+                    dateElem.removeAttr('type').datetimepicker({
+                        format: 'Y-m-d H:i',
+                        step: 15,
+                        allowInput: false
+                    });
+
+                    let currentVal = dateElem.val();
+                    if (currentVal.includes('T')) {
+                        dateElem.val(currentVal.replace('T', ' '));
+                    }
+                });
+                break;
+
+            default:
+        }
+    }, 1000);
+}
 function DangerousGoods(url) {
     myWindow = window.open(url, "Dangerous Goods", 'width=1200,height=800')
     myWindow.focus()

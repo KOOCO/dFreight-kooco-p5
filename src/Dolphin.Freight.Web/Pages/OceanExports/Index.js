@@ -123,6 +123,14 @@ function lockCheckBox(checkbox) {
 function selectAllCheckbox(element) {
     var isChecked = $(element).prop('checked');
     $('#MblListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+
+    if (isChecked) {
+        $('#lockId').prop('disabled', !isChecked);
+        $('#unlockId').prop('disabled', !isChecked);
+    } else {
+        $('#lockId').prop('disabled', !isChecked);
+        $('#unlockId').prop('disabled', !isChecked);
+    }
 }
 
 function copyMbl(shouldDisplayAlternativeTitle) {
@@ -155,9 +163,7 @@ function selectCheckbox(checkbox) {
             }
             else {
                 isAnyUnlocked = true;
-
             }
-
         });
         $('#lockId').prop('disabled', !isAnyUnlocked);
         $('#unlockId').prop('disabled', !isAnyLocked);
@@ -218,6 +224,8 @@ function selectedLock() {
                 dolphin.freight.importExport.oceanExports.oceanExportMbl.selectedLockedOceanExportMbl(ids)
                     .done(function () {
                         abp.message.success(l('Message:SuccessLock'));
+                        $('#lockId').prop('disabled', confirmed);
+                        $('#unlockId').prop('disabled', confirmed);
                         dataTable.ajax.reload();
                     });
             }
@@ -265,6 +273,8 @@ function selectedUnLock() {
                 dolphin.freight.importExport.oceanExports.oceanExportMbl.selectedUnLockedOceanExportMbl(ids)
                     .done(function () {
                         abp.message.success(l('Message:SuccessUnlock'));
+                        $('#lockId').prop('disabled', confirmed);
+                        $('#unlockId').prop('disabled', confirmed);
                         dataTable.ajax.reload();
                     });
             }

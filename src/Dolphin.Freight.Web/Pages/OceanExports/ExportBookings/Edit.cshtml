@@ -26,6 +26,13 @@
         $(document).ready(function () {
             var l = abp.localization.getResource('Freight');
 
+            var url = new URL(window.location.href);
+
+            dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.getBookingCardById(url.searchParams.get('Id')).then(function (res)
+            { 
+                $('#newBookingNoTitle > a').text(res.soNo);
+            });
+
             $(document).ready(function () {
                 const ids = [
                     'ExportBooking_SoNoDate',
@@ -598,8 +605,9 @@
 <div class="page-header">
     <div class="breadcrumb-wrapper">
         <abp-breadcrumb>
+            <abp-breadcrumb-item href="#" title=@L["Menu:Home"] />
             <abp-breadcrumb-item title=@L["Menu:OceanExports"] />
-            <abp-breadcrumb-item title=@L["Menu:ExportBookings.Create"] href="#" />
+            <abp-breadcrumb-item title="@Model.ExportBooking.SoNo"   />
         </abp-breadcrumb>
     </div>
     <nav class="submenu">

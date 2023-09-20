@@ -1,0 +1,311 @@
+﻿@using Dolphin.Freight.AirExports;
+@using Dolphin.Freight.Localization;
+@using Dolphin.Freight.Web.Pages.Shared.Memos;
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.Extensions.Localization;
+@using Volo.Abp.Account.Localization
+@model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
+@inject IStringLocalizer<FreightResource> L
+
+<abp-card class="card board-item" id="hblCard">
+    <abp-card-header id="hblCardHeader" class="@Model.OceanImportHbl.CardColorValue">
+        <input hidden name="@Model.OceanImportHbl.Id" asp-for="@Model.OceanImportHbl.Id" />
+        <abp-card-title>
+            HB/L  @Model.OceanImportHbl.HblNo
+        </abp-card-title>
+
+        <div class="btn-group dropdown">
+            <button class="btn btn-secondary dropdown-toggle" style="position: relative;" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                @L["Display:Function"]
+            </button>
+            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                </a>
+                <div class="dropdown-divider"></div>
+                @* <a class='dropdown-item' href='#'>
+                <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
+                </a> *@
+
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ProofOfDeliveryOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Proof of Delivery"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ReleaseOrderOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="getPreliminaryClaim()">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ExamHoldNoticeOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("CarrierCertificateOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PickupDeliveryInstrucationOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Pickup Delivery Instruction"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ForwarderCargoReceiptOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class='dropdown-item' href='#'>
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()" style="color: #4B77BE; font-weight: 500;">
+                    <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
+                </a>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#hblDiv" aria-expanded="true" aria-controls="hblDiv">
+        </button>
+    </abp-card-header>
+    <abp-card-body class="collapse show " id="hblDiv">
+        <abp-row>
+
+            <abp-column size-md="_12">
+                <div>
+                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('','@Model.OceanImportHbl.Id',0)">@L["Btn:AddAR"]</abp-button>
+                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('','@Model.OceanImportHbl.Id',1)">@L["Btn:AddDC"]</abp-button>
+                    <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('','@Model.OceanImportHbl.Id',2)">@L["Btn:AddAP"]</abp-button>
+                </div>
+                <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:0.5em;">
+                    <tr border="1">
+                        <th width="15%"></th>
+                        <th width="10%">@L["Display:InvoiceNo"]</th>
+                        <th width="15%">@L["Display:To"]</th>
+                        <th width="10%">@L["RevenueName"]</th>
+                        <th width="10%">@L["CostId"]</th>
+                        <th width="10%">@L["Display:Balance"]</th>
+                        <th width="5%">@L["Display:Status"]</th>
+                        <th width="10%">@L["PostDate"]</th>
+                        <th width="10%">@L["Display:InvoiceDate"]</th>
+                        <th width="5%">@L["Display:Function"]</th>
+                    </tr>
+                    @if (Model.h0invoiceDtos != null && Model.h0invoiceDtos.Count > 0)
+                    {
+                        var i = 0;
+                        foreach (var dto in Model.h0invoiceDtos)
+                        {
+                            if (i == 0)
+                            {
+                                i++;
+                                <tr>
+                                    <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h0invoiceDtos.Count">@L["Menu:AccountingAR"]</td>
+                                    <td><a href="/Accounting/Invoice?MethodType=0&Mid=@dto.MblId&Hid=@dto.HblId&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td>@dto.InvoiceCompanyName</td>
+                                    @{
+                                        double j = 0;
+                                    }
+                                    @foreach(var invBill in dto.InvoiceBillDtos)
+                                    {
+                                        j = j + invBill.Quantity;
+                                    }
+                                    <td>@j</td>
+                                    <td>0.00</td>
+                                    @{
+                                        double r = 0;
+                                    }
+                                    @foreach (var invRate in dto.InvoiceBillDtos)
+                                    {
+                                        r += invRate.Quantity * invRate.Rate;
+                                    }
+                                    <td>@r.ToString("0.00")</td>
+                                    <td></td>
+                                    <td>@dto.PostDate</td>
+                                    <td>@dto.InvoiceDate</td>
+                                    <td></td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td><a href="/Accounting/Invoice?MethodType=0&Mid=@dto.MblId&Hid=@dto.HblId&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td>@dto.InvoiceCompanyName</td>
+                                    @{
+                                        double j = 0;
+                                    }
+                                    @foreach (var invBill in dto.InvoiceBillDtos)
+                                    {
+                                        j = j + invBill.Quantity;
+                                    }
+                                    <td>@j</td>
+                                    <td>0.00</td>
+                                    @{
+                                        double r = 0;
+                                    }
+                                    @foreach (var invRate in dto.InvoiceBillDtos)
+                                    {
+                                        r += invRate.Quantity * invRate.Rate;
+                                    }
+                                    <td>@r.ToString("0.00")</td>
+                                    <td></td>
+                                    <td>@dto.PostDate</td>
+                                    <td>@dto.InvoiceDate</td>
+                                    <td></td>
+                                </tr>
+                            }
+
+                        }
+                    }
+                    @if (Model.h1invoiceDtos != null && Model.h1invoiceDtos.Count > 0)
+                    {
+                        var i = 0;
+                        foreach (var dto in Model.h1invoiceDtos)
+                        {
+                            if (i == 0)
+                            {
+                                i++;
+                                <tr>
+                                    <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h1invoiceDtos.Count">@L["Menu:AccountingDC"]</td>
+                                    <td><a href="/Accounting/Invoice?MethodType=0&Mid=@dto.MblId&Hid=@dto.HblId&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td>@dto.InvoiceCompanyName</td>
+                                    @{
+                                        double j = 0;
+                                    }
+                                    @foreach (var invBill in dto.InvoiceBillDtos)
+                                    {
+                                        j = j + invBill.Quantity;
+                                    }
+                                    <td>@j</td>
+                                    <td>0.00</td>
+                                    @{
+                                        double r = 0;
+                                    }
+                                    @foreach (var invRate in dto.InvoiceBillDtos)
+                                    {
+                                        r += invRate.Quantity * invRate.Rate;
+                                    }
+                                    <td>@r.ToString("0.00")</td>
+                                    <td></td>
+                                    <td>@dto.PostDate</td>
+                                    <td>@dto.InvoiceDate</td>
+                                    <td></td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td><a href="/Accounting/Invoice?MethodType=0&Mid=@dto.MblId&Hid=@dto.HblId&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td>@dto.InvoiceCompanyName</td>
+                                    @{
+                                        double j = 0;
+                                    }
+                                    @foreach (var invBill in dto.InvoiceBillDtos)
+                                    {
+                                        j = j + invBill.Quantity;
+                                    }
+                                    <td>@j</td>
+                                    <td>0.00</td>
+                                    @{
+                                        double r = 0;
+                                    }
+                                    @foreach (var invRate in dto.InvoiceBillDtos)
+                                    {
+                                        r += invRate.Quantity * invRate.Rate;
+                                    }
+                                    <td>@r.ToString("0.00")</td>
+                                    <td></td>
+                                    <td>@dto.PostDate</td>
+                                    <td>@dto.InvoiceDate</td>
+                                    <td></td>
+                                </tr>
+                            }
+
+                        }
+                    }
+                    @if (Model.h2invoiceDtos != null && Model.h2invoiceDtos.Count > 0)
+                    {
+                        var i = 0;
+                        foreach (var dto in Model.m2invoiceDtos)
+                        {
+                            if (i == 0)
+                            {
+                                i++;
+                                <tr>
+                                    <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h2invoiceDtos.Count">@L["Menu:AccountingAP"]</td>
+                                    <td><a href="/Accounting/Invoice?MethodType=0&Mid=@dto.MblId&Hid=@dto.HblId&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td>@dto.InvoiceCompanyName</td>
+                                    @{
+                                        double j = 0;
+                                    }
+                                    @foreach (var invBill in dto.InvoiceBillDtos)
+                                    {
+                                        j = j + invBill.Quantity;
+                                    }
+                                    <td>@j</td>
+                                    <td>0.00</td>
+                                    @{
+                                        double r = 0;
+                                    }
+                                    @foreach (var invRate in dto.InvoiceBillDtos)
+                                    {
+                                        r += invRate.Quantity * invRate.Rate;
+                                    }
+                                    <td>@r.ToString("0.00")</td>
+                                    <td></td>
+                                    <td>@dto.PostDate</td>
+                                    <td>@dto.InvoiceDate</td>
+                                    <td></td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td><a href="/Accounting/Invoice?MethodType=0&Mid=@dto.MblId&Hid=@dto.HblId&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td>@dto.InvoiceCompanyName</td>
+                                    @{
+                                        double j = 0;
+                                    }
+                                    @foreach (var invBill in dto.InvoiceBillDtos)
+                                    {
+                                        j = j + invBill.Quantity;
+                                    }
+                                    <td>@j</td>
+                                    <td>0.00</td>
+                                    @{
+                                        double r = 0;
+                                    }
+                                    @foreach (var invRate in dto.InvoiceBillDtos)
+                                    {
+                                        r += invRate.Quantity * invRate.Rate;
+                                    }
+                                    <td>@r.ToString("0.00")</td>
+                                    <td></td>
+                                    <td>@dto.PostDate</td>
+                                    <td>@dto.InvoiceDate</td>
+                                    <td></td>
+                                </tr>
+                            }
+
+                        }
+                    }
+
+                </table>
+
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column size-md="_12">
+                &nbsp;
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column>
+                <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                    @L["Title:Memo"]
+                </abp-card-header>
+                <abp-card>
+                    <abp-card-body>
+                        <partial name="Memos/_Memo" model="new _MemoModel(Model.OceanImportHbl.Id, Dolphin.Freight.Common.FreightPageType.OIHBL)" />
+                    </abp-card-body>
+                </abp-card>
+            </abp-column>
+        </abp-row>
+    </abp-card-body>
+</abp-card>

@@ -1,5 +1,4 @@
 ﻿$(function () {
-    debugger;
     var url = new URL(window.location.href);
 
     dolphin.freight.importExport.airImports.airImportHawb.getHblCardsById(url.searchParams.get('Id'))

@@ -26,6 +26,7 @@ using Org.BouncyCastle.Asn1.Mozilla;
 using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.Accounting.InvoiceBills;
 using Dolphin.Freight.Settinngs.SysCodes;
+using static Volo.Abp.Http.MimeTypes;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -220,6 +221,47 @@ namespace Dolphin.Freight.Web.Controllers
         }
 
         [HttpGet]
+        [Route("AirExportAccountingHawb")]
+        public async Task<PartialViewResult> GetAirExportAccountHawb(Guid Id)
+        {
+            HawbHblViewModel model = new();
+
+            model.SubstationLookupList = SubstationLookupList;
+            model.AirportLookupList = AirportLookupList;
+            model.TradePartnerLookupList = TradePartnerLookupList;
+            model.PackageUnitLookupList = PackageUnitLookupList;
+
+            model.AirExportHawbDto = await _airExportHawbAppService.GetHawbCardById(Id);
+
+            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 4, ParentId = Id };
+            var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
+            model.h0invoiceDtos = new List<InvoiceDto>();
+            model.h1invoiceDtos = new List<InvoiceDto>();
+            model.h2invoiceDtos = new List<InvoiceDto>();
+            if (invoiceDtos != null && invoiceDtos.Count > 0)
+            {
+                foreach (var dto in invoiceDtos)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            model.h0invoiceDtos.Add(dto);
+                            break;
+                        case 1:
+                            model.h1invoiceDtos.Add(dto);
+                            break;
+                        case 2:
+                            model.h2invoiceDtos.Add(dto);
+                            break;
+                    }
+                }
+            }
+            qidto.ParentId = Id;
+
+            return PartialView("~/Pages/AirExports/_AirExportAccountHawb.cshtml", model);
+        }
+
+        [HttpGet]
         [Route("AirExportDocCenterHawb")]
         public async Task<PartialViewResult> GetAirExportDocCenterHawb(Guid Id)
         {
@@ -262,6 +304,46 @@ namespace Dolphin.Freight.Web.Controllers
             model.OceanImportHbl = await _oceanImportHblAppService.GetHblCardById(Id);
 
             return PartialView("~/Pages/OceanImports/_OceanImportBasicHbl.cshtml", model);
+        }
+
+        [Route("OceanImportAccountingHbl")]
+        public async Task<PartialViewResult> GetOceanImportAccountHbl(Guid Id)
+        {
+            HawbHblViewModel model = new();
+
+            model.SubstationLookupList = SubstationLookupList;
+            model.AirportLookupList = AirportLookupList;
+            model.TradePartnerLookupList = TradePartnerLookupList;
+            model.PackageUnitLookupList = PackageUnitLookupList;
+
+            model.OceanImportHbl = await _oceanImportHblAppService.GetHblCardById(Id);
+
+            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 1, ParentId = Id };
+            var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
+            model.h0invoiceDtos = new List<InvoiceDto>();
+            model.h1invoiceDtos = new List<InvoiceDto>();
+            model.h2invoiceDtos = new List<InvoiceDto>();
+            if (invoiceDtos != null && invoiceDtos.Count > 0)
+            {
+                foreach (var dto in invoiceDtos)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            model.h0invoiceDtos.Add(dto);
+                        break;
+                        case 1:
+                            model.h1invoiceDtos.Add(dto);
+                        break;
+                        case 2:
+                            model.h2invoiceDtos.Add(dto);
+                        break;
+                    }
+                }
+            }
+            qidto.ParentId = Id;
+
+            return PartialView("~/Pages/OceanImports/_OceanImportAccountingHbl.cshtml", model);
         }
 
         #endregion

@@ -171,7 +171,22 @@ namespace Dolphin.Freight.ImportExport.AirImports
                                            .Equals(query.MblId))
                                            .WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.HawbNo
                                            .Contains(query.Search) || x.MawbId.ToString()
-                                           .Contains(query.Search));
+                                           .Contains(query.Search))
+                                            .WhereIf(query.ShipperId.HasValue, e => e.ShipperId == query.ShipperId)
+                                   .WhereIf(query.ConsigneeId.HasValue, e => e.ConsigneeId == query.ConsigneeId)
+                                   .WhereIf(query.NotifyId.HasValue, e => e.ConsigneeId == query.NotifyId)
+                                   .WhereIf(query.DestinationId.HasValue, e => e.FinalDestination == query.DestinationId.ToString())
+                                   .WhereIf(query.CustomerId.HasValue, e => e.Customer == query.CustomerId.ToString())
+                                  .WhereIf(query.SaleId.HasValue, e => e.SalesId == query.SaleId)
+
+
+                                   .WhereIf(query.FreightLocationId.HasValue, e => e.FreightLocation == query.FreightLocationId.ToString())
+                                   
+                                  
+                                   
+                                   
+                                   .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1))
+                                          .OrderByDescending(x => x.CreationTime);
             List<AirImportHawb> rs = airImportHawbs.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<AirImportHawbDto> list = new List<AirImportHawbDto>();
             if (rs.Any())

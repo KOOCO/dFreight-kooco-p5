@@ -6,7 +6,27 @@
     var _changeInterval = null;
     var queryListFilter = function () {
         return {
-            search: $("input[name='Search'").val()
+            search: $("#Keyword").val(),
+
+
+            freightLocationId: $("#VesselSchedule_FreightLocationId").val() == '' ? null : $("#VesselSchedule_FreightLocationId").val(),
+
+            consigneeId: $("#VesselSchedule_ConsigneeId").val() == '' ? null : $("#VesselSchedule_ConsigneeId").val(),
+            carrierId: $("#VesselSchedule_CarrierId").val() == '' ? null : $("#VesselSchedule_CarrierId").val(),
+            depatureId: $("#VesselSchedule_DepatureId").val() == '' ? null : $("#VesselSchedule_DepatureId").val(),
+            destinationId: $("#VesselSchedule_DestinationId").val() == '' ? null : $("#VesselSchedule_DestinationId").val(),
+
+            directMaster: $("#DirectMaster").val() == '' ? null : $("#DirectMaster").val(),
+            flightNo: $("#FlightNo").val(),
+            officeId: $("#VesselSchedule_OfficeId").val() == '' ? null : $("#VesselSchedule_OfficeId").val(),
+            awbType: $("#AwbType").val() == '' ? null : $("#AwbType").val(),
+
+
+            depatureDate: $("#DepatureDate").val() == '' || $("#DepatureDate").val() == null ? null : new Date($("#DepatureDate").val()),
+            arrivalDate: $("#ArrivalDate").val() == '' || $("#ArrivalDate").val() == null ? null : new Date($("#ArrivalDate").val()),
+            postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
+            creationDate: $("#CreationDate").val() == '' || $("#CreationDate").val() == null ? null : new Date($("#CreationDate").val()),
+
         };
     };
 
@@ -97,12 +117,8 @@
 
     })
 
-    $('#Search').keyup(function () {
-        clearInterval(_changeInterval)
-        _changeInterval = setInterval(function () {
-            dataTable.ajax.reload();
-            clearInterval(_changeInterval)
-        }, 1000);
+    $('#Search').click(function (e) {
+        dataTable.ajax.reload();
     });
 
 

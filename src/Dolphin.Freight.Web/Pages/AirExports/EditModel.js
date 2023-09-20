@@ -8,10 +8,8 @@
         dolphin.freight.importExport.airExports.airExportHawb.getHblCardsById(id)
             .done(function (hblCards) {
                 if (hblCards && hblCards.length) {
-                    debugger;
                     if (HawbCopy == "AllHAWB" || HawbCopy == null) {
                         hblCards.forEach(function (hblCard, index) {
-
 
                             let abpcard = createHawbCard();
 
@@ -22,7 +20,6 @@
                             if (hblCard.id == url.searchParams.get('Hid')) {
                                 selectedHblNo = hblCard.hawbNo;
                                 isHawbLocked = hblCard.isLocked;
-                                debugger;
                             }
 
                         })
@@ -37,7 +34,6 @@
                         if (hblCards[0].id == url.searchParams.get('Hid')) {
                             selectedHblNo = hblCards[0].hawbNo;
                             isHawbLocked = hblCards[0].isLocked;
-                            debugger;
                         } }
                     setTimeout(() => {
                         var from = url.searchParams.get('from');
