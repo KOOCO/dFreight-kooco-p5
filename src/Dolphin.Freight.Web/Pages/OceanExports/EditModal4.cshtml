@@ -645,7 +645,7 @@
                 </abp-card>
                 <br />
                 <abp-card class="card board-item" id="hblCard">
-                    <abp-card-header id="hblCardHeader" class="@Model.OceanExportHbl.CardColorValue">
+                    <abp-card-header id="hblCardHeader" class="hbl-sm-@Model.OceanExportHbl.CardColorValue">
                         <abp-card-title>
                             HB/L @Model.OceanExportHbl.HblNo
                         </abp-card-title>
@@ -839,14 +839,16 @@
                 <div id="hblCardDiv" class="cardAnchor">
                     @if (Model.OceanExportHbls != null)
                     {
-                        foreach (var hbl in Model.OceanExportHbls)
+                            var count = -1;
+                            foreach (var hbl in Model.OceanExportHbls)
                         {
-                            var focusString = "";
+                                count = count + 1;
+                                var focusString = "";
                             if (Model.Hid == hbl.Id)
                             {
                                 focusString = " focus ";
                             }
-                            <div class="borad-anchor @focusString @hbl.CardColorValue">
+                            <div class="borad-anchor  hbl-sm-@count @focusString">
                                 <div class="borad-cont" id="Card_@Model.Id" onclick="changeHid('@Model.Id','@hbl.Id')">
                                     <a class="link" href="#cardA"></a>
                                     <span class="label label-HBL">HB/L</span>
