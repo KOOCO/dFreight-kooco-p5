@@ -175,6 +175,7 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<CreateUpdateOceanImportHblDto, OceanImportHbl>();
         CreateMap<OceanImportMbl, OceanImportDetails>();
         CreateMap<OceanImportHbl, OceanImportDetails>();
+        CreateMap<OceanImportHblDto, OceanImportHbl>();
 
         // Substation
         CreateMap<Substation, SubstationLookupDto>();

@@ -42,10 +42,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly IRepository<OceanImportHbl, Guid> _oceanImportHblRepository;
         private readonly IRepository<Country, Guid> _countryRepository;
         private readonly IIdentityUserAppService _identityUserAppService;
+        private readonly IOceanImportHblAppService _oceanImportHblAppService;
         public OceanImportMblAppService(IRepository<OceanImportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository,
                                          PortsManagementAppService portRepository1, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
                                         IRepository<OceanImportHbl, Guid> oceanImportHblRepository, IIdentityUserAppService identityUserAppService,
-                                        IRepository<Country, Guid> countryRepository, IRepository<PortsManagement, Guid> portRepository)
+                                        IRepository<Country, Guid> countryRepository, IRepository<PortsManagement, Guid> portRepository, IOceanImportHblAppService oceanImportHblAppService)
             : base(repository)
         {
             _repository = repository;
@@ -57,6 +58,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             _identityUserAppService=identityUserAppService;
             _portRepository = portRepository;
             _countryRepository = countryRepository;
+            _oceanImportHblAppService = oceanImportHblAppService;
             /*
             GetPolicyName = OceanImportPermissions.OceanImportMbls.Default;
             GetListPolicyName = OceanImportPermissions.OceanImportMbls.Default;
@@ -123,11 +125,34 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             listDto.TotalCount = OceanImportMbls.Count();
             return listDto;
         }
-        public async void LockedOrUnLockedOceanImportMblAsync(QueryMblDto query)
+        public async Task LockedOrUnLockedOceanImportMblAsync(QueryMblDto query)
         {
             var mbl = await _repository.GetAsync(query.MbId.Value);
-            mbl.IsLocked = !mbl.IsLocked;
-            await _repository.UpdateAsync(mbl);
+            if (mbl.IsLocked == true)
+            {
+                mbl.IsLocked = false;
+                var queryHbl = await _oceanImportHblRepository.GetQueryableAsync();
+                var hbls = queryHbl.Where(w => w.MblId == mbl.Id).ToList();
+                foreach (var hbl in hbls)
+                {
+                    hbl.IsLocked = false;
+
+                    await _oceanImportHblRepository.UpdateAsync(hbl);
+                }
+                await _repository.UpdateAsync(mbl);
+            } else
+            {
+                mbl.IsLocked = true;
+                var queryHbl = await _oceanImportHblRepository.GetQueryableAsync();
+                var hbls = queryHbl.Where(w => w.MblId == mbl.Id).ToList();
+                foreach (var hbl in hbls)
+                {
+                    hbl.IsLocked = true;
+
+                    await _oceanImportHblRepository.UpdateAsync(hbl);
+                }
+                await _repository.UpdateAsync(mbl);
+            }
         }
         public async Task<CreateUpdateOceanImportMblDto> GetCreateUpdateOceanImportMblDtoById(Guid Id)
         {
@@ -400,6 +425,24 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             oceanImportDetails.ItDate = data.ItDate;
 
             return oceanImportDetails;
+        }
+
+        public async Task SetLockOrUnlockStatusOceanImportMblAsync(Guid[] Ids, bool IsLocked)
+        {
+            foreach (var Id in Ids)
+            {
+                var Mbl = await _repository.GetAsync(Id);
+                Mbl.IsLocked = IsLocked;
+                var QueryHbls = await _oceanImportHblRepository.GetQueryableAsync();
+                var Hbls = QueryHbls.Where(w => w.MblId == Id).ToList();
+                foreach (var Hbl in Hbls)
+                {
+                    Hbl.IsLocked = IsLocked;
+
+                    await _oceanImportHblRepository.UpdateAsync(Hbl);
+                }
+                await _repository.UpdateAsync(Mbl);
+            }
         }
     }
 }
