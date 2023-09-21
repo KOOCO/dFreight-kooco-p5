@@ -112,7 +112,7 @@ namespace Dolphin.Freight.TradePartners
             int creditLimit,
             
 
-            bool isActive = false,
+            bool isActive = true,
             bool trackPayment = true,
             bool clm = false,
             bool billToAgentCode = false,

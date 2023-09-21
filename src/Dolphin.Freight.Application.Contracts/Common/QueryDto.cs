@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.AirExports;
+using Dolphin.Freight.TradePartner;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -40,6 +41,19 @@ namespace Dolphin.Freight.Common
         public DateTime? DepatureDate { get; set; }
         public DateTime? ArrivalDate { get; set; }
         public DateTime? PostDate { get; set; }
+
+        public TPType? TpType { get; set; }
+        public Guid? TpAccountGroupName { get; set; }
+        public Guid? TpCountryCode { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string TaxId { get; set; }
+        public string SalePerson { get; set; }
+        public string SaleOffice { get; set; }
+        public bool? Status { get; set; }
+        public DateTime? CreatedDate { get; set;}
 
     }
 }

@@ -4,7 +4,22 @@
     var _changeInterval = null;
     var queryListFilter = function () {
         return {
-            search: $("input[name='Search'").val()
+            search: $("#Keyword").val(),
+
+            tpType: $("#tpType").val() == '' ? null : $("#tpType").val(),
+            tpAccountGroupName: $("#tpAccountGroupName").val() == '' ? null : $("#tpAccountGroupName").val(),
+            tpCountryCode: $("#tpCountryCode").val() == '' ? null : $("#tpCountryCode").val(),
+            status: $("#status").val() == '' ? null : $("#status").val(),
+           
+           
+            creationDate: $("#CreationDate").val() == '' || $("#CreationDate").val() == null ? null : new Date($("#CreationDate").val()),
+            name: $("#name").val(),
+            address: $("#address").val(),
+            city: $("#city").val(),
+            city: $("#state").val(),
+            taxId: $("#taxid").val(),
+            salePerson: $("#salePerson").val(),
+            saleOffice: $("#saleOffice").val(),
         };
     };
 
@@ -196,12 +211,8 @@
     );
 
    
-    $('#Search').keyup(function () {
-        clearInterval(_changeInterval)
-        _changeInterval = setInterval(function () {
-            dataTable.ajax.reload();
-            clearInterval(_changeInterval)
-        }, 1000);
+    $('#Search').click(function (e) {
+        dataTable.ajax.reload();
     });
     
 

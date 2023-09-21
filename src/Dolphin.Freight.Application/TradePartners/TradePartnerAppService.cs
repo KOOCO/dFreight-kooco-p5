@@ -268,8 +268,21 @@ namespace Dolphin.Freight.TradePartners
                                 .Contains(input.Search) || x.tradePartner.ScacCode
                                 .Contains(input.Search) || x.tradePartner.IataCode
                                 .Contains(input.Search) || x.tradePartner.TPPrintAddress
-                                .Contains(input.Search)); 
-              
+                                .Contains(input.Search))
+                                .WhereIf(input.TpType.HasValue, e => e.tradePartner.TPType == input.TpType)
+                                   .WhereIf(input.TpAccountGroupName.HasValue, e => e.tradePartner.AccountGroupId == input.TpAccountGroupName)
+                                   .WhereIf(input.TpCountryCode.HasValue, e => e.tradePartner.CountryCode == input.TpCountryCode.ToString())
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.Name), x => x.tradePartner.TPName == input.Name)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.Address), x => x.tradePartner.TPLocalAddress == input.Address)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.City), x => x.tradePartner.CityCode == input.Address)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.State), x => x.tradePartner.StateCode == input.State)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.SaleOffice), x => x.tradePartner.SalesOfficeCode == input.SaleOffice)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.SalePerson), x => x.tradePartner.SalesCode == input.SalePerson)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.TaxId), x => x.tradePartner.TaxId == input.TaxId)
+                                   .WhereIf(input.Status.HasValue, e => e.tradePartner.IsActive == input.Status)
+                                  
+                                   .WhereIf(input.CreatedDate.HasValue, e => e.tradePartner.CreationTime.Date == input.CreatedDate.Value.Date.AddDays(1));
+
 
             // paging
             query = query
