@@ -98,7 +98,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 }
             }
             //港口
-            var ports = await _portRepository.GetListAsync();
+            var ports = await _portsManagementRepository.GetListAsync();
             Dictionary<Guid, string> pdictionary = new();
             if (ports != null && ports.Count > 0)
             {
