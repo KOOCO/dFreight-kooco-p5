@@ -230,3 +230,49 @@ function alertConfirmation2() {
 function gotoBookingInvoice(BookingId, InvoiceType) {
     location.href = '/Accounting/Invoice?MethodType=4&Bid=' + BookingId + "&InvoiceType=" + InvoiceType;
 }
+
+function cardSettingClick() {
+    $("#checkModal").modal("show");
+}
+
+function closeModal() {
+    $("#checkModal").modal("hide");
+}
+
+function changeSetting() {
+    $("#checkModal").modal("hide");
+    SortHblCard();
+}
+
+function SortHblCard() {
+    selectedValue = $('#sortType').val();
+
+    var url = new URL(window.location.href);
+    var selectedHblNo;
+
+    dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.getBookingCardsById(url.searchParams.get('Id'), isAsc, selectedValue).done(function (hblCards) {
+        if (hblCards && hblCards.length) {
+            $('#hblCards').empty();
+            hblCards.forEach(function (hblCard, index) {
+
+                let abpcard = createHawbCard();
+
+                abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index, hblCard.hblConsigneeName, hblCard.hblShipperName);
+
+                $('#hblCards').append(abpcard);
+
+                if (hblCard.id == url.searchParams.get('Hid')) {
+                    selectedHblNo = hblCard.hblNo;
+                }
+
+            })
+            setTimeout(() => {
+                if (selectedHblNo) {
+                    $('#title_' + selectedHblNo).click();
+                }
+                else { $('.hblCardTitle')[0].click(); }
+
+            }, 500);
+        }
+    })
+}

@@ -341,5 +341,33 @@
                 </div>
             </abp-column>
         </abp-row>
+        <div id="checkModal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Card Setting</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="pull-left w-80per _pd-sm">
+                                <div class="_text-blue-steel _font-15 bold _mg-bottom-10">Collapsed Card View</div>
+                                <div class="_font-13 _mg-bottom-xs">Show Shipper and Consignee</div>
+                                <div class="_font-11 text-muted">Show Shipper and Consignee name without hovering on the <i class="fa fa-info-circle _font-11"></i> icon when the cards are collapsed</div>
+                            </div>
+                            <div class="pull-left w-20per _mg-top-50">
+                                <abp-input asp-for="@Model.ISToolTipShow" id="cardCheck" suppress-label />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="changeSetting()">@L["Btn:Ok"]</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
