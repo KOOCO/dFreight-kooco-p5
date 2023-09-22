@@ -122,5 +122,14 @@
     $('#AddMawbButton').click(function (e) {
         window.location = "\CreateMawb";
     });
+    $('#btnConfiguration').click(function (e) {
+        var _configurationModal = new abp.ModalManager({
+            viewUrl: abp.appPath + 'Configuration',
+            modalClass: 'ConfigurationViewModel'
+        });
 
+        _configurationModal.open({
+            src: 'AirImportMawbList'
+        });
+    })
 });
