@@ -20,15 +20,30 @@ $(function () {
 });
 
 function createBookingCard() {
-    let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title bookingCardTitle" id="title_{{bookingNo}}"' +
-        ' onclick="onBookingCardClick(event,{{bookingCardId}})">{{bookingNo}}</h5>' +
-        ' <button type="button" class="btn d-none btn-collapse collapsed btnBookingCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnBookingCardCollapse_{{bookingNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
-        ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+    $('#cardSettingArea').show();
+
+    var check = 'false';
+    if ($('#cardCheck').prop('checked')) {
+        check = 'True';
+    }
+
+    let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h6 class="card-title bookingCardTitle" id="title_{{bookingNo}}"' +
+        ' onclick="onBookingCardClick(event,{{bookingCardId}})">';
+
+    if (check == 'false') {
+        abpCard += '<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="{{hblCosigneeName}} {{hblShipperName}}"></i>{{bookingNo}}</h6>'
+    } else {
+        abpCard += '{{bookingNo}}<br>{{hblCosigneeName}}<br>{{hblShipperName}}</h6>'
+    }
+
+    abpCard += '<button type="button" class="btn d-none btn-collapse collapsed btnBookingCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnBookingCardCollapse_{{bookingNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+               '<i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+
     return abpCard;
 }
 
-function setBookingCardValues(abpcard, cardId, bookingNo, index) {
-    let apbCardClass = 'card board-item booking-sm-' + index;
+function setBookingCardValues(abpcard, cardId, bookingNo, index, hblCosigneeName, hblShipperName) {
+    let apbCardClass = 'card board-item mb-3 booking-sm-' + index;
     let cardBodyId = 'bookingCard_' + index;
     cardId = "'" + cardId + "'";
 
@@ -37,6 +52,17 @@ function setBookingCardValues(abpcard, cardId, bookingNo, index) {
     abpcard = abpcard.replaceAll("{{bookingCardId}}", cardId);
     abpcard = abpcard.replaceAll("{{index}}", index);
     abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
+    if (hblCosigneeName !== null && hblCosigneeName !== undefined) {
+        abpcard = abpcard.replaceAll("{{hblCosigneeName}}", hblCosigneeName);
+    } else {
+        abpcard = abpcard.replaceAll("{{hblCosigneeName}}", "");
+    }
+
+    if (hblShipperName != null && hblShipperName !== undefined) {
+        abpcard = abpcard.replaceAll("{{hblShipperName}}", hblShipperName);
+    } else {
+        abpcard = abpcard.replaceAll("{{hblShipperName}}", "");
+    }
 
     return abpcard;
 }
@@ -77,113 +103,6 @@ function onBookingCardClick(e, bookingId) {
                 $('#bookCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                 Swal.clickCancel();
                 //if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
-                setTimeout(() => {
-                    var l = abp.localization.getResource('Freight');
-
-                    $('#ExportBooking_SoNoDate').datetimepicker({
-                        format: 'Y-m-d H:i',
-                        step: 15,
-                        allowInput: false,
-                        value: new Date()
-                    });
-
-                    const ids = [
-                        'ExportBookingDto_SoNoDate',
-                        'ExportBookingDto_PorEtd',
-                        'ExportBookingDto_PodEta',
-                        'ExportBookingDto_DelEta',
-                        'ExportBookingDto_FdestEta',
-                        'ExportBookingDto_WhCutOffTime',
-                        'ExportBookingDto_DocCutOffTime',
-                        'ExportBookingDto_PortCutOffTime',
-                        'ExportBookingDto_VgmCutOffTime',
-                        'ExportBookingDto_RailCutOffTime',
-                        'ExportBookingDto_EarlyReturnDatetime',
-                        'ExportBookingDto_Trans1Eta'
-                    ];
-
-                    ids.forEach(function (id) {
-                        let dateElem = $('#' + id);
-
-                        if (dateElem.length === 0) {
-                            return;
-                        }
-
-                        dateElem.removeAttr('type').datetimepicker({
-                            format: 'Y-m-d H:i',
-                            step: 15,
-                            allowInput: false
-                        });
-
-                        let currentVal = dateElem.val();
-                        if (currentVal.includes('T')) {
-                            dateElem.val(currentVal.replace('T', ' '));
-                        }
-                    });
-
-                    initializeDropdownSearch("ExportBookingDto_CancelReason");
-                    initializeDropdownSearch("ExportBookingDto_ReferenceId");
-                    initializeDropdownSearch("ExportBookingDto_CarrierId");
-                    initializeDropdownSearch("ExportBookingDto_ShipModeId");
-                    initializeDropdownSearch("ExportBookingDto_FreightTermForBuyerId");
-                    initializeDropdownSearch("ExportBookingDto_FreightTermForSalerId");
-                    initializeDropdownSearch("ExportBookingDto_SvcTermFromId");
-                    initializeDropdownSearch("ExportBookingDto_SvcTermToId");
-                    initializeDropdownSearch("ExportBookingDto_IncotermsId");
-                    initializeDropdownSearch("ExportBookingDto_CargoTypeId");
-                    initializeDropdownSearch("ExportBookingDto_ShipperId");
-                    initializeDropdownSearch("ExportBookingDto_CustomerId");
-                    initializeDropdownSearch("ExportBookingDto_BillToId");
-                    initializeDropdownSearch("ExportBookingDto_ConsigneeId");
-                    initializeDropdownSearch("ExportBookingDto_NotifyId");
-                    initializeDropdownSearch("ExportBookingDto_ShippingAgentId");
-                    initializeDropdownSearch("ExportBookingDto_HblAgentId");
-                    initializeDropdownSearch("ExportBookingDto_CoLoaderId");
-                    initializeDropdownSearch("ExportBookingDto_FbaId");
-                    initializeDropdownSearch("ExportBookingDto_CargoPickupId");
-                    initializeDropdownSearch("ExportBookingDto_TruckerId");
-                    initializeDropdownSearch("ExportBookingDto_DeliveryToId");
-                    initializeDropdownSearch("ExportBookingDto_DelId");
-                    initializeDropdownSearch("ExportBookingDto_SalespersonId");
-                    initializeDropdownSearch("ExportBookingDto_PorId");
-                    initializeDropdownSearch("ExportBookingDto_PolId");
-                    initializeDropdownSearch("ExportBookingDto_PodId");
-                    initializeDropdownSearch("ExportBookingDto_FdestId");
-                    initializeDropdownSearch("ExportBookingDto_TransPort1Id");
-                    initializeDropdownSearch("ExportBookingDto_OfficeId");
-                    initializeDropdownSearch("ExportBookingDto_ReferralById");
-                    initializeDropdownSearch("ExportBookingDto_EmptyPickupId");
-
-                    $("#checkHideBtn").click(function () {
-                        initHideBtn();
-                    });
-                    $("#ExportBooking_IsCanceled").change(function () {
-                        initReasonStatus()
-                    });
-                    $('#ExportBooking_IsCreateBySystem').on('click', function (res) {
-                        var l = abp.localization.getResource('Freight');
-                        if (res.currentTarget.checked) {
-                            abp.message.confirm(l('SystemBookingNoConfirm')).then(function (confirmed) {
-                                if (confirmed) {
-                                    dolphin.freight.settings.sysCodes.sysCode.getSystemBookingNo({ queryType: 'ExportBooking_SoNo' }).done(function (rs) {
-                                        $('#ExportBooking_SoNo').val(rs);
-                                    });
-                                }
-                            });
-                        }
-                    })
-
-                    onSetCommodity();
-                    setPoValue();
-                    initHideBtn();
-                    initRemark(0);
-                    initReasonStatus();
-
-                    dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.getBookingCardById($('#ExportBookingDto_Id').val()).done(function (res) {
-                        var sono = res.soNo;
-                        $('#ExportBooking_SoNo').val(sono);
-                    });
-                }, 500);
             })
 
             $('.btnBookingCardCollapse').each(function (i, e) {
@@ -239,6 +158,24 @@ function closeModal() {
     $("#checkModal").modal("hide");
 }
 
+const toggleLink = document.getElementById("toggleLink");
+
+let isAsc = true;
+let selectedValue = 1;
+
+toggleLink.addEventListener("click", function (e) {
+    e.preventDefault();
+
+    if (isAsc) {
+        toggleLink.innerHTML = '<i class="fa fa-sort-down"></i> Desc';
+    } else {
+        toggleLink.innerHTML = '<i class="fa fa-sort-up"></i> Asc';
+    }
+
+    isAsc = !isAsc;
+    SortHblCard();
+});
+
 function changeSetting() {
     $("#checkModal").modal("hide");
     SortHblCard();
@@ -250,19 +187,19 @@ function SortHblCard() {
     var url = new URL(window.location.href);
     var selectedHblNo;
 
-    dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.getBookingCardsById(url.searchParams.get('Id'), isAsc, selectedValue).done(function (hblCards) {
-        if (hblCards && hblCards.length) {
-            $('#hblCards').empty();
-            hblCards.forEach(function (hblCard, index) {
+    dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.getBookingCardsById(url.searchParams.get('Id'), isAsc, selectedValue).done(function (bookingCard) {
+        if (bookingCard && bookingCard.length) {
+            $('#bookingCards').empty();
+            bookingCard.forEach(function (bookingCard, index) {
 
-                let abpcard = createHawbCard();
+                let abpcard = createBookingCard();
 
-                abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index, hblCard.hblConsigneeName, hblCard.hblShipperName);
+                abpcard = setBookingCardValues(abpcard, bookingCard.id, bookingCard.soNo, index, bookingCard.hblConsigneeName, bookingCard.hblShipperName);
 
-                $('#hblCards').append(abpcard);
+                $('#bookingCards').append(abpcard);
 
-                if (hblCard.id == url.searchParams.get('Hid')) {
-                    selectedHblNo = hblCard.hblNo;
+                if (bookingCard.id == url.searchParams.get('Hid')) {
+                    selectedHblNo = bookingCard.hblNo;
                 }
 
             })
@@ -270,7 +207,7 @@ function SortHblCard() {
                 if (selectedHblNo) {
                     $('#title_' + selectedHblNo).click();
                 }
-                else { $('.hblCardTitle')[0].click(); }
+                else { $('.bookingCardTitle')[0].click(); }
 
             }, 500);
         }

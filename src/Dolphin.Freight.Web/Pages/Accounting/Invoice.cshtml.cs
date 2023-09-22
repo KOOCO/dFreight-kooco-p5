@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using QueryInvoiceDto = Dolphin.Freight.Accounting.Invoices.QueryInvoiceDto;
 
 namespace Dolphin.Freight.Web.Pages.Accounting
@@ -311,15 +312,9 @@ namespace Dolphin.Freight.Web.Pages.Accounting
 
                 InvoiceMblDto = ObjectMapper.Map<ExportBookingDto, InvoiceMblDto>(exportBooking);
 
-                backUrl = "/OceanExports/ExportBookings/Edit2?Id=" + exportBooking.VesselScheduleId;
-                
-                VesselId = exportBooking.VesselScheduleId;
-            } else
-            {
-                var oceanExportMbl = new OceanExportMblDto();
-                InvoiceMblDto = ObjectMapper.Map<OceanExportMblDto, InvoiceMblDto>(oceanExportMbl);
+                backUrl = "/OceanExports/VesselSchedules/Edit2?Id=" + exportBooking.VesselScheduleId;
 
-                backUrl = "/OceanExports/ExportBookings/Edit2?Id=" + Bid;
+                VesselId = exportBooking.VesselScheduleId;
             }
         }
         private async Task InitVesselSchedule()

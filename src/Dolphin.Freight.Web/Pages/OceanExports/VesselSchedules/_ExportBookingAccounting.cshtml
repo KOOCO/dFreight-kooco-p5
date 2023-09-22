@@ -60,17 +60,17 @@
                         <th width="10%">@L["Display:InvoiceDate"]</th>
                         <th width="5%">@L["Display:Function"]</th>
                     </tr>
-                    @if (Model.m0invoiceDtos != null && Model.m0invoiceDtos.Count > 0)
+                    @if (Model.h0invoiceDtos != null && Model.h0invoiceDtos.Count > 0)
                     {
                         var i = 0;
-                        foreach (var dto in Model.m0invoiceDtos)
+                        foreach (var dto in Model.h0invoiceDtos)
                         {
                             if (i == 0)
                             {
                                 i++;
                                 <tr>
-                                    <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m0invoiceDtos.Count">@L["Menu:AccountingAR"]</td>
-                                    <td><a href="/Accounting/Invoice?MethodType=5&VesselId=@Model.Id&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h0invoiceDtos.Count">@L["Menu:AccountingAR"]</td>
+                                    <td><a href="/Accounting/Invoice?MethodType=4&Bid=@Model.ExportBookingDto.Id&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
                                     @{
                                         double j = 0;
@@ -98,7 +98,7 @@
                             else
                             {
                                 <tr>
-                                    <td><a href="/Accounting/Invoice?MethodType=5&VesselId=@Model.Id&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td><a href="/Accounting/Invoice?MethodType=4&Bid=@Model.ExportBookingDto.Id&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
                                     @{
                                         double j = 0;
@@ -126,17 +126,17 @@
 
                         }
                     }
-                    @if (Model.m1invoiceDtos != null && Model.m1invoiceDtos.Count > 0)
+                    @if (Model.h1invoiceDtos != null && Model.h1invoiceDtos.Count > 0)
                     {
                         var i = 0;
-                        foreach (var dto in Model.m1invoiceDtos)
+                        foreach (var dto in Model.h1invoiceDtos)
                         {
                             if (i == 0)
                             {
                                 i++;
                                 <tr>
-                                    <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m1invoiceDtos.Count">@L["Menu:AccountingDC"]</td>
-                                    <td><a href="/Accounting/Invoice?MethodType=5&VesselId=@Model.Id&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h1invoiceDtos.Count">@L["Menu:AccountingDC"]</td>
+                                    <td><a href="/Accounting/Invoice?MethodType=4&Bid=@Model.ExportBookingDto.Id&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
                                     @{
                                         double j = 0;
@@ -164,7 +164,7 @@
                             else
                             {
                                 <tr>
-                                    <td><a href="/Accounting/Invoice?MethodType=5&VesselId=@Model.Id&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td><a href="/Accounting/Invoice?MethodType=4&Bid=@Model.ExportBookingDto.Id&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
                                     @{
                                         double j = 0;
@@ -192,17 +192,17 @@
 
                         }
                     }
-                    @if (Model.m2invoiceDtos != null && Model.m2invoiceDtos.Count > 0)
+                    @if (Model.h2invoiceDtos != null && Model.h2invoiceDtos.Count > 0)
                     {
                         var i = 0;
-                        foreach (var dto in Model.m2invoiceDtos)
+                        foreach (var dto in Model.h2invoiceDtos)
                         {
                             if (i == 0)
                             {
                                 i++;
                                 <tr>
-                                    <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m2invoiceDtos.Count">@L["Menu:AccountingAP"]</td>
-                                    <td><a href="/Accounting/Invoice?MethodType=5&VesselId=@Model.Id&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h2invoiceDtos.Count">@L["Menu:AccountingAP"]</td>
+                                    <td><a href="/Accounting/Invoice?MethodType=4&Bid=@Model.ExportBookingDto.Id&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.ShipTo</td>
                                     @{
                                         double j = 0;
@@ -230,7 +230,7 @@
                             else
                             {
                                 <tr>
-                                    <td><a href="/Accounting/Invoice?MethodType=5&VesselId=@Model.Id&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
+                                    <td><a href="/Accounting/Invoice?MethodType=4&Bid=@Model.ExportBookingDto.Id&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.ShipTo</td>
                                     @{
                                         double j = 0;
