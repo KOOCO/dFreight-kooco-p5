@@ -18,5 +18,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         Task<CreateUpdateOceanImportMblDto> GetCreateUpdateOceanImportMblDtoById(Guid Id);
         Task<OceanImportDetails> GetOceanImportDetailsById(Guid Id);
         Task SetLockOrUnlockStatusOceanImportMblAsync(Guid[] Ids, bool IsLocked);
+        Task DeleteMultipleMblsAsync(Guid[] Ids);
     }
 }

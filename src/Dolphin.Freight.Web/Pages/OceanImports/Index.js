@@ -98,7 +98,6 @@ $(function () {
 
     dolphin.freight.web.controllers.configuration.getJsonConfig('OceanImports').done(function (data) {
         data.forEach(function (item) {
-
             if (!item.lock && item.checkable) {
                 var column;
 
@@ -118,7 +117,10 @@ $(function () {
                 else {
                     column = {
                         title: l(item.text),
-                        data: item.name
+                        data: item.name,
+                        render: function (data, type, row) {
+                            return data === null ? " " : data;
+                        }
                     };
                 }
                 columns.push(column);
@@ -186,7 +188,7 @@ function selectCheckbox(checkbox) {
         var isAnyLocked = false;
         var isAnyUnlocked = false
         checkedCheckboxes.each(function (index, checkbox1) {
-            //$('#deleteBtn').prop('disabled', false);
+            $('#deleteBtn').prop('disabled', false);
             var id = $(checkbox1).data('id');
 
             //if (checkedCheckboxes.length == 1) {
@@ -208,16 +210,15 @@ function selectCheckbox(checkbox) {
     } else {
         var checkedCheckboxes = $('.selectCheckbox:checked');
 
-        //if (checkedCheckboxes && checkedCheckboxes.length == 0) {
-        //    $('#deleteBtn').prop('disabled', true);
+        if (checkedCheckboxes && checkedCheckboxes.length == 0) {
+            $('#deleteBtn').prop('disabled', true);
         //    $('#copyBtn').prop('disabled', true);
-        //}
+        }
         //else if (checkedCheckboxes.length == 1) {
         //    $('#copyBtn').prop('disabled', false);
         //}
 
         checkedCheckboxes.each(function (index, checkbox1) {
-
             var id = $(checkbox1).data('id');
 
             var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
@@ -226,11 +227,9 @@ function selectCheckbox(checkbox) {
             }
             else {
                 isAnyUnlocked = true;
-
             }
-
         });
-        //$('#deleteBtn').prop('disabled', true);
+        $('#deleteBtn').prop('disabled', true);
         $('#lockId').prop('disabled', !isAnyUnlocked);
         $('#unlockId').prop('disabled', !isAnyLocked);
     }
@@ -295,6 +294,33 @@ function lockCheckBox(checkbox) {
                 });
         }
     });
+}
+
+function deleteMbls() {
+    var ids = [];
+    var selectedCheckboxes = $('#MblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+    
+    selectedCheckboxes.each(function (i, checkBox) {
+        var id = checkBox.attributes[2].value;
+        var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+
+        if (!isLock) {
+            ids.push(id);
+        }
+    });
+
+    abp.message.confirm(l('DeleteConfirmationMessage')).done(function (confirmed) {
+        if (confirmed) {
+            dolphin.freight.importExport.oceanImports.oceanImportMbl.deleteMultipleMbls(ids).done(function () {
+                abp.message.success(l('Message:SuccessDelete'));
+                dataTable.ajax.reload();
+            });
+        }
+    });
+}
+
+function createNew() {
+    window.location.href = "/OceanImports/CreateMbl";
 }
 
 var lock = function (id) {

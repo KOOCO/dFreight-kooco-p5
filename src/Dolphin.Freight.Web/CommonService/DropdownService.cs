@@ -10,11 +10,15 @@ using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Dolphin.Freight.TradePartners.Credits;
+using NPOI.POIFS.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Identity;
+using Volo.Abp.Users;
 using SelectItems = Microsoft.AspNetCore.Mvc.Rendering.SelectListItem;
 using SelectListItem = Microsoft.AspNetCore.Mvc.Rendering.SelectListItem;
 
@@ -35,6 +39,7 @@ namespace Dolphin.Freight.Web.CommonService
         private readonly ICreditLimitGroupAppService _creditLimitGroupAppService;
         private readonly IAccountGroupAppService _accountGroupAppService;
         private readonly IAirImportMawbAppService _airImportMawbAppService;
+
         public DropdownService(ITradePartnerAppService tradePartnerAppService,
                                ISubstationAppService substationAppService,
                                IAirportAppService airportAppService,
@@ -47,7 +52,7 @@ namespace Dolphin.Freight.Web.CommonService
                                IGlCodeAppService glCodeAppService,
                                ICreditLimitGroupAppService creditLimitGroupAppService,
                                IAccountGroupAppService accountGroupAppService,
-                                IAirImportMawbAppService airImportMawbAppService
+                               IAirImportMawbAppService airImportMawbAppService
                                )
         {
             _tradePartnerAppService = tradePartnerAppService;

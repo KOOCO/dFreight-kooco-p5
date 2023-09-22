@@ -261,8 +261,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 放貨日期
         /// </summary>
-        [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
+        //[DataType(DataType.DateTime)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? HblReleaseDate { get; set; }
         /// <summary>
         /// 放貨人ID

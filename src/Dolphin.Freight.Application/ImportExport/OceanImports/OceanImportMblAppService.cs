@@ -42,11 +42,12 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly IRepository<OceanImportHbl, Guid> _oceanImportHblRepository;
         private readonly IRepository<Country, Guid> _countryRepository;
         private readonly IIdentityUserAppService _identityUserAppService;
+        private readonly IIdentityUserRepository _identityUserRepository;
         private readonly IOceanImportHblAppService _oceanImportHblAppService;
         public OceanImportMblAppService(IRepository<OceanImportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository,
                                          PortsManagementAppService portRepository1, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
                                         IRepository<OceanImportHbl, Guid> oceanImportHblRepository, IIdentityUserAppService identityUserAppService,
-                                        IRepository<Country, Guid> countryRepository, IRepository<PortsManagement, Guid> portRepository, IOceanImportHblAppService oceanImportHblAppService)
+                                        IRepository<Country, Guid> countryRepository, IIdentityUserRepository identityUserRepository, IRepository<PortsManagement, Guid> portRepository, IOceanImportHblAppService oceanImportHblAppService)
             : base(repository)
         {
             _repository = repository;
@@ -59,6 +60,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             _portRepository = portRepository;
             _countryRepository = countryRepository;
             _oceanImportHblAppService = oceanImportHblAppService;
+            _identityUserRepository = identityUserRepository;
             /*
             GetPolicyName = OceanImportPermissions.OceanImportMbls.Default;
             GetListPolicyName = OceanImportPermissions.OceanImportMbls.Default;
@@ -77,6 +79,24 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     substationsDictionary.Add(substation.Id, substation.SubstationName + "(" + substation.AbbreviationName + ")");
                 }
             }
+            var tradePartners = await _tradePartnerRepository.GetListAsync();
+            Dictionary<Guid, string> tradePartnerDictionary = new Dictionary<Guid, string>();
+            if (tradePartners != null)
+            {
+                foreach (var tradePartner in tradePartners)
+                {
+                    tradePartnerDictionary.Add(tradePartner.Id, tradePartner.TPName);
+                }
+            }
+            var portManagements = await _portRepository.GetListAsync();
+            Dictionary<Guid, string> portManagementsDictionary = new Dictionary<Guid, string>();
+            if (portManagements != null)
+            {
+                foreach (var portManagement in portManagements)
+                {
+                    portManagementsDictionary.Add(portManagement.Id, portManagement.PortName);
+                }
+            }
             var SysCodes = await _sysCodeRepository.GetListAsync();
             Dictionary<Guid, string> dictionary = new Dictionary<Guid, string>();
             if (SysCodes != null)
@@ -86,28 +106,36 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     dictionary.Add(syscode.Id, syscode.CodeValue);
                 }
             }
+            var Users = await _identityUserRepository.GetListAsync();
+            Dictionary<Guid, string> userDictionary = new Dictionary<Guid, string>();
+            if (Users != null)
+            {
+                foreach (var user in Users)
+                {
+                    dictionary.Add(user.Id, user.Name + " " + user.Surname);
+                }
+            }
             var OceanImportMbls = await _repository.GetQueryableAsync();
             OceanImportMbls = OceanImportMbls.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.MblNo
-                                              .Contains(query.Search) || x.Office.SubstationName
-                                              .Contains(query.Search) || x.Office.AbbreviationName
-                                               .Contains(query.Search) || x.SoNo
-                                          .Contains(query.Search))
-                                             .WhereIf(query.CarrierId.HasValue, e => e.MblCarrierId == query.CarrierId)
-                                   .WhereIf(query.ShippingAgentId.HasValue, e => e.ShippingAgentId == query.ShippingAgentId)
-                                   .WhereIf(query.CyLocationId.HasValue, e => e.CyLocationId == query.CyLocationId)
-                                   .WhereIf(query.CyLocationId.HasValue, e => e.CfsLocationId == query.CyLocationId)
-                                   .WhereIf(query.Pol.HasValue, e => e.PolId == query.Pol)
-                                   .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
-                                   .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
-                                    .WhereIf(!string.IsNullOrWhiteSpace(query.Vessel),x=>x.VesselName==query.Vessel)
-                                   .WhereIf(query.SaleId.HasValue, e => e.MblSaleId == query.SaleId)
-                                   .WhereIf(query.OvearseaAgentId.HasValue, e => e.MblOverseaAgentId == query.OvearseaAgentId)
-                                   .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
-                                   .WhereIf(query.CoLoaderId.HasValue, e => e.CoLoaderId == query.CoLoaderId)
-                                   .WhereIf(query.PostDate.HasValue, e => e.PostDate.Date == query.PostDate.Value.Date.AddDays(1))
-                                   
-                                   .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1))
-                                          .OrderByDescending(x => x.CreationTime);
+                                            .Contains(query.Search) || x.Office.SubstationName
+                                            .Contains(query.Search) || x.Office.AbbreviationName
+                                            .Contains(query.Search) || x.SoNo
+                                            .Contains(query.Search))
+                                            .WhereIf(query.CarrierId.HasValue, e => e.MblCarrierId == query.CarrierId)
+                                            .WhereIf(query.ShippingAgentId.HasValue, e => e.ShippingAgentId == query.ShippingAgentId)
+                                            .WhereIf(query.CyLocationId.HasValue, e => e.CyLocationId == query.CyLocationId)
+                                            .WhereIf(query.CyLocationId.HasValue, e => e.CfsLocationId == query.CyLocationId)
+                                            .WhereIf(query.Pol.HasValue, e => e.PolId == query.Pol)
+                                            .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
+                                            .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
+                                            .WhereIf(!string.IsNullOrWhiteSpace(query.Vessel),x=>x.VesselName==query.Vessel)
+                                            .WhereIf(query.SaleId.HasValue, e => e.MblSaleId == query.SaleId)
+                                            .WhereIf(query.OvearseaAgentId.HasValue, e => e.MblOverseaAgentId == query.OvearseaAgentId)
+                                            .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
+                                            .WhereIf(query.CoLoaderId.HasValue, e => e.CoLoaderId == query.CoLoaderId)
+                                            .WhereIf(query.PostDate.HasValue, e => e.PostDate.Date == query.PostDate.Value.Date.AddDays(1))
+                                            .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1))
+                                            .OrderByDescending(x => x.CreationTime);
             List<OceanImportMbl> rs = OceanImportMbls.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<OceanImportMblDto> list = new List<OceanImportMblDto>();
 
@@ -117,6 +145,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 {
                     var item = ObjectMapper.Map<OceanImportMbl, OceanImportMblDto>(r);
                     item.OfficeName = substationsDictionary[r.OfficeId.Value];
+                    if (r.FdestId is not null) item.FinalDestName = portManagementsDictionary[r.FdestId.Value];
+                    if (r.MblCarrierId is not null) item.MblCarrierName = tradePartnerDictionary[r.MblCarrierId.Value];
+                    if (r.MblOverseaAgentId is not null) item.MblOverseaAgentName = tradePartnerDictionary[r.MblOverseaAgentId.Value];
+                    if (r.MblSaleId is not null) item.MblSaleName = tradePartnerDictionary[r.MblSaleId.Value];
+                    if (r.MblOperatorId is not null) item.MblOperatorName = userDictionary[r.MblOperatorId.Value];
                     list.Add(item);
                 }
             }
@@ -442,6 +475,20 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     await _oceanImportHblRepository.UpdateAsync(Hbl);
                 }
                 await _repository.UpdateAsync(Mbl);
+            }
+        }
+
+        public async Task DeleteMultipleMblsAsync(Guid[] Ids)
+        {
+            var Hbls = await _oceanImportHblRepository.GetListAsync();
+
+            foreach (var Id in Ids)
+            {
+                var HblIds = Hbls.Where(w => w.MblId == Id).Select(s => s.Id).ToList();           
+
+                await _oceanImportHblRepository.DeleteManyAsync(HblIds);
+
+                await _repository.DeleteAsync(Id);
             }
         }
     }

@@ -13,8 +13,8 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Dolphin.Freight.Migrations
 {
     [DbContext(typeof(FreightDbContext))]
-    [Migration("20230921062846_FK_AppOceanExportMbls_AppPortsManagement_DelId")]
-    partial class FK_AppOceanExportMbls_AppPortsManagement_DelId
+    [Migration("20230922113750_Update_AppGridPreference_OceanImports")]
+    partial class Update_AppGridPreference_OceanImports
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
