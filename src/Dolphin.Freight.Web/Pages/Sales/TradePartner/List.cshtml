@@ -166,10 +166,108 @@
             </abp-row>
         </abp-card-body>
         <abp-card-body>
-         
+             <div class="portlet-tool">
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                 
+                    <button type="button" class="btn btn-outline-secondary fa fa-users" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Account Group" onclick="setGroup()" id="setGroupBtn" disabled></button>
+                     <button type="button" class="btn btn-outline-secondary fa fa-compress" data-bs-toggle="tooltip" data-bs-placement="top" title="Merge Trading Partner" onclick="margeTP()" id="margeTPBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary " id="disableBtn" data-bs-toggle="tooltip" data-bs-placement="top" title="Disable Trading Partner" disabled><i class="fa fa-ban me-0"></i></button>
+                   
+                </div>
+            </div>
             <abp-table class="nowrap" border-style="Bordered" striped-rows="true" id="TPListTable"></abp-table>
         </abp-card-body>
     </abp-card>
+      <div id="setGroupModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Set Account Group</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                   Please enter name of the account group you would like to set:
+                     <select class="form-select form-control" asp-Items="@Model.AccountGroupNameLookupList" id="setAccountGroupName">
+                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                        </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="assignGroupButton" class="btn btn-primary" >@L["Btn:Ok"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* marge modal *@
+    <div id="margeTPModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                   <h4 class="modal-title">@L["Trade Partner Merge"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeTPModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <abp-row class="mb-3">
+                        <abp-column size-md="_2">
+                    <label>@L["From"].Value</label>
+                </abp-column>
+                <abp-column size-md="_8">
+                  <select disabled class="form-select  form-control" asp-Items="@Model.TradePartnerList" id="tpfrom">
+                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                        </select>
+                        </abp-column>
+
+                    </abp-row>
+                      <abp-row class="mb-3">
+                        <abp-column size-md="_2">
+                    <label>@L["To"].Value</label>
+                </abp-column>
+                <abp-column size-md="_8">
+                  <select class="form-select form-control" asp-Items="@Model.TradePartnerList" id="tpTo">
+                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                        </select>
+                        </abp-column>
+
+                    </abp-row>
+                 <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group form-full">
+                    <label class="control-label name-sm"></label>
+                    <label class="name-sm w-auto mg-right-sm"><input checked type="checkbox" id="Cp"  style=""> Merge Contact Person as well</label>
+                    <label class="name-sm w-auto"><input checked type="checkbox" id="Tp"  style=""> Merge Trade Party as well</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group form-full">
+                    <label class="control-label name-sm"></label>
+                    <label class="name-sm w-auto mg-right-sm"><input checked type="checkbox" id="Mm"   style=""> Merge Memo as well</label>
+                    <label class="name-sm w-auto"><input checked type="checkbox" id="Md"   style=""> Merge Document as well</label>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <h6 class="bold">Note:</h6>
+        <ol class="ol-control">
+            <li class="ng-binding">“Trade Partner Merge” feature only merges data associated with (ex. Shipment, Invoice, Payment, etc.) from the original trade partner to the designated trade partner.</li>
+            <li class="ng-binding">Trade Partner Basic Information will not be modified.</li>
+            <li class="ng-binding">Original trade partner will be disabled once merged.</li>
+            <li class="text-danger ng-binding">This operation is non-reversible. Please reconfirm before you click "OK".</li>
+        </ol>
+    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="margeTpBtn" class="btn btn-primary" disabled >@L["Btn:Ok"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeTPModal()">@L["Btn:Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
