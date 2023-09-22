@@ -101,6 +101,7 @@ public class FreightWebAutoMapperProfile : Profile
         CreateMap<CreateUpdateOceanImportMblDto, InvoiceMblDto>();
         CreateMap<CreateUpdateOceanExportHblDto, InvoiceMblDto>();
         CreateMap<CreateUpdateOceanImportHblDto, InvoiceMblDto>();
+        CreateMap<ExportBookingDto, InvoiceMblDto>();
         CreateMap<OceanExportMblDto, InvoiceMblDto>();
 
         // 國家管理

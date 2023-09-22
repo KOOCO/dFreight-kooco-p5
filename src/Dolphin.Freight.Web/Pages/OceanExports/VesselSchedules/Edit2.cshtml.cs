@@ -26,6 +26,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         public IList<InvoiceDto> m0invoiceDtos { get; set; }
 
         [BindProperty(SupportsGet = true)]
+        public bool ISToolTipShow { get; set; }
+
+        [BindProperty(SupportsGet = true)]
         public IList<InvoiceDto> m1invoiceDtos { get; set; }
 
         [BindProperty(SupportsGet = true)]
