@@ -883,3 +883,23 @@ switch-success {
     font-size: 14px;
     line-height: 20px;
 }
+.form-full .name-sm {
+    width: 15%;
+}
+
+.w-auto {
+    width: auto !important;
+}
+
+.name-sm {
+    width: 30%;
+    font-size: 11px;
+    line-height: 10px;
+    margin-bottom: 3px;
+    word-wrap: break-word;
+    text-align: right;
+    vertical-align: middle;
+    display: inline-block;
+    font-weight: 600;
+    color: #444;
+}

@@ -216,6 +216,7 @@ namespace Dolphin.Freight.TradePartners
         {
             var tradePartnersQueryable = await _tradePartnerRepository.GetQueryableAsync();
             var query = from tradePartner in tradePartnersQueryable
+                        where tradePartner.IsActive==true
                         orderby tradePartner.TPName
                         select tradePartner;
             var tradePartners = await AsyncExecuter.ToListAsync(query);
