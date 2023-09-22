@@ -293,15 +293,12 @@ namespace Dolphin.Freight.Web.Pages.Accounting
             if (MawbId != null)
             {
                 backUrl = "/AirExports/EditModal3?Id=" + MawbId + "&Hid=" + HawbId;
-            }
-            else {
-
+            } else 
+            {
                 var airexportHawb = await _airExportHawbAppService.GetAsync((Guid)HawbId);
                 backUrl = "/AirExports/EditModal3?Id=" + airexportHawb.MawbId + "&Hid=" + HawbId;
                 MawbId = airexportHawb.MawbId;
-
             }
-            
         }
         private async Task InitExportBooking() 
         {
