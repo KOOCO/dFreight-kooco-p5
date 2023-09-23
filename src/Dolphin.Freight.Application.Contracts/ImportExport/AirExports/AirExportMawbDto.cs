@@ -374,5 +374,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public List<InvoiceDto> AP { get; set; }
         public string InvoicesJson { get; set; }
         public List<InvoiceDto> Invoices { get; set; }
+        public string Sales { get; set; }
     }
 }
