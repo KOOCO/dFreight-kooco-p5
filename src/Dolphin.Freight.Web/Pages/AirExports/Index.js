@@ -1,5 +1,11 @@
-﻿$(function () {
+﻿var l = abp.localization.getResource('Freight');
+var dataTable;
+var copyModalMawbList = new abp.ModalManager({
+    viewUrl: '/AirExports/CopyModalMawbList',
+});
+$(function () {
     var l = abp.localization.getResource('Freight');
+   
     var _changeInterval = null;
     var queryListFilter = function () {
         return {
@@ -27,6 +33,34 @@
         };
     };
     var columns = [{
+        title: '<input type="checkbox" id="selectAllCheckbox" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
+        data: null,
+        orderable: false,
+        "render": function (data, type, row) {
+
+            var id = row.id;
+            var filingNo = row.filingNo;
+
+            return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" data-filingNo="' + filingNo + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
+        }
+    },
+    {
+        title: '<div  style=" cursor: pointer;"><span><i class="fa fa-lock"></i></span></div>',
+        orderable: false,
+        "render": function (data, type, row) {
+            var isCkecked = row.isLocked;
+            var id = row.id;
+            debugger;
+            if (isCkecked) {
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + id + '"  checked="' + isCkecked + '" onclick="lockCheckBox(this)"  style=" cursor: pointer;">';
+            } else {
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + id + '" onclick="lockCheckBox(this)"   style=" cursor: pointer;">';
+            }
+        }
+    },
+
+
+        {
         title: l('Actions'),
         rowAction: {
             items:
@@ -89,7 +123,7 @@
         data: "chargeableWeightLb"
     }]
 
-    var dataTable;
+   
 
     dolphin.freight.web.controllers.configuration.getJsonConfig('AirExport').done(function (data) {
         data.forEach(function (item) {
@@ -150,3 +184,19 @@
     })
 
 });
+var lock = function (id) {
+    var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+    abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+        if (confirmed) {
+            dolphin.freight.importExport.airExports.airExportMawb.lockedOrUnLockedAirExportMawb(id)
+                .done(function () {
+                    if (isLock) {
+                        abp.message.success(l('Message:SuccessUnlock'));
+                    } else {
+                        abp.message.success(l('Message:SuccessLock'));
+                    }
+                    dataTable.ajax.reload();
+                });
+        }
+    });
+}
