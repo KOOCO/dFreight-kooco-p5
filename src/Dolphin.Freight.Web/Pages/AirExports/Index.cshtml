@@ -16,124 +16,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
      
-    $(document).ready(function () {
-
-    });
-
-    function selectAllCheckbox(element){
-        var isChecked = $(element).prop('checked');
-        $('#MblListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
-
-        if (isChecked){
-            $('#summaryId').prop('disabled', false);
-            $('#detailedId').prop('disabled', false);
-
-            
-        } else {
-            $('#summaryId').prop('disabled', true);
-            $('#detailedId').prop('disabled', true);
-        }
-    }
-
-    function selectCheckbox(checkbox) {
-      
-        debugger;
-         var checkedCheckboxes = $('.selectCheckbox:checked');
-        if (checkbox.checked){
-            $('#summaryId').prop('disabled', false);
-            $('#detailedId').prop('disabled', false);
-           
-            if (checkedCheckboxes.length == 1) {
-                $('#copyId').prop('disabled', false);
-            
-            }
-            else
-            {
-                $('#copyId').prop('disabled', true);
-            }
-             var isAnyLocked = false;
-                 var isAnyUnlocked=false
-             checkedCheckboxes.each(function(index, checkbox1) {
-      var id = $(checkbox1).data('id');
-                
-      var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
-                 if (isLock) {
-                     isAnyLocked = true;
-                 }
-                 else { 
-                     isAnyUnlocked = true;
-                 
-                 }
-     
-    });
-       $('#lockId').prop('disabled', !isAnyUnlocked);
-            $('#unlockId').prop('disabled', !isAnyLocked);
-        } else{
-            $('#summaryId').prop('disabled', true);
-            $('#detailedId').prop('disabled', true);
-              var checkedCheckboxes = $('.selectCheckbox:checked');
-            if (checkedCheckboxes.length == 1) {
-                $('#copyId').prop('disabled', false);
-            
-            }
-            else
-            {
-                $('#copyId').prop('disabled', true);
-            }
-                  checkedCheckboxes.each(function(index, checkbox1) {
-
-      var id = $(checkbox1).data('id');
-                
-      var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
-                 if (isLock) {
-                     isAnyLocked = true;
-                 }
-                 else { 
-                     isAnyUnlocked = true;
-                 
-                 }
-     
-    });
-       $('#lockId').prop('disabled', !isAnyUnlocked);
-            $('#unlockId').prop('disabled', !isAnyLocked);
-        }
-        if (!$(checkbox).prop('checked')) {
-            $('#selectAllCheckbox').prop('checked', false);
-        } else {
-            var allChecked = true;
-            $('#MblListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
-                if (!$(this).prop('checked')) {
-                    allChecked = false;
-                    return false;
-                }
-            });
-            $('#selectAllCheckbox').prop('checked', allChecked);
-        }
-    }
-    function lockCheckBox(checkbox) {
-        debugger
-        var selectedCheckboxes = $('#MblListTable tbody input.lockUnlockCheckbox[type="checkbox"]:checked');
-
-        var id = checkbox.attributes[2].value;
-
-
-        var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
-        abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
-            if (confirmed) {
-                dolphin.freight.importExport.airExports.airExportMawb.lockedOrUnLockedAirExportMawb(id)
-                    .done(function () {
-                        if (isLock) {
-                            abp.message.success(l('Message:SuccessUnlock'));
-                        } else {
-                            abp.message.success(l('Message:SuccessLock'));
-                        }
-                        dataTable.ajax.reload();
-                    });
-            }
-        });
-    }
     function getProfitReport(reportType) {
-        debugger;
 
         var params = "";
         var selectedCheckboxes = $('#MblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
@@ -147,72 +30,18 @@
 
         OpenWindow('/Docs/ProfitReportMawbListAirExport?reportType=' + reportType + '&pageType=@Dolphin.Freight.Common.FreightPageType.AEMBL&param='+ params);
     }
-    function selectedLock() {
-        debugger;
+    function openCopyModal(){
 
-        var ids = []; 
-        var selectedCheckboxes = $('#MblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
-        for(var i = 0; i < selectedCheckboxes.length; i++ ){
-            var id = selectedCheckboxes[i].attributes[2].value;
-            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
-            if (!isLock) { 
-            
-                ids.push(id);
-            
-            }
-              abp.message.confirm(l('LockConfirmationMessage')).then(function (confirmed) {
-            if (confirmed) {
-                dolphin.freight.importExport.airExports.airExportMawb.selectedLockedAirExportMawb(ids)
-                    .done(function () {
-                     
-                            abp.message.success(l('Message:SuccessLock'));
-                       
-                        dataTable.ajax.reload();
-                    });
-            }
-        });
-        }
+         var selectedCheckboxes = $('#MblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
 
-    }
-     function selectedUnLock() {
-        debugger;
-
-        var ids = []; 
-        var selectedCheckboxes = $('#MblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
-        for(var i = 0; i < selectedCheckboxes.length; i++ ){
-            var id = selectedCheckboxes[i].attributes[2].value;
-            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
-            if (isLock) { 
-            
-                ids.push(id);
-            
-            }
-              abp.message.confirm(l('UnlockConfirmationMessage')).then(function (confirmed) {
-            if (confirmed) {
-                dolphin.freight.importExport.airExports.airExportMawb.selectedUnLockedAirExportMawb(ids)
-                    .done(function () {
-                     
-                            abp.message.success(l('Message:Message:SuccessUnlock'));
-                       
-                        dataTable.ajax.reload();
-                    });
-            }
-        });
-        }
-
-    }
-   function openCopyModal(){
-
-        var selectedCheckboxes = $('#MblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
-
-        var id = selectedCheckboxes[0].attributes[2].value;
-         copyModalMawbList.open({
-                    id,
-                   
-                });
-    
-    
-    }
+         var id = selectedCheckboxes[0].attributes[2].value;
+          copyModalMawbList.open({
+                     id,
+                    
+                 });
+     
+     
+     }
 </script>
 <div class="page-header">
     <div class="breadcrumb-wrapper">
@@ -240,10 +69,6 @@
                     <abp-button id="btnConfiguration"
                                 text="@L["Configuration"].Value"
                                 icon="gear"
-                                button-type="Primary" />
-                    <abp-button id="NewMblButton"
-                                text="@L["Create"].Value"
-                                icon="plus"
                                 button-type="Primary" />
                 </abp-column>
             </abp-row>
@@ -344,35 +169,32 @@
             
             </abp-row>
 
-                 <abp-row class="mb-3">
-                       <abp-column size-md="_1">
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
                     <label>@L["AWBCancelled"].Value</label>
                 </abp-column>
                 <abp-column size-md="_2">
-               <select id="AwbCancelled" class="form-control" />
-                <option value=""></option>
-                   <option value="true">Yes</option>
-                    <option value="false">No</option>
-               </select>
-                
+                    <select id="AwbCancelled" class="form-control">
+                         <option value=""></option>
+                         <option value="true">Yes</option>
+                         <option value="false">No</option>
+                    </select>
                 </abp-column>
                          <abp-column size-md="_1">
                     <label>@L["DirectMaster"].Value</label>
                 </abp-column>
                 <abp-column size-md="_2">
-               <select id="DirectMaster" class="form-control" />
-                <option value=""></option>
-                   <option value="true">Yes</option>
-                    <option value="false">No</option>
-               </select>
-                
+                    <select id="DirectMaster" class="form-control">
+                         <option value=""></option>
+                         <option value="true">Yes</option>
+                         <option value="false">No</option>
+                    </select>
                 </abp-column>
                   <abp-column size-md="_1">
                     <label>@L["CreationDate"].Value</label>
                 </abp-column>
                 <abp-column size-md="_2">
-              <input type="date" id="CreationDate" class="form-control" />
-                
+                    <input type="date" id="CreationDate" class="form-control" />
                 </abp-column>
                  </abp-row>
             <abp-row>
@@ -388,12 +210,13 @@
         <abp-card-body>
                <div class="portlet-tool">
                 <div class="btn-group" role="group" aria-label="Basic outlined example" >
+                    <abp-button type="button" id="newBtn" class="btn btn-outline-secondary fa fa-plus" onclick="AirExports.createNew()" />
                     <button type="button" id="copyId" class="btn btn-outline-secondary" onclick="openCopyModal()" disabled><i class="fa fa-files-o me-0"></i></button>
                     <button type="button" class="btn btn-outline-secondary" style="cursor: no-drop;" disabled><i class="fa fa-trash me-0"></i></button>
                 </div>
                 <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
-                    <button type="button" class="btn btn-outline-secondary" onclick="selectedLock()" id="lockId" disabled>Lock</button>
-                    <button type="button" class="btn btn-outline-secondary" id="unlockId" onclick="selectedUnLock()" disabled>Unlock</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="AirExports.selectedLock()" id="lockId" disabled>Lock</button>
+                    <button type="button" class="btn btn-outline-secondary" id="unlockId" onclick="AirExports.selectedUnLock()" disabled>Unlock</button>
                 </div>
                @*  <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
                     <button type="button" id="summaryId" class="btn btn-outline-secondary" onclick="getProfitReport('Summary')" disabled><i class="fa fa-file-text-o me-0"></i>Profit Report - Summary</button>
