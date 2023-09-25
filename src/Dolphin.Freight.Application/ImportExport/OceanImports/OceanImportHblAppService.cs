@@ -476,5 +476,13 @@ namespace Dolphin.Freight.ImportExport.OceanImports
 
             return oceanImportDetails;
         }
+        public async Task DeleteMultipleHblsAsync(Guid[] Ids)
+        {
+            if (Ids.Length > 1) {
+                await _repository.DeleteManyAsync(Ids);
+            } else if (Ids.Length == 1) {
+                await _repository.DeleteAsync(Ids[0]);
+            }
+        }
     }
 }
