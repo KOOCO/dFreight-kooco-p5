@@ -20,6 +20,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// MBL的文件號碼
         /// </summary>
         public string FilingNo { get; set; }
+        public string Voyage { get; set; }
         /// <summary>
         /// MBL的MBL 編號
         /// </summary>
@@ -32,6 +33,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// MBL的OB/L類別
         /// </summary>
         public string OblTypeName { get; set; }
+        public string SvcTermFromName { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -101,6 +103,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public Guid? AgentId { get; set; }
         public string AgentName { get; set; }
+        public string AmsNo { get; set; }
+        public string TruckerName { get; set; }
+        public string CyCfsLocationName { get; set; }
         /// <summary>
         /// 業務員ID
         /// </summary>

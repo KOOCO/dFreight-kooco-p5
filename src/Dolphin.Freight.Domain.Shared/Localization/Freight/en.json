@@ -3,6 +3,7 @@
   "culture": "en",
   "texts": {
     "Menu:Home": "Home",
+    "CyCfsLocation": "CY / CFS Location",
     "Welcome": "Welcome",
     "LongWelcomeMessage": "Welcome to the application.",
     "Menu:Settings": "Settings",
@@ -315,6 +316,7 @@
     "ItnNo": "Itn No",
     "MblCarrierId": "Shipping Company",
     "MblCarrierName": "Carrier",
+    "CustomerBroker": "Customer Broker",
     "MblSaleName": "Sale",
     "MblOperatorName": "OP",
     "BlAcctCarrierId": "B/L Acct. Carrier",
@@ -597,6 +599,7 @@
     "KOS": "Gross Weight",
     "IHblno": "HBL No",
     "MblConsigneeName": "Consignee Name",
+    "ConsigneeName": "Consignee",
     "CBM": "Volume",
     "MblNotifyName": "Notify",
     "VesselNameVoyage": "Vessel/NameVoyage",
@@ -694,6 +697,7 @@
     "DisplayName:Capricorn": "Capricorn",
     "DisplayName:Aquarius": "Aquarius",
     "DisplayName:Pisces": "Pisces",
+    "LastFreeDate": "Last Free Date",
 
     // Memo
     "Display:Memo:THead:Title": "Subject",

@@ -62,6 +62,7 @@ $(function () {
                     title: '<div  style=" cursor: pointer;"><span><i class="fa fa-lock"></i></span></div>',
                     orderable: false,
                     "render": function (data, type, row) {
+                        debugger;
                         var isCkecked = row.isLocked;
                         var Hblid = row.id;
                         if (isCkecked) {
@@ -165,41 +166,103 @@ $(function () {
                     title: l('OfficeId'),
                     data: "officeName"
                 },
-
+                {
+                    title: l('Voyage'),
+                    data: "voyage"
+                },
                 {
                     //代理
-                    title: l('AgentName'),
+                    title: l('OverseaAgentId'),
                     data: "agentName"
                 },
                 {
-                    //託運人
                     title: l('IHblShipperName'),
                     data: "hblShipperName"
                 },
                 {
                     //收貨人
-                    title: l('MblConsigneeName'),
+                    title: l('ConsigneeName'),
                     data: "hblConsigneeName"
                 },
                 {
+                    title: l('FinalDestName'),
+                    data: "fdestName"
+                },
+                {
+                    title: l('FinalEta'),
+                    data: "fdestEta"
+                },
+                {
+                    title: l('AmsNo'),
+                    data: "amsNo",
+                    defaultContent: ""
+                },
+                {
+                    title: l('Packages'),
+                    data: "",
+                    defaultContent: ""
+                },
+                {
+                    title: l('Weight'),
+                    data: "",
+                    defaultContent: ""
+                },
+                {
+                    title: l('Measurement'),
+                    data: "",
+                    defaultContent: ""
+                },
+                {
+                    title: l('SvcTermFromId'),
+                    data: "svcTermFromName"
+                },
+                {
                     //AR結餘
-                    title: l('ARSurplus'),
+                    title: l('ARBalance'),
                     data: "arSurplus"
                 },
                 {
                     //A/P結餘
-                    title: l('APSurplus'),
+                    title: l('APBalance'),
                     data: "apSurplus"
                 },
                 {
                     //D/C結餘
-                    title: l('DCSurplus'),
+                    title: l('DCBalance'),
                     data: "dcSurplus"
                 },
                 {
-                    //船公司S/O號碼
-                    title: l('SoNo'),
-                    data: "soNo"
+                    title: l('HShipModeId'),
+                    data: "shipModeName"
+                },
+                {
+                    title: l('Trucker'),
+                    data: "truckerName"
+                },
+                {
+                    title: l('Display:ContainerNo'),
+                    data: "",
+                    defaultContent: ""
+                },
+                {
+                    title: l('InvoiceList:PoNo'),
+                    data: "poNo",
+                    defaultContent: ""
+                },
+                {
+                    title: l('LastFreeDate'),
+                    data: "",
+                    defaultContent: ""
+                },
+                {
+                    title: l('CyCfsLocation'),
+                    data: "cyCfsLocationName",
+                    defaultContent: ""
+                },
+                {
+                    title: l('CarrierContractNo'),
+                    data: "", 
+                    defaultContent: ""
                 },
                 {
                     //是否扣留
@@ -226,7 +289,7 @@ $(function () {
                 },
                 {
                     //客戶名稱
-                    title: l('HblCustomerName'),
+                    title: l('CustomerBroker'),
                     data: "hblCustomerName"
                 },
                 {
@@ -263,8 +326,22 @@ $(function () {
                     //船公司
                     title: l('MblCarrierName'),
                     data: "mblCarrierName"
+                },
+                {
+                    title: l('Sales'),
+                    data: "",
+                    defaultContent: ""
+                },
+                {
+                    title: l('Remark'),
+                    data: "",
+                    defaultContent: ""
+                },
+                {
+                    title: l('CreateDate'),
+                    data: "creationTime",
+                    defaultContent: ""
                 }
-
             ]
         })
     );
