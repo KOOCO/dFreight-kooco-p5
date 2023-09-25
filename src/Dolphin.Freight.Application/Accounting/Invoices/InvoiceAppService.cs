@@ -9,6 +9,8 @@ using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Accounting.InvoiceBills;
 using Dolphin.Freight.Accounting.Inv;
 using Volo.Abp.Uow;
+using Dolphin.Freight.Settings.Substations;
+using Volo.Abp.Identity;
 
 namespace Dolphin.Freight.Accounting.Invoices
 {
@@ -23,18 +25,23 @@ namespace Dolphin.Freight.Accounting.Invoices
     {
         private readonly IInvoiceRepository _invoiceRepository;
         private IRepository<Invoice, Guid> _repository;
+        private IRepository<Substation, Guid> _substationRepository;
         private IRepository<InvoiceBill, Guid> _billRepository;
+        private IRepository<IdentityUser, Guid> _userRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
 
         private readonly IRepository<SysCode, Guid> _sysCideRepository;
-        public InvoiceAppService(IRepository<Invoice, Guid> repository, IRepository<SysCode, Guid> sysCideRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<InvoiceBill, Guid> billRepository, IInvoiceRepository invoiceRepository)
+        public InvoiceAppService(IRepository<Invoice, Guid> repository, IRepository<SysCode, Guid> sysCideRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner,
+            Guid> tradePartnerRepository, IRepository<InvoiceBill, Guid> billRepository, IInvoiceRepository invoiceRepository, IRepository<Substation,
+            Guid> substationRepository, IRepository<IdentityUser, Guid> userRepository)
             : base(repository)
         {
             _repository = repository;
             _tradePartnerRepository = tradePartnerRepository;
             _invoiceRepository = invoiceRepository;
             _billRepository = billRepository;
-
+            _substationRepository = substationRepository;
+            _userRepository = userRepository;
         }
         public async Task<PagedResultDto<InvoiceDto>> QueryListAsync(QueryInvoiceDto query)
         {
@@ -45,6 +52,24 @@ namespace Dolphin.Freight.Accounting.Invoices
                 foreach (var tradePartner in tradePartners)
                 {
                     tDictionary.Add(tradePartner.Id, tradePartner.TPName);
+                }
+            }
+            var substations = await _substationRepository.GetListAsync();
+            Dictionary<Guid, string> subDictionary = new Dictionary<Guid, string>();
+            if (substations != null)
+            {
+                foreach (var substation in substations)
+                {
+                    subDictionary.Add(substation.Id, substation.SubstationName);
+                }
+            }
+            var users = await _userRepository.GetListAsync();
+            Dictionary<Guid, string> userDictionary = new Dictionary<Guid, string>();
+            if (users is not null)
+            {
+                foreach (var user in users)
+                {
+                    userDictionary.Add(user.Id, user.Name);
                 }
             }
             var rs = await _repository.GetListAsync();
@@ -71,7 +96,10 @@ namespace Dolphin.Freight.Accounting.Invoices
                 foreach (var r in rs)
                 {
                     var bill = ObjectMapper.Map<Invoice, InvoiceDto>(r);
+                    if (r.ShipToId is not null) bill.ShipToName = tDictionary[r.ShipToId.Value];
                     if (r.InvoiceCompanyId != null) bill.InvoiceCompanyName = tDictionary[r.InvoiceCompanyId.Value];
+                    if (r.OfficeId is not null) bill.OfficeName = subDictionary[r.OfficeId.Value];
+                    if (r.CreatorId is not null) bill.IssuedBy = userDictionary[r.CreatorId.Value];
                     if (r.MblId != null && r.MblId != Guid.Empty) { 
                         
                     }

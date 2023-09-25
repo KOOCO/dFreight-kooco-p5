@@ -147,6 +147,8 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// </summary>
         public Guid? OfficeId { get; set; }
         public string OfficeName { get; set; }
+        public string ShipToName { get; set; }
+        public string IssuedBy { get; set; }
 
         /// <summary>
         /// 客戶ID
