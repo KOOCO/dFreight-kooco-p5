@@ -420,7 +420,52 @@ function setDateTimeforCards(card) {
                     }
                 });
                 break;
+            case 'OIHBL':
 
+                var hblId = $('#OceanImportHBL').val();
+                dolphin.freight.importExport.oceanImports.oceanImportHbl.get(hblId).done(function (res) {
+                    if (res.isLocked) {
+                        $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+                        $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                    } else {
+                        $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                        $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                    }
+                });
+
+                const OceanImportids = [
+                    "OceanImportHbl_PorEtd",
+                    "OceanImportHbl_PodEta",
+                    "OceanImportHbl_DelEta",
+                    "OceanImportHbl_FdestEta",
+                    "OceanImportHbl_CargoArrivalDate",
+                    "OceanImportHbl_HblWhCutOffTime",
+                    "OceanImportHbl_EarlyReturnDatetime",
+                    "OceanImportHbl_LcIssueDate",
+                    "OceanImportHbl_OnBoardDate",
+                    "OceanImportHbl_HblReleaseDate",
+                    "OceanImportHbl_CanceledDate"
+                ];
+
+                OceanImportids.forEach(function (id) {
+                    let dateElem = $('#' + id);
+
+                    if (dateElem.length === 0) {
+                        return;
+                    }
+
+                    dateElem.removeAttr('type').datetimepicker({
+                        format: 'Y-m-d H:i',
+                        step: 15,
+                        allowInput: false
+                    });
+
+                    let currentVal = dateElem.val();
+                    if (currentVal.includes('T')) {
+                        dateElem.val(currentVal.replace('T', ' '));
+                    }
+                });
+                break;
             default:
         }
     }, 1000);

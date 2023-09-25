@@ -484,5 +484,16 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 await _repository.DeleteAsync(Ids[0]);
             }
         }
+        public async Task SetLockOrUnlockStatusOceanImportHblAsync(Guid[] Ids, bool IsLock)
+        {
+            foreach (var Id in Ids)
+            {
+                var Hbl = await _repository.GetAsync(Id);
+
+                Hbl.IsLocked = IsLock;
+
+                await _repository.UpdateAsync(Hbl);
+            }
+        }
     }
 }

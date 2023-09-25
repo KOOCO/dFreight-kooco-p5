@@ -69,7 +69,21 @@
             var showMsg = '@Model.ShowMsg';
             if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
             var isLocked = '@Model.OceanImportMbl.IsLocked';
-            if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
+            if (isLocked == 'True') {
+                abp.message.warn(l("Message:LockMessage"));
+
+                $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:Lock"));
+            } else {
+                $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:UnLock"));
+            }
+
+
             //$("#addHBtn").click(function () {
             //    addHBtn();
             //});
@@ -206,8 +220,9 @@
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
-                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white');
                         setFilteredDropdown();
+                        setDateTimeforCards('OIHBL');
+                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white');
                         Swal.clickCancel();
                     })
 
@@ -483,13 +498,11 @@
                             </abp-card-title>
 
                             <div class="btn-group dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDropMbl" data-bs-toggle="dropdown">
                                     @L["Display:Function"]
                                 </button>
-                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                                    </a>
+                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDropMbl">
+                                    <a class='dropdown-item' id="lockButtonMbl" href='javascript:void(0)' onclick="EditModelScript.lockUnlockMblOrHbl('@Model.OceanImportMbl.Id', 'Mbl')"></a>
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                                     </a>

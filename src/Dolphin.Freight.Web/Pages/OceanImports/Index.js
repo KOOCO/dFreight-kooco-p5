@@ -127,8 +127,7 @@ $(function () {
             }
         });
 
-                var col = (columns.length > 2) ? [[2, 'asc']] : [[0, 'asc']];
-
+        var col = (columns.length > 2) ? [[2, 'asc']] : [[0, 'asc']];
 
         dataTable = $('#MblListTable').DataTable(
             abp.libs.datatables.normalizeConfiguration({
@@ -276,22 +275,19 @@ function setSelectedLockStatus(isLock) {
 }
 
 function lockCheckBox(checkbox) {
-    var selectedCheckboxes = $('#MblListTable tbody input.lockUnlockCheckbox[type="checkbox"]:checked');
-
     var id = checkbox.attributes[2].value;
 
     var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
     abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
         if (confirmed) {
-            dolphin.freight.importExport.oceanImports.oceanImportMbl.lockedOrUnLockedOceanImportMbl({ MbId: id })
-                .done(function () {
-                    if (isLock) {
-                        abp.message.success(l('Message:SuccessUnlock'));
-                    } else {
-                        abp.message.success(l('Message:SuccessLock'));
-                    }
-                    dataTable.ajax.reload();
-                });
+            dolphin.freight.importExport.oceanImports.oceanImportMbl.lockedOrUnLockedOceanImportMbl({ MbId: id }).done(function (){
+                if (isLock) {
+                    abp.message.success(l('Message:SuccessUnlock'));
+                } else {
+                    abp.message.success(l('Message:SuccessLock'));
+                }
+                dataTable.ajax.reload();
+            });
         }
     });
 }

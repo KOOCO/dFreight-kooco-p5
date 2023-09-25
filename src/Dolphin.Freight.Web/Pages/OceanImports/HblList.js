@@ -308,6 +308,33 @@ $(function () {
     });
 });
 
+function setSelectedLockStatus(isLock) {
+    var ids = [];
+    var selectedCheckboxes = $('#HblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+    var lockCondition = isLock ? false : true;
+    var confirmationMessage = isLock ? l('LockConfirmationMessage') : l('UnlockConfirmationMessage');
+    var successMessage = isLock ? l('Message:SuccessLock') : l('Message:SuccessUnlock');
+
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        var id = selectedCheckboxes[i].attributes[2].value;
+        var currentLockStatus = $('#lock_' + id).find('i').hasClass('fa-lock');
+
+        if (currentLockStatus === lockCondition) {
+            ids.push(id);
+        }
+    }
+
+    abp.message.confirm(confirmationMessage).then(function (confirmed) {
+        if (confirmed) {
+            dolphin.freight.importExport.oceanImports.oceanImportHbl.setLockOrUnlockStatusOceanImportHbl(ids, isLock).done(function () {
+                abp.message.success(successMessage);
+                $('#lockId').prop('disabled', confirmed);
+                $('#unlockId').prop('disabled', confirmed);
+                dataTable.ajax.reload();
+            });
+        }
+    });
+}
 function selectAllCheckbox(elem) {
     var isChecked = $(elem).prop('checked');
     $('#HblListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
@@ -340,6 +367,7 @@ function selectCheckbox(checkbox) {
         });
         $('#lockId').prop('disabled', !isAnyUnlocked);
         $('#unlockId').prop('disabled', !isAnyLocked);
+        $('#deleteBtn').prop('disabled', isAnyLocked);
     } else {
         var checkedCheckboxes = $('.selectCheckbox:checked');
         checkedCheckboxes.each(function (index, checkbox1) {
@@ -370,6 +398,24 @@ function selectCheckbox(checkbox) {
         });
         $('#selectAllCheckbox').prop('checked', allChecked);
     }
+}
+
+function lockCheckBox(checkbox) {
+    var id = checkbox.attributes[2].value;
+
+    var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+    abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+        if (confirmed) {
+            dolphin.freight.importExport.oceanImports.oceanImportHbl.lockedOrUnLockedOceanImportHbl({ HblId: id }).done(function () {
+                if (isLock) {
+                    abp.message.success(l('Message:SuccessUnlock'));
+                } else {
+                    abp.message.success(l('Message:SuccessLock'));
+                }
+                dataTable.ajax.reload();
+            });
+        }
+    });
 }
 
 function deleteHbl() {

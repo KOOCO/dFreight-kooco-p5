@@ -12,43 +12,9 @@
 @inject ICurrentUser CurrentUser
 @inject IDropdownService _dropdown
 
-
-<script type="text/javascript">
-    
-    $(document).ready(function () {
-        const ids = [
-            "OceanImportHbl_PorEtd",
-            "OceanImportHbl_PodEta",
-            "OceanImportHbl_DelEta",
-            "OceanImportHbl_FdestEta",
-            "OceanImportHbl_CargoArrivalDate",
-            "OceanImportHbl_HblWhCutOffTime",
-            "OceanImportHbl_EarlyReturnDatetime",
-            "OceanImportHbl_LcIssueDate",
-            "OceanImportHbl_OnBoardDate",
-            "OceanImportHbl_HblReleaseDate",
-            "OceanImportHbl_CanceledDate"
-        ];
-
-        ids.forEach(function (id) {
-            let dateElem = $('#' + id);
-
-            if (dateElem.length === 0) {
-                return;
-            }
-            
-            dateElem.removeAttr('type').datetimepicker({
-                format: 'Y-m-d H:i',
-                step: 15,
-                allowInput: false
-            });
-
-            let currentVal = dateElem.val();
-            if (currentVal.includes('T')) {
-                dateElem.val(currentVal.replace('T', ' '));
-            }
-        });
-    });
+@section scripts{
+    <abp-script src="/Pages/OceanImports/EditModel.js" />
+    <script type="text/javascript">
 
     function OpenInTrackTrace() {
         var url = new URL(window.location.href);
@@ -59,6 +25,7 @@
         });
     }
 </script>
+}
 
 <abp-card class="card board-item" id="hblCard">
     <abp-card-header id="hblCardHeader" class="@Model.OceanImportHbl.CardColorValue">
@@ -67,13 +34,11 @@
         </abp-card-title>
 
         <div class="btn-group dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDropHbl" data-bs-toggle="dropdown">
                 @L["Display:Function"]
             </button>
-            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                </a>
+            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDropHbl">
+                <a class='dropdown-item' id="lockButtonHbl" href='javascript:void(0)' onclick="EditModelScript.lockUnlockMblOrHbl('@Model.OceanImportHbl.Id', 'Hbl')"></a>
                 <a class='dropdown-item' href='#'>
                     <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                 </a>
