@@ -352,14 +352,22 @@ public class FreightMenuContributor : IMenuContributor
                     name: FreightMenus.AirExportManagement.HawbList,
                     displayName: l["Menu:AirExport.HawbList"],  // Hawb List
                     url: "/AirExports/HawbList")
-                //).AddItem(new ApplicationMenuItem(
-                //    name: FreightMenus.AirExportManagement.Booking,
-                //    displayName: l["Menu:AirExport.Booking"],  // Create Booking
-                //    url: "/AirExports/CreateBooking")
-                //).AddItem(new ApplicationMenuItem(
-                //    name: FreightMenus.AirExportManagement.BookingList,
-                //    displayName: l["Menu:AirExport.BookingList"],  // Booking List
-                //    url: "/AirExports/BookingList")
+                ).AddItem(new ApplicationMenuItem(
+                    name: FreightMenus.AirExportManagement.Booking,
+                    displayName: l["Menu:AirExport.Booking"],  // Hawb List
+                    url: "/AirExports/Bookings/Create")
+                ).AddItem(new ApplicationMenuItem(
+                    name: FreightMenus.AirExportManagement.BookingList,
+                    displayName: l["Menu:AirExport.BookingList"],  // Hawb List
+                    url: "/AirExports/Bookings/BookingList")
+            //).AddItem(new ApplicationMenuItem(
+            //    name: FreightMenus.AirExportManagement.Booking,
+            //    displayName: l["Menu:AirExport.Booking"],  // Create Booking
+            //    url: "/AirExports/CreateBooking")
+            //).AddItem(new ApplicationMenuItem(
+            //    name: FreightMenus.AirExportManagement.BookingList,
+            //    displayName: l["Menu:AirExport.BookingList"],  // Booking List
+            //    url: "/AirExports/BookingList")
 
             );
             context.Menu.AddItem(airExportMenu);

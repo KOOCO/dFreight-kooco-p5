@@ -19,6 +19,7 @@ namespace Dolphin.Freight.Web.CommonService
         List<SelectItems> ShipModeLookupList { get; }
         List<SelectItems> FreightTermLookupList { get; }
         List<SelectItems> ReferenceLookupList { get; }
+        List<SelectItems> ReferenceMawbLookupList { get; }
         List<SelectItems> CancelReasonLookupList { get; }
         List<SelectItems> SvgTermLookupList { get; }
         List<SelectItems> IncotermsLookupList { get; }
