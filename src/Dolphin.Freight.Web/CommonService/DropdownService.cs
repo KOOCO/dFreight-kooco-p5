@@ -92,6 +92,7 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> FreightTermLookupList => FillFreightTermAsync().Result;
 
         public List<SelectItems> ReferenceLookupList => FillReferenceNumberAsync().Result;
+        public List<SelectItems> ReferenceMawbLookupList => FillReferenceMawbNumberAsync().Result;
 
         public List<SelectItems> CancelReasonLookupList => FillCancelReasonAsync().Result;
 
@@ -136,9 +137,9 @@ namespace Dolphin.Freight.Web.CommonService
         #region FillAirportAsync()
         private async Task<List<SelectItems>> FillAirportAsync()
         {
-            var airportLookup = await _countryAppService.GetCountryLookupAsync();
+            var airportLookup = await _airportAppService.GetAirportLookupAsync();
             return airportLookup.Items
-                                    .Select(x => new SelectListItem(x.Code + " " + x.CountryName, x.Id.ToString(), false))
+                                    .Select(x => new SelectListItem(x.AirportName , x.Id.ToString(), false))
                                     .ToList();
         }
         #endregion
@@ -256,6 +257,18 @@ namespace Dolphin.Freight.Web.CommonService
         private async Task<List<SelectItems>> FillReferenceNumberAsync()
         {
             var referenceLookup = await _ajaxDropdownAppService.GetReferenceItemsByTypeAsync(new QueryDto());
+
+            referenceLookup = referenceLookup.Where(w => !string.IsNullOrEmpty(w.ReferenceNo)).ToList();
+
+            return referenceLookup
+                                                 .Select(x => new SelectListItem(x.ReferenceNo, x.Id.ToString(), false))
+                                                 .ToList();
+        }
+        #endregion
+        #region FillReferenceMawbNumberAsync()
+        private async Task<List<SelectItems>> FillReferenceMawbNumberAsync()
+        {
+            var referenceLookup = await _ajaxDropdownAppService.GetReferenceMawabAsync(new QueryDto());
 
             referenceLookup = referenceLookup.Where(w => !string.IsNullOrEmpty(w.ReferenceNo)).ToList();
 

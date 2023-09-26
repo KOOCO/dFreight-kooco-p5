@@ -4,6 +4,7 @@ using Dolphin.Freight.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,10 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Dolphin.Freight.Migrations
 {
     [DbContext(typeof(FreightDbContext))]
-    partial class FreightDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230925045255_Add AirExportBooking Table")]
+    partial class AddAirExportBookingTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1015,6 +1017,12 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("ConsigneeId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ContainerPickupNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContainerQtyInputText")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2")
                         .HasColumnName("CreationTime");
@@ -1036,9 +1044,6 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("DVCustomer")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DeliveryInstruction")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("DeliveryToId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1047,6 +1052,9 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<Guid?>("DepatureId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("DestinationId")
                         .HasColumnType("uniqueidentifier");
@@ -1071,6 +1079,12 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("ForwardingAgentId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("FreightTermForBuyerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("FreightTermForSalerId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<double>("GrossWeightAmount")
                         .HasColumnType("float");
 
@@ -1079,9 +1093,6 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<double>("GrossWeightLb")
                         .HasColumnType("float");
-
-                    b.Property<string>("HandlingInformation")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HblNo")
                         .HasMaxLength(32)
@@ -1129,9 +1140,6 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("MawbPackageUnitId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("NatureAndQuantity")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("NotifyId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1159,12 +1167,6 @@ namespace Dolphin.Freight.Migrations
                     b.Property<int>("ReferenceType")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("SaleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("SalesPersonId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("SalesType")
                         .HasColumnType("int");
 
@@ -1179,6 +1181,9 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<Guid?>("ShipperId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ShippingRemark")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SoNo")
                         .IsRequired()
@@ -1196,6 +1201,9 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<int>("SvcTermTypeTo")
                         .HasColumnType("int");
+
+                    b.Property<Guid?>("TransPort1Id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("TruckerId")
                         .HasColumnType("uniqueidentifier");
@@ -1237,6 +1245,10 @@ namespace Dolphin.Freight.Migrations
 
                     b.HasIndex("ForwardingAgentId");
 
+                    b.HasIndex("FreightTermForBuyerId");
+
+                    b.HasIndex("FreightTermForSalerId");
+
                     b.HasIndex("HolderId");
 
                     b.HasIndex("NotifyId");
@@ -1244,8 +1256,6 @@ namespace Dolphin.Freight.Migrations
                     b.HasIndex("OfficeId");
 
                     b.HasIndex("PackageId");
-
-                    b.HasIndex("SaleId");
 
                     b.HasIndex("ShipperId");
 
@@ -9231,6 +9241,14 @@ namespace Dolphin.Freight.Migrations
                         .WithMany()
                         .HasForeignKey("ForwardingAgentId");
 
+                    b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "FreightTermForBuyer")
+                        .WithMany()
+                        .HasForeignKey("FreightTermForBuyerId");
+
+                    b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "FreightTermForSalerr")
+                        .WithMany()
+                        .HasForeignKey("FreightTermForSalerId");
+
                     b.HasOne("Volo.Abp.Users.UserData", "Holder")
                         .WithMany()
                         .HasForeignKey("HolderId");
@@ -9246,10 +9264,6 @@ namespace Dolphin.Freight.Migrations
                     b.HasOne("Dolphin.Freight.Settings.PackageUnits.PackageUnit", "MawbPackageUnit")
                         .WithMany()
                         .HasForeignKey("PackageId");
-
-                    b.HasOne("Volo.Abp.Users.UserData", "SalesPerson")
-                        .WithMany()
-                        .HasForeignKey("SaleId");
 
                     b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Shipper")
                         .WithMany()
@@ -9285,6 +9299,10 @@ namespace Dolphin.Freight.Migrations
 
                     b.Navigation("ForwardingAgent");
 
+                    b.Navigation("FreightTermForBuyer");
+
+                    b.Navigation("FreightTermForSalerr");
+
                     b.Navigation("Holder");
 
                     b.Navigation("MawbPackageUnit");
@@ -9292,8 +9310,6 @@ namespace Dolphin.Freight.Migrations
                     b.Navigation("Notify");
 
                     b.Navigation("Office");
-
-                    b.Navigation("SalesPerson");
 
                     b.Navigation("Shipper");
 
