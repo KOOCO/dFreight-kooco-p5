@@ -519,3 +519,37 @@ function copyHawb(hawbId) {
         $('.hblCardTitle')[index].click();
     }, 500);
 }
+
+class CustomDateTimePicker {
+    dateTimePicker(Ids, CurrentDate = false) {
+        Ids.forEach(function (id) {
+            let dateElem = $('#' + id);
+            let formattedDate;
+
+            if (dateElem.length === 0) {
+                return;
+            }
+
+            if (CurrentDate) {
+                let currentDate = new Date();
+                formattedDate = currentDate.getFullYear() +
+                    '-' + ('0' + (currentDate.getMonth() + 1)).slice(-2) +
+                    '-' + ('0' + currentDate.getDate()).slice(-2) +
+                    ' ' + ('0' + currentDate.getHours()).slice(-2) +
+                    ':' + ('0' + currentDate.getMinutes()).slice(-2);
+            }
+
+            dateElem.removeAttr('type').datetimepicker({
+                format: 'Y-m-d H:i',
+                step: 15,
+                allowInput: false,
+                value: formattedDate
+            });
+
+            let currentVal = dateElem.val();
+            if (currentVal.includes('T')) {
+                dateElem.val(currentVal.replace('T', ' '));
+            }
+        });
+    }
+}

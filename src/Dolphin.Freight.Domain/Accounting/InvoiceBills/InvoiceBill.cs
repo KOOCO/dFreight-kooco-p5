@@ -73,5 +73,7 @@ namespace Dolphin.Freight.Accounting.InvoiceBills
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public int? Price { get; set; }
+        public Guid? TaxId { get; set; }
     }
 }

@@ -123,7 +123,8 @@
     "Prepaid": "Prepaid",
     "Collect": "Collect",
     "showingAt": "Showing At",
-
+    "TotalAmount": "Total Amount",
+    "TotalTax": "Total Tax",
 
     // Menu: AirImport
     "Menu:AirImport": "Air Import",
@@ -920,6 +921,8 @@
     "Display:BillCurrency": "Currency",
     "Display:BillQuantity": "Quantity",
     "Display:BillRate": "Rate",
+    "Display:Price": "Price",
+    "Display:Tax": "Tax",
     "Display:BillAmount": "Amount",
     "Display:AmountToAgent": "Amount To Agent",
     "Display:BillStatus": "Status",
