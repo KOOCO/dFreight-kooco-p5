@@ -7,6 +7,7 @@
 @inject IStringLocalizer<FreightResource> L
 @section scripts
     {
+    <abp-script src="/Pages/Accounting/Invoice.js" />
     <script type="text/javascript">
         var BillCodeItems = [];
         var PPOrCCItems = [];
@@ -182,16 +183,20 @@
             var index = target.id.split('_')[1];
             let quantity = parseFloat($(target).val() || 0);
             let rate = parseFloat($(target).parent().next().children().val() || 0);
-            $(target).parent().next().next().children().text(parseFloat(quantity * rate).toFixed(2));
+            let price = parseFloat($(target).parent().next().next().children().val() || 0);
+            var amount = quantity * rate * price;
+            $(target).parent().next().next().next().next().children().text(parseFloat(quantity * rate * price).toFixed(2));
+            if ($('#Tax_0').find(':selected').text().split('%')[0] == '7') {
+                var taxAmount = amount * 0.07;
+            } else {
+                var taxAmount = amount * 0;
+            }
             setCurrencyRate1($('#Currency_'+index+'').val(), event);
             getTotalSubAmount();
-            getTotalAmount();
+            getTotalAmount(parseFloat(taxAmount).toFixed());
         }
 
-
-
         function onRateChange(e) {
-            
             let target = e.currentTarget || e.srcElement || e.target;
             let rate = parseInt($(target).val() || 0);
             let quantity = parseInt($(target).parent().prev().children().val() || 0);
@@ -214,6 +219,7 @@
             {
                 $('#Rate_'+ index).val(0);
                 $('#Quantity_'+ index).val(0);
+                $('#Price_'+ index).val(0);
             }
             else{
                 $('#Rate_'+ index).val(parseFloat(rate).toFixed(2));
@@ -222,13 +228,20 @@
             setCurrencyRate1($(target).val(), event);
 
             var quantity = $('#Quantity_'+index).val();
+            var price = $('#Price_'+index).val();
 
-            $('#Amount_'+index).text(parseFloat(quantity * rate).toFixed(2));
+            $('#Amount_'+index).text(parseFloat(quantity * rate * price).toFixed(2));
+            var amount = quantity * rate * price;
             if(document.getElementById('Amount_'+index+'').innerHTML == 'NaN'){
                 document.getElementById('Amount_'+index+'').innerHTML = 0;
             }
+            if ($('#Tax_0').find(':selected').text().split('%')[0] == '7') {
+                var taxAmount = amount * 0.07;
+            } else {
+                var taxAmount = amount * 0;
+            }
             getTotalSubAmount();
-            getTotalAmount();
+            getTotalAmount(parseFloat(taxAmount).toFixed(2));
         }
 
 
@@ -279,7 +292,7 @@
             });
         }
 
-        function getTotalAmount(){
+        function getTotalAmount(taxAmount){
             var table = $('#trtbody');
             var total = 0;
 
@@ -290,15 +303,19 @@
               
               total += amount;
             }
+            total = parseFloat(total) + parseFloat(taxAmount);
+            var totalTaxElement = document.getElementById("totalTax");
+            totalTaxElement.innerHTML = taxAmount;
+            var totalBeforeElement = document.getElementById("totalBeforeTax");
+            totalBeforeElement.innerHTML = parseFloat(parseFloat(total) - parseFloat(taxAmount)).toFixed(2);
             var totalAmountElement = document.getElementById("totalAmount");
-            totalAmountElement.innerHTML = total.toFixed(2);
+            totalAmountElement.innerHTML = parseFloat(total).toFixed(2);
         }
 
 
         function getTotalSubAmount(){
             var table = $('#trtbody');
             var total = 0;
-
             for (var i = 0; i < table[0].rows.length; i++) {
               var amountCell = document.getElementById("Amount_" + i);
               
@@ -320,7 +337,7 @@
         var index = 0;
         function addItems(bill) {
             bill = bill || {};
-            
+            var invoice = new Invoice();
             var url = window.location.href;
             var urlParams = new URLSearchParams(new URL(url).search);
             var id = urlParams.get("Mid");
@@ -334,6 +351,8 @@
             trhtml = trhtml + "<td>" + getCurrencySelect(index, '', (bill.currency || '')) + "</td>";
             trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' onchange='onQuantityChange(event)' value='" + (bill.quantity || '') + "' id='Quantity_" + index + "' /></td>";
             trhtml = trhtml + "<td>" + getRate(index, bill.rate) + "</td>";
+            trhtml = trhtml + "<td>" + invoice.getPrice(index, bill.price) + "</td>";
+            trhtml = trhtml + "<td>" + invoice.getTax(index, bill.taxId) + "</td>";
             trhtml = trhtml + "<td id='td_Amount_" + index + "' value='" + (bill.amount || '') + "'><label name='InvoiceBillDtos[" + index + "].AmountLabel' id='Amount_" + index + "'>" + amount + "</label></td>";
             trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].AmountToAgent' id='AmountToAgent_" + index + "' value='" + (bill.amountToAgent || '') + "' /></td>";
             trhtml = trhtml + "<td  style='text-align:center'><input type='checkbox' name='InvoiceBillDtos[" + index + "].IsNonProfit' id='IsNonProfit_" + index + "'" + (bill.isNonProfit ? "checked" : "") + " disabled /></td>";
@@ -347,19 +366,25 @@
             {
                 $('#Quantity_'+ index).val(0);
                 $('#Rate_'+ index).val(0);
+                $('#Price_'+ index).val(0);
             }
             else{
                 getRate(urlParams.get("Mid"), parseFloat(bill.rate).toFixed(2));
             }
-            var amount = bill.quantity * $("#Rate_" + index + "").val();
+            var amount = bill.quantity * $("#Rate_" + index + "").val() * bill.price;
             if(val == undefined || amount == NaN){
                 $('#Amount_'+index+'').text(0);
             }else {
                 $('#Amount_'+index+'').text(parseFloat(amount).toFixed(2));
             }
+            if ($('#Tax_0').find(':selected').text().split('%')[0] == '7'){
+                var taxAmount = amount * 0.07;
+            } else {
+                var taxAmount = amount * 0;
+            }
             setCurrencyRate($('#Currency_0').val());
             getTotalSubAmount();
-            getTotalAmount();
+            getTotalAmount(parseFloat(taxAmount).toFixed(2));
             index++;
             
         }
@@ -754,7 +779,8 @@
                                 <abp-input type="text" asp-for="InvoiceDto.InvoiceNo" id="InvoiceNo" />
                             </abp-column>
                             <abp-column size-md="_3">
-                                <abp-select asp-for="InvoiceDto.ShipToId" asp-items="@Model.TradePartnerLookupList" />
+                                @*<abp-select asp-for="InvoiceDto.ShipToId" asp-items="@Model.TradePartnerLookupList" />*@
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "InvoiceDto.ShipToId", AspItems = Model.TradePartnerLookupList, Selected = Convert.ToString(Model.InvoiceDto.ShipToId), IsShowLabel = true, FieldName = @L["ShipToId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.InvoiceDto.ShipToId) })
                                 <abp-input type="hidden" name="ShipToId" id="mShipToId" asp-for="@Model.InvoiceDto.ShipToId" />
                             </abp-column>
                             <abp-column size-md="_3">
@@ -766,7 +792,8 @@
                         </abp-row>
                         <abp-row>
                             <abp-column size-md="_3">
-                                <abp-select asp-for="InvoiceDto.InvoiceCompanyId" asp-items="@Model.TradePartnerLookupList" />
+                                @*<abp-select asp-for="InvoiceDto.InvoiceCompanyId" asp-items="@Model.TradePartnerLookupList" />*@
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "InvoiceDto.InvoiceCompanyId", AspItems = Model.TradePartnerLookupList, Selected = Convert.ToString(Model.InvoiceDto.InvoiceCompanyId), IsShowLabel = true, FieldName = @L["BillTo"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.InvoiceDto.ShipToId) })
                             </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceDto.PostDate" />
@@ -794,7 +821,7 @@
                                 <abp-input asp-for="InvoiceDto.LastNo" />
                             </abp-column>
                             <abp-column size-md="_3">
-                                <abp-input asp-for="InvoiceDto.DueDate" type="text" abp-data-datepicker="false" readonly="true" />
+                                <abp-input asp-for="InvoiceDto.DueDate" abp-data-datepicker="false" />
                             </abp-column>
                             <abp-column size-md="_6">
                             </abp-column>
@@ -807,9 +834,6 @@
                             </abp-column>
                             <abp-column size-md="_3" class="expandCheck">
                                 <label for="InvoiceDto_IsAmountConfirmed" class="form-label">@L["IsAmountConfirmed"]<input type="checkbox" name="InvoiceDto.IsAmountConfirmed" id="InvoiceDto_IsAmountConfirmed" value="true" checked="@Model.InvoiceDto.IsAmountConfirmed" /></label>
-                            </abp-column>
-                            <abp-column size-md="_3">
-                                <abp-select asp-for="InvoiceDto.CcyRateSourceId" asp-items="@Model.SysCodeLookupList" style="width:230px" />
                             </abp-column>
                         </abp-row>
                     }
@@ -824,7 +848,7 @@
                                 <abp-input asp-for="InvoiceDto.InvoiceNo" />
                             </abp-column>
                             <abp-column size-md="_3">
-                                <abp-input asp-for="InvoiceDto.PostDate" />
+                                <abp-input asp-for="InvoiceDto.PostDate" abp-data-datepicker="false" />
                             </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceDto.OutstandingAmount" readonly="true" />
@@ -841,7 +865,7 @@
                                 <abp-select asp-for="InvoiceDto.InvoiceCompanyId" asp-items="@Model.TradePartnerLookupList" />
                             </abp-column>
                             <abp-column size-md="_3">
-                                <abp-input asp-for="InvoiceDto.InvoiceDate" />
+                                <abp-input asp-for="InvoiceDto.InvoiceDate" abp-data-datepicker="false" />
                             </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceDto.PaidAmount" readonly="true" />
@@ -859,7 +883,7 @@
                                 <abp-input asp-for="InvoiceDto.CustomerRefNo" />
                             </abp-column>
                             <abp-column size-md="_3">
-                                <abp-input asp-for="InvoiceDto.DueDate" />
+                                <abp-input asp-for="InvoiceDto.DueDate" abp-data-datepicker="false" />
                             </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceDto.ProfitShare" />
@@ -1079,8 +1103,8 @@
                         <abp-column>
                             <abp-button class="btn btn-success me-md-2" type="button" id="addBtn">+</abp-button>
                             <abp-button class="btn btn-outline-success me-md-2" type="button" id="add5Btn">+5</abp-button>
-                            <abp-button class="btn btn-outline-warning me-md-2" type="button" id="copyBtn">@L["Btn:Copy"]</abp-button>
-                            <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn">@L["Btn:Delete"]</abp-button>
+                            <abp-button class="btn btn-outline-warning me-md-2" type="button" id="copyBtn"><i class="fa fa-files-o"></i></abp-button>
+                            <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn"><i class="fa fa-trash"></i></abp-button>
                         </abp-column>
                     </abp-row>
                     <abp-row>
@@ -1096,6 +1120,8 @@
                                     <th width="8%">@L["Display:BillCurrency"]</th>
                                     <th width="8%">@L["Display:BillQuantity"]</th>
                                     <th width="8%">@L["Display:BillRate"]</th>
+                                    <th width="8%">@L["Display:Price"]</th>
+                                    <th width="8%">@L["Display:Tax"]</th>
                                     <th width="8%">@L["Display:BillAmount"]</th>
                                     <th width="8%">@L["Display:AmountToAgent"]</th>
                                     <th width="6%" style="text-align:center">N</th>
@@ -1105,7 +1131,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr border="1">
-                                        <th colspan="5" style="text-align:right;border-block-color:#333333;" border="1">小計</th>
+                                        <th colspan="7" style="text-align:right;border-block-color:#333333;" border="1">小計</th>
                                         <th>TWD</th>
                                         <th id="convertedTWD">0</th>
                                         <th>USD</th>
@@ -1116,7 +1142,15 @@
                                         <th id="convertedHKD">0</th>
                                     </tr>
                                     <tr border="1">
-                                        <th colspan="12" style="text-align:right;border-block-color:#333333;" border="1">總計</th>
+                                        <th colspan="14" style="text-align:right;border-block-color:#333333;" border="1">@L["TotalTax"]</th>
+                                        <th id="totalBeforeTax">0</th>
+                                    </tr>
+                                    <tr border="1">
+                                        <th colspan="14" style="text-align:right;border-block-color:#333333;" border="1">@L["TotalTax"]</th>
+                                        <th id="totalTax">0</th>
+                                    </tr>
+                                    <tr border="1">
+                                        <th colspan="14" style="text-align:right;border-block-color:#333333;" border="1">@L["TotalAmount"]</th>
                                         <th id="totalAmount">0</th>
                                         @*<th id="totalAmount">0 <input type="hidden" name="" /></th>*@
                                     </tr>

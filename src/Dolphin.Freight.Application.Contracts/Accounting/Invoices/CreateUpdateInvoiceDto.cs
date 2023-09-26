@@ -47,14 +47,10 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// <summary>
         /// 發布日期
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? PostDate { get; set; }
         /// <summary>
         /// 發票日期
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? InvoiceDate { get; set; }
         /// <summary>
         /// 最後應付日期
@@ -65,8 +61,6 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// <summary>
         /// 到期日期
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? DueDate { get; set; }
         /// <summary>
         /// 發票公司ID
