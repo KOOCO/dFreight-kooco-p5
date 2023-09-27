@@ -307,11 +307,11 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 運輸條款來
         /// </summary>
-        public ServiceTermType ServiceTermTypeFrom { get; set; }
+        public ServiceTermType? ServiceTermTypeFrom { get; set; }
         /// <summary>
         /// 運輸條款自
         /// </summary>
-        public ServiceTermType ServiceTermTypeTo { get; set; }
+        public ServiceTermType? ServiceTermTypeTo { get; set; }
         /// <summary>
         /// 是否取消提單
         /// </summary>
@@ -344,7 +344,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 顯示單位
         /// </summary>
-        public DisplayUnitType DisplayUnit { get; set; }
+        public DisplayUnitType? DisplayUnit { get; set; }
         /// <summary>
         /// 是否刪除
         /// </summary>

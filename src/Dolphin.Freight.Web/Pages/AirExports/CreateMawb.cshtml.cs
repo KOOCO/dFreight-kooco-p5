@@ -794,11 +794,11 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             public double AwbChargeableWeightLb { get; set; }
             public double AwbChargeableWeightAmount { get; set; }
 
-            public IncotermsType IncotermsType { get; set; }
-            public ServiceTermType ServiceTermTypeFrom { get; set; }
+            public IncotermsType? IncotermsType { get; set; }
+            public ServiceTermType? ServiceTermTypeFrom { get; set; }
             [DisplayName("~")]
-            public ServiceTermType ServiceTermTypeTo { get; set; }
-            public DisplayUnitType DisplayUnit { get; set; }
+            public ServiceTermType? ServiceTermTypeTo { get; set; }
+            public DisplayUnitType? DisplayUnit { get; set; }
 
             public bool IsAwbCancelled { get; set; }
            
