@@ -3,9 +3,12 @@
 @using Dolphin.Freight.Permissions
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
+@using Dolphin.Freight.Web.Pages.Components
+
+@using Dolphin.Freight.Web.CommonService
 @model Dolphin.Freight.Web.Pages.Accounting.Invoices.GAListModel
 @inject IStringLocalizer<FreightResource> L
-
+@inject IDropdownService _dropdown;
 @section scripts
     {
     <script type="text/javascript">
@@ -173,7 +176,25 @@
             src: 'Q&AInvoiceList'
         });
     })
-
+          $('#Search').click(function (e) {
+        dataTable.ajax.reload();
+    });
+    $('#CancelFilter').click(function (e) {
+        $("#Keyword").val(null);
+       
+        // $("#VesselSchedule_OfficeId").val(null);
+        $("select[name='VesselSchedule_OfficeId']").val(null);
+        
+        $("#Type").val(null).trigger("change");
+        $("#PostDate").val(null);
+        $("#ETA").val(null);
+        $("#ETD").val(null);
+        $("#InvoiceDate").val(null);
+        $("#DueDate").val(null);
+        $("#LastDate").val(null);
+        $("#InvoiceNo").val(null);
+        dataTable.ajax.reload();
+    });
             });
 
         });
@@ -210,6 +231,97 @@
                 </abp-column>
             </abp-row>
     </abp-card-header>
+    <abp-card-body class="collapse hide" id="mblDiv">
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["Keyword"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="Keyword" />
+                </abp-column>
+                 <abp-column size-md="_1">
+                    <label>@L["InvoiceNo"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="InvoiceNo" />
+                </abp-column>
+                     <abp-column size-md="_1">
+                    <label>@L["Office"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                  @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OfficeId", AspItems =  _dropdown.SubstationLookupList, IsShowLabel = false, FieldName = "OfficeId", SelectType = 0,  })
+            </abp-column>
+                    <abp-column size-md="_1">
+                    <label>@L["Type"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+               <select id="TypeId" class="form-select" />
+                <option value=""></option>
+                   <option value="0">應收</option>
+                    <option value="1">應收/應付</option>
+                    <option value="2">應付</option>
+               </select>
+                
+                </abp-column>
+            </abp-row>
+         
+            <abp-row class="mb-3">
+               
+
+            </abp-row>
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["PostDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" type="date" id="PostDate" />
+                </abp-column>
+               <abp-column size-md="_1">
+                    <label>@L["InvoiceDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" type="date" id="InvoiceDate" />
+                </abp-column>
+               
+               
+                <abp-column size-md="_1">
+                    <label>@L["ETD"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="ETD" />
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["ETA"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="ETA" />
+                </abp-column>
+            </abp-row>
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["DueDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="DueDate" />
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["LastPaidDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="LastDate" />
+                </abp-column>
+                          </abp-row>
+            
+            <abp-row>
+                <abp-abp-column class="text-center">
+               
+                    <abp-button type="button" id="CancelFilter" text="@L["Cancel"]" button-type="Danger" />
+
+                    <abp-button type="button" id="Search" text="@L["Search"]" button-type="Primary" />
+               
+                </abp-abp-column>
+            </abp-row>
+            </abp-card-body>
     <abp-card-body>
             <abp-table class="nowrap" striped-rows="true" id="ListTable" style="width:2000px;"></abp-table>
     </abp-card-body>
