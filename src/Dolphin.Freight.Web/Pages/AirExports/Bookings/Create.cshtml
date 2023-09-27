@@ -61,6 +61,8 @@
                         dateElem.val(currentVal.replace('T', ' '));
                     }
                 });
+                 onSetMawbCommodity();
+                onSetMawbOtherCharges();
             });
               // Calculate Weight Kg to Lb
             $("#GrossWeightKg").on('keyup', function () {
@@ -322,6 +324,27 @@
             //     $("#Mawbtr_" + val).hide();
             // })
         })
+           function onSetMawbCommodity() {
+            var extraProperties = '@Html.Raw(Json.Serialize(Model.ExportBooking.ExtraProperties))';
+            if (extraProperties && extraProperties != 'null' && extraProperties != '{}') {
+                var commodities = JSON.parse(extraProperties).Commodities;
+
+                if (commodities && commodities.length) {
+                    var commodityIndex = 0;
+                    commodities.forEach(function (commodity) {
+                        commodity.chkIndex = commodityIndex;
+
+                        var newRow = $('#mawbCommodityTemplate').tmpl(commodity);
+                        $('#MawbcommodityBody').append(newRow);
+
+                        commodityIndex += 1;
+                    });
+
+                    // $('#btnCommodity').removeAttr('disabled');
+                    // $('#btnCommodityHTS').removeAttr('disabled');
+                }
+            }
+        }
          function onAddMawbCommodity()
         {
             var newRowData = {
@@ -464,6 +487,26 @@
 
         /////
                var chkMawbOtherChargesIndex = 0;
+                function onSetMawbOtherCharges() {
+
+            var extraProperties ='@Html.Raw(Json.Serialize(Model.ExportBooking.ExtraProperties))';
+
+            if (extraProperties && extraProperties != 'null') {
+                var otherCharges = JSON.parse(extraProperties).OtherCharges;
+
+                if(otherCharges && otherCharges.length){
+                    var Index = 0;
+                    otherCharges.forEach(function (otherCharge) {
+                        otherCharge.chkIndex = Index;
+
+                        var newRow = $('#mawbOtherChargesTemplate').tmpl(otherCharge);
+                        $('#mawbOtherChargesBody').append(newRow);
+
+                        Index += 1;
+                    })
+                }
+            }
+        }
         function onAddMawbOtherCharges() {
 
             var newRowData = {
@@ -588,6 +631,10 @@
         }
     </script>
     <script>
+           var Code = "";
+        var CarrierAgent="";
+        var CollectPaid="";
+        var ChargeItem = "";
         var chargeItems=@Html.Raw(Json.Serialize(Model.ChargeItemList));
     </script>
       <script id="mawbCommodityTemplate" type="text/x-jQuery-tmpl">
@@ -609,18 +656,18 @@
           
            <td> <select  name="ExportBooking.OtherCharges[${chkIndex}].CarrierAgent" id="desc_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
         <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
-        <option value="Carrier"> Carrier</option>
-         <option value="Agent" > Agent</option>
+        <option value="Carrier" {{if "Carrier" === CarrierAgent}}selected{{/if}}  > Carrier</option>
+         <option value="Agent" {{if "Agent" === CarrierAgent}}selected{{/if}} > Agent</option>
         </select></td>
           <td> <select  name="ExportBooking.OtherCharges[${chkIndex}].CollectPaid" id="htscode_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
         <option value="" > @L["Display:Dropdownlist:Option:Select"]</option>
-        <option value="Collect"  > Collect</option>
-         <option value="Prepaid" >Prepaid</option>
+        <option value="Collect" {{if "Collect" === CollectPaid}}selected{{/if}} > Collect</option>
+         <option value="Prepaid" {{if "Prepaid" === CollectPaid}}selected{{/if}} >Prepaid</option>
         </select></td>
          <td> <select name="ExportBooking.OtherCharges[${chkIndex}].ChargeItem"  class="filteredDropdown form-select form-control cursor-pointer ">
         <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
       {{each chargeItems}}
-         <option value="${$value.value}" }>${$value.text}</option>
+         <option value="${$value.value}" {{if $value.value === ChargeItem}}selected{{/if}}>${$value.text}</option>
         {{/each}}
       </select></td>
          @*  <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].ChargeItem" /></td> *@

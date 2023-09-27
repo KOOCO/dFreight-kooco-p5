@@ -16,6 +16,7 @@ namespace Dolphin.Freight.ImportExport.AirExports.Bookings
         /// 0：船期，1：MBL
         /// </summary>
         public int ReferenceType { get; set; }
+        public string MawbNo { get; set;}
         /// <summary>
         /// SO編號
         /// </summary>
@@ -323,5 +324,17 @@ namespace Dolphin.Freight.ImportExport.AirExports.Bookings
         public SalesType SalesType { get; set; }
         public ShipType ShipType { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public string CarrierName { get; set; }
+        public string DepartureName { get; set; }
+        public string DestinationName { get; set; }
+        public string ShipperName { get; set; }
+        public string CustomerName { get; set; }
+        public string NotifyName { get; set; }
+        public string OverseaAgentName { get; set; }
+        public string ConsigneeName { get; set; }
+        public string OPName { get; set; }
+        public string SalesName { get; set; }
+        public string OfficeName { get; set; }
+        
     }
 }

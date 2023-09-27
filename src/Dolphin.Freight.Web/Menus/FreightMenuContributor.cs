@@ -359,7 +359,7 @@ public class FreightMenuContributor : IMenuContributor
                 ).AddItem(new ApplicationMenuItem(
                     name: FreightMenus.AirExportManagement.BookingList,
                     displayName: l["Menu:AirExport.BookingList"],  // Hawb List
-                    url: "/AirExports/Bookings/BookingList")
+                    url: "/AirExports/Bookings/Index")
             //).AddItem(new ApplicationMenuItem(
             //    name: FreightMenus.AirExportManagement.Booking,
             //    displayName: l["Menu:AirExport.Booking"],  // Create Booking

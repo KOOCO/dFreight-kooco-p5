@@ -700,7 +700,7 @@
                             <abp-row>
                                 <abp-column size-md="_9">
                                     <abp-card-title>
-                                        S/O <span id="title0"></span>
+                                        S/O @Model.ExportBooking.SoNo <span id="title0"></span>
                                         <span id="title0" style="font-size:0.8em;"></span>
                                         <span id="title2" style="font-size:0.8em;"></span>
                                         <span id="title3" style="font-size:0.8em;"></span>
@@ -723,7 +723,7 @@
                                             <abp-row>
                                                 <abp-column>
                                                      <div class="mb-3">
-                                                    <label for="ExportBooking_SoNo" class="form-label">@L["SoCode"] <input type="checkbox" name="ExportBooking.IsCreateBySystem" id="ExportBooking_IsCreateBySystem" value="true" /></label>
+                                                    <label for="ExportBooking_SoNo" class="form-label">@L["SoCode"] <input type="checkbox" name="ExportBooking.IsCreateBySystem" disabled id="ExportBooking_IsCreateBySystem" value="true" /></label>
                                                     <input  type="text" name="ExportBooking.SoNo" class="form-control" id="ExportBooking_SoNo" value="@Model.ExportBooking.SoNo" readonly  />
                                                 </div>
                                                 </abp-column>

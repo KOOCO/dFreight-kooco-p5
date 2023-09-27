@@ -15,7 +15,8 @@ namespace Dolphin.Freight.ImportExport.AirExports.Bookings
        PagedAndSortedResultRequestDto,
        CreateUpdateExportBookingDto>
     {
-        //Task<PagedResultDto<ExportBookingDto>> QueryListAsync(QueryExportBookingDto query);
+        Task<PagedResultDto<ExportBookingDto>> GetQueryListAsync(QueryExportBookingDto query);
         Task<List<ExportBookingDto>> GetSONo();
+        Task DeleteAirExportBookingAsync(Guid id);
     }
 }
