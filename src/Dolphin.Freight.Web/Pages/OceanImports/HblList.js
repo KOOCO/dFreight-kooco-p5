@@ -31,320 +31,150 @@ var queryListFilter = function () {
 
     };
 };
+var columns = [
+    {
+    title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
+    data: null,
+    orderable: false,
+    render: function (data, type, row) {
+        var id = row.id;
+        $('#selectAllCheckbox').prop('checked', false);
+        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
+    }
+},
+    {
+        title: '<div  style=" cursor: pointer;"><span><i class="fa fa-lock"></i></span></div>',
+        orderable: false,
+        "render": function (data, type, row) {
+            debugger;
+            var isCkecked = row.isLocked;
+            var Hblid = row.id;
+            if (isCkecked) {
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + Hblid + '"  checked="' + isCkecked + '" onclick="lockCheckBox(this)"  style=" cursor: pointer;">';
+            } else {
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + Hblid + '" onclick="lockCheckBox(this)"   style=" cursor: pointer;">';
+            }
+        }
+    },
+    //{
+    //    className: 'dtr-control',
+    //    orderable: false,
+    //    "defaultContent": ""
+    //},
+    {
+        title: l('Actions'),
+        rowAction: {
+            items:
+                [
+                    {
+                        text: l('Edit'),
+                        visible: abp.auth.isGranted('Settings.ItNoRanges.Edit'), //CHECK for the PERMISSION
+                        action: function (data) {
+                            if (data.record.isLocked) {
 
+                            }
+                            location.href = 'EditModal?Id=' + data.record.mblId + '&Hid=' + data.record.id;
 
-$(function () {
-    dataTable = $('#HblListTable').DataTable(
-        abp.libs.datatables.normalizeConfiguration({
-            serverSide: true,
-            paging: true,
-            order: [[2, "asc"]],
-            searching: false,
-            scrollX: true,
-            processing: true,
-            responsive: {
-                details: {
-                    type: 'column'
-                }
-            },
-            ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.oceanImports.oceanImportHbl.queryList, queryListFilter),
-            columnDefs: [{
-                title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
-                data: null,
-                orderable: false,
-                render: function (data, type, row) {
-                    var id = row.id;
-                    $('#selectAllCheckbox').prop('checked', false);
-                    return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
-                }
-            },
-                {
-                    title: '<div  style=" cursor: pointer;"><span><i class="fa fa-lock"></i></span></div>',
-                    orderable: false,
-                    "render": function (data, type, row) {
-                        debugger;
-                        var isCkecked = row.isLocked;
-                        var Hblid = row.id;
-                        if (isCkecked) {
-                            return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + Hblid + '"  checked="' + isCkecked + '" onclick="lockCheckBox(this)"  style=" cursor: pointer;">';
-                        } else {
-                            return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + Hblid + '" onclick="lockCheckBox(this)"   style=" cursor: pointer;">';
                         }
-                    }
-                },
-                //{
-                //    className: 'dtr-control',
-                //    orderable: false,
-                //    "defaultContent": ""
-                //},
-                {
-                    title: l('Actions'),
-                    rowAction: {
-                        items:
-                            [
-                                {
-                                    text: l('Edit'),
-                                    visible: abp.auth.isGranted('Settings.ItNoRanges.Edit'), //CHECK for the PERMISSION
-                                    action: function (data) {
-                                        if (data.record.isLocked) {
+                    },
+                    {
+                        text: l('Delete'),
+                        visible: function (data) {
 
-                                        }
-                                        location.href = 'EditModal?Id=' + data.record.mblId + '&Hid=' + data.record.id;
+                            return !data.isLocked && abp.auth.isGranted('Settings.ItNoRanges.Delete')
+                        },
 
-                                    }
-                                },
-                                {
-                                    text: l('Delete'),
-                                    visible: function (data) {
-
-                                        return !data.isLocked && abp.auth.isGranted('Settings.ItNoRanges.Delete')
-                                    },
-
-                                    action: function (data) {
-                                        if (!data.record.isLocked) {
-                                            abp.message.confirm(l('DeletionConfirmationMessage'))
-                                                .then(function (confirmed) {
-                                                    if (confirmed) {
-                                                        dolphin.freight.importExport.oceanImports.oceanImportMbl
-                                                            .delete(data.record.id)
-                                                            .then(function () {
-                                                                abp.message.success(l('SuccessfullyDeleted'));
-                                                                dataTable.ajax.reload();
-                                                            });
-                                                    }
-                                                });
-
-                                        } else {
-                                            abp.message.warn("鎖定不能刪除")
-                                        }
-
-                                        /*
-                                        if (!data.record.isLocked) {
+                        action: function (data) {
+                            if (!data.record.isLocked) {
+                                abp.message.confirm(l('DeletionConfirmationMessage'))
+                                    .then(function (confirmed) {
+                                        if (confirmed) {
                                             dolphin.freight.importExport.oceanImports.oceanImportMbl
                                                 .delete(data.record.id)
                                                 .then(function () {
                                                     abp.message.success(l('SuccessfullyDeleted'));
                                                     dataTable.ajax.reload();
                                                 });
-                                        } else {
-                                            abp.message.warn("鎖定不能刪除")
-                                        }*/
+                                        }
+                                    });
 
-                                    }
-                                }
-                            ]
-                    }
-                },
-                {
-                    //是否鎖定
-                    title: l('IsLocked'),
-                    orderable: false,
-                    render: function (data, type, row, meta) {
-                        if (row.isLocked)
-                            return "<a href='javascript:lock(\"" + row.id + "\")' class='btn-lock' id='lock_" + row.id + "'><i class='fa-lg fa-solid fa-lock fa-lg'></i><span>解鎖</span></a>";
-                        else
-                            return "<a href='javascript:lock(\"" + row.id + "\")' class='btn-lock action' id='lock_" + row.id + "'><i class='fa-lg fa-solid fa-lock-open'></i><span>上鎖</span></a>";
-                    }
-                },
-                {
-                    //文件號碼
-                    title: l('FilingNo'),
-                    data: "filingNo"
-                },
-                {
-                    //HBL號碼
-                    title: l('HblNo'),
-                    data: "hblNo"
-                },
-                {
-                    //MBL號碼
-                    title: l('MblNo'),
-                    data: "mblNo"
-                },
-                {
-                    //分站
-                    title: l('OfficeId'),
-                    data: "officeName"
-                },
-                {
-                    title: l('Voyage'),
-                    data: "voyage"
-                },
-                {
-                    //代理
-                    title: l('OverseaAgentId'),
-                    data: "agentName"
-                },
-                {
-                    title: l('IHblShipperName'),
-                    data: "hblShipperName"
-                },
-                {
-                    //收貨人
-                    title: l('ConsigneeName'),
-                    data: "hblConsigneeName"
-                },
-                {
-                    title: l('FinalDestName'),
-                    data: "fdestName"
-                },
-                {
-                    title: l('FinalEta'),
-                    data: "fdestEta"
-                },
-                {
-                    title: l('AmsNo'),
-                    data: "amsNo",
-                    defaultContent: ""
-                },
-                {
-                    title: l('Packages'),
-                    data: "",
-                    defaultContent: ""
-                },
-                {
-                    title: l('Weight'),
-                    data: "",
-                    defaultContent: ""
-                },
-                {
-                    title: l('Measurement'),
-                    data: "",
-                    defaultContent: ""
-                },
-                {
-                    title: l('SvcTermFromId'),
-                    data: "svcTermFromName"
-                },
-                {
-                    //AR結餘
-                    title: l('ARBalance'),
-                    data: "arSurplus"
-                },
-                {
-                    //A/P結餘
-                    title: l('APBalance'),
-                    data: "apSurplus"
-                },
-                {
-                    //D/C結餘
-                    title: l('DCBalance'),
-                    data: "dcSurplus"
-                },
-                {
-                    title: l('HShipModeId'),
-                    data: "shipModeName"
-                },
-                {
-                    title: l('Trucker'),
-                    data: "truckerName"
-                },
-                {
-                    title: l('Display:ContainerNo'),
-                    data: "",
-                    defaultContent: ""
-                },
-                {
-                    title: l('InvoiceList:PoNo'),
-                    data: "poNo",
-                    defaultContent: ""
-                },
-                {
-                    title: l('LastFreeDate'),
-                    data: "",
-                    defaultContent: ""
-                },
-                {
-                    title: l('CyCfsLocation'),
-                    data: "cyCfsLocationName",
-                    defaultContent: ""
-                },
-                {
-                    title: l('CarrierContractNo'),
-                    data: "", 
-                    defaultContent: ""
-                },
-                {
-                    //是否扣留
-                    title: l('IsHold'),
-                    data: function (row, type, set) {
-                        if (row.isHold) return "V";
-                        else return "";
+                            } else {
+                                abp.message.warn("鎖定不能刪除")
+                            }
 
-                    }
-                },
-                {
-                    //放貨
-                    title: l('IsReleased'),
-                    data: function (row, type, set) {
-                        if (row.isReleased) return "V";
-                        else return "";
+                            /*
+                            if (!data.record.isLocked) {
+                                dolphin.freight.importExport.oceanImports.oceanImportMbl
+                                    .delete(data.record.id)
+                                    .then(function () {
+                                        abp.message.success(l('SuccessfullyDeleted'));
+                                        dataTable.ajax.reload();
+                                    });
+                            } else {
+                                abp.message.warn("鎖定不能刪除")
+                            }*/
 
+                        }
                     }
-                },
-                {
-                    //OBL編號
-                    title: l('OblTypeName'),
-                    data: "oblTypeName"
-                },
-                {
-                    //客戶名稱
-                    title: l('CustomerBroker'),
-                    data: "hblCustomerName"
-                },
-                {
-                    //ETD
-                    title: l('PolEtd'),
-                    data: "polEtd"
-                },
-                {
-                    //ETA
-                    title: l('PodEta'),
-                    data: "podEta"
-                },
-                {
-                    //收貨地(POR)
-                    title: l('PorName'),
-                    data: "porName"
-                },
-                {
-                    //收貨地(POR)
-                    title: l('PolName'),
-                    data: "polName"
-                },
-                {
-                    //卸貨港(POD)
-                    title: l('PodName'),
-                    data: "podName"
-                },
-                {
-                    //交貨地(DEL)
-                    title: l('DelName'),
-                    data: "delName"
-                },
-                {
-                    //船公司
-                    title: l('MblCarrierName'),
-                    data: "mblCarrierName"
-                },
-                {
-                    title: l('Sales'),
-                    data: "",
-                    defaultContent: ""
-                },
-                {
-                    title: l('Remark'),
-                    data: "",
-                    defaultContent: ""
-                },
-                {
-                    title: l('CreateDate'),
-                    data: "creationTime",
-                    defaultContent: ""
+                ]
+        }
+    },
+   
+        
+    ]
+
+$(function () {
+    dolphin.freight.web.controllers.configuration.getJsonConfig('OceanImportHblList').done(function (data) {
+        data.forEach(function (item) {
+            if (!item.lock && item.checkable) {
+                var column;
+
+                if (item.text.toLowerCase().includes('islocked')) {
+                    column = {
+                        //是否鎖定
+                        title: l('IsLocked'),
+                        orderable: false,
+                        render: function (data, type, row, meta) {
+                            if (row.isLocked)
+                                return "<a href='javascript:lock(\"" + row.id + "\")' class='btn-lock' id='lock_" + row.id + "'><i class='fa-lg fa-solid fa-lock fa-lg'></i><span>解鎖</span></a>";
+                            else
+                                return "<a href='javascript:lock(\"" + row.id + "\")' class='btn-lock action' id='lock_" + row.id + "'><i class='fa-lg fa-solid fa-lock-open'></i><span>上鎖</span></a>";
+                        }
+                    }
                 }
-            ]
-        })
-    );
+                else {
+                    column = {
+                        title: l(item.text),
+                        data: item.name,
+                        render: function (data, type, row) {
+                            return data === null ? " " : data;
+                        }
+                    };
+                }
+                columns.push(column);
+            }
+        });
+
+        var col = (columns.length > 2) ? [[2, 'asc']] : [[0, 'asc']];
+        dataTable = $('#HblListTable').DataTable(
+            abp.libs.datatables.normalizeConfiguration({
+                serverSide: true,
+                paging: true,
+                order: col,
+                searching: false,
+                scrollX: true,
+                processing: true,
+                responsive: {
+                    details: {
+                        type: 'column'
+                    }
+                },
+                ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.oceanImports.oceanImportHbl.queryList, queryListFilter),
+                columnDefs: columns
+            })
+        )
+    
+   });
 
     $('#Search').keyup(function () {
         clearInterval(_changeInterval)
@@ -356,6 +186,16 @@ $(function () {
     $('#Search').click(function (e) {
         dataTable.ajax.reload();
     });
+    $('#btnConfiguration').click(function (e) {
+        var _configurationModal = new abp.ModalManager({
+            viewUrl: abp.appPath + 'Configuration',
+            modalClass: 'ConfigurationViewModel'
+        });
+
+        _configurationModal.open({
+            src: 'OceanImportHblList'
+        });
+    })
     $('#CancelFilter').click(function (e) {
         $("#Keyword").val(null);
 

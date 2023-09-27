@@ -410,5 +410,14 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         
         public CreateUpdateContainerDto CreateUpdateHBLContainerDto { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public string Remark { get; set; }
+        public string CarrierContractNo { get; set; }
+        public DateTime? LastFreeDate { get; set; }
+        public string ContainerNo { get; set; }
+        public string SalesName { get; set; }
+        public string Package { get; set; }
+        public string Weight { get; set; }
+        public string Measurement { get; set; }
+
     }
 }
