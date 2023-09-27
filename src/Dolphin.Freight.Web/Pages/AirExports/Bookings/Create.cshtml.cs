@@ -15,6 +15,12 @@ namespace Dolphin.Freight.Web.Pages.AirExports.Bookings
 {
     public class CreateModel : FreightPageModel
     {
+        [HiddenInput]
+        [BindProperty(SupportsGet = true)]
+        public Guid Id { get; set; }
+       
+        [BindProperty(SupportsGet = true)]
+        public bool IsCopy { get; set; }
         [BindProperty]
         public CreateUpdateExportBookingDto ExportBooking { get; set; }
         public string CabinateSize { get; set; }
@@ -39,17 +45,9 @@ namespace Dolphin.Freight.Web.Pages.AirExports.Bookings
             _sysCodeAppService = sysCodeAppService;
             _containerAppService = containerAppService;
         }
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            ExportBooking = new CreateUpdateExportBookingDto
-            {
-                SoNoDate = DateTime.Now,
-                DVCarriage = "NVD",
-                DVCustomer = "NCV",
-                Insurance = "XXX",
-                WtVal = "PPD",
-                Other = "PPD"
-            };
+            ChargeItemList = GetChargeItemSelectList();
             RateUnitTypeLookupList = new List<SelectListItem>
             {
                 new SelectListItem() { Text = "KG", Value = "KG" },
@@ -60,10 +58,33 @@ namespace Dolphin.Freight.Web.Pages.AirExports.Bookings
                 new SelectListItem() { Text = "CBM", Value = "CBM" },
                 new SelectListItem() { Text = "CFT", Value = "CFT" }
             };
-            ChargeItemList = GetChargeItemSelectList();
+            if (IsCopy)
+            {
+                var exportBooking = await _exportBookingAppService.GetAsync(Id);
+                ExportBooking = ObjectMapper.Map<ExportBookingDto, CreateUpdateExportBookingDto>(exportBooking);
+                ExportBooking.SoNo = null;
+            }
+            else
+            {
+                ExportBooking = new CreateUpdateExportBookingDto
+                {
+                    SoNoDate = DateTime.Now,
+                    DVCarriage = "NVD",
+                    DVCustomer = "NCV",
+                    Insurance = "XXX",
+                    WtVal = "PPD",
+                    Other = "PPD"
+                };
+            }
+           
         }
         public async Task<JsonResult> OnPostAsync()
         {
+            if (IsCopy)
+            {
+                ExportBooking.Id = Guid.Empty;
+            
+            }
             if (ExportBooking.IsCreateBySystem) {
                 ExportBooking.SoNo = await _sysCodeAppService.GetSystemBookingNoAsync(new() { QueryType = "ExportBooking_SoNo" });
             }
