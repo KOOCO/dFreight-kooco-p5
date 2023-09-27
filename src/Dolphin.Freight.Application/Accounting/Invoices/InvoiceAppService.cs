@@ -47,7 +47,25 @@ namespace Dolphin.Freight.Accounting.Invoices
                     tDictionary.Add(tradePartner.Id, tradePartner.TPName);
                 }
             }
-            var rs = await _repository.GetListAsync();
+            var result= await _repository.GetQueryableAsync();
+            var rs=result.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.InvoiceNo
+                                           .Contains(query.Search) || x.FilingNo
+                                           
+                                           .Contains(query.Search) || x.PoNo
+                                           .ToString().Contains(query.Search))
+                                           .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
+                                   .WhereIf(query.InvoiceType.HasValue, e => e.InvoiceType == query.InvoiceType)
+                                   
+                                   .WhereIf(!string.IsNullOrWhiteSpace(query.InvoiceNo), x => x.InvoiceNo == query.InvoiceNo)
+                                   
+                                  .WhereIf(query.InvoiceDate.HasValue, e => e.InvoiceDate == query.InvoiceDate.Value.Date.AddDays(1))
+                                   .WhereIf(query.PostDate.HasValue, e => e.PostDate == query.PostDate.Value.Date.AddDays(1))
+                                  .WhereIf(query.DueDate.HasValue, e => e.DueDate == query.DueDate.Value.Date.AddDays(1))
+                                  .WhereIf(query.LastDate.HasValue, e => e.LastDate == query.LastDate.Value.Date.AddDays(1))
+                                  
+                                 
+                                          .OrderByDescending(x => x.CreationTime).ToList();
+          
             List<InvoiceDto> list = new List<InvoiceDto>();
             if (query != null && query.ParentId != null)
             {
