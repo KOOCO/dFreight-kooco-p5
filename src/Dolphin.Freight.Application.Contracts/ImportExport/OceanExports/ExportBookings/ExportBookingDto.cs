@@ -147,6 +147,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// </summary>
         public Guid? ShippingAgentId { get; set; }
         public string ShippingAgentName { get; set; }
+        public string HblConsigneeName { get; set; }
         /// <summary>
         /// HBL代理ID
         /// </summary>

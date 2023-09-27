@@ -175,6 +175,7 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<CreateUpdateOceanImportHblDto, OceanImportHbl>();
         CreateMap<OceanImportMbl, OceanImportDetails>();
         CreateMap<OceanImportHbl, OceanImportDetails>();
+        CreateMap<OceanImportHblDto, OceanImportHbl>();
 
         // Substation
         CreateMap<Substation, SubstationLookupDto>();
@@ -208,6 +209,9 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<AirImportHawb, AirImportHawbDto>();
         CreateMap<CreateUpdateAirImportHawbDto, AirImportHawb>();
         CreateMap<AirImportHawbDto, CreateUpdateAirImportHawbDto>();
+        // AirExportBooking
+        CreateMap<AirExportBooking, Dolphin.Freight.ImportExport.AirExports.Bookings.ExportBookingDto>();
+        CreateMap<Dolphin.Freight.ImportExport.AirExports.Bookings.CreateUpdateExportBookingDto, AirExportBooking>();
 
         #region iFreight 的資料表
 

@@ -135,6 +135,7 @@ public class FreightDbContext :
     public DbSet<Payment> Payment { get; set; }
     public DbSet<VesselSchedule> VesselSchedules { get; set; }
     public DbSet<ExportBooking> ExportBookings { get; set; }
+    public DbSet<AirExportBooking> AirExportBookings { get; set; }
     // Tenant Management 
     public DbSet<Tenant> Tenants { get; set; }
     public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
@@ -702,7 +703,18 @@ public class FreightDbContext :
             b.Property(x => x.DocNo).HasMaxLength(32);
             b.Property(x => x.Voyage).HasMaxLength(32);
         });
-
+        builder.Entity<AirExportBooking>(b =>
+        {
+            b.ToTable(FreightConsts.DbTablePrefix + "AirExportBookings",
+                FreightConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.Property(x => x.SoNo).IsRequired().HasMaxLength(32);
+            b.Property(x => x.HblNo).HasMaxLength(32);
+            b.Property(x => x.ItnNo).HasMaxLength(64);
+            b.Property(x => x.CustomerRefNo).HasMaxLength(128);
+            b.Property(x => x.DocNo).HasMaxLength(32);
+           
+        });
         builder.Entity<OceanImportMbl>(b =>
         {
             b.ToTable(FreightConsts.DbTablePrefix + "OceanImportMbls",

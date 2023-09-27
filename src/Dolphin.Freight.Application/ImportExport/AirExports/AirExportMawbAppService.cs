@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Dolphin.Freight.Accounting.Invoices;
 using Newtonsoft.Json;
 using NPOI.POIFS.Crypt.Dsig;
+using Dolphin.Freight.ImportExport.AirImports;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -106,6 +107,66 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 {
                     var dto = ObjectMapper.Map<AirExportMawb, AirExportMawbDto>(pu);
                     if (dto.ShipperId != null) dto.Shipper = tdictionary[dto.ShipperId.Value];
+                    var hawbs = await _airExportHawbRepository.GetListAsync();
+                    dto.HawbNos = string.Join(", ", hawbs.Where(w => w.MawbId == dto.Id).Select(s => s.HawbNo));
+                    var queryType = 0;
+
+                    QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = dto.Id };
+
+                    dto.Invoices = (await _invoiceAppService.QueryInvoicesAsync(queryDto)).ToList();
+
+                    if (dto.Invoices is not null && dto.Invoices.Count > 0)
+                    {
+                        dto.AR = new List<InvoiceDto>();
+                        dto.DC = new List<InvoiceDto>();
+                        dto.AP = new List<InvoiceDto>();
+                        foreach (var dto1 in dto.Invoices)
+                        {
+                            switch (dto1.InvoiceType)
+                            {
+                                default:
+                                    dto.AR.Add(dto1);
+                                    break;
+                                case 1:
+                                    dto.DC.Add(dto1);
+                                    break;
+                                case 2:
+                                    dto.AP.Add(dto1);
+                                    break;
+                            }
+                        }
+
+                        if (dto.AR.Any())
+                        {
+                            double arTotal = 0;
+                            foreach (var ar in dto.AR)
+                            {
+                                arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                            }
+                            dto.ARTotal = arTotal;
+                        }
+                        if (dto.AP.Any())
+                        {
+                            double apTotal = 0;
+                            foreach (var ap in dto.AP)
+                            {
+                                apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                            }
+
+                            dto.APTotal = apTotal;
+                        }
+                        if (dto.DC.Any())
+                        {
+                            double dcTotal = 0;
+                            foreach (var dc in dto.DC)
+                            {
+                                dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                            }
+                            dto.DCTotal = dcTotal;
+                        }
+                        dto.Total = dto.ARTotal - dto.APTotal + dto.DCTotal;
+                        dto.InvoicesJson = JsonConvert.SerializeObject(dto.Invoices);
+                    }
                     list.Add(dto);
                 }
             }

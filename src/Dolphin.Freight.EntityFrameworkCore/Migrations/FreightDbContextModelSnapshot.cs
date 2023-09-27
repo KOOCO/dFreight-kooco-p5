@@ -932,6 +932,157 @@ namespace Dolphin.Freight.Migrations
                     b.ToTable("AppMemos", (string)null);
                 });
 
+            modelBuilder.Entity("Dolphin.Freight.iFreightDB.BaseTables.PublicFreights.PublicFreight", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasComment("主索引流水號");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<string>("Branch")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasComment("運價來源(公司站別) ");
+
+                    b.Property<string>("Carrier")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasComment("船/航空公司");
+
+                    b.Property<decimal?>("Cbm")
+                        .HasColumnType("decimal(16,4)")
+                        .HasColumnName("CBM")
+                        .HasComment("1 CBM 的價錢，僅 Model = CFS 顯示");
+
+                    b.Property<string>("CoLoader")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasComment("秀出是否是跟同行拿的價格 (不用秀出同行名字)");
+
+                    b.Property<string>("ContractNo")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasComment("合約編號");
+
+                    b.Property<string>("CreateBy")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasComment("新增人");
+
+                    b.Property<DateTime?>("CreateDate")
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)")
+                        .HasComment("新增時間");
+
+                    b.Property<string>("Currency")
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)")
+                        .HasComment("幣別");
+
+                    b.Property<string>("Destination")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasComment("最終交貨地");
+
+                    b.Property<DateTime?>("EffectiveDate")
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)")
+                        .HasComment("合約生效日期");
+
+                    b.Property<string>("Eta")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("ETA")
+                        .HasComment("預計到達時間");
+
+                    b.Property<string>("Etc")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("ETC")
+                        .HasComment("截關日");
+
+                    b.Property<string>("Etd")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("ETD")
+                        .HasComment("預計開航時間");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit")
+                        .HasComment("是否刪除");
+
+                    b.Property<string>("Model")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasComment("儲存 CY 或是 CFS 搜尋時會以此作為依據");
+
+                    b.Property<string>("ModifyBy")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasComment("最後修改人");
+
+                    b.Property<DateTime?>("ModifyDate")
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)")
+                        .HasComment("最後修改時間");
+
+                    b.Property<decimal?>("Of20")
+                        .HasColumnType("decimal(16,4)")
+                        .HasColumnName("OF20")
+                        .HasComment("20' 的價錢，僅 Model = CY 顯示");
+
+                    b.Property<decimal?>("Of40")
+                        .HasColumnType("decimal(16,4)")
+                        .HasColumnName("OF40")
+                        .HasComment("40' 的價錢，僅 Model = CY 顯示");
+
+                    b.Property<decimal?>("Of40hq")
+                        .HasColumnType("decimal(16,4)")
+                        .HasColumnName("OF40HQ")
+                        .HasComment("40'HQ 的價錢，僅 Model = CY 顯示");
+
+                    b.Property<string>("Pod")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("POD")
+                        .HasComment("目的港");
+
+                    b.Property<string>("Pol")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("POL")
+                        .HasComment("起運地");
+
+                    b.Property<string>("Remark")
+                        .HasColumnType("nvarchar(max)")
+                        .HasComment("備註");
+
+                    b.Property<string>("TrasitTime")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasComment("航程天數");
+
+                    b.Property<DateTime?>("ValidTill")
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)")
+                        .HasComment("合約到期日期");
+
+                    b.Property<string>("ViaPort")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasComment("轉運地點");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "CreateBy" }, "IX_CreateBy");
+
+                    b.HasIndex(new[] { "Model", "EffectiveDate", "ValidTill", "IsDeleted" }, "IX_SearchBase");
+
+                    b.ToTable("AppPublicFreight", (string)null);
+                });
+
             modelBuilder.Entity("Dolphin.Freight.ImportExport.AirExports.AirExportHawb", b =>
                 {
                     b.Property<Guid>("Id")

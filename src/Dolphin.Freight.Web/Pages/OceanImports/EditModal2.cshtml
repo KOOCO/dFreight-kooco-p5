@@ -58,7 +58,6 @@
 
             $("#addBtn").click(function () {
                 addTr();
-                debugger;
                 if ($('#packageTypeSelect > .select2-container--default').length === 0){
                     addPackageUnitNameddl();
                 }
@@ -67,7 +66,9 @@
                 for (var i = 0; i < 5; i++) {
                     addTr();
                 }
-
+                if ($('#packageTypeSelect > .select2-container--default').length === 0) {
+                    addPackageUnitNameddl();
+                }
             })
             $("#copyBtn").click(function () {
                 $("input[name='f0']:checked").each(function () {
@@ -172,8 +173,8 @@
                         selectHtml = selectHtml + ">" + packageUnitsName[i].packageName + "</option>"
                     }
                     selectHtml = selectHtml + "</select>";
-                    $('#packageTypeSelect').append(selectHtml).find('.select-search').select2();
-                    $('#hblPackageTypeddl').append(selectHtml).find('.select-search').select2();
+                    $('#packageTypeSelect').append(selectHtml).find('#PackagingUnit').select2();
+                    $('#hblPackageTypeddl').append(selectHtml);
                 }
             });
         }

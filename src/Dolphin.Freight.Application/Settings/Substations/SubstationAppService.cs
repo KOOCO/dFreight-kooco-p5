@@ -32,8 +32,7 @@ namespace Dolphin.Freight.Settings.Substations
         public async Task<List<SubstationDto>> GetSubstationsAsync(QueryDto query)
         {
             var Substations = await _repository.GetListAsync();
-            var rs = Substations;
-            var list = ObjectMapper.Map<List<Substation>, List<SubstationDto>>(rs);
+            var list = ObjectMapper.Map<List<Substation>, List<SubstationDto>>(Substations);
             return list;
         }
         public async Task<ListResultDto<SubstationLookupDto>> GetSubstationsLookupAsync()

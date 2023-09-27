@@ -90,6 +90,8 @@ public class FreightWebAutoMapperProfile : Profile
         // AirExportMawb
         CreateMap<Pages.AirExports.CreateMawbModel.CreateMawbViewModel, CreateUpdateAirExportMawbDto>();
         CreateMap<AirExportMawbDto, Pages.AirExports.CreateMawbModel.CreateMawbViewModel>();
+        //AirExportBooking
+        CreateMap<Dolphin.Freight.ImportExport.AirExports.Bookings.ExportBookingDto, Dolphin.Freight.ImportExport.AirExports.Bookings.CreateUpdateExportBookingDto>();
         // AirImportMawb
         CreateMap<Pages.AirImports.CreateMawbModel.CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>();
         CreateMap<AirImportMawbDto, Pages.AirImports.EditMawbModel.CreateAIMMawbViewModel>();
@@ -101,6 +103,7 @@ public class FreightWebAutoMapperProfile : Profile
         CreateMap<CreateUpdateOceanImportMblDto, InvoiceMblDto>();
         CreateMap<CreateUpdateOceanExportHblDto, InvoiceMblDto>();
         CreateMap<CreateUpdateOceanImportHblDto, InvoiceMblDto>();
+        CreateMap<ExportBookingDto, InvoiceMblDto>();
         CreateMap<OceanExportMblDto, InvoiceMblDto>();
 
         // 國家管理

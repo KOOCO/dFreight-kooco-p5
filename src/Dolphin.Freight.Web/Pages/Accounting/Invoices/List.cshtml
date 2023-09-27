@@ -3,37 +3,38 @@
 @using Dolphin.Freight.Permissions
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
+@using Dolphin.Freight.Web.Pages.Components
+
+@using Dolphin.Freight.Web.CommonService
 @model Dolphin.Freight.Web.Pages.Accounting.Invoices.ListModel
 @inject IStringLocalizer<FreightResource> L
-
+@inject IDropdownService _dropdown;
 @section scripts
     {
     <script type="text/javascript">
         var cardIndex = 0;
+        var dataTable;
         $(document).ready(function () {
 
             var l = abp.localization.getResource('Freight');
             var queryAction = function (){
                 return {
-                        QueryInvoiceType: 1
+                        QueryInvoiceType: 1,
+                         search: $("#Keyword").val(),
+       
+        officeId: $("#VesselSchedule_OfficeId").val() == '' ? null : $("#VesselSchedule_OfficeId").val(),
+        invoiceType:$("#TypeId").val() == '' ? null :parseInt($("#TypeId").val()),
+        postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
+         invoiceDate: $("#InvoiceDate").val() == '' || $("#InvoiceDate").val() == null? null : new Date($("#InvoiceDate").val()),
+        dueDate: $("#DueDate").val() == '' || $("#DueDate").val() == null ? null : new Date($("#DueDate").val()),
+        eta: $("#ETA").val() == '' || $("#ETA").val() == null? null : new Date($("#ETA").val()),
+        etd: $("#ETD").val() == '' || $("#ETD").val() == null ? null : new Date($("#ETD").val()),
+         lastDate: $("#LastDate").val() == '' || $("#LastDate").val() == null ? null : new Date($("#LastDate").val()),
+       
+        invoiceNo: $("#InvoiceNo").val(),
                 };
             };
-            var dataTable = $('#ListTable').DataTable(
-                abp.libs.datatables.normalizeConfiguration({
-                    serverSide: true,
-                    paging: true,
-                    order: [[2, "asc"]],
-                    searching: true,
-                    scrollX: true,
-                    responsive: {
-                        details: {
-                            type: 'column'
-                        }
-                    },
-                    autoWidth: false,
-                    ajax: abp.libs.datatables.createAjax(dolphin.freight.accounting.invoices.invoice.queryList, queryAction ),
-                    columnDefs: [
-                        {
+            var columns=[ {
                             className: 'dtr-control',
                             orderable: false,
                             "defaultContent": ""
@@ -96,112 +97,106 @@
                                         }
                                     ]
                             }
-                        },
-                        {
-                            //對象
-                            title: l('TheCustomerName'),
-                            data: "invoiceCompanyName"
-                        },
-                        {
-                            //文件號碼
-                            title: l('FilingNo'),
-                            data: "filingNo"
-                        },
-                        {
-                            data: null, title: l('InvoiceNo'),
-                            render: function (data, type, row) {
-                                var hid = row.hblId;
-                                if(hid==null || hid == "null")hid = "";
-                                return '<a href="/Accounting/Invoice?MethodType=2&InvoiceType=' + row.invoiceType + '&Mid=' + row.mblId + '&Hid=' + hid + '&InvoiceId=' + row.id + '" >' + row.invoiceNo + '</a> ';
-                            }
-                        },
-                        {
-                            //對象註冊地名稱
-                            title: l('PlaceOfRegistration'),
-                            data: "placeOfRegistration"
-                        },
-                        {
-                            //參考編號
-                            title: l('TheReferenceNo'),
-                            data: "theReferenceNo"
-                        },
-                        {
-                            //類別
-                            data: null, title: l('Type'),
-                            render: function (data, type, row) {
-                                switch(row.invoiceType){
-                                default:
-                                    return "";
-                                case 0:
-                                    return "應收";
-                                case 1:
-                                    return "應收/應付";
-                                case 2:
-                                    return "應付";
+                        }
+                        ];
+            $(function () {
+                dolphin.freight.web.controllers.configuration.getJsonConfig('InvoiceList').done(function (data) {
+                    data.forEach(function (item) {
 
+                        if (!item.lock && item.checkable) {
+                            var column;
+
+                            if (item.text.toLowerCase().includes('invoiceno')) {
+                                column = {
+                                    //是否鎖定
+                                    data: null, title: l('InvoiceNo'),
+                                    render: function (data, type, row) {
+                                        var hid = row.hblId;
+                                        if (hid == null || hid == "null") hid = "";
+                                        return '<a href="/Accounting/Invoice?MethodType=2&InvoiceType=' + row.invoiceType + '&Mid=' + row.mblId + '&Hid=' + hid + '&InvoiceId=' + row.id + '" >' + row.invoiceNo + '</a> ';
+                                    }
                                 }
                             }
-                        },
-                        {
-                            //發布日期
-                            title: l('PostDate'),
-                            data: "postDate"
-                        }, 
-                        {
-                            //發票日期
-                            title: l('InvoiceDate'),
-                            data: "invoiceDate"
-                        },
-                        {
-                            //到期日期
-                            title: l('DueDate'),
-                            data: "dueDate"
-                        },
-                        {
-                            //etd
-                            title: l('Etd'),
-                            data: "etd"
-                        },
-                        {
-                            //eta
-                            title: l('Etd'),
-                            data: "eta"
-                        },
-                        {
-                            //OB/L
-                            title: l('OblName'),
-                            data: "oblName"
-                        },
-                        {
-                            //結餘金額
-                            title: l('BalanceAmount'),
-                            data: "balanceAmount"
-                        },
-                        {
-                            //最後付款日期
-                            title: l('LastDate'),
-                            data: "lastDate"
-                        },
-                        {
-                            //分站
-                            title: l('OfficeId'),
-                            data: "officeName"
-                        },
-                        {
-                            //MBLNO
-                            title: l('MblNo'),
-                            data: "mblNo"
-                        },
-                        {
-                            //HBL NO
-                            title: l('HblNo'),
-                            data: "hblNo"
+                            else if (item.text.toLowerCase().includes('type')) {
+                                column = {
+                                    data: null, title: l('Type'),
+                                    render: function (data, type, row) {
+                                        switch (row.invoiceType) {
+                                            default:
+                                                return "";
+                                            case 0:
+                                                return "應收";
+                                            case 1:
+                                                return "應收/應付";
+                                            case 2:
+                                                return "應付";
+
+                                        }
+                                    }
+                                }
+
+                            }
+                            else {
+                                column = {
+                                    title: l(item.text),
+                                    data: item.name
+                                };
+                            }
+                            columns.push(column);
                         }
+                    });
 
-                    ]
-                })
-            );
+                    var col = (columns.length > 2) ? [[2, 'asc']] : [[0, 'asc']];
+                     dataTable = $('#ListTable').DataTable(
+                        abp.libs.datatables.normalizeConfiguration({
+                            serverSide: true,
+                            paging: true,
+                            order: col,
+                            searching: false,
+                            scrollX: true,
+                            processing: true,
+                            responsive: {
+                                details: {
+                                    type: 'column'
+                                }
+                            },
+                            autoWidth: false,
+                            ajax: abp.libs.datatables.createAjax(dolphin.freight.accounting.invoices.invoice.queryList, queryAction),
+                            columnDefs: columns
+                        })
+                    );
 
+                });
+                 $('#btnConfiguration').click(function (e) {
+        var _configurationModal = new abp.ModalManager({
+            viewUrl: abp.appPath + 'Configuration',
+            modalClass: 'ConfigurationViewModel'
+        });
+
+        _configurationModal.open({
+            src: 'InvoiceList'
+        });
+    })
+        $('#Search').click(function (e) {
+        dataTable.ajax.reload();
+    });
+    $('#CancelFilter').click(function (e) {
+        $("#Keyword").val(null);
+       
+        // $("#VesselSchedule_OfficeId").val(null);
+        $("select[name='VesselSchedule_OfficeId']").val(null);
+        
+        $("#Type").val(null).trigger("change");
+        $("#PostDate").val(null);
+        $("#ETA").val(null);
+        $("#ETD").val(null);
+        $("#InvoiceDate").val(null);
+        $("#DueDate").val(null);
+        $("#LastDate").val(null);
+        $("#InvoiceNo").val(null);
+        dataTable.ajax.reload();
+    });
+            });
         });
 
     </script>
@@ -218,13 +213,115 @@
 <div class="page-content-area">
     <abp-card>
         <abp-card-header>
-            <abp-row>
-                <abp-column class="title">
-                    <abp-card-title>@L["Menu:Invoice.List"]</abp-card-title>
+           
+        <abp-row class="w-100">
+                <abp-column size-md="_6">
+                   <abp-card-title>@L["Menu:Invoice.List"]</abp-card-title>
                 </abp-column>
-
-        </abp-row>
+                <abp-column size-md="_6" class="text-end p-0">
+                    <abp-button id="FilterGlCodeButton"
+                            text="@L["Filter"].Value"
+                            icon="filter"
+                            button-type="Primary"
+                            data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
+                    <abp-button id="btnConfiguration"
+                                text="@L["Configuration"].Value"
+                                icon="gear"
+                                button-type="Primary" />
+                </abp-column>
+            </abp-row>
     </abp-card-header>
+    <abp-card-body class="collapse hide" id="mblDiv">
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["Keyword"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="Keyword" />
+                </abp-column>
+                 <abp-column size-md="_1">
+                    <label>@L["InvoiceNo"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="InvoiceNo" />
+                </abp-column>
+                     <abp-column size-md="_1">
+                    <label>@L["Office"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                  @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OfficeId", AspItems =  _dropdown.SubstationLookupList, IsShowLabel = false, FieldName = "OfficeId", SelectType = 0,  })
+            </abp-column>
+                    <abp-column size-md="_1">
+                    <label>@L["Type"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+               <select id="TypeId" class="form-select" />
+                <option value=""></option>
+                   <option value="0">應收</option>
+                    <option value="1">應收/應付</option>
+                    <option value="2">應付</option>
+               </select>
+                
+                </abp-column>
+            </abp-row>
+         
+            <abp-row class="mb-3">
+               
+
+            </abp-row>
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["PostDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" type="date" id="PostDate" />
+                </abp-column>
+               <abp-column size-md="_1">
+                    <label>@L["InvoiceDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" type="date" id="InvoiceDate" />
+                </abp-column>
+               
+               
+                <abp-column size-md="_1">
+                    <label>@L["ETD"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="ETD" />
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["ETA"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="ETA" />
+                </abp-column>
+            </abp-row>
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["DueDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="DueDate" />
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["LastPaidDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="LastDate" />
+                </abp-column>
+                          </abp-row>
+            
+            <abp-row>
+                <abp-abp-column class="text-center">
+               
+                    <abp-button type="button" id="CancelFilter" text="@L["Cancel"]" button-type="Danger" />
+
+                    <abp-button type="button" id="Search" text="@L["Search"]" button-type="Primary" />
+               
+                </abp-abp-column>
+            </abp-row>
+            </abp-card-body>
     <abp-card-body>
             <abp-table striped-rows="true" id="ListTable" style="width:2000px;" class="nowrap"></abp-table>
     </abp-card-body>

@@ -27,7 +27,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         private IRepository<SysCode, Guid> _sysCodeRepository;
         private IRepository<PortsManagement, Guid> _portsManagementRepository;
         private IRepository<Substation, Guid> _substationRepository;
-        private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
+        private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository; 
         public ExportBookingAppService(IRepository<ExportBooking, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<PortsManagement, 
                                        Guid> portsManagementRepository, IRepository<Substation, Guid> substationRepository, IRepository<TradePartners.TradePartner, 
                                        Guid> tradePartnerRepository)
@@ -158,10 +158,50 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
             return list;
         }
 
-        public async Task<List<ExportBookingDto>> GetBookingCardsById(Guid Id)
+        public async Task<List<ExportBookingDto>> GetBookingCardsById(Guid Id, bool isAsc = true, int sortType = 1)
         {
             var data = await _repository.GetListAsync(f => f.VesselScheduleId == Id);
+            var tradePartner = await _tradePartnerRepository.GetListAsync();
+
+            if (!isAsc)
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderByDescending(o => o.HblNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderByDescending(o => o.CreationTime).ToList();
+                }
+            } else
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderBy(o => o.HblNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(o => o.CreationTime).ToList();
+                }
+            }
+
+
             var retVal = ObjectMapper.Map<List<ExportBooking>, List<ExportBookingDto>>(data);
+
+            foreach (var item in retVal)
+            {
+                if (item.ShipperId is not null)
+                {
+                    var shipper = tradePartner.Where(w => w.Id == item.ShipperId).FirstOrDefault();
+                    item.ShipperName = shipper.TPName;
+                }
+
+                if (item.ConsigneeId is not null)
+                {
+                    var consignee = tradePartner.Where(w => w.Id == item.ConsigneeId).FirstOrDefault();
+                    item.HblConsigneeName = consignee.TPName;
+                }
+            }
 
             return retVal;
         }

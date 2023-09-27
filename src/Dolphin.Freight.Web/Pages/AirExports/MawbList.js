@@ -33,15 +33,13 @@ $(function () {
     };
 
     var columns = [{
-        title: '<input type="checkbox" id="selectAllCheckbox" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
+        title: '<input type="checkbox" id="selectAllCheckbox" onclick="AirExportsMawbList.selectAllCheckbox(this)" style=" cursor: pointer;">',
         data: null,
         orderable: false,
         "render": function (data, type, row) {
-
             var id = row.id;
             var filingNo = row.filingNo;
-
-            return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" data-filingNo="' + filingNo + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
+            return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" data-filingNo="' + filingNo + '" onclick="AirExportsMawbList.selectCheckbox(this)" style=" cursor: pointer;">';
         }
     },
     {
@@ -50,11 +48,10 @@ $(function () {
         "render": function (data, type, row) {
             var isCkecked = row.isLocked;
             var id = row.id;
-            debugger;
             if (isCkecked) {
-                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + id + '"  checked="' + isCkecked + '" onclick="lockCheckBox(this)"  style=" cursor: pointer;">';
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + id + '"  checked="' + isCkecked + '" onclick="AirExportsMawbList.lockCheckBox(this)"  style=" cursor: pointer;">';
             } else {
-                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + id + '" onclick="lockCheckBox(this)"   style=" cursor: pointer;">';
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + id + '" onclick="AirExportsMawbList.lockCheckBox(this)"   style=" cursor: pointer;">';
             }
         }
     },
@@ -129,8 +126,6 @@ $(function () {
                 return `<span class="kg">KG : ${data.chargeableWeightKg}</span><span class="lb">LB : ${data.chargeableWeightLb}</span>`;
             }
         }];
-
- 
 
     dolphin.freight.web.controllers.configuration.getJsonConfig('AirExportMawbList').done(function (data) {
         data.forEach(function (item) {
@@ -257,11 +252,6 @@ $(function () {
         dataTable.ajax.reload();
     });
     
-
-    $('#AddMawbButton').click(function (e) {
-        window.location = "\CreateMawb";
-    });
-
     $('#btnConfiguration').click(function (e) {
         var _configurationModal = new abp.ModalManager({
             viewUrl: abp.appPath + 'Configuration',
@@ -272,8 +262,162 @@ $(function () {
             src: 'AirExportMawbList'
         });
     })
-
 });
+
+var AirExportsMawbList = {
+    selectAllCheckbox: function (element) {
+        var isChecked = $(element).prop('checked');
+        $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+
+        if (isChecked) {
+            $('#summaryId').prop('disabled', false);
+            $('#detailedId').prop('disabled', false);
+        } else {
+            $('#summaryId').prop('disabled', true);
+            $('#detailedId').prop('disabled', true);
+        }
+    },
+    selectCheckbox: function (checkbox) {
+        var checkedCheckboxes = $('.selectCheckbox:checked');
+        if (checkbox.checked) {
+            $('#summaryId').prop('disabled', false);
+            $('#detailedId').prop('disabled', false);
+        
+            if (checkedCheckboxes.length == 1) {
+                $('#copyId').prop('disabled', false);
+            }
+            else {
+                $('#copyId').prop('disabled', true);
+            }
+            var isAnyLocked = false;
+            var isAnyUnlocked = false
+            checkedCheckboxes.each(function (index, checkbox1) {
+                var id = $(checkbox1).data('id');
+        
+                var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+                if (isLock) {
+                    isAnyLocked = true;
+                }
+                else {
+                    isAnyUnlocked = true;
+                }
+            });
+            $('#lockId').prop('disabled', !isAnyUnlocked);
+            $('#unlockId').prop('disabled', !isAnyLocked);
+        } else {
+            $('#summaryId').prop('disabled', true);
+            $('#detailedId').prop('disabled', true);
+            var checkedCheckboxes = $('.selectCheckbox:checked');
+            if (checkedCheckboxes.length == 1) {
+                $('#copyId').prop('disabled', false);
+            }
+            else {
+                $('#copyId').prop('disabled', true);
+            }
+            checkedCheckboxes.each(function (index, checkbox1) {
+                var id = $(checkbox1).data('id');
+                var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+                if (isLock) {
+                    isAnyLocked = true;
+                }
+                else {
+                    isAnyUnlocked = true;
+                }
+            });
+            $('#lockId').prop('disabled', !isAnyUnlocked);
+            $('#unlockId').prop('disabled', !isAnyLocked);
+        }
+        if (!$(checkbox).prop('checked')) {
+            $('#selectAllCheckbox').prop('checked', false);
+        } else {
+            var allChecked = true;
+            $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
+                if (!$(this).prop('checked')) {
+                    allChecked = false;
+                    return false;
+                }
+            });
+            $('#selectAllCheckbox').prop('checked', allChecked);
+        }
+    },
+    lockCheckBox: function (checkbox) {
+        var selectedCheckboxes = $('#MawbListTable tbody input.lockUnlockCheckbox[type="checkbox"]:checked');
+        var id = checkbox.attributes[2].value;
+        var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+        abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+            if (confirmed) {
+                dolphin.freight.importExport.airExports.airExportMawb.lockedOrUnLockedAirExportMawb(id).done(function () {
+                    if (isLock) {
+                        abp.message.success(l('Message:SuccessUnlock'));
+                    } else {
+                        abp.message.success(l('Message:SuccessLock'));
+                    }
+                    dataTable.ajax.reload();
+                });
+            }
+        });
+    },
+    selectedLock: function () {
+        var ids = [];
+        var selectedCheckboxes = $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+        for (var i = 0; i < selectedCheckboxes.length; i++) {
+            var id = selectedCheckboxes[i].attributes[2].value;
+            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
+            if (!isLock) {
+                ids.push(id);
+            }
+            abp.message.confirm(l('LockConfirmationMessage')).then(function (confirmed) {
+                if (confirmed) {
+                    dolphin.freight.importExport.airExports.airExportMawb.selectedLockedAirExportMawb(ids).done(function () {
+                        abp.message.success(l('Message:SuccessLock'));
+                        dataTable.ajax.reload();
+                    });
+                }
+            });
+        }
+    },
+    selectedUnLock: function() {
+        var ids = [];
+        var selectedCheckboxes = $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+        for (var i = 0; i < selectedCheckboxes.length; i++) {
+            var id = selectedCheckboxes[i].attributes[2].value;
+            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
+            if (isLock) {
+                ids.push(id);
+            }
+            abp.message.confirm(l('UnlockConfirmationMessage')).then(function (confirmed) {
+                if (confirmed) {
+                    dolphin.freight.importExport.airExports.airExportMawb.selectedUnLockedAirExportMawb(ids).done(function () {
+                        abp.message.success(l('Message:Message:SuccessUnlock'));
+                        dataTable.ajax.reload();
+                    });
+                }
+            });
+        }
+    },
+    openCopyModal: function (){
+        var selectedCheckboxes = $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+        var id = selectedCheckboxes[0].attributes[2].value;
+        copyModalMawbList.open({
+            id,
+        });
+    },
+    getProfitReport: function (reportType) {
+        var params = "";
+        var selectedCheckboxes = $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+        for (var i = 0; i < selectedCheckboxes.length; i++) {
+            var id = selectedCheckboxes[i].attributes[2].value;
+            var filingNo = selectedCheckboxes[i].attributes[3].value;
+            params += id + ' / ' + filingNo + ',';
+        }
+        params = params.replace(/^,|,$/g, '');
+        OpenWindow('/Docs/ProfitReportMawbListAirExport?reportType=' + reportType + '&pageType=@Dolphin.Freight.Common.FreightPageType.AEMBL&param=' + params);
+    },
+    createNew: function () {
+        window.location.href = "/AirExports/CreateMawb";
+    }
+}
+
 var lock = function (id) {
     var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
     abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {

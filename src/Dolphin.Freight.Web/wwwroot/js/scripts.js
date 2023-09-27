@@ -420,7 +420,52 @@ function setDateTimeforCards(card) {
                     }
                 });
                 break;
+            case 'OIHBL':
 
+                var hblId = $('#OceanImportHBL').val();
+                dolphin.freight.importExport.oceanImports.oceanImportHbl.get(hblId).done(function (res) {
+                    if (res.isLocked) {
+                        $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+                        $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                    } else {
+                        $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                        $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                    }
+                });
+
+                const OceanImportids = [
+                    "OceanImportHbl_PorEtd",
+                    "OceanImportHbl_PodEta",
+                    "OceanImportHbl_DelEta",
+                    "OceanImportHbl_FdestEta",
+                    "OceanImportHbl_CargoArrivalDate",
+                    "OceanImportHbl_HblWhCutOffTime",
+                    "OceanImportHbl_EarlyReturnDatetime",
+                    "OceanImportHbl_LcIssueDate",
+                    "OceanImportHbl_OnBoardDate",
+                    "OceanImportHbl_HblReleaseDate",
+                    "OceanImportHbl_CanceledDate"
+                ];
+
+                OceanImportids.forEach(function (id) {
+                    let dateElem = $('#' + id);
+
+                    if (dateElem.length === 0) {
+                        return;
+                    }
+
+                    dateElem.removeAttr('type').datetimepicker({
+                        format: 'Y-m-d H:i',
+                        step: 15,
+                        allowInput: false
+                    });
+
+                    let currentVal = dateElem.val();
+                    if (currentVal.includes('T')) {
+                        dateElem.val(currentVal.replace('T', ' '));
+                    }
+                });
+                break;
             default:
         }
     }, 1000);
@@ -473,4 +518,45 @@ function copyHawb(hawbId) {
     setTimeout(() => {
         $('.hblCardTitle')[index].click();
     }, 500);
+}
+
+class CustomDateTimePicker {
+    dateTimePicker(Ids, CurrentDate = false, DefaultTimeIds) {
+        Ids.forEach(function (id) {
+            let dateElem = $('#' + id);
+            let formattedDate;
+
+            if (dateElem.length === 0) {
+                return;
+            }
+
+            if (CurrentDate) {
+                let currentDate = new Date();
+                formattedDate = currentDate.getFullYear() +
+                    '-' + ('0' + (currentDate.getMonth() + 1)).slice(-2) +
+                    '-' + ('0' + currentDate.getDate()).slice(-2) +
+                    ' ' + ('0' + currentDate.getHours()).slice(-2) +
+                    ':' + ('0' + currentDate.getMinutes()).slice(-2);
+            }
+
+            dateElem.removeAttr('type').datetimepicker({
+                format: 'Y-m-d H:i',
+                step: 15,
+                allowInput: false,
+                value: formattedDate,
+                onChangeDateTime: function (dp, $input) {
+                    if (DefaultTimeIds.length > 1) {
+                        if (DefaultTimeIds.includes(id)) {
+                            dateElem.val(dp.getFullYear() + '-' + ('0' + (dp.getMonth() + 1)).slice(-2) + '-' + ('0' + dp.getDate()).slice(-2) + ' 00:00');
+                        }
+                    }
+                }
+            });
+
+            let currentVal = dateElem.val();
+            if (currentVal.includes('T')) {
+                dateElem.val(currentVal.replace('T', ' '));
+            }
+        });
+    }
 }

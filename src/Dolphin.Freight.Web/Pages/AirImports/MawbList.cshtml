@@ -35,8 +35,8 @@
 <div class="page-content-area">
     <abp-card>
         <abp-card-header>
-            <abp-row>
-                <abp-column>
+               <abp-row class="w-100">
+                <abp-column size-md="_6">
                     <abp-card-title>@L["Menu:AirImport.MawbList"]</abp-card-title>
                 </abp-column>
                 <abp-column size-md="_6" class="text-end">
@@ -45,6 +45,10 @@
                             icon="filter"
                             button-type="Primary"
                             data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
+                             <abp-button id="btnConfiguration"
+                                text="@L["Configuration"].Value"
+                                icon="gear"
+                                button-type="Primary" />
                     <abp-button id="AddMawbButton"
                                 text=@L["Display:Button:New"]
                                 icon="plus"

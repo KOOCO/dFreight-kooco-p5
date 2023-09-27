@@ -11,6 +11,7 @@
             "MawbModel_RouteTrans1DepatureDate",
             "MawbModel_RouteTrans2DepatureDate",
             "MawbModel_RouteTrans3DepatureDate",
+            "AwbCancelledDate",
             "AirExportMawbDto_AwbDate",
             "AirExportMawbDto_PostDate",
             "AirExportMawbDto_DepatureDate",

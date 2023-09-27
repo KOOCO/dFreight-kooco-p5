@@ -1,9 +1,12 @@
 ﻿@page
 @using Dolphin.Freight.Localization
 @using Microsoft.Extensions.Localization
+@using Dolphin.Freight.TradePartner
 @model Dolphin.Freight.Web.Pages.Sales.TradePartner.ListModel
 @inject IStringLocalizer<FreightResource> L
 @section scripts{
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.3/xlsx.full.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.2.0/js/tableexport.min.js"></script>
     <abp-script src="/Pages/Sales/TradePartner/List.js" />
 }
 <div class="page-header">
@@ -22,6 +25,11 @@
                     <abp-card-title>@L["Menu:TradePartner.List"]</abp-card-title>
                 </abp-column>
                 <abp-column  class="text-end">
+                       <abp-button id="FilterGlCodeButton"
+                                text="@L["Filter"].Value"
+                                icon="filter"
+                                button-type="Primary"
+                                data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
                     <abp-button id="AddTradePartnerButton"
                                 text=@L["Display:Button:New"]
                                 icon="plus"
@@ -29,20 +37,237 @@
                     <abp-button id="ExportTradePartnerExcelButton"
                                 text=@L["Display:Button:Excel"]
                                 icon="file-excel"
+                                onclick="exportToExcel()"
                                 button-type="Outline_Secondary" />
+                    
                 </abp-column>
             </div>
         </abp-card-header>
-        <abp-card-body>
-            <div class="row" style="text-align: center; margin:0!important">
-                <abp-column size="_9"></abp-column>
-                <abp-column size="_3" class="filterDiv">
-                    <abp-input asp-for="Search" class="ml-4" />
+         <abp-card-body class="collapse hide" id="mblDiv">
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["Keyword"].Value</label>
                 </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="Keyword" />
+                </abp-column>
+               
+                <abp-column size-md="_1">
+                    <label>@L["Type"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                <select  id="tpType" asp-items="Html.GetEnumSelectList(typeof(TPType))" class="form-select form-control">
+                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                        </select>
+                        </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Group"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                  <select class="form-select form-control" asp-Items="@Model.AccountGroupNameLookupList" id="tpAccountGroupName">
+                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                        </select>
+                        </abp-column>
+                 <abp-column size-md="_1">
+                    <label>@L["Name"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="name" />
+
+                </abp-column>
+            </abp-row>
+            <abp-row class="mb-3">
+                  <abp-column size-md="_1">
+                    <label>@L["Address"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="address" />
+
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["City"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="city" />
+
+                </abp-column>
+                 <abp-column size-md="_1">
+                    <label>@L["State"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="state" />
+
+                </abp-column>
+                 <abp-column size-md="_1">
+                    <label>@L["Country"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <select asp-items="@Model.CountryLookupList"  id="tpCountryCode" class="form-select form-control">
+                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                     
+                    </select>
+                   
+                </abp-column>
+                 
+            </abp-row>
+            <abp-row class="mb-3">
+               <abp-column size-md="_1">
+                    <label>@L["TaxId"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="taxid" />
+
+                </abp-column>
+                 <abp-column size-md="_1">
+                    <label>@L["SalePerson"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="salePerson" />
+
+                </abp-column>
+                 <abp-column size-md="_1">
+                    <label>@L["SaleOffice"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                 
+                    <input class="form-control" id="saleOffice" />
+                </abp-column>
+                
+                <abp-column size-md="_1">
+                    <label>@L["Status"].Value</label>
+                </abp-column>
+
+                <abp-column size-md="_2">
+                 <select id="status" class="form-select form-control"  >
+                 <option value="">All</option>
+                 <option value="true" selected>Enable</option>
+                 <option value="false" >Disable</option>
+                 </select>
+                 </abp-column>
+                
+            </abp-row>
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["CreatedDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                 
+                    <input type="date" class="form-control" id="createdDate" />
+                </abp-column>
+            </abp-row>
+            <abp-row>
+                <abp-column class="text-center">
+
+                    <abp-button type="button" id="CancelFilter" text="@L["Cancel"]" button-type="Danger" />
+
+                    <abp-button type="button" id="Search" text="@L["Search"]" button-type="Primary" />
+
+                </abp-column>
+            </abp-row>
+        </abp-card-body>
+        <abp-card-body>
+             <div class="portlet-tool">
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                 
+                    <button type="button" class="btn btn-outline-secondary fa fa-users" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Account Group" onclick="setGroup()" id="setGroupBtn" disabled></button>
+                     <button type="button" class="btn btn-outline-secondary fa fa-compress" data-bs-toggle="tooltip" data-bs-placement="top" title="Merge Trading Partner" onclick="margeTP()" id="margeTPBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary " id="disableBtn" data-bs-toggle="tooltip" data-bs-placement="top" title="Disable Trading Partner" disabled><i class="fa fa-ban me-0"></i></button>
+                   
+                </div>
             </div>
             <abp-table class="nowrap" border-style="Bordered" striped-rows="true" id="TPListTable"></abp-table>
         </abp-card-body>
     </abp-card>
+      <div id="setGroupModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Set Account Group</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                   Please enter name of the account group you would like to set:
+                     <select class="form-select form-control" asp-Items="@Model.AccountGroupNameLookupList" id="setAccountGroupName">
+                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                        </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="assignGroupButton" class="btn btn-primary" >@L["Btn:Ok"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* marge modal *@
+    <div id="margeTPModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                   <h4 class="modal-title">@L["Trade Partner Merge"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeTPModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <abp-row class="mb-3">
+                        <abp-column size-md="_2">
+                    <label>@L["From"].Value</label>
+                </abp-column>
+                <abp-column size-md="_8">
+                  <select disabled class="form-select  form-control" asp-Items="@Model.TradePartnerList" id="tpfrom">
+                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                        </select>
+                        </abp-column>
+
+                    </abp-row>
+                      <abp-row class="mb-3">
+                        <abp-column size-md="_2">
+                    <label>@L["To"].Value</label>
+                </abp-column>
+                <abp-column size-md="_8">
+                  <select class="form-select form-control" asp-Items="@Model.TradePartnerList" id="tpTo">
+                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                        </select>
+                        </abp-column>
+
+                    </abp-row>
+                 <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group form-full">
+                    <label class="control-label name-sm"></label>
+                    <label class="name-sm w-auto mg-right-sm"><input checked type="checkbox" id="Cp"  style=""> Merge Contact Person as well</label>
+                    <label class="name-sm w-auto"><input checked type="checkbox" id="Tp"  style=""> Merge Trade Party as well</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group form-full">
+                    <label class="control-label name-sm"></label>
+                    <label class="name-sm w-auto mg-right-sm"><input checked type="checkbox" id="Mm"   style=""> Merge Memo as well</label>
+                    <label class="name-sm w-auto"><input checked type="checkbox" id="Md"   style=""> Merge Document as well</label>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <h6 class="bold">Note:</h6>
+        <ol class="ol-control">
+            <li class="ng-binding">“Trade Partner Merge” feature only merges data associated with (ex. Shipment, Invoice, Payment, etc.) from the original trade partner to the designated trade partner.</li>
+            <li class="ng-binding">Trade Partner Basic Information will not be modified.</li>
+            <li class="ng-binding">Original trade partner will be disabled once merged.</li>
+            <li class="text-danger ng-binding">This operation is non-reversible. Please reconfirm before you click "OK".</li>
+        </ol>
+    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="margeTpBtn" class="btn btn-primary" disabled >@L["Btn:Ok"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeTPModal()">@L["Btn:Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>

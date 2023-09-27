@@ -20,8 +20,11 @@ $(function () {
 
                 })
                 setTimeout(() => {
+                    var from = url.searchParams.get('from');
                     if (selectedBookingNo) {
                         $('#title_' + selectedBookingNo).click();
+                    } else if (from == 'Accounting') {
+                        $('#addHBtn').click();
                     }
                     else { $('.bookingCardTitle')[0].click(); }
 

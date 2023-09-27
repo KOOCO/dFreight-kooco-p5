@@ -440,6 +440,47 @@ namespace Dolphin.Freight.Web.Controllers
 
             return PartialView("~/Pages/OceanExports/VesselSchedules/_ExportBookingBasic.cshtml", model);
         }
+
+        [HttpGet]
+        [Route("ExportBookingAccounting")]
+        public async Task<PartialViewResult> GetExportBookingAccounting(Guid Id)
+        {
+            HawbHblViewModel model = new();
+
+            model.SubstationLookupList = SubstationLookupList;
+            model.AirportLookupList = AirportLookupList;
+            model.TradePartnerLookupList = TradePartnerLookupList;
+            model.PackageUnitLookupList = PackageUnitLookupList;
+
+            model.ExportBookingDto = await _exportBookingAppService.GetBookingCardById(Id);
+            
+            QueryInvoiceDto qiDto = new QueryInvoiceDto() { QueryType = 2, ParentId = Id };
+            var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qiDto);
+            model.h0invoiceDtos = new List<InvoiceDto>();
+            model.h1invoiceDtos = new List<InvoiceDto>();
+            model.h2invoiceDtos = new List<InvoiceDto>();
+            if (invoiceDtos != null && invoiceDtos.Count > 0)
+            {
+                foreach (var dto in invoiceDtos)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            model.h0invoiceDtos.Add(dto);
+                            break;
+                        case 1:
+                            model.h1invoiceDtos.Add(dto);
+                            break;
+                        case 2:
+                            model.h2invoiceDtos.Add(dto);
+                            break;
+                    }
+                }
+            }
+            qiDto.ParentId = Id;
+
+            return PartialView("~/Pages/OceanExports/VesselSchedules/_ExportBookingAccounting.cshtml", model);
+        }
         #endregion
 
 

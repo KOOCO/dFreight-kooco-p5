@@ -27,116 +27,91 @@
 
         };
     };
+    var columns = [{
+        title: l('Actions'),
+        rowAction: {
+            items:
+                [
+                    {
+                        text: l('Edit'),
+                        visible: abp.auth.isGranted('Settings.ItNoRanges.Edit'), //CHECK for the PERMISSION
+                        action: function (data) {
+                            if (data.record.isLocked) {
 
-    var dataTable = $('#MawbListTable').DataTable(
-        abp.libs.datatables.normalizeConfiguration({
-            serverSide: true,
-            paging: true,
-            order: [[2, "asc"]],
-            searching: false,
-            scrollX: true,
-            processing: true,
-            responsive: {
-                details: {
-                    type: 'column'
+                            }
+                            location.href = 'EditMawb?Id=' + data.record.id;
+
+                        }
+                    },
+                    {
+                        text: l('Delete'),
+                        visible: function (data) {
+
+                            return !data.isLocked && abp.auth.isGranted('Settings.ItNoRanges.Delete')
+                        },
+
+                        action: function (data) {
+                            if (!data.record.isLocked) {
+                                abp.message.confirm(l('DeletionConfirmationMessage'))
+                                    .then(function (confirmed) {
+                                        if (confirmed) {
+                                            dolphin.freight.importExport.airImports.airImportMawb
+                                                .delete(data.record.id)
+                                                .then(function () {
+                                                    abp.message.success(l('SuccessfullyDeleted'));
+                                                    dataTable.ajax.reload();
+                                                });
+                                        }
+                                    });
+
+                            } else {
+                                abp.message.warn("鎖定不能刪除")
+                            }
+                        }
+                    }
+                ]
+        }
+    }]
+    dolphin.freight.web.controllers.configuration.getJsonConfig('AirImportMawbList').done(function (data) {
+        data.forEach(function (item) {
+
+            if (!item.lock && item.checkable) {
+                var itemData = item.name;
+                if (item.name.toLowerCase().includes('date')) {
+                    itemData = function (row, type, set) {
+                        var depatureDate = new Date(row.depatureDate);
+                        if (depatureDate.getFullYear() == 1) {
+                            return '';
+                        }
+                        return depatureDate.toLocaleDateString() + ' ' + depatureDate.toLocaleTimeString();
+                    }
                 }
-            },
-            ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.airImports.airImportMawb.getList, queryListFilter),
-            columnDefs: [
-                //{
-                //    className: 'dtr-control',
-                //    orderable: false,
-                //    "defaultContent": ""
-                //},
-                {
-                    title: l('Actions'),
-                    rowAction: {
-                        items:
-                            [
-                                {
-                                    text: l('Edit'),
-                                    //visible: abp.auth.isGranted('BookStore.Books.Edit'),
-                                    action: function (data) {
-                                        window.location = "\EditMawb?ShowMsg=true&Id=" + data.record.id;
-                                    }
-                                }
-                            ]
-                    }
-                },
-                {
-                    title: l('FileNo'),
-                    data: "filingNo",
-                    targets: 0
-                },
-                {
-                    title: l('MawbNo'),
-                    data: "mawbNo"
-                },
-                {
-                    title: l('DepatureDate'),
-                    data: "depatureDate",
-                    render: function (data) {
-                        return luxon
-                            .DateTime
-                            .fromISO(data, {
-                                locale: abp.localization.currentCulture.name
-                            }).toFormat('yyyy-MM-dd HH:mm');
-                    }
-                },
-                {
-                    title: l('ArrivalDate'),
-                    data: "arrivalDate",
-                    render: function (data) {
-                        return luxon
-                            .DateTime
-                            .fromISO(data, {
-                                locale: abp.localization.currentCulture.name
-                            }).toFormat('yyyy-MM-dd HH:mm');
-                    }
-                },
-                {
-                    title: l('Depature'),
-                    data: "depatureAirportName"
-                },
-                {
-                    title: l('Destination'),
-                    data: "destinationAirportName"
-                },
-                {
-                    title: l('OverseaAgent'),
-                    data: "overseaAgentTPName"
-                },
-                {
-                    title: l('Carrier'),
-                    data: "carrierTPName"
-                },
-                {
-                    title: l('FlightNo'),
-                    data: "flightNo"
-                }
-                //{
-                //    title: l('AR Balance'),
-                //    data: ""
-                //},
-                //{
-                //    title: l('A/P Balance'),
-                //    data: ""
-                //},
-                //{
-                //    title: l('D/C Balance'),
-                //    data: ""
-                //},
-                //{
-                //    title: l('Sales'),
-                //    data: "sales"
-                //},
-                //{
-                //    title: l('OP'),
-                //    data: "oP"
-                //}
-            ]
-        })
-    );
+
+                var column = {
+                    title: l(item.text),
+                    data: itemData
+                };
+                columns.push(column);
+            }
+        });
+
+        var col = (columns.length > 1) ? [[1, 'asc']] : [[0, 'asc']];
+
+
+        dataTable = $('#MawbListTable').DataTable(
+            abp.libs.datatables.normalizeConfiguration({
+                serverSide: true,
+                paging: true,
+                order: col,
+                searching: false,
+                scrollX: true,
+                processing: true,
+                ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.airImports.airImportMawb.getList, queryListFilter),
+                columnDefs: columns
+            })
+        );
+
+    })
 
    
     $('#Search').click(function (e) {
@@ -147,5 +122,14 @@
     $('#AddMawbButton').click(function (e) {
         window.location = "\CreateMawb";
     });
+    $('#btnConfiguration').click(function (e) {
+        var _configurationModal = new abp.ModalManager({
+            viewUrl: abp.appPath + 'Configuration',
+            modalClass: 'ConfigurationViewModel'
+        });
 
+        _configurationModal.open({
+            src: 'AirImportMawbList'
+        });
+    })
 });

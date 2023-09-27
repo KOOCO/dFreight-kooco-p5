@@ -62,7 +62,7 @@
     width: 100%;
     right: 0;
     height: 57px;
-    content: '@L["OrDragItHere."]';
+    content: '@Html.Raw(L["OrDragItHere."])';
     display: block;
     margin: 0 auto;
     color: #2ea591;
@@ -265,7 +265,10 @@
                         if (tindex == 0) trhtml = trhtml + "<tr id='tr_";
                         else trhtml = trhtml + "<tr id='trh_";
                         trhtml = trhtml + index + "'><td>" + result[index].fileName + "</td><td>" + result[index].creationTime.substring(0, 10) + "</td> <td>" + result[index].size + "KB </td><td>";
-                        trhtml=trhtml+"<select disabled><option >Other<option></select> </td><td>";
+                        trhtml = trhtml + "<select ><option value='Other' >" + l("Other") + "</option><option value='AWB' >" + l("AWB") + "</option><option value='POD' >" + l("POD") + "</option>";
+                        trhtml=trhtml+"<option value='INV-C' >"+l("INV-C")+"</option><option value='INV-P' >"+l("INV-P")+"</option>";
+                        trhtml = trhtml + "<option value='PAK-C' >" + l("PAK-C") + "</option><option value='PAK-P' >" + l("PAK-P") + "</option";
+                        trhtml = trhtml + "><option value='TRUCKER_A' >" + l("TRUCKER_A") + "</option><option value='EXCEPTION' >" + l("EXCEPTION") + "</option><option value='SHIPPER' >" + l("SHIPPER") + "</option></select> </td><td>";
                         // trhtml = trhtml + "<div class='btn-group dropdown'><button class='btn btn-secondary dropdown-toggle'  type='button' id='ActionDrop_" + index + "' data-bs-toggle='dropdown'>";
                         // trhtml = trhtml + l('Display:Function');
                         // trhtml = trhtml + "</button><div class='dropdown-menu ' aria-labelledby='dropdownMenuButton1' id='ActionDrop_div_" + index + "'>";

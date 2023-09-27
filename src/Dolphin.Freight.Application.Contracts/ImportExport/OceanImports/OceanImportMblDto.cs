@@ -25,6 +25,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public Guid? OfficeId { get; set; }
         public string OfficeName { get; set; }
+        public string FinalDestName { get; set; }
         /// <summary>
         /// 提單類別ID
         /// </summary>
@@ -51,6 +52,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public Guid? MblCarrierId { get; set; }
         public string MblCarrierName { get; set; }
+        public string MblOverseaAgentName { get; set; }
+        public string MblSaleName { get; set; }
         /// <summary>
         /// 船公司(財務窗口)ID
         /// </summary>
@@ -75,6 +78,10 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 共同裝運人ID
         /// </summary>
         public Guid? CoLoaderId { get; set; }
+        public string ArBalance { get; set; }
+        public string ApBalance { get; set; }
+        public string DcBalance { get; set; }
+        public string Packages { get; set; }
         /// <summary>
         /// 操作員ID
         /// </summary>
@@ -84,6 +91,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         [ForeignKey("MblOperatorId")]
         public UserData MblOperator { get; set; }
+        public string MblOperatorName { get; set; }
         /// <summary>
         /// 船公司合約編號
         /// </summary>

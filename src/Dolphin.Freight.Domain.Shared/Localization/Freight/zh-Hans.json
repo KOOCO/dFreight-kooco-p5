@@ -560,8 +560,8 @@
     "Prepaid": "预付",
     "Collect": "运费到付",
     "showingAt": "显示于",
-
-
+    "TotalTax": "总税额",
+    "TotalBeforeTax": "税前总额",
 
 
     // Menu: Trade Partner
@@ -651,7 +651,8 @@
     "DisplayName:IataCode": "IATA Code",
     "DisplayName:IataPrefix": "IATA Prefix",
     "DisplayName:ScacCode": "SCAC",
-
+    "Display:Price": "单价",
+    "Display:Tax": "税收",
     "DisplayName:FirmsCode": "Firms Code",
     "DisplayName:CbsaCode": "CBSA Carrier Code",
     "DisplayName:DutyPaymentType": "付税方式",

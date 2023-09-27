@@ -13,6 +13,36 @@
 @section scripts{
     <abp-script src="/Pages/AirExports/Index.js" />
 }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+     
+    function getProfitReport(reportType) {
+
+        var params = "";
+        var selectedCheckboxes = $('#MblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+        for(var i = 0; i < selectedCheckboxes.length; i++ ){
+            var id = selectedCheckboxes[i].attributes[2].value;
+            var filingNo = selectedCheckboxes[i].attributes[3].value;
+
+            params += id + ' / ' + filingNo + ',';
+        }
+        params = params.replace(/^,|,$/g, '');
+
+        OpenWindow('/Docs/ProfitReportMawbListAirExport?reportType=' + reportType + '&pageType=@Dolphin.Freight.Common.FreightPageType.AEMBL&param='+ params);
+    }
+    function openCopyModal(){
+
+         var selectedCheckboxes = $('#MblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+
+         var id = selectedCheckboxes[0].attributes[2].value;
+          copyModalMawbList.open({
+                     id,
+                    
+                 });
+     
+     
+     }
+</script>
 <div class="page-header">
     <div class="breadcrumb-wrapper">
         <abp-breadcrumb>
@@ -39,10 +69,6 @@
                     <abp-button id="btnConfiguration"
                                 text="@L["Configuration"].Value"
                                 icon="gear"
-                                button-type="Primary" />
-                    <abp-button id="NewMblButton"
-                                text="@L["Create"].Value"
-                                icon="plus"
                                 button-type="Primary" />
                 </abp-column>
             </abp-row>
@@ -143,35 +169,32 @@
             
             </abp-row>
 
-                 <abp-row class="mb-3">
-                       <abp-column size-md="_1">
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
                     <label>@L["AWBCancelled"].Value</label>
                 </abp-column>
                 <abp-column size-md="_2">
-               <select id="AwbCancelled" class="form-control" />
-                <option value=""></option>
-                   <option value="true">Yes</option>
-                    <option value="false">No</option>
-               </select>
-                
+                    <select id="AwbCancelled" class="form-control">
+                         <option value=""></option>
+                         <option value="true">Yes</option>
+                         <option value="false">No</option>
+                    </select>
                 </abp-column>
                          <abp-column size-md="_1">
                     <label>@L["DirectMaster"].Value</label>
                 </abp-column>
                 <abp-column size-md="_2">
-               <select id="DirectMaster" class="form-control" />
-                <option value=""></option>
-                   <option value="true">Yes</option>
-                    <option value="false">No</option>
-               </select>
-                
+                    <select id="DirectMaster" class="form-control">
+                         <option value=""></option>
+                         <option value="true">Yes</option>
+                         <option value="false">No</option>
+                    </select>
                 </abp-column>
                   <abp-column size-md="_1">
                     <label>@L["CreationDate"].Value</label>
                 </abp-column>
                 <abp-column size-md="_2">
-              <input type="date" id="CreationDate" class="form-control" />
-                
+                    <input type="date" id="CreationDate" class="form-control" />
                 </abp-column>
                  </abp-row>
             <abp-row>
@@ -185,7 +208,21 @@
             </abp-row>
             </abp-card-body>
         <abp-card-body>
-          
+               <div class="portlet-tool">
+                <div class="btn-group" role="group" aria-label="Basic outlined example" >
+                    <abp-button type="button" id="newBtn" class="btn btn-outline-secondary fa fa-plus" onclick="AirExports.createNew()" />
+                    <button type="button" id="copyId" class="btn btn-outline-secondary" onclick="openCopyModal()" disabled><i class="fa fa-files-o me-0"></i></button>
+                    <button type="button" class="btn btn-outline-secondary" style="cursor: no-drop;" disabled><i class="fa fa-trash me-0"></i></button>
+                </div>
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                    <button type="button" class="btn btn-outline-secondary" onclick="AirExports.selectedLock()" id="lockId" disabled>Lock</button>
+                    <button type="button" class="btn btn-outline-secondary" id="unlockId" onclick="AirExports.selectedUnLock()" disabled>Unlock</button>
+                </div>
+               @*  <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                    <button type="button" id="summaryId" class="btn btn-outline-secondary" onclick="getProfitReport('Summary')" disabled><i class="fa fa-file-text-o me-0"></i>Profit Report - Summary</button>
+                    <button type="button" id="detailedId" class="btn btn-outline-secondary" onclick="getProfitReport('Detailed')" disabled><i class="fa fa-file-text-o me-0"></i>Profit Report - Detailed</button>
+                </div> *@
+            </div>
             <abp-table class="nowrap" striped-rows="true" id="MblListTable"></abp-table>
         </abp-card-body>
     </abp-card>
