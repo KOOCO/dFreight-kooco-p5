@@ -8,10 +8,10 @@ namespace Dolphin.Freight.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_AppOceanExportMbls_AppPorts_DelId",
-                table: "AppOceanExportMbls"
-            );
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_AppOceanExportMbls_AppPorts_DelId",
+            //    table: "AppOceanExportMbls"
+            //);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AppOceanExportMbls_AppPortsManagements_DelId",
@@ -94,13 +94,13 @@ namespace Dolphin.Freight.Migrations
                 table: "AppOceanExportMbls"
             );
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_AppOceanExportMbls_AppPorts_DelId",
-                table: "AppOceanExportMbls",
-                column: "DelId",
-                principalTable: "AppPorts",
-                principalColumn: "Id"
-            );
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_AppOceanExportMbls_AppPorts_DelId",
+            //    table: "AppOceanExportMbls",
+            //    column: "DelId",
+            //    principalTable: "AppPorts",
+            //    principalColumn: "Id"
+            //);
 
             migrationBuilder.DropForeignKey(
                 name: "FK_AppOceanExportMbls_AppPortsManagements_PorId",

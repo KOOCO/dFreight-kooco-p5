@@ -140,7 +140,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
 
         public bool IsAwbCancelled { get; set; }
 
-        [DataType(DataType.Date)]
+        [DataType(DataType.DateTime)]
         public DateTime? AwbCancelledDate { get; set; }
         
         public String AwbCancelledOpId { get; set; }
