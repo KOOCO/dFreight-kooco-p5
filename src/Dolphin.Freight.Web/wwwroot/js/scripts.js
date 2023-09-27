@@ -521,7 +521,7 @@ function copyHawb(hawbId) {
 }
 
 class CustomDateTimePicker {
-    dateTimePicker(Ids, CurrentDate = false) {
+    dateTimePicker(Ids, CurrentDate = false, DefaultTimeIds) {
         Ids.forEach(function (id) {
             let dateElem = $('#' + id);
             let formattedDate;
@@ -543,7 +543,14 @@ class CustomDateTimePicker {
                 format: 'Y-m-d H:i',
                 step: 15,
                 allowInput: false,
-                value: formattedDate
+                value: formattedDate,
+                onChangeDateTime: function (dp, $input) {
+                    if (DefaultTimeIds.length > 1) {
+                        if (DefaultTimeIds.includes(id)) {
+                            dateElem.val(dp.getFullYear() + '-' + ('0' + (dp.getMonth() + 1)).slice(-2) + '-' + ('0' + dp.getDate()).slice(-2) + ' 00:00');
+                        }
+                    }
+                }
             });
 
             let currentVal = dateElem.val();

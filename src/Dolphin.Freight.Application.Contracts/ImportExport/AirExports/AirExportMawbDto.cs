@@ -117,11 +117,11 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 中轉航班1到達日期
         /// </summary>
-        public DateTime RouteTrans1ArrivalDate { get; set; }
+        public DateTime? RouteTrans1ArrivalDate { get; set; }
         /// <summary>
         /// 中轉航班1出發日期
         /// </summary>
-        public DateTime RouteTrans1DepatureDate { get; set; }
+        public DateTime? RouteTrans1DepatureDate { get; set; }
         /// <summary>
         /// 中轉航班1航班號碼
         /// </summary>
@@ -137,12 +137,11 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 中轉航班2到達日期
         /// </summary>
-        public DateTime RouteTrans2ArrivalDate { get; set; }
+        public DateTime? RouteTrans2ArrivalDate { get; set; }
         /// <summary>
         /// 中轉航班2出發日期
         /// </summary>
-        [DataType(DataType.Date)]
-        public DateTime RouteTrans2DepatureDate { get; set; }
+        public DateTime? RouteTrans2DepatureDate { get; set; }
         /// <summary>
         /// 中轉航班2航班號碼
         /// </summary>
@@ -158,11 +157,11 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// 中轉航班3到達日期
         /// </summary>
-        public DateTime RouteTrans3ArrivalDate { get; set; }
+        public DateTime? RouteTrans3ArrivalDate { get; set; }
         /// <summary>
         /// 中轉航班3出發日期
         /// </summary>
-        public DateTime RouteTrans3DepatureDate { get; set; }
+        public DateTime? RouteTrans3DepatureDate { get; set; }
         /// <summary>
         /// 中轉航班3航班號碼
         /// </summary>
