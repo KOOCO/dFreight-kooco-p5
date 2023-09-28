@@ -158,5 +158,9 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public bool IsECom { get; set; }
 
         public DisplayUnitType DisplayUnit { get; set; }
+        public string Mark { get; set; }
+        public string NatureAndQuantityOfGoods { get; set; }
+        public string ManifestNatureAndQuantityOfGoods { get; set; }
+        public string HandlingInformation { get; set; }
     }
 }

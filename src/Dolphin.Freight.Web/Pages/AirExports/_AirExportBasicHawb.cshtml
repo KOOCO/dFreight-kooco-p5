@@ -576,17 +576,21 @@
         <abp-row class="mt-4">
             <abp-column size-md="_6">
                 <h3>@L["Mark"]</h3>
-                <abp-input asp-for="AirExportHawbDto.Mark" id="AirExportHawbDto_Mark" value="@Model.AirExportHawbDto.Mark" suppress-label="true" />
+                <textarea asp-for="AirExportHawbDto.Mark" id="AirExportHawbDto_Mark" name="AirExportHawbDto.Mark" class="form-control">@Model.AirExportHawbDto.Mark</textarea>
+               @*  <abp-input asp-for="AirExportHawbDto.Mark" id="AirExportHawbDto_Mark" value="@Model.AirExportHawbDto.Mark" suppress-label="true" /> *@
             </abp-column>
             <abp-column size-md="_6">
                 <h3>@L["Description"]</h3>
-                <abp-input asp-for="AirExportHawbDto.NatureAndQuantityOfGoods" suppress-label="true" />
+                 <textarea asp-for="AirExportHawbDto.NatureAndQuantityOfGoods" id="AirExportHawbDto_NatureAndQuantityOfGoods" name="AirExportHawbDto.NatureAndQuantityOfGoods" class="form-control">@Model.AirExportHawbDto.NatureAndQuantityOfGoods</textarea>
+               @*  <abp-input asp-for="AirExportHawbDto.NatureAndQuantityOfGoods" suppress-label="true" /> *@
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_12">
                 <h3>@L["HandlingInformation"]</h3>
-                <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation" suppress-label="true" />
+                   <textarea asp-for="AirExportHawbDto.HandlingInformation" id="AirExportHawbDto_HandlingInformation" name="AirExportHawbDto.HandlingInformation" class="form-control">@Model.AirExportHawbDto.HandlingInformation</textarea>
+              
+              @*   <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation" suppress-label="true" /> *@
             </abp-column>
         </abp-row>
         <div class="mt-4 d-flex mb-2">

@@ -1658,17 +1658,20 @@
                                             <abp-row class="mt-4">
                                                 <abp-column size-md="_6">
                                                     <h3>@L["Mark"]</h3>
-                                                    <abp-input asp-for="@Model.AirExportHawbDto.Mark" />
+                                                     <textarea  id="AirExportMawbDto_Mark" name="AirExportMawbDto.Mark" class="form-control">@Model.AirExportMawbDto.Mark</textarea>
+                                                  @*   <abp-input asp-for="@Model.AirExportHawbDto.Mark" /> *@
                                                 </abp-column>
                                                 <abp-column size-md="_6">
                                                     <h3>@L["NatureAndQuantityOfGoods"]</h3>
-                                                    <abp-input asp-for="@Model.AirExportHawbDto.NatureAndQuantityOfGoods" />
+                                                      <textarea  id="AirExportMawbDto_NatureAndQuantityOfGoods" name="AirExportMawbDto.NatureAndQuantityOfGoods" class="form-control">@Model.AirExportMawbDto.NatureAndQuantityOfGoods</textarea>
+                                                   @*  <abp-input asp-for="@Model.AirExportHawbDto.NatureAndQuantityOfGoods" /> *@
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column size-md="_12">
                                                     <h3>@L["HandlingInformation"]</h3>
-                                                    <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation" />
+                                                      <textarea  id="AirExportMawbDto_HandlingInformation" name="AirExportMawbDto.HandlingInformation" class="form-control">@Model.AirExportMawbDto.HandlingInformation</textarea>
+                                                    @* <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation" /> *@
                                                 </abp-column>
                                             </abp-row>
                                         </abp-card-body>
