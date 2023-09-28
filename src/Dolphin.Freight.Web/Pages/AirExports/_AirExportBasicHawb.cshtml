@@ -20,7 +20,13 @@
         if ($('#HawbCancelledDate').val() == '0001-01-01T00:00') {
             $('#HawbCancelledDate').val('');
         }
-     
+        $('#HawbCancelledDate').removeAttr('type');
+
+        if ($('#AirExportHawbDto\\.OtherRadioPPD').val() == '@Model.AirExportHawbDto.Other') {
+            $('#AirExportHawbDto\\.OtherRadioPPD').prop('checked', true);
+        } else if ($('#AirExportHawbDto\\.OtherRadioCOLL').val() == '@Model.AirExportHawbDto.Other') {
+            $('#AirExportHawbDto\\.OtherRadioCOLL').prop('checked', true);
+        }
     });
 
     $(document).ready(function () {
@@ -353,16 +359,14 @@
             </abp-column>
             <abp-column size-md="_3">
                 <abp-row>
-
                     <abp-column>
                         @L["WT/VAL"]
-                        <abp-radio asp-for="AirExportHawbDto.WTVAL" asp-items="@Model.WtValOtherList" inline="true" />
+                        <abp-radio asp-for="@Model.AirExportHawbDto.WTVAL" asp-items="@Model.WtValOtherList" inline="true" />
                     </abp-column>
                 </abp-row>
             </abp-column>
             <abp-column size-md="_3">
                 <abp-row>
-
                     <abp-column>
                         @L["Other"]
                         <abp-radio asp-for="@Model.AirExportHawbDto.Other" asp-items="@Model.WtValOtherList" inline="true" />

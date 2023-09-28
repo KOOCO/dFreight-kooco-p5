@@ -211,7 +211,6 @@ namespace Dolphin.Freight.Web.Controllers
             model.AirExportHawbDto = await _airExportHawbAppService.GetHawbCardById(Id);
             model.AirExportHawbDto.CurrentHawbNo = hawbNo;
 
-
             if( Id == Guid.Empty)
             {
                 model.AirExportHawbDto.BookingDate = DateTime.Now;  
