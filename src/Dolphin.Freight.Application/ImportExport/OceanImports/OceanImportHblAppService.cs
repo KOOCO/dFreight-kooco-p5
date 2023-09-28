@@ -250,11 +250,57 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             Hbl.IsLocked = !Hbl.IsLocked;
             await _repository.UpdateAsync(Hbl);
         }
-        public async Task<List<OceanImportHblDto>> GetHblCardsById(Guid Id)
+        public async Task<List<OceanImportHblDto>> GetHblCardsById(Guid Id, bool isAsc = true, int sortType = 1)
         {
             var data = await _repository.GetListAsync(f => f.MblId == Id);
-            var retVal = ObjectMapper.Map<List<OceanImportHbl>, List<OceanImportHblDto>>(data);
+            var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
 
+            if (!isAsc)
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderByDescending(x => x.HblNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderByDescending(x => x.CreationTime).ToList();
+
+                }
+            }
+            else
+            {
+
+                if (sortType == 1)
+                {
+                    data = data.OrderBy(x => x.HblNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(x => x.CreationTime).ToList();
+
+                }
+            }
+
+
+
+            var retVal = ObjectMapper.Map<List<OceanImportHbl>, List<OceanImportHblDto>>(data);
+            foreach (var item in retVal)
+            {
+
+                if (item.HblShipperId != null)
+                {
+                    var shipper = tradePartners.Where(w => w.Id == item.HblShipperId).FirstOrDefault();
+                    item.HblShipperName = shipper.TPName;
+                }
+
+                if (item.HblConsigneeId != null)
+                {
+                    var consignee = tradePartners.Where(w => w.Id == item.HblConsigneeId).FirstOrDefault();
+                    item.HblConsigneeName = consignee.TPName;
+                }
+
+
+            }
             return retVal;
         }
         public async Task<OceanImportHblDto> GetHblCardById(Guid Id)
@@ -263,6 +309,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             {
                 var data = await _repository.GetAsync(f => f.Id == Id);
                 var retVal = ObjectMapper.Map<OceanImportHbl, OceanImportHblDto>(data);
+
                 return retVal;
             }
 
