@@ -546,11 +546,26 @@ class CustomDateTimePicker {
                 step: 15,
                 allowInput: false,
                 value: formattedDate,
+                onShow: function (ct, $input) {
+                    if (!$input.data('previousDate')) {
+                        let todayDate = ct.getFullYear() + '-' + ('0' + (ct.getMonth() + 1)).slice(-2) + '-' + ('0' + ct.getDate()).slice(-2);
+                        let todayTime = ct.getHours() + ':' + ct.getMinutes();
+                        $input.data('previousDate', todayDate + ' ' + todayTime);
+                    }
+                    $('.xdsoft_today_button').remove();
+                },
+                onSelectDate: function (dp, $input) {
+                    if (DefaultTimeIds.includes(id)) {
+                        let currentDate = dp.getFullYear() + '-' + ('0' + (dp.getMonth() + 1)).slice(-2) + '-' + ('0' + dp.getDate()).slice(-2);
+                        $input.val(currentDate + ' 00:00');
+                    }
+                },
                 onChangeDateTime: function (dp, $input) {
-                    if (DefaultTimeIds.length > 1) {
-                        if (DefaultTimeIds.includes(id)) {
-                            dateElem.val(dp.getFullYear() + '-' + ('0' + (dp.getMonth() + 1)).slice(-2) + '-' + ('0' + dp.getDate()).slice(-2) + ' 00:00');
-                        }
+                    if (DefaultTimeIds.includes(id)) {
+                        let currentDate = dp.getFullYear() + '-' + ('0' + (dp.getMonth() + 1)).slice(-2) + '-' + ('0' + dp.getDate()).slice(-2);
+                        let currentTime = $input.val().split(' ')[1];
+
+                        $input.data('previousDate', currentDate);
                     }
                 }
             });
