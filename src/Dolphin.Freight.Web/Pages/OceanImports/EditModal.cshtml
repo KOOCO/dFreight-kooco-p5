@@ -187,7 +187,8 @@
             console.log("enter here");
             event.preventDefault();
             abp.message.success('Successfully Saved').then(function () {
-                location.href = "/OceanImports/Index";
+                // location.href = "/OceanImports/Index";
+                location.reload();
             });
             //location.href = '/AirImports/EditMawb/' + rs.responseText.id + '/show';
         });
