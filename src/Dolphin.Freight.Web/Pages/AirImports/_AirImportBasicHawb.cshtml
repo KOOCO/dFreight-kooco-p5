@@ -401,16 +401,32 @@
         <!--第10列-->
         <abp-row>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.ShipType" size="Small" />
+                <label class="form-label" for="@Model.HawbModel.ShipType">@L["ShipType"]</label>
+                <select asp-for="@Model.HawbModel.ShipType" class="form-select form-control cursor-pointer">
+                    <option></option>
+                    @foreach (SelectListItem item in Html.GetEnumSelectList(typeof(ShipType)))
+                    {
+                        @if (item.Value == @Model.HawbModel.ShipType)
+                        {
+                            <option value="@item.Value" selected>@item.Text</option>
+                        } else if (item.Value == Convert.ToString(1))
+                        {
+                            <option value="@item.Value" selected>@item.Text</option>
+                        } else
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                </select>
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.Incoterms", AspItems = _dropdown.IncotermsLookupList, IsShowLabel = true, IsRequired = true, FieldName = @L["Incoterms"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.Incoterms) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.Incoterms", AspItems = _dropdown.IncotermsLookupList, IsShowLabel = true, FieldName = @L["Incoterms"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.Incoterms) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.ServiceTermStart", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, IsRequired = true, FieldName = @L["ServiceTermStart"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.ServiceTermStart) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.ServiceTermStart", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, FieldName = @L["ServiceTermStart"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.ServiceTermStart) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.ServiceTermTo", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, IsRequired = true, FieldName = @L["ServiceTermTo"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.ServiceTermTo) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.ServiceTermTo", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, FieldName = @L["ServiceTermTo"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.ServiceTermTo) })
             </abp-column>
         </abp-row>
         <!-- SUB HAWB -->
