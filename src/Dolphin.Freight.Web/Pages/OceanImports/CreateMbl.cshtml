@@ -4,6 +4,7 @@
 @using Dolphin.Freight.Web.Pages.Components
 @using Microsoft.Extensions.Localization
 @using Volo.Abp.Users
+@using Dolphin.Freight.Web.Pages.Shared.Memos;
 @model Dolphin.Freight.Web.Pages.OceanImports.CreateMblModel
 @inject IStringLocalizer<FreightResource> L
 @inject ICurrentUser CurrentUser
@@ -389,6 +390,18 @@
                                     <label for="OceanImportMbl_IsEcommerce" class="form-label customCheck">@L["IsEcommerce"]<input type="checkbox" name="OceanImportMbl.IsEcommerce" id="OceanImportMbl_IsEcommerce" value="true" checked="@Model.OceanImportMbl.IsEcommerce" /></label>
                                 </abp-column>
                             </abp-row>
+                               <abp-row>
+                                <abp-column>
+                                    <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                                        @L["Title:Memo"]
+                                    </abp-card-header>
+                                    <abp-card>
+                                        <abp-card-body>
+                                            <partial name="Memos/_Memo" model="new _MemoModel(Model.OceanImportMbl.Mid, Dolphin.Freight.Common.FreightPageType.OIMBL)" />
+                                        </abp-card-body>
+                                    </abp-card>
+                                </abp-column>
+                            </abp-row>
                         </abp-card-body>
                     </abp-card>
                     <br />
@@ -648,6 +661,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.MblReferralById", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "MblReferralById", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.MblReferralById) })
                                 </abp-column>
                             </abp-row>
+    
                         </abp-card-body>
                     </abp-card>
                 </div>
