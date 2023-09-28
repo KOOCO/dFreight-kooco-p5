@@ -1189,7 +1189,7 @@
                                 <abp-column size-md="_3">
                                     <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapseRoute" role="button" aria-expanded="false" aria-controls="collapseRoute" style="margin-top:2em;">
                                         <i class="fa fa-plane" aria-hidden="true"></i>
-                                        Add Connecting Flight
+                                        @L["AddConnectingFlight"]
                                     </a>
                                 </abp-column>
                             </abp-row>
@@ -1286,7 +1286,7 @@
                                                 <tr>
                                                     <th>Trans2</th>
                                                    <td>
-                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans2Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans1Id) })
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans2Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans2Id) })
                                                     </td>
                                                     <td>
                                                         <input asp-for="@Model.AirExportMawbDto.RouteTrans2ArrivalDate" abp-data-datepicker="false" size="Small" />
@@ -1304,7 +1304,7 @@
                                                 <tr>
                                                     <th>Trans3</th>
                                                    <td>
-                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans3Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans1Id) })
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans3Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans3Id) })
                                                     </td>
                                                     <td>
                                                         <input asp-for="@Model.AirExportMawbDto.RouteTrans3ArrivalDate" abp-data-datepicker="false" size="Small" />
