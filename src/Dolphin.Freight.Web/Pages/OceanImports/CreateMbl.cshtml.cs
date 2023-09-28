@@ -1,5 +1,6 @@
 
 using Dolphin.Freight.Common;
+using Dolphin.Freight.Common.Memos;
 using Dolphin.Freight.ImportExport.OceanImports;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settinngs.Substations;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Users;
@@ -33,13 +35,14 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
         [BindProperty]
         public int AddHbl { get; set; } = 0;
         private readonly IOceanImportHblAppService _oceanImportHblAppService;
+        private readonly IMemoAppService _memoAppService;
         private readonly IOceanImportMblAppService _oceanImportMblAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
         private readonly ISubstationAppService _substationAppService;
         private readonly ITradePartnerAppService _tradePartnerAppService;
         private readonly IPortsManagementAppService _portsManagementAppService;
         private readonly ICurrentUser _currentUser;
-        public CreateMblModel( IOceanImportMblAppService oceanImportMblAppService,IOceanImportHblAppService oceanImportHblAppService, ISysCodeAppService sysCodeAppService, IPortsManagementAppService portsManagementAppService, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService, ICurrentUser currentUser)
+        public CreateMblModel( IOceanImportMblAppService oceanImportMblAppService,IOceanImportHblAppService oceanImportHblAppService, ISysCodeAppService sysCodeAppService, IPortsManagementAppService portsManagementAppService, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService, ICurrentUser currentUser, IMemoAppService memoAppService)
         {
             _oceanImportMblAppService = oceanImportMblAppService;
             _oceanImportHblAppService = oceanImportHblAppService;
@@ -48,6 +51,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             _tradePartnerAppService = tradePartnerAppService;
             _portsManagementAppService = portsManagementAppService;
             _currentUser = currentUser;
+            _memoAppService = memoAppService;
         }
         public async Task OnGetAsync()
         {
@@ -79,8 +83,15 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
                     var syscode = syscodes[0];
                     OceanImportHbl.CardColorId = syscode.Id;
                 }
-                await _oceanImportHblAppService.CreateAsync(OceanImportHbl);
-
+               var hbl= await _oceanImportHblAppService.CreateAsync(OceanImportHbl);
+                var emptyGuid = Guid.Empty;
+                var memo = await _memoAppService.GetListByQueryAsync(new QueryListDto() { SourceId = emptyGuid,FType=FreightPageType.OIHBL}) ;
+                if (memo.Count > 0)
+                {
+                    await _memoAppService.UpdateSourceIdAsync(hbl.Id, FreightPageType.OIHBL);
+                
+                }
+            
             }
 
             Dictionary<string, Guid> rs = new()
