@@ -614,15 +614,15 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                    
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.IncotermsType", AspItems = Html.GetEnumSelectList(typeof(IncotermsType)).ToList(),Selected=Convert.ToString(Model.MawbModel.IncotermsType), IsRequired = true, IsShowLabel = true, FieldName = "IncotermsType", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.IncotermsType) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.IncotermsType", AspItems = Html.GetEnumSelectList(typeof(IncotermsType)).ToList(),Selected=Convert.ToString(Model.MawbModel.IncotermsType), IsShowLabel = true, FieldName = "IncotermsType", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.IncotermsType) })
                                 </abp-column>
                                 <abp-column size-md="_3">
 
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeFrom", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(),Selected=Convert.ToString(Model.MawbModel.ServiceTermTypeFrom), IsRequired = true, IsShowLabel = true, FieldName = "ServiceTermTypeFrom", SelectType = 0, ShowFiledContentValue =  Convert.ToString((Model.MawbModel.ServiceTermTypeFrom)) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeFrom", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(),Selected=Convert.ToString(Model.MawbModel.ServiceTermTypeFrom), IsShowLabel = true, FieldName = "ServiceTermTypeFrom", SelectType = 0, ShowFiledContentValue = Convert.ToString((1)) })
                                 </abp-column>
                                 <abp-column size-md="_3">
 
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeTo", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(),Selected=Convert.ToString(Model.MawbModel.ServiceTermTypeTo), IsRequired = true, IsShowLabel = true, FieldName = "ServiceTermTypeTo", SelectType = 0, ShowFiledContentValue = Convert.ToString((Model.MawbModel.ServiceTermTypeTo))})
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeTo", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(),Selected=Convert.ToString(Model.MawbModel.ServiceTermTypeTo), IsShowLabel = true, FieldName = "ServiceTermTypeTo", SelectType = 0, ShowFiledContentValue = Convert.ToString((1))})
                                 </abp-column>
                             </abp-row>
                             <!--第10列 Awb取消Checkbox, IsEcom-->
@@ -631,7 +631,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BusinessReferredId", AspItems = _dropdown.TradePartnerLookupList,Selected=Model.MawbModel.BusinessReferredId, IsShowLabel = true, FieldName = "BusinessReferredId", ShowFiledContentValue = Convert.ToString(Model.MawbModel.BusinessReferredId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DisplayUnit", AspItems = Html.GetEnumSelectList(typeof(DisplayUnitType)).ToList(),Selected=Convert.ToString(Model.MawbModel.DisplayUnit), IsRequired = true, IsShowLabel = true, FieldName = "DisplayUnit", ShowFiledContentValue = Convert.ToString((Model.MawbModel.DisplayUnit)) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DisplayUnit", AspItems = Html.GetEnumSelectList(typeof(DisplayUnitType)).ToList(),Selected=Convert.ToString(Model.MawbModel.DisplayUnit), IsShowLabel = true, FieldName = "DisplayUnit", ShowFiledContentValue = Convert.ToString((Model.MawbModel.DisplayUnit)) })
                                 </abp-column>
                                 <abp-column size-md="_3" class="expandCheck">
                                     <abp-input asp-for="MawbModel.IsECom" />
