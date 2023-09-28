@@ -441,6 +441,10 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public bool IsDeleted { get; set; }
         public string PONo { get; set; }
         public bool IsLocked { get; set; }
+        public string Mark { get; set; }
+        public string NatureAndQuantityOfGoods { get; set; }
+        public string ManifestNatureAndQuantityOfGoods { get; set; }
+        public string HandlingInformation { get; set; }
 
         public AirExportMawb() { 
             AwbDate = DateTime.Now;

@@ -19,7 +19,9 @@
     function OpenInTrackTrace() {
         var url = new URL(window.location.href);
         var mblId = url.searchParams.get('Id');
+
         dolphin.freight.importExport.oceanImports.oceanImportMbl.get(mblId).done(function (res) {
+
             myWindow = window.open('https://www.track-trace.com/bol#' + res.mblNo, '_blank', 'width=1200,height=1000');
             myWindow.focus();
         });
