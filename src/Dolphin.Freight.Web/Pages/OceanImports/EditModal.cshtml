@@ -159,7 +159,6 @@
         //}
 
         $('#addHBtn').on('click', function () {
-            debugger;
             if ($('#mblDiv')[0].classList.contains('show')) {
                 $('#btnMawbCollapse').click();
             }
@@ -168,7 +167,6 @@
                 showAlert(alertConfirmation2, 'Store');
             }
             else {
-
                 let hawbcard = createHawbCard();
 
                 let index = $('.hbl_sm_area').find('.card').length;
@@ -194,6 +192,7 @@
         $('#hblMainCard').append('#mawbCard');
 
         function onHawbCardClick(e, hawbId) {
+            debugger;
             var element = e.currentTarget || e.target || e.srcElement;
             var hblNo = element.id.split('_')[1];
 
@@ -258,7 +257,6 @@
         }
 
         function createHawbCard() {
-            debugger
             let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
                 ' onclick="onHawbCardClick(event,{{hblCardId}})">{{hblNo}}</h5>' +
                 ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
@@ -569,7 +567,7 @@
                             </div>
                             </div>*@
 
-                            <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
+                            <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" id="btnMawbCollapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
                             </button>
 
                         </abp-card-header>
@@ -850,7 +848,7 @@
 
                 <div class="card-wrap">
                     <button class="btn btn-block btn-add" type="button" id="addHBtn">
-                        <i class="fa-solid fa-plus"></i>Add HAWB
+                        <i class="fa-solid fa-plus"></i>@L["AddHBL"]
                     </button>
                     <div id="hblCards" class="hbl_sm_area">
 

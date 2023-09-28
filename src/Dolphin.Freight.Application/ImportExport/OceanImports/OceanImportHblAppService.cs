@@ -259,7 +259,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         }
         public async Task<OceanImportHblDto> GetHblCardById(Guid Id)
         {
-            if (await _repository.AnyAsync(f => f.Id == Id))
+            if (Id != Guid.Empty && await _repository.AnyAsync(f => f.Id == Id))
             {
                 var data = await _repository.GetAsync(f => f.Id == Id);
                 var retVal = ObjectMapper.Map<OceanImportHbl, OceanImportHblDto>(data);
