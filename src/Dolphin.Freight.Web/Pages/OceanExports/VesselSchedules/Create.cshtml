@@ -723,7 +723,7 @@
 
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.BlTypeId", AspItems = Model.BlTypeList, IsShowLabel = true, FieldName = "BlTypeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.BlTypeId.ToString() })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.BlTypeId", AspItems = Model.BlTypeList, IsShowLabel = true, FieldName = "BlTypeId", SelectType = 2, ShowFiledContentValue = Model.BlTypeList[6].Value.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.PostDate" disabled=true />
