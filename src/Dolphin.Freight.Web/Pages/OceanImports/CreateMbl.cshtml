@@ -28,6 +28,29 @@
 
     <script type="text/javascript">$(document).ready(function () {
             var l = abp.localization.getResource('Freight');
+
+             $('#OceanImportMbl_IsOblReceived').change(function() {
+            if(this.checked) {
+                // Checkbox is checked, set OblReceivedDate to current date time
+                var currentDate = new Date();
+                $('#OceanImportMbl_OblReceivedDate').val(currentDate.toISOString().slice(0, 19).replace("T", " "));
+            } else {
+                // Checkbox is unchecked, clear OblReceivedDate
+                $('#OceanImportMbl_OblReceivedDate').val('');
+            }
+        });
+
+        $('#OceanImportMbl_IsReleased').change(function() {
+            if(this.checked) {
+                // Checkbox is checked, set MblReleaseDate to current date time
+                var currentDate = new Date();
+                $('#OceanImportMbl_MblReleaseDate').val(currentDate.toISOString().slice(0, 19).replace("T", " "));
+            } else {
+                // Checkbox is unchecked, clear MblReleaseDate
+                $('#OceanImportMbl_MblReleaseDate').val('');
+            }
+        });
+
             $("#addHBtn").click(function () {
                 addHBtn();
             });
@@ -307,9 +330,9 @@
 
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.FdestId", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.FdestId) })
+                              @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.ShipModeId", AspItems = _dropdown.ShipModeLookupList, IsShowLabel = true, FieldName = "ShipModeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.ShipModeId) })
 
-                                </abp-column>
+                              </abp-column>
 
 
                                 <abp-column size-md="_3">
@@ -332,7 +355,7 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label for="OceanImportMbl_IsOblReceived" class="form-label customCheck">@L["IsOblReceived"]<input type="checkbox" name="OceanImportMbl.IsOblReceived" id="OceanImportMbl_IsOblReceived" value="true" /></label>
-                                    <abp-input label="" asp-for="OceanImportMbl.OblReceivedDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input label="" asp-for="OceanImportMbl.OblReceivedDate"  type="text" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label for="OceanImportMbl_IsReleased" class="form-label customCheck">@L["IsReleased"]<input type="checkbox" name="OceanImportMbl.IsReleased" id="OceanImportMbl_IsReleased" value="true" /></label>

@@ -57,6 +57,14 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
         {
             OceanImportHbl = new CreateUpdateOceanImportHblDto();
             OceanImportMbl = new CreateUpdateOceanImportMblDto();
+          var blTypeLookup=  await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "BlTypeId" });
+
+             
+            OceanImportMbl.BlTypeId=blTypeLookup.Where(x=>x.CodeValue=="NR").Select(x=>x.Id).FirstOrDefault();
+            var shipModeLookup = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "ShipModeId" });
+
+
+            OceanImportMbl.ShipModeId = shipModeLookup.Where(x => x.CodeValue == "FCL").Select(x => x.Id).FirstOrDefault();
             await FillSubstationAsync();
             await FillTradePartnerAsync();
             await FillPortAsync();

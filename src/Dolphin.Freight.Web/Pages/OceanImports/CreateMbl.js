@@ -22,7 +22,9 @@
             "OceanImportHbl_LcIssueDate",
             "OceanImportHbl_OnBoardDate",
             "OceanImportHbl_HblReleaseDate",
-            "OceanImportHbl_CanceledDate"
+            "OceanImportHbl_CanceledDate",
+            "OceanImportMbl_OblReceivedDate",
+            "OceanImportMbl_MblReleaseDate"
         ];
 
         ids.forEach(function (id) {
