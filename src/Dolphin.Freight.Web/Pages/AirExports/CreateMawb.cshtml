@@ -670,17 +670,17 @@
               <input type="checkbox" name="chk_mawbOtherCharges" id="chk_mawbOtherCharges_${chkIndex}" />
           </td>
           
-           <td> <select  name="MawbModel.OtherCharges[${chkIndex}].CarrierAgent" id="desc_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
+           <td> <select style="font-size: 0.8rem!important;"  name="MawbModel.OtherCharges[${chkIndex}].CarrierAgent" id="desc_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
         <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
         <option value="Carrier" {{if "Carrier" === CarrierAgent}}selected{{/if}}  > Carrier</option>
          <option value="Agent" {{if "Agent" === CarrierAgent}}selected{{/if}} > Agent</option>
         </select></td>
-          <td> <select  name="MawbModel.OtherCharges[${chkIndex}].CollectPaid" id="htscode_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
+          <td> <select style="font-size: 0.8rem!important;" name="MawbModel.OtherCharges[${chkIndex}].CollectPaid" id="htscode_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
         <option value="" > @L["Display:Dropdownlist:Option:Select"]</option>
         <option value="Collect" {{if "Collect" === CollectPaid}}selected{{/if}} > Collect</option>
          <option value="Prepaid" {{if "Prepaid" === CollectPaid}}selected{{/if}} >Prepaid</option>
         </select></td>
-         <td> <select name="MawbModel.OtherCharges[${chkIndex}].ChargeItem"  class="filteredDropdown form-select form-control cursor-pointer ">
+         <td> <select style="font-size: 0.8rem!important;" name="MawbModel.OtherCharges[${chkIndex}].ChargeItem"  class="filteredDropdown form-select form-control cursor-pointer ">
         <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
       {{each chargeItems}}
          <option value="${$value.value}" {{if $value.value === ChargeItem}}selected{{/if}}>${$value.text}</option>
@@ -715,7 +715,7 @@
 </div>
 <div class="page-content-area">
     <div class="board-wrap">
-    < class="board-wrap">
+  @*   < class="board-wrap"> *@
         <form abp-model="MawbModel" submit-button="true" data-ajaxForm="true" id="createForm">
             <abp-row>
                 @if(Model.Id!=Guid.Empty)
@@ -1172,8 +1172,10 @@
                                 <abp-column>
                                     <abp-card-header style="background:#cccccc;color:#FFFFFF;">
                                         @L["More"]
+                                          <button type="button" id="btnMoreInfoCollapse" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#moreInfoDiv" aria-expanded="true" aria-controls="moreInfoDiv">
+                            </button>
                                     </abp-card-header>
-                                    <abp-card>
+                                    <abp-card class="collapse show customForm" id="moreInfoDiv">
                                         <abp-card-body>
                                             <div class="table-responsive">
                                                 <abp-table class="nowrap">
