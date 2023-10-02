@@ -1,6 +1,5 @@
 ﻿class AirExportHawb {
     static KgLbConversion(Elem, Unit) {
-        debugger;
         switch (Unit) {
             case 'KG':
                 var LB = parseFloat(Elem.currentTarget.value * 2.2).toFixed(2);
