@@ -514,17 +514,19 @@
                         <abp-card-body class="collapse show customForm" id="hblDiv">
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label for="ceanImportHbl_HblNo" class="form-label">@L["HblNo"] <input type="checkbox" name="OceanImportHbl.IsCreateBySystem" id="OceanImportHbl_IsCreateBySystem" value="true" checked /></label>
+                                    <label for="0ceanImportHbl_HblNo" class="form-label">@L["HblNo"] <input type="checkbox" name="OceanImportHbl.IsCreateBySystem" id="OceanImportHbl_IsCreateBySystem" value="true" checked /></label>
                                     <input type="text" name="OceanImportHbl.HblNo" class="form-control" id="OceanImportHbl_HblNo" disabled />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportHbl.SoNo" />
+                                      <label for="oceanImportHbl_AmsNo" class="form-label">@L["AmsNo"] *</label>
+                                    <abp-input suppress-label asp-for="OceanImportHbl.AmsNo" required />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportHbl.CustomerRefNo" />
+                                    <abp-input asp-for="OceanImportHbl.IsfNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportHbl.DocNo" />
+                                      <label for="ceanImportHbl_HblNo" class="form-label">@L["ISFFilling"]</label>
+                                    <abp-input suppress-label asp-for="OceanImportHbl.IsfByThirdParty" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>

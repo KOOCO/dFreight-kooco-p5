@@ -109,17 +109,20 @@
     <abp-card-body class="card-body collapse show customForm" id="hawbDiv">
         <abp-row>
             <abp-column size-md="_3">
-                <input type="hidden" name="OceanImportHbl.Id" id="OceanImportHBL" value="@Model.OceanImportHbl.Id" />
-                <abp-input asp-for="OceanImportHbl.HblNo" required />
+                <input type="hidden"   name="OceanImportHbl.Id" id="OceanImportHBL" value="@Model.OceanImportHbl.Id" />
+                 <label for="oceanImportHbl_HblNo" class="form-label">@L["HblNo"] *</label>
+                <abp-input suppress-label asp-for="OceanImportHbl.HblNo" required />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanImportHbl.SoNo" />
+                <label for="oceanImportHbl_AmsNo" class="form-label">@L["AsmNo"] *</label>
+                <abp-input suppress-label asp-for="OceanImportHbl.AmsNo" required />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanImportHbl.CustomerRefNo" />
+                <abp-input asp-for="OceanImportHbl.IsfNo" />
             </abp-column>
             <abp-column size-md="_3">
-                <abp-input asp-for="OceanImportHbl.DocNo" />
+                 <label for="ceanImportHbl_HblNo" class="form-label">@L["ISFFilling"]</label>
+                <abp-input suppress-label asp-for="OceanImportHbl.IsfByThirdParty" />
             </abp-column>
         </abp-row>
         <abp-row>

@@ -103,6 +103,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public Guid? AgentId { get; set; }
         public string AgentName { get; set; }
+        [Required]
         public string AmsNo { get; set; }
         public string TruckerName { get; set; }
         public string CyCfsLocationName { get; set; }
@@ -418,6 +419,16 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string Package { get; set; }
         public string Weight { get; set; }
         public string Measurement { get; set; }
+
+        
+        /// <summary>
+        /// ISF號碼
+        /// </summary>
+        public string IsfNo { get; set; }
+        /// <summary>
+        /// 由第三方申報ISF
+        /// </summary>
+        public bool IsfByThirdParty { get; set; }
 
     }
 }
