@@ -1375,10 +1375,10 @@
                                                     </tr>
                                                     <tr>
                                                         <th class="packageTable">@L["VolumeWeight"]</th>
-                                                        <td><input asp-for="@Model.AirExportMawbDto.VolumeWeightKg" class="form-control" /></td>
+                                                <td><input asp-for="@Model.AirExportMawbDto.VolumeWeightKg" class="form-control" onkeyup="AirExportMawb.KgToCbmConversion(event, 'KG')" /></td>
                                                         <td>@L["KG"]</td>
                                                         <td>
-                                                            <input asp-for="@Model.AirExportMawbDto.VolumeWeightCbm" class="form-control" />
+                                                            <input asp-for="@Model.AirExportMawbDto.VolumeWeightCbm" class="form-control" onkeyup="AirExportMawb.KgToCbmConversion(event, 'CBM')" />
                                                         </td>
                                                         <td>@L["CBM"]</td>
                                                     </tr>
@@ -1402,8 +1402,8 @@
                                                 <tbody>
                                                     <tr>
                                                         <th class="packageTable">@L["GrossWeightKG"]</th>
-                                                        <td><input asp-for="@Model.AirExportMawbDto.GrossWeightKg" class="form-control" id="GrossWeightKg" /></td>
-                                                        <td><input asp-for="@Model.AirExportMawbDto.GrossWeightLb" class="form-control" id="GrossWeightLb" /></td>
+                                                        <td><input asp-for="@Model.AirExportMawbDto.GrossWeightKg" class="form-control" onkeyup="AirExportMawb.GrossWeightConversion(event, 'KG')" id="GrossWeightKg" /></td>
+                                                        <td><input asp-for="@Model.AirExportMawbDto.GrossWeightLb" class="form-control" onkeyup="AirExportMawb.GrossWeightConversion(event, 'LB')" id="GrossWeightLb" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.GrossWeightAmount" class="form-control" /></td>
                                                     </tr>
                                                     <tr>

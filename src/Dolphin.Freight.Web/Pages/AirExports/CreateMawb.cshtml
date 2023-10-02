@@ -994,11 +994,9 @@
                                             </tr>
                                             <tr>
                                                 <th>@L["VolumeWeight"]</th>
-                                                <td><input asp-for="MawbModel.VolumeWeightKg" class="form-control form-control-sm" /></td>
+                                                <td><input asp-for="MawbModel.VolumeWeightKg" class="form-control form-control-sm" onkeyup="AirExportMawb.KgToCbmConversion(event, 'KG')" /></td>
                                                 <td>@L["KG"]</td>
-                                                <td>
-                                                    <input asp-for="MawbModel.VolumeWeightCbm" class="form-control form-control-sm" />
-                                                </td>
+                                                <td><input asp-for="MawbModel.VolumeWeightCbm" class="form-control form-control-sm" onkeyup="AirExportMawb.KgToCbmConversion(event, 'CBM')" /></td>
                                                 <td>@L["CBM"]</td>
                                             </tr>
                                             <tr>
@@ -1021,8 +1019,8 @@
                                         <tbody>
                                             <tr>
                                                 <th class="packageTable">@L["GrossWeight"]</th>
-                                                <td><input asp-for="MawbModel.GrossWeightKg" class="form-control form-control-sm" id="GrossWeightKg" /></td>
-                                                <td><input asp-for="MawbModel.GrossWeightLb" class="form-control form-control-sm" id="GrossWeightLb" /></td>
+                                                <td><input asp-for="MawbModel.GrossWeightKg" class="form-control form-control-sm" onkeyup="AirExportMawb.GrossWeightConversion(event, 'KG')" id="GrossWeightKg" /></td>
+                                                <td><input asp-for="MawbModel.GrossWeightLb" class="form-control form-control-sm" onkeyup="AirExportMawb.GrossWeightConversion(event, 'LB')" id="GrossWeightLb" /></td>
                                                 <td><input asp-for="MawbModel.GrossWeightAmount" class="form-control" /></td>
                                             </tr>
                                             <tr>
