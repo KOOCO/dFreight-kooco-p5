@@ -60,6 +60,7 @@ var columns = [{
                         if (data.record.isLocked) {
 
                         }
+                        debugger;
                         location.href = 'EditModal?Id=' + data.record.id;
 
                     }

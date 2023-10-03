@@ -36,6 +36,7 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
         [BindProperty]
         public CreateUpdateContainerDto CreateUpdateContainerBooking { get; set; }
         public OceanImportHblDto OceanImportHbl { get; set; }
+        public CreateUpdateOceanImportHblDto OceanImportHblDto { get; set; }
         public AirExportHawbDto AirExportHawbDto { get; set; }
         [BindProperty(SupportsGet = true)]
         public Guid Hid { get; set; }

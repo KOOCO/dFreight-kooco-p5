@@ -9,7 +9,9 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
+    
+    <abp-script src="/Pages/OceanImports/EditModel2.js" />
+    
     <script type="text/javascript">
         var trindex = 0;
         var containerSizes = [];
@@ -36,7 +38,6 @@
                                 addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9);
 
                             }
-                            addPackageUnitNameddl();
                             countTotal('MBL');
                             countTotal('HBL');
                             countTotalVolume('MBL');
@@ -45,6 +46,7 @@
                             countPackageType('HBL');
                             copyContainertoHBL(0);
                         }
+                        addPackageUnitNameddl();
                     });
                 }
             });
@@ -175,6 +177,7 @@
                     selectHtml = selectHtml + "</select>";
                     $('#packageTypeSelect').append(selectHtml).find('#PackagingUnit').select2();
                     $('#hblPackageTypeddl').append(selectHtml);
+                    $('#totalPackageTypeUnit').text($('#PackagingUnit').find('option:selected').text());
                 }
             });
         }
@@ -232,18 +235,21 @@
         }
 
         function convertUnit(value, module) {
+            debugger;
             switch (module){
                 case 'MBL':
                     if (value === 'LB') {
+                        debugger;
                         for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
                             $('#f5_' + i).val(parseFloat($('#f5_' + i).val() * 2.20462).toFixed(2));
                         }
-                        countTotal('MBL');
+                        debugger;
+                        countTotal('MBL', 'KG');
                     } else if (value === 'KG') {
                         for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
                             $('#f5_' + i).val(parseFloat($('#f5_' + i).val() / 2.20462).toFixed(2));
                         }
-                        countTotal('MBL');
+                        countTotal('MBL', 'LB');
                     } else if (value === 'CFT') {
                         for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
                             $('#f6_' + i).val(parseFloat($('#f6_' + i).val() * 35.315).toFixed(2));
@@ -278,7 +284,7 @@
             }
         }
 
-        function countTotal(module){
+        function countTotal(module, Unit){
             switch (module){
                 case 'MBL':
                     var totalWgt = 0;
@@ -289,8 +295,14 @@
                             totalWgt += cells;
                         }
                     }
-
-                    $('#totalWeight').text(parseFloat(totalWgt).toFixed(2));
+                    debugger;
+                    if (Unit === 'KG') {
+                        $('#totalWeight').text(parseFloat(totalWgt).toFixed(2) + ' KG');
+                        $('#totalWeightUnit').text(parseFloat(totalWgt * 2.2).toFixed(2) + ' LB');
+                    } else if (Unit === 'LB') {
+                        $('#totalWeight').text(parseFloat(totalWgt).toFixed(2) + ' LB');
+                        $('#totalWeightUnit').text(parseFloat(totalWgt / 2.2).toFixed(2) + ' KG');
+                    }
                 break;
 
                 case 'HBL':
@@ -313,7 +325,15 @@
                         }
                     }
 
-                    $('#totalWeight').text(parseFloat(totalWgt).toFixed(2));
+                    var selectedOption = $('#selectWeight').find('option:selected').val();
+
+                    if (selectedOption === 'KG'){
+                        $('#totalWeight').text(parseFloat(totalWgt).toFixed(2) + ' KG');
+                        $('#totalWeightUnit').text(parseFloat(totalWgt * 2.2).toFixed(2) + ' LB');
+                    } else if (selectedOption === 'LB') {
+                        $('#totalWeight').text(parseFloat(totalWgt).toFixed(2) + ' LB');
+                        $('#totalWeightUnit').text(parseFloat(totalWgt / 2.2).toFixed(2) + ' KG');
+                    }
                 break;
             }
         }
@@ -330,7 +350,8 @@
                         }
                     }
 
-                    $('#totalVolume').text(parseFloat(totalVol).toFixed(2));
+                    $('#totalVolume').text(parseFloat(totalVol).toFixed(2) + ' CBM');
+                    $('#totalVolumeUnit').text(parseFloat(totalVol * 35.315).toFixed(2) + ' CFT');
                 break;
 
                 case 'HBL':
@@ -353,7 +374,8 @@
                         }
                     }
 
-                    $('#totalVolume').text(parseFloat(totalVol).toFixed(2));
+                    $('#totalVolume').text(parseFloat(totalVol).toFixed(2) + ' CBM');
+                    $('#totalVolumeUnit').text(parseFloat(totalVol * 35.315).toFixed(2) + ' CFT');
                 break;
             }
         }
@@ -770,8 +792,8 @@
                                     <div>
                                         <abp-button class="btn btn-success me-md-2" type="button" id="addBtn">+</abp-button>
                                         <abp-button class="btn btn-outline-success me-md-2" type="button" id="add5Btn">+5</abp-button>
-                                        <abp-button class="btn btn-outline-warning me-md-2" type="button" id="copyBtn">copy</abp-button>
-                                        <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn">delete</abp-button>
+                                        <abp-button class="btn btn-outline-warning me-md-2" type="button" id="copyBtn"><i class="fa fa-files-o mx-1"></i></abp-button>
+                                        <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn"><i class="fa fa-trash mx-1"></i></abp-button>
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" id="add-ap" disabled>
                                                 @L["Display:AddAP"]
@@ -824,6 +846,12 @@
                                                 <td id="totalPackageType"></td>
                                                 <td id="totalWeight"></td>
                                                 <td id="totalVolume"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="6" align="right"></td>
+                                                <td id="totalPackageTypeUnit"></td>
+                                                <td id="totalWeightUnit"></td>
+                                                <td id="totalVolumeUnit"></td>
                                             </tr>
                                         </tfoot>
                                     </table>

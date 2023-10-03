@@ -6,6 +6,7 @@ using Dolphin.Freight.Settings.PackageUnits;
 using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.PackageUnits;
 using Dolphin.Freight.Settinngs.SysCodes;
+using MathNet.Numerics.Statistics;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -63,13 +63,25 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             OceanImportMbl = await _oceanImportMblAppService.GetCreateUpdateOceanImportMblDtoById(Id);
             ImportExport.OceanImports.QueryHblDto query = new ImportExport.OceanImports.QueryHblDto() { MblId = Id };
             query.Id = Hid;
-            OceanImportHbl = new();
+            if (Hid is not null && Hid != Guid.Empty)
+            {
+                OceanImportHbl = ObjectMapper.Map<OceanImportHblDto, CreateUpdateOceanImportHblDto>(await _oceanImportHblAppService.GetAsync((Guid)Hid));
+            } else
+            {
+                var hbls = await _oceanImportHblAppService.GetHblCardsById(Id);
+                if (hbls.Any())
+                {
+                    OceanImportHbl = ObjectMapper.Map<OceanImportHblDto, CreateUpdateOceanImportHblDto>(await _oceanImportHblAppService.GetAsync(hbls[0].Id));
+                } else
+                {
+                    OceanImportHbl = new();
+                }
+            }
             IsShowHbl = true;
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-
             await _oceanImportMblAppService.UpdateAsync(OceanImportMbl.Id, OceanImportMbl);
 
             if (OceanImportHbl is not null && !string.IsNullOrEmpty(OceanImportHbl.HblNo))
@@ -78,7 +90,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
 
                 if (OceanImportHbl.Id != Guid.Empty)
                 {
-                    if (OceanImportHbl.CardColorId != Guid.Empty)
+                    if (OceanImportHbl.CardColorId is not null && OceanImportHbl.CardColorId != Guid.Empty)
                     {
                         var sysCode = await _sysCodeAppService.GetAsync((Guid)OceanImportHbl.CardColorId);
                         sysCode.CodeValue = OceanImportHbl.CardColorValue;
@@ -97,25 +109,8 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
 
                         OceanImportHbl.CardColorId = newSysCode.Id;
                     }
-                    try
-                    {
-                        await _oceanImportHblAppService.UpdateAsync(OceanImportHbl.Id, OceanImportHbl);
-                    }
-                    catch (DbUpdateException ex)
-                    {
-                        var failedEntries = ex.Entries;
-                        foreach (var entry in failedEntries)
-                        {
-                            var entityName = entry.Metadata.Name;
-                            var properties = entry.Properties.Where(p => p.IsModified && !p.IsTemporary);
-                            foreach (var property in properties)
-                            {
-                                var propertyName = property.Metadata.Name;
-                                Console.WriteLine($"Failed to update field: {propertyName} in entity: {entityName}");
-                            }
-                        }
-                        throw;
-                    }
+                    
+                    await _oceanImportHblAppService.UpdateAsync(OceanImportHbl.Id, OceanImportHbl);
                 }
                 else
                 {
