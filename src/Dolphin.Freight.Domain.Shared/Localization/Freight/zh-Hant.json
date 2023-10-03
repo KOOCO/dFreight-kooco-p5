@@ -260,7 +260,7 @@
     "MblCarrierName": "船公司",
     "BlAcctCarrierId": "船公司(財務窗口)",
     "ShippingAgentId": "本地代理",
-    "MblOverseaAgentId": "(海外代理)收貨人",
+    "MblOverseaAgentId": "海外代理",
     "MblOverseaAgentName": "海外代理",
     "MblNotifyId": "通知方",
     "ForwardingAgentId": "轉運代理",
@@ -1375,7 +1375,7 @@
     "ExpiryDate": "到期日",
     "GoDate": "出閘日期",
     "ANSentDate": "AN寄出日期",
-    "DOSentDate": "DO寄出日期",
+    "DOSentDate": "DO寄出日期"
 
   }
 }
