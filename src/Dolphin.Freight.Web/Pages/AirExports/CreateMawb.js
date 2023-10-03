@@ -79,7 +79,7 @@ class AirExportMawb {
         }
         switch (Unit) {
             case 'KG':
-                var CBM = parseFloat(Elem.currentTarget.value * 0.01).toFixed(2);
+                var CBM = parseFloat(Elem.currentTarget.value * 0.006).toFixed(2);
                 $($(Elem.currentTarget).parent().next().next().children()[0]).val(CBM);
                 if (Number(Elem.currentTarget.value) >= Number($('#GrossWeightKg').val())) {
                     $('#ChargeableWeightKg').val(Elem.currentTarget.value);
@@ -170,7 +170,7 @@ class AirExportMawb {
                 }
                 break;
             case 'LB':
-                var KG = parseFloat(Elem.currentTarget.value / 2).toFixed(2);
+                var KG = parseFloat(Elem.currentTarget.value / 2.2).toFixed(2);
                 if (Number(KG) > Number(VolumeWeightKg)) {
                     $('#ChargeableWeightKg').val(KG);
                     if ($('#MawbModel_ChargeableWeightAmount').length == 0) {
