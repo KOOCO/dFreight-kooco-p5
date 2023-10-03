@@ -31,6 +31,7 @@
 
         $(document).ready(function () {
              $('#cardSettingArea').hide();
+
             const ids = [
                 "OceanImportMbl_PostDate",
                 "OceanImportMbl_PolEtd",
@@ -42,7 +43,8 @@
                 "OceanImportMbl_MblReleaseDate",
                 "OceanImportMbl_LatestContainerEntryDate",
                 "OceanImportMbl_PorEtd",
-                "OceanImportMbl_ItDate"
+                "OceanImportMbl_ItDate",
+          
             ];
 
             ids.forEach(function (id) {
@@ -63,10 +65,12 @@
                     dateElem.val(currentVal.replace('T', ' '));
                 }
             });
+            
         });
-
+     
         $(document).ready(function () {
-            var l = abp.localization.getResource('Freight');
+          
+
             var showMsg = '@Model.ShowMsg';
              var showMsg = '@Model.ShowMsg';
             if (showMsg == 'True') {
@@ -321,6 +325,7 @@
                 confirmButtonText: buttonName,
             }).then(funName)
         }
+
 
         function alertConfirmation(result) {
             if (result.isConfirmed) {

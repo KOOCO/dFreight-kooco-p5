@@ -260,7 +260,7 @@
     "MblCarrierName": "船公司",
     "BlAcctCarrierId": "船公司(財務窗口)",
     "ShippingAgentId": "本地代理",
-    "MblOverseaAgentId": "(海外代理)收貨人",
+    "MblOverseaAgentId": "海外代理",
     "MblOverseaAgentName": "海外代理",
     "MblNotifyId": "通知方",
     "ForwardingAgentId": "轉運代理",
@@ -952,7 +952,6 @@
     "BLCategory": "顯示提單類別",
     "BLBillingDateRange": "提單帳單日期區間",
     "SearchResults": "搜尋結果",
-    "Customer": "帳單對象/委託人",
     "From(LoadingPort)": "收貨港 / 裝貨港 (機場)",
     "AddShippingFreightCost": "新增海運運價成本",
     "ImportShippingCompanyContractExcel": "匯入船公司合約 Excel",
@@ -1352,7 +1351,30 @@
     "OrDragItHere.": "在此拖放檔案",
     "Display:Action": "功能",
     "Display:Creator": "建立者",
-    "Display:Type": "類別"
+    "Display:Type": "類別",
+    //Ocean Import Hbl New Fields
+    "CyCfsLocationId": "CY/CFS地點",
+    "Available": "可提櫃日期",
+
+    "IsfMatchDate": "ISF Match Date",
+    "Lfd": "場內延滯免費期",
+    "ItIssuedLocation": "IT發布地點",
+    "Rail": "鐵路",
+    "EntryNo": "報關號碼",
+    "EntryDocSent": "報關文件已寄出",
+    "OblReceived": "OB/L Received",
+    "Ror": "ROR",
+    "FreightReleased": "已放貨",
+    "DoorDeliveryATA": "已送貨到府",
+    "DoorMove": "送貨到府",
+    "CClearance": "海關清關",
+    "CHold": "海關扣留",
+
+    "ExpressBl": "快速提單",
+    "ExpiryDate": "到期日",
+    "GoDate": "出閘日期",
+    "ANSentDate": "AN寄出日期",
+    "DOSentDate": "DO寄出日期"
 
   }
 }

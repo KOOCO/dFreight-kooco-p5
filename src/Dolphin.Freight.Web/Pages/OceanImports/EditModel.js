@@ -1,7 +1,7 @@
 ﻿$(function () {
     var url = new URL(window.location.href);
     var from = url.searchParams.get('from');
-
+   
     dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(url.searchParams.get('Id'))
         .done(function (hblCards) {
 
@@ -26,6 +26,8 @@
                 $('#addHBtn').click();
             }
         });
+  
+ 
 })
 
 var EditModelScript = {
@@ -101,4 +103,6 @@ var EditModelScript = {
             return undefined;
         }
     }
+
+
 }

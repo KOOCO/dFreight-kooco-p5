@@ -2,6 +2,24 @@
     var l = abp.localization.getResource('Freight');
 
     $(document).ready(function () {
+        updateRequiredAttribute();
+
+        $('#OceanImportHbl_IsfByThirdParty').change(function () {
+            updateRequiredAttribute();
+        });
+        $('#OceanImportHbl_IsfNo').change(function () {
+            updateRequiredAttribute();
+        });
+        function updateRequiredAttribute() {
+            var isfByThirdParty = $('#OceanImportHbl_IsfByThirdParty').prop('checked');
+            var isfNo = $('#OceanImportHbl_IsfNo').val();
+
+            if (isfByThirdParty || isfNo) {
+                $('#OceanImportHbl_AmsNo').prop('required', true);
+            } else {
+                $('#OceanImportHbl_AmsNo').prop('required', false);
+            }
+        }
         const ids = [
             "OceanImportMbl_PostDate",
             "OceanImportMbl_PolEtd",
@@ -24,7 +42,16 @@
             "OceanImportHbl_HblReleaseDate",
             "OceanImportHbl_CanceledDate",
             "OceanImportMbl_OblReceivedDate",
-            "OceanImportMbl_MblReleaseDate"
+            "OceanImportMbl_MblReleaseDate",
+            "OceanImportHbl_Available",
+            "OceanImportHbl_IsfMatchDate",
+            "OceanImportHbl_Lfd",
+            "OceanImportHbl_ItDate",
+            "OceanImportHbl_GoDate",
+            "OceanImportHbl_ExpiryDate",
+            "OceanImportHbl_CReleasedDate",
+            "OceanImportHbl_EntryDocSent",
+            "OceanImportHbl_DoorDeliveryATA",
         ];
 
         ids.forEach(function (id) {
@@ -234,6 +261,10 @@
     $("#checkHideBtn").click(function () {
         initHideBtn();
     });
+    initHideHblBtn();
+    $("#checkHideHblBtn").click(function () {
+        initHideHblBtn();
+    });
     initIsDirect()
     $("#OceanImportMbl_IsDirect").change(function () {
         initIsDirect();
@@ -278,6 +309,21 @@ function initIsDirect() {
 function showMblPrint(id) {
     url = "/OceanImports/PrintImport/MblPrint?Id="+id
     window.open(url, 'printpage');
+}
+function initHideHblBtn() {
+    var isHide = $("#isHideHbl").val();
+    if (isHide == 1) {
+        $(".hideAreaHbl").hide();
+        $("#hideLiHbl").hide();
+        $("#showLiHbl").show();
+        $("#isHideHbl").val(0);
+    } else {
+        $(".hideAreaHbl").show();
+        $("#hideLiHbl").show();
+        $("#showLiHbl").hide();
+        $("#isHideHbl").val(1);
+    }
+
 }
 function initReasonStatus() {
     var locked = !$("#OceanImportMbl_IsCanceled").is(":checked");
