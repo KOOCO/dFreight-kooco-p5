@@ -280,7 +280,7 @@ function lockCheckBox(checkbox) {
     var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
     abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
         if (confirmed) {
-            dolphin.freight.importExport.oceanImports.oceanImportMbl.lockedOrUnLockedOceanImportMbl({ MbId: id }).done(function (){
+            dolphin.freight.importExport.oceanImports.oceanImportMbl.lockedOrUnLockedOceanImportMbl({ MbId: id }).done(function () {
                 if (isLock) {
                     abp.message.success(l('Message:SuccessUnlock'));
                 } else {
@@ -288,6 +288,8 @@ function lockCheckBox(checkbox) {
                 }
                 dataTable.ajax.reload();
             });
+        } else {
+            $($('#lock_' + id).parent().prev().prev().children()[0]).prop('checked', false);
         }
     });
 }
