@@ -254,6 +254,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         {
             var data = await _repository.GetListAsync(f => f.MblId == Id);
             var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
+            var sysCodes = await _sysCodeRepository.GetListAsync();
 
             if (!isAsc)
             {
@@ -281,12 +282,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
             }
 
-
-
             var retVal = ObjectMapper.Map<List<OceanImportHbl>, List<OceanImportHblDto>>(data);
             foreach (var item in retVal)
             {
-
                 if (item.HblShipperId != null)
                 {
                     var shipper = tradePartners.Where(w => w.Id == item.HblShipperId).FirstOrDefault();
@@ -299,7 +297,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     item.HblConsigneeName = consignee.TPName;
                 }
 
-
+                if (item.CardColorId is not null)
+                {
+                    var colorValue = sysCodes.Where(w => w.Id == item.CardColorId).FirstOrDefault();
+                    item.CardColorValue = colorValue.CodeValue;
+                }
             }
             return retVal;
         }
