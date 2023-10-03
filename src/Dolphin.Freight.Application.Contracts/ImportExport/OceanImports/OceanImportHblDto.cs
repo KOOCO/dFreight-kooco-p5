@@ -1,4 +1,6 @@
-﻿using Dolphin.Freight.ImportExport.Containers;
+﻿using Dolphin.Freight.AirImports;
+using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.OceanImports;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -429,6 +431,31 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 由第三方申報ISF
         /// </summary>
         public bool IsfByThirdParty { get; set; }
+        public bool DoorMove { get; set; }
+        public bool CClearance { get; set; }
+        public bool CHold { get; set; }
+        public bool IsOblReceived { get; set; }
+        public bool Ror { get; set; }
+
+        public DateTime? IsfMatchDate { get; set; }
+        public DateTime? Lfd { get; set; }
+        public DateTime? OblReceivedDate { get; set; }
+        public DateTime? ItDate { get; set; }
+        public DateTime? GoDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
+        public DateTime? CReleasedDate { get; set; }
+        public DateTime? EntryDocSent { get; set; }
+        public DateTime? AnDate { get; set; }
+        public DateTime? DoDate { get; set; }
+        public ItIssuedLocation? ItIssuedLocation { get; set; }
+        public FreightType? Freight { get; set; }
+        public string ItNo { get; set; }
+        public string EntryNo { get; set; }
+        public string ScNo { get; set; }
+        public string NameAccount { get; set; }
+        public string GroupComm { get; set; }
+        public string LineCode { get; set; }
+        public string CustomDoc { get; set; }
 
     }
 }

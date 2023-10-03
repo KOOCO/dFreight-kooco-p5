@@ -354,6 +354,7 @@
     "DelEta": "DEL ETA",
     "FdestId": "Final dest",
     "FdestEta": "Final dest ETA",
+
     "EmptyPickupId": "Empty Pickup",
     "DeliveryToId": "Delivery",
     "PreCarriageVesselNameId": "Pre-carriage by",
@@ -1053,7 +1054,27 @@
     "Enum:ItemCharge.FI": "Weighing",
     "Enum:ItemCharge.XE": "Weight",
     "Enum:ItemCharge.BM": "Withdrawal of shipment after clearance",
-
+    //ItIssuedLocation
+    "Enum:ItIssuedLocation.PORTLAND_MAINE": "(0101) PORTLAND, MAINE",
+    "Enum:ItIssuedLocation.BANGOR_MAINE": "(0102) BANGOR, MAINE",
+    "Enum:ItIssuedLocation.EASTPORT_MAINE": "(0103) EASTPORT, MAINE",
+    "Enum:ItIssuedLocation.JACKMAN_MAINE": "(0104) JACKMAN, MAINE",
+    "Enum:ItIssuedLocation.VANCEBORO_MAINE": "(0105) VANCEBORO, MAINE",
+    "Enum:ItIssuedLocation.HOULTON_MAINE": "(0106) HOULTON, MAINE",
+    "Enum:ItIssuedLocation.FORT_FAIRFIELD_MAINE": "(0107) FORT FAIRFIELD, MAINE",
+    "Enum:ItIssuedLocation.VAN_BUREN_MAINE": "(0108) VAN BUREN, MAINE",
+    "Enum:ItIssuedLocation.MADAWASKA_MAINE": "(0109) MADAWASKA, MAINE",
+    "Enum:ItIssuedLocation.FORT_KENT_MAINE": "(0110) FORT KENT, MAINE",
+    "Enum:ItIssuedLocation.BATH_MAINE": "(0111) BATH, MAINE",
+    "Enum:ItIssuedLocation.BAR_HARBOR_MAINE": "(0112) BAR HARBOR, MAINE",
+    "Enum:ItIssuedLocation.MANCHESTER_NEW_HAMPSHIRE": "(0114) MANCHESTER, NEW HAMPSHIRE",
+    "Enum:ItIssuedLocation.CALAIS_MAINE": "(0115) CALAIS, MAINE",
+    "Enum:ItIssuedLocation.LIMESTONE_MAINE": "(0118) LIMESTONE, MAINE",
+    "Enum:ItIssuedLocation.ROCKLAND_MAINE": "(0121) ROCKLAND, MAINE",
+    "Enum:ItIssuedLocation.JONESPORT_MAINE": "(0122) JONESPORT, MAINE",
+    "Enum:ItIssuedLocation.BRIDGEWATER_MAINE": "(0127) BRIDGEWATER, MAINE",
+    "Enum:ItIssuedLocation.PORTSMOUTH_NEW_HAMPSHIRE": "(0131) PORTSMOUTH, NEW HAMPSHIRE",
+    "Enum:ItIssuedLocation.BELFAST_MAINE": "(0132) BELFAST, MAINE",
 
     // Enum CreditTermType
     "Enum:CreditTermType.1": "Days after ETA",
@@ -1070,7 +1091,13 @@
     "Enum:CreditTermType.EndOfNextMonth": "End of next month",
     "Enum:CreditTermType.EndOfThisMonth": "End of this month",
     "Enum:CreditTermType.OfNextMonth": "__th of next month",
-
+    //Enum RailCode
+    "Enum:RailCode.UP": "Union Pacific",
+    "Enum:RailCode.BN": "BNSF",
+    "Enum:RailCode.CN": " Canadian National",
+    "Enum:RailCode.CP": " Canadian Pacific",
+    "Enum:RailCode.NS": " Norfolk Southern",
+    "Enum:RailCode.Others": "Others",
     // Enum PaymentType
     "Enum:PaymentType.1": "COD",
     "Enum:PaymentType.2": "CREDIT",
@@ -1501,7 +1528,31 @@
     "BookingRemark": "Booking Remarks",
     "DocumentList": "Document List",
     "SelectFiles": "Select Files",
-    "OrDragItHere.": "Or Drag It Here."
+    "OrDragItHere.": "Or Drag It Here.",
+    //Ocean Import Hbl New Fields
+    "CyCfsLocationId": "CY/CFS Location",
+    "Available": "Available",
+
+    "IsfMatchDate": "ISF Match Date",
+    "Lfd": "LFD",
+    "ItIssuedLocation": "IT Issued Location",
+    "Rail": "Rail",
+    "EntryNo": "Entry No",
+    "EntryDocSent": "Entry DOC. Sent",
+    "OblReceived": "OB/L Received",
+    "Ror": "ROR",
+    "FreightReleased": "Freight Released",
+    "DoorDeliveryATA": "Door Delivered",
+    "DoorMove": "Door Move",
+    "CClearance": "C.Clearance",
+    "CHold": "C.CHold",
+    "CReleasedDate": "C. Released Date",
+    "ExpressBl": "Express B/L",
+    "ExpiryDate": "Expiry Date",
+    "GoDate": "G.O Date",
+    "ANSentDate": "AN Sent Date",
+    "DOSentDate": "DO Sent Date"
+
 
   }
 }

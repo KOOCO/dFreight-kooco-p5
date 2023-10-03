@@ -1,7 +1,9 @@
 
+using Dolphin.Freight.Accounting;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Common.Memos;
 using Dolphin.Freight.ImportExport.OceanImports;
+using Dolphin.Freight.OceanImports;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
@@ -42,6 +44,8 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
         private readonly ITradePartnerAppService _tradePartnerAppService;
         private readonly IPortsManagementAppService _portsManagementAppService;
         private readonly ICurrentUser _currentUser;
+        public List<SelectListItem> ItIssuedLocationList { get; set; }
+        public List<SelectListItem> RailCodeList { get; set; }
         public CreateMblModel( IOceanImportMblAppService oceanImportMblAppService,IOceanImportHblAppService oceanImportHblAppService, ISysCodeAppService sysCodeAppService, IPortsManagementAppService portsManagementAppService, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService, ICurrentUser currentUser, IMemoAppService memoAppService)
         {
             _oceanImportMblAppService = oceanImportMblAppService;
@@ -69,6 +73,8 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             await FillSubstationAsync();
             await FillTradePartnerAsync();
             await FillPortAsync();
+            ItIssuedLocationList = GetItIssuedLocationSelectList();
+            RailCodeList = GetRailCodeSelectList();
         }
         public async Task<JsonResult> OnPostAsync()
         {
@@ -138,6 +144,34 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
                                    .ToList();
         }
         #endregion
+        private List<SelectListItem> GetItIssuedLocationSelectList()
+        {
+            var enumValues = Enum.GetValues(typeof(ItIssuedLocation))
+                                  .Cast<ItIssuedLocation>()
+                                  .Select(e => new SelectListItem
+                                  {
+                                      Text = L["Enum:ItIssuedLocation." + e.ToString()],
+                                      Value = e.ToString(),
+
+                                  })
+                                  .ToList();
+
+            return enumValues;
+        }
+        private List<SelectListItem> GetRailCodeSelectList()
+        {
+            var enumValues = Enum.GetValues(typeof(RailCode))
+                                  .Cast<RailCode>()
+                                  .Select(e => new SelectListItem
+                                  {
+                                      Text = L["Enum:RailCode." + e.ToString()],
+                                      Value = e.ToString(),
+
+                                  })
+                                  .ToList();
+
+            return enumValues;
+        }
     }
 }
 
