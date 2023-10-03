@@ -696,5 +696,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
     
      
         public string CustomDoc { get; set; }
+        public DateTime? Available { get; set; }
     }
 }

@@ -86,10 +86,10 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             Id = mbl.Id;
             if (AddHbl == 1)
             {
-                if (OceanImportHbl.IsCreateBySystem)
-                {
-                    OceanImportHbl.HblNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "OceanImportHbl_HblNo" });
-                }
+                //if (OceanImportHbl.IsCreateBySystem)
+                //{
+                //    OceanImportHbl.HblNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "OceanImportHbl_HblNo" });
+                //}
                 QueryDto query  = new QueryDto();
                 query.QueryType = "CardColorId";
                 var syscodes = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(query);

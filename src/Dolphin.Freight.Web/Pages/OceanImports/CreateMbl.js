@@ -2,6 +2,24 @@
     var l = abp.localization.getResource('Freight');
 
     $(document).ready(function () {
+        updateRequiredAttribute();
+
+        $('#OceanImportHbl_IsfByThirdParty').change(function () {
+            updateRequiredAttribute();
+        });
+        $('#OceanImportHbl_IsfNo').change(function () {
+            updateRequiredAttribute();
+        });
+        function updateRequiredAttribute() {
+            var isfByThirdParty = $('#OceanImportHbl_IsfByThirdParty').prop('checked');
+            var isfNo = $('#OceanImportHbl_IsfNo').val();
+
+            if (isfByThirdParty || isfNo) {
+                $('#OceanImportHbl_AmsNo').prop('required', true);
+            } else {
+                $('#OceanImportHbl_AmsNo').prop('required', false);
+            }
+        }
         const ids = [
             "OceanImportMbl_PostDate",
             "OceanImportMbl_PolEtd",

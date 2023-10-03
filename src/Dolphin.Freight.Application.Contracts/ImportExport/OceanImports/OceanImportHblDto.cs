@@ -105,7 +105,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public Guid? AgentId { get; set; }
         public string AgentName { get; set; }
-        [Required]
+     
         public string AmsNo { get; set; }
         public string TruckerName { get; set; }
         public string CyCfsLocationName { get; set; }
@@ -344,7 +344,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 目的地鐵路ID
         /// </summary>
-        public Guid? RailwayCodeId { get; set; }
+        public RailCode? RailwayCodeId { get; set; }
         /// <summary>
         /// 預計最終交付時間
         /// </summary>
@@ -421,8 +421,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string Package { get; set; }
         public string Weight { get; set; }
         public string Measurement { get; set; }
+       
 
-        
         /// <summary>
         /// ISF號碼
         /// </summary>
@@ -456,6 +456,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string GroupComm { get; set; }
         public string LineCode { get; set; }
         public string CustomDoc { get; set; }
-
+        public DateTime? Available { get; set; }
+        public string SubBlNo { get; set; }
+        public int GetHideCheck()
+        {
+            return (SubBlNo == null && IsEcommerce) ? 1 : 0;
+        }
     }
 }

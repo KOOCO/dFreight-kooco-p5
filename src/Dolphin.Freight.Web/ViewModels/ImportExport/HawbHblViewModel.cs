@@ -83,5 +83,6 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
         }
         public string Title { get; set; }
         public string CurrentHawbNo { get; set; }
+
     }
 }

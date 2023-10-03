@@ -29,7 +29,7 @@
 
     <script type="text/javascript">$(document).ready(function () {
             var l = abp.localization.getResource('Freight');
-
+             
              $('#OceanImportMbl_IsOblReceived').change(function() {
             if(this.checked) {
                 // Checkbox is checked, set OblReceivedDate to current date time
@@ -555,12 +555,12 @@
                         <abp-card-body class="collapse show customForm" id="hblDiv">
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <label for="0ceanImportHbl_HblNo" class="form-label">@L["HblNo"] <input type="checkbox" name="OceanImportHbl.IsCreateBySystem" id="OceanImportHbl_IsCreateBySystem" value="true" checked /></label>
-                                    <input type="text" name="OceanImportHbl.HblNo" class="form-control" id="OceanImportHbl_HblNo" disabled />
+                                    <label for="0ceanImportHbl_HblNo" class="form-label">@L["HblNo"] *</label>
+                                    <abp-input suppress-label asp-for="OceanImportHbl.HblNo"   />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                       <label for="oceanImportHbl_AmsNo" class="form-label">@L["AmsNo"] *</label>
-                                    <abp-input suppress-label asp-for="OceanImportHbl.AmsNo" required />
+                                    <abp-input suppress-label asp-for="OceanImportHbl.AmsNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanImportHbl.IsfNo" />

@@ -366,7 +366,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public bool IsLocked { get; set; }
         public bool IsCreateBySystem { get; set; }
-        [Required]
+       
         public string AmsNo { get; set; }
         /// <summary>
         /// ISF號碼
