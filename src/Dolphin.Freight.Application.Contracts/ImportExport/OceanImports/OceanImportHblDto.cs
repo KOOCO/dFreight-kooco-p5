@@ -1,4 +1,6 @@
-﻿using Dolphin.Freight.ImportExport.Containers;
+﻿using Dolphin.Freight.AirImports;
+using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.OceanImports;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -103,7 +105,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public Guid? AgentId { get; set; }
         public string AgentName { get; set; }
-        [Required]
+     
         public string AmsNo { get; set; }
         public string TruckerName { get; set; }
         public string CyCfsLocationName { get; set; }
@@ -342,7 +344,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 目的地鐵路ID
         /// </summary>
-        public Guid? RailwayCodeId { get; set; }
+        public RailCode? RailwayCodeId { get; set; }
         /// <summary>
         /// 預計最終交付時間
         /// </summary>
@@ -419,8 +421,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string Package { get; set; }
         public string Weight { get; set; }
         public string Measurement { get; set; }
+       
 
-        
         /// <summary>
         /// ISF號碼
         /// </summary>
@@ -429,6 +431,36 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 由第三方申報ISF
         /// </summary>
         public bool IsfByThirdParty { get; set; }
+        public bool DoorMove { get; set; }
+        public bool CClearance { get; set; }
+        public bool CHold { get; set; }
+        public bool IsOblReceived { get; set; }
+        public bool Ror { get; set; }
 
+        public DateTime? IsfMatchDate { get; set; }
+        public DateTime? Lfd { get; set; }
+        public DateTime? OblReceivedDate { get; set; }
+        public DateTime? ItDate { get; set; }
+        public DateTime? GoDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
+        public DateTime? CReleasedDate { get; set; }
+        public DateTime? EntryDocSent { get; set; }
+        public DateTime? AnDate { get; set; }
+        public DateTime? DoDate { get; set; }
+        public ItIssuedLocation? ItIssuedLocation { get; set; }
+        public FreightType? Freight { get; set; }
+        public string ItNo { get; set; }
+        public string EntryNo { get; set; }
+        public string ScNo { get; set; }
+        public string NameAccount { get; set; }
+        public string GroupComm { get; set; }
+        public string LineCode { get; set; }
+        public string CustomDoc { get; set; }
+        public DateTime? Available { get; set; }
+        public string SubBlNo { get; set; }
+        public int GetHideCheck()
+        {
+            return (SubBlNo == null && IsEcommerce) ? 1 : 0;
+        }
     }
 }

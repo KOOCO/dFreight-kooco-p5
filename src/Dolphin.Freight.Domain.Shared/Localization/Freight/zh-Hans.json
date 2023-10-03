@@ -1015,7 +1015,30 @@
     "OrDragItHere.": "在此拖放档案",
     "Display:Action": "功能",
     "Display:Creator": "建立者",
-    "Display:Type": "类别"
+    "Display:Type": "类别",
+    //Ocean Import Hbl New Fields
+    "CyCfsLocationId": "CY/CFS地点",
+    "Available": "可提柜日期",
+
+    "IsfMatchDate": "ISF Match Date",
+    "Lfd": "场内延滞免费期",
+    "ItIssuedLocation": "IT发布地点",
+    "Rail": "铁路",
+    "EntryNo": "报关号码",
+    "EntryDocSent": "报关文件已寄出",
+    "OblReceived": "OB/L Received",
+    "Ror": "ROR",
+    "FreightReleased": "已放货",
+    "DoorDeliveryATA": "已送货到府",
+    "DoorMove": "送货到府",
+    "CClearance": "海关清关",
+    "CHold": "海关扣留",
+    "CReleasedDate": "C. Released Date",
+    "ExpressBl": "快速提单",
+    "ExpiryDate": "期日",
+    "GoDate": "出闸日期",
+    "ANSentDate": "AN寄出日期",
+    "DOSentDate": "DO寄出日期"
 
 
   }

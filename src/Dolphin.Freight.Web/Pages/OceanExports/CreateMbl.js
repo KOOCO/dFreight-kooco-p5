@@ -227,6 +227,10 @@
     $("#checkHideBtn").click(function () {
         initHideBtn();
     });
+    initHideHblBtn();
+    $("#checkHideHblBtn").click(function () {
+        initHideHblBtn();
+    });
     initReasonStatus();
     initHReasonStatus();
     $("#OceanExportMbl_IsCanceled").change(function () {
@@ -307,6 +311,21 @@ function initHideBtn() {
         $("#hideLi").show();
         $("#showLi").hide();
         $("#isHide").val(1);
+    }
+
+}
+function initHideHblBtn() {
+    var isHide = $("#isHideHbl").val();
+    if (isHide == 1) {
+        $(".hideAreaHbl").hide();
+        $("#hideLiHbl").hide();
+        $("#showLiHbl").show();
+        $("#isHideHbl").val(0);
+    } else {
+        $(".hideAreaHbl").show();
+        $("#hideLiHbl").show();
+        $("#showLiHbl").hide();
+        $("#isHideHbl").val(1);
     }
 
 }
