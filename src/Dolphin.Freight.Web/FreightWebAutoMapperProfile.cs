@@ -31,6 +31,7 @@ using Volo.Abp.AutoMapper;
 using static Dolphin.Freight.Web.Pages.ReportScreen.VolumeProfileReportModel;
 using Dolphin.Freight.ReportLog;
 using static Dolphin.Freight.Web.Pages.AirImports.CreateMawbModel;
+using Dolphin.Freight.Settinngs.SysCodes;
 
 namespace Dolphin.Freight.Web;
 
@@ -67,6 +68,10 @@ public class FreightWebAutoMapperProfile : Profile
         // TradePartner Attachment
         CreateMap<Pages.Sales.TradePartner.DocumentModel.DocumentUploadViewModel, CreateUpdateTradePartnerAttachmentDto>();
 
+        // SysCode
+        CreateMap<Settings.SysCodes.SysCode, CreateUpdateSysCodeDto>();
+        CreateMap<SysCodeDto, CreateUpdateSysCodeDto>();
+        CreateMap<CreateUpdateSysCodeDto, Settings.SysCodes.SysCode>();
 
         // ContactPerson
         CreateMap<Pages.Sales.TradePartner.ModalWithCreateContactPersonModel.CreateContactPersonViewModel, CreateUpdateContactPersonDto>();

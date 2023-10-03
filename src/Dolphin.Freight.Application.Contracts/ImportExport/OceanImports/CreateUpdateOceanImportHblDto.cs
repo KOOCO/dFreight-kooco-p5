@@ -199,7 +199,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 信用狀編號
         /// </summary>
         public string LcNo { get; set; }
-        public int PackageNo { get; set; }
+        public int? PackageNo { get; set; }
         public double? PackageWeight { get; set; }
         public double? PackageMeasurement { get; set; }
         /// <summary>
@@ -355,7 +355,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 0：集裝箱總數，1：手動輸入總數
         /// </summary>
-        public int SurplusType { get; set; }
+        public int? SurplusType { get; set; }
         public string PoNo { get; set; }
         /// <summary>
         /// 是否鎖定

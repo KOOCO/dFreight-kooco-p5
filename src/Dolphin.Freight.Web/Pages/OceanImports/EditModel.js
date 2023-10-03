@@ -90,5 +90,15 @@ var EditModelScript = {
                 });
                 break;
         }
+    },
+
+    RextoHexColorCode: function (rgb) {
+        var result = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/.exec(rgb);
+        if (result) {
+            return '#' +
+                (1 << 24 | parseInt(result[1]) << 16 | parseInt(result[2]) << 8 | parseInt(result[3])).toString(16).slice(1).toUpperCase();
+        } else {
+            return undefined;
+        }
     }
 }
