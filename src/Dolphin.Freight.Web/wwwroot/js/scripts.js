@@ -456,7 +456,15 @@ function setDateTimeforCards(card) {
                     "OceanImportHbl_EntryDocSent",
                     "OceanImportHbl_DoorDeliveryATA",
                 ];
+                debugger;
+                if ($("#OceanImportHbl_IsRailwayCode").val() == "true") {
 
+                    $('#OceanImportHbl_RailwayCodeId').prop('disabled', false);
+                }
+                if ($("#OceanImportHbl_IsOblReceived").val() == "true") {
+
+                    $('#OceanImportHbl_OblReceivedDate').prop('disabled', false);
+                }
                 OceanImportids.forEach(function (id) {
                     let dateElem = $('#' + id);
 

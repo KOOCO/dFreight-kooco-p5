@@ -311,6 +311,8 @@
                               $('#OceanImportHbl_IsfNo').change(function () {
                      updateRequiredAttribute();
                         });
+
+
                          $('#OceanImportHbl_IsRailwayCode').change(function() {
                         if (this.checked) {
                             $('#OceanImportHbl_RailwayCodeId').prop('disabled', false);
@@ -321,6 +323,7 @@
             }
         
         })
+        
             $('#OceanImportHbl_IsOblReceived').change(function () {
                 if (this.checked) {
                     // Checkbox is checked, set OblReceivedDate to current date time

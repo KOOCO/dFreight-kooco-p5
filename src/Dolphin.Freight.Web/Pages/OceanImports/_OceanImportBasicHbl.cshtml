@@ -231,7 +231,7 @@
                               </abp-row>
                             <abp-row>
                                  <abp-column size-md="_3">
-                                    <label for="0ceanImportHbl_IsRailwayCode" class="form-label">@L["Rail"] <input type="checkbox" name="OceanImportHbl.IsRailwayCode" id="OceanImportHbl_IsRailwayCode" value="true"  /></label>
+                                    <label for="0ceanImportHbl_IsRailwayCode" class="form-label">@L["Rail"] <input type="checkbox" asp-for="OceanImportHbl.IsRailwayCode" name="OceanImportHbl.IsRailwayCode" id="OceanImportHbl_IsRailwayCode"   /></label>
                                     @* @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.RailwayCodeId", AspItems =Html.GetEnumSelectList(typeof(RailCode)).ToList(), IsRequired = false, IsShowLabel = false, FieldName = "RailwayCodeId", ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.RailwayCodeId) }) *@
                                  <select disabled asp-for="@Model.OceanImportHbl.RailwayCodeId"  class="form-select form-control">
                                                                 <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
@@ -343,8 +343,8 @@
                             </abp-row>
                              <abp-row>
                                   <abp-column size-md="_3">
-                                    <label for="0ceanImportHbl_IsOblReceived" class="form-label">@L["OblReceived"] <input type="checkbox" name="OceanImportHbl.IsOblReceived" id="OceanImportHbl_IsOblReceived" value="false" /></label>
-                                    <input type="text" abp-data-datepicker="false" name="OceanImportHbl.OblReceivedDate" class="form-control" id="OceanImportHbl_OblReceivedDate" disabled />
+                                    <label for="0ceanImportHbl_IsOblReceived" class="form-label">@L["OblReceived"] <input type="checkbox" asp-for="OceanImportHbl.IsOblReceived" name="OceanImportHbl.IsOblReceived" id="OceanImportHbl_IsOblReceived"  /></label>
+                                    <input asp-for="OceanImportHbl.OblReceivedDate" type="text" abp-data-datepicker="false" name="OceanImportHbl.OblReceivedDate" class="form-control" id="OceanImportHbl_OblReceivedDate" disabled />
                                 </abp-column>
                      <abp-column size-md="_3">
                                       <label for="ceanImportHbl_Ror" class="form-label">@L["Ror"]</label>
