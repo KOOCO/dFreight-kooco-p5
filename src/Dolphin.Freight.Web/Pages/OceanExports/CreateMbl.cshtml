@@ -42,7 +42,65 @@
             setFilteredDropdown();
             
             var l = abp.localization.getResource('Freight');
-            
+                    $('#OceanImportMbl_DelId').change(function () {
+                debugger;
+                var selectedValue = $(this).val();
+                if ($('#OceanImportHbl_DelId').val() == null || $('#OceanImportHbl_DelId').val() == '') {
+                    $('#OceanImportHbl_DelId').val(selectedValue);
+
+
+                    // Trigger the change event to update the dropdown visually
+                    $('#OceanImportHbl_DelId').trigger('change');
+                }
+               
+            });
+            $('#OceanImportMbl_DelEta').on('change', function () {
+                var newValue = $(this).val();
+
+                $('#OceanImportHbl_DelEta').val(newValue);
+
+                // Call your other functions or perform desired actions here
+            });
+                 $('#OceanImportMbl_ShipModeId').on('change', function () {
+                var newValue = $(this).val();
+
+                $('#OceanImportHbl_ShipModeId').val(newValue);
+                 $('#OceanImportHbl_ShipModeId').trigger('change');
+
+                // Call your other functions or perform desired actions here
+            });   
+            $('#OceanImportMbl_FreightTermId').on('change', function () {
+                var newValue = $(this).val();
+                debugger;
+                $('#OceanImportHbl_FreightTermForBuyerId').val(newValue);
+                 $('#OceanImportHbl_FreightTermForBuyerId').trigger('change');
+
+                // Call your other functions or perform desired actions here
+            });
+            $('#OceanImportMbl_SvcTermFromId').on('change', function () {
+                var newValue = $(this).val();
+                debugger;
+                $('#OceanImportHbl_SvcTermFromId').val(newValue);
+                 $('#OceanImportHbl_SvcTermFromId').trigger('change');
+
+                // Call your other functions or perform desired actions here
+            });
+             $('#OceanImportMbl_SvcTermToId').on('change', function () {
+                var newValue = $(this).val();
+                debugger;
+                $('#OceanImportHbl_SvcTermToId').val(newValue);
+                 $('#OceanImportHbl_SvcTermToId').trigger('change');
+
+                // Call your other functions or perform desired actions here
+            });
+                  $('#OceanImportMbl_ForwardingAgentId').on('change', function () {
+                var newValue = $(this).val();
+                debugger;
+                $('#OceanImportHbl_AgentId').val(newValue);
+                 $('#OceanImportHbl_AgentId').trigger('change');
+
+                // Call your other functions or perform desired actions here
+            });
             
             $("#addHBtn").click(function () {
                 if ($('#mblDiv')[0].classList.contains('show')) {
