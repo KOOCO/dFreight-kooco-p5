@@ -196,7 +196,7 @@
                 trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
                 trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
-                trhtml = trhtml + "<td><i class='fa fa-calculator' id='fCalc_" + trindex + "' onclick='EditModel2.openPopUp()' style='font-size: 24px; cursor: pointer;'></i></td>"
+                trhtml = trhtml + "<td><i class='fa fa-calculator' id='fCalc_" + trindex + "' onclick='EditModel2.openPopUp(" + trindex + ")' style='font-size: 24px; cursor: pointer;'></i></td>"
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
@@ -1247,7 +1247,7 @@
 </div>
 
 <div class="modal fade" id="CreateModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Create New Item</h5>
@@ -1258,32 +1258,49 @@
             <div class="modal-body">
                 <div class="portlet-tool">
                     <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
-                        <button type="button" class="btn btn-outline-success fa fa-plus" onclick="createNew()" id="newBtn"></button>
-                        <button type="button" class="btn btn-outline-danger fa fa-trash" onclick="deleteMbls()" id="deleteBtn" disabled></button>
+                        <button type="button" class="btn btn-outline-success fa fa-plus" onclick="EditModel2.createNewDimension()" id="newDimensionBtn"></button>
+                        <button type="button" class="btn btn-outline-danger fa fa-trash" onclick="EditModel2.deleteDimension()" id="deleteDimensionBtn" disabled></button>
                     </div>
                 </div>
 
-                <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                <table class="table-responsive" width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
                     <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
                         <th width="5%"><input type="checkbox" name="dimensionCheckbox" /></th>
                         <th width="20%">@L["Length"]</th>
                         <th width="15%">@L["Width"]</th>
                         <th width="15%">@L["Height"]</th>
                         <th width="15%">@L["PCS"]</th>
-                        <th colspan="2" width="30%">@L["Volume"]</th>
-                        <th colspan="2" width="30%">@L["Measurement"]</th>
+                        <th colspan="2" width="20%">@L["Volume"]</th>
+                        <th colspan="2" width="20%">@L["Measurement"]</th>
                     </tr>
-                    <tr>
-                        <td>KGS</td>
-                        <td>LBS</td>
-                        <td>CBM</td>
-                        <td>CFT</td>
+                    <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                        <th rowspan="2"></th>
+                        <th rowspan="2"></th>
+                        <th rowspan="2"></th>
+                        <th rowspan="2"></th>
+                        <th rowspan="2"></th>
+                        <th width="10%">@L["KG"]</th>
+                        <th width="10%">@L["LB"]</th>
+                        <th width="10%">@L["CBM"]</th>
+                        <th width="10%">@L["CFT"]</th>
                     </tr>
+                    <tbody id="popuptrtbody">
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" align="right"><strong>Total:</strong></td>
+                            <td id="totalPCS">0</td>
+                            <td id="totalKG">0.00</td>
+                            <td id="totalLB">0.00</td>
+                            <td id="totalCBM">0.00</td>
+                            <td id="totalCFT">0.00</td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="$('#CreateModal').modal('hide')" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Apply</button>
+                <button type="button" class="btn btn-primary" id="applyDimensions">Apply</button>
             </div>
         </div>
     </div>
