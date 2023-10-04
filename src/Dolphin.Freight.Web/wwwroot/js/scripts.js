@@ -484,9 +484,13 @@ function updateRequiredAttribute() {
     var isfByThirdParty = $('#OceanImportHbl_IsfByThirdParty').prop('checked');
     var isfNo = $('#OceanImportHbl_IsfNo').val();
 
+
     if (isfByThirdParty || isfNo) {
         $('#OceanImportHbl_AmsNo').prop('required', true);
-        $("#OceanImportHbl_AmsNo-error").text("AMS No. is mandatory for creating ISF");
+        
+        if ($('#OceanImportHbl_AmsNo').val() == '') {
+            $("#OceanImportHbl_AmsNo-error").text("AMS No. is mandatory for creating ISF");
+        }
     } else {
         $('#OceanImportHbl_AmsNo').prop('required', false);
         $("#OceanImportHbl_AmsNo-error").text("");

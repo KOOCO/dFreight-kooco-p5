@@ -295,7 +295,15 @@
                         setDateTimeforCards('OIHBL');
                        
                           updateRequiredAttribute();
-
+                        $('#OceanImportHbl_AmsNo').change(function () {
+                         if ($('#OceanImportHbl_AmsNo').val() == '') {
+            $("#OceanImportHbl_AmsNo-error").text("AMS No. is mandatory for creating ISF");
+        }else{
+        
+        $("#OceanImportHbl_AmsNo-error").text("");
+        }
+                        
+                        });
                          $('#OceanImportHbl_IsfByThirdParty').change(function () {
                               debugger;
                         updateRequiredAttribute();
