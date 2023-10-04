@@ -185,7 +185,6 @@
             addTrTag("", "", "", "", "", "", "", "", "", '@Model.OceanImportMbl.Id');
         }
         function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, mblId) {
-            debugger;
             getHblCheckbox(mblId, trindex, function (checkboxesHTML, headersHTML) {
                 if (!$('input[id^="hblHeaders_"]').length) {
                     $('#trttable > tbody > tr:first > th:eq(9)').after(headersHTML);
@@ -202,7 +201,7 @@
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
                 trhtml = trhtml + "<td><input type='checkbox' id='selectAllAssignContainerCheckbox_" + trindex + "' style='cursor: pointer;'></td>"
-                trhtml = trhtml + "<td>" + checkboxesHTML + "</td>"
+                trhtml = trhtml + checkboxesHTML
                 trhtml = trhtml + "</tr>"
                 trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
                 trhtml = trhtml + "</tr>"
@@ -819,7 +818,12 @@
                                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#exampleModal2">Clean Truck Fundn</a>
                                             </div>
                                         </div>
-                                        <abp-button class="btn btn-outline-info me-md-2" type="button" id="assignContainerBtn" style="display: inline-flex;float: right;">Assign Container</abp-button>
+                                        <abp-button class="btn btn-info me-md-2" type="button" id="assignContainerBtn" onclick="EditModel2.showHideHBLCheckboxes()" style="display: inline-flex;float: right;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                <path d="M6.69767 10.3721H0V15.3954H6.69767V18.8605L13.9535 12.6047L6.69767 6.34885V10.3721Z" fill="white" />
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M24 22.093H9.48837V17.7442L15.186 12.6047L9.48837 7.46512V2H18.4186L24 7.5814V22.093ZM23.5814 8.0814H18V2.5L23.5814 8.0814Z" fill="white" />
+                                            </svg>
+                                        </abp-button>
                                     </div>
                                     <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;" id="trttable">
                                         <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">

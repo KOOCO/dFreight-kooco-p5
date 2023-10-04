@@ -109,12 +109,11 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
 
                         OceanImportHbl.CardColorId = newSysCode.Id;
                     }
-                    
                     await _oceanImportHblAppService.UpdateAsync(OceanImportHbl.Id, OceanImportHbl);
                 }
                 else
                 {
-                    if (OceanImportHbl.CardColorId is null && OceanImportHbl.CardColorId == Guid.Empty)
+                    if (OceanImportHbl.CardColorId is null)
                     {
                         SysCode sysCodeDto = new();
                         sysCodeDto.CodeType = "CardColorId";

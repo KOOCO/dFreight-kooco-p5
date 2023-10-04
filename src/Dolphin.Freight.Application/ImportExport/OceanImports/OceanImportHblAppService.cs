@@ -170,7 +170,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     if (dto.HblShipperId != null) dto.HblShipperName = tdictionary[dto.HblShipperId.Value];
                     if (dto.HblConsigneeId != null) dto.HblConsigneeName = tdictionary[dto.HblConsigneeId.Value];
                     if (mdictionary[dto.MblId].MblCarrierId != null) dto.MblCarrierName = tdictionary[mdictionary[dto.MblId].MblCarrierId.Value];
-                    if (mdictionary[dto.MblId].ShipModeId != null) dto.shipModeName = tdictionary[mdictionary[dto.MblId].ShipModeId.Value];
+                    if (mdictionary[dto.MblId].ShipModeId != null) dto.shipModeName = dictionary[mdictionary[dto.MblId].ShipModeId.Value];
 
                     //港口
                     if (dto.PodId != null) dto.PodName = pdictionary[dto.PodId.Value];

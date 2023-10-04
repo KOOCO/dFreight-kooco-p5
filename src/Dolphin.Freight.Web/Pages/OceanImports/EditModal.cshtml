@@ -236,7 +236,6 @@
                         var backGroundColor = $('#hblCardHeader').css('background-color');
                         var hexColor = EditModelScript.RextoHexColorCode(backGroundColor);
                         $('#hCardColorValue').val(hexColor);
-                        debugger;
                         if (hawbId != '00000000-0000-0000-0000-000000000000'){
                             dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardById(hawbId).then(function (res) {
                                 var cardColorId = res.cardColorId;
