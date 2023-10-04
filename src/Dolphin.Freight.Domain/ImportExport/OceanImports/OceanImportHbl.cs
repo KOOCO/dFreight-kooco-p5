@@ -434,15 +434,15 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// W/O號碼
         /// </summary>
         public string WoNo { get; set; }
+
         /// <summary>
         /// 運輸類別ID
         /// </summary>
-        public Guid? ShipTypeId { get; set; }
+        public ShipType? ShipTypeId { get; set; }
         /// <summary>
         /// 運輸類別
         /// </summary>
-        [ForeignKey("ShipTypeId")]
-        public virtual SysCode ShipType { get; set; }
+
         /// <summary>
         /// 國貿條規ID
         /// </summary>
@@ -695,7 +695,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string EntryNo { get; set; }
     
      
-        public string CustomDoc { get; set; }
+        public bool CustomDoc { get; set; }
         public DateTime? Available { get; set; }
     }
 }

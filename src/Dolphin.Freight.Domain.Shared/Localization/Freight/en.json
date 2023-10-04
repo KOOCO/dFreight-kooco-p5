@@ -1144,6 +1144,11 @@
     "Enum:TPType.Vendor": "VENDOR",
     "Enum:TPType.Warehouse": "WAREHOUSE",
     "Enum:TPType.FBAWarehouse": "FBA WAREHOUSE",
+    //
+    "Enum:ShipType.Normal": "Normal",
+    "Enum:ShipType.Ts": "T/S",
+    "Enum:ShipType.Sw": "S/W",
+
 
     // 通用文字
     "------拜託下面這個不要亂改------": "------改了可能很多東西會壞掉------",
@@ -1548,13 +1553,14 @@
     "DoorDeliveryATA": "Door Delivered",
     "DoorMove": "Door Move",
     "CClearance": "C.Clearance",
-    "CHold": "C.CHold",
+    "CHold": "C.Hold",
     "CReleasedDate": "C. Released Date",
     "ExpressBl": "Express B/L",
     "ExpiryDate": "Expiry Date",
     "GoDate": "G.O Date",
     "ANSentDate": "AN Sent Date",
-    "DOSentDate": "DO Sent Date"
+    "DOSentDate": "DO Sent Date",
+    "HblSalesTypeId": "Sales Type"
 
 
   }

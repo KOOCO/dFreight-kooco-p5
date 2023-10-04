@@ -320,7 +320,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 運輸類別ID
         /// </summary>
-        public Guid? ShipTypeId { get; set; }
+        public ShipType? ShipTypeId { get; set; }
         /// <summary>
         /// 國貿條規ID
         /// </summary>
@@ -455,7 +455,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string NameAccount { get; set; }
         public string GroupComm { get; set; }
         public string LineCode { get; set; }
-        public string CustomDoc { get; set; }
+        public bool CustomDoc { get; set; }
         public DateTime? Available { get; set; }
         public string SubBlNo { get; set; }
         public int GetHideCheck()
