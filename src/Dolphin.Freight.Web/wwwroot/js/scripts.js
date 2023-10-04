@@ -423,16 +423,17 @@ function setDateTimeforCards(card) {
             case 'OIHBL':
 
                 var hblId = $('#OceanImportHBL').val();
-                dolphin.freight.importExport.oceanImports.oceanImportHbl.get(hblId).done(function (res) {
-                    if (res.isLocked) {
-                        $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
-                        $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
-                    } else {
-                        $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
-                        $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
-                    }
-                });
-
+                if (hblId != '00000000-0000-0000-0000-000000000000') {
+                    dolphin.freight.importExport.oceanImports.oceanImportHbl.get(hblId).done(function (res) {
+                        if (res.isLocked) {
+                            $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+                            $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                        } else {
+                            $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                            $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                        }
+                    });
+                }
                 const OceanImportids = [
                     "OceanImportHbl_PorEtd",
                     "OceanImportHbl_PodEta",
@@ -469,6 +470,16 @@ function setDateTimeforCards(card) {
             default:
         }
     }, 1000);
+}
+function updateRequiredAttribute() {
+    var isfByThirdParty = $('#OceanImportHbl_IsfByThirdParty').prop('checked');
+    var isfNo = $('#OceanImportHbl_IsfNo').val();
+
+    if (isfByThirdParty || isfNo) {
+        $('#OceanImportHbl_AmsNo').prop('required', true);
+    } else {
+        $('#OceanImportHbl_AmsNo').prop('required', false);
+    }
 }
 function DangerousGoods(url) {
     myWindow = window.open(url, "Dangerous Goods", 'width=1200,height=800')

@@ -43,6 +43,19 @@
 
         $(document).ready(function () {
              $('#cardSettingArea').hide();
+              if("@Model.OceanImportMbl.IsOblReceived"=="True")
+            {
+                debugger;
+            $('#OceanImportMbl_OblReceivedDate').prop('disabled', false);
+             $('#OceanImportMbl_IsOblReceived').prop('checked', true);
+            }
+            if("@Model.OceanImportMbl.IsReleased"=="True")
+            {
+                debugger;
+                $('#OceanImportMbl_MblReleaseDate').prop('disabled', false);
+                 $('#OceanImportMbl_IsReleased').prop('checked', true);
+
+            }
 
             const ids = [
                 "OceanImportMbl_PostDate",
@@ -78,16 +91,7 @@
                     dateElem.val(currentVal.replace('T', ' '));
                 }
             });
-            if("@Model.OceanImportMbl.IsOblReceived"=="True")
-            {
-                debugger;
-            $('#OceanImportMbl_OblReceivedDate').prop('disabled', false);
-            }
-            if("@Model.OceanImportMbl.IsReleased"=="True")
-            {
-                debugger;
-                $('#OceanImportMbl_MblReleaseDate').prop('disabled', false);
-            }
+           
               $('#OceanImportMbl_IsOblReceived').on('change', function (e, val) { 
                 if (this.checked) {
                     $('#OceanImportMbl_OblReceivedDate').prop('disabled', false);
@@ -289,7 +293,7 @@
 
                          $('#OceanImportHbl_IsfByThirdParty').change(function () {
                               debugger;
-        updateRequiredAttribute();
+                        updateRequiredAttribute();
                          });
                 $('#OceanImportHbl_IsfNo').change(function () {
         updateRequiredAttribute();
@@ -939,11 +943,11 @@
             <input type="hidden" name="OceanImportMbl.OblTypeId" id="mOblTypeId" value="@Model.OceanImportMbl.OblTypeId" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsOblReceived" class="form-label">@L["IsOblReceived"]<input type="checkbox" asp-for="OceanImportMbl.IsOblReceived" name="OceanImportMbl.IsOblReceived" id="OceanImportMbl_IsOblReceived" value="true" /></label>
+                                    <label for="OceanImportMbl_IsOblReceived" class="form-label">@L["IsOblReceived"]<input type="checkbox"  name="OceanImportMbl.IsOblReceived" id="OceanImportMbl_IsOblReceived" value="true" /></label>
                                     <abp-input asp-for="OceanImportMbl.OblReceivedDate" type="text"  abp-data-datetimepicker="false"  suppress-label disabled />
                                 </abp-column>
                                 <abp-column size-md="_3">
-            <label for="OceanImportMbl_IsReleased" class="form-label">@L["IsReleased"]<input type="checkbox" asp-for="OceanImportMbl.IsReleased" name=" OceanImportMbl.IsReleased" id="OceanImportMbl_IsReleased" value="true" /></label>
+            <label for="OceanImportMbl_IsReleased" class="form-label">@L["IsReleased"]<input type="checkbox"  name="OceanImportMbl.IsReleased" id="OceanImportMbl_IsReleased" value="true" /></label>
                                     <abp-input asp-for="OceanImportMbl.MblReleaseDate" type="text" abp-data-datetimepicker="false"  suppress-label disabled />
                                 </abp-column>
                             </abp-row>
