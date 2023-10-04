@@ -70,6 +70,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
 
             OceanImportMbl.ShipModeId = shipModeLookup.Where(x => x.CodeValue == "FCL").Select(x => x.Id).FirstOrDefault();
             OceanImportHbl.ShipModeId = OceanImportMbl.ShipModeId;
+            OceanImportHbl.ShipTypeId = Freight.AirImports.ShipType.Normal;
             await FillSubstationAsync();
             await FillTradePartnerAsync();
             await FillPortAsync();
