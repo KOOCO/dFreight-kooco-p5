@@ -333,7 +333,7 @@
     "ItNo": "IT号码",
     "ItDate": "IT日期",
     "ItLocation": "IT发布地点",
-    "IsEcommerce": "电子商务",
+    "IsEcommerce": "E-Commerce",
     "MblShipperId": "託运人",
     "MblConsigneeId": "收货人",
     "MblCustomerId": "客户",
@@ -345,7 +345,7 @@
     "CompanyId": "航空公司",
     "PackageCode": "代码",
     "PackageName": "名称",
-    "AmsNo": "AMS代码",
+    "AmsNo": "AMS号码",
     "AmsNoId": "AMS代码",
     "EManifestNo": "eManifest代码",
     "EManifestNoId": "eManifest代码",
@@ -1039,7 +1039,8 @@
     "GoDate": "出闸日期",
     "ANSentDate": "AN寄出日期",
     "DOSentDate": "DO寄出日期",
-   
+    "ShipTypeId": "业务推荐人"
+
 
 
   }
