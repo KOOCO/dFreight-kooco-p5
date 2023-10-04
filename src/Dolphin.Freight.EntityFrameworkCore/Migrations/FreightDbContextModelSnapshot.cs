@@ -1795,7 +1795,6 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<string>("WtVal")
                         .HasColumnType("nvarchar(max)");
-                    b.Property<string>("ManifestNatureAndQuantityOfGoods")
 
                     b.HasKey("Id");
 
@@ -4281,6 +4280,7 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<bool>("CustomDoc")
                         .HasColumnType("bit");
+
                     b.Property<string>("CustomerRefNo")
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
@@ -4605,8 +4605,6 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("ShipModeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ShipTypeId")
-                        .HasColumnType("uniqueidentifier");
                     b.Property<int?>("ShipTypeId")
                         .HasColumnType("int");
 
