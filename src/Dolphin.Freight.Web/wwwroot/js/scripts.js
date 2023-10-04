@@ -486,8 +486,10 @@ function updateRequiredAttribute() {
 
     if (isfByThirdParty || isfNo) {
         $('#OceanImportHbl_AmsNo').prop('required', true);
+        $("#OceanImportHbl_AmsNo-error").text("AMS No. is mandatory for creating ISF");
     } else {
         $('#OceanImportHbl_AmsNo').prop('required', false);
+        $("#OceanImportHbl_AmsNo-error").text("");
     }
 }
 function DangerousGoods(url) {

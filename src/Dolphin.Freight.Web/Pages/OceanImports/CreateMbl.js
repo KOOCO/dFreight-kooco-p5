@@ -15,9 +15,11 @@
             var isfNo = $('#OceanImportHbl_IsfNo').val();
 
             if (isfByThirdParty || isfNo) {
+                $("#OceanImportHbl_AmsNo-error").text("AMS No. is mandatory for creating ISF");
                 $('#OceanImportHbl_AmsNo').prop('required', true);
             } else {
                 $('#OceanImportHbl_AmsNo').prop('required', false);
+                $("#OceanImportHbl_AmsNo-error").text("");
             }
         }
         const ids = [

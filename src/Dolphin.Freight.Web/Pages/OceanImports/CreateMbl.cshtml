@@ -575,7 +575,9 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                       <label for="oceanImportHbl_AmsNo" class="form-label">@L["AmsNo"] *</label>
-                                    <abp-input suppress-label asp-for="OceanImportHbl.AmsNo" />
+                                  <input class="form-control" suppress-label asp-for="OceanImportHbl.AmsNo" validation-message="AMSNoIsRequired"  />
+                                  <span class="text-danger field-validation-error" data-valmsg-for="OceanImportHbl.AmsNo" data-valmsg-replace="true"><span id="OceanImportHbl_AmsNo-error" class=""></span></span>
+
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanImportHbl.IsfNo" />
