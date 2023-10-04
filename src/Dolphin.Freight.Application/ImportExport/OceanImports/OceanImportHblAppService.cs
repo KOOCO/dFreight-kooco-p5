@@ -45,6 +45,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly ICurrentUser _currentUser;
         private readonly IRepository<Container, Guid> _containerRepository;
         private readonly IRepository<Country, Guid> _countryRepository;
+
         public OceanImportHblAppService(IRepository<OceanImportHbl, Guid> repository, IRepository<Container, Guid> containerRepository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanImportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<PortsManagement, Guid> portsManagementRepository, ICurrentUser currentUser, IRepository<Country, Guid> countryRepository)
             : base(repository)
         {
@@ -170,7 +171,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     if (dto.HblShipperId != null) dto.HblShipperName = tdictionary[dto.HblShipperId.Value];
                     if (dto.HblConsigneeId != null) dto.HblConsigneeName = tdictionary[dto.HblConsigneeId.Value];
                     if (mdictionary[dto.MblId].MblCarrierId != null) dto.MblCarrierName = tdictionary[mdictionary[dto.MblId].MblCarrierId.Value];
-                    if (mdictionary[dto.MblId].ShipModeId != null) dto.shipModeName = tdictionary[mdictionary[dto.MblId].ShipModeId.Value];
+                    if (mdictionary[dto.MblId].ShipModeId != null) dto.shipModeName = dictionary[mdictionary[dto.MblId].ShipModeId.Value];
 
                     //港口
                     if (dto.PodId != null) dto.PodName = pdictionary[dto.PodId.Value];
@@ -254,6 +255,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         {
             var data = await _repository.GetListAsync(f => f.MblId == Id);
             var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
+            var sysCodes = await _sysCodeRepository.GetListAsync();
 
             if (!isAsc)
             {
@@ -281,12 +283,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
             }
 
-
-
             var retVal = ObjectMapper.Map<List<OceanImportHbl>, List<OceanImportHblDto>>(data);
             foreach (var item in retVal)
             {
-
                 if (item.HblShipperId != null)
                 {
                     var shipper = tradePartners.Where(w => w.Id == item.HblShipperId).FirstOrDefault();
@@ -299,7 +298,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     item.HblConsigneeName = consignee.TPName;
                 }
 
-
+                if (item.CardColorId is not null)
+                {
+                    var colorValue = sysCodes.Where(w => w.Id == item.CardColorId).FirstOrDefault();
+                    item.CardColorValue = colorValue.CodeValue;
+                }
             }
             return retVal;
         }
@@ -543,6 +546,31 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 Hbl.IsLocked = IsLock;
 
                 await _repository.UpdateAsync(Hbl);
+            }
+        }
+
+        public async Task SaveAssignContainerToHblAsync(OceanImportHblAppModel AppModel)
+        {
+            var Ids = AppModel.Ids;
+            var Containers = AppModel.Containers;
+
+            foreach (var Id in Ids)
+            {
+                foreach (var Container in Containers)
+                {
+                    QueryHblDto queryHblDto = new QueryHblDto() { Id = Id };
+                    var OceanImportHbl = await this.GetHblById(queryHblDto);
+
+                    if (OceanImportHbl.Id != Guid.Empty)
+                    {
+                        CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                        {
+                            ContainerNo = Container
+                        };
+
+                        await _containerRepository.InsertAsync(ObjectMapper.Map<CreateUpdateContainerDto, Container>(containerDto));
+                    }
+                }
             }
         }
     }

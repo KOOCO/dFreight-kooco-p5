@@ -554,8 +554,6 @@ function copyHawb(hawbId) {
     }, 500);
 }
 
-
-
 class CustomDateTimePicker {
     dateTimePicker(Ids, CurrentDate = false, DefaultTimeIds) {
         Ids.forEach(function (id) {

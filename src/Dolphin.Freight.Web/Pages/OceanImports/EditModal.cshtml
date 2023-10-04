@@ -257,7 +257,6 @@
         $('#hblMainCard').append('#mawbCard');
 
         function onHawbCardClick(e, hawbId) {
-            debugger;
             var element = e.currentTarget || e.target || e.srcElement;
             var hblNo = element.id.split('_')[1];
 
@@ -266,7 +265,6 @@
                 showAlert(alertConfirmation, 'Continue');
             }
             else {
-
                 var color = getComputedStyle(element.parentElement.parentElement).backgroundColor;
 
                 if (!$('#btnHawbCardCollapse_' + hblNo).attr('class').includes('collapsed')) {
@@ -382,6 +380,19 @@
     });
 
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white');
+                        var backGroundColor = $('#hblCardHeader').css('background-color');
+                        var hexColor = EditModelScript.RextoHexColorCode(backGroundColor);
+                        $('#hCardColorValue').val(hexColor);
+                        if (hawbId != '00000000-0000-0000-0000-000000000000'){
+                            dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardById(hawbId).then(function (res) {
+                                var cardColorId = res.cardColorId;
+                                $('#hCardColorId').val(cardColorId);
+                            });
+                        } else if (hawbId == '00000000-0000-0000-0000-000000000000'){
+                            $('#hCardColorId').val('');
+                        } else {
+                            $('#hCardColorId').val('');
+                        }
                         Swal.clickCancel();
                     })
 
@@ -410,7 +421,6 @@
         }
 
        function createHawbCard() {
-            debugger;
              $('#cardSettingArea').show();
             var check='False';
             if ($('#cardCheck').prop('checked')) {
@@ -1219,6 +1229,7 @@
         <input type="hidden" name="OceanImportHbl.HDelId" id="hHDelId" value="@Model.OceanImportHbl.DelId" />
         <input type="hidden" name="OceanImportHbl.FdestId" id="hHFdestId" value="@Model.OceanImportHbl.FdestId" />
         <input type="hidden" name="OceanImportHbl.CardColorId" id="hCardColorId" value="@Model.OceanImportHbl.CardColorId" />
+        <input type="hidden" name="OceanImportHbl.CardColorValue" id="hCardColorValue" />
         <div  id="ejo" style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
            <button class="btn btn-primary me-md-2 rounded-circle" type="submit" id="saveBtn" style="width: 60px; height: 60px;">
   <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-save fa-w-14 fa-2x">
