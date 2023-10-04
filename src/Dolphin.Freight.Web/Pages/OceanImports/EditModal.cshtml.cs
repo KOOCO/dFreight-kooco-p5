@@ -100,7 +100,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
                     }
                     else
                     {
-                        SysCode sysCodeDto = new SysCode();
+                        SysCode sysCodeDto = new();
                         sysCodeDto.CodeType = "CardColorId";
                         sysCodeDto.CodeValue = OceanImportHbl.CardColorValue;
                         sysCodeDto.ShowName = OceanImportHbl.HblNo;
@@ -114,14 +114,14 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
                 }
                 else
                 {
-                    if (OceanImportHbl.CardColorId == Guid.Empty)
+                    if (OceanImportHbl.CardColorId is null && OceanImportHbl.CardColorId == Guid.Empty)
                     {
-                        SysCodeDto sysCodeDto = new SysCodeDto();
-                        sysCodeDto.Id = Guid.Empty;
+                        SysCode sysCodeDto = new();
+                        sysCodeDto.CodeType = "CardColorId";
                         sysCodeDto.CodeValue = OceanImportHbl.CardColorValue;
                         sysCodeDto.ShowName = OceanImportHbl.HblNo;
 
-                        var newSysCode = await _sysCodeAppService.CreateAsync(ObjectMapper.Map<SysCodeDto, CreateUpdateSysCodeDto>(sysCodeDto));
+                        var newSysCode = await _sysCodeAppService.CreateAsync(ObjectMapper.Map<SysCode, CreateUpdateSysCodeDto>(sysCodeDto));
 
                         OceanImportHbl.CardColorId = newSysCode.Id;
                     }
