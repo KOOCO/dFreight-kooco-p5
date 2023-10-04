@@ -424,6 +424,22 @@ function setDateTimeforCards(card) {
 
                 var hblId = $('#OceanImportHBL').val();
                 if (hblId != '00000000-0000-0000-0000-000000000000') {
+                    if ($("#OceanImportHbl_IsRailwayCode").val() == "true") {
+
+                        $('#OceanImportHbl_RailwayCodeId').prop('disabled', false);
+                    }
+                    else {
+                        $('#OceanImportHbl_RailwayCodeId').prop('disabled', true);
+
+                    }
+                    if ($("#OceanImportHbl_IsOblReceived").val() == "true") {
+
+                        $('#OceanImportHbl_OblReceivedDate').prop('disabled', false);
+                    }
+                    else {
+
+                        $('#OceanImportHbl_OblReceivedDate').prop('disabled', true);
+                    }
                     dolphin.freight.importExport.oceanImports.oceanImportHbl.get(hblId).done(function (res) {
                         if (res.isLocked) {
                             $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
@@ -457,32 +473,86 @@ function setDateTimeforCards(card) {
                     "OceanImportHbl_DoorDeliveryATA",
                 ];
                 debugger;
-                if ($("#OceanImportHbl_IsRailwayCode").val() == "true") {
+                if (hblId == '00000000-0000-0000-0000-000000000000') {
+                  
 
-                    $('#OceanImportHbl_RailwayCodeId').prop('disabled', false);
-                }
-                if ($("#OceanImportHbl_IsOblReceived").val() == "true") {
+                    OceanImportids.forEach(function (id) {
+                        let dateElem = $('#' + id);
 
-                    $('#OceanImportHbl_OblReceivedDate').prop('disabled', false);
-                }
-                OceanImportids.forEach(function (id) {
-                    let dateElem = $('#' + id);
+                        if (dateElem.length === 0) {
+                            return;
+                        }
 
-                    if (dateElem.length === 0) {
-                        return;
-                    }
+                        dateElem.removeAttr('type').datetimepicker({
+                            format: 'Y-m-d H:i',
+                            step: 15,
+                            allowInput: false
+                        });
 
-                    dateElem.removeAttr('type').datetimepicker({
-                        format: 'Y-m-d H:i',
-                        step: 15,
-                        allowInput: false
+                        let currentVal = dateElem.val();
+                        if (currentVal.includes('T')) {
+                            dateElem.val(currentVal.replace('T', ' '));
+                        }
                     });
 
-                    let currentVal = dateElem.val();
-                    if (currentVal.includes('T')) {
-                        dateElem.val(currentVal.replace('T', ' '));
+                    debugger;
+                    var selectedValue = $('#OceanImportMbl_DelId').val();
+                    if ($('#OceanImportHbl_DelId').val() == null || $('#OceanImportHbl_DelId').val() == '') {
+                        $('#OceanImportHbl_DelId').val(selectedValue);
+
+
+                        // Trigger the change event to update the dropdown visually
+                        $('#OceanImportHbl_DelId').trigger('change');
                     }
-                });
+
+
+                    if ($('#OceanImportHbl_DelEta').val() == null || $('#OceanImportHbl_DelEta').val() == '') {
+                        var newValue = $('#OceanImportMbl_DelEta').val();
+
+                        $('#OceanImportHbl_DelEta').val(newValue);
+
+                        // Call your other functions or perform desired actions here
+
+                        var newValue = $('#OceanImportMbl_ShipModeId').val();
+
+                        $('#OceanImportHbl_ShipModeId').val(newValue);
+                        $('#OceanImportHbl_ShipModeId').trigger('change');
+
+                    }
+
+                    if ($('#OceanImportHbl_FreightTermForBuyerId').val() == null || $('#OceanImportHbl_FreightTermForBuyerId').val() == '') {
+                        var newValue = $('#OceanImportMbl_FreightTermId').val();
+                        debugger;
+                        $('#OceanImportHbl_FreightTermForBuyerId').val(newValue);
+                        $('#OceanImportHbl_FreightTermForBuyerId').trigger('change');
+
+                        // Call your other functions or perform desired actions here
+                    }
+                    if ($('#OceanImportHbl_SvcTermFromId').val() == null || $('#OceanImportHbl_SvcTermFromId').val() == '') {
+                        var newValue = $('#OceanImportMbl_SvcTermFromId').val();
+                        debugger;
+                        $('#OceanImportHbl_SvcTermFromId').val(newValue);
+                        $('#OceanImportHbl_SvcTermFromId').trigger('change');
+                    }
+                    // Call your other functions or perform desired actions here
+
+                    if ($('#OceanImportHbl_SvcTermToId').val() == null || $('#OceanImportHbl_SvcTermToId').val() == '') {
+                        var newValue = $('#OceanImportMbl_SvcTermToId').val();
+                        debugger;
+                        $('#OceanImportHbl_SvcTermToId').val(newValue);
+                        $('#OceanImportHbl_SvcTermToId').trigger('change');
+                    }
+                    // Call your other functions or perform desired actions here
+
+
+                    if ($('#OceanImportHbl_AgentId').val() == null || $('#OceanImportHbl_AgentId').val() == '') {
+                        var newValue = $('#OceanImportMbl_ForwardingAgentId').val();
+                        debugger;
+                        $('#OceanImportHbl_AgentId').val(newValue);
+                        $('#OceanImportHbl_AgentId').trigger('change');
+                    }
+                    // Call your other functions or perform desired actions here
+                }
                 break;
             default:
         }
