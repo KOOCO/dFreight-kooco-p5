@@ -44,6 +44,7 @@
                 "OceanImportMbl_LatestContainerEntryDate",
                 "OceanImportMbl_PorEtd",
                 "OceanImportMbl_ItDate",
+                
           
             ];
 
@@ -65,7 +66,34 @@
                     dateElem.val(currentVal.replace('T', ' '));
                 }
             });
-            
+              $('#OceanImportMbl_IsOblReceived').on('change', function (e, val) { 
+                if (this.checked) { 
+                    $('#OceanImportMbl_OblReceivedDate').removeAttr('disabled');
+                    var currentDate = new Date();
+                    $("#OceanImportMbl_OblReceivedDate").datetimepicker("setDate", currentDate.toISOString().slice(0, 19).replace("T", " "));
+                
+                } 
+                else{
+                    $('#OceanImportMbl_OblReceivedDate').attr('disabled', 'disabled');
+                    $("#OceanImportMbl_OblReceivedDate").datetimepicker("setDate", null);
+                   
+                 
+                }
+            })
+            $('#OceanImportMbl_IsReleased').on('change', function (e, val) { 
+                if (this.checked) { 
+                    $('#OceanImportMbl_MblReleaseDate').removeAttr('disabled');
+                  var currentDate = new Date();
+                    $("#OceanImportMbl_MblReleaseDate").datetimepicker("setDate", currentDate.toISOString().slice(0, 19).replace("T", " "));
+                
+                } 
+                else{
+                    $('#OceanImportMbl_MblReleaseDate').attr('disabled', 'disabled');
+                    $("#OceanImportMbl_MblReleaseDate").datetimepicker("setDate", null);
+                   
+                 
+                }
+            })
         });
      
         $(document).ready(function () {
@@ -858,7 +886,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.FreightTermId", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = "FreightTermId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.FreightTermId) })
         </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.FdestId", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.FdestId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.ShipModeId", AspItems = _dropdown.ShipModeLookupList, IsShowLabel = true, FieldName = "ShipModeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.ShipModeId) })
         </abp-column>
 
 
@@ -880,11 +908,11 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label for="OceanImportMbl_IsOblReceived" class="form-label">@L["IsOblReceived"]<input type="checkbox" name="OceanImportMbl.IsOblReceived" id="OceanImportMbl_IsOblReceived" value="true" /></label>
-                                    <abp-input asp-for="OceanImportMbl.OblReceivedDate" type="text" abp-data-datetimepicker="false" suppress-label="true"  />
+                                    <abp-input asp-for="OceanImportMbl.OblReceivedDate" type="text"  abp-data-datetimepicker="false"  suppress-label disabled />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label for="OceanImportMbl_IsReleased" class="form-label">@L["IsReleased"]<input type="checkbox" name="OceanImportMbl.IsReleased" id="OceanImportMbl_IsReleased" value="true" /></label>
-                                    <abp-input asp-for="OceanImportMbl.MblReleaseDate" type="text" abp-data-datetimepicker="false" suppress-label="true" />
+                                    <abp-input asp-for="OceanImportMbl.MblReleaseDate" type="text" abp-data-datetimepicker="false"  suppress-label disabled />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
