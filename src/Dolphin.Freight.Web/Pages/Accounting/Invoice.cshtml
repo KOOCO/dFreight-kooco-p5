@@ -348,7 +348,7 @@
             trhtml = trhtml + "<th>" + getPPOrCCSelect(index, '', (bill.ppOrCC || '')) + "</th>";
             trhtml = trhtml + "<th>" + getBillTypeSelect(index, '', (bill.billType || '')) + "</th>";
             trhtml = trhtml + "<th>" + getUnitSelect(index, '', (bill.unit || '')) + "</th>";
-            trhtml = trhtml + "<td>" + getCurrencySelect(index, '', (bill.currency || '')) + "</td>";
+            trhtml = trhtml + "<th>" + getCurrencySelect(index, '', (bill.currency || '')) + "</th>";
             trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' onchange='onQuantityChange(event)' value='" + (bill.quantity || '') + "' id='Quantity_" + index + "' /></th>";
             trhtml = trhtml + "<th>" + getRate(index, bill.rate) + "</th>";
             trhtml = trhtml + "<th>" + invoice.getPrice(index, bill.price) + "</th>";
