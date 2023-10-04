@@ -19,6 +19,7 @@ using NPOI.HSSF.Record;
 using NPOI.DDF;
 using Volo.Abp.Validation.Localization;
 using Volo.Abp.Auditing;
+using Dolphin.Freight.ImportExport.Containers;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -38,8 +39,11 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         private readonly IRepository<Port, Guid> _portRepository;
         private readonly IRepository<PortsManagement, Guid> _portsManagementRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
+        private readonly IRepository<Container, Guid> _containerRepository;
         private readonly ICurrentUser _currentUser;
-        public OceanExportHblAppService(IRepository<OceanExportHbl, Guid> repository, ICurrentUser currentUser, IRepository<PortsManagement, Guid> portsManagementRepository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanExportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid>  portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository)
+        public OceanExportHblAppService(IRepository<OceanExportHbl, Guid> repository, ICurrentUser currentUser, IRepository<PortsManagement, Guid> portsManagementRepository,
+            IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanExportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, 
+            IRepository<Port, Guid>  portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<Container, Guid> containerRepository)
             : base(repository)
         {
             _repository = repository;
@@ -49,6 +53,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             _portRepository = portRepository;
             _tradePartnerRepository = tradePartnerRepository;
             _portsManagementRepository = portsManagementRepository;
+            _containerRepository = containerRepository;
             _currentUser = currentUser;
             /*
             GetPolicyName = OceanExportPermissions.OceanExportHbls.Default;
@@ -247,6 +252,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public async Task<List<OceanExportHblDto>> GetHblCardsById(Guid Id,bool isAsc=true,int sortType=1) {
             var data = await _repository.GetListAsync(f => f.MblId == Id);
             var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
+            var sysCodes = await _sysCodeRepository.GetListAsync();
 
             if (!isAsc)
             {
@@ -273,25 +279,24 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 }
             }
 
-
-            
             var retVal = ObjectMapper.Map<List<OceanExportHbl>, List<OceanExportHblDto>>(data);
             foreach (var item in retVal)
             {
-
                 if (item.HblShipperId != null)
                 {
                     var shipper = tradePartners.Where(w => w.Id == item.HblShipperId).FirstOrDefault();
                     item.HblShipperName = shipper.TPName;
                 }
-
                 if (item.HblConsigneeId != null)
                 {
                     var consignee = tradePartners.Where(w => w.Id == item.HblConsigneeId).FirstOrDefault();
                     item.HblConsigneeName = consignee.TPName;
                 }
-
-
+                if (item.CardColorId is not null)
+                {
+                    var cardColor = sysCodes.Where(w => w.Id == item.CardColorId).FirstOrDefault();
+                    item.CardColorValue = cardColor.CodeValue;
+                }
             }
             return retVal;
         }
@@ -544,6 +549,30 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 hbl.IsLocked = isLocked;
 
                 await _repository.UpdateAsync(hbl);
+            }
+        }
+        public async Task SaveAssignContainerToHblAsync(OceanExportHblAppModel AppModel)
+        {
+            var Ids = AppModel.Ids;
+            var Containers = AppModel.Containers;
+
+            foreach (var Id in Ids)
+            {
+                foreach (var Container in Containers)
+                {
+                    QueryHblDto queryHblDto = new QueryHblDto() { Id = Id };
+                    var OceanExportHbl = await this.GetHblById(queryHblDto);
+
+                    if (OceanExportHbl.Id != Guid.Empty)
+                    {
+                        CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                        {
+                            ContainerNo = Container
+                        };
+
+                        await _containerRepository.InsertAsync(ObjectMapper.Map<CreateUpdateContainerDto, Container>(containerDto));
+                    }
+                }
             }
         }
     }

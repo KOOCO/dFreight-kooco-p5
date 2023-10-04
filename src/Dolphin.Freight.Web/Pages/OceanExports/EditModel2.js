@@ -16,28 +16,16 @@ $(document).on('input', 'input', function () {
 });
 
 $("#saveBtn").click(function () {
-    $("#mPoNo").val($("#PoNoTag").tagsStr());
+    if ($("#mPoNo").length > 0) {
+        $("#mPoNo").val($("#PoNoTag").tagsStr());
+    }
 
-    EditModel2.SaveHBLContainer();
+    EditModelOEContainer.SaveHBLContainer();
 
     $("#edit2Form").submit();
 });
 
 let rowCount = 0;
-
-function getHblCheckbox(mblId, index, callback) {
-    dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(mblId).done(function (res) {
-        let checkboxesHTML = '';
-        let headersHTML = '';
-        var tdindex = 0;
-        for (let hbl of res) {
-            checkboxesHTML += `<td style='display: none;'><input type='checkbox' data-id='${hbl.id}' data-containerNo='' id='assignContainerCheckbox_${index}_${tdindex}' style='cursor: pointer;'></td>`;
-            headersHTML += `<th style="text-align: center; display: none;"><div style="background-color: ${hbl.cardColorValue}; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto;"></div><input type="checkbox" id="hblHeaders_${hbl.hblNo}" style="cursor: pointer; margin-top: 10px;"></th>`
-            tdindex++;
-        }
-        callback(checkboxesHTML, headersHTML);
-    });
-}
 
 function updateDeleteButtonState() {
     if ($('#popuptrtbody tr').length > 0) {
@@ -106,7 +94,21 @@ function applyPopupValues() {
     $('#CreateModal').modal('hide');
 }
 
-class EditModel2 {
+class EditModelOEContainer {
+    static getHblCheckbox(mblId, index, callback) {
+        dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(mblId).done(function (res) {
+            let checkboxesHTML = '';
+            let headersHTML = '';
+            var tdindex = 0;
+            for (let hbl of res) {
+                checkboxesHTML += `<td style='display: none;'><input type='checkbox' data-id='${hbl.id}' data-containerNo='' id='assignContainerCheckbox_${index}_${tdindex}' style='cursor: pointer;'></td>`;
+                headersHTML += `<th style="text-align: center; display: none;"><div style="background-color: ${hbl.cardColorValue}; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto;"></div><input type="checkbox" id="hblHeaders_${hbl.hblNo}" style="cursor: pointer; margin-top: 10px;"></th>`
+                tdindex++;
+            }
+            callback(checkboxesHTML, headersHTML);
+        });
+    }
+
     static showHideHBLCheckboxes() {
         if (!$('input[id^="hblHeaders_"]').parent().is(":visible")) {
             $('input[id^="hblHeaders_"]').parent().show();
@@ -133,9 +135,9 @@ class EditModel2 {
                 ids.push(id);
                 containers.push(container);
             });
-
+            
             var AppModel = { Ids: ids, Containers: containers };
-            dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignContainerToHbl(AppModel).done(function (res) {});
+            dolphin.freight.importExport.oceanExports.oceanExportHbl.saveAssignContainerToHbl(AppModel).done(function (res) {});
         }
     }
 
@@ -197,4 +199,3 @@ class EditModel2 {
         updateDeleteButtonState();
     }
 }
-

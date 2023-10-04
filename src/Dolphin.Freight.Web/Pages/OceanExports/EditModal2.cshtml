@@ -7,7 +7,7 @@
 @inject Dolphin.Freight.Web.CommonService.IDropdownService _DropdownService;
 @section scripts
     {
-
+    <abp-script src="/Pages/OceanExports/EditModel2.js" />
     <script type="text/javascript">
         Swal.fire({
             title: 'Loading...',
@@ -53,14 +53,13 @@
                                 var value7 = result[i].isPP;
                                 var value8 = result[i].isCTF;
                                 if (value3 == null) value3 = '';
-                                addTrTag(value1, value2, value3, value4, value5, value6, value7, value8);
-
+                                addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, '@Model.OceanExportMbl.Id');
                             }
-                            addPackageUnitNameddl();
                             countTotal('MBL');
                             countTotalVolume('MBL');
                             countPackageType('MBL');
                         }
+                        addPackageUnitNameddl();
                     });
                 }
             });
@@ -94,12 +93,6 @@
                 });
                 resetIndexes();
             })
-            $("#saveBtn").click(function () {
-                if ($("#mPoNo").length > 0) {
-                    $("#mPoNo").val($("#PoNoTag").tagsStr());
-                }
-                $("#edit2Form").submit();
-            });
             $('#edit2Form').on('abp-ajax-success', function (result, rs) {
                 event.preventDefault();
 
@@ -172,7 +165,7 @@
             });
         }
 
-        function countTotal(module) {
+        function countTotal(module, Unit) {
             switch (module) {
                 case 'MBL':
                     var totalWgt = 0;
@@ -184,7 +177,13 @@
                         }
                     }
 
-                    $('#totalWeight').text(parseFloat(totalWgt).toFixed(2));
+                    if (Unit === 'KG') {
+                        $('#totalWeight').text(parseFloat(totalWgt).toFixed(2) + ' KG');
+                        $('#totalWeightUnit').text(parseFloat(totalWgt * 2.20462062).toFixed(2) + ' LB');
+                    } else if (Unit === 'LB') {
+                        $('#totalWeight').text(parseFloat(totalWgt).toFixed(2) + ' LB');
+                        $('#totalWeightUnit').text(parseFloat(totalWgt / 2.20462062).toFixed(2) + ' KG');
+                    }
                 break;
 
                 case 'HBL':
@@ -207,12 +206,20 @@
                         }
                     }
 
-                    $('#totalWeight').text(parseFloat(totalWgt).toFixed(2));
+                    var selectedOption = $('#selectWeight').find('option:selected').val();
+
+                    if (selectedOption === 'KG') {
+                        $('#totalWeight').text(parseFloat(totalWgt).toFixed(2) + ' KG');
+                        $('#totalWeightUnit').text(parseFloat(totalWgt * 2.20462062).toFixed(2) + ' LB');
+                    } else if (selectedOption === 'LB') {
+                        $('#totalWeight').text(parseFloat(totalWgt).toFixed(2) + ' LB');
+                        $('#totalWeightUnit').text(parseFloat(totalWgt / 2.20462062).toFixed(2) + ' KG');
+                    }
                 break;
             }
         }
 
-        function countTotalVolume(module) {
+        function countTotalVolume(module, Unit) {
             switch (module) {
                 case 'MBL':
                     var totalVol = 0;
@@ -224,7 +231,13 @@
                         }
                     }
 
-                    $('#totalVolume').text(parseFloat(totalVol).toFixed(2));
+                    if (Unit === 'CBM') {
+                        $('#totalVolume').text(parseFloat(totalVol).toFixed(2) + ' CBM');
+                        $('#totalVolumeUnit').text(parseFloat(totalVol * 35.315).toFixed(2) + ' CFT');
+                    } else if (Unit === 'CFT') {
+                        $('#totalVolume').text(parseFloat(totalVol).toFixed(2) + ' CFT');
+                        $('#totalVolumeUnit').text(parseFloat(totalVol / 35.315).toFixed(2) + ' CBM');
+                    }
                 break;
 
                 case 'HBL':
@@ -247,7 +260,15 @@
                         }
                     }
 
-                    $('#totalVolume').text(parseFloat(totalVol).toFixed(2));
+                    var selectedOption = $('#selectMeasurement').find('option:selected').val();
+
+                    if (selectedOption === 'CBM') {
+                        $('#totalVolume').text(parseFloat(totalVol).toFixed(2) + ' CBM');
+                        $('#totalVolumeUnit').text(parseFloat(totalVol * 35.315).toFixed(2) + ' CFT');
+                    } else if (selectedOption === 'CFT') {
+                        $('#totalVolume').text(parseFloat(totalVol).toFixed(2) + ' CFT');
+                        $('#totalVolumeUnit').text(parseFloat(totalVol / 35.315).toFixed(2) + ' CBM');
+                    }
                 break;
             }
         }
@@ -297,22 +318,22 @@
                         for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
                             $('#f5_' + i).val(parseFloat($('#f5_' + i).val() * 2.20462).toFixed(2));
                         }
-                        countTotal('MBL');
+                        countTotal('MBL', 'LB');
                     } else if (value === 'KG') {
                         for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
                             $('#f5_' + i).val(parseFloat($('#f5_' + i).val() / 2.20462).toFixed(2));
                         }
-                        countTotal('MBL');
+                        countTotal('MBL', 'KG');
                     } else if (value === 'CFT') {
                         for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
                             $('#f6_' + i).val(parseFloat($('#f6_' + i).val() * 35.315).toFixed(2));
                         }
-                        countTotalVolume('MBL');
+                        countTotalVolume('MBL', 'CFT');
                     } else if (value === 'CBM') {
                         for (var i = 0; i <= $('.packageWeight').length - 1; i++) {
                             $('#f6_' + i).val(parseFloat($('#f6_' + i).val() / 35.315).toFixed(2));
                         }
-                        countTotalVolume('MBL');
+                        countTotalVolume('MBL', 'CBM');
                     }
                 break;
 
@@ -348,12 +369,23 @@
                     }
                     selectHtml = selectHtml + "</select>";
                     $('#packageTypeSelect').append(selectHtml).find('.select-search').select2();
+                    $('#totalPackageTypeUnit').text($('#PackagingUnit').find('option:selected').text());
                 }
             });
         }
 
+        function copyContainertoHBL(i, index) {
+            $('input[id^="assignContainerCheckbox_0_"]').attr('data-containerno', $('#f1_' + index).val());
+
+            switch (index) {
+                case 0:
+                    $('#OceanExportHbl_PackageNo').val($('#f1_0').val());
+                    break;
+            }
+        }
+
         function addTr() {
-            addTrTag("", "", "", "", "", "");
+            addTrTag("", "", "", "", "", "", "", "", '@Model.OceanExportMbl.Id');
         }
 
         function resetIndexes() {
@@ -380,24 +412,34 @@
             trindex = newIndex;
         }
 
-        function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8) {
-            var serialNo = trindex + 1;
-            var trhtml = "<tr id='tr_" + trindex + "'><td style='text-align: center;'><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "' /></td>"
-            trhtml = trhtml + "<td style='text-align: center;'>" + serialNo + "</td>"
-            trhtml = trhtml + `<td>${value7 === true ? '√' : ''}</td>`;
-            trhtml = trhtml + `<td>${value8 === true ? '√' : ''}</td>`;
-            trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='exportDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
-            trhtml = trhtml + "<td> <input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
-            trhtml = trhtml + getcontainerSizeSelect(trindex, value2) + "</td>";
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
-            trhtml = trhtml + "</tr>"
-            trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
-            trhtml = trhtml + "</tr>"
-            $("#trtbody").append(trhtml);
-            trindex++;
+        function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, mblId) {
+            EditModelOEContainer.getHblCheckbox(mblId, trindex, function (checkboxesHTML, headersHTML) {
+                if (!$('input[id^="hblHeaders_"]').length) {
+                    $('#trttable > tbody > tr:first > th:eq(11)').after(headersHTML);
+                }
+
+                var serialNo = trindex + 1;
+                var trhtml = "<tr id='tr_" + trindex + "'><td style='text-align: center;'><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "' /></td>"
+                trhtml = trhtml + "<td style='text-align: center;'>" + serialNo + "</td>"
+                trhtml = trhtml + `<td>${value7 === true ? '√' : ''}</td>`;
+                trhtml = trhtml + `<td>${value8 === true ? '√' : ''}</td>`;
+                trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' onkeyup='copyContainertoHBL(this, " + trindex + ")' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='exportDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
+                trhtml = trhtml + "<td> <input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
+                trhtml = trhtml + getcontainerSizeSelect(trindex, value2) + "</td>";
+                trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
+                trhtml = trhtml + "<td><i class='fa fa-calculator' id='fCalc_" + trindex + "' onclick='EditModelOEContainer.openPopUp(" + trindex + ")' style='font-size: 24px; cursor: pointer;'></i></td>"
+                trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
+                trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
+                trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
+                trhtml = trhtml + "<td style='display: none;'><input type='checkbox' id='selectAllAssignContainerCheckbox_" + trindex + "' style='cursor: pointer;'></td>"
+                trhtml = trhtml + checkboxesHTML
+                trhtml = trhtml + "</tr>"
+                trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
+                trhtml = trhtml + "</tr>"
+                $("#trtbody").append(trhtml);
+                copyContainertoHBL('', trindex);
+                trindex++;
+            });
         }
         function getcontainerSizeSelect(index, selectedId) {
             var selectHtml = "<select name='CreateUpdateContainerDtos[" + index + "].ContainerSizeId' class='form-control' >";
@@ -740,6 +782,8 @@
 </div>
 <div class="page-content-area">
     <form submit-button="true" data-ajaxForm="true" id="edit2Form">
+        <input type="hidden" asp-for="@Model.OceanExportHbl.ContainerId" />
+
         <abp-row>
             <abp-column size-md="_9">
                 <div class="board-wrap">
@@ -844,9 +888,15 @@
                                     <div>
                                         <abp-button class="btn btn-success me-md-2" type="button" id="addBtn">+</abp-button>
                                         <abp-button class="btn btn-outline-success me-md-2" type="button" id="add5Btn">+5</abp-button>
-                                        <abp-button class="btn btn-outline-warning me-md-2" type="button" id="copyBtn">copy</abp-button>
-                                        <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn">delete</abp-button>
+                                        <abp-button class="btn btn-outline-warning me-md-2" type="button" id="copyBtn"><i class="fa fa-files-o mx-1"></i></abp-button>
+                                        <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn"><i class="fa fa-trash mx-1"></i></abp-button>
                                         <abp-button class="btn btn-outline-danger me-md-2" type="button" id="classificationBtn">分配集裝箱</abp-button>
+                                        <abp-button class="btn btn-info me-md-2" type="button" id="assignContainerBtn" onclick="EditModelOEContainer.showHideHBLCheckboxes()" style="display: inline-flex;float: right;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                <path d="M6.69767 10.3721H0V15.3954H6.69767V18.8605L13.9535 12.6047L6.69767 6.34885V10.3721Z" fill="white" />
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M24 22.093H9.48837V17.7442L15.186 12.6047L9.48837 7.46512V2H18.4186L24 7.5814V22.093ZM23.5814 8.0814H18V2.5L23.5814 8.0814Z" fill="white" />
+                                            </svg>
+                                        </abp-button>
                                     </div>
                                     <br />
                                     <table width="100%" class="table table-bordered" id="trttable">
@@ -858,18 +908,26 @@
                                             <th width="20%">@L["Display:ContainerNo"]</th>
                                             <th width="15%">@L["Display:TP/SZ"]</th>
                                             <th width="15%">@L["Display:Seal No"]</th>
+                                            <th width="2%"></th>
                                             <th width="15%" id="packageTypeSelect"><span class="d-block">@L["PKG"]</span></th>
                                             <th width="15%"><span class="d-block">@L["Display:Weight"]</span><select id="selectWeight" class="form-select form-select-sm" onchange="convertUnit($(this).val(), 'MBL')" name="selectWeight" style="width: 100%;"><option value="KG" id="wkg">KG</option><option value="LB" id="wlb">LB</option></select></th>
                                             <th width="15%"><span class="d-block">@L["Measurement"]</span><select id="selectMeasurement" class="form-select form-select-sm" onchange="convertUnit($(this).val(), 'MBL')" name="selectMeasurement" style="width: 100%;"><option value="CBM" id="mcbm">CBM</option><option value="CFT" id="mcft">CFT</option></select></th>
+                                            <th></th>
                                         </tr>
                                         <tbody id="trtbody">
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colspan="7" align="right"><strong>Total:</strong></td>
+                                                <td colspan="8" align="right"><strong>Total:</strong></td>
                                                 <td id="totalPackageType"></td>
                                                 <td id="totalWeight"></td>
                                                 <td id="totalVolume"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="8" align="right"></td>
+                                                <td id="totalPackageTypeUnit"></td>
+                                                <td id="totalWeightUnit"></td>
+                                                <td id="totalVolumeUnit"></td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -1015,7 +1073,44 @@
         <abp-column size-md="_12">
             <div>
             </div>
-            <abp-table width="100%" border="1">
+            <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                    <th width="5%"></th>
+                    <th width="20%">@L["Display:ContainerNo"]</th>
+                    <th width="15%">@L["Display:PackageType"]</th>
+                    <th width="15%">@L["Display:Weight"]</th>
+                    <th width="15%">@L["Measurement"]</th>
+                    <th width="30%">@L["Title:PoNo"]</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td id="hblPackageTypeddl"></td>
+                    <td><select id="selectWeight" onchange="convertUnit($(this).val(), 'HBL')" name="selectWeight"><option value="KG" id="hkg">KG</option><option value="LB" id="hlb">LB</option></select></td>
+                    <td><select id="hselectMeasurement" onchange="convertUnit($(this).val(), 'HBL')" name="selectMeasurement"><option value="CBM" id="hcbm">CBM</option><option value="CFT" id="hcft">CFT</option></select></td>
+                    <td></td>
+                </tr>
+                <tbody id="htrtbody">
+                    <tr>
+                        <td style="align-items:center"><input type="radio" name="SurplusType" /></td>
+                        <td><input asp-for="@Model.OceanExportHbl.PackageNo" type="text" class="form-control" value="@Model.OceanExportHbl.PackageNo" readonly /></td>
+                        <td><input type="text" class="form-control" id="oceanImportHbl_PackageType" onkeyup="countPackageType('HBL')" value="" /></td>
+                        <td><input asp-for="@Model.OceanExportHbl.PackageWeight" type="text" class="form-control" onkeyup="countTotal('HBL')" value="@Model.OceanExportHbl.PackageWeight" /></td>
+                        <td><input asp-for="@Model.OceanExportHbl.PackageMeasurement" type="text" class="form-control" onkeyup="countTotalVolume('HBL')" value="@Model.OceanExportHbl.PackageMeasurement" /></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2" align="right"><strong>Total:</strong></td>
+                        <td id="htotalPackageType">0.00</td>
+                        <td id="htotalWeight">0.00</td>
+                        <td id="htotalVolume">0.00</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+            @*<abp-table width="100%" border="1">
                 <tr ng-form="hbl.__form2" class="ng-valid ng-dirty ng-valid-parse" style="">
                     <th width="5%" class="text-center">#</th>
                     <th width="10%" style="white-space: nowrap">Container No.</th>
@@ -1054,7 +1149,7 @@
 
                     </tr>
                 </tfoot>
-            </abp-table>
+            </abp-table>*@
 
         </abp-column>
     </abp-row>
@@ -1215,12 +1310,70 @@
 <div class="modal mymodal" id="ManifestModal" tabindex="-1" role="dialog">
 </div>
 
-</div>
-
 <div class="modal" id="documentPackageModal">
 </div>
 
 <div class="modal" id="MBLDocumentPackageModal">
+</div>
+
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Item</h5>
+                <button type="button" class="close" onclick="$('#CreateModal').modal('hide')" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="portlet-tool">
+                    <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                        <button type="button" class="btn btn-outline-success fa fa-plus" onclick="EditModelOEContainer.createNewDimension()" id="newDimensionBtn"></button>
+                        <button type="button" class="btn btn-outline-danger fa fa-trash" onclick="EditModelOEContainer.deleteDimension()" id="deleteDimensionBtn" disabled></button>
+                    </div>
+                </div>
+
+                <table class="table-responsive" width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                    <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                        <th width="5%"><input type="checkbox" name="dimensionCheckbox" /></th>
+                        <th width="20%">@L["Length"]</th>
+                        <th width="15%">@L["Width"]</th>
+                        <th width="15%">@L["Height"]</th>
+                        <th width="15%">@L["PCS"]</th>
+                        <th colspan="2" width="20%">@L["Volume"]</th>
+                        <th colspan="2" width="20%">@L["Measurement"]</th>
+                    </tr>
+                    <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                        <th rowspan="2"></th>
+                        <th rowspan="2"></th>
+                        <th rowspan="2"></th>
+                        <th rowspan="2"></th>
+                        <th rowspan="2"></th>
+                        <th width="10%">@L["KG"]</th>
+                        <th width="10%">@L["LB"]</th>
+                        <th width="10%">@L["CBM"]</th>
+                        <th width="10%">@L["CFT"]</th>
+                    </tr>
+                    <tbody id="popuptrtbody">
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" align="right"><strong>Total:</strong></td>
+                            <td id="totalPCS">0</td>
+                            <td id="totalKG">0.00</td>
+                            <td id="totalLB">0.00</td>
+                            <td id="totalCBM">0.00</td>
+                            <td id="totalCFT">0.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="$('#CreateModal').modal('hide')" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="applyDimensions">Apply</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>

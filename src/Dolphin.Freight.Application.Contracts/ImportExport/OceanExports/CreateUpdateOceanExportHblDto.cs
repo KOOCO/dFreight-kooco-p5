@@ -16,6 +16,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// </summary>
         
         public Guid? MblId { get; set; }
+        public Guid? ContainerId { get; set; }
         /// <summary>
         /// HB/L號碼
         /// </summary>
@@ -359,6 +360,9 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 嘜頭
         /// </summary>
         public string Mark { get; set; }
+        public int? PackageNo { get; set; }
+        public double? PackageWeight { get; set; }
+        public double? PackageMeasurement { get; set; }
         /// <summary>
         /// 貨描
         /// </summary>
