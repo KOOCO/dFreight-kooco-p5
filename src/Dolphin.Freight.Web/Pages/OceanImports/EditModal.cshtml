@@ -302,6 +302,73 @@
                 $('#OceanImportHbl_IsfNo').change(function () {
         updateRequiredAttribute();
                         });
+                         $('#OceanImportHbl_IsRailwayCode').change(function() {
+            if (this.checked) {
+                $('#OceanImportHbl_RailwayCodeId').prop('disabled', false);
+            }
+            else {
+             $('#OceanImportHbl_RailwayCodeId').prop('disabled', true);
+            
+            }
+        
+        })
+            $('#OceanImportHbl_IsOblReceived').change(function () {
+                if (this.checked) {
+                    // Checkbox is checked, set OblReceivedDate to current date time
+                    var currentDate = new Date();
+                    $('#OceanImportHbl_OblReceivedDate').val(currentDate.toISOString().slice(0, 19).replace("T", " "));
+                    $('#OceanImportHbl_IsReleased').removeAttr('disabled');
+                     $('#OceanImportHbl_OblReceivedDate').prop('disabled', false);
+                } else {
+                    // Checkbox is unchecked, clear OblReceivedDate
+                    $('#OceanImportHbl_OblReceivedDate').val('');
+                    $('#OceanImportHbl_IsReleased').attr('disabled', 'disabled');
+                     $('#OceanImportHbl_OblReceivedDate').prop('disabled', true);
+                }
+            });
+                 $('#OceanImportHbl_IsReleased').on('change', function (e, val) { 
+                if (this.checked) { 
+                    $('#OceanImportHbl_HblReleaseDate').removeAttr('disabled');
+                    $('#OceanImportHbl_ReleaseById').removeAttr('disabled');
+                    $("#OceanImportHbl_HblReleaseDate").datepicker("setDate", new Date());
+                    $('#releasedBy').val('@(CurrentUser.Name + " " + CurrentUser.SurName)');
+                } 
+                else{
+                    $('#OceanImportHbl_HblReleaseDate').attr('disabled', 'disabled');
+                    $("#OceanImportHbl_HblReleaseDate").datepicker("setDate", null);
+                    $('#OceanImportHbl_ReleaseById').val(null);
+                    $('#releasedBy').val(null);
+                }
+            })
+            $('#OceanImportHbl_IsHold').on('change', function () {
+                if (this.checked) {
+
+
+                    $('#OceanImportHbl_HoldReason').removeAttr('disabled');
+
+                }
+                else { 
+                
+                $('#OceanImportHbl_HoldReason').attr('disabled','disabled');
+                }
+
+                // Call your other functions or perform desired actions here
+            });   
+        $('#OceanImportMbl_IsReleased').change(function() {
+            if(this.checked) {
+                // Checkbox is checked, set MblReleaseDate to current date time
+                var currentDate = new Date();
+                $('#OceanImportMbl_MblReleaseDate').val(currentDate.toISOString().slice(0, 19).replace("T", " "));
+            } else {
+                // Checkbox is unchecked, clear MblReleaseDate
+                $('#OceanImportMbl_MblReleaseDate').val('');
+            }
+        });
+      initHideHblBtn();
+    $("#checkHideHblBtn").click(function () {
+        initHideHblBtn();
+    });
+
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white');
                         Swal.clickCancel();
                     })

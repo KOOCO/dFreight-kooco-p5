@@ -66,18 +66,7 @@
                      $('#OceanImportHbl_OblReceivedDate').prop('disabled', true);
                 }
             });
-
-        $('#OceanImportMbl_IsReleased').change(function() {
-            if(this.checked) {
-                // Checkbox is checked, set MblReleaseDate to current date time
-                var currentDate = new Date();
-                $('#OceanImportMbl_MblReleaseDate').val(currentDate.toISOString().slice(0, 19).replace("T", " "));
-            } else {
-                // Checkbox is unchecked, clear MblReleaseDate
-                $('#OceanImportMbl_MblReleaseDate').val('');
-            }
-        });
-          $('#OceanImportHbl_IsReleased').on('change', function (e, val) { 
+                 $('#OceanImportHbl_IsReleased').on('change', function (e, val) { 
                 if (this.checked) { 
                     $('#OceanImportHbl_HblReleaseDate').removeAttr('disabled');
                     $('#OceanImportHbl_ReleaseById').removeAttr('disabled');
@@ -91,6 +80,31 @@
                     $('#releasedBy').val(null);
                 }
             })
+            $('#OceanImportHbl_IsHold').on('change', function () {
+                if (this.checked) {
+
+
+                    $('#OceanImportHbl_HoldReason').removeAttr('disabled');
+
+                }
+                else { 
+                
+                $('#OceanImportHbl_HoldReason').attr('disabled','disabled');
+                }
+
+                // Call your other functions or perform desired actions here
+            });   
+        $('#OceanImportMbl_IsReleased').change(function() {
+            if(this.checked) {
+                // Checkbox is checked, set MblReleaseDate to current date time
+                var currentDate = new Date();
+                $('#OceanImportMbl_MblReleaseDate').val(currentDate.toISOString().slice(0, 19).replace("T", " "));
+            } else {
+                // Checkbox is unchecked, clear MblReleaseDate
+                $('#OceanImportMbl_MblReleaseDate').val('');
+            }
+        });
+     
             $('#OceanImportMbl_DelId').change(function () {
                 debugger;
                 var selectedValue = $(this).val();
@@ -118,20 +132,7 @@
 
                 // Call your other functions or perform desired actions here
             });    
-            $('#OceanImportHbl_IsHold').on('change', function () {
-                if (this.checked) {
-
-
-                    $('#OceanImportHbl_HoldReason').removeAttr('disabled');
-
-                }
-                else { 
-                
-                $('#OceanImportHbl_HoldReason').attr('disabled','disabled');
-                }
-
-                // Call your other functions or perform desired actions here
-            });   
+            
             $('#OceanImportMbl_FreightTermId').on('change', function () {
                 var newValue = $(this).val();
                 debugger;
@@ -839,7 +840,8 @@
                                
                                 <abp-column size-md="_3">
                                     @* @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.ShipTypeId", AspItems = _dropdown.ShipModeLookupList, IsShowLabel = true, FieldName = "ShipTypeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.ShipTypeId) }) *@
-                                       <select asp-for="@Model.OceanImportHbl.ShipTypeId"  class="form-select form-control">
+                                    <label class="form-label">@L["ShipTypeId"]</label>  
+                                    <select asp-for="@Model.OceanImportHbl.ShipTypeId"  class="form-select form-control">
                                                                 <option value='' > @L["Display:Dropdownlist:Option:Select"] </option>
                                                                  @{
                                                            var enumSelectList = Html.GetEnumSelectList(typeof(ShipType)).ToList();
@@ -869,7 +871,8 @@
                                     <label for="OceanImportHbl_IsEcommerce" class="form-label customCheck">@L["IsEcommerce"]<input type="checkbox" name="OceanImportHbl.IsEcommerce" id="OceanImportHbl_IsEcommerce" value="true" checked="@Model.OceanImportHbl.IsEcommerce" /></label>
                                 </abp-column>
                                  <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportHbl.CustomDoc" />
+                                      <label for="OceanImportHbl_IsEcommerce" class="form-label customCheck">@L["CustomDoc"]<input type="checkbox" name="OceanImportHbl.CustomDoc" id="OceanImportHbl_CustomDoc" value="true" checked="@Model.OceanImportHbl.CustomDoc" /></label>
+                                    @* <abp-input asp-for="OceanImportHbl.CustomDoc" /> *@
                                 </abp-column>
                             </abp-row>
                             <abp-row>

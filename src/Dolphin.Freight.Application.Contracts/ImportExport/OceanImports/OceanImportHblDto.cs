@@ -460,7 +460,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string SubBlNo { get; set; }
         public int GetHideCheck()
         {
-            return (SubBlNo == null && IsEcommerce) ? 1 : 0;
+            return (SubBlNo == null && IsEcommerce) ? 1 : 1;
         }
     }
 }

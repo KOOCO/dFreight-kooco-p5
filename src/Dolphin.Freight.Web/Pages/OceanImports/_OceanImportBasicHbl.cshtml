@@ -118,7 +118,7 @@
                 <abp-input suppress-label asp-for="OceanImportHbl.HblNo"  />
             </abp-column>
              <abp-column size-md="_3">
-                                      <label for="oceanImportHbl_AmsNo" class="form-label">@L["AmsNo"] *</label>
+                                      <label for="oceanImportHbl_AmsNo" class="form-label">@L["AmsNo"] </label>
                                   <abp-input suppress-label asp-for="OceanImportHbl.AmsNo"   />
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -229,9 +229,9 @@
                               </abp-row>
                             <abp-row>
                                  <abp-column size-md="_3">
-                                    <label for="0ceanImportHbl_IsRailwayCode" class="form-label">@L["Rail"] <input type="checkbox" name="OceanImportHbl.IsRailwayCode" id="OceanImportHbl_IsRailwayCode" value="true" checked /></label>
+                                    <label for="0ceanImportHbl_IsRailwayCode" class="form-label">@L["Rail"] <input type="checkbox" name="OceanImportHbl.IsRailwayCode" id="OceanImportHbl_IsRailwayCode" value="true"  /></label>
                                     @* @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.RailwayCodeId", AspItems =Html.GetEnumSelectList(typeof(RailCode)).ToList(), IsRequired = false, IsShowLabel = false, FieldName = "RailwayCodeId", ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.RailwayCodeId) }) *@
-                                 <select asp-for="@Model.OceanImportHbl.RailwayCodeId"  class="form-select form-control">
+                                 <select disabled asp-for="@Model.OceanImportHbl.RailwayCodeId"  class="form-select form-control">
                                                                 <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                                                                  @{
                                                            var enumSelectList = Html.GetEnumSelectList(typeof(RailCode)).ToList();
@@ -281,9 +281,16 @@
                                 <abp-row>
                                
                                 
-                                 <abp-column size-md="_3">
+                                      <abp-column size-md="_3">
                                       <label for="ceanImportHbl_IsExpress" class="form-label">@L["ExpressBl"]</label>
-                                    <abp-input suppress-label asp-for="OceanImportHbl.IsExpress" />
+                                    @* <abp-input suppress-label asp-for="OceanImportHbl.IsExpress" /> *@
+                             
+        <input  type="radio" name="OceanImportHbl.IsExpress" id="wtValTrueRadio" value="true">
+        <label  for="wtValTrueRadio">Yes</label>
+   
+        <input  type="radio" name="OceanImportHbl.IsExpress" id="wtValFalseRadio" checked value="false">
+        <label  for="wtValFalseRadio">No</label>
+    
                                 </abp-column>
                              <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.HblSalesTypeId", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "HblSalesTypeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.HblSalesTypeId) })
@@ -320,7 +327,7 @@
                                     <abp-input disabled asp-for="OceanImportHbl.DisplayHblContainerSizeQtyInfo" />
                                 </abp-column>
                                    <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.MblReferralById", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "MblReferralById", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.MblReferralById) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.MblReferralById", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblReferralById", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.MblReferralById) })
                                 </abp-column>
                                            <abp-column size-md="_3">
                                 <abp-input asp-for="OceanImportHbl.EntryNo" type="text" />
@@ -399,9 +406,20 @@
                                     <abp-input asp-for="OceanImportHbl.LcNo" />
                                 </abp-column>
                                
-                                <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.ShipTypeId", AspItems = _dropdown.ShipModeLookupList, IsShowLabel = true, FieldName = "ShipTypeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.ShipTypeId) })
-                                    
+                                 <abp-column size-md="_3">
+                                    @* @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.ShipTypeId", AspItems = _dropdown.ShipModeLookupList, IsShowLabel = true, FieldName = "ShipTypeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.ShipTypeId) }) *@
+                                    <label class="form-label">@L["ShipTypeId"]</label>  
+                                    <select asp-for="@Model.OceanImportHbl.ShipTypeId"  class="form-select form-control">
+                                                                <option value='' > @L["Display:Dropdownlist:Option:Select"] </option>
+                                                                 @{
+                                                           var enumSelectList = Html.GetEnumSelectList(typeof(ShipType)).ToList();
+                                                              foreach (var item in enumSelectList)
+                                                                 {
+                                                               var localizedText = L["Enum:ShipType." + item.Text];
+                                                             <option value="@item.Value">@localizedText</option>
+                                                                                        }
+                                                                            }
+                                                            </select>
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanImportHbl.ScNo" />
@@ -421,8 +439,8 @@
                                     <label for="OceanImportHbl_IsEcommerce" class="form-label customCheck">@L["IsEcommerce"]<input type="checkbox" name="OceanImportHbl.IsEcommerce" id="OceanImportHbl_IsEcommerce" value="true" checked="@Model.OceanImportHbl.IsEcommerce" /></label>
                                 </abp-column>
                                  <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportHbl.CustomDoc" />
-                                </abp-column>
+                                    <label for="OceanImportHbl_IsEcommerce" class="form-label customCheck">@L["CustomDoc"]<input type="checkbox" name="OceanImportHbl.CustomDoc" id="OceanImportHbl_CustomDoc" value="true" checked="@Model.OceanImportHbl.CustomDoc" /></label>
+                                  </abp-column>
                             </abp-row>
 
         <abp-row></abp-row>

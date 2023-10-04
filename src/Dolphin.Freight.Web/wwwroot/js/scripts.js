@@ -445,7 +445,16 @@ function setDateTimeforCards(card) {
                     "OceanImportHbl_LcIssueDate",
                     "OceanImportHbl_OnBoardDate",
                     "OceanImportHbl_HblReleaseDate",
-                    "OceanImportHbl_CanceledDate"
+                    "OceanImportHbl_CanceledDate",
+                    "OceanImportHbl_Available",
+                    "OceanImportHbl_IsfMatchDate",
+                    "OceanImportHbl_Lfd",
+                    "OceanImportHbl_ItDate",
+                    "OceanImportHbl_GoDate",
+                    "OceanImportHbl_ExpiryDate",
+                    "OceanImportHbl_CReleasedDate",
+                    "OceanImportHbl_EntryDocSent",
+                    "OceanImportHbl_DoorDeliveryATA",
                 ];
 
                 OceanImportids.forEach(function (id) {
