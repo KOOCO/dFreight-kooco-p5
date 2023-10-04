@@ -43,7 +43,7 @@
                             countTotalVolume('HBL');
                             countPackageType('MBL');
                             countPackageType('HBL');
-                            copyContainertoHBL(0);
+                            //copyContainertoHBL('', 0);
                         }
                         addPackageUnitNameddl();
                     });
@@ -84,10 +84,7 @@
                 })
                 $('#packageTypeSelect > .select2-container--default').remove();
             })
-            $("#saveBtn").click(function () {
-                $("#mPoNo").val($("#PoNoTag").tagsStr());
-                $("#edit2Form").submit();
-            });
+            
             $('#edit2Form').on('abp-ajax-success', function (result, rs) {
                 event.preventDefault();
                 var l = abp.localization.getResource('Freight');
@@ -156,7 +153,9 @@
             
         });
 
-        function copyContainertoHBL(index) {
+        function copyContainertoHBL(i, index) {
+            $('input[id^="assignContainerCheckbox_0_"]').attr('data-containerno', $('#f1_' + index).val());
+
             switch (index) {
                 case 0:
                     $('#OceanImportHbl_PackageNo').val($('#f1_0').val());
@@ -187,25 +186,27 @@
         function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, mblId) {
             getHblCheckbox(mblId, trindex, function (checkboxesHTML, headersHTML) {
                 if (!$('input[id^="hblHeaders_"]').length) {
-                    $('#trttable > tbody > tr:first > th:eq(9)').after(headersHTML);
+                    $('#trttable > tbody > tr:first > th:eq(10)').after(headersHTML);
                 }
 
                 var trhtml = "<tr id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "' data-id='" + value9 + "'    /></td>"
                 trhtml = trhtml + `<td>${value7 === true ? '√' : ''}</td>`;
                 trhtml = trhtml + `<td>${value8 === true ? '√' : ''}</td>`;
-                trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' onkeyup='copyContainertoHBL("+ trindex +")' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='importDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
+                trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' onkeyup='copyContainertoHBL(this, "+ trindex +")' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='importDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
                 trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
                 trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
+                trhtml = trhtml + "<td><i class='fa fa-calculator' id='fCalc_" + trindex + "' onclick='EditModel2.openPopUp()' style='font-size: 24px; cursor: pointer;'></i></td>"
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
-                trhtml = trhtml + "<td><input type='checkbox' id='selectAllAssignContainerCheckbox_" + trindex + "' style='cursor: pointer;'></td>"
+                trhtml = trhtml + "<td style='display: none;'><input type='checkbox' id='selectAllAssignContainerCheckbox_" + trindex + "' style='cursor: pointer;'></td>"
                 trhtml = trhtml + checkboxesHTML
                 trhtml = trhtml + "</tr>"
                 trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
                 trhtml = trhtml + "</tr>"
                 $("#trtbody").append(trhtml);
+                copyContainertoHBL('', trindex);
                 trindex++;
             });
         }
@@ -833,12 +834,14 @@
                                             <th width="20%">@L["Display:ContainerNo"]</th>
                                             <th width="15%">@L["Display:PackageSize"]</th>
                                             <th width="15%">@L["Display:Seal No"]</th>
+                                            <th width="2%"></th>
                                             <th width="15%">@L["Display:PackageType"]</th>
                                             <th width="15%">@L["Display:Weight"]</th>
                                             <th width="15%">@L["Measurement"]</th>
                                             <th></th>
                                         </tr>
                                         <tr>
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                             <td></td>
@@ -864,13 +867,13 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colspan="6" align="right"><strong>Total:</strong></td>
+                                                <td colspan="7" align="right"><strong>Total:</strong></td>
                                                 <td id="totalPackageType"></td>
                                                 <td id="totalWeight"></td>
                                                 <td id="totalVolume"></td>
                                             </tr>
                                             <tr>
-                                                <td colspan="6" align="right"></td>
+                                                <td colspan="7" align="right"></td>
                                                 <td id="totalPackageTypeUnit"></td>
                                                 <td id="totalWeightUnit"></td>
                                                 <td id="totalVolumeUnit"></td>
@@ -1242,3 +1245,48 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Item</h5>
+                <button type="button" class="close" onclick="$('#CreateModal').modal('hide')" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="portlet-tool">
+                    <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                        <button type="button" class="btn btn-outline-success fa fa-plus" onclick="createNew()" id="newBtn"></button>
+                        <button type="button" class="btn btn-outline-danger fa fa-trash" onclick="deleteMbls()" id="deleteBtn" disabled></button>
+                    </div>
+                </div>
+
+                <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                    <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                        <th width="5%"><input type="checkbox" name="dimensionCheckbox" /></th>
+                        <th width="20%">@L["Length"]</th>
+                        <th width="15%">@L["Width"]</th>
+                        <th width="15%">@L["Height"]</th>
+                        <th width="15%">@L["PCS"]</th>
+                        <th colspan="2" width="30%">@L["Volume"]</th>
+                        <th colspan="2" width="30%">@L["Measurement"]</th>
+                    </tr>
+                    <tr>
+                        <td>KGS</td>
+                        <td>LBS</td>
+                        <td>CBM</td>
+                        <td>CFT</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="$('#CreateModal').modal('hide')" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Apply</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

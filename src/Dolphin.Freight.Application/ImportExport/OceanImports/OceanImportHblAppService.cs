@@ -45,6 +45,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly ICurrentUser _currentUser;
         private readonly IRepository<Container, Guid> _containerRepository;
         private readonly IRepository<Country, Guid> _countryRepository;
+
         public OceanImportHblAppService(IRepository<OceanImportHbl, Guid> repository, IRepository<Container, Guid> containerRepository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanImportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<PortsManagement, Guid> portsManagementRepository, ICurrentUser currentUser, IRepository<Country, Guid> countryRepository)
             : base(repository)
         {
@@ -545,6 +546,31 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 Hbl.IsLocked = IsLock;
 
                 await _repository.UpdateAsync(Hbl);
+            }
+        }
+
+        public async Task SaveAssignContainerToHblAsync(OceanImportHblAppModel AppModel)
+        {
+            var Ids = AppModel.Ids;
+            var Containers = AppModel.Containers;
+
+            foreach (var Id in Ids)
+            {
+                foreach (var Container in Containers)
+                {
+                    QueryHblDto queryHblDto = new QueryHblDto() { Id = Id };
+                    var OceanImportHbl = await this.GetHblById(queryHblDto);
+
+                    if (OceanImportHbl.Id != Guid.Empty)
+                    {
+                        CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                        {
+                            ContainerNo = Container
+                        };
+
+                        await _containerRepository.InsertAsync(ObjectMapper.Map<CreateUpdateContainerDto, Container>(containerDto));
+                    }
+                }
             }
         }
     }
