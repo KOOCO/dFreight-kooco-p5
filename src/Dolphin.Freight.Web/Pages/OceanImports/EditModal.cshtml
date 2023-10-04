@@ -28,6 +28,18 @@
     <script type="text/javascript">
         var cardIndex = 0;
         var l = abp.localization.getResource('Freight');
+        function getCurrentDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+          
+
+            const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}`;
+            return formattedDateTime;
+        }
 
         $(document).ready(function () {
              $('#cardSettingArea').hide();
@@ -66,30 +78,41 @@
                     dateElem.val(currentVal.replace('T', ' '));
                 }
             });
+            if("@Model.OceanImportMbl.IsOblReceived"=="True")
+            {
+                debugger;
+            $('#OceanImportMbl_OblReceivedDate').prop('disabled', false);
+            }
+            if("@Model.OceanImportMbl.IsReleased"=="True")
+            {
+                debugger;
+                $('#OceanImportMbl_MblReleaseDate').prop('disabled', false);
+            }
               $('#OceanImportMbl_IsOblReceived').on('change', function (e, val) { 
-                if (this.checked) { 
-                    $('#OceanImportMbl_OblReceivedDate').removeAttr('disabled');
+                if (this.checked) {
+                    $('#OceanImportMbl_OblReceivedDate').prop('disabled', false);
                     var currentDate = new Date();
-                    $("#OceanImportMbl_OblReceivedDate").datetimepicker("setDate", currentDate.toISOString().slice(0, 19).replace("T", " "));
+                    $("#OceanImportMbl_OblReceivedDate").val(getCurrentDateTime());
                 
                 } 
                 else{
-                    $('#OceanImportMbl_OblReceivedDate').attr('disabled', 'disabled');
-                    $("#OceanImportMbl_OblReceivedDate").datetimepicker("setDate", null);
+                $('#OceanImportMbl_OblReceivedDate').prop('disabled', true);
+                    $("#OceanImportMbl_OblReceivedDate").val( null);
                    
                  
                 }
             })
             $('#OceanImportMbl_IsReleased').on('change', function (e, val) { 
                 if (this.checked) { 
-                    $('#OceanImportMbl_MblReleaseDate').removeAttr('disabled');
+                    $('#OceanImportMbl_MblReleaseDate').prop('disabled',false);
                   var currentDate = new Date();
-                    $("#OceanImportMbl_MblReleaseDate").datetimepicker("setDate", currentDate.toISOString().slice(0, 19).replace("T", " "));
+
+                    $("#OceanImportMbl_MblReleaseDate").val(getCurrentDateTime());
                 
                 } 
                 else{
-                    $('#OceanImportMbl_MblReleaseDate').attr('disabled', 'disabled');
-                    $("#OceanImportMbl_MblReleaseDate").datetimepicker("setDate", null);
+                    $('#OceanImportMbl_MblReleaseDate').prop('disabled', true);
+                    $("#OceanImportMbl_MblReleaseDate").val(null);
                    
                  
                 }
@@ -262,6 +285,15 @@
                         $('#partialContainer').html(partial);
                         setFilteredDropdown();
                         setDateTimeforCards('OIHBL');
+                          updateRequiredAttribute();
+
+                         $('#OceanImportHbl_IsfByThirdParty').change(function () {
+                              debugger;
+        updateRequiredAttribute();
+                         });
+                $('#OceanImportHbl_IsfNo').change(function () {
+        updateRequiredAttribute();
+                        });
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white');
                         Swal.clickCancel();
                     })
@@ -907,11 +939,11 @@
             <input type="hidden" name="OceanImportMbl.OblTypeId" id="mOblTypeId" value="@Model.OceanImportMbl.OblTypeId" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsOblReceived" class="form-label">@L["IsOblReceived"]<input type="checkbox" name="OceanImportMbl.IsOblReceived" id="OceanImportMbl_IsOblReceived" value="true" /></label>
+                                    <label for="OceanImportMbl_IsOblReceived" class="form-label">@L["IsOblReceived"]<input type="checkbox" asp-for="OceanImportMbl.IsOblReceived" name="OceanImportMbl.IsOblReceived" id="OceanImportMbl_IsOblReceived" value="true" /></label>
                                     <abp-input asp-for="OceanImportMbl.OblReceivedDate" type="text"  abp-data-datetimepicker="false"  suppress-label disabled />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsReleased" class="form-label">@L["IsReleased"]<input type="checkbox" name="OceanImportMbl.IsReleased" id="OceanImportMbl_IsReleased" value="true" /></label>
+            <label for="OceanImportMbl_IsReleased" class="form-label">@L["IsReleased"]<input type="checkbox" asp-for="OceanImportMbl.IsReleased" name=" OceanImportMbl.IsReleased" id="OceanImportMbl_IsReleased" value="true" /></label>
                                     <abp-input asp-for="OceanImportMbl.MblReleaseDate" type="text" abp-data-datetimepicker="false"  suppress-label disabled />
                                 </abp-column>
                             </abp-row>
