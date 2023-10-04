@@ -11,6 +11,9 @@ using Dolphin.Freight.Common;
 using Dolphin.Freight.Settinngs.SysCodes;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Dolphin.Freight.ImportExport.OceanImports;
+using static Dolphin.Freight.Permissions.OceanImportPermissions;
+using Volo.Abp.ObjectMapping;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
 {
@@ -57,11 +60,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         public async Task OnGetAsync()
         {
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
-            QueryHblDto query = new QueryHblDto() { MblId = Id };
+            ImportExport.OceanExports.QueryHblDto query = new ImportExport.OceanExports.QueryHblDto() { MblId = Id };
             OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
-            OceanExportHbls = OceanExportHbls.Reverse().ToList();
-            QueryHblDto queryHbl = new QueryHblDto();
-            CreateUpdateContainerHawb = new CreateUpdateContainerDto() { Id = Guid.Empty };
+            ImportExport.OceanExports.QueryHblDto queryHbl = new ImportExport.OceanExports.QueryHblDto();
             RateUnitTypeLookupList = new List<SelectListItem>
             {
                 new SelectListItem() { Text = "KG", Value = "KG" },
@@ -102,11 +103,12 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                     OceanExportHbl = new CreateUpdateOceanExportHblDto();
                     if (OceanExportHbls != null && OceanExportHbls.Count > 0)
                     {
-                        
                         OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(OceanExportHbls[0]);
-                        OceanExportHbl.CardColorValue = "0";
+                        OceanExportHbl.PackageNo = OceanExportHbls[0].CreateUpdateHBLContainerDto?.PackageNum ?? 0;
+                        OceanExportHbl.PackageWeight = OceanExportHbls[0].CreateUpdateHBLContainerDto?.PackageWeight ?? 0;
+                        OceanExportHbl.PackageMeasurement = OceanExportHbls[0].CreateUpdateHBLContainerDto?.PackageMeasure ?? 0;
+                        OceanExportHbl.ContainerId = OceanExportHbls[0].CreateUpdateHBLContainerDto?.Id;
                         Hid = OceanExportHbl.Id;
-                        CreateUpdateContainerHawb = await _containerAppService.GetContainerByHblId(Hid);
                         IsShowHbl = true;
                     }
                 }
@@ -115,10 +117,15 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             else
             {
                 queryHbl.Id = Hid;
-               
-                int index = OceanExportHbls.IndexOf(OceanExportHbls.FirstOrDefault(x => x.Id == Hid));
-                OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(OceanExportHbls.Where(x=>x.Id==Hid).FirstOrDefault());
-                OceanExportHbl.CardColorValue = index.ToString();
+                OceanExportHbl = new CreateUpdateOceanExportHblDto();
+                if (OceanExportHbls != null && OceanExportHbls.Count > 0)
+                {
+                    OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(OceanExportHbls.Where(w => w.Id == Hid).FirstOrDefault());
+                    OceanExportHbl.PackageNo = OceanExportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.PackageNum ?? 0).FirstOrDefault();
+                    OceanExportHbl.PackageWeight = OceanExportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.PackageWeight ?? 0).FirstOrDefault();
+                    OceanExportHbl.PackageMeasurement = OceanExportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.PackageMeasure ?? 0).FirstOrDefault();
+                    OceanExportHbl.ContainerId = OceanExportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.Id ?? Guid.Empty).FirstOrDefault();
+                }
                 IsShowHbl = true;
             }
         }
@@ -126,10 +133,29 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         {
             if (OceanExportHbl.Id != Guid.Empty)
             {
-                QueryHblDto queryHbl = new QueryHblDto();
+                ImportExport.OceanExports.QueryHblDto queryHbl = new ImportExport.OceanExports.QueryHblDto();
                 queryHbl.Id = OceanExportHbl.Id;
                 var OceanExportHb2 = await _oceanExportHblAppService.GetHblById(queryHbl);
-
+                OceanExportHb2.PackageNo = OceanExportHbl.PackageNo;
+                OceanExportHb2.PackageWeight = OceanExportHbl.PackageWeight;
+                OceanExportHb2.PackageMeasurement = OceanExportHbl.PackageMeasurement;
+                if (OceanExportHb2.Id != Guid.Empty)
+                {
+                    CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                    {
+                        PackageNum = OceanExportHb2.PackageNo,
+                        PackageWeight = OceanExportHb2.PackageWeight,
+                        PackageMeasure = OceanExportHb2.PackageMeasurement,
+                        HblId = OceanExportHb2.Id,
+                    };
+                    if (OceanExportHbl.ContainerId is not null && OceanExportHbl.ContainerId != Guid.Empty)
+                    {
+                        await _containerAppService.UpdateAsync(OceanExportHbl.ContainerId.GetValueOrDefault(), containerDto);
+                    } else
+                    {
+                        await _containerAppService.CreateAsync(containerDto);
+                    }
+                }
                 OceanExportHb2.Mark = OceanExportHbl.Mark;
                 OceanExportHb2.Description = OceanExportHbl.Description;
                 OceanExportHb2.DomesticInstructions = OceanExportHbl.DomesticInstructions;

@@ -398,7 +398,22 @@
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
-                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
+                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white');
+                        
+                        var backGroundColor = $('#hblCardHeader').css('background-color');
+                        var hexColor = EditModelOEScript.RextoHexColorCode(backGroundColor);
+                        $('#OceanExportHbl_CardColorValue').val(hexColor);
+                        if (hawbId != '00000000-0000-0000-0000-000000000000') {
+                            dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardById(hawbId).done(function(res) { 
+                                var cardColorId = res.cardColorId;
+                                $('#OceanExportHbl_CardColorId').val(cardColorId);
+                            });
+                        } else if (hawbId == '00000000-0000-0000-0000-000000000000') {
+                            $('#hCardColorId').val('');
+                        } else {
+                            $('#hCardColorId').val('');
+                        }
+
                         Swal.clickCancel();
                         if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
                         setTimeout(() => {
@@ -1247,6 +1262,8 @@
 <input type="hidden" name="OceanExportMbl.DelId" id="mDelId" value="@Model.OceanExportMbl.DelId" />
 <input type="hidden" name="OceanExportMbl.FdestId" id="mFdestId" value="@Model.OceanExportMbl.FdestId" />
 <input type="hidden" name="AddHbl" id="AddHbl" value="0" />
+<input type="hidden" name="OceanExportHbl.CardColorId" id="hCardColorId" value="@Model.OceanExportHbl.CardColorId" />
+<input type="hidden" name="OceanExportHbl.CardColorValue" id="hCardColorValue" />
 
 <div class="modal mymodal" id="ManifestModal" tabindex="-1" role="dialog">
 </div>
