@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.Common;
+using Dolphin.Freight.ImportExport.Containers;
 using System;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -19,5 +20,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         Task<OceanImportDetails> GetOceanImportDetailsById(Guid Id);
         Task SetLockOrUnlockStatusOceanImportMblAsync(Guid[] Ids, bool IsLocked);
         Task DeleteMultipleMblsAsync(Guid[] Ids);
+        Task SaveDimensionsAsync(DimensionDataModel DataModel);
     }
 }
