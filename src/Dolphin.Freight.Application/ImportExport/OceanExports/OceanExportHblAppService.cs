@@ -40,9 +40,10 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         private readonly IRepository<PortsManagement, Guid> _portsManagementRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IRepository<Container, Guid> _containerRepository;
+        private readonly IContainerAppService _containerAppService;
         private readonly ICurrentUser _currentUser;
         public OceanExportHblAppService(IRepository<OceanExportHbl, Guid> repository, ICurrentUser currentUser, IRepository<PortsManagement, Guid> portsManagementRepository,
-            IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanExportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, 
+            IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanExportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IContainerAppService containerAppService, 
             IRepository<Port, Guid>  portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<Container, Guid> containerRepository)
             : base(repository)
         {
@@ -55,6 +56,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             _portsManagementRepository = portsManagementRepository;
             _containerRepository = containerRepository;
             _currentUser = currentUser;
+            _containerAppService = containerAppService;
             /*
             GetPolicyName = OceanExportPermissions.OceanExportHbls.Default;
             GetListPolicyName = OceanExportPermissions.OceanExportHbls.Default;
@@ -555,6 +557,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         {
             var Ids = AppModel.Ids;
             var Containers = AppModel.Containers;
+            var ContainerId = AppModel.ContainerId;
 
             foreach (var Id in Ids)
             {
@@ -565,12 +568,29 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 
                     if (OceanExportHbl.Id != Guid.Empty)
                     {
-                        CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                        foreach (var containerId in ContainerId)
                         {
-                            ContainerNo = Container
-                        };
+                            if (containerId != Guid.Empty)
+                            {
+                                CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                                {
+                                    Id = containerId,
+                                    HblId = Id,
+                                    PackageNum = Convert.ToInt32(Container)
+                                };
+                                await _containerAppService.UpdateAsync(containerId, containerDto);
+                            }
+                            else
+                            {
+                                CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                                {
+                                    HblId = Id,
+                                    PackageNum = Convert.ToInt32(Container)
+                                };
 
-                        await _containerRepository.InsertAsync(ObjectMapper.Map<CreateUpdateContainerDto, Container>(containerDto));
+                                await _containerAppService.CreateAsync(containerDto);
+                            }
+                        }
                     }
                 }
             }

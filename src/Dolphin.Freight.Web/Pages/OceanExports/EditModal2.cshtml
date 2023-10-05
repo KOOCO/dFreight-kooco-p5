@@ -52,12 +52,13 @@
                                 var value6 = result[i].packageMeasure;
                                 var value7 = result[i].isPP;
                                 var value8 = result[i].isCTF;
+                                var value9 = result[i].id;
                                 if (value3 == null) value3 = '';
-                                addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, '@Model.OceanExportMbl.Id');
+                                addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, '@Model.OceanExportMbl.Id');
                             }
-                            countTotal('MBL');
-                            countTotalVolume('MBL');
-                            countPackageType('MBL');
+                            countTotal('HBL');
+                            countTotalVolume('HBL');
+                            countPackageType('HBL');
                         }
                         addPackageUnitNameddl();
                     });
@@ -72,19 +73,18 @@
             else $("#hblCard").hide();
 
             $("#addBtn").click(function () {
-                addTr()
-            })
+                addTr();
+            });
             $("#add5Btn").click(function () {
                 for (var i = 0; i < 5; i++) {
                     addTr();
                 }
-
-            })
+            });
             $("#copyBtn").click(function () {
                 $("input[name='f0']:checked").each(function () {
-                    addTrTag($("#f1_" + $(this).val()).val(), $("#f2_" + $(this).val()).val(), $("#f3_" + $(this).val()).val(), $("#f4_" + $(this).val()).val(), $("#f5_" + $(this).val()).val(), $("#f6_" + $(this).val()).val())
-                })
-            })
+                    addTrTag($("#f1_" + $(this).val()).val() || 0, $("#f2_" + $(this).val()).val() || 0, $("#f3_" + $(this).val()).val() || 0, $("#f4_" + $(this).val()).val() || 0, $("#f5_" + $(this).val()).val() || 0, $("#f6_" + $(this).val()).val() || 0, "", "", "", '@Model.OceanExportMbl.Id');
+                });
+            });
             $("#deleteBtn").click(function () {
                 $("input[name='f0']:checked").each(function () {
                     var tid = $(this).val();
@@ -92,11 +92,13 @@
                     $("#tr_" + $(this).val()).hide();
                 });
                 resetIndexes();
-            })
+            });
             $('#edit2Form').on('abp-ajax-success', function (result, rs) {
                 event.preventDefault();
 
-                abp.message.success(l("Message:SuccessEdit"));
+                abp.message.success(l("Message:SuccessEdit")).then(function() {
+                    location.href = '/OceanExports/EditModal2?Id=@Model.Id';
+                });
             });
             $("#addHBtn").click(function () {
                 //var url = "/OceanExports/EditModal?Id=@Model.Id&NewHbl=1";
@@ -375,7 +377,7 @@
         }
 
         function copyContainertoHBL(i, index) {
-            $('input[id^="assignContainerCheckbox_0_"]').attr('data-containerno', $('#f1_' + index).val());
+            $('input[id^="assignContainerCheckbox_'+index+'_"]').attr('data-containerno', $('#f1_' + index).val());
 
             switch (index) {
                 case 0:
@@ -385,7 +387,7 @@
         }
 
         function addTr() {
-            addTrTag("", "", "", "", "", "", "", "", '@Model.OceanExportMbl.Id');
+            addTrTag("", "", "", "", "", "", "", "", "", '@Model.OceanExportMbl.Id');
         }
 
         function resetIndexes() {
@@ -412,7 +414,7 @@
             trindex = newIndex;
         }
 
-        function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, mblId) {
+        function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, mblId) {
             EditModelOEContainer.getHblCheckbox(mblId, trindex, function (checkboxesHTML, headersHTML) {
                 if (!$('input[id^="hblHeaders_"]').length) {
                     $('#trttable > tbody > tr:first > th:eq(11)').after(headersHTML);
@@ -427,7 +429,7 @@
                 trhtml = trhtml + "<td> <input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
                 trhtml = trhtml + getcontainerSizeSelect(trindex, value2) + "</td>";
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
-                trhtml = trhtml + "<td><i class='fa fa-calculator' id='fCalc_" + trindex + "' onclick='EditModelOEContainer.openPopUp(" + trindex + ")' style='font-size: 24px; cursor: pointer;'></i></td>"
+                trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Id' class='form-control' value='" + value9 + "' /><i class='fa fa-calculator' id='fCalc_" + trindex + "' data-containerid='" + value9 + "' onclick='EditModelOEContainer.openPopUp(" + trindex + ")' style='font-size: 24px; cursor: pointer;'></i></td>"
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
@@ -437,8 +439,20 @@
                 trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
                 trhtml = trhtml + "</tr>"
                 $("#trtbody").append(trhtml);
-                copyContainertoHBL('', trindex);
+                $('input[id^="assignContainerCheckbox_' + trindex + '_"]').attr('data-containerno', $('#f1_' + trindex).val());
+
+                var currentIndex = trindex;
+
+                $("#selectAllAssignContainerCheckbox_" + currentIndex).click(function () {
+                    $('input[id^="assignContainerCheckbox_' + currentIndex + '_"]').prop('checked', $(this).prop('checked'));
+                    EditModelOEContainer.SaveHBLContainer();
+                });
+
                 trindex++;
+
+                countPackageType('MBL');
+                countTotal('MBL', 'KG');
+                countTotalVolume('MBL', 'CBM');
             });
         }
         function getcontainerSizeSelect(index, selectedId) {
@@ -917,17 +931,17 @@
                                         <tbody id="trtbody">
                                         </tbody>
                                         <tfoot>
-                                            <tr>
-                                                <td colspan="8" align="right"><strong>Total:</strong></td>
-                                                <td id="totalPackageType"></td>
-                                                <td id="totalWeight"></td>
-                                                <td id="totalVolume"></td>
+                                            <tr style="border: none;">
+                                                <td colspan="8" align="right" style="border: none; padding-bottom: 5px;"><strong>Total:</strong></td>
+                                                <td id="totalPackageType" style="border: none; padding-bottom: 5px;"></td>
+                                                <td id="totalWeight" style="border: none; padding-bottom: 5px;"></td>
+                                                <td id="totalVolume" style="border: none; padding-bottom: 5px;"></td>
                                             </tr>
-                                            <tr>
-                                                <td colspan="8" align="right"></td>
-                                                <td id="totalPackageTypeUnit"></td>
-                                                <td id="totalWeightUnit"></td>
-                                                <td id="totalVolumeUnit"></td>
+                                            <tr style="border: none;">
+                                                <td colspan="8" align="right" style="border: none; padding-top: 5px;"></td>
+                                                <td id="totalPackageTypeUnit" style="border: none; padding-top: 5px;"></td>
+                                                <td id="totalWeightUnit" style="border: none; padding-top: 5px;"></td>
+                                                <td id="totalVolumeUnit" style="border: none; padding-top: 5px;"></td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -1341,13 +1355,13 @@
 
                 <table class="table-responsive" width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
                     <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
-                        <th width="5%"><input type="checkbox" name="dimensionCheckbox" /></th>
-                        <th width="20%">@L["Length"]</th>
-                        <th width="15%">@L["Width"]</th>
-                        <th width="15%">@L["Height"]</th>
-                        <th width="15%">@L["PCS"]</th>
-                        <th colspan="2" width="20%">@L["Volume"]</th>
-                        <th colspan="2" width="20%">@L["Measurement"]</th>
+                        <th width="5%" style="background: #888888; color: #fff"><input type="checkbox" name="dimensionCheckbox" /></th>
+                        <th width="20%" style="background: #888888; color: #fff">@L["Length"]</th>
+                        <th width="15%" style="background: #888888; color: #fff">@L["Width"]</th>
+                        <th width="15%" style="background: #888888; color: #fff">@L["Height"]</th>
+                        <th width="15%" style="background: #888888; color: #fff">@L["PCS"]</th>
+                        <th colspan="2" width="20%" style="text-align: center; background: #888888; color: #fff">@L["Volume"]</th>
+                        <th colspan="2" width="20%" style="text-align: center; background: #888888; color: #fff">@L["Measurement"]</th>
                     </tr>
                     <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
                         <th rowspan="2"></th>

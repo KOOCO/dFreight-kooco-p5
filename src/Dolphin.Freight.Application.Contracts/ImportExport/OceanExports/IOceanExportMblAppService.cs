@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.Common;
+using Dolphin.Freight.ImportExport.Containers;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -22,5 +23,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         Task<OceanExportDetails> GetOceanExportDetailsById(Guid Id);
         Task<JsonResult> CreateOneMBLWithContainerAsync(Guid[] ids);
         Task<JsonResult> CreateMblWithDiffContainersAsync(Guid[] ids);
+        Task SaveDimensionsAsync(DimensionDataModel DataModel);
     }
 }

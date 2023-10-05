@@ -8,4 +8,5 @@ public class OceanExportHblAppModel
 {
     public Guid[] Ids { get; set; }
     public string[] Containers { get; set; }
+    public Guid[] ContainerId { get; set; }
 }

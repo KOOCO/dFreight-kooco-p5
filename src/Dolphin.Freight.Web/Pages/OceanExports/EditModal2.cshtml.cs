@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Dolphin.Freight.ImportExport.OceanImports;
 using static Dolphin.Freight.Permissions.OceanImportPermissions;
 using Volo.Abp.ObjectMapping;
+using Newtonsoft.Json;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
 {
@@ -117,15 +118,18 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             else
             {
                 queryHbl.Id = Hid;
+
+                var hbl = await _oceanExportHblAppService.GetAsync(Hid);
+
+                var container = await _containerAppService.GetContainerByHblId(Hid);
+
                 OceanExportHbl = new CreateUpdateOceanExportHblDto();
-                if (OceanExportHbls != null && OceanExportHbls.Count > 0)
-                {
-                    OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(OceanExportHbls.Where(w => w.Id == Hid).FirstOrDefault());
-                    OceanExportHbl.PackageNo = OceanExportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.PackageNum ?? 0).FirstOrDefault();
-                    OceanExportHbl.PackageWeight = OceanExportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.PackageWeight ?? 0).FirstOrDefault();
-                    OceanExportHbl.PackageMeasurement = OceanExportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.PackageMeasure ?? 0).FirstOrDefault();
-                    OceanExportHbl.ContainerId = OceanExportHbls.Where(w => w.Id == Hid).Select(s => s.CreateUpdateHBLContainerDto?.Id ?? Guid.Empty).FirstOrDefault();
-                }
+
+                OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl);
+                OceanExportHbl.PackageNo = container.PackageNum;
+                OceanExportHbl.PackageWeight = container.PackageWeight;
+                OceanExportHbl.PackageMeasurement = container.PackageMeasure;
+                OceanExportHbl.ContainerId = container.Id;
                 IsShowHbl = true;
             }
         }
@@ -172,7 +176,6 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                     OceanExportHb2.ExtraProperties.Add("Commodities", Commodities);
                 }
 
-
                 await _oceanExportHblAppService.UpdateAsync(OceanExportHb2.Id, OceanExportHb2);
 
                 if (CreateUpdateContainerHawb is not null)
@@ -196,12 +199,29 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             OceanExportMb2.DomesticInstructions = OceanExportMbl.DomesticInstructions;
             await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMb2);
 
-            QueryContainerDto query = new QueryContainerDto() { QueryId=Id };
-            var rs = await _containerAppService.DeleteByMblIdAsync(query); 
             foreach (var dto in CreateUpdateContainerDtos) 
             {
-                var a = dto.IsDeleted;
-                if (dto.Status == 0)await _containerAppService.CreateAsync(dto);
+                if (dto.Id != Guid.Empty)
+                {
+                    var container = await _containerAppService.GetAsync(dto.Id);
+
+                    if (container.ExtraProperties != null) 
+                    {
+                        var dimensions = container.ExtraProperties.GetValueOrDefault("Dimensions").ToString();
+
+                        var dimensionList = JsonConvert.DeserializeObject<List<Dimension>>(dimensions);
+
+                        dto.ExtraProperties = container.ExtraProperties;
+
+                        dto.ExtraProperties.Remove("Dimensions");
+                        dto.ExtraProperties.Add("Dimensions", dimensionList);
+                    }
+
+                    await _containerAppService.UpdateAsync(dto.Id, dto);
+                } else
+                {
+                    await _containerAppService.CreateAsync(dto);
+                }
             }
 
             return NoContent();

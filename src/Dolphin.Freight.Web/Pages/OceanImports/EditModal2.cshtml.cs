@@ -163,12 +163,9 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             }
 
             await _oceanImportHblAppService.UpdateAsync(oceanImportHbl.Id, oceanImportHbl);
-            //QueryContainerDto query = new QueryContainerDto() { QueryId=Id };
-            //var rs = await _containerAppService.DeleteByMblIdAsync(query); 
+            
             foreach (var dto in CreateUpdateContainerDtos) 
             {
-                //var a = dto.IsDeleted;
-                //if (dto.Status == 0)await _containerAppService.CreateAsync(dto);
                 if (dto.Id != Guid.Empty)
                 {
                     var container = await _containerAppService.GetAsync(dto.Id);
