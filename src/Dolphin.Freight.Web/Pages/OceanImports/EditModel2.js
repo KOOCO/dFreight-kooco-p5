@@ -1,4 +1,6 @@
-﻿$(document).on('change', '[name=PackagingUnit]', function () {
+﻿const l = abp.localization.getResource('Freight');
+
+$(document).on('change', '[name=PackagingUnit]', function () {
     $('#totalPackageTypeUnit').text($('#PackagingUnit').find('option:selected').text());
 });
 
@@ -122,6 +124,12 @@ function applyPopupValues() {
     countTotal();
     countTotalVolume();
     countPackageType();
+
+    if (containerid == null || typeof containerid === 'undefined' || containerid === '') {
+        $('#CreateModal').modal('hide');
+        abp.message.warn(l("Message:SaveContainer"));
+        return;
+    }
 
     const sendData = {
         dimensions: dimensionsData,
