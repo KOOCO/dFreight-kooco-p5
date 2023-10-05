@@ -37,13 +37,10 @@
                                 var value9 = result[i].id;
                                 addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, '@Model.OceanImportMbl.Id');
                             }
-                            countTotal('MBL');
                             countTotal('HBL');
-                            countTotalVolume('MBL');
                             countTotalVolume('HBL');
                             countPackageType('MBL');
                             countPackageType('HBL');
-                            //copyContainertoHBL('', 0);
                         }
                         addPackageUnitNameddl();
                     });
@@ -73,7 +70,7 @@
             })
             $("#copyBtn").click(function () {
                 $("input[name='f0']:checked").each(function () {
-                    addTrTag($("#f1_" + $(this).val()).val(), $("#f2_" + $(this).val()).val(), $("#f3_" + $(this).val()).val(), $("#f4_" + $(this).val()).val(), $("#f5_" + $(this).val()).val(), $("#f6_" + $(this).val()).val())
+                    addTrTag($("#f1_" + $(this).val()).val() || 0, $("#f2_" + $(this).val()).val() || 0, $("#f3_" + $(this).val()).val() || 0, $("#f4_" + $(this).val()).val() || 0, $("#f5_" + $(this).val()).val() || 0, $("#f6_" + $(this).val()).val() || 0, "", "", "", "@Model.OceanImportMbl.Id");
                 })
             })
             $("#deleteBtn").click(function () {
@@ -81,8 +78,7 @@
                     var tid = $(this).val();
                     $("#did_" + tid).val("1");
                     $("#tr_" + $(this).val()).hide();
-                })
-                $('#packageTypeSelect > .select2-container--default').remove();
+                });
             })
             
             $('#edit2Form').on('abp-ajax-success', function (result, rs) {
@@ -185,30 +181,40 @@
         }
         function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, mblId) {
             getHblCheckbox(mblId, trindex, function (checkboxesHTML, headersHTML) {
-                if (!$('input[id^="hblHeaders_"]').length) {
-                    $('#trttable > tbody > tr:first > th:eq(10)').after(headersHTML);
-                }
+                    if (!$('input[id^="hblHeaders_"]').length) {
+                        $('#trttable > tbody > tr:first > th:eq(10)').after(headersHTML);
+                    }
 
-                var trhtml = "<tr id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "' data-id='" + value9 + "'    /></td>"
-                trhtml = trhtml + `<td>${value7 === true ? '√' : ''}</td>`;
-                trhtml = trhtml + `<td>${value8 === true ? '√' : ''}</td>`;
-                trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' onkeyup='copyContainertoHBL(this, "+ trindex +")' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='importDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
-                trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
-                trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
-                trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
-                trhtml = trhtml + "<td><i class='fa fa-calculator' id='fCalc_" + trindex + "' onclick='EditModel2.openPopUp(" + trindex + ")' style='font-size: 24px; cursor: pointer;'></i></td>"
-                trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
-                trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
-                trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
-                trhtml = trhtml + "<td style='display: none;'><input type='checkbox' id='selectAllAssignContainerCheckbox_" + trindex + "' style='cursor: pointer;'></td>"
-                trhtml = trhtml + checkboxesHTML
-                trhtml = trhtml + "</tr>"
-                trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
-                trhtml = trhtml + "</tr>"
-                $("#trtbody").append(trhtml);
-                copyContainertoHBL('', trindex);
-                trindex++;
-            });
+                    var trhtml = "<tr id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "' data-id='" + value9 + "'    /></td>"
+                    trhtml = trhtml + `<td>${value7 === true ? '√' : ''}</td>`;
+                    trhtml = trhtml + `<td>${value8 === true ? '√' : ''}</td>`;
+                    trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' onkeyup='copyContainertoHBL(this, " + trindex + ")' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='importDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
+                    trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
+                    trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
+                    trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
+                    trhtml = trhtml + "<td><i class='fa fa-calculator' id='fCalc_" + trindex + "' onclick='EditModel2.openPopUp(" + trindex + ")' style='font-size: 24px; cursor: pointer;'></i></td>"
+                    trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
+                    trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
+                    trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
+                    trhtml = trhtml + "<td style='display: none;'><input type='checkbox' id='selectAllAssignContainerCheckbox_" + trindex + "' style='cursor: pointer;'></td>"
+                    trhtml = trhtml + checkboxesHTML
+                    trhtml = trhtml + "</tr>"
+                    trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
+                    trhtml = trhtml + "</tr>"
+                    $("#trtbody").append(trhtml);
+                    $('input[id^="assignContainerCheckbox_0_"]').attr('data-containerno', $('#f1_' + trindex).val());
+
+                    trindex++;
+
+                    countTotal('MBL', 'KG');
+                    countTotalVolume('MBL', 'CBM');
+
+                    $("#selectAllAssignContainerCheckbox_" + (trindex - 1)).click(function () {
+                        $('input[id^="assignContainerCheckbox_' + (trindex - 1) + '_"]').prop('checked', $(this).prop('checked'));
+
+                        EditModel2.SaveHBLContainer();
+                    });
+                });
         }
         function getcontainerSizeSelect(selectedId) {
             var selectHtml = "<select name='CreateUpdateContainerDtos[" + trindex + "].ContainerSizeId' class='form-control' >";
@@ -299,7 +305,6 @@
                             totalWgt += cells;
                         }
                     }
-                    
                     if (Unit === 'KG') {
                         $('#totalWeight').text(parseFloat(totalWgt).toFixed(2) + ' KG');
                         $('#totalWeightUnit').text(parseFloat(totalWgt * 2.2).toFixed(2) + ' LB');
@@ -1264,14 +1269,14 @@
                 </div>
 
                 <table class="table-responsive" width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
-                    <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
-                        <th width="5%"><input type="checkbox" name="dimensionCheckbox" /></th>
-                        <th width="20%">@L["Length"]</th>
-                        <th width="15%">@L["Width"]</th>
-                        <th width="15%">@L["Height"]</th>
-                        <th width="15%">@L["PCS"]</th>
-                        <th colspan="2" width="20%">@L["Volume"]</th>
-                        <th colspan="2" width="20%">@L["Measurement"]</th>
+                    <tr border="1" style="border-block-color:#888888;padding-left:10px;margin-left:4px;">
+                        <th width="5%" style="background: #888888; color: #fff"><input type="checkbox" name="dimensionCheckbox" /></th>
+                        <th width="20%" style="background: #888888; color: #fff">@L["Length"]</th>
+                        <th width="15%" style="background: #888888; color: #fff">@L["Width"]</th>
+                        <th width="15%" style="background: #888888; color: #fff">@L["Height"]</th>
+                        <th width="15%" style="background: #888888; color: #fff">@L["PCS"]</th>
+                        <th colspan="2" width="20%" style="text-align: center; background: #888888; color: #fff">@L["Volume"]</th>
+                        <th colspan="2" width="20%" style="text-align: center; background: #888888; color: #fff">@L["Measurement"]</th>
                     </tr>
                     <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
                         <th rowspan="2"></th>
