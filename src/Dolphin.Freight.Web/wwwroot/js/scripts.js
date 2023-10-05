@@ -505,7 +505,14 @@ function setDateTimeforCards(card) {
                         $('#OceanImportHbl_DelId').trigger('change');
                     }
 
+                    var selectedValue = $('#OceanImportMbl_ForwardingAgentId').val();
+                    if ($('#OceanImportHbl_HblForwardingAgentId').val() == null || $('#OceanImportHbl_HblForwardingAgentId').val() == '') {
+                        $('#OceanImportHbl_HblForwardingAgentId').val(selectedValue);
 
+
+                        // Trigger the change event to update the dropdown visually
+                        $('#OceanImportHbl_HblForwardingAgentId').trigger('change');
+                    }
                     if ($('#OceanImportHbl_DelEta').val() == null || $('#OceanImportHbl_DelEta').val() == '') {
                         var newValue = $('#OceanImportMbl_DelEta').val();
 

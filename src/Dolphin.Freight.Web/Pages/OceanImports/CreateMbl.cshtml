@@ -104,7 +104,16 @@
                 $('#OceanImportMbl_MblReleaseDate').val('');
             }
         });
-     
+        $('#OceanImportMbl_ForwardingAgentId').change(function () {
+         var selectedValue = $('#OceanImportMbl_ForwardingAgentId').val();
+                    if ($('#OceanImportHbl_HblForwardingAgentId').val() == null || $('#OceanImportHbl_HblForwardingAgentId').val() == '') {
+                        $('#OceanImportHbl_HblForwardingAgentId').val(selectedValue);
+
+
+                        // Trigger the change event to update the dropdown visually
+                        $('#OceanImportHbl_HblForwardingAgentId').trigger('change');
+                    }
+     });
             $('#OceanImportMbl_DelId').change(function () {
                 debugger;
                 var selectedValue = $(this).val();
