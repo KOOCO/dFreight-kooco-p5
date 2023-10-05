@@ -83,13 +83,35 @@ function updateTotals() {
 function applyPopupValues() {
     let totalPCS = 0, totalKG = 0, totalCBM = 0;
 
+    let dimensionsData = [];
+
     $('#popuptrtbody tr').each(function () {
-        totalPCS += parseFloat($(this).find('input[name^="pcs_"]').val()) || 0;
-        totalKG += parseFloat($(this).find('input[name^="kg_"]').val()) || 0;
-        totalCBM += parseFloat($(this).find('input[name^="cbm_"]').val()) || 0;
+        const length = parseFloat($(this).find('input[name^="length_"]').val()) || 0; 
+        const width = parseFloat($(this).find('input[name^="width_"]').val()) || 0; 
+        const height = parseFloat($(this).find('input[name^="height_"]').val()) || 0; 
+        const pcs = parseFloat($(this).find('input[name^="pcs_"]').val()) || 0;
+        const kg = parseFloat($(this).find('input[name^="kg_"]').val()) || 0;
+        const cbm = parseFloat($(this).find('input[name^="cbm_"]').val()) || 0;
+
+        totalPCS += pcs;
+        totalKG += kg;
+        totalCBM += cbm;
+
+        dimensionsData.push({
+            length: length,
+            width: width,
+            height: height,
+            pcs: pcs
+        });
     });
 
+    const extraProperties = {
+        dimensions: dimensionsData
+    };
+
     let targetRowIndex = $('#applyDimensions').data('target-row');
+
+    var containerid = $('#fCalc_' + targetRowIndex).data('containerid');
 
     let targetRow = $('#trtbody #tr_' + targetRowIndex);
 
@@ -101,9 +123,49 @@ function applyPopupValues() {
     countTotalVolume();
     countPackageType();
 
+    const sendData = {
+        dimensions: dimensionsData,
+        containerId: containerid
+    };
+
+    dolphin.freight.importExport.oceanImports.oceanImportMbl.saveDimensions(sendData).done(function () { });
+
     $('#CreateModal').modal('hide');
 }
 
+function addDimensionRow(dimension = null) {
+    rowCount++;
+
+    let newRow = $('<tr>');
+
+    let checkboxCell = $('<td>');
+    let checkbox = $('<input>', { type: 'checkbox', name: 'dimensionCheckbox_' + rowCount });
+    checkboxCell.append(checkbox);
+
+    let lengthInput = $('<td>').append($('<input>', { type: 'text', name: 'length_' + rowCount, value: dimension ? dimension.Length : '' }));
+    let widthInput = $('<td>').append($('<input>', { type: 'text', name: 'width_' + rowCount, value: dimension ? dimension.Width : '' }));
+    let heightInput = $('<td>').append($('<input>', { type: 'text', name: 'height_' + rowCount, value: dimension ? dimension.Height : '' }));
+    let pcsInput = $('<td>').append($('<input>', { type: 'text', name: 'pcs_' + rowCount, value: dimension ? dimension.Pcs : '' }));
+    let kgInput = $('<td>').append($('<input>', { type: 'text', name: 'kg_' + rowCount, disabled: true }));
+    let lbInput = $('<td>').append($('<input>', { type: 'text', name: 'lb_' + rowCount, disabled: true }));
+    let cbmInput = $('<td>').append($('<input>', { type: 'text', name: 'cbm_' + rowCount, disabled: true }));
+    let cftInput = $('<td>').append($('<input>', { type: 'text', name: 'cft_' + rowCount, disabled: true }));
+
+    newRow.append(checkboxCell, lengthInput, widthInput, heightInput, pcsInput, kgInput, lbInput, cbmInput, cftInput);
+
+    newRow.find('input[name^="length_"], input[name^="width_"], input[name^="height_"], input[name^="pcs_"]').on('input', function () {
+        calculateWeights(newRow);
+    });
+
+    if (dimension) {
+        // Trigger the calculation to update kg, lb, cft, and cbm
+        calculateWeights(newRow);
+    }
+
+    $('#popuptrtbody').append(newRow);
+    updateTotals();
+    updateDeleteButtonState();
+}
 class EditModel2 {
     static showHideHBLCheckboxes() {
         if (!$('input[id^="hblHeaders_"]').parent().is(":visible")) {
@@ -153,36 +215,24 @@ class EditModel2 {
     }
 
     static openPopUp(trIndex) {
-        $('#CreateModal').modal('show');
-        $('#applyDimensions').data('target-row', trIndex);
+        const containerId = $('#fCalc_' + trIndex).data('containerid');
+
+        $('#popuptrtbody').empty();
+
+        dolphin.freight.importExport.containers.container.get(containerId).then(function (response) {
+            if (response && response.extraProperties && response.extraProperties.Dimensions) {
+                for (let dimension of response.extraProperties.Dimensions) {
+                    addDimensionRow(dimension);
+                }
+            }
+
+            $('#CreateModal').modal('show');
+            $('#applyDimensions').data('target-row', trIndex);
+        });
     }
 
     static createNewDimension() {
-        rowCount++;
-
-        let newRow = $('<tr>');
-        let checkboxCell = $('<td>');
-        let checkbox = $('<input>', { type: 'checkbox', name: 'dimensionCheckbox_' + rowCount });
-        checkboxCell.append(checkbox);
-
-        let lengthInput = $('<td><input type="text" name="length_' + rowCount + '"></td>');
-        let widthInput = $('<td><input type="text" name="width_' + rowCount + '"></td>');
-        let heightInput = $('<td><input type="text" name="height_' + rowCount + '"></td>');
-        let pcsInput = $('<td><input type="text" name="pcs_' + rowCount + '"></td>');
-        let kgInput = $('<td><input type="text" name="kg_' + rowCount + '" disabled></td>');
-        let lbInput = $('<td><input type="text" name="lb_' + rowCount + '" disabled></td>');
-        let cbmInput = $('<td><input type="text" name="cbm_' + rowCount + '" disabled></td>');
-        let cftInput = $('<td><input type="text" name="cft_' + rowCount + '" disabled></td>');
-
-        newRow.append(checkboxCell, lengthInput, widthInput, heightInput, pcsInput, kgInput, lbInput, cbmInput, cftInput);
-
-        $('#popuptrtbody').append(newRow);
-
-        calculateWeights(newRow);
-
-        updateTotals();
-
-        updateDeleteButtonState();
+        addDimensionRow();
     }
 
     static deleteDimension() {
