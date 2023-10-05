@@ -124,7 +124,7 @@ function applyPopupValues() {
     countTotal();
     countTotalVolume();
     countPackageType();
-
+    
     if (containerid == null || typeof containerid === 'undefined' || containerid === '') {
         $('#CreateModal').modal('hide');
         abp.message.warn(l("Message:SaveContainer"));

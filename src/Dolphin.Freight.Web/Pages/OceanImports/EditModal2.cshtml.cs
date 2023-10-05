@@ -13,6 +13,8 @@ using Dolphin.Freight.ImportExport.OceanExports;
 using QueryHblDto = Dolphin.Freight.ImportExport.OceanImports.QueryHblDto;
 using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using System.Linq;
+using Volo.Abp.Domain.Repositories;
+using Newtonsoft.Json;
 
 namespace Dolphin.Freight.Web.Pages.OceanImports
 {
@@ -42,12 +44,14 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
         private readonly IOceanImportMblAppService _oceanImportMblAppService;
         private readonly IContainerAppService _containerAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
-        public EditModal2Model(IContainerAppService containerAppService,IOceanImportMblAppService oceanImportMblAppService, IOceanImportHblAppService oceanImportHblAppService, ISysCodeAppService sysCodeAppService)
+        private readonly IRepository<Container, Guid> _containerRepository;
+        public EditModal2Model(IContainerAppService containerAppService, IRepository<Container, Guid> containerRepository, IOceanImportMblAppService oceanImportMblAppService, IOceanImportHblAppService oceanImportHblAppService, ISysCodeAppService sysCodeAppService)
         {
             _oceanImportMblAppService = oceanImportMblAppService;
             _oceanImportHblAppService = oceanImportHblAppService;
             _containerAppService = containerAppService;
             _sysCodeAppService = sysCodeAppService;
+            _containerRepository = containerRepository;
         }
         public async Task OnGetAsync()
         {
@@ -159,12 +163,28 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             }
 
             await _oceanImportHblAppService.UpdateAsync(oceanImportHbl.Id, oceanImportHbl);
-            QueryContainerDto query = new QueryContainerDto() { QueryId=Id };
-            var rs = await _containerAppService.DeleteByMblIdAsync(query); 
+            //QueryContainerDto query = new QueryContainerDto() { QueryId=Id };
+            //var rs = await _containerAppService.DeleteByMblIdAsync(query); 
             foreach (var dto in CreateUpdateContainerDtos) 
             {
-                var a = dto.IsDeleted;
-                if (dto.Status == 0)await _containerAppService.CreateAsync(dto);
+                //var a = dto.IsDeleted;
+                //if (dto.Status == 0)await _containerAppService.CreateAsync(dto);
+
+                var container = await _containerAppService.GetAsync(dto.Id);
+
+                if (container.ExtraProperties != null)
+                {
+                    var dimensions = container.ExtraProperties.GetValueOrDefault("Dimensions").ToString();
+
+                    var dimensionList = JsonConvert.DeserializeObject<List<Dimension>>(dimensions);
+
+                    dto.ExtraProperties = container.ExtraProperties;
+
+                    dto.ExtraProperties.Remove("Dimensions");
+                    dto.ExtraProperties.Add("Dimensions", dimensionList);
+                }
+
+                await _containerAppService.UpdateAsync(dto.Id, dto);
             }
             return NoContent();
         }
