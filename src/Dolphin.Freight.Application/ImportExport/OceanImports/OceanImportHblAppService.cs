@@ -11,7 +11,6 @@ using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using NPOI.POIFS.Crypt.Dsig.Facets;
 using NPOI.SS.Formula.Functions;
 using System;
