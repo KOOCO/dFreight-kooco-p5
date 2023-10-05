@@ -424,22 +424,9 @@ function setDateTimeforCards(card) {
 
                 var hblId = $('#OceanImportHBL').val();
                 if (hblId != '00000000-0000-0000-0000-000000000000') {
-                    if ($("#OceanImportHbl_IsRailwayCode").val() == "true") {
-
-                        $('#OceanImportHbl_RailwayCodeId').prop('disabled', false);
-                    }
-                    else {
-                        $('#OceanImportHbl_RailwayCodeId').prop('disabled', true);
-
-                    }
-                    if ($("#OceanImportHbl_IsOblReceived").val() == "true") {
-
-                        $('#OceanImportHbl_OblReceivedDate').prop('disabled', false);
-                    }
-                    else {
-
-                        $('#OceanImportHbl_OblReceivedDate').prop('disabled', true);
-                    }
+                    
+                 
+                   
                     dolphin.freight.importExport.oceanImports.oceanImportHbl.get(hblId).done(function (res) {
                         if (res.isLocked) {
                             $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
@@ -447,6 +434,22 @@ function setDateTimeforCards(card) {
                         } else {
                             $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
                             $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                        }
+                        if (res.isRailwayCode) {
+
+                            $('#OceanImportHbl_RailwayCodeId').prop('disabled', false);
+                        }
+                        else {
+                            $('#OceanImportHbl_RailwayCodeId').prop('disabled', true);
+
+                        }
+                        if (res.isOblReceived) {
+
+                            $('#OceanImportHbl_OblReceivedDate').prop('disabled', false);
+                        }
+                        else {
+
+                            $('#OceanImportHbl_OblReceivedDate').prop('disabled', true);
                         }
                     });
                 }
