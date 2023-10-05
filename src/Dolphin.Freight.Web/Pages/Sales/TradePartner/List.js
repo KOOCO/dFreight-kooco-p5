@@ -469,7 +469,7 @@ function exportToExcel() {
 
 
     var table = document.getElementById("TPListTable");
-    var columnsToExclude = [2,3];
+    var columnsToExclude = [0,1];
 
     // Create a new worksheet
     var ws = XLSX.utils.aoa_to_sheet([]);
@@ -486,7 +486,7 @@ function exportToExcel() {
         var row = table.rows[rowIndex];
         var newRow = [];
         for (var colIndex = 0; colIndex < row.cells.length; colIndex++) {
-            if (columnsToExclude.includes(colIndex)) {
+            if (!columnsToExclude.includes(colIndex)) {
                 newRow.push(row.cells[colIndex].innerText);
             }
         }
