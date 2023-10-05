@@ -18,8 +18,6 @@ $(document).on('input', 'input', function () {
 $("#saveBtn").click(function () {
     $("#mPoNo").val($("#PoNoTag").tagsStr());
 
-    EditModel2.SaveHBLContainer();
-
     $("#edit2Form").submit();
 });
 
@@ -31,7 +29,7 @@ function getHblCheckbox(mblId, index, callback) {
         let headersHTML = '';
         var tdindex = 0;
         for (let hbl of res) {
-            checkboxesHTML += `<td style='display: none;'><input type='checkbox' data-id='${hbl.id}' data-containerNo='' id='assignContainerCheckbox_${index}_${tdindex}' style='cursor: pointer;'></td>`;
+            checkboxesHTML += `<td style='display: none;'><input type='checkbox' data-id='${hbl.id}' data-containerNo='' onclick='EditModel2.SaveHBLContainer()' id='assignContainerCheckbox_${index}_${tdindex}' style='cursor: pointer;'></td>`;
             headersHTML += `<th style="text-align: center; display: none;"><div style="background-color: ${hbl.cardColorValue}; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto;"></div><input type="checkbox" id="hblHeaders_${hbl.hblNo}" style="cursor: pointer; margin-top: 10px;"></th>`
             tdindex++;
         }
@@ -54,7 +52,7 @@ function calculateWeights(row) {
     const pcs = parseFloat(row.find('input[name^="pcs_"]').val()) || 0;
 
     const kgWeight = (length * width * height * pcs) / 6000;
-    const lbsWeight = kgWeight * 2.20462;
+    const lbsWeight = kgWeight * 2.20462062;
     const cft = kgWeight / 4.72 + 0.0049;
     const cbm = cft * 0.0283168;
 
@@ -127,6 +125,7 @@ class EditModel2 {
         if ($('input[id^="assignContainerCheckbox_"]:checked').length > 0 && $('input[id^="assignContainerCheckbox_"]:checked').is(":visible")) {
             var ids = [];
             var containers = [];
+            var containerid;
             $('input[id^="assignContainerCheckbox_"]:checked').each(function (i, e) {
                 var id = e.attributes[1].value;
                 var container = e.attributes[2].value;
@@ -134,8 +133,22 @@ class EditModel2 {
                 containers.push(container);
             });
 
-            var AppModel = { Ids: ids, Containers: containers };
-            dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignContainerToHbl(AppModel).done(function (res) {});
+            const promises = ids.map(id => {
+                return new Promise((resolve) => {
+                    dolphin.freight.importExport.containers.container.getContainerByHblId(id).done(function (r) {
+                        if (r && r.id) {
+                            resolve(r.id);
+                        } else {
+                            resolve('00000000-0000-0000-0000-000000000000');
+                        }
+                    });
+                });
+            });
+
+            Promise.all(promises).then(results => {
+                var AppModel = { Ids: ids, Containers: containers, ContainerId: results };
+                dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignContainerToHbl(AppModel).done(function (res) { });
+            });
         }
     }
 

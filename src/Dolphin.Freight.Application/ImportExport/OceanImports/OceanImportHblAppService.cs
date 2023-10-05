@@ -10,6 +10,8 @@ using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NPOI.POIFS.Crypt.Dsig.Facets;
 using NPOI.SS.Formula.Functions;
 using System;
@@ -44,9 +46,10 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly IRepository<PortsManagement, Guid> _portsManagementRepository;
         private readonly ICurrentUser _currentUser;
         private readonly IRepository<Container, Guid> _containerRepository;
+        private readonly IContainerAppService _containerAppService;
         private readonly IRepository<Country, Guid> _countryRepository;
 
-        public OceanImportHblAppService(IRepository<OceanImportHbl, Guid> repository, IRepository<Container, Guid> containerRepository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanImportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<PortsManagement, Guid> portsManagementRepository, ICurrentUser currentUser, IRepository<Country, Guid> countryRepository)
+        public OceanImportHblAppService(IRepository<OceanImportHbl, Guid> repository, IRepository<Container, Guid> containerRepository, IContainerAppService containerAppService, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanImportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<PortsManagement, Guid> portsManagementRepository, ICurrentUser currentUser, IRepository<Country, Guid> countryRepository)
             : base(repository)
         {
             _repository = repository;
@@ -59,6 +62,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             _currentUser = currentUser;
             _containerRepository = containerRepository;
             _countryRepository = countryRepository;
+            _containerAppService = containerAppService;
             /*
             GetPolicyName = OceanImportPermissions.OceanImportHbls.Default;
             GetListPolicyName = OceanImportPermissions.OceanImportHbls.Default;
@@ -553,6 +557,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         {
             var Ids = AppModel.Ids;
             var Containers = AppModel.Containers;
+            var ContainerId = AppModel.ContainerId;
 
             foreach (var Id in Ids)
             {
@@ -563,12 +568,29 @@ namespace Dolphin.Freight.ImportExport.OceanImports
 
                     if (OceanImportHbl.Id != Guid.Empty)
                     {
-                        CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                        foreach (var containerId in ContainerId)
                         {
-                            ContainerNo = Container
-                        };
+                            if (containerId != Guid.Empty)
+                            {
+                                CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                                {
+                                    Id = containerId,
+                                    HblId = Id,
+                                    PackageNum = Convert.ToInt32(Container)
+                                };
+                                await _containerAppService.UpdateAsync(containerId, containerDto);
+                            }
+                            else
+                            {
+                                CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                                {
+                                    HblId = Id,
+                                    PackageNum = Convert.ToInt32(Container)
+                                };
 
-                        await _containerRepository.InsertAsync(ObjectMapper.Map<CreateUpdateContainerDto, Container>(containerDto));
+                                await _containerAppService.CreateAsync(containerDto);
+                            }
+                        }
                     }
                 }
             }
