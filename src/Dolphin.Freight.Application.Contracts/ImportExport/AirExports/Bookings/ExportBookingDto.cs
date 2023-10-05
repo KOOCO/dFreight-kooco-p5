@@ -28,7 +28,7 @@ namespace Dolphin.Freight.ImportExport.AirExports.Bookings
         /// <summary>
         /// HBL編號
         /// </summary>
-        public string HblNo { get; set; }
+        public string HawbNo { get; set; }
         /// <summary>
         /// Itn編號
         /// </summary>
