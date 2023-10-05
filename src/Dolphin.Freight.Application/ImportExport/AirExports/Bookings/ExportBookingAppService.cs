@@ -85,6 +85,7 @@ namespace Dolphin.Freight.ImportExport.AirExports.Bookings
                                 .WhereIf(query.SalesId.HasValue, e => e.SalesPersonId == query.SalesId)
                                 .WhereIf(query.DepatureId.HasValue, e => e.DepatureId == query.DepatureId)
                                 .WhereIf(query.CustomerId.HasValue, e => e.CustomerId == query.CustomerId)
+                                .WhereIf(query.CreatorId.HasValue,e=>e.CreatorId==query.CreatorId)
                                 .WhereIf(query.DestinationId.HasValue, e => e.DestinationId == query.DestinationId)
                                 .WhereIf(query.ForwadingAgentId.HasValue, e => e.ForwardingAgentId == query.ForwadingAgentId)
                                  .WhereIf(!string.IsNullOrWhiteSpace(query.FlightNo), x => x.FlightNo == query.FlightNo)
