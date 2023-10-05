@@ -169,22 +169,27 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             {
                 //var a = dto.IsDeleted;
                 //if (dto.Status == 0)await _containerAppService.CreateAsync(dto);
-
-                var container = await _containerAppService.GetAsync(dto.Id);
-
-                if (container.ExtraProperties != null)
+                if (dto.Id != Guid.Empty)
                 {
-                    var dimensions = container.ExtraProperties.GetValueOrDefault("Dimensions").ToString();
+                    var container = await _containerAppService.GetAsync(dto.Id);
 
-                    var dimensionList = JsonConvert.DeserializeObject<List<Dimension>>(dimensions);
+                    if (container.ExtraProperties != null)
+                    {
+                        var dimensions = container.ExtraProperties.GetValueOrDefault("Dimensions").ToString();
 
-                    dto.ExtraProperties = container.ExtraProperties;
+                        var dimensionList = JsonConvert.DeserializeObject<List<Dimension>>(dimensions);
 
-                    dto.ExtraProperties.Remove("Dimensions");
-                    dto.ExtraProperties.Add("Dimensions", dimensionList);
+                        dto.ExtraProperties = container.ExtraProperties;
+
+                        dto.ExtraProperties.Remove("Dimensions");
+                        dto.ExtraProperties.Add("Dimensions", dimensionList);
+                    }
+
+                    await _containerAppService.UpdateAsync(dto.Id, dto);
+                } else
+                {
+                    await _containerAppService.CreateAsync(dto);
                 }
-
-                await _containerAppService.UpdateAsync(dto.Id, dto);
             }
             return NoContent();
         }

@@ -39,7 +39,6 @@
                             }
                             countTotal('HBL');
                             countTotalVolume('HBL');
-                            countPackageType('MBL');
                             countPackageType('HBL');
                         }
                         addPackageUnitNameddl();
@@ -195,7 +194,7 @@
                     trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
                     trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
                     trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Id' class='form-control' value='" + value9 + "' /><i class='fa fa-calculator' id='fCalc_" + trindex + "' data-containerid='" + value9 + "' onclick='EditModel2.openPopUp(" + trindex + ")' style='font-size: 24px; cursor: pointer;'></i></td>"
-                    trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum ' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
+                    trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
                     trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
                     trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
                     trhtml = trhtml + "<td style='display: none;'><input type='checkbox' id='selectAllAssignContainerCheckbox_" + trindex + "' style='cursor: pointer;'></td>"
@@ -215,6 +214,7 @@
 
                     trindex++;
 
+                    countPackageType('MBL');
                     countTotal('MBL', 'KG');
                     countTotalVolume('MBL', 'CBM');
                 });
