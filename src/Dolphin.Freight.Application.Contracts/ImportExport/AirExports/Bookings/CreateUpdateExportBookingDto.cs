@@ -143,7 +143,7 @@ namespace Dolphin.Freight.ImportExport.AirExports.Bookings
         /// 收貨地(POR)ID
         /// </summary>
 
-        public DateTime? FinalEta { get; set; }
+        public DateTime FinalEta { get; set; }
 
         /// <summary>
         /// 中轉港 ID
