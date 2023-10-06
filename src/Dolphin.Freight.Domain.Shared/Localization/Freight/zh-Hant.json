@@ -1059,7 +1059,7 @@
     "AwbType": "提單類別",
     "MawbNo": "MAWB號碼",
     "AwbDate": "提單日期",
-    "ConsigneeId": "收貨人(海外代理)",
+    "ConsigneeId": "收貨人",
     "NotifyId": "通知方",
     "Office": "分站",
     "CoShipper": "聯合托運人",
@@ -1311,7 +1311,7 @@
     "BookingDate": "S/O日期",
     "ITNNo": "ITN號碼",
     "BillTo": "收票人",
-   
+
     "Departure": "出發地",
     "TruckReceipt": "卡車收貨地",
     "TruckDeliveryPlace": "卡車交貨地",
@@ -1385,7 +1385,8 @@
     "ChargeableWeight(SHPR)": "計費重量(託運人)",
     "BookingRemarks": "S/O備註",
     "Pickup/DeliveryInstruction": "收貨/交貨指示",
-    "IssuingCarrier": "承運人/代理"
+    "IssuingCarrier": "承運人/代理",
+    "ActualShipper": "實際託運人"
 
 
 
