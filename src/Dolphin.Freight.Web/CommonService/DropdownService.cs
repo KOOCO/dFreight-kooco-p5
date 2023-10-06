@@ -39,6 +39,7 @@ namespace Dolphin.Freight.Web.CommonService
         private readonly ICreditLimitGroupAppService _creditLimitGroupAppService;
         private readonly IAccountGroupAppService _accountGroupAppService;
         private readonly IAirImportMawbAppService _airImportMawbAppService;
+        private readonly IIdentityUserAppService _identityUserAppService;
 
         public DropdownService(ITradePartnerAppService tradePartnerAppService,
                                ISubstationAppService substationAppService,
@@ -52,7 +53,8 @@ namespace Dolphin.Freight.Web.CommonService
                                IGlCodeAppService glCodeAppService,
                                ICreditLimitGroupAppService creditLimitGroupAppService,
                                IAccountGroupAppService accountGroupAppService,
-                               IAirImportMawbAppService airImportMawbAppService
+                               IAirImportMawbAppService airImportMawbAppService,
+                               IIdentityUserAppService identityUserAppService
                                )
         {
             _tradePartnerAppService = tradePartnerAppService;
@@ -68,6 +70,7 @@ namespace Dolphin.Freight.Web.CommonService
             _creditLimitGroupAppService = creditLimitGroupAppService;
             _accountGroupAppService = accountGroupAppService;
             _airImportMawbAppService = airImportMawbAppService;
+            _identityUserAppService = identityUserAppService;
         }
         public List<SelectItems> TradePartnerLookupList => FillTradePartnerAsync().Result;
 
@@ -112,6 +115,8 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> GiCodeLookupList => FillGiCodesAsync().Result;
         public List<SelectItems> CreditLimitGroupNameLookupList => FillCreditLimitGroupName().Result;
         public List<SelectItems> AccountGroupnameLookupList => FillAccountGroupName().Result;
+
+        public List<SelectItems> OperatorLookupList => FillOperatorAsync().Result;
 
 
         #region FillTradePartnerAsync()
@@ -219,7 +224,14 @@ namespace Dolphin.Freight.Web.CommonService
                                      .ToList();
 
         }
+        public async Task<List<SelectItems>> FillOperatorAsync()
+        {
+            var svcTermLookup = await _identityUserAppService.GetListAsync(new GetIdentityUsersInput() {MaxResultCount=1000 });
 
+            return svcTermLookup.Items.Select(x => new SelectListItem(x.Name, x.Id.ToString(), false))
+                                     .ToList();
+
+        }
         public async Task<List<SelectItems>> FillPreCarriageVesselTypeAsync()
         {
             var svcTermLookup = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new QueryDto() { QueryType = "PreCarriageVesselNameId" });

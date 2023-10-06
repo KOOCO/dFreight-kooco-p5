@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.Containers
 {
@@ -147,5 +148,6 @@ namespace Dolphin.Freight.ImportExport.Containers
         public string PackageWeightUnit { get; set; }
         public string PackageMeasureUnit { get; set; }
         public Guid? VesselId { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

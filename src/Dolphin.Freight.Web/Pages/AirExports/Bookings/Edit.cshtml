@@ -12,11 +12,11 @@
 @inject ICurrentUser _currentUser;
 @section styles {
     <style type="text/css">
-        #ejo .btn-primary {
-            color: #fff;
-            background-color: rgb(0 123 255 / 52%);
-            border-color: #007bff;
-        }
+                       #ejo .btn-primary {
+    color: #fff;
+    background-color: rgb(25 28 32 / 52%);
+    border-color: #000000;
+}
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
@@ -29,6 +29,17 @@
 
 
             $(document).ready(function () {
+               var checkDate= $('#ExportBooking_DepatureDate').val();
+                debugger;
+               if(checkDate=='0001-01-01')
+               {
+                   $('#ExportBooking_DepatureDate').val(null);
+               }
+               var checkDate1= $('#ExportBooking_FinalEta').val();
+               if(checkDate1=="0001-01-01T00:00")
+               {
+                   $('#ExportBooking_FinalEta').val(null);
+               }
                 const ids = [
                     'ExportBooking_SoNoDate',
                    
@@ -678,14 +689,15 @@
             <abp-breadcrumb-item title=@L["Menu:ExportBookings.Create"] href="#" />
         </abp-breadcrumb>
     </div>
-    <nav class="submenu">
+   <nav class="submenu">
         <ol>
-            <li class="menu-item ">
+            <li class="menu-item " style="display: flex!important; align-items: flex-start!important;flex-direction: column">
                 <a class="nav-link active" href="javascript:void(0)">@L["Tab:Basic"]</a>
             </li>
-            <li class="menu-item ">
+
+            @* <li class="menu-item ">
                 <a class="nav-link disabled" href="javascript:void(0)">@L["Tab:Status"]</a>
-            </li>
+            </li> *@
             
         </ol>
     </nav>
@@ -737,7 +749,7 @@
                                               <abp-row>
                                                 <abp-column>
                                                      <div class="mb-3">
-                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ReferenceId", AspItems = _dropdown.ReferenceMawbLookupList, IsShowLabel = true, FieldName = @L["ReferenceId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ReferenceId), IsRequired = false })
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ReferenceId", AspItems = _dropdown.ReferenceMawbLookupList, IsShowLabel = true, FieldName = @L["ReferenceNo"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ReferenceId), IsRequired = false })
                                                </div>
                                                 </abp-column>
                                             </abp-row>
@@ -804,7 +816,7 @@
                                                    <abp-row>
                                                 <abp-column>
                                                      <div class="mb-3">
-                                                    <label  class="form-label">@L["Sub Agent AWB"] <input  type="checkbox" asp-for="@Model.ExportBooking.SubAgentAwb"  /></label>
+                                                    <label  class="form-label">@L["SubAgentAwb"] <input  type="checkbox" asp-for="@Model.ExportBooking.SubAgentAwb"  /></label>
                                                  
                                                 </div>
                                                 </abp-column>
@@ -834,7 +846,7 @@
                                              <abp-row>
                                                 <abp-column>
                                                      <div class="mb-3">
-                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ActualShipperId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ShipperId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ActualShipperId), IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ActualShipperId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ActualShipper"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ActualShipperId), IsRequired = false })
                                                </div>
                                                 </abp-column>
                                             </abp-row>
@@ -866,20 +878,21 @@
                                                 </div>
                                                 </abp-column>
                                             </abp-row>
-                                              <abp-row>
-                                                <abp-column>
-                                                     <div class="mb-3">
-                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.AgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Issuing Carrier"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.AgentId), IsRequired = false })
-                                               </div>
-                                                </abp-column>
-                                            </abp-row>
                                              <abp-row>
                                                 <abp-column>
                                                      <div class="mb-3">
-                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ForwardingAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Oversea Agent"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ForwardingAgentId), IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ForwardingAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["OverseaAgentId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.ForwardingAgentId), IsRequired = false })
                                                </div>
                                                 </abp-column>
                                             </abp-row>
+                                              <abp-row>
+                                                <abp-column>
+                                                     <div class="mb-3">
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.AgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["IssuingCarrier"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.AgentId), IsRequired = false })
+                                               </div>
+                                                </abp-column>
+                                            </abp-row>
+                                            
                                              <abp-row>
                                                 <abp-column>
                                                      <div class="mb-3">
@@ -900,14 +913,14 @@
                                                 <abp-column size-md="_6">
                                                      <div class="mb-3">
                                                          <abp-select label="@L["SvcTermFromId"]" asp-for="@Model.ExportBooking.SvcTermTypeFrom" asp-items="Html.GetEnumSelectList(typeof(ServiceTermType))" class="form-select-sm form-control">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                                        <option value='0' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                                     </abp-select> </div>
                                                 </abp-column>
                                                 <abp-column size-md="_6" >
                                                      <div class="mb-3 ">
                                                     
                                                      <abp-select label="@L["SvcTermToId"]" asp-for="@Model.ExportBooking.SvcTermTypeTo" asp-items="Html.GetEnumSelectList(typeof(ServiceTermType))" class="form-select-sm form-control">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                                        <option value='0' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                                     </abp-select>
                                
                                                 </div>
@@ -917,7 +930,7 @@
                                                 <abp-column>
                                                      <div class="mb-3">
                                                     <abp-select asp-for="@Model.ExportBooking.IncotermsType" asp-items="Html.GetEnumSelectList(typeof(IncotermsType))" class="form-select-sm form-control">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                                        <option value='0' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                                     </abp-select>
                                 </div>
                                                 </abp-column>
@@ -958,7 +971,7 @@
                                 </abp-row>
                                  <abp-row>
                                 <abp-column>
-                                    <abp-input asp-for="ExportBooking.ArrivalDate" abp-data-datepicker="false" size="Small" />
+                                    <abp-input asp-for="ExportBooking.ArrivalDate" abp-data-datepicker="false"  />
                                 </abp-column>
                                    </abp-row>
                                       <abp-row>
@@ -1009,7 +1022,7 @@
                                                 <abp-column>
                                                      <div class="mb-3">
                                                     <abp-select asp-for="@Model.ExportBooking.SalesType" asp-items="Html.GetEnumSelectList(typeof(SalesType))" class="form-select-sm form-control">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                                        <option value='0' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                                     </abp-select>
                                 </div>
                                                 </abp-column>
@@ -1018,27 +1031,22 @@
                                                 <abp-column>
                                                      <div class="mb-3">
                                                            <abp-select asp-for="@Model.ExportBooking.ShipType" asp-items="Html.GetEnumSelectList(typeof(ShipType))" class="form-select-sm form-control">
-                                        <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                                        <option value='0' selected> @L["Display:Dropdownlist:Option:Select"] </option>
                                     </abp-select></div>
                                                 </abp-column>
                                             </abp-row>
                                          <abp-row>
                                             <abp-column >
-                                    <abp-input asp-for="ExportBooking.DVCarriage" size="Small" />
+                                    <abp-input asp-for="ExportBooking.DVCarriage"  />
                                 </abp-column>
                                 </abp-row>
                                  <abp-row>
                                 <abp-column >
-                                    <abp-input asp-for="ExportBooking.DVCustomer" size="Small" />
+                                    <abp-input asp-for="ExportBooking.DVCustomer"  />
                                 </abp-column>
                             </abp-row>
                             <!--第七列-->
-                            <abp-row>
-                                <abp-column>
-                                    <abp-input asp-for="ExportBooking.Insurance" size="Small" />
-                                </abp-column>
-                                        
-                                     </abp-row>
+                           
                                        <abp-row>
                                         <abp-column>
                                             @L["WT/VAL"]
@@ -1052,7 +1060,12 @@
                                         </abp-column>
                                     </abp-row>
                             
-                              
+                               <abp-row>
+                                <abp-column>
+                                    <abp-input asp-for="ExportBooking.Insurance"  />
+                                </abp-column>
+                                        
+                                     </abp-row>
                                    
 
                                         </abp-card-body>
@@ -1069,27 +1082,27 @@
                                     <abp-card class="mt-3 mb-3">
                                         <abp-card-body style="background:#eeeeee;">
                                              <abp-row>
-                                                 <h4>@L["Cargo Details"]</h4>
+                                                 <h4>@L["CargoDetails"]</h4>
                                 <div class="col">
                                     <table class="table table-borderless">
                                         <thead>
                                             <tr>
-                                                <th></th>
-                                                <th></th>
-                                                <th></th>
-                                                <th></th>
+                                                <th style="border-color: transparent!important;"></th>
+                                                <th style="border-color: transparent!important;"></th>
+                                                <th style="border-color: transparent!important;"></th>
+                                                <th style="border-color: transparent!important;"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <th class="packageTable">@L["Package"]</th>
+                                                <th style="border-color: transparent!important;" class="packageTable">@L["Package"]</th>
                                                 <td><input asp-for="ExportBooking.Package" class="form-control form-control-sm" /></td>
                                                 <td colspan="3">
                                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.PackageUnitLookupList", AspItems = _dropdown.PackageUnitLookupList, Selected = Model.ExportBooking.MawbPackageUnitId.ToString(), FieldName = "MawbPackageUnitId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.MawbPackageUnitId) })
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <th class="redStar packageTable">@L["BuyingRate"]</th>
+                                                <th style="border-color: transparent!important;" class="redStar packageTable">@L["BuyingRate"]</th>
                                                 <td><input asp-for="ExportBooking.BuyingRate" class="form-control form-control-sm" /></td>
                                                 <td>@L["per"]</td>
                                                 <td>
@@ -1098,7 +1111,7 @@
                                                 <td></td>
                                             </tr>
                                             <tr>
-                                                <th class="redStar packageTable">@L["SellingRate"]</th>
+                                                <th style="border-color: transparent!important;" class="redStar packageTable">@L["SellingRate"]</th>
                                                 <td><input asp-for="ExportBooking.SellingRate" class="form-control form-control-sm" /></td>
                                                 <td>@L["per"]</td>
                                                 <td>
@@ -1107,7 +1120,7 @@
                                                 <td></td>
                                             </tr>
                                             <tr>
-                                                <th>@L["VolumeWeight"]</th>
+                                                <th style="border-color: transparent!important;">@L["VolumeWeight"]</th>
                                                 <td><input asp-for="ExportBooking.VolumeWeightKg" class="form-control form-control-sm" /></td>
                                                 <td>@L["KG"]</td>
                                                 <td>
@@ -1116,7 +1129,7 @@
                                                 <td>@L["CBM"]</td>
                                             </tr>
                                             <tr>
-                                                <th></th>
+                                                <th style="border-color: transparent!important;"></th>
                                                 <td colspan="4"><abp-button size="Small" button-type="Primary" text="@L["SetDimensions"]" disabled="true" icon="pencil-square" /></td>
                                             </tr>
                                         </tbody>
@@ -1126,39 +1139,39 @@
                                     <table class="table table-borderless">
                                         <thead>
                                             <tr>
-                                                <th></th>
-                                                <th>@L["KG"]</th>
-                                                <th>@L["LB"]</th>
-                                                <th>@L["Amount"]</th>
+                                                <th style="border-color: transparent!important;"></th>
+                                                <th style="border-color: transparent!important;">@L["KG"]</th>
+                                                <th style="border-color: transparent!important;">@L["LB"]</th>
+                                                <th style="border-color: transparent!important;">@L["Amount"]</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <th class="packageTable">@L["GrossWeight(SHPR)"]</th>
+                                                <th style="border-color: transparent!important;" class="packageTable">@L["GrossWeight(SHPR)"]</th>
                                                 <td><input asp-for="ExportBooking.GrossWeightKg" class="form-control form-control-sm" id="GrossWeightKg" /></td>
                                                 <td><input asp-for="ExportBooking.GrossWeightLb" class="form-control form-control-sm" id="GrossWeightLb" /></td>
                                                 <td><input asp-for="ExportBooking.GrossWeightAmount" class="form-control" /></td>
                                             </tr>
                                             <tr>
-                                                <th class="packageTable">@L["GrossWeight(CNEE)"]</th>
+                                                <th style="border-color: transparent!important;" class="packageTable">@L["GrossWeight(CNEE)"]</th>
                                                 <td><input asp-for="ExportBooking.AwbGrossWeightKg" class="form-control form-control-sm" id="AwbGrossWeightKg" /></td>
                                                 <td><input asp-for="ExportBooking.AwbGrossWeightLb" class="form-control form-control-sm" id="AwbGrossWeightLb" /></td>
                                                 <td><input asp-for="ExportBooking.AwbGrossWeightAmount" class="form-control form-control-sm" /></td>
                                             </tr>
                                             <tr>
-                                                <th class="packageTable">@L["ChargeableWeight(SHPR)"]</th>
+                                                <th style="border-color: transparent!important;" class="packageTable">@L["ChargeableWeight(SHPR)"]</th>
                                                 <td><input asp-for="ExportBooking.ChargeableWeightKg" class="form-control form-control-sm" id="ChargeableWeightKg" /></td>
                                                 <td><input asp-for="ExportBooking.ChargeableWeightLb" class="form-control form-control-sm" id="ChargeableWeightLb" /></td>
                                                 <td><input asp-for="ExportBooking.ChargeableWeightAmount" class="form-control form-control-sm" /></td>
                                             </tr>
                                             <tr>
-                                                <th class="packageTable">@L["ChargeableWeight(CNEE)"]</th>
+                                                <th style="border-color: transparent!important;" class="packageTable">@L["ChargeableWeight(CNEE)"]</th>
                                                 <td><input asp-for="ExportBooking.AwbChargeableWeightKg" class="form-control form-control-sm" id="AwbChargeableWeightKg" /></td>
                                                 <td><input asp-for="ExportBooking.AwbChargeableWeightLb" class="form-control form-control-sm" id="AwbChargeableWeightLb" /></td>
                                                 <td><input asp-for="ExportBooking.AwbChargeableWeightAmount" class="form-control form-control-sm" /></td>
                                             </tr>
                                             <tr>
-                                                <th></th>
+                                                <th style="border-color: transparent!important;"></th>
                                                 
                                             </tr>
                                         </tbody>
@@ -1263,7 +1276,7 @@
                                                 </abp-column>
                                                 <abp-column size-md="_6">
                                                               <div>
-                                        <div class="pull-left"><h7 class="form-section">Nature And Quantatiy Of Goods</h7></div>
+                                        <div class="pull-left"><h7 class="form-section">@L["NatureandQuantityOfGoods"]</h7></div>
                                         <div class="pull-right">
                                             <div class="_font-12 inline-block">Copy: </div>
                                             <div class="btn-group">
@@ -1277,21 +1290,21 @@
                                                 </abp-column>
                                                 <abp-column size-md="_6">
                                                     <div>
-                                                        <div class="pull-left"><h7 class="form-section">Handling Information</h7></div>
+                                                        <div class="pull-left"><h7 class="form-section">@L["HandlingInformation"]</h7></div>
                                                         
                                                     </div>
                                                     <textarea id="ExportBooking_HandlingInformation" name="ExportBooking.HandlingInformation" class="form-control">@Model.ExportBooking.HandlingInformation</textarea>
                                                 </abp-column>
                                                 <abp-column size-md="_6">
                                                     <div>
-                                                        <div class="pull-left"><h7 class="form-section">Booking Remarks</h7></div>
+                                                        <div class="pull-left"><h7 class="form-section">@L["BookingRemarks"]</h7></div>
 
                                                     </div>
                                                     <textarea id="ExportBooking_BookingRemark" name="ExportBooking.BookingRemark" class="form-control">@Model.ExportBooking.BookingRemark</textarea>
                                                 </abp-column>
                                                 <abp-column size-md="_6">
                                                     <div>
-                                                        <div class="pull-left"><h7 class="form-section">Pickup / Delivery Instruction</h7></div>
+                                                        <div class="pull-left"><h7 class="form-section">@L["Pickup/DeliveryInstruction"]</h7></div>
 
                                                     </div>
                                                     <textarea id="ExportBooking_DeliveryInstruction" name="ExportBooking.DeliveryInstruction" class="form-control">@Model.ExportBooking.DeliveryInstruction</textarea>
@@ -1408,7 +1421,12 @@
 
 
                 <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
-                    <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
+                   @*  <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button> *@
+                      <button class="btn btn-primary me-md-2 rounded-circle" type="button" id="saveBtn" style="width: 60px; height: 60px;">
+  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-save fa-w-14 fa-2x">
+    <path fill="currentColor" d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM224 416c-35.346 0-64-28.654-64-64 0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64zm96-304.52V212c0 6.627-5.373 12-12 12H76c-6.627 0-12-5.373-12-12V108c0-6.627 5.373-12 12-12h228.52c3.183 0 6.235 1.264 8.485 3.515l3.48 3.48A11.996 11.996 0 0 1 320 111.48z"></path>
+  </svg>
+</button>
                 </div>
             </abp-column>
         </abp-row>

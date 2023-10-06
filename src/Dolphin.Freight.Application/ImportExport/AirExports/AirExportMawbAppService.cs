@@ -92,6 +92,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
                                    .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
                                    .WhereIf(query.IncotermsType.HasValue,e=>e.IncotermsType==query.IncotermsType)
                                    .WhereIf(query.AwbCancelled.HasValue, e => e.IsAwbCancelled == query.AwbCancelled)
+                                   .WhereIf(query.Block.HasValue, e => e.IsLocked == query.Block)
+                                   .WhereIf(query.AwbType.HasValue, e => e.AwbType == query.AwbType)
                                    .WhereIf(query.DirectMaster.HasValue, e => e.IsDirectMaster == query.DirectMaster)
                                    .WhereIf(query.PostDate.HasValue, e => e.PostDate.Date == query.PostDate.Value.Date.AddDays(1))
                                    .WhereIf(query.DepatureDate.HasValue, e => e.DepatureDate.Date == query.DepatureDate.Value.Date.AddDays(1))

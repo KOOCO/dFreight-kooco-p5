@@ -11,16 +11,29 @@
 @inject IDropdownService _dropdown
 @model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
 @using Dolphin.Freight.AirImports;
-
 @inject IStringLocalizer<FreightResource> L
 
+@section styles {
+    <style>
+    .form-control + span {
+        margin-left: 5px;
+    }
+    </style>
+}
+<abp-script src="/Pages/AirExports/AirExportHawb.js" />
 <script>
     var isHawbLocked;
     $(document).ready(function () {
         if ($('#HawbCancelledDate').val() == '0001-01-01T00:00') {
             $('#HawbCancelledDate').val('');
         }
-     
+        $('#HawbCancelledDate').removeAttr('type');
+
+        if ($('#AirExportHawbDto\\.OtherRadioPPD').val() == '@Model.AirExportHawbDto.Other') {
+            $('#AirExportHawbDto\\.OtherRadioPPD').prop('checked', true);
+        } else if ($('#AirExportHawbDto\\.OtherRadioCOLL').val() == '@Model.AirExportHawbDto.Other') {
+            $('#AirExportHawbDto\\.OtherRadioCOLL').prop('checked', true);
+        }
     });
 
     $(document).ready(function () {
@@ -353,16 +366,14 @@
             </abp-column>
             <abp-column size-md="_3">
                 <abp-row>
-
                     <abp-column>
                         @L["WT/VAL"]
-                        <abp-radio asp-for="AirExportHawbDto.WTVAL" asp-items="@Model.WtValOtherList" inline="true" />
+                        <abp-radio asp-for="@Model.AirExportHawbDto.WTVAL" asp-items="@Model.WtValOtherList" inline="true" />
                     </abp-column>
                 </abp-row>
             </abp-column>
             <abp-column size-md="_3">
                 <abp-row>
-
                     <abp-column>
                         @L["Other"]
                         <abp-radio asp-for="@Model.AirExportHawbDto.Other" asp-items="@Model.WtValOtherList" inline="true" />
@@ -412,10 +423,10 @@
                                 </tr>
                                 <tr>
                                     <th class="packageTable">@L["VolumeWeight"]</th>
-                                    <td><input asp-for="AirExportHawbDto.ChargeableWeightCneeKG" class="form-control form-control-sm" /></td>
+                                    <td><input asp-for="AirExportHawbDto.VolumeWeightKG" class="form-control form-control-sm" /></td>
                                     <td>@L["KG"]</td>
                                     <td>
-                                        <input asp-for="AirExportHawbDto.ChargeableWeightCneeLB" class="form-control form-control-sm" />
+                                        <input asp-for="AirExportHawbDto.VolumeWeightCBM" class="form-control form-control-sm" />
                                     </td>
                                     <td>@L["CBM"]</td>
                                 </tr>
@@ -426,34 +437,41 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col">
+                    <div class="col-7 pl-0 grossWeightTable">
                         <table class="table table-borderless">
-                            <thead>
+                            @*<thead>
                                 <tr>
                                     <th></th>
-                                    <th>@L["KG"]</th>
-                                    <th>@L["LB"]</th>
-                                    <th>@L["Amount"]</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
                                 </tr>
-                            </thead>
+                            </thead>*@
+                            <br />
                             <tbody>
                                 <tr>
-                                    <th class="packageTable">@L["GrossWeight"]</th>
-                                    <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprKG" class="form-control form-control-sm" id="GrossWeightKg" /></td>
-                                    <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprLB" class="form-control form-control-sm" id="GrossWeightLb" /></td>
-                                    <td><input asp-for="@Model.AirExportHawbDto.GrossWeightShprAmount" class="form-control form-control-sm" /></td>
+                                    <th class="packageTable">@L["GrossWeightSHPR"]</th>
+                                    <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.GrossWeightShprKG" class="form-control form-control-sm mr-1" onkeyup="AirExportHawb.KgLbConversion(event, 'KG')" /><span>@L["KG"]</span></div></td>
+                                    <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.GrossWeightShprLB" class="form-control form-control-sm mr-1" onkeyup="AirExportHawb.KgLbConversion(event, 'LB')" /><span>@L["LB"]</span></div></td>
+                                    <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.GrossWeightShprAmount" class="form-control form-control-sm mr-1" /><span>@L["Amount"]</span></div></td>
                                 </tr>
                                 <tr>
-                                    <th class="packageTable">@L["ChargeableWeight"]</th>
-                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprKG" class="form-control form-control-sm" id="ChargeableWeightKg" /></td>
-                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprLB" class="form-control form-control-sm" id="ChargeableWeightLb" /></td>
-                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprAmount" class="form-control form-control-sm" /></td>
+                                    <th class="packageTable">@L["GrossWeightCNEE"]</th>
+                                    <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.GrossWeightCneeKG" class="form-control form-control-sm mr-1" onkeyup="AirExportHawb.KgLbConversion(event, 'KG')" /><span>@L["KG"]</span></div></td>
+                                    <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.GrossWeightCneeLB" class="form-control form-control-sm mr-1" onkeyup="AirExportHawb.KgLbConversion(event, 'LB')" /><span>@L["LB"]</span></div></td>
+                                    <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.GrossWeightCneeAmount" class="form-control form-control-sm mr-1" /><span>@L["Amount"]</span></div></td>
                                 </tr>
                                 <tr>
-                                    <th class="packageTable">@L["AWBChargeableWeight"]</th>
-                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeKG" class="form-control form-control-sm" id="AwbChargeableWeightKg" /></td>
-                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeLB" class="form-control form-control-sm" id="AwbChargeableWeightLb" /></td>
-                                    <td><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeAmount" class="form-control form-control-sm" /></td>
+                                    <th class="packageTable">@L["ChargeableWeightSHPR"]</th>
+                                    <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprKG" class="form-control form-control-sm mr-1" onkeyup="AirExportHawb.KgLbConversion(event, 'KG')" /><span>@L["KG"]</span></div></td>
+                                    <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprLB" class="form-control form-control-sm mr-1" onkeyup="AirExportHawb.KgLbConversion(event, 'LB')" /><span>@L["LB"]</span></div></td>
+                                    <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprAmount" class="form-control form-control-sm mr-1" /><span>@L["Amount"]</span></div></td>
+                                </tr>
+                                <tr>
+                                    <th class="packageTable">@L["ChargeableWeightCNEE"]</th>
+                                    <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeKG" class="form-control form-control-sm mr-1" onkeyup="AirExportHawb.KgLbConversion(event, 'KG')" /><span>@L["KG"]</span></div></td>
+                                    <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeLB" class="form-control form-control-sm mr-1" onkeyup="AirExportHawb.KgLbConversion(event, 'LB')" /><span>@L["LB"]</span></div></td>
+                                    <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.ChargeableWeightCneeAmount" class="form-control form-control-sm mr-1" /><span>@L["Amount"]</span></div></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -576,17 +594,21 @@
         <abp-row class="mt-4">
             <abp-column size-md="_6">
                 <h3>@L["Mark"]</h3>
-                <abp-input asp-for="AirExportHawbDto.Mark" id="AirExportHawbDto_Mark" value="@Model.AirExportHawbDto.Mark" suppress-label="true" />
+                <textarea asp-for="AirExportHawbDto.Mark" id="AirExportHawbDto_Mark" name="AirExportHawbDto.Mark" class="form-control">@Model.AirExportHawbDto.Mark</textarea>
+               @*  <abp-input asp-for="AirExportHawbDto.Mark" id="AirExportHawbDto_Mark" value="@Model.AirExportHawbDto.Mark" suppress-label="true" /> *@
             </abp-column>
             <abp-column size-md="_6">
                 <h3>@L["Description"]</h3>
-                <abp-input asp-for="AirExportHawbDto.NatureAndQuantityOfGoods" suppress-label="true" />
+                 <textarea asp-for="AirExportHawbDto.NatureAndQuantityOfGoods" id="AirExportHawbDto_NatureAndQuantityOfGoods" name="AirExportHawbDto.NatureAndQuantityOfGoods" class="form-control">@Model.AirExportHawbDto.NatureAndQuantityOfGoods</textarea>
+               @*  <abp-input asp-for="AirExportHawbDto.NatureAndQuantityOfGoods" suppress-label="true" /> *@
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_12">
                 <h3>@L["HandlingInformation"]</h3>
-                <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation" suppress-label="true" />
+                   <textarea asp-for="AirExportHawbDto.HandlingInformation" id="AirExportHawbDto_HandlingInformation" name="AirExportHawbDto.HandlingInformation" class="form-control">@Model.AirExportHawbDto.HandlingInformation</textarea>
+              
+              @*   <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation" suppress-label="true" /> *@
             </abp-column>
         </abp-row>
         <div class="mt-4 d-flex mb-2">

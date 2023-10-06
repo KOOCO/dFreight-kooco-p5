@@ -1,15 +1,17 @@
 ﻿$(function () {
     var url = new URL(window.location.href);
     var from = url.searchParams.get('from');
-
+   
     dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(url.searchParams.get('Id'))
         .done(function (hblCards) {
+
             if (hblCards && hblCards.length) {
+               
                 hblCards.forEach(function (hblCard, index) {
 
                     let abpcard = createHawbCard();
 
-                    abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index);
+                    abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index, hblCard.hblConsigneeName, hblCard.hblShipperName);
 
                     $('#hblCards').append(abpcard);
                 });
@@ -24,6 +26,8 @@
                 $('#addHBtn').click();
             }
         });
+  
+ 
 })
 
 var EditModelScript = {
@@ -88,5 +92,17 @@ var EditModelScript = {
                 });
                 break;
         }
+    },
+
+    RextoHexColorCode: function (rgb) {
+        var result = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/.exec(rgb);
+        if (result) {
+            return '#' +
+                (1 << 24 | parseInt(result[1]) << 16 | parseInt(result[2]) << 8 | parseInt(result[3])).toString(16).slice(1).toUpperCase();
+        } else {
+            return undefined;
+        }
     }
+
+
 }

@@ -83,6 +83,30 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public async Task OnGetAsync(Guid Id)
         {
             AirExportMawbDto = await _airExportMawbAppService.GetAsync(Id);
+            if (AirExportMawbDto.RouteTrans1ArrivalDate == DateTime.MinValue)
+            {
+                AirExportMawbDto.RouteTrans1ArrivalDate = (DateTime?)null;
+            }
+            if (AirExportMawbDto.RouteTrans1DepatureDate == DateTime.MinValue)
+            {
+                AirExportMawbDto.RouteTrans1DepatureDate = (DateTime?)null;
+            }
+            if (AirExportMawbDto.RouteTrans2ArrivalDate == DateTime.MinValue)
+            {
+                AirExportMawbDto.RouteTrans2ArrivalDate = (DateTime?)null;
+            }
+            if (AirExportMawbDto.RouteTrans2DepatureDate == DateTime.MinValue)
+            {
+                AirExportMawbDto.RouteTrans2DepatureDate = (DateTime?)null;
+            }
+            if (AirExportMawbDto.RouteTrans3ArrivalDate == DateTime.MinValue)
+            {
+                AirExportMawbDto.RouteTrans3ArrivalDate = (DateTime?)null;
+            }
+            if (AirExportMawbDto.RouteTrans3DepatureDate == DateTime.MinValue)
+            {
+                AirExportMawbDto.RouteTrans3DepatureDate = (DateTime?)null;
+            }
             //AirExportHawbDto = new AirExportHawbDto();
             /*AirExportHawbDto = await _airExportHawbAppService.GetHblCardsById(Id);*/
             //if (AirExportMawbDto.ExtraProperties != null)

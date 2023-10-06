@@ -29,5 +29,6 @@ namespace Dolphin.Freight.ImportExport.AirExports.Bookings
         public DateTime? BookingDate { get; set; }
         public DateTime? DepatureDate { get; set; }
         public DateTime? ArrivalDate { get; set; }
+        public Guid? CreatorId { get; set; }
     }
 }

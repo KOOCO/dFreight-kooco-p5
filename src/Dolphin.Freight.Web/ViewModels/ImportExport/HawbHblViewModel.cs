@@ -18,6 +18,7 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
 {
     public class HawbHblViewModel
     {
+        private OceanImportHblDto _oceanImportHbl;
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
@@ -35,7 +36,12 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
         public CreateUpdateExportBookingDto ExportBookingDto { get; set; }
         [BindProperty]
         public CreateUpdateContainerDto CreateUpdateContainerBooking { get; set; }
-        public OceanImportHblDto OceanImportHbl { get; set; }
+        public OceanImportHblDto OceanImportHbl { get { return _oceanImportHbl; } set
+            {
+                _oceanImportHbl = value;
+                _oceanImportHbl.ShipTypeId = AirImports.ShipType.Normal;   } }
+        public CreateUpdateOceanImportHblDto OceanImportHblDto { get; set; }
+        
         public AirExportHawbDto AirExportHawbDto { get; set; }
         [BindProperty(SupportsGet = true)]
         public Guid Hid { get; set; }
@@ -66,6 +72,7 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
         public List<SelectListItem> CountryName { get; set; }
         public List<SelectListItem> PackageUnitLookupList { get; set; }
         public List<SelectListItem> WtValOtherList { get; set; }
+
         public virtual string GetFileSize(string filename)
         {
             string uploadsFolder = Path.Combine("mediaUpload", "AirImports", "DocCenter", Id.ToString());
@@ -83,5 +90,6 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
         }
         public string Title { get; set; }
         public string CurrentHawbNo { get; set; }
+
     }
 }

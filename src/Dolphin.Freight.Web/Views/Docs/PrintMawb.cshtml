@@ -493,7 +493,7 @@
                                     <tbody><tr>
                                         <td class="border-r w-20 text-center">
                                             <div class="title-oblique text-var lineheight-nor">Amount of Insurance</div>
-                                            <div class="item-edit"><input type="text" name="insurance" value="XXX"></div>
+                                            <div class="item-edit"><input type="text" name="insurance" value="@Model.Insurance"></div>
                                             <div class="item-pdf auto-font-size __width-amount"><span>XXX</span></div>
                                         </td>
                                         <td class="w-80 text-var col-padding lineheight-nor">
@@ -638,13 +638,13 @@
                             <td class="border-r bg-light">&nbsp;</td>
                             <td class="td col-padding border-r">
                                 <div class="item-edit">
-                                    <textarea name="rate_charge_area" cols="40" rows="13"></textarea>
+                                    <textarea name="rate_charge_area" cols="40" rows="13">@Model.SellingRate</textarea>
                                 </div>
                             </td>
                             <td class="border-r bg-light">&nbsp;</td>
                             <td class="td col-padding border-r">
                                 <div class="item-edit">
-                                    <textarea name="total_charge_area" cols="40" rows="9"></textarea>
+                                    <textarea name="total_charge_area" cols="40" rows="9">@Model.AwbChargeableWeightAmount</textarea>
                                 </div>
                                 <table class="table-padding">
                                     <tbody><tr>
@@ -700,7 +700,7 @@
                                 <table class="table-padding">
                                     <tbody><tr>
                                         <td class="w-50 text-right border-r">
-                                            <div class="item-edit"><input type="text" name="weight_prepaid" value=""></div>
+                                            <div class="item-edit"><input type="text" name="weight_prepaid" value="@Model.ChargeableWeightAmount"></div>
                                         </td>
                                         <td class="w-50 text-right">
                                             <div class="item-edit"><input type="text" name="weight_collect"></div>
@@ -747,15 +747,15 @@
                                     <tbody><tr>
                                         <td class="w-60 td">
                                             <div class="title-oblique text-var">Other Charges</div>
-                                            <div class="item-edit"><textarea name="other_charges_area" cols="40" rows="5"></textarea></div>
+                                            <div class="item-edit"><textarea name="other_charges_area" cols="40" rows="5">@(Model.OtherCharges.Sum(x=>Convert.ToDouble(x.ChargeAmount)))</textarea></div>
                                         </td>
                                         <td class="w-20 td text-center">
                                             <div class="title-oblique text-var">PREPAID</div>
-                                            <div class="item-edit"><textarea name="other_charges_area_prepaid" cols="40" rows="5"></textarea></div>
+                                            <div class="item-edit"><textarea name="other_charges_area_prepaid" cols="40" rows="5">@(Model.OtherCharges.Where(x=>x.CollectPaid=="Paid").Sum(x=>Convert.ToDouble(x.ChargeAmount)))</textarea></div>
                                         </td>
                                         <td class="w-20 td text-center">
                                             <div class="title-oblique text-var">COLLECT</div>
-                                            <div class="item-edit"><textarea name="other_charges_area_collect" cols="40" rows="5"></textarea></div>
+                                            <div class="item-edit"><textarea name="other_charges_area_collect" cols="40" rows="5">@(Model.OtherCharges.Where(x=>x.CollectPaid=="Collect").Sum(x=>Convert.ToDouble(x.ChargeAmount)))</textarea></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -791,7 +791,7 @@
                                 <table class="table-padding">
                                     <tbody><tr>
                                         <td class="w-50 text-right border-r">
-                                            <div class="item-edit"><input type="text" name="total_other_charges_due_carrier_prepaid" value=""></div>
+                                            <div class="item-edit"><input type="text" name="total_other_charges_due_carrier_prepaid" value="@Model.OtherChargesDueCarrier"></div>
                                         </td>
                                         <td class="w-50 text-right">
                                             <div class="item-edit"><input type="text" name="total_other_charges_due_carrier_collect"></div>
@@ -861,7 +861,7 @@
                                     </tr>
                                     <tr>
                                         <td class="w-50 border-r text-right">
-                                            <div class="item-edit"><input type="text" name="total_prepaid" value=""></div>
+                                            <div class="item-edit"><input type="text" name="total_prepaid" value="@Model.TotalPrepaid"></div>
                                         </td>
                                         <td class="w-50 text-right">
                                             <div class="item-edit"><input type="text" name="total_collect" value=""></div>

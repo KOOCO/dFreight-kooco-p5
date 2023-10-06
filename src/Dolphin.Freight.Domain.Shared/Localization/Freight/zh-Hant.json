@@ -2,10 +2,10 @@
   "culture": "zh-Hant",
   "texts": {
 
-
+    "Customer": "客戶",
     "Welcome": "歡迎",
     "LongWelcomeMessage": "歡迎使用",
-
+    "AddHBL": "新增HBL",
     "Permission:Settings": "設定",
     "Permission:OceanExports": "海運出口",
     "Permission:OceanImports": "海運進口",
@@ -248,7 +248,7 @@
     "Note": "備註",
     "CurrentNo": "當前分配的號碼",
     //Menu:OceanExports
-
+    "ChargeableWeightCNEE": "提單計費重量",
     "FilingNo": "文件編號",
     "MblNo": "MB/L號碼",
     "PostDate": "發布日期 ",
@@ -260,7 +260,7 @@
     "MblCarrierName": "船公司",
     "BlAcctCarrierId": "船公司(財務窗口)",
     "ShippingAgentId": "本地代理",
-    "MblOverseaAgentId": "(海外代理)收貨人",
+    "MblOverseaAgentId": "海外代理",
     "MblOverseaAgentName": "海外代理",
     "MblNotifyId": "通知方",
     "ForwardingAgentId": "轉運代理",
@@ -303,6 +303,7 @@
     "RailCutOffTime": "鐵路結關日",
     "IsCanceled": "提單已取消",
     "IsReleased": "已放貨",
+    "ShipTypeId": "運輸類別",
 
     //海運進口
     "AgentRefNo": "代理參考號碼",
@@ -318,7 +319,7 @@
     "ItNo": "IT號碼",
     "ItDate": "IT日期",
     "ItLocation": "IT發布地點",
-    "IsEcommerce": "電子商務",
+    "IsEcommerce": "E-Commerce",
     "MblShipperId": "託運人",
     "MblConsigneeId": "收貨人",
     "MblCustomerId": "客戶",
@@ -330,7 +331,7 @@
     "CompanyId": "航空公司",
     "PackageCode": "代碼",
     "PackageName": "名稱",
-    "AmsNo": "AMS代碼",
+    "AmsNo": "AMS號碼",
     "AmsNoId": "AMS代碼",
     "EManifestNo": "eManifest代碼",
     "EManifestNoId": "eManifest代碼",
@@ -384,7 +385,7 @@
     "LockConfirmationMessage": "確定鎖定?",
     "UnlockConfirmationMessage": "確定解鎖?",
     "SuccessfullyLock": "鎖定成功",
-    "MblReferralById": "業務員",
+    "MblReferralById": "業務推薦人",
     "ReleaseById": "放貨人",
     "MblReleaseDate": "",
     "IsBookingAgent": "攬貨代理",
@@ -467,7 +468,7 @@
     "Total": "加總",
     "ReceivedAmount": "已接收金額",
     "PaidTo": "收款人",
-    "ReferenceNo": "船期編號",
+    "ReferenceNo": "參考編號(MAWB)",
     "SoCode": "S/O 號碼",
     "SoNoDate": "S/O 日期",
     "SalespersonId": "業務員",
@@ -482,8 +483,8 @@
     "VesselSchedule": "船期",
     "CancelName": "取消者",
     "CarrierBkgNo": "船公司S/O號碼",
-    "CarrierId": "船公司",
-    "ShipperId": "實際託運人",
+    "CarrierId": "航空公司",
+    "ShipperId": "託運人 (本地代理)",
     "CustomerId": "客戶",
     "HblAgentId": "HB/L代理",
     "ContainerQtyInputText": "集裝箱 櫃型/尺寸",
@@ -952,7 +953,6 @@
     "BLCategory": "顯示提單類別",
     "BLBillingDateRange": "提單帳單日期區間",
     "SearchResults": "搜尋結果",
-    "Customer": "帳單對象/委託人",
     "From(LoadingPort)": "收貨港 / 裝貨港 (機場)",
     "AddShippingFreightCost": "新增海運運價成本",
     "ImportShippingCompanyContractExcel": "匯入船公司合約 Excel",
@@ -1059,7 +1059,7 @@
     "AwbType": "提單類別",
     "MawbNo": "MAWB號碼",
     "AwbDate": "提單日期",
-    "ConsigneeId": "收貨人(海外代理)",
+    "ConsigneeId": "收貨人",
     "NotifyId": "通知方",
     "Office": "分站",
     "CoShipper": "聯合托運人",
@@ -1211,7 +1211,7 @@
     "sales": "業務員",
 
     "tracker": "卡車行",
-    "subAgentawb": "子代理提單",
+    "SubAgentAwb": "子代理提單",
     "CargoPickup": "卡車收貨地",
     "DeliveryTo": "卡車交貨地",
     "CargoType": "貨物類別",
@@ -1245,7 +1245,7 @@
     "Measurement": "材積",
     "Mark": "嘜頭",
     "NatureAndQuantityOfGoods": "貨描",
-    "HandlingInformation": "收貨/交貨指示",
+    "HandlingInformation": "儲運事項",
     "OtherCharges": "其他費用",
     "CarrierAgent": "航空公司/代理",
     "Collect/Prepaid": "運費到付/預付",
@@ -1311,7 +1311,7 @@
     "BookingDate": "S/O日期",
     "ITNNo": "ITN號碼",
     "BillTo": "收票人",
-    "IssuingCarrier": "海外代理",
+
     "Departure": "出發地",
     "TruckReceipt": "卡車收貨地",
     "TruckDeliveryPlace": "卡車交貨地",
@@ -1352,7 +1352,43 @@
     "OrDragItHere.": "在此拖放檔案",
     "Display:Action": "功能",
     "Display:Creator": "建立者",
-    "Display:Type": "類別"
+    "Display:Type": "類別",
+    //Ocean Import Hbl New Fields
+    "CyCfsLocationId": "CY/CFS地點",
+    "Available": "可提櫃日期",
+
+    "IsfMatchDate": "ISF匹配日期",
+    "Lfd": "場內延滯免費期",
+    "ItIssuedLocation": "IT發布地點",
+    "Rail": "鐵路",
+    "EntryNo": "報關號碼",
+    "EntryDocSent": "報關文件已寄出",
+    "OblReceived": "OB/L Received",
+    "Ror": "ROR",
+    "FreightReleased": "已放貨",
+    "DoorDeliveryATA": "已送貨到府",
+    "DoorMove": "送貨到府",
+    "CClearance": "海關清關",
+    "CHold": "海關扣留",
+
+    "ExpressBl": "快速提單",
+    "ExpiryDate": "到期日",
+    "GoDate": "出閘日期",
+    "ANSentDate": "AN寄出日期",
+    "DOSentDate": "DO寄出日期",
+    "HblSaleId": "業務員",
+    "Shipper": "託運人 (本地代理)",
+    "CargoDetails": "貨運細節",
+    "GrossWeight(SHPR)": "毛重(託運人)",
+    "GrossWeight(CNEE)": "毛重(收貨人)",
+    "ChargeableWeight(CNEE)": "計費重量(收貨人)",
+    "ChargeableWeight(SHPR)": "計費重量(託運人)",
+    "BookingRemarks": "S/O備註",
+    "Pickup/DeliveryInstruction": "收貨/交貨指示",
+    "IssuingCarrier": "承運人/代理",
+    "ActualShipper": "實際託運人"
+
+
 
   }
 }

@@ -144,17 +144,17 @@
                     <input type="text" class="form-control" id="FlightNo" />
                 </abp-column>
                 <abp-column size-md="_1">
-                    <label>@L["Depature"].Value</label>
+                    <label>@L["Depature/Destination"].Value</label>
                 </abp-column>
                 <abp-column size-md="_2">
                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DepatureId", AspItems = _dropdown.PortsManagementLookupList,  IsShowLabel = false, FieldName = "DepatureId", SelectType = 0, ShowFiledContentValue =null })
                                 </abp-column>
- <abp-column size-md="_1">
-                    <label>@L["Destination"].Value</label>
+       <abp-column size-md="_1">
+                    <label>@L["DepatureDate"].Value</label>
                 </abp-column>
                 <abp-column size-md="_2">
-                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DestinationId", AspItems = _dropdown.PortsManagementLookupList,  IsShowLabel = false, FieldName = "DepatureId", SelectType = 0, ShowFiledContentValue =null })
-                    </abp-column>
+                    <input type="date" class="form-control" id="DepatureDate" />
+                </abp-column>
                 
              
             </abp-row>
@@ -167,12 +167,7 @@
             
           
                   <abp-row class="mb-3">
-                          <abp-column size-md="_1">
-                    <label>@L["DepatureDate"].Value</label>
-                </abp-column>
-                <abp-column size-md="_2">
-                    <input type="date" class="form-control" id="DepatureDate" />
-                </abp-column>
+                   
                 <abp-column size-md="_1">
                     <label>@L["ArrivalDate"].Value</label>
                 </abp-column>
@@ -192,7 +187,12 @@
                 <abp-column size-md="_2">
                     <input type="text" class="form-control" id="BookingRemarks" />
                 </abp-column>
-            
+             <abp-column size-md="_1">
+                    <label>@L["OP"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.CreatorId", AspItems = _dropdown.OperatorLookupList,  IsShowLabel = false, FieldName = "OP", SelectType = 0, ShowFiledContentValue =null })
+                                </abp-column>
             
             </abp-row>
 

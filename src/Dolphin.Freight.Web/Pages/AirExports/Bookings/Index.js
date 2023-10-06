@@ -17,7 +17,7 @@ $(function () {
             consigneeId: $("#VesselSchedule_ConsigneeId").val() == '' ? null : $("#VesselSchedule_ConsigneeId").val(),
             carrierId: $("#VesselSchedule_CarrierId").val() == '' ? null : $("#VesselSchedule_CarrierId").val(),
             depatureId: $("#VesselSchedule_DepatureId").val() == '' ? null : $("#VesselSchedule_DepatureId").val(),
-            destinationId: $("#VesselSchedule_DestinationId").val() == '' ? null : $("#VesselSchedule_DestinationId").val(),
+            destinationId: $("#VesselSchedule_DepatureId").val() == '' ? null : $("#VesselSchedule_DepatureId").val(),
             salesId: $("#VesselSchedule_SalesId").val() == '' ? null : $("#VesselSchedule_SalesId").val(),
             notifyId: $("#VesselSchedule_NotifyId").val() == '' ? null : $("#VesselSchedule_NotifyId").val(),
             notifyId: $("#VesselSchedule_CustomerId").val() == '' ? null : $("#VesselSchedule_CustomerId").val(),
@@ -25,7 +25,7 @@ $(function () {
             bookingRemarks: $("#BookingRemarks").val(),
             officeId: $("#VesselSchedule_OfficeId").val() == '' ? null : $("#VesselSchedule_OfficeId").val(),
             forwadingAgent: $("#VesselSchedule_OverseaAgentId").val() == '' ? null : $("#VesselSchedule_OverseaAgentId").val(),
-
+            creatorId:  $("#VesselSchedule_CreatorId").val() == '' ? null : $("#VesselSchedule_CreatorId").val(),
 
             depatureDate: $("#DepatureDate").val() == '' || $("#DepatureDate").val() == null ? null : new Date($("#DepatureDate").val()),
             arrivalDate: $("#ArrivalDate").val() == '' || $("#ArrivalDate").val() == null ? null : new Date($("#ArrivalDate").val()),

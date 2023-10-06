@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dolphin.Freight.ImportExport.Containers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -422,6 +423,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public CreateUpdateContainerDto CreateUpdateHBLContainerDto { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

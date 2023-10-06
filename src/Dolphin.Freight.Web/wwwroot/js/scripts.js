@@ -423,16 +423,36 @@ function setDateTimeforCards(card) {
             case 'OIHBL':
 
                 var hblId = $('#OceanImportHBL').val();
-                dolphin.freight.importExport.oceanImports.oceanImportHbl.get(hblId).done(function (res) {
-                    if (res.isLocked) {
-                        $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
-                        $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
-                    } else {
-                        $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
-                        $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
-                    }
-                });
+                if (hblId != '00000000-0000-0000-0000-000000000000') {
+                    
+                 
+                   
+                    dolphin.freight.importExport.oceanImports.oceanImportHbl.get(hblId).done(function (res) {
+                        if (res.isLocked) {
+                            $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+                            $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                        } else {
+                            $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                            $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                        }
+                        if (res.isRailwayCode) {
 
+                            $('#OceanImportHbl_RailwayCodeId').prop('disabled', false);
+                        }
+                        else {
+                            $('#OceanImportHbl_RailwayCodeId').prop('disabled', true);
+
+                        }
+                        if (res.isOblReceived) {
+
+                            $('#OceanImportHbl_OblReceivedDate').prop('disabled', false);
+                        }
+                        else {
+
+                            $('#OceanImportHbl_OblReceivedDate').prop('disabled', true);
+                        }
+                    });
+                }
                 const OceanImportids = [
                     "OceanImportHbl_PorEtd",
                     "OceanImportHbl_PodEta",
@@ -444,31 +464,125 @@ function setDateTimeforCards(card) {
                     "OceanImportHbl_LcIssueDate",
                     "OceanImportHbl_OnBoardDate",
                     "OceanImportHbl_HblReleaseDate",
-                    "OceanImportHbl_CanceledDate"
+                    "OceanImportHbl_CanceledDate",
+                    "OceanImportHbl_Available",
+                    "OceanImportHbl_IsfMatchDate",
+                    "OceanImportHbl_Lfd",
+                    "OceanImportHbl_ItDate",
+                    "OceanImportHbl_GoDate",
+                    "OceanImportHbl_ExpiryDate",
+                    "OceanImportHbl_CReleasedDate",
+                    "OceanImportHbl_EntryDocSent",
+                    "OceanImportHbl_DoorDeliveryATA",
                 ];
+                debugger;
+                if (hblId == '00000000-0000-0000-0000-000000000000') {
+                  
 
-                OceanImportids.forEach(function (id) {
-                    let dateElem = $('#' + id);
+                    OceanImportids.forEach(function (id) {
+                        let dateElem = $('#' + id);
 
-                    if (dateElem.length === 0) {
-                        return;
-                    }
+                        if (dateElem.length === 0) {
+                            return;
+                        }
 
-                    dateElem.removeAttr('type').datetimepicker({
-                        format: 'Y-m-d H:i',
-                        step: 15,
-                        allowInput: false
+                        dateElem.removeAttr('type').datetimepicker({
+                            format: 'Y-m-d H:i',
+                            step: 15,
+                            allowInput: false
+                        });
+
+                        let currentVal = dateElem.val();
+                        if (currentVal.includes('T')) {
+                            dateElem.val(currentVal.replace('T', ' '));
+                        }
                     });
 
-                    let currentVal = dateElem.val();
-                    if (currentVal.includes('T')) {
-                        dateElem.val(currentVal.replace('T', ' '));
+                    debugger;
+                    var selectedValue = $('#OceanImportMbl_DelId').val();
+                    if ($('#OceanImportHbl_DelId').val() == null || $('#OceanImportHbl_DelId').val() == '') {
+                        $('#OceanImportHbl_DelId').val(selectedValue);
+
+
+                        // Trigger the change event to update the dropdown visually
+                        $('#OceanImportHbl_DelId').trigger('change');
                     }
-                });
+
+                    var selectedValue = $('#OceanImportMbl_ForwardingAgentId').val();
+                    if ($('#OceanImportHbl_HblForwardingAgentId').val() == null || $('#OceanImportHbl_HblForwardingAgentId').val() == '') {
+                        $('#OceanImportHbl_HblForwardingAgentId').val(selectedValue);
+
+
+                        // Trigger the change event to update the dropdown visually
+                        $('#OceanImportHbl_HblForwardingAgentId').trigger('change');
+                    }
+                    if ($('#OceanImportHbl_DelEta').val() == null || $('#OceanImportHbl_DelEta').val() == '') {
+                        var newValue = $('#OceanImportMbl_DelEta').val();
+
+                        $('#OceanImportHbl_DelEta').val(newValue);
+
+                        // Call your other functions or perform desired actions here
+
+                        var newValue = $('#OceanImportMbl_ShipModeId').val();
+
+                        $('#OceanImportHbl_ShipModeId').val(newValue);
+                        $('#OceanImportHbl_ShipModeId').trigger('change');
+
+                    }
+
+                    if ($('#OceanImportHbl_FreightTermForBuyerId').val() == null || $('#OceanImportHbl_FreightTermForBuyerId').val() == '') {
+                        var newValue = $('#OceanImportMbl_FreightTermId').val();
+                        debugger;
+                        $('#OceanImportHbl_FreightTermForBuyerId').val(newValue);
+                        $('#OceanImportHbl_FreightTermForBuyerId').trigger('change');
+
+                        // Call your other functions or perform desired actions here
+                    }
+                    if ($('#OceanImportHbl_SvcTermFromId').val() == null || $('#OceanImportHbl_SvcTermFromId').val() == '') {
+                        var newValue = $('#OceanImportMbl_SvcTermFromId').val();
+                        debugger;
+                        $('#OceanImportHbl_SvcTermFromId').val(newValue);
+                        $('#OceanImportHbl_SvcTermFromId').trigger('change');
+                    }
+                    // Call your other functions or perform desired actions here
+
+                    if ($('#OceanImportHbl_SvcTermToId').val() == null || $('#OceanImportHbl_SvcTermToId').val() == '') {
+                        var newValue = $('#OceanImportMbl_SvcTermToId').val();
+                        debugger;
+                        $('#OceanImportHbl_SvcTermToId').val(newValue);
+                        $('#OceanImportHbl_SvcTermToId').trigger('change');
+                    }
+                    // Call your other functions or perform desired actions here
+
+
+                    if ($('#OceanImportHbl_AgentId').val() == null || $('#OceanImportHbl_AgentId').val() == '') {
+                        var newValue = $('#OceanImportMbl_ForwardingAgentId').val();
+                        debugger;
+                        $('#OceanImportHbl_AgentId').val(newValue);
+                        $('#OceanImportHbl_AgentId').trigger('change');
+                    }
+                    // Call your other functions or perform desired actions here
+                }
                 break;
             default:
         }
     }, 1000);
+}
+function updateRequiredAttribute() {
+    var isfByThirdParty = $('#OceanImportHbl_IsfByThirdParty').prop('checked');
+    var isfNo = $('#OceanImportHbl_IsfNo').val();
+
+
+    if (isfByThirdParty || isfNo) {
+        $('#OceanImportHbl_AmsNo').prop('required', true);
+        
+        if ($('#OceanImportHbl_AmsNo').val() == '') {
+            $("#OceanImportHbl_AmsNo-error").text("AMS No. is mandatory for creating ISF");
+        }
+    } else {
+        $('#OceanImportHbl_AmsNo').prop('required', false);
+        $("#OceanImportHbl_AmsNo-error").text("");
+    }
 }
 function DangerousGoods(url) {
     myWindow = window.open(url, "Dangerous Goods", 'width=1200,height=800')
@@ -544,10 +658,29 @@ class CustomDateTimePicker {
                 step: 15,
                 allowInput: false,
                 value: formattedDate,
+                onShow: function (ct, $input) {
+                    if (!$input.data('previousDate')) {
+                        let todayDate = ct.getFullYear() + '-' + ('0' + (ct.getMonth() + 1)).slice(-2) + '-' + ('0' + ct.getDate()).slice(-2);
+                        let todayTime = ct.getHours() + ':' + ct.getMinutes();
+                        $input.data('previousDate', todayDate + ' ' + todayTime);
+                    }
+                    $('.xdsoft_today_button').remove();
+                },
+                onSelectDate: function (dp, $input) {
+                    if (DefaultTimeIds.length > 1) {
+                        if (DefaultTimeIds.includes(id)) {
+                            let currentDate = dp.getFullYear() + '-' + ('0' + (dp.getMonth() + 1)).slice(-2) + '-' + ('0' + dp.getDate()).slice(-2);
+                            $input.val(currentDate + ' 00:00');
+                        }
+                    }
+                },
                 onChangeDateTime: function (dp, $input) {
                     if (DefaultTimeIds.length > 1) {
                         if (DefaultTimeIds.includes(id)) {
-                            dateElem.val(dp.getFullYear() + '-' + ('0' + (dp.getMonth() + 1)).slice(-2) + '-' + ('0' + dp.getDate()).slice(-2) + ' 00:00');
+                            let currentDate = dp.getFullYear() + '-' + ('0' + (dp.getMonth() + 1)).slice(-2) + '-' + ('0' + dp.getDate()).slice(-2);
+                            let currentTime = $input.val().split(' ')[1];
+
+                            $input.data('previousDate', currentDate);
                         }
                     }
                 }

@@ -812,6 +812,10 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             public string PONo { get; set; }
             public List<OtherCharges> OtherCharges { get; set; }
             public ExtraPropertyDictionary ExtraProperties { get; set; }
+            public string Mark { get; set; }
+            public string NatureAndQuantityOfGoods { get; set; }
+            public string ManifestNatureAndQuantityOfGoods { get; set; }
+            public string HandlingInformation { get; set; }
         }
         #endregion
         private List<SelectListItem> GetIncotermsSelectList()

@@ -207,6 +207,9 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("PPOrCC")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Price")
+                        .HasColumnType("int");
+
                     b.Property<double>("Quantity")
                         .HasColumnType("float");
 
@@ -215,6 +218,9 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("TaxId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Unit")
                         .HasColumnType("nvarchar(max)");
@@ -932,155 +938,326 @@ namespace Dolphin.Freight.Migrations
                     b.ToTable("AppMemos", (string)null);
                 });
 
-            modelBuilder.Entity("Dolphin.Freight.iFreightDB.BaseTables.PublicFreights.PublicFreight", b =>
+            modelBuilder.Entity("Dolphin.Freight.ImportExport.AirExports.AirExportBooking", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasComment("主索引流水號");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                    b.Property<Guid?>("ActualShipperId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Branch")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasComment("運價來源(公司站別) ");
+                    b.Property<Guid?>("AgentId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Carrier")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasComment("船/航空公司");
+                    b.Property<DateTime?>("ArrivalDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<decimal?>("Cbm")
-                        .HasColumnType("decimal(16,4)")
-                        .HasColumnName("CBM")
-                        .HasComment("1 CBM 的價錢，僅 Model = CFS 顯示");
+                    b.Property<double>("AwbChargeableWeightAmount")
+                        .HasColumnType("float");
 
-                    b.Property<string>("CoLoader")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasComment("秀出是否是跟同行拿的價格 (不用秀出同行名字)");
+                    b.Property<double>("AwbChargeableWeightKg")
+                        .HasColumnType("float");
 
-                    b.Property<string>("ContractNo")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasComment("合約編號");
+                    b.Property<double>("AwbChargeableWeightLb")
+                        .HasColumnType("float");
 
-                    b.Property<string>("CreateBy")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasComment("新增人");
+                    b.Property<double>("AwbGrossWeightAmount")
+                        .HasColumnType("float");
 
-                    b.Property<DateTime?>("CreateDate")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime2(0)")
-                        .HasComment("新增時間");
+                    b.Property<double>("AwbGrossWeightKg")
+                        .HasColumnType("float");
 
-                    b.Property<string>("Currency")
-                        .HasMaxLength(3)
-                        .HasColumnType("nvarchar(3)")
-                        .HasComment("幣別");
+                    b.Property<double>("AwbGrossWeightLb")
+                        .HasColumnType("float");
 
-                    b.Property<string>("Destination")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
-                        .HasComment("最終交貨地");
+                    b.Property<Guid?>("BillToId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("EffectiveDate")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime2(0)")
-                        .HasComment("合約生效日期");
+                    b.Property<string>("BookingRemark")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Eta")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ETA")
-                        .HasComment("預計到達時間");
+                    b.Property<double>("BuyingRate")
+                        .HasColumnType("float");
 
-                    b.Property<string>("Etc")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ETC")
-                        .HasComment("截關日");
+                    b.Property<int>("BuyingRateUnitType")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Etd")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ETD")
-                        .HasComment("預計開航時間");
+                    b.Property<DateTime?>("CargoArrivalDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit")
-                        .HasComment("是否刪除");
+                    b.Property<Guid?>("CargoPickupId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Model")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)")
-                        .HasComment("儲存 CY 或是 CFS 搜尋時會以此作為依據");
+                    b.Property<string>("CargoRemark")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ModifyBy")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasComment("最後修改人");
+                    b.Property<Guid?>("CargoTypeId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("ModifyDate")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime2(0)")
-                        .HasComment("最後修改時間");
+                    b.Property<string>("CarrierBkgNo")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("Of20")
-                        .HasColumnType("decimal(16,4)")
-                        .HasColumnName("OF20")
-                        .HasComment("20' 的價錢，僅 Model = CY 顯示");
+                    b.Property<Guid?>("CarrierId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal?>("Of40")
-                        .HasColumnType("decimal(16,4)")
-                        .HasColumnName("OF40")
-                        .HasComment("40' 的價錢，僅 Model = CY 顯示");
+                    b.Property<double>("ChargeableWeightAmount")
+                        .HasColumnType("float");
 
-                    b.Property<decimal?>("Of40hq")
-                        .HasColumnType("decimal(16,4)")
-                        .HasColumnName("OF40HQ")
-                        .HasComment("40'HQ 的價錢，僅 Model = CY 顯示");
+                    b.Property<double>("ChargeableWeightKg")
+                        .HasColumnType("float");
 
-                    b.Property<string>("Pod")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
-                        .HasColumnName("POD")
-                        .HasComment("目的港");
+                    b.Property<double>("ChargeableWeightLb")
+                        .HasColumnType("float");
 
-                    b.Property<string>("Pol")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
-                        .HasColumnName("POL")
-                        .HasComment("起運地");
+                    b.Property<Guid?>("CoLoaderId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Remark")
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<Guid?>("ConsigneeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CustomerRefNo")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("DVCarriage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DVCustomer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeliveryInstruction")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("DeliveryToId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DepatureDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DepatureId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("DestinationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("DisplayUnit")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DocNo")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<string>("ExtraProperties")
                         .HasColumnType("nvarchar(max)")
-                        .HasComment("備註");
+                        .HasColumnName("ExtraProperties");
 
-                    b.Property<string>("TrasitTime")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasComment("航程天數");
+                    b.Property<DateTime>("FinalEta")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("ValidTill")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime2(0)")
-                        .HasComment("合約到期日期");
+                    b.Property<string>("FlightNo")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ViaPort")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasComment("轉運地點");
+                    b.Property<Guid?>("ForwardingAgentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("GrossWeightAmount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("GrossWeightKg")
+                        .HasColumnType("float");
+
+                    b.Property<double>("GrossWeightLb")
+                        .HasColumnType("float");
+
+                    b.Property<string>("HandlingInformation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HblNo")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<string>("HoldReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("HolderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("IncotermsType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Insurance")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<bool>("IsHold")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsStackable")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ItnNo")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<string>("Mark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("MawbPackageUnitId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("NatureAndQuantity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("NotifyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("OfficeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Other")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Package")
+                        .HasColumnType("float");
+
+                    b.Property<Guid?>("PackageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PoNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ReferenceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ReferenceNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ReferenceType")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("SaleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("SalesPersonId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("SalesType")
+                        .HasColumnType("int");
+
+                    b.Property<double>("SellingRate")
+                        .HasColumnType("float");
+
+                    b.Property<int>("SellingRateUnitType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShipType")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("ShipperId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SoNo")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<DateTime>("SoNoDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("SubAgentAwb")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SvcTermTypeFrom")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SvcTermTypeTo")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("TruckerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("VolumeWeightCbm")
+                        .HasColumnType("float");
+
+                    b.Property<double>("VolumeWeightKg")
+                        .HasColumnType("float");
+
+                    b.Property<string>("WtVal")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "CreateBy" }, "IX_CreateBy");
+                    b.HasIndex("ActualShipperId");
 
-                    b.HasIndex(new[] { "Model", "EffectiveDate", "ValidTill", "IsDeleted" }, "IX_SearchBase");
+                    b.HasIndex("AgentId");
 
-                    b.ToTable("AppPublicFreight", (string)null);
+                    b.HasIndex("BillToId");
+
+                    b.HasIndex("CargoPickupId");
+
+                    b.HasIndex("CargoTypeId");
+
+                    b.HasIndex("CarrierId");
+
+                    b.HasIndex("CoLoaderId");
+
+                    b.HasIndex("ConsigneeId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("DeliveryToId");
+
+                    b.HasIndex("DepatureId");
+
+                    b.HasIndex("DestinationId");
+
+                    b.HasIndex("ForwardingAgentId");
+
+                    b.HasIndex("HolderId");
+
+                    b.HasIndex("NotifyId");
+
+                    b.HasIndex("OfficeId");
+
+                    b.HasIndex("PackageId");
+
+                    b.HasIndex("SaleId");
+
+                    b.HasIndex("ShipperId");
+
+                    b.HasIndex("TruckerId");
+
+                    b.ToTable("AppAirExportBookings", (string)null);
                 });
 
             modelBuilder.Entity("Dolphin.Freight.ImportExport.AirExports.AirExportHawb", b =>
@@ -1446,6 +1623,9 @@ namespace Dolphin.Freight.Migrations
                     b.Property<double>("GrossWeightLb")
                         .HasColumnType("float");
 
+                    b.Property<string>("HandlingInformation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("IncotermsType")
                         .HasColumnType("int");
 
@@ -1486,6 +1666,12 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("LastModifierId");
 
+                    b.Property<string>("ManifestNatureAndQuantityOfGoods")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Mark")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("MawbCarrierId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1497,6 +1683,9 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<Guid?>("MawbPackageUnitId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("NatureAndQuantityOfGoods")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("NotifyId")
                         .HasColumnType("uniqueidentifier");
@@ -4042,6 +4231,8 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<Guid?>("BusinessReferrerId")
                         .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime?>("Available")
+                   .HasColumnType("datetime2");
 
                     b.Property<Guid?>("CancelById")
                         .HasColumnType("uniqueidentifier");
@@ -4086,6 +4277,9 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<DateTime?>("CustomDeclaration")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("CustomDoc")
+                        .HasColumnType("bit");
 
                     b.Property<string>("CustomerRefNo")
                         .HasMaxLength(128)
@@ -4174,11 +4368,13 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("ForwardingAgentId")
                         .HasColumnType("uniqueidentifier");
 
+
                     b.Property<Guid?>("FreightTermForBuyerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("FreightTermForSalerId")
                         .HasColumnType("uniqueidentifier");
+
 
                     b.Property<string>("GroupComm")
                         .HasMaxLength(128)
@@ -4314,6 +4510,7 @@ namespace Dolphin.Freight.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
+
                     b.Property<string>("LineCode")
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
@@ -4366,8 +4563,31 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("QuotationNo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("RailwayCodeId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CustomDoc")
+                         .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("DoorMove")
+                                        .HasColumnType("bit");
+                    b.Property<DateTime?>("EntryDocSent")
+                                 .HasColumnType("datetime2");
+
+                    b.Property<string>("EntryNo")
+                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("DoorMove")
+                                     .HasColumnType("bit");
+                    b.Property<int?>("Freight")
+                                      .HasColumnType("int");
+                    b.Property<DateTime?>("GoDate")
+                                         .HasColumnType("datetime2");
+                    b.Property<DateTime?>("IsfMatchDate")
+                                       .HasColumnType("datetime2");
+                    b.Property<int?>("ItIssuedLocation")
+                                         .HasColumnType("int");
+                    b.Property<DateTime?>("Lfd")
+                                      .HasColumnType("datetime2");
+                    b.Property<int?>("RailwayCodeId")
+                                      .HasColumnType("int");
+                    b.Property<bool>("Ror")
+                                    .HasColumnType("bit");
 
                     b.Property<DateTime?>("RaiseDate")
                         .HasColumnType("datetime2");
@@ -4385,8 +4605,8 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("ShipModeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ShipTypeId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("ShipTypeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("SoNo")
                         .HasMaxLength(32)
@@ -4477,15 +4697,11 @@ namespace Dolphin.Freight.Migrations
 
                     b.HasIndex("PorId");
 
-                    b.HasIndex("RailwayCodeId");
-
                     b.HasIndex("ReceivingAgentId");
 
                     b.HasIndex("ReleaseById");
 
                     b.HasIndex("ShipModeId");
-
-                    b.HasIndex("ShipTypeId");
 
                     b.HasIndex("SvcTermFromId");
 
@@ -9006,6 +9222,129 @@ namespace Dolphin.Freight.Migrations
                     b.Navigation("GlType");
                 });
 
+            modelBuilder.Entity("Dolphin.Freight.ImportExport.AirExports.AirExportBooking", b =>
+                {
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "ActualShipper")
+                        .WithMany()
+                        .HasForeignKey("ActualShipperId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Agent")
+                        .WithMany()
+                        .HasForeignKey("AgentId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "BillTo")
+                        .WithMany()
+                        .HasForeignKey("BillToId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "CargoPickup")
+                        .WithMany()
+                        .HasForeignKey("CargoPickupId");
+
+                    b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "CargoType")
+                        .WithMany()
+                        .HasForeignKey("CargoTypeId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Carrier")
+                        .WithMany()
+                        .HasForeignKey("CarrierId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "CoLoader")
+                        .WithMany()
+                        .HasForeignKey("CoLoaderId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Consignee")
+                        .WithMany()
+                        .HasForeignKey("ConsigneeId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "DeliveryTo")
+                        .WithMany()
+                        .HasForeignKey("DeliveryToId");
+
+                    b.HasOne("Dolphin.Freight.ImportExport.AirExports.Airport", "Depature")
+                        .WithMany()
+                        .HasForeignKey("DepatureId");
+
+                    b.HasOne("Dolphin.Freight.ImportExport.AirExports.Airport", "Destination")
+                        .WithMany()
+                        .HasForeignKey("DestinationId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "ForwardingAgent")
+                        .WithMany()
+                        .HasForeignKey("ForwardingAgentId");
+
+                    b.HasOne("Volo.Abp.Users.UserData", "Holder")
+                        .WithMany()
+                        .HasForeignKey("HolderId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Notify")
+                        .WithMany()
+                        .HasForeignKey("NotifyId");
+
+                    b.HasOne("Dolphin.Freight.Settings.Substations.Substation", "Office")
+                        .WithMany()
+                        .HasForeignKey("OfficeId");
+
+                    b.HasOne("Dolphin.Freight.Settings.PackageUnits.PackageUnit", "MawbPackageUnit")
+                        .WithMany()
+                        .HasForeignKey("PackageId");
+
+                    b.HasOne("Volo.Abp.Users.UserData", "SalesPerson")
+                        .WithMany()
+                        .HasForeignKey("SaleId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Shipper")
+                        .WithMany()
+                        .HasForeignKey("ShipperId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Truckerr")
+                        .WithMany()
+                        .HasForeignKey("TruckerId");
+
+                    b.Navigation("ActualShipper");
+
+                    b.Navigation("Agent");
+
+                    b.Navigation("BillTo");
+
+                    b.Navigation("CargoPickup");
+
+                    b.Navigation("CargoType");
+
+                    b.Navigation("Carrier");
+
+                    b.Navigation("CoLoader");
+
+                    b.Navigation("Consignee");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("DeliveryTo");
+
+                    b.Navigation("Depature");
+
+                    b.Navigation("Destination");
+
+                    b.Navigation("ForwardingAgent");
+
+                    b.Navigation("Holder");
+
+                    b.Navigation("MawbPackageUnit");
+
+                    b.Navigation("Notify");
+
+                    b.Navigation("Office");
+
+                    b.Navigation("SalesPerson");
+
+                    b.Navigation("Shipper");
+
+                    b.Navigation("Truckerr");
+                });
+
             modelBuilder.Entity("Dolphin.Freight.ImportExport.AirExports.AirExportHawb", b =>
                 {
                     b.HasOne("Dolphin.Freight.ImportExport.AirExports.AirExportMawb", "Mawb")
@@ -10313,10 +10652,6 @@ namespace Dolphin.Freight.Migrations
                         .WithMany()
                         .HasForeignKey("PorId");
 
-                    b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "RailwayCode")
-                        .WithMany()
-                        .HasForeignKey("RailwayCodeId");
-
                     b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "ReceivingAgent")
                         .WithMany()
                         .HasForeignKey("ReceivingAgentId");
@@ -10328,10 +10663,6 @@ namespace Dolphin.Freight.Migrations
                     b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "ShipMode")
                         .WithMany()
                         .HasForeignKey("ShipModeId");
-
-                    b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "ShipType")
-                        .WithMany()
-                        .HasForeignKey("ShipTypeId");
 
                     b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "SvcTermFrom")
                         .WithMany()
@@ -10409,15 +10740,11 @@ namespace Dolphin.Freight.Migrations
 
                     b.Navigation("Por");
 
-                    b.Navigation("RailwayCode");
-
                     b.Navigation("ReceivingAgent");
 
                     b.Navigation("ReleaseBy");
 
                     b.Navigation("ShipMode");
-
-                    b.Navigation("ShipType");
 
                     b.Navigation("SvcTermFrom");
 

@@ -70,12 +70,14 @@ namespace Dolphin.Freight.AccountingSettings.CurrencyTables
         public async Task<string> QueryRateInternalAsync(QueryCurrencyTableDto query)
         {
             var rs = await _repository.GetListAsync();
+
             string rateInternal = "";
+            if (rs.Count> 0)
+            {
+                var queryList = rs.Where(x => x.Ccy1Id.ToString().ToUpper().Replace("{", "").Replace("}", "") == query.Ccy1Id.ToUpper()).OrderByDescending(x => x.StartDate).First();
 
-            var queryList = rs.Where(x => x.Ccy1Id.ToString().ToUpper().Replace("{", "").Replace("}", "") == query.Ccy1Id.ToUpper()).OrderByDescending(x => x.StartDate).First();
- 
-            rateInternal = queryList.RateInternal.ToString();
-
+                rateInternal = queryList.RateInternal.ToString();
+            }
             return rateInternal;
         }
     }

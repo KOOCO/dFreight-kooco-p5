@@ -5,7 +5,9 @@ using Dolphin.Freight.Settings.SysCodes;
 using Nito.AsyncEx.Synchronous;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -32,10 +34,11 @@ namespace Dolphin.Freight.ImportExport.AirExports.Bookings
         private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private IRepository<Airport, Guid> _airPortRepository;
         private IIdentityUserRepository _identityUserRepository;
+        private IRepository<AirExportHawb, Guid> _hawbRepositroy;
         public ExportBookingAppService(IRepository<AirExportBooking, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<PortsManagement,
                                        Guid> portsManagementRepository, IRepository<Substation, Guid> substationRepository, IRepository<TradePartners.TradePartner,
                                        Guid> tradePartnerRepository, IRepository<Airport, Guid> airPortRepository, IIdentityUserRepository identityUserRepository,
-                                        IRepository<AirExportMawb, Guid> mawbRepository)
+                                        IRepository<AirExportMawb, Guid> mawbRepository, IRepository<AirExportHawb, Guid> hawbRepositroy)
             : base(repository)
         {
             _repository = repository;
@@ -46,6 +49,7 @@ namespace Dolphin.Freight.ImportExport.AirExports.Bookings
             _airPortRepository= airPortRepository;
             _identityUserRepository = identityUserRepository;
             _mawbRepository=mawbRepository;
+            _hawbRepositroy = hawbRepositroy;
             /*
             GetPolicyName = OceanExportPermissions.ExportBookingas.Default;
             GetListPolicyName = OceanExportPermissions.ExportBookingas.Default;
@@ -81,6 +85,7 @@ namespace Dolphin.Freight.ImportExport.AirExports.Bookings
                                 .WhereIf(query.SalesId.HasValue, e => e.SalesPersonId == query.SalesId)
                                 .WhereIf(query.DepatureId.HasValue, e => e.DepatureId == query.DepatureId)
                                 .WhereIf(query.CustomerId.HasValue, e => e.CustomerId == query.CustomerId)
+                                .WhereIf(query.CreatorId.HasValue,e=>e.CreatorId==query.CreatorId)
                                 .WhereIf(query.DestinationId.HasValue, e => e.DestinationId == query.DestinationId)
                                 .WhereIf(query.ForwadingAgentId.HasValue, e => e.ForwardingAgentId == query.ForwadingAgentId)
                                  .WhereIf(!string.IsNullOrWhiteSpace(query.FlightNo), x => x.FlightNo == query.FlightNo)
@@ -103,6 +108,12 @@ namespace Dolphin.Freight.ImportExport.AirExports.Bookings
                     {
                         var carrier = await _mawbRepository.GetAsync((Guid)pu.ReferenceId);
                         dto.MawbNo = carrier.MawbNo;
+                    }
+                    if (pu.ReferenceId != null)
+                    {
+                        var carriers = await _hawbRepositroy.GetQueryableAsync();
+                        var carrier = carriers.Where(x => x.MawbId == pu.ReferenceId).FirstOrDefault();
+                        dto.HawbNo = carrier.HawbNo;
                     }
                     if (pu.CarrierId != null)
                     {

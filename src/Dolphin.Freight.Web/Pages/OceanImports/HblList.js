@@ -46,7 +46,6 @@ var columns = [
         title: '<div  style=" cursor: pointer;"><span><i class="fa fa-lock"></i></span></div>',
         orderable: false,
         "render": function (data, type, row) {
-            debugger;
             var isCkecked = row.isLocked;
             var Hblid = row.id;
             if (isCkecked) {
@@ -331,6 +330,8 @@ function lockCheckBox(checkbox) {
                 }
                 dataTable.ajax.reload();
             });
+        } else {
+            $('#lock_' + id).parent().prev().prev().children().prop('checked', false);
         }
     });
 }

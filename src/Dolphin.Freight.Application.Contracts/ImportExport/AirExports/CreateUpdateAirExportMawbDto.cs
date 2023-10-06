@@ -72,10 +72,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
         
         public String RouteTrans1Id { get; set; }
         [DisplayName("")]
-        [DataType(DataType.DateTime)]
         public DateTime? RouteTrans1ArrivalDate { get; set; }
         [DisplayName("")]
-        [DataType(DataType.DateTime)]
         public DateTime? RouteTrans1DepatureDate { get; set; }
         [DisplayName("")]
         public string RouteTrans1FlightNo { get; set; }
@@ -86,10 +84,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
         
         public String RouteTrans2Id { get; set; }
         [DisplayName("")]
-        [DataType(DataType.DateTime)]
         public DateTime? RouteTrans2ArrivalDate { get; set; }
         [DisplayName("")]
-        [DataType(DataType.DateTime)]
         public DateTime? RouteTrans2DepatureDate { get; set; }
         [DisplayName("")]
         public string RouteTrans2FlightNo { get; set; }
@@ -100,10 +96,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
         
         public String RouteTrans3Id { get; set; }
         [DisplayName("")]
-        [DataType(DataType.DateTime)]
         public DateTime? RouteTrans3ArrivalDate { get; set; }
         [DisplayName("")]
-        [DataType(DataType.DateTime)]
         public DateTime? RouteTrans3DepatureDate { get; set; }
         [DisplayName("")]
         public string RouteTrans3FlightNo { get; set; }
@@ -157,5 +151,9 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string PONo { get; set; }
         public List<OtherCharges> OtherCharges { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public string Mark { get; set; }
+        public string NatureAndQuantityOfGoods { get; set; }
+        public string ManifestNatureAndQuantityOfGoods { get; set; }
+        public string HandlingInformation { get; set; }
     }
 }

@@ -71,7 +71,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports.Bookings
                     SoNoDate = DateTime.Now,
                     DVCarriage = "NVD",
                     DVCustomer = "NCV",
-                    Insurance = "XXX",
+                    
                     WtVal = "PPD",
                     Other = "PPD"
                 };

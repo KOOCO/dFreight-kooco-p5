@@ -32,5 +32,6 @@ namespace Dolphin.Freight.Web.CommonService
         List<SelectItems> CreditLimitGroupNameLookupList { get; }
         List<SelectItems> AccountGroupnameLookupList { get; }
         List<SelectItems> AirImportMawbLookupList { get;}
+        List<SelectItems> OperatorLookupList { get; }
     }
 }
