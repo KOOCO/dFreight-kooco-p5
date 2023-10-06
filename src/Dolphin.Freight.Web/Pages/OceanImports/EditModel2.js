@@ -24,6 +24,7 @@ $("#saveBtn").click(function () {
 });
 
 let rowCount = 0;
+var htrindex = 0;
 
 function getHblCheckbox(mblId, index, callback) {
     dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(mblId).done(function (res) {
@@ -31,12 +32,25 @@ function getHblCheckbox(mblId, index, callback) {
         let headersHTML = '';
         var tdindex = 0;
         for (let hbl of res) {
-            checkboxesHTML += `<td style='display: none;'><input type='checkbox' data-id='${hbl.id}' data-containerNo='' onclick='EditModel2.SaveHBLContainer()' id='assignContainerCheckbox_${index}_${tdindex}' style='cursor: pointer;'></td>`;
-            headersHTML += `<th style="text-align: center; display: none;"><div style="background-color: ${hbl.cardColorValue}; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto;"></div><input type="checkbox" id="hblHeaders_${hbl.hblNo}" style="cursor: pointer; margin-top: 10px;"></th>`
+            checkboxesHTML += `<td style='display: none;'><input type='checkbox' data-id='${hbl.id}' data-containerNo='' data-containerid='${hbl.containerIds}' data-mblid='${mblId}' onclick='EditModel2.SaveHBLContainer()' id='assignContainerCheckbox_${index}_${tdindex}' style='cursor: pointer;'></td>`;
+            headersHTML += `<th style="text-align: center; display: none;"><div style="background-color: ${hbl.cardColorValue}; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto;"></div><input type="checkbox" data-hblid='${hbl.id}' onclick="checkAllHeaderCheckbox(this, '${index}', '${tdindex}')" id="hblHeaders_${hbl.hblNo}" style="cursor: pointer; margin-top: 10px;"></th>`
             tdindex++;
         }
         callback(checkboxesHTML, headersHTML);
     });
+}
+
+function checkAllHeaderCheckbox(Elem, checkboxindex, tdindex) {
+    if ($(Elem)[0].checked) {
+        $('#trtbody .tr').each(function (i, e) {
+            $('#assignContainerCheckbox_' + i + '_' + tdindex).prop('checked', true);
+        });
+        EditModel2.SaveHBLContinerNo(tdindex, Elem);
+    } else {
+        $('#trtbody .tr').each(function (i, e) {
+            $('#assignContainerCheckbox_' + i + '_' + tdindex).prop('checked', false);
+        });
+    }
 }
 
 function updateDeleteButtonState() {
@@ -222,6 +236,27 @@ class EditModel2 {
         }
     }
 
+    static SaveHBLContinerNo(tdindex, Elem) {
+        if ($('input[id^="assignContainerCheckbox_"]:checked').filter(function () { return this.id.match(/assignContainerCheckbox_\d+_$/); }).prevObject.length > 0 && $('input[id^="assignContainerCheckbox_"]:checked').filter(function () {return this.id.match(/assignContainerCheckbox_\d+_0$/);}).prevObject.is(":visible")) {
+            var id;
+            var hblid;
+            var containers = [];
+            var containerids;
+            $('input[id^="assignContainerCheckbox_"]:checked').filter(function () { return this.id.match(/assignContainerCheckbox_\d+_$/); }).prevObject.each(function (i, e) {
+                id = e.attributes[4].value;
+                hblid = e.attributes[1].value;
+                containerids = e.attributes[3].value;
+                var container = e.attributes[2].value;
+                containers.push(container);
+            });
+
+            var AppModel = { MblId: id, HblId: hblid, Containersid: containerids, ContainerNos: containers };
+            dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignContainerNoToHbl(AppModel).done(function (res) { });
+
+            location.reload();
+        }
+    }
+
     static openPopUp(trIndex) {
         const containerId = $('#fCalc_' + trIndex).data('containerid');
 
@@ -266,6 +301,18 @@ class EditModel2 {
         updateTotals();
 
         updateDeleteButtonState();
+    }
+
+    static AddHblContainerTr(packageNumValue, containerIdValue, hblIdValue) {
+        var htrHtml = "<tr id='htr_" + htrindex + "'><input name='OceanImportHblContainer[" + htrindex + "].ContainerId' type='hidden' value='" + containerIdValue + "' /><input name='OceanImportHblContainer[" + htrindex + "].Id' type='hidden' value='" + hblIdValue + "' /><td style='align-items:center'><input type='radio' name='SurplusType' id='SurplusType_" + htrindex + "' /></td>";
+        htrHtml += "<td><input name='OceanImportHblContainer[" + htrindex + "].PackageNo' id='OceanImportHbl_PackageNo_" + htrindex + "' type='text' class='form-control' value='" + packageNumValue + "' readonly/></td>";
+        htrHtml += "<td><input type='text' class='form-control' id='oceanImportHbl_PackageType_" + htrindex + "' onkeyup='countPackageType('HBL')' value='' /></td>";
+        htrHtml += "<td><input name='OceanImportHblContainer[" + htrindex + "].PackageWeight' type='text' class='form-control' onkeyup='countTotal('HBL')' value='' /></td>";
+        htrHtml += "<td><input name='OceanImportHblContainer[" + htrindex + "].PackageMeasurement' type='text' class='form-control' onkeyup='countTotalVolume('HBL')' value='' /></td>";
+        htrHtml += "<td></td></tr>";
+        $('#htrtbody').append(htrHtml);
+
+        htrindex++;
     }
 }
 

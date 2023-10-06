@@ -11,10 +11,12 @@ using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.HSSF.Record.Chart;
 using NPOI.POIFS.Crypt.Dsig.Facets;
 using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +26,7 @@ using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
+using Container = Dolphin.Freight.ImportExport.Containers.Container;
 
 namespace Dolphin.Freight.ImportExport.OceanImports
 {
@@ -306,6 +309,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     var colorValue = sysCodes.Where(w => w.Id == item.CardColorId).FirstOrDefault();
                     item.CardColorValue = colorValue.CodeValue;
                 }
+
+                List<CreateUpdateContainerDto> containers = await _containerAppService.GetContainerListByHblId(item.Id);
+                item.ContainerIds = containers.Select(s => s.Id.ToString()).ToArray();
             }
             return retVal;
         }
@@ -593,6 +599,31 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     }
                 }
             }
+        }
+
+        public async Task SaveAssignContainerNoToHblAsync(OceanImportHblAppModel AppModel)
+        {
+            var MblId = AppModel.MblId;
+            var HblId = AppModel.HblId;
+            var test = await _containerRepository.GetQueryableAsync();
+            var test1 = test.Where(w => w.MblId == MblId);
+            var test2 = await AsyncExecuter.ToListAsync(test1);
+            
+            //var cs = await _containerAppService.QueryListAsync(new QueryContainerDto());
+            //var filtered = cs.Where(w => w.MblId ==  MblId).ToList();
+            //var containers = ObjectMapper.Map<List<ContainerDto>, List<Container>>(filtered);
+
+            //var containers = await _containerAppService.GetContainerByMblId(MblId);
+
+            //var filtered = containers.Where(w => w.MblId == MblId).ToList();
+
+            foreach (var container in test2)
+            {
+                container.HblId = HblId;
+                var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
+                await _containerAppService.UpdateAsync(container.Id, dto);
+            }
+            
         }
     }
 }

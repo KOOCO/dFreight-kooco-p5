@@ -30,6 +30,8 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
         [BindProperty]
         public CreateUpdateOceanImportHblDto OceanImportHbl { get; set; }
         [BindProperty]
+        public List<CreateUpdateOceanExportHblDto> OceanImportHblContainer { get; set; }
+        [BindProperty]
         public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
 
         [BindProperty]
@@ -124,25 +126,29 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             await _oceanImportMblAppService.UpdateAsync(Id, OceanImportMb2);
             QueryHblDto queryHblDto = new QueryHblDto() { Id = OceanImportHbl.Id };
             var oceanImportHbl = await _oceanImportHblAppService.GetHblById(queryHblDto);
-            oceanImportHbl.PackageNo = OceanImportHbl.PackageNo;
-            oceanImportHbl.PackageWeight = OceanImportHbl.PackageWeight;
-            oceanImportHbl.PackageMeasurement = OceanImportHbl.PackageMeasurement;
+            //oceanImportHbl.PackageNo = OceanImportHbl.PackageNo;
+            //oceanImportHbl.PackageWeight = OceanImportHbl.PackageWeight;
+            //oceanImportHbl.PackageMeasurement = OceanImportHbl.PackageMeasurement;
             if (oceanImportHbl.Id != Guid.Empty)
             {
-                CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                foreach (var item in OceanImportHblContainer)
                 {
-                    PackageNum = oceanImportHbl.PackageNo,
-                    PackageWeight = oceanImportHbl.PackageWeight,
-                    PackageMeasure = oceanImportHbl.PackageMeasurement,
-                    HblId = oceanImportHbl.Id,
-                };
-                if (OceanImportHbl.ContainerId is not null && OceanImportHbl.ContainerId != Guid.Empty)
-                {
-                    await _containerAppService.UpdateAsync(OceanImportHbl.ContainerId.GetValueOrDefault() ,containerDto);
-                }
-                else
-                {
-                    await _containerAppService.CreateAsync(containerDto);
+                    CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                    {
+                        PackageNum = item.PackageNo,
+                        PackageWeight = item.PackageWeight,
+                        PackageMeasure = item.PackageMeasurement,
+                        HblId = item.Id,
+                        Id = (Guid)item.ContainerId
+                    };
+                    if (item.ContainerId is not null && item.ContainerId != Guid.Empty)
+                    {
+                        await _containerAppService.UpdateAsync(item.ContainerId.GetValueOrDefault(), containerDto);
+                    }
+                    else
+                    {
+                        await _containerAppService.CreateAsync(containerDto);
+                    }
                 }
             }
             oceanImportHbl.Mark = OceanImportHbl.Mark;

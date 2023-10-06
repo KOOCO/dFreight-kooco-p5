@@ -422,6 +422,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string Weight { get; set; }
         public string Measurement { get; set; }
        
+        public string[] ContainerIds { get; set; }
 
         /// <summary>
         /// ISF號碼
