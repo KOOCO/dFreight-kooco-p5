@@ -481,7 +481,7 @@
     "Total": "加总",
     "ReceivedAmount": "已接收金额",
     "PaidTo": "收款人",
-    "ReferenceNo": "船期编号",
+    "ReferenceNo": "参考编号(MAWB)",
     "SoCode": "S/O 号码",
     "SoNoDate": "S/O 日期",
     "SalespersonId": "业务员",
@@ -496,8 +496,8 @@
     "VesselSchedule": "船期",
     "CancelName": "取消者",
     "CarrierBkgNo": "船公司S/O号码",
-    "CarrierId": "船公司",
-    "ShipperId": "实际託运人",
+    "CarrierId": "航空公司",
+    "ShipperId": "托运人",
     "CustomerId": "客户",
     "HblAgentId": "HB/L代理",
     "ContainerQtyInputText": "集装箱 柜型/尺寸",
@@ -1041,7 +1041,17 @@
     "DOSentDate": "DO寄出日期",
     "ShipTypeId": "业务推荐人",
     "HblSaleId": "业务员",
-
+    "SubAgentAwb": "代理提单",
+    "Shipper": "托运人 (本地代理)",
+    "CargoDetails": "货运细节",
+    "GrossWeight(SHPR)": "毛重(托运人)",
+    "GrossWeight(CNEE)": "毛重(收货人)",
+    "ChargeableWeight(CNEE)": "计费重量(收货人)",
+    "ChargeableWeight(SHPR)": "计费重量(托运人)",
+    "NatureandQuantityOfGoods": "货描",
+    "HandlingInformation": "儲運事項",
+    "BookingRemarks": "S/O备注",
+    "Pickup/DeliveryInstruction": "收货/交货指示"
 
 
   }

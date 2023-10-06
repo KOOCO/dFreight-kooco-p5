@@ -468,7 +468,7 @@
     "Total": "加總",
     "ReceivedAmount": "已接收金額",
     "PaidTo": "收款人",
-    "ReferenceNo": "船期編號",
+    "ReferenceNo": "參考編號(MAWB)",
     "SoCode": "S/O 號碼",
     "SoNoDate": "S/O 日期",
     "SalespersonId": "業務員",
@@ -483,8 +483,8 @@
     "VesselSchedule": "船期",
     "CancelName": "取消者",
     "CarrierBkgNo": "船公司S/O號碼",
-    "CarrierId": "船公司",
-    "ShipperId": "實際託運人",
+    "CarrierId": "航空公司",
+    "ShipperId": "託運人 (本地代理)",
     "CustomerId": "客戶",
     "HblAgentId": "HB/L代理",
     "ContainerQtyInputText": "集裝箱 櫃型/尺寸",
@@ -1211,7 +1211,7 @@
     "sales": "業務員",
 
     "tracker": "卡車行",
-    "subAgentawb": "子代理提單",
+    "SubAgentawb": "子代理提單",
     "CargoPickup": "卡車收貨地",
     "DeliveryTo": "卡車交貨地",
     "CargoType": "貨物類別",
@@ -1245,7 +1245,7 @@
     "Measurement": "材積",
     "Mark": "嘜頭",
     "NatureAndQuantityOfGoods": "貨描",
-    "HandlingInformation": "收貨/交貨指示",
+    "HandlingInformation": "儲運事項",
     "OtherCharges": "其他費用",
     "CarrierAgent": "航空公司/代理",
     "Collect/Prepaid": "運費到付/預付",
@@ -1377,6 +1377,16 @@
     "ANSentDate": "AN寄出日期",
     "DOSentDate": "DO寄出日期",
     "HblSaleId": "業務員",
+    "Shipper": "託運人 (本地代理)",
+    "CargoDetails": "貨運細節",
+    "GrossWeight(SHPR)": "毛重(託運人)",
+    "GrossWeight(CNEE)": "毛重(收貨人)",
+    "ChargeableWeight(CNEE)": "計費重量(收貨人)",
+    "ChargeableWeight(SHPR)": "計費重量(託運人)",
+    "BookingRemarks": "S/O備註",
+    "Pickup/DeliveryInstruction": "收貨/交貨指示"
+
+
 
   }
 }

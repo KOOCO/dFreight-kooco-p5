@@ -143,7 +143,7 @@ namespace Dolphin.Freight.ImportExport.AirExports.Bookings
         /// 收貨地(POR)ID
         /// </summary>
 
-        public DateTime FinalEta { get; set; }
+        public DateTime? FinalEta { get; set; }
 
         /// <summary>
         /// 中轉港 ID
@@ -224,7 +224,7 @@ namespace Dolphin.Freight.ImportExport.AirExports.Bookings
         /// 出發日期
         /// </summary>
         [DataType(DataType.Date)]
-        public DateTime DepatureDate { get; set; }
+        public DateTime? DepatureDate { get; set; }
         /// <summary>
         /// 航班號碼
         /// </summary>

@@ -37,7 +37,7 @@
     "EndNo": "End No.",
     "Note": "Remark",
     "CurrentNo": "Current Assigned No.",
-    "ReferenceNo": "Reference No",
+
     "Permission:OceanExportMbls": "Ocean Export Mbl",
     "Permission:OceanImportMbls": "Ocean Import Mbl",
     "Permission:Settings": "Setting",
@@ -571,11 +571,12 @@
     "CAR": "Carrier's issue",
     "OT": "Others",
     "ReferenceId": "Reference No. ",
+    "ReferenceNo": "Reference No.",
     "VesselSchedule": "Vessel Schedule",
     "CancelName": "Cancelled by",
     "CarrierBkgNo": "Carrier Bkg. No.",
     "CarrierId": "Carrier",
-    "ShipperId": "Actual Shipper",
+    "ShipperId": "Shipper",
     "CustomerId": "Customer",
     "HblAgentId": "HB/L Agent",
     "ContainerQtyInputText": "Container Qty",
@@ -631,7 +632,7 @@
     "Receiver": "Receiver",
     "TruckReceivingPlace": "Truck receiving place",
     "TruckDeliveryPlace": "Truck delivery point",
-    "SubAgentAwb": "Sub-agent bill of lading",
+    "SubAgentAwb": "Sub Agent AWB",
     "AWBCancelledDate": "AWB cancellation date",
     "CacelledBy": "Cancelled by",
     "PONo": "PO number",
@@ -1288,6 +1289,7 @@
     "MAWBInformation": "MAWB Information",
     "MawbCarrierId": "Carrier",
     "IssuingCarrierId": "Issuing Carrier/Agent",
+    "IssuingCarrier": "Issuing Carrier Agent",
     "AwbType": "AWB Type",
     "Shipper": "Shipper (Shipping Agent)",
     "Consignee": "Consignee",
@@ -1565,7 +1567,12 @@
     "ANSentDate": "AN Sent Date",
     "DOSentDate": "DO Sent Date",
     "HblSalesTypeId": "Sales Type",
-    "ShipTypeId": "Ship Type"
+    "ShipTypeId": "Ship Type",
+    "CargoDetails": "Cargo Details",
+    "GrossWeight(SHPR)": "GrossWeight (SHPR)",
+    "BookingRemarks": "Booking Remarks",
+    "Pickup/DeliveryInstruction": "Pickup / Delivery Instruction",
+
 
 
   }
