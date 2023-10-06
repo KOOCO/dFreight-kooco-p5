@@ -17,13 +17,14 @@ $(function () {
             consigneeId: $("#VesselSchedule_ConsigneeId").val() == '' ? null : $("#VesselSchedule_ConsigneeId").val(),
             carrierId: $("#VesselSchedule_CarrierId").val() == '' ? null : $("#VesselSchedule_CarrierId").val(),
             depatureId: $("#VesselSchedule_DepatureId").val() == '' ? null : $("#VesselSchedule_DepatureId").val(),
-            destinationId: $("#VesselSchedule_DestinationId").val() == '' ? null : $("#VesselSchedule_DestinationId").val(),
+            destinationId: $("#VesselSchedule_DepatureId").val() == '' ? null : $("#VesselSchedule_DepatureId").val(),
             awbCancelled: $("#AwbCancelled").val() == '' ? null : $("#AwbCancelled").val(),
             directMaster: $("#DirectMaster").val() == '' ? null : $("#DirectMaster").val(),
             flightNo: $("#FlightNo").val(),
             officeId: $("#VesselSchedule_OfficeId").val() == '' ? null : $("#VesselSchedule_OfficeId").val(),
             incotermsType: $("#IncotermsType").val() == '' ? null : $("#IncotermsType").val(),
-
+            awbType: $("#awbType").val() == '' ? null : $("#awbType").val(),
+            block: $("#block").val() == '' ? null : $("#block").val(),
 
             depatureDate: $("#DepatureDate").val() == '' || $("#DepatureDate").val() == null ? null : new Date($("#DepatureDate").val()),
             arrivalDate: $("#ArrivalDate").val() == '' || $("#ArrivalDate").val() == null ? null : new Date($("#ArrivalDate").val()),

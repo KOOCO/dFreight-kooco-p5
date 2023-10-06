@@ -54,6 +54,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 
         public Guid? OfficeId { get; set; }
         public bool? AwbCancelled { get; set; }
+        public bool? Block { get; set; }
+        public AWBType? AwbType { get; set; }
         public bool? DirectMaster { get; set; }
         public DateTime? DepatureDate { get; set; }
         public DateTime? ArrivalDate { get; set; }
