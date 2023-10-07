@@ -91,12 +91,14 @@ namespace Dolphin.Freight.ImportExport.AirImports
                                  .Contains(input.Search))
                                   .WhereIf(input.CarrierId.HasValue, e => e.AwbAcctCarrierId == input.CarrierId)
                                    .WhereIf(input.ConsigneeId.HasValue, e => e.ConsigneeId == input.ConsigneeId)
-
+                                    .WhereIf(input.OverseaAgentId.HasValue, e => e.OverseaAgentId == input.OverseaAgentId)
                                    .WhereIf(input.DestinationId.HasValue, e => e.DestinationId == input.DestinationId)
                                    .WhereIf(input.DepatureId.HasValue, e => e.DepatureId == input.DepatureId)
                                    .WhereIf(!string.IsNullOrWhiteSpace(input.FlightNo), x => x.FlightNo == input.FlightNo)
                                    .WhereIf(input.OfficeId.HasValue, e => e.OfficeId == input.OfficeId)
                                    .WhereIf(input.AwbType.HasValue, e => e.AwbType == input.AwbType)
+                                   .WhereIf(input.Block.HasValue, e => e.IsLocked == input.Block)
+                                   .WhereIf(input.CreatorId.HasValue, e => e.CreatorId == input.CreatorId)
                                    .WhereIf(input.FreightLocationId.HasValue, e => e.FreightLocationId == input.FreightLocationId)
                                    .WhereIf(input.DirectMaster.HasValue, e => e.IsDirectMaster == input.DirectMaster)
                                    .WhereIf(input.PostDate.HasValue, e => e.PostDate.Date == input.PostDate.Value.Date.AddDays(1))
@@ -156,6 +158,11 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     {
                         var MblSale = ObjectMapper.Map<IdentityUserDto, UserData>(await _identityUserAppService.GetAsync(airImportMawb.SalesId.GetValueOrDefault()));
                         airImportMawbDto.SalesName = string.Concat(MblSale?.Name, "/", MblSale?.Surname)?.TrimStart('/');
+                    }
+                    if (airImportMawb.CreatorId != null)
+                    {
+                        var MblSale = await _identityUserAppService.GetAsync(airImportMawb.CreatorId.GetValueOrDefault());
+                        airImportMawbDto.OpName = MblSale?.Name;
                     }
                     else
                     {

@@ -281,6 +281,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string NatureAndQuantityOfGoods { get; set; }
         public string ManifestNatureAndQuantityOfGoods { get; set; }
         public string HandlingInformation { get; set; }
+        public string OpName { get; set; }
     }
     public class AllHawbListAirImport
     {
