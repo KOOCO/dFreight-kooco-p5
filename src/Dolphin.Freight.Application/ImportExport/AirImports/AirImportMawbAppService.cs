@@ -39,6 +39,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         private readonly IRepository<AirImportHawb, Guid> _airImportHawbAppService;
         private readonly IIdentityUserAppService _identityUserAppService;
         private readonly IRepository<Substation, Guid> _substationRepository;
+       
 
         public AirImportMawbAppService(
             IRepository<AirImportMawb, Guid> repository,
@@ -393,6 +394,33 @@ namespace Dolphin.Freight.ImportExport.AirImports
             return ObjectMapper.Map<List<AirImportMawb>, List<AirImportMawbDto>>(query.ToList());
         
         }
+        public async Task SelectedUnLockedAirImportMawbAsync(Guid[] ids)
+        {
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var mbl = await _repository.GetAsync(id);
 
+                    mbl.IsLocked = false;
+                    var query = await _airImportHawbAppService.GetQueryableAsync();
+                    var hbls = query.Where(x => x.MawbId == id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = false;
+
+                        await _airImportHawbAppService.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+
+        }
     }
 }
