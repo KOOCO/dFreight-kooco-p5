@@ -258,13 +258,13 @@ table td {
                             <td>AGENT NAME:</td>
                             <td>@Model.AgentName</td>
                             <td>P.O.L / ETD:</td>
-                            <td> @string.Concat(@Model.PolName, " / ",  DateTime.Parse(@Model.PolEtd).ToShortDateString())?.TrimStart('/')</td>
+                            <td> @string.Concat(@Model.PolName, " / ", @Model.PolEtd)?.TrimStart('/')</td>
                         </tr>
                         <tr>
                             <td>D.E.L :</td>
                             <td>@Model.Del</td>
                             <td>P.O.D / ETA :</td>
-                            <td>@string.Concat(@Model.PodName, " / ",  DateTime.Parse(@Model.PodEtd).ToShortDateString())?.TrimStart('/')</td>
+                            <td>@string.Concat(@Model.PodName, " / ", @Model.PodEtd)?.TrimStart('/')</td>
                         </tr>
                         <tr>
                             <td>CONTAINER NO:</td>

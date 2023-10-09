@@ -146,11 +146,11 @@
             
             <div class="portlet-tool">
                 <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
-                    <button type="button" class="btn btn-outline-secondary fa fa-plus" onclick="createNew()" id="newBtn"></button>
-                    <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="deleteMbls()" id="deleteBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-plus" onclick="OceanImportMblList.createNew()" id="newBtn"></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="OceanImportMblList.deleteMbls()" id="deleteBtn" disabled></button>
                     <button type="button" class="btn btn-outline-secondary" id="copyBtn" onclick="copyMbl(true)" disabled><i class="fa fa-files-o me-0"></i></button>
-                    <button type="button" class="btn btn-outline-secondary" onclick="selectedLock()" id="lockId" disabled>Lock</button>
-                    <button type="button" class="btn btn-outline-secondary" id="unlockId" onclick="selectedUnLock()" disabled>Unlock</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="OceanImportMblList.setSelectedLockStatus(true)" id="lockId" disabled>Lock</button>
+                    <button type="button" class="btn btn-outline-secondary" id="unlockId" onclick="OceanImportMblList.setSelectedLockStatus(false)" disabled>Unlock</button>
                     <button type="button" class="btn btn-outline-secondary" id="profitReportSummary" onclick="OceanImportMblList.getProfitReport('Summary')" disabled>Profit Report - Summary</button>
                     <button type="button" class="btn btn-outline-secondary" id="profitReportDetail" onclick="OceanImportMblList.getProfitReport('Detailed')" disabled>Profit Report - Detail</button>
                     <button type="button" class="btn btn-outline-secondary" id="arrivalNotice" disabled>Arrival Notice</button>
