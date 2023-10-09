@@ -23,6 +23,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public string FilingNo { get; set; }
         public string Voyage { get; set; }
+        public string VesselName { get; set; }
         /// <summary>
         /// MBL的MBL 編號
         /// </summary>
@@ -88,6 +89,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public Guid? HblConsigneeId { get; set; }
         public string HblConsigneeName { get; set; }
+        public string DeliveryLocation { get; set; }
         /// <summary>
         /// 通知方ID
         /// </summary>
@@ -108,6 +110,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
      
         public string AmsNo { get; set; }
         public string TruckerName { get; set; }
+        public string HblNotifyName { get; set; }
         public string CyCfsLocationName { get; set; }
         /// <summary>
         /// 業務員ID
@@ -417,6 +420,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string CarrierContractNo { get; set; }
         public DateTime? LastFreeDate { get; set; }
         public string ContainerNo { get; set; }
+        public string OperatorName { get; set; }
         public string SalesName { get; set; }
         public string Package { get; set; }
         public string Weight { get; set; }

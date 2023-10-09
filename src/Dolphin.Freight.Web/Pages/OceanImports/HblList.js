@@ -33,13 +33,13 @@ var queryListFilter = function () {
 };
 var columns = [
     {
-    title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
+    title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="HblList.selectAllCheckbox(this)" style=" cursor: pointer;">',
     data: null,
     orderable: false,
     render: function (data, type, row) {
         var id = row.id;
         $('#selectAllCheckbox').prop('checked', false);
-        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
+        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="HblList.selectCheckbox(this)" style=" cursor: pointer;">';
     }
 },
     {
@@ -49,9 +49,9 @@ var columns = [
             var isCkecked = row.isLocked;
             var Hblid = row.id;
             if (isCkecked) {
-                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + Hblid + '"  checked="' + isCkecked + '" onclick="lockCheckBox(this)"  style=" cursor: pointer;">';
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + Hblid + '"  checked="' + isCkecked + '" onclick="HblList.lockCheckBox(this)"  style=" cursor: pointer;">';
             } else {
-                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + Hblid + '" onclick="lockCheckBox(this)"   style=" cursor: pointer;">';
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + Hblid + '" onclick="HblList.lockCheckBox(this)"   style=" cursor: pointer;">';
             }
         }
     },
@@ -140,6 +140,17 @@ $(function () {
                                 return "<a href='javascript:lock(\"" + row.id + "\")' class='btn-lock action' id='lock_" + row.id + "'><i class='fa-lg fa-solid fa-lock-open'></i><span>上鎖</span></a>";
                         }
                     }
+                } else if (item.text.toLowerCase().includes('isfbythirdparty')) {
+                    column = {
+                        title: l('ISFByThirdParty'),
+                        render: function (data, type, row, meta) {
+                            if (row.isfByThirdParty) {
+                                return "<i class='fa-solid fa-check'></i>";
+                            } else {
+                                return "";
+                            }
+                        }
+                    }
                 }
                 else {
                     column = {
@@ -224,150 +235,157 @@ $(function () {
     });
 });
 
-function setSelectedLockStatus(isLock) {
-    var ids = [];
-    var selectedCheckboxes = $('#HblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
-    var lockCondition = isLock ? false : true;
-    var confirmationMessage = isLock ? l('LockConfirmationMessage') : l('UnlockConfirmationMessage');
-    var successMessage = isLock ? l('Message:SuccessLock') : l('Message:SuccessUnlock');
+class HblList {
+    static createNew() {
+        window.location.href = '/OceanImports/CreateMbl';
+    }
 
-    for (var i = 0; i < selectedCheckboxes.length; i++) {
-        var id = selectedCheckboxes[i].attributes[2].value;
-        var currentLockStatus = $('#lock_' + id).find('i').hasClass('fa-lock');
+    static setSelectedLockStatus(isLock) {
+        var ids = [];
+        var selectedCheckboxes = $('#HblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+        var lockCondition = isLock ? false : true;
+        var confirmationMessage = isLock ? l('LockConfirmationMessage') : l('UnlockConfirmationMessage');
+        var successMessage = isLock ? l('Message:SuccessLock') : l('Message:SuccessUnlock');
 
-        if (currentLockStatus === lockCondition) {
-            ids.push(id);
+        for (var i = 0; i < selectedCheckboxes.length; i++) {
+            var id = selectedCheckboxes[i].attributes[2].value;
+            var currentLockStatus = $('#lock_' + id).find('i').hasClass('fa-lock');
+
+            if (currentLockStatus === lockCondition) {
+                ids.push(id);
+            }
         }
-    }
 
-    abp.message.confirm(confirmationMessage).then(function (confirmed) {
-        if (confirmed) {
-            dolphin.freight.importExport.oceanImports.oceanImportHbl.setLockOrUnlockStatusOceanImportHbl(ids, isLock).done(function () {
-                abp.message.success(successMessage);
-                $('#lockId').prop('disabled', confirmed);
-                $('#unlockId').prop('disabled', confirmed);
-                dataTable.ajax.reload();
-            });
-        }
-    });
-}
-function selectAllCheckbox(elem) {
-    var isChecked = $(elem).prop('checked');
-    $('#HblListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
-
-    if (isChecked) {
-        var isAnyLocked = false;
-        var isAnyUnLocked = false;
-
-        $('#HblListTable tbody input.selectCheckbox[type="checkbox"]').each(function (i, e) {
-            var id = $($('.selectCheckbox')[i]).attr('data-id');
-            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
-
-            if (isLock) {
-                isAnyLocked = true;
-            } else {
-                isAnyUnLocked = true;
-            }
-        });
-
-        $('#lockId').prop('disabled', !isAnyUnLocked);
-        $('#unlockId').prop('disabled', !isAnyLocked);
-    } else {
-        $('#lockId').prop('disabled', !isChecked);
-        $('#unlockId').prop('disabled', !isChecked);
-    }
-}
-
-function selectCheckbox(checkbox) {
-    var checkedCheckboxes = $('.selectCheckbox:checked');
-    if (checkbox.checked) {
-        var isAnyLocked = false;
-        var isAnyUnlocked = false
-        checkedCheckboxes.each(function (index, checkbox1) {
-            $('#deleteBtn').prop('disabled', false);
-            var id = $(checkbox1).data('id');
-
-            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
-            if (isLock) {
-                isAnyLocked = true;
-            }
-            else {
-                isAnyUnlocked = true;
-            }
-        });
-        $('#lockId').prop('disabled', !isAnyUnlocked);
-        $('#unlockId').prop('disabled', !isAnyLocked);
-        $('#deleteBtn').prop('disabled', isAnyLocked);
-    } else {
-        var checkedCheckboxes = $('.selectCheckbox:checked');
-        checkedCheckboxes.each(function (index, checkbox1) {
-
-            var id = $(checkbox1).data('id');
-
-            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
-            if (isLock) {
-                isAnyLocked = true;
-            }
-            else {
-                isAnyUnlocked = true;
-            }
-        });
-        $('#deleteBtn').prop('disabled', true);
-        $('#lockId').prop('disabled', !isAnyUnlocked);
-        $('#unlockId').prop('disabled', !isAnyLocked);
-    }
-    if (!$(checkbox).prop('checked')) {
-        $('#selectAllCheckbox').prop('checked', false);
-    } else {
-        var allChecked = true;
-        $('#HblListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
-            if (!$(this).prop('checked')) {
-                allChecked = false;
-                return false;
-            }
-        });
-        $('#selectAllCheckbox').prop('checked', allChecked);
-    }
-}
-
-function lockCheckBox(checkbox) {
-    var id = checkbox.attributes[2].value;
-
-    var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
-    abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
-        if (confirmed) {
-            dolphin.freight.importExport.oceanImports.oceanImportHbl.lockedOrUnLockedOceanImportHbl({ HblId: id }).done(function () {
-                if (isLock) {
-                    abp.message.success(l('Message:SuccessUnlock'));
-                } else {
-                    abp.message.success(l('Message:SuccessLock'));
-                }
-                dataTable.ajax.reload();
-            });
-        } else {
-            $('#lock_' + id).parent().prev().prev().children().prop('checked', false);
-        }
-    });
-}
-
-function deleteHbl() {
-    var ids = [];
-    var selectedCheckboxes = $('#HblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
-
-    selectedCheckboxes.each(function (i, checkbox) {
-        var id = checkbox.attributes[2].value;
-        ids.push(id);
-
-        abp.message.confirm(l('DeleteConfirmationMessage')).then(function (confirmed) {
+        abp.message.confirm(confirmationMessage).then(function (confirmed) {
             if (confirmed) {
-                dolphin.freight.importExport.oceanImports.oceanImportHbl.deleteMultipleHbls(ids).done(function () {
-                    abp.message.success(l('Message:SuccessDelete'));
-                    $('#deleteBtn').prop('disabled', confirmed);
+                dolphin.freight.importExport.oceanImports.oceanImportHbl.setLockOrUnlockStatusOceanImportHbl(ids, isLock).done(function () {
+                    abp.message.success(successMessage);
+                    $('#lockId').prop('disabled', confirmed);
+                    $('#unlockId').prop('disabled', confirmed);
                     dataTable.ajax.reload();
                 });
             }
         });
-    });
+    }
+
+    static deleteHbl() {
+        var ids = [];
+        var selectedCheckboxes = $('#HblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+
+        selectedCheckboxes.each(function (i, checkbox) {
+            var id = checkbox.attributes[2].value;
+            ids.push(id);
+
+            abp.message.confirm(l('DeleteConfirmationMessage')).then(function (confirmed) {
+                if (confirmed) {
+                    dolphin.freight.importExport.oceanImports.oceanImportHbl.deleteMultipleHbls(ids).done(function () {
+                        abp.message.success(l('Message:SuccessDelete'));
+                        $('#deleteBtn').prop('disabled', confirmed);
+                        dataTable.ajax.reload();
+                    });
+                }
+            });
+        });
+    }
+
+    static selectAllCheckbox(elem) {
+        var isChecked = $(elem).prop('checked');
+        $('#HblListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+
+        if (isChecked) {
+            var isAnyLocked = false;
+            var isAnyUnLocked = false;
+
+            $('#HblListTable tbody input.selectCheckbox[type="checkbox"]').each(function (i, e) {
+                var id = $($('.selectCheckbox')[i]).attr('data-id');
+                var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+
+                if (isLock) {
+                    isAnyLocked = true;
+                } else {
+                    isAnyUnLocked = true;
+                }
+            });
+
+            $('#lockId').prop('disabled', !isAnyUnLocked);
+            $('#unlockId').prop('disabled', !isAnyLocked);
+        } else {
+            $('#lockId').prop('disabled', !isChecked);
+            $('#unlockId').prop('disabled', !isChecked);
+        }
+    }
+
+    static selectCheckbox(checkbox) {
+        var checkedCheckboxes = $('.selectCheckbox:checked');
+        if (checkbox.checked) {
+            var isAnyLocked = false;
+            var isAnyUnlocked = false
+            checkedCheckboxes.each(function (index, checkbox1) {
+                $('#deleteBtn').prop('disabled', false);
+                var id = $(checkbox1).data('id');
+
+                var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+                if (isLock) {
+                    isAnyLocked = true;
+                }
+                else {
+                    isAnyUnlocked = true;
+                }
+            });
+            $('#lockId').prop('disabled', !isAnyUnlocked);
+            $('#unlockId').prop('disabled', !isAnyLocked);
+            $('#deleteBtn').prop('disabled', isAnyLocked);
+        } else {
+            var checkedCheckboxes = $('.selectCheckbox:checked');
+            checkedCheckboxes.each(function (index, checkbox1) {
+
+                var id = $(checkbox1).data('id');
+
+                var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+                if (isLock) {
+                    isAnyLocked = true;
+                }
+                else {
+                    isAnyUnlocked = true;
+                }
+            });
+            $('#deleteBtn').prop('disabled', true);
+            $('#lockId').prop('disabled', !isAnyUnlocked);
+            $('#unlockId').prop('disabled', !isAnyLocked);
+        }
+        if (!$(checkbox).prop('checked')) {
+            $('#selectAllCheckbox').prop('checked', false);
+        } else {
+            var allChecked = true;
+            $('#HblListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
+                if (!$(this).prop('checked')) {
+                    allChecked = false;
+                    return false;
+                }
+            });
+            $('#selectAllCheckbox').prop('checked', allChecked);
+        }
+    }
+
+    static lockCheckBox(checkbox) {
+        var id = checkbox.attributes[2].value;
+
+        var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+        abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+            if (confirmed) {
+                dolphin.freight.importExport.oceanImports.oceanImportHbl.lockedOrUnLockedOceanImportHbl({ HblId: id }).done(function () {
+                    if (isLock) {
+                        abp.message.success(l('Message:SuccessUnlock'));
+                    } else {
+                        abp.message.success(l('Message:SuccessLock'));
+                    }
+                    dataTable.ajax.reload();
+                });
+            } else {
+                $('#lock_' + id).parent().prev().prev().children().prop('checked', false);
+            }
+        });
+    }
 }
 
 var lock = function (id) {
