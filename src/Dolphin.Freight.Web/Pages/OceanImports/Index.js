@@ -30,8 +30,9 @@ var columns = [{
     orderable: false,
     render: function (data, type, row) {
         var id = row.id;
+        var filingNo = row.filingNo;
         $('#selectAllCheckbox').prop('checked', false);
-        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="selectCheckbox(this)" style="cursor: pointer;">';
+        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" data-filingNo="' + filingNo + '" onclick="selectCheckbox(this)" style="cursor: pointer;">';
     }
 },
     {
@@ -168,6 +169,22 @@ $(function () {
         });
     })
 });
+
+class OceanImportMblList {
+    static getProfitReport(reportType) {
+        var params = "";
+        var selectedCheckboxes = $('#MblListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+
+        for (var i = 0; i < selectedCheckboxes.length; i++) {
+            var id = selectedCheckboxes[i].attributes[2].value;
+            var filingNo = selectedCheckboxes[i].attributes[3].value;
+            params += id + ' / ' + filingNo + ', ';
+        }
+
+        params = params.replace(/^,|,$/g, '');
+        OpenWindow('/Docs/ProfitReportMblListOceanImport?reportType=' + reportType + '&pageType=@Dolphin.Freight.Common.FreightPageType.OIMBL&param=' + params);
+    }
+}
 
 function selectAllCheckbox(element) {
     var isChecked = $(element).prop('checked');

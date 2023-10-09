@@ -41,6 +41,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public DateTime PostDate { get; set; }
         public Guid? CyLocationId { get; set; }
         public string CyLocation { get; set; }
+        public string ReportType { get; set; }
         public string SoNo { get; set; }
         public string HblSoNo { get; set; }
         public string ItnNo { get; set; }
@@ -56,7 +57,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string BlAcctCarrierContent { get; set; }
         public Guid? ShippingAgentId { get; set; }
         public string ShippingAgentName { get; set; }
-
+        public List<string> DDLItems { get; set; }
         public string ShippingAgentContent { get; set; }
         public Guid? MblOverseaAgentId { get; set; }
         public string MblOverseaAgentName { get; set; }

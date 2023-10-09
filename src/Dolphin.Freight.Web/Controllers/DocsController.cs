@@ -5695,6 +5695,18 @@ namespace Dolphin.Freight.Web.Controllers
         {
             return await ProfitReport(model);
         }
+
+        public IActionResult ProfitReportMblListOceanImport(string reportType, FreightPageType pageType, string param)
+        {
+            OceanImportDetails OceanImportDetails = new();
+
+            OceanImportDetails.DDLItems = param.Split(',').ToList();
+
+            OceanImportDetails.ReportType = reportType;
+
+            return View(OceanImportDetails);
+        }
+
         public IActionResult ProfitReportMawbListAirImport(string reportType, FreightPageType pageType, string param)
         {
             AirExportDetails airExportDetails = new();
