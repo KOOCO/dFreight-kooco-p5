@@ -256,8 +256,22 @@ function selectAllCheckbox(elem) {
     $('#HblListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
 
     if (isChecked) {
-        $('#lockId').prop('disabled', !isChecked);
-        $('#unlockId').prop('disabled', !isChecked);
+        var isAnyLocked = false;
+        var isAnyUnLocked = false;
+
+        $('#HblListTable tbody input.selectCheckbox[type="checkbox"]').each(function (i, e) {
+            var id = $($('.selectCheckbox')[i]).attr('data-id');
+            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+
+            if (isLock) {
+                isAnyLocked = true;
+            } else {
+                isAnyUnLocked = true;
+            }
+        });
+
+        $('#lockId').prop('disabled', !isAnyUnLocked);
+        $('#unlockId').prop('disabled', !isAnyLocked);
     } else {
         $('#lockId').prop('disabled', !isChecked);
         $('#unlockId').prop('disabled', !isChecked);

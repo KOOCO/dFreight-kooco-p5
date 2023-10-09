@@ -174,8 +174,20 @@ function selectAllCheckbox(element) {
     $('#MblListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
 
     if (isChecked) {
-        $('#lockId').prop('disabled', !isChecked);
-        $('#unlockId').prop('disabled', !isChecked);
+        var isAnyLocked = false;
+        var isAnyUnlocked = false;
+        $('#MblListTable tbody input.selectCheckbox[type="checkbox"]').each(function (i, e) {
+            var id = $($('.selectCheckbox')[i]).attr('data-id');
+            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+
+            if (isLock) {
+                isAnyLocked = true;
+            } else {
+                isAnyUnlocked = true;
+            }
+        });
+        $('#lockId').prop('disabled', !isAnyUnlocked);
+        $('#unlockId').prop('disabled', !isAnyLocked);
     } else {
         $('#lockId').prop('disabled', !isChecked);
         $('#unlockId').prop('disabled', !isChecked);
