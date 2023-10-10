@@ -15,7 +15,8 @@
         $(document).ready(function () {
                     var l = abp.localization.getResource('Freight');
                     //$('#Accounting_InvoiceList_PaymentId').val('@Model.CustomerPayment.PaymentId');
-            if ('@Model.CustomerPayment.Deposit' != null) { 
+            debugger;
+            if ('@Model.CustomerPayment.Deposit' != null&&'@Model.CustomerPayment.Deposit' != '') { 
             
              document.getElementById("CustomerPayment_Deposit").disabled = false;
              document.getElementById("CPDck").checked = true;
@@ -23,7 +24,7 @@
             }else{
             document.getElementById("CustomerPayment_Deposit").disabled = true;
             }
-            if ('@Model.CustomerPayment.Invalid' != null) {
+            if ('@Model.CustomerPayment.Invalid' != null&&'@Model.CustomerPayment.Invalid' != '') {
 
                 document.getElementById("CustomerPayment_Invalid").disabled = false;
                 document.getElementById("CPIck").checked = true;
@@ -82,7 +83,7 @@ var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes
         }
             $('#createForm').on('abp-ajax-success', function (result, rs) {
                 event.preventDefault();
-                location.href = '/Accounting/Payment/CustomerPayment?Id=' + rs.responseText.id
+                location.href = '/Accounting/Payment/CustomerPayment?Id=' + rs.responseText.id+'&edit=Y'
             });
 
     </script>
