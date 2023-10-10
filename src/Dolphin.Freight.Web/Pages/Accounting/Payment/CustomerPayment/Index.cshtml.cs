@@ -313,10 +313,10 @@ new SelectListItem { Value = "29", Text = "\u96F6\u7528\u91D1" }
 
             if (CustomerPaymentDto != null)
             {
-                if (customerPayment.Edit != "Y")
-                {
-                    throw new BusinessException(FreightDomainErrorCodes.CustomerPaymentAlreadyExists);
-                }
+                //if (customerPayment.Edit != "Y")
+                //{
+                //    throw new BusinessException(FreightDomainErrorCodes.CustomerPaymentAlreadyExists);
+                //}
                 customerPayment.PaymentId = customerPayment.GU;
                 CustomerPaymentDto= await _customerPaymentAppService.UpdateAsync(Guid.Parse(customerPayment.Id), customerPayment);
             }

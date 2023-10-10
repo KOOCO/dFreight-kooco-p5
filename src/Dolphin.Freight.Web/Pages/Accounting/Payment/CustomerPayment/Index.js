@@ -29,10 +29,78 @@
     //});
  
     $("#saveBtn").click(function () {
-        var datatable = JSON.stringify(invDataTable.data().toArray());
+        var datatable = getAllRowsData();
         $("#datatablelist").val(datatable);
         $("#createForm").submit();
+        //var datatableRowArray = JSON.parse(getAllRowData());
+
+        //if (datatableArray.length > 0) {
+        //    datatableArray = datatableArray.concat(datatableRowArray);
+        //    $("#datatablelist").val(JSON.stringify(datatableArray));
+        //    $("#createForm").submit();
+        //} else {
+        //    $("#datatablelist").val(datatableRowArray);
+        //    $("#createForm").submit();
+        //}
     });
+
+    function getAllRowsData() {
+        var allData = [];
+
+        //var existingData = $('#InvTable').DataTable().rows().data().toArray();
+        //debugger;
+        //allData = allData.concat(existingData);
+
+        $('#InvTable tbody tr').each(function (index, row) {
+            var rowData = {};
+
+            $(row).find('td').each(function (cellIndex, cell) {
+                var input = $(cell).find('input, select');
+                if (input.length) {
+                    var key = input.attr('name');
+                    var value = input.val();
+                    rowData[key] = value;
+                } else {
+                    if ($('#InvTable').DataTable().column(cellIndex).dataSrc().toLowerCase() == 'glcodeid') {
+                        rowData[$('#InvTable').DataTable().column(cellIndex).dataSrc()] = null;
+                    } else {
+                        rowData[$('#InvTable').DataTable().column(cellIndex).dataSrc()] = $(cell).text();
+                    }
+                }
+            });
+
+            allData.push(rowData);
+        });
+
+        var allDataJson = JSON.stringify(allData);
+
+        return allDataJson;
+    }
+
+    //function getAllRowData() {
+    //    var allData = [];
+
+    //    $('#InvTable tbody tr').each(function (index, row) {
+    //        var rowData = {};
+
+    //        $(row).find('td').each(function (cellIndex, cell) {
+    //            var input = $(cell).find('input, select');
+
+    //            if (input.length) {
+    //                var key = input.attr('name');
+    //                var value = input.val();
+
+    //                rowData[key] = value;
+    //            }
+    //        });
+
+    //        allData.push(rowData);
+    //    });
+
+    //    var allDataJson = JSON.stringify(allData);
+
+    //    return allDataJson;
+    //}
 
     $('#createForm').on('abp-ajax-success', function (result, rs) {           
         abp.message.success('Successfully saved.');
