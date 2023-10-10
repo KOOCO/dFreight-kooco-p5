@@ -94,7 +94,8 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                 ViewData["PId"] = CustomerPaymentDto.PaymentId;
             }
             else 
-            { 
+            {
+                CustomerPayment.ReleaseDate = DateTime.Now.Date;
                 QueryCurrency.Ccy1Id = "19B90321-C852-451D-A1C0-5FA47373ED55";
                 QueryCurrency.Ccy2Id = "9D571C85-3C78-41B1-A098-BBB22E8D159B";
                 CustomerPayment.U2T = await _currencyAppService.QueryRateInternalAsync(QueryCurrency);
@@ -119,7 +120,7 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                 PLList = new List<SelectListItem>();
                 if (id.ToString() == "00000000-0000-0000-0000-000000000000")
                 {
-                    foreach (var pl in list)
+                    foreach (var pl in list.DistinctBy(x=>x.CodeValue))
                     {
                         if (pl.CodeValue == "1")
                         {
@@ -133,7 +134,7 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                 }
                 else 
                 {
-                    foreach (var pl in list)
+                    foreach (var pl in list.DistinctBy(x => x.CodeValue))
                     {
                         if (pl.CodeValue == CustomerPaymentDto.PaymentLevel)
                         {
@@ -160,9 +161,9 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                 CategoryList = new List<SelectListItem>();
                 if (id.ToString() == "00000000-0000-0000-0000-000000000000")
                 {
-                    foreach (var pl in list)
+                    foreach (var pl in list.DistinctBy(x => x.CodeValue))
                     {
-                        if (pl.CodeValue == "0")
+                        if (pl.CodeValue == "10")
                         {
                             CategoryList.Add(new SelectListItem() { Text = pl.ShowName, Value = pl.CodeValue, Selected = true });
                         }
@@ -174,7 +175,7 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                 }
                 else 
                 {
-                    foreach (var pl in list)
+                    foreach (var pl in list.DistinctBy(x => x.CodeValue))
                     {
                         if (pl.CodeValue == CustomerPaymentDto.Category)
                         {
@@ -260,14 +261,35 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
             //之後改為讀取DB，暫時寫死
             BankList = new List<SelectListItem>
             {
-                new SelectListItem { Value = "中央銀行", Text = "中央銀行"},
-                new SelectListItem { Value = "國泰銀行", Text = "國泰銀行", Selected = true},
-                new SelectListItem { Value = "土地銀行", Text = "土地銀行"},
-                new SelectListItem { Value = "富邦銀行", Text = "富邦銀行"},
-                new SelectListItem { Value = "永豐銀行", Text = "永豐銀行"},
-                new SelectListItem { Value = "玉山銀行", Text = "玉山銀行"},
-                new SelectListItem { Value = "連線商業銀行", Text = "連線商業銀行"},
-                new SelectListItem { Value = "遠東銀行", Text = "遠東銀行"}
+               new SelectListItem { Value = "1", Text = "UOB" },
+new SelectListItem { Value = "2", Text = "\u83EF\u5357\u9280\u884C-USD",Selected=true },
+new SelectListItem { Value = "3", Text = "Bank3" },
+new SelectListItem { Value = "4", Text = "Bank4" },
+new SelectListItem { Value = "5", Text = "Bank5" },
+new SelectListItem { Value = "6", Text = "Bank6" },
+new SelectListItem { Value = "7", Text = "Bank7" },
+new SelectListItem { Value = "8", Text = "Bank8" },
+new SelectListItem { Value = "9", Text = "Bank9" },
+new SelectListItem { Value = "10", Text = "Chase Credit Card Example" },
+new SelectListItem { Value = "11", Text = "Bank11" },
+new SelectListItem { Value = "12", Text = "Bank12" },
+new SelectListItem { Value = "13", Text = "Bank13" },
+new SelectListItem { Value = "14", Text = "BANK1234" },
+new SelectListItem { Value = "15", Text = "Bank15" },
+new SelectListItem { Value = "16", Text = "Bank16" },
+new SelectListItem { Value = "17", Text = "Bank17" },
+new SelectListItem { Value = "18", Text = "Bank18" },
+new SelectListItem { Value = "19", Text = "Bank19" },
+new SelectListItem { Value = "20", Text = "Bank20" },
+new SelectListItem { Value = "21", Text = "Bank21" },
+new SelectListItem { Value = "22", Text = "Credit Card Example" },
+new SelectListItem { Value = "23", Text = "Petty Cash" },
+new SelectListItem { Value = "24", Text = "Petty Cash" },
+new SelectListItem { Value = "25", Text = "testing" },
+new SelectListItem { Value = "26", Text = "OCBC" },
+new SelectListItem { Value = "27", Text = "HSBC" },
+new SelectListItem { Value = "28", Text = "UOB" },
+new SelectListItem { Value = "29", Text = "\u96F6\u7528\u91D1" }
             };
 
             if (id.ToString() != "00000000-0000-0000-0000-000000000000")
@@ -296,19 +318,19 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                     throw new BusinessException(FreightDomainErrorCodes.CustomerPaymentAlreadyExists);
                 }
                 customerPayment.PaymentId = customerPayment.GU;
-                await _customerPaymentAppService.UpdateAsync(Guid.Parse(customerPayment.Id), customerPayment);
+                CustomerPaymentDto= await _customerPaymentAppService.UpdateAsync(Guid.Parse(customerPayment.Id), customerPayment);
             }
             else 
             { 
                 customerPayment.PaymentId = customerPayment.GU;
-                await _customerPaymentAppService.CreateAsync(customerPayment);
+                CustomerPaymentDto= await _customerPaymentAppService.CreateAsync(customerPayment);
             }
 
             List<CreateUpdateInvDto> list = JsonConvert.DeserializeObject<List<CreateUpdateInvDto>>(datatablelist);
             await _invAppService.UpdateList(customerPayment.GU, list);
             Dictionary<string, Guid> rs = new Dictionary<string, Guid>
             {
-                { "id", customerPayment.GU }
+                { "id",CustomerPaymentDto.Id }
             };
             return new JsonResult(rs);
         }
