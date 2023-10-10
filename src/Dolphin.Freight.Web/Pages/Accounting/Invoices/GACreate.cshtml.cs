@@ -1,10 +1,12 @@
 using Dolphin.Freight.Accounting.InvoiceBills;
 using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.Settings.CurrencySetting;
 using Dolphin.Freight.Settinngs.Ports;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -30,6 +32,8 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
         public InvoiceBasicDto InvoiceBasicDto { get; set; }
         [BindProperty]
         public InvoiceMblDto InvoiceMblDto { get; set; }
+        public Dictionary<string, float> DictCurrencyConversion { get; set; }
+        public string CurrencyConversionJSON { get; set; }
 
         public string backUrl { get; set; }
         private readonly IInvoiceAppService _invoiceAppService;
@@ -38,12 +42,14 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
         private readonly ITradePartnerAppService _tradePartnerAppService;
         private readonly IPortAppService _portAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
+        private readonly ICurrencySettingAppService _currencySettingAppService;
         public GACreateModel(ITradePartnerAppService tradePartnerAppService,
                             ISubstationAppService substationAppService,
                             IInvoiceAppService invoiceAppService,
                             IInvoiceBillAppService invoiceBillAppService,
                             IPortAppService portAppService,
-                            ISysCodeAppService sysCodeAppService
+                            ISysCodeAppService sysCodeAppService,
+                            ICurrencySettingAppService currencySettingAppService
                             )
         {
             _invoiceAppService = invoiceAppService;
@@ -52,6 +58,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
             _tradePartnerAppService = tradePartnerAppService;
             _portAppService = portAppService;
             _sysCodeAppService = sysCodeAppService;
+            _currencySettingAppService = currencySettingAppService;
         }
         public async Task OnGetAsync()
         {
@@ -88,8 +95,10 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
                     InvoiceBasicDto.VesselNameVoyage = InvoiceBasicDto.VesselNameVoyage + InvoiceMblDto.Voyage;
                 }
             }
+
+            await FillCurrencySettingsDictionary();
         }
-        
+
         public async Task<JsonResult> OnPostAsync()
         {
             
@@ -118,6 +127,19 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
             Dictionary<string, object> rs = new Dictionary<string, object>();
             rs.Add("a1", "ejo");
             return new JsonResult(rs);
+        }
+
+        public async Task FillCurrencySettingsDictionary()
+        {
+            var currencySettings = await _currencySettingAppService.GetCurrenciesAsync();
+
+            DictCurrencyConversion = new Dictionary<string, float>();
+            foreach (var currencySetting in currencySettings)
+            {
+                DictCurrencyConversion.Add($"{currencySetting.StartingCurrency}-{currencySetting.EndCurrency}", currencySetting.ExChangeRate);
+            }
+
+            CurrencyConversionJSON = JsonConvert.SerializeObject(DictCurrencyConversion);
         }
     }
 }
