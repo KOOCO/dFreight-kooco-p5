@@ -75,7 +75,7 @@ var load = function () {
                 abp.libs.datatables.normalizeConfiguration({
                     paging: false,
                     info: false,
-                    searching: true,
+                    searching: false,
                     scrollX: true,
                     select: 'single',
                     responsive: true,
