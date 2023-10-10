@@ -1,10 +1,12 @@
 ﻿@page
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Web.Pages.Components
+@using Dolphin.Freight.Web.CommonService
 @using Microsoft.Extensions.Localization
 @using Dolphin.Freight.Web.Pages.Shared.Memos;
 @model Dolphin.Freight.Web.Pages.Accounting.Invoices.GACreateModel
 @inject IStringLocalizer<FreightResource> L
+@inject IDropdownService _dropdownService
 @section scripts
     {
     <abp-script src="/Pages/Accounting/Invoices/GACreate.js" />
@@ -270,9 +272,9 @@
                         <abp-row>
                             <abp-column size-md="_3">
                                 <label for="InvoiceNo" class="form-label">
-                                    @L["Display:InvoiceCompanyIdAR"]
+                                    @L["BillTo"]
                                 </label>
-                                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "InvoiceCompanyId", FieldName = "InvoiceCompanyId",DefaultValue="" , IsShowLabel = false , IsRequired = false })
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "InvoiceDto.InvoiceCompanyId", AspItems = _dropdownService.TradePartnerLookupList, Selected = Convert.ToString(Model.InvoiceDto.InvoiceCompanyId), SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.InvoiceDto.InvoiceCompanyId) })
                                 <input type="hidden" name="InvoiceDto.InvoiceCompanyId" id="mInvoiceCompanyId" value="@Model.InvoiceDto.InvoiceCompanyId" />
                             </abp-column>
                             <abp-column size-md="_3">
