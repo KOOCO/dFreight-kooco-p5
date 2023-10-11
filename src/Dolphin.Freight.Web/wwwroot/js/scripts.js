@@ -25,6 +25,10 @@ window.addEventListener('DOMContentLoaded', event => {
 
 });
 
+$(document).on('select2:open', () => {
+    document.querySelector('.select2-search__field').focus();
+});
+
 $(document).ready(function () {
     initMenuActive();
     if (location.pathname != null && location.pathname != "") {
