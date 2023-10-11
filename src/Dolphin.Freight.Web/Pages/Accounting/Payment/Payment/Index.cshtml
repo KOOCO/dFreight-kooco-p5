@@ -14,7 +14,35 @@
     <script type="text/javascript">
         $(document).ready(function () {
                     var l = abp.localization.getResource('Freight');
-                   
+                                       const ids = [
+            "Payment_Clear",
+            "Payment_Invalid",
+            "Payment_ReleaseDate"
+        ];
+
+        ids.forEach(function (id) {
+            let dateElem = $('#' + id);
+
+            if (dateElem.length === 0) {
+                return;
+            }
+
+            dateElem.removeAttr('type').datetimepicker({
+                format: 'Y-m-d H:i',
+                step: 15,
+                allowInput: false
+            });
+
+            let currentVal = dateElem.val();
+            if (currentVal.includes('T')) {
+                dateElem.val(currentVal.replace('T', ' '));
+            }
+        });
+    
+
+    $(".cdatetime").change(function () {
+        checkDateTime($(this).attr("id"), $(this).val())
+    })
                     
 
                       if ('@Model.Payment.Clear' != null&&'@Model.Payment.Clear' != '') { 
@@ -34,7 +62,43 @@
            document.getElementById("Payment_Invalid").disabled = true;
             } 
                 });
+                function checkDateTime(id,checkdate )
+{
+    var startdate = '2023-02-01';
+    var enddate = '2023-04-01';
+    var d = checkdate.toString().split(" ");
+    var checkIndex = 0;
+    if (d.length == 2) {
+        var d2 = d[0].split("-");
+        if (d2.length == 3) {
+            if (d2[0].length == 4 ) {
+                var date1 = new Date(d2[0], d2[1], d2[3]);
+                var date2 = new Date(startdate);
+                var date3 = new Date(enddate);
+                var dateCheck1 = date2 > date1;
+                var dateCheck2 = date1 > date3;
+                var dateCheck3 = date2.getTime() - date3.getTime();
+                if (dateCheck1) checkIndex = 1;
+                if (dateCheck2) checkIndex = 1;
 
+            } else {
+                checkIndex = 1;
+            }
+            
+           
+        } else {
+            console.log("2");
+            checkIndex = 1;
+        }
+    } else {
+        console.log("1");
+        checkIndex = 1;
+    }
+    if (checkIndex > 0) {
+        var date = new Date(startdate);
+        $("#" + id).val(startdate+" 00:00");
+    }
+}
         function PD_disable() {
             if(document.getElementById("Payment_Clear").disabled)
             {
@@ -161,7 +225,7 @@
                              <div class="form-group row ">
                              <label class="col-5 col-form-label "><span class="text-danger">*</span>@L["ReleaseDate"]</label>
                              <div class="col-7">
-                                <abp-input required suppress-label type="date" asp-for="Payment.ReleaseDate"   />
+                                <abp-input required suppress-label  asp-for="Payment.ReleaseDate"   />
                                 </div>
                                 </div>
                             </abp-column>

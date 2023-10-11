@@ -33,6 +33,8 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public Guid CopyId { get; set; }
         [BindProperty]
         public CreateUpdateCustomerPaymentDto CustomerPayment { get; set; }
         public CustomerPaymentDto CustomerPaymentDto { get; set; }
@@ -61,16 +63,17 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
             _ajaxDropdownAppService = ajaxDropdownAppService;
             _invAppService = invAppService;
         }
-        public async Task<IActionResult> OnGetAsync(Guid id,string edit)
+        public async Task<IActionResult> OnGetAsync(Guid id,string edit,Guid copyId)
         {
             //id = Guid.Parse("9A2B557D-1E43-6504-DECE-3A09461EDB60");
             CustomerPayment = new CreateUpdateCustomerPaymentDto();
             QueryCurrency = new QueryCurrencyTableDto();
 
-            if (id.ToString() != "00000000-0000-0000-0000-000000000000")
+            if (id.ToString() != "00000000-0000-0000-0000-000000000000"|| copyId.ToString() != "00000000-0000-0000-0000-000000000000")
             {
-                CustomerPaymentDto = await _customerPaymentAppService.GetDataAsync(id);
-                CustomerPayment.Id = id.ToString();
+                var newId = copyId != Guid.Empty ? copyId : id;
+                CustomerPaymentDto = await _customerPaymentAppService.GetDataAsync(newId);
+                CustomerPayment.Id = copyId == Guid.Empty? id.ToString():null;
                 CustomerPayment.PaymentId = CustomerPaymentDto.PaymentId;
                 CustomerPayment.PaymentLevel = CustomerPaymentDto.PaymentLevel;
                 CustomerPayment.ReceivablesSources = CustomerPaymentDto.ReceivablesSources;
@@ -89,7 +92,7 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                 CustomerPayment.H2T = CustomerPaymentDto.H2T;
                 CustomerPayment.Memo = CustomerPaymentDto.Memo;
 
-                CustomerPayment.GU = CustomerPaymentDto.PaymentId;
+                CustomerPayment.GU = copyId == Guid.Empty ? CustomerPaymentDto.PaymentId: Guid.NewGuid();
                 CustomerPayment.Edit = edit;
                 ViewData["PId"] = CustomerPaymentDto.PaymentId;
             }
@@ -118,7 +121,7 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
             if (list.Count > 0 )
             { 
                 PLList = new List<SelectListItem>();
-                if (id.ToString() == "00000000-0000-0000-0000-000000000000")
+                if (id.ToString() == "00000000-0000-0000-0000-000000000000" && CopyId.ToString() == "00000000-0000-0000-0000-000000000000")
                 {
                     foreach (var pl in list.DistinctBy(x=>x.CodeValue))
                     {
@@ -159,7 +162,7 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
             if (list.Count > 0)
             {
                 CategoryList = new List<SelectListItem>();
-                if (id.ToString() == "00000000-0000-0000-0000-000000000000")
+                if (id.ToString() == "00000000-0000-0000-0000-000000000000"&& copyId.ToString() == "00000000-0000-0000-0000-000000000000")
                 {
                     foreach (var pl in list.DistinctBy(x => x.CodeValue))
                     {
@@ -198,7 +201,7 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
             if (substations != null)
             {
                 SubstationList = new List<SelectListItem>();
-                if (id.ToString() == "00000000-0000-0000-0000-000000000000")
+                if (id.ToString() == "00000000-0000-0000-0000-000000000000" && CopyId.ToString() == "00000000-0000-0000-0000-000000000000")
                 {
                     SubstationList.Add(new SelectListItem() { Text = "", Value = "", Selected = true });
                     foreach (var substation in substations)
@@ -232,7 +235,7 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
             if (receivablessources != null)
             {
                 RSList = new List<SelectListItem>();
-                if (id.ToString() == "00000000-0000-0000-0000-000000000000")
+                if (id.ToString() == "00000000-0000-0000-0000-000000000000" && copyId.ToString() == "00000000-0000-0000-0000-000000000000")
                 {
                     RSList.Add(new SelectListItem() { Text = "", Value = "", Selected = true });
                     foreach (var receivablessource in receivablessources)
@@ -261,38 +264,22 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
             //之後改為讀取DB，暫時寫死
             BankList = new List<SelectListItem>
             {
-               new SelectListItem { Value = "1", Text = "UOB" },
-new SelectListItem { Value = "2", Text = "\u83EF\u5357\u9280\u884C-USD",Selected=true },
-new SelectListItem { Value = "3", Text = "Bank3" },
-new SelectListItem { Value = "4", Text = "Bank4" },
-new SelectListItem { Value = "5", Text = "Bank5" },
-new SelectListItem { Value = "6", Text = "Bank6" },
-new SelectListItem { Value = "7", Text = "Bank7" },
-new SelectListItem { Value = "8", Text = "Bank8" },
-new SelectListItem { Value = "9", Text = "Bank9" },
-new SelectListItem { Value = "10", Text = "Chase Credit Card Example" },
-new SelectListItem { Value = "11", Text = "Bank11" },
-new SelectListItem { Value = "12", Text = "Bank12" },
-new SelectListItem { Value = "13", Text = "Bank13" },
-new SelectListItem { Value = "14", Text = "BANK1234" },
-new SelectListItem { Value = "15", Text = "Bank15" },
-new SelectListItem { Value = "16", Text = "Bank16" },
-new SelectListItem { Value = "17", Text = "Bank17" },
-new SelectListItem { Value = "18", Text = "Bank18" },
-new SelectListItem { Value = "19", Text = "Bank19" },
-new SelectListItem { Value = "20", Text = "Bank20" },
-new SelectListItem { Value = "21", Text = "Bank21" },
-new SelectListItem { Value = "22", Text = "Credit Card Example" },
-new SelectListItem { Value = "23", Text = "Petty Cash" },
-new SelectListItem { Value = "24", Text = "Petty Cash" },
-new SelectListItem { Value = "25", Text = "testing" },
-new SelectListItem { Value = "26", Text = "OCBC" },
-new SelectListItem { Value = "27", Text = "HSBC" },
-new SelectListItem { Value = "28", Text = "UOB" },
-new SelectListItem { Value = "29", Text = "\u96F6\u7528\u91D1" }
+               new SelectListItem { Value = "UOB", Text = "UOB" },
+new SelectListItem { Value = "????-USD", Text = "\u83EF\u5357\u9280\u884C-USD",Selected=true },
+
+new SelectListItem { Value = "Chase Credit Card Example", Text = "Chase Credit Card Example" },
+
+new SelectListItem { Value = "Credit Card Example", Text = "Credit Card Example" },
+new SelectListItem { Value = "Petty Cash", Text = "Petty Cash" },
+new SelectListItem { Value = "Petty Cash", Text = "Petty Cash" },
+new SelectListItem { Value = "testing", Text = "testing" },
+new SelectListItem { Value = "OCBC", Text = "OCBC" },
+new SelectListItem { Value = "HSBC", Text = "HSBC" },
+new SelectListItem { Value = "UOB", Text = "UOB" },
+new SelectListItem { Value = "???", Text = "\u96F6\u7528\u91D1" }
             };
 
-            if (id.ToString() != "00000000-0000-0000-0000-000000000000")
+            if (id.ToString() != "00000000-0000-0000-0000-000000000000" && copyId.ToString() == "00000000-0000-0000-0000-000000000000")
             {
                 foreach (var item in BankList)
                 {
