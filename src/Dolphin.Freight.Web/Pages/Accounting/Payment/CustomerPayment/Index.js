@@ -53,20 +53,28 @@
 
         $('#InvTable tbody tr').each(function (index, row) {
             var rowData = {};
+            var currentDate = getCurrentDate();
 
             $(row).find('td').each(function (cellIndex, cell) {
                 var input = $(cell).find('input, select');
+                debugger;
                 if (input.length) {
                     var key = input.attr('name');
                     var value = input.val();
-                    rowData[key] = value;
-                } else {
-                    if ($('#InvTable').DataTable().column(cellIndex).dataSrc().toLowerCase() == 'glcodeid') {
-                        rowData[$('#InvTable').DataTable().column(cellIndex).dataSrc()] = null;
-                    } else {
-                        rowData[$('#InvTable').DataTable().column(cellIndex).dataSrc()] = $(cell).text();
+
+                    if (key === 'postDate' || key === 'dueDate') {
+                        value = currentDate;
                     }
+
+                    rowData[key] = value;
                 }
+                //else {
+                //    if ($('#InvTable').DataTable().column(cellIndex).dataSrc().toLowerCase() == 'glcodeid') {
+                //        rowData[$('#InvTable').DataTable().column(cellIndex).dataSrc()] = null;
+                //    } else {
+                //        rowData[$('#InvTable').DataTable().column(cellIndex).dataSrc()] = $(cell).text();
+                //    }
+                //}
             });
 
             allData.push(rowData);
