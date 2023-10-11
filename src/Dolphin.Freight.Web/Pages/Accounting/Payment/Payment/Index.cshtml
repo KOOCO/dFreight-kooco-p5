@@ -109,7 +109,7 @@
                     var hours = String(now.getHours()).padStart(2, '0');
                     var minutes = String(now.getMinutes()).padStart(2, '0');
 
-                    var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+                    var formattedDate = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
                 document.getElementById("Payment_Clear").disabled = false;
                  document.getElementById("Payment_Clear").value = formattedDate;
             }
@@ -130,7 +130,7 @@
                     var hours = String(now.getHours()).padStart(2, '0');
                     var minutes = String(now.getMinutes()).padStart(2, '0');
 
-                    var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+                    var formattedDate = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
                 document.getElementById("Payment_Invalid").disabled = false;
                document.getElementById("Payment_Invalid").value = formattedDate;
                 document.getElementById("PDck").disabled = true;
