@@ -333,7 +333,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.OfficeId", AspItems = _dropdown.SubstationLookupList, IsShowLabel = true, FieldName = "OfficeId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.OfficeId), IsRequired = true })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.BlTypeId", AspItems = _dropdown.BlTypeLookupList, IsShowLabel = true, FieldName = "BlTypeId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.BlTypeId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.BlTypeId", AspItems = Model.BlTypeLookupList, IsShowLabel = true, FieldName = "BlTypeId", ShowFiledContentValue = Convert.ToString(Model.BlTypeLookupList[6].Value.ToString()) })
                                 </abp-column>
                             </abp-row>
                            
