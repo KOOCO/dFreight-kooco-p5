@@ -94,11 +94,7 @@
                             data: "bankCurrency",
                             type: "readonly"
                         },
-                        {
-                            title: l('PaymentMadeList:PaidAmount') + '(' + l('PaymentMadeList:BankCurrency') + ')',
-                            data: "bankCurrency",
-                            type: "readonly"
-                        },
+                     
                         {
                             title: l('PaymentMadeList:ClearDate'),
                             data: "clear",
@@ -106,8 +102,14 @@
                         },
                         {
                             title: l('PaymentMadeList:Invalid'),
-                            data: "invalid",
-                            type: "readonly"
+                            data: "void",
+                            render: function (data, type, row) {
+                                if (data === true) {
+                                    return '<i class="fas fa-check"></i>'; // Use an icon for true (checkmark)
+                                } else {
+                                    return '<i class="fas fa-times"></i>'; // Use an icon for false (cross)
+                                }
+                            }
                         },
                         {
                             title: l('PaymentMadeList:InvalidDate'),
