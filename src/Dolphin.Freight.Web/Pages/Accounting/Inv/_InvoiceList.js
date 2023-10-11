@@ -135,7 +135,8 @@ var load = function () {
                                 }
                             },
                             type: "select",
-                            "options": glcodes
+                            "options": glcodes,
+                            width: "50px"
                         },
                         {
                             title: l('InvoiceList:Currency'),
@@ -204,7 +205,7 @@ var load = function () {
                                 var blankData = {
                                     id: "",
                                     postDate: "",
-                                    invoiceDate: "",
+                                    invoiceDate: "Test",
                                     dueDate: "",
                                     type: "",
                                     officeId: "",
@@ -244,7 +245,7 @@ var load = function () {
                     createdRow: function (row, data, dataIndex) {
                         if (!data.id) {
                             $('td:eq(0)', row).html("<input type='hidden' id='id' name='id'><input class='form-control' type='text' pattern='.*' name='postDate' readonly='' id='postDate' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
-                            $('td:eq(1)', row).html("<input class='form-control' type='text'' pattern='.*' name='invoiceDate' id='invoiceDate' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden;'>");
+                            $('td:eq(1)', row).html("<input class='form-control' type='readonly'' pattern='.*' name='invoiceDate' value='" + getCurrentDate() + "' id='invoiceDate' readonly='' placeholder='' data-special='' data-unique='false' style='overflow: hidden;'>");
                             $('td:eq(2)', row).html("<input class='form-control' type='readonly' pattern='.*' name='dueDate' readonly='' id='dueDate' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
                             $('td:eq(3)', row).html("<input class='form-control' type='readonly' pattern='.*' name='type' readonly='' id='type' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
                             $('td:eq(4)', row).html("<input class='form-control' type='readonly' pattern='.*' name='officeId' readonly='' id='officeId' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
@@ -287,11 +288,43 @@ var load = function () {
                 })
             );
 
+            $($('th:contains("Post Date")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Invoice Date")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Due Date")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Type")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Office")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Customer")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Invoice No.")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("G/L")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            
+            $($('th:contains("Currency")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Invoice AMT")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Balance AMT")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Payment")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Payment(TWD)")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Invoice Description")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("File No.")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("B/L No.")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("P.O.No.")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("OP")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Sales")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+
             $("InvTable_filter").find('[type=search]').on('keyup', function () {
                 invDataTable.search(this.value).draw();
             });
         }
     );
+}
+
+function getCurrentDate() {
+    let currentDate = new Date();
+    formattedDate = currentDate.getFullYear() +
+        '-' + ('0' + (currentDate.getMonth() + 1)).slice(-2) +
+        '-' + ('0' + currentDate.getDate()).slice(-2) +
+        ' ' + ('0' + currentDate.getHours()).slice(-2) +
+        ':' + ('0' + currentDate.getMinutes()).slice(-2);
+
+    return formattedDate;
 }
 
 const getExchangeRate = async (exchageDate, ccy1, ccy2) => {
