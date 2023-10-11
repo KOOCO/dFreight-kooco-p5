@@ -114,7 +114,7 @@ var day = String(now.getDate()).padStart(2, '0');
 var hours = String(now.getHours()).padStart(2, '0');
 var minutes = String(now.getMinutes()).padStart(2, '0');
 
-var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+var formattedDate = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
 
                 document.getElementById("CustomerPayment_Deposit").disabled = false;
               document.getElementById("CustomerPayment_Deposit").value =formattedDate;
@@ -140,7 +140,7 @@ var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes
                  var hours = String(now.getHours()).padStart(2, '0');
                  var minutes = String(now.getMinutes()).padStart(2, '0');
 
-                 var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+                 var formattedDate = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
  document.getElementById("CustomerPayment_Invalid").value = formattedDate;
             }
             else
