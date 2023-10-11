@@ -84,5 +84,15 @@ namespace Dolphin.Freight.Accounting.Payment
             var cp = await _customerPaymentRepository.CheckByPaymentIdAsync(PaymentId);
             return ObjectMapper.Map<CustomerPayment, CustomerPaymentDto>(cp);
         }
+
+        public async Task DeleteMultiplePaymentsAsync(Guid[] ids)
+        {
+            foreach (var id in ids)
+            {
+
+
+              await  base.DeleteAsync(id);
+            }
+        }
     }
 }
