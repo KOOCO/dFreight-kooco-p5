@@ -24,6 +24,7 @@ using Newtonsoft.Json;
 using System.Runtime.ConstrainedExecution;
 using System.Xml.Linq;
 using Volo.Abp;
+using static Dolphin.Freight.Permissions.AccountingPermissions;
 
 namespace Dolphin.Freight.Web.Pages.Payment
 {
@@ -296,10 +297,10 @@ namespace Dolphin.Freight.Web.Pages.Payment
 
             if (PaymentDto != null)
             {
-                if (Payment.Edit != "Y")
-                {
-                    throw new BusinessException(FreightDomainErrorCodes.PaymentAlreadyExists);
-                }
+                //if (Payment.Edit != "Y")
+                //{
+                //    throw new BusinessException(FreightDomainErrorCodes.PaymentAlreadyExists);
+                //}
                 payment.PaymentId = Payment.GU;
                 PaymentDto= await _paymentAppService.UpdateAsync(Guid.Parse(payment.Id), payment);
             }
@@ -310,7 +311,10 @@ namespace Dolphin.Freight.Web.Pages.Payment
             }
 
             List<CreateUpdateInvDto> list = JsonConvert.DeserializeObject<List<CreateUpdateInvDto>>(datatablelist);
-            await _invAppService.UpdateList(Payment.GU, list);
+            if (!(list.Count == 1 && !list[0].GetType().GetProperties().Any(prop => prop.GetValue(list[0]) != null)))
+            {
+                await _invAppService.UpdateList(Payment.GU, list);
+            }
             Dictionary<string, Guid> rs = new Dictionary<string, Guid>
             {
                 { "id", PaymentDto.Id }

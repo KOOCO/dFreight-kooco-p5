@@ -1,4 +1,35 @@
-﻿var invDataTable;
+﻿class InvoiceListJS {
+    static getAllRowsData() {
+        var allData = [];
+
+        $('#InvTable tbody tr').each(function (index, row) {
+            var rowData = {};
+            var currentDate = getCurrentDate();
+
+            $(row).find('td').each(function (cellIndex, cell) {
+                var input = $(cell).find('input, select');
+                if (input.length) {
+                    var key = input.attr('name');
+                    var value = input.val();
+
+                    if (key === 'postDate' || key === 'dueDate') {
+                        value = currentDate;
+                    }
+
+                    rowData[key] = value;
+                }
+            });
+
+            allData.push(rowData);
+        });
+
+        var allDataJson = JSON.stringify(allData);
+
+        return allDataJson;
+    }
+}
+
+var invDataTable;
 var currencies;
 var glcodes;
 var exchangeRate;
@@ -77,7 +108,6 @@ var load = function () {
                     info: false,
                     searching: false,
                     scrollX: true,
-                    select: 'single',
                     responsive: true,
                     data: result,
                     columnDefs: [
@@ -226,7 +256,6 @@ var load = function () {
                                 };
                                 console.log(blankData);
                                 dt.row.add(blankData).draw();
-                                dt.row(':last', { order: 'current' }).select();
                             }
                         },
                         {
@@ -298,7 +327,6 @@ var load = function () {
             $($('th:contains("Customer")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
             $($('th:contains("Invoice No.")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
             $($('th:contains("G/L")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
-            
             $($('th:contains("Currency")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
             $($('th:contains("Invoice AMT")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
             $($('th:contains("Balance AMT")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
