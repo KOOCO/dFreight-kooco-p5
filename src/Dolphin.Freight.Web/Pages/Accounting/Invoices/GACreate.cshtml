@@ -24,20 +24,21 @@
             HKD: "HKD",
             TWD: "TWD"
         }
+        const currencies = ['TWD', 'USD', 'RMB', 'HKD'];
         let currencyConverter = '@Model.CurrencyConversionJSON'.replaceAll('&quot;', '"');
 
         $(document).ready(function () {
             //分站
-            dolphin.freight.settings.substations.substation.getSubstations({}).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSubstationsTag(result, "OfficeId", $("#mOfficeId").val())
-                }
-            });
-            dolphin.freight.common.ajaxDropdown.getAllTradePartners({}).done(function (result) {
-                var selectItems = result;
-                initTradePartnerSelect(selectItems, "InvoiceCompanyId", $("#mInvoiceCompanyId").val());
+            //dolphin.freight.settings.substations.substation.getSubstations({}).done(function (result) {
+            //    if (result != null && result.length > 0) {
+            //        initSubstationsTag(result, "OfficeId", $("#mOfficeId").val())
+            //    }
+            //});
+            //dolphin.freight.common.ajaxDropdown.getAllTradePartners({}).done(function (result) {
+            //    var selectItems = result;
+            //    initTradePartnerSelect(selectItems, "InvoiceCompanyId", $("#mInvoiceCompanyId").val());
 
-            });
+            //});
             dolphin.freight.accounting.invoiceBills.invoiceBill.queryInvoiceBills({
                 InvoiceNo: '@Model.InvoiceId'
             }).done(function (result) {
@@ -78,6 +79,12 @@
                 if (result != null && result.length > 0) {
                     initSysCodeTag(result, "IncotermsId", $("#mIncotermsId").val())
                 }
+            });
+            dolphin.freight.accounting.invoiceBills.invoiceBill.queryInvoiceBills({ InvoiceNo: '@Model.InvoiceId' }).done(function (result) {
+                InvoiceBills = result;
+                result.forEach(function (bill) {
+                    addItems(bill);
+                })
             });
             $("#InvoiceDto_PostDate").datepicker({
                 format: "yyyy-mm-dd",
@@ -159,21 +166,36 @@
             });
         });
         var index = 0;
-        function addItems() {
+        function addItems(bill) {
+            bill = bill || {};
+            var trhtml = "<tr id='_" + index + "'><td style='text-align:center'><input class='checkItem' type='checkbox' name='InvoiceBillDtos[" + index + "].Id' value='" + (bill.id || '') + "' id='InvoiceBillDtosId_" + index + "' value='new_" + index + "'/></td>";
+            trhtml = trhtml + "<td>" + GACreate.getBillCodeSelect(index, '', (bill.code || '')) + "</td>";
+            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Description' value='" + (bill.description || '') + "' id='Description_" + index + "' /></td>";
 
-            var trhtml = "<tr id='_" + index + "'><td style='text-align:center'><input class='checkItem' type='checkbox' name='InvoiceBillDtos[" + index + "].Id' id='InvoiceBillDtosId_" + index + "' value='new_" + index + "'/></td>";
-            trhtml = trhtml + "<td>" + GACreate.getBillCodeSelect(index, '') + "</td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Description' id='Description_" + index + "' /></td>";
-
-            trhtml = trhtml + "<td>" + GACreate.getUnitSelect(index, '') + "</td>";
-            trhtml = trhtml + "<td>" + GACreate.getCurrencySelect(index, '') + "</td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' id='Quantity_" + index + "' /></td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Rate' id='Rate_" + index + "' /><input type='hidden' name='InvoiceBillDtos[" + index + "].Amount' id='Amount_" + index + "' /></td>";
-            trhtml = trhtml + "<td id='td_Amount_" + index + "'></td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].AmountToAgent' id='AmountToAgent_" + index + "' /></td>";
-            trhtml = trhtml + "<td  style='text-align:center'><input type='checkbox' name='InvoiceBillDtos[" + index + "].IsNonProfit' id='IsNonProfit_" + index + "' value='true'/></td>";
+            trhtml = trhtml + "<td>" + GACreate.getUnitSelect(index, '', (bill.unit || '')) + "</td>";
+            trhtml = trhtml + "<td>" + GACreate.getCurrencySelect(index, '', (bill.currency || '')) + "</td>";
+            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' id='Quantity_" + index + "' value='" + (bill.quantity || '') + "' onchange='GACreateScripts.onQuantityChange(event)' /></td>";
+            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Rate' value='"+(bill.rate || '')+"' id='Rate_" + index + "' /><input type='hidden' name='InvoiceBillDtos[" + index + "].Amount' id='Amount_" + index + "' /></td>";
+            trhtml = trhtml + "<td id='td_Amount_" + index + "' value='" + (bill.amount || '') + "'></td>";
+            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].AmountToAgent' value='" + (bill.amountToAgent || '') + "' id='AmountToAgent_" + index + "' /></td>";
+            trhtml = trhtml + "<td  style='text-align:center'><input type='checkbox' name='InvoiceBillDtos[" + index + "].IsNonProfit' id='IsNonProfit_" + index + "'" + (bill.isNonProfit ? "checked" : "") + "/></td>";
             trhtml = trhtml + "<td></td></tr>";
             $("#trtbody").append(trhtml);
+            let val = currencyCodeToName[bill.currency || $('#Currency_' + index).val()];
+            let conversion = JSON.parse(currencyConverter);
+            let rate = conversion["" + val + "-TWD"];
+            if (val == undefined) {
+                $('#Quantity_' + index).val(0);
+                $('#Rate_' + index).val(0);
+            }
+            var amount = bill.quantity * $("#Rate_" + index + "").val();
+            if (val == undefined || amount == NaN) {
+                $('#td_Amount_' + index + '').text(0);
+            } else {
+                $('#td_Amount_' + index + '').text(parseFloat(amount).toFixed(2));
+            }
+            getTotalSubAmount();
+            getTotalAmount();
             index++;
         }
         function copyItems(id) {
@@ -229,6 +251,7 @@
         <form submit-button="true" data-ajaxForm="true" id="createForm">
             <abp-card class="card board-item">
                 <abp-card-header class="card-header active" style="background:#00CCFF;color:#FFFFFF;">
+                    <abp-input type="hidden" asp-for="@Model.InvoiceDto.Id" />
                     <abp-row>
                         <abp-column size-md="_9">
                             <abp-card-title>
@@ -267,7 +290,7 @@
 
 
 
-                        @if (Model.InvoiceType == 3)
+                        @if (Model.InvoiceType == 3 || Model.InvoiceDto.InvoiceType == 3)
                     {
                         <abp-row>
                             <abp-column size-md="_3">
@@ -472,17 +495,17 @@
                                     <tr border="1">
                                         <th colspan="5" style="text-align:right;border-block-color:#333333;" border="1">小計</th>
                                         <th>TWD</th>
-                                        <th>0</th>
+                                        <th id="convertedTWD" class="text-danger">0</th>
                                         <th>USD</th>
-                                        <th>0</th>
+                                        <th id="convertedUSD" class="text-danger">0</th>
                                         <th>RMB</th>
-                                        <th>0</th>
+                                        <th id="convertedRMB" class="text-danger">0</th>
                                         <th>HKD</th>
-                                        <th>0</th>
+                                        <th id="convertedHKD" class="text-danger">0</th>
                                     </tr>
                                     <tr border="1">
                                         <th colspan="12" style="text-align:right;border-block-color:#333333;" border="1">總計</th>
-                                        <th>0</th>
+                                        <th id="totalAmount" class="text-danger">0</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -500,7 +523,7 @@
                             </abp-card-header>
                             <abp-card>
                                 <abp-card-body>
-                                    <partial name="Memos/_Memo" model="new _MemoModel(Model.InvoiceDto.Id, Dolphin.Freight.Common.FreightPageType.GA)" />
+                                    <partial name="Memos/_Memo" model="new _MemoModel(Model.InvoiceId, Dolphin.Freight.Common.FreightPageType.GA)" />
                                 </abp-card-body>
                             </abp-card>
                         </abp-column>

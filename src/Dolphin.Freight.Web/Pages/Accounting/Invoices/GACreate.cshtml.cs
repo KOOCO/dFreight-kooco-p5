@@ -24,7 +24,10 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
         public int InvoiceType { get; set; }
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
-        public Guid? InvoiceId { get; set; }
+        public Guid InvoiceId { get; set; }
+        [HiddenInput]
+        [BindProperty(SupportsGet = true)]
+        public Guid? Id { get; set; }
         [BindProperty]
         public IList<CreateUpdateInvoiceBillDto> InvoiceBillDtos { get; set; }
         [BindProperty(SupportsGet = true)]
@@ -64,9 +67,9 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
         {
             InvoiceBasicDto = new InvoiceBasicDto();
 
-            if (InvoiceId != null)
+            if (InvoiceId != Guid.Empty || Id != null)
             {
-                var invoice = await _invoiceAppService.GetAsync(InvoiceId.Value);
+                var invoice = await _invoiceAppService.GetAsync(InvoiceId);
                 InvoiceDto = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
             }
 
@@ -101,27 +104,42 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
 
         public async Task<JsonResult> OnPostAsync()
         {
-            
-            if (InvoiceDto.InvoiceNo == null)
+            if (InvoiceDto.Id == Guid.Empty)
             {
                 if (InvoiceType == 3)
                 {
+                    if (InvoiceDto.InvoiceNo == null)
+                    {
+                        Random rnd = new Random(Guid.NewGuid().GetHashCode());
+                        int ai = rnd.Next(20230000);
+                        var s = ai.ToString("00000000");
+                        InvoiceDto.InvoiceNo = "AP" + s;
+                    }
                     InvoiceDto.InvoiceType = InvoiceType;
-                    InvoiceDto.InvoiceNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "In_InvoiceNo" });
                 }
                 else {
                     InvoiceDto.InvoiceType = 4;
                     InvoiceDto.InvoiceNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "OUT_InvoiceNo" });
                 }
+                var invoice = await _invoiceAppService.CreateAsync(InvoiceDto);
+                InvoiceDto.Id = invoice.Id;
+            } else if (InvoiceDto.Id != Guid.Empty)
+            {
+                await _invoiceAppService.UpdateAsync(InvoiceDto.Id, InvoiceDto);
             }
-            var invoice = await _invoiceAppService.CreateAsync(InvoiceDto);
-            InvoiceDto.Id = invoice.Id;
+
             if (InvoiceBillDtos != null && InvoiceBillDtos.Count > 0)
             {
                 foreach (var dto in InvoiceBillDtos)
                 {
-                    dto.InvoiceId = invoice.Id;
-                    await _invoiceBillAppService.CreateAsync(dto);
+                    dto.InvoiceId = InvoiceDto.Id;
+                    if (dto.Id != Guid.Empty)
+                    {
+                        await _invoiceBillAppService.UpdateAsync(dto.Id, dto);
+                    } else
+                    {
+                        await _invoiceBillAppService.CreateAsync(dto);
+                    }
                 }
             }
             Dictionary<string, object> rs = new Dictionary<string, object>();
