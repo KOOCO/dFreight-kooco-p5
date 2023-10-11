@@ -118,8 +118,14 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
                     InvoiceDto.InvoiceType = InvoiceType;
                 }
                 else {
+                    if (InvoiceDto.InvoiceNo == null)
+                    {
+                        Random rnd = new Random(Guid.NewGuid().GetHashCode());
+                        int ai = rnd.Next(20230000);
+                        var s = ai.ToString("00000000");
+                        InvoiceDto.InvoiceNo = s;
+                    }
                     InvoiceDto.InvoiceType = 4;
-                    InvoiceDto.InvoiceNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "OUT_InvoiceNo" });
                 }
                 var invoice = await _invoiceAppService.CreateAsync(InvoiceDto);
                 InvoiceDto.Id = invoice.Id;
