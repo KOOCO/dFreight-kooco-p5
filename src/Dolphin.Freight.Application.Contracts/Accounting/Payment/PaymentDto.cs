@@ -102,6 +102,7 @@ namespace Dolphin.Freight.Accounting.Payment
             get { return Invalid != null; }
             set { /* You can't set a value for Void since it's based on Invalid property */ }
         }
+        public string OpName { get; set; }
     }
 }
 

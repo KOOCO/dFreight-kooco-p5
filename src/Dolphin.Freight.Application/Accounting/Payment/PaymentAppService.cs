@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Identity;
 using Volo.Abp.ObjectMapping;
 
 namespace Dolphin.Freight.Accounting.Payment
@@ -23,12 +24,15 @@ namespace Dolphin.Freight.Accounting.Payment
     {
         private readonly IPaymentRepository _PaymentRepository;
         private IRepository<SysCode, Guid> _syscodeRepository;
+        private readonly IIdentityUserRepository _identityUserRepository;
 
-        public PaymentAppService(IRepository<Payment, Guid> repository, IPaymentRepository PaymentRepository, IRepository<SysCode, Guid> syscodeRepository)
+
+        public PaymentAppService(IRepository<Payment, Guid> repository, IPaymentRepository PaymentRepository, IRepository<SysCode, Guid> syscodeRepository, IIdentityUserRepository identityUserRepository)
         : base(repository)
         {
             _PaymentRepository = PaymentRepository;
             _syscodeRepository = syscodeRepository;
+            _identityUserRepository = identityUserRepository;
             GetPolicyName = AccountingPermissions.Payment.Default;
             GetListPolicyName = AccountingPermissions.Payment.Default;
             CreatePolicyName = AccountingPermissions.Payment.Create;
@@ -83,7 +87,14 @@ namespace Dolphin.Freight.Accounting.Payment
             PagedResultDto<PaymentDto> listDto = new PagedResultDto<PaymentDto>();
             listDto.Items = list.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             listDto.TotalCount = list.Count;
-
+            foreach (var item in listDto.Items) {
+                if(item.CreatorId != null) {
+                    var user = await _identityUserRepository.GetAsync((Guid)item.CreatorId);
+                    item.OpName = user.Name;
+                
+                }
+            
+            }
             return listDto;
         }
 

@@ -90,10 +90,9 @@ namespace Dolphin.Freight.Accounting.Invoices
             var rs=result.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.InvoiceNo
                                            .Contains(query.Search) || x.FilingNo
                                            
-                                           .Contains(query.Search) || x.PoNo
-                                           .ToString().Contains(query.Search))
+                                           .Contains(query.Search) )
                                            .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
-                                   .WhereIf(query.InvoiceType.HasValue, e => e.InvoiceType == query.InvoiceType)
+                                   .WhereIf(query.TypeId.HasValue, e => e.InvoiceType == query.TypeId)
                                    
                                    .WhereIf(!string.IsNullOrWhiteSpace(query.InvoiceNo), x => x.InvoiceNo == query.InvoiceNo)
                                    
@@ -134,20 +133,24 @@ namespace Dolphin.Freight.Accounting.Invoices
                     if (r.OfficeId is not null) bill.OfficeName = subDictionary[r.OfficeId.Value];
                     if (r.InvoiceCompanyId != null) bill.InvoiceCompanyName = tDictionary[r.InvoiceCompanyId.Value];
                     if (r.ShipToId != null) bill.ShipTo = tDictionary[r.ShipToId.Value];
+                    if (r.ShipToId != null) bill.PartyLocalName = tDictionary[r.ShipToId.Value];
                     if (r.CreatorId != null) bill.OpName = UserDictionary[r.CreatorId.Value];
                     if (r.CreatorId != null) bill.IssuedBy = UserDictionary[r.CreatorId.Value];
                     if (r.LastModifierId != null) bill.LastModifiedBy = UserDictionary[r.LastModifierId.Value];
                     if (r.MblId != null && r.MblId != Guid.Empty) { 
                         
                     }
-
+                    bill.TaxAmount = (decimal?)r.TotalTax;
+                    bill.TotalTax = r.TotalTax;
+                    bill.TotalAmount= r.TotalAmount;
+                    bill.TotalBeforeTax = r.TotalBeforeTax;
+                    bill.TaxAmountAc = (decimal?)r.TotalTax;
+                    bill.AmountAc= (decimal?)r.TotalAmount;
+                    bill.BalanceAc = (decimal?)r.TotalAmount;
                     list.Add(bill);
                     var invoiceBills = invoiceBillQueryable.Where(w => w.InvoiceId.Value == r.Id).ToList();
                     bill.InvoiceBillDtos = ObjectMapper.Map<List<InvoiceBill>, List<CreateUpdateInvoiceBillDto>>(invoiceBills);
-                    bill.Amount =(decimal)bill.InvoiceBillDtos.Sum(x => x.Amount);
-                    bill.AmountAc = (decimal)bill.InvoiceBillDtos.Sum(x => x.Amount);
-                    bill.BalanceAmount = (decimal)bill.InvoiceBillDtos.Sum(x => x.Amount);
-                    bill.BalanceAc = (decimal)bill.InvoiceBillDtos.Sum(x => x.Amount);
+              
                 }
             }
             PagedResultDto<InvoiceDto> listDto = new PagedResultDto<InvoiceDto>();
