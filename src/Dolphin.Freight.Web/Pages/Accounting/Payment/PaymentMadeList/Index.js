@@ -1,4 +1,24 @@
 ﻿var l = abp.localization.getResource('Freight');
+var queryListFilter = function () {
+    return {
+        
+
+        officeId: $("#Payment_OfficeId").val() == '' ? null : $("#Payment_OfficeId").val(),
+        categoryId: $("#categoryId").val() == '' ? null : $("#categoryId").val(),
+        paidTo: $("#Payment_PaidTo").val() == '' ? null : $("#Payment_PaidTo").val(),
+        bank: $("#Bank").val() == '' ? null : $("#Bank").val(),
+        refNo: $("#refNo").val() == '' ? null : $("#refNo").val(),
+        issuedBy: $("#Payment_IssuedBy").val() == '' ? null : $("#Payment_IssuedBy").val(),
+    
+        postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
+
+        clear: $("#Clear").val() == '' ? null : $("#Clear").val(),
+        void: $("#Void").val() == '' ? null : $("#Void").val(),
+        clearDate: $("#ClearDate").val() == '' || $("#ClearDate").val() == null ? null : new Date($("#ClearDate").val()),
+        voidDate: $("#VoidDate").val() == '' || $("#VoidDate").val() == null ? null : new Date($("#VoidDate").val()),
+       
+    };
+};
 var columns = [
 
 
@@ -88,16 +108,16 @@ $(function () {
                         type: 'column'
                     }
                 },
-                ajax: abp.libs.datatables.createAjax(dolphin.freight.accounting.payment.payment.getDataList, function () {
-                    return {};
-                }),
+                ajax: abp.libs.datatables.createAjax(dolphin.freight.accounting.payment.payment.getDataList, queryListFilter),
                 columnDefs: columns
             })
         );
 
        
     });
-
+    $('#Search').click(function (e) {
+        dataTable.ajax.reload();
+    });
     $('#btnConfiguration').click(function (e) {
         var _configurationModal = new abp.ModalManager({
             viewUrl: abp.appPath + 'Configuration',

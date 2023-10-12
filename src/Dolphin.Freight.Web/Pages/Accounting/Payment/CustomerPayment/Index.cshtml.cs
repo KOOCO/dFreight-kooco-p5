@@ -314,6 +314,7 @@ new SelectListItem { Value = "???", Text = "\u96F6\u7528\u91D1" }
             }
 
             List<CreateUpdateInvDto> list = JsonConvert.DeserializeObject<List<CreateUpdateInvDto>>(datatablelist);
+            
             await _invAppService.UpdateList(customerPayment.GU, list);
             Dictionary<string, Guid> rs = new Dictionary<string, Guid>
             {
