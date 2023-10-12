@@ -20,5 +20,6 @@ namespace Dolphin.Freight.Accounting.Invoices
         Task<IList<InvoiceDto>> QueryInvoicesAsync(QueryInvoiceDto query);
         Task<List<CopyIdDto>> CopyByBookingId(QueryInvoiceDto query,int IsAR,int IsAp,int IsDC);
         Task<bool> QueryInvoicesCheckAsync(QueryInvoiceDto query);
+        Task DeleteMultipleInvoicesByIdsAsync(Guid[] ids);
     }
 }
