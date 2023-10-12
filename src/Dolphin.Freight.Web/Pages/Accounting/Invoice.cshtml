@@ -310,6 +310,10 @@
             totalBeforeElement.innerHTML = parseFloat(parseFloat(total) - parseFloat(taxAmount)).toFixed(2);
             var totalAmountElement = document.getElementById("totalAmount");
             totalAmountElement.innerHTML = parseFloat(total).toFixed(2);
+
+            $('#InvoiceDto_TotalBeforeTax').val(parseFloat(parseFloat(total) - parseFloat(taxAmount)).toFixed(2));
+            $('#InvoiceDto_TotalTax').val(taxAmount);
+            $('#InvoiceDto_TotalAmount').val(parseFloat(total).toFixed(2));
         }
 
 
@@ -769,6 +773,9 @@
                                 <abp-input type="hidden" asp-for="InvoiceDto.InvoiceStatus" id="InvoiceDto_InvoiceStatus" value="0" />
                                 <abp-input type="hidden" asp-for="InvoiceDto.InvoiceType" id="InvoiceDto_InvoiceType" value="@Model.InvoiceType" />
                                 <abp-input type="hidden" asp-for="InvoiceDto.Id" />
+                                <abp-input type="hidden" asp-for="InvoiceDto.TotalBeforeTax" />
+                                <abp-input type="hidden" asp-for="InvoiceDto.TotalTax" />
+                                <abp-input type="hidden" asp-for="InvoiceDto.TotalAmount" />
                             </abp-column>
                         </abp-row>
 
@@ -1144,15 +1151,15 @@
                                     </tr>
                                     <tr border="1">
                                         <th colspan="14" style="text-align:right;border-block-color:#333333;" border="1">@L["TotalBeforeTax"]</th>
-                                        <th style="border-block-color:#333333;" id="totalBeforeTax" class="text-danger">0</th>
+                                        <th style="border-block-color:#333333;" name="InvoiceDto.TotalBeforeTax" id="totalBeforeTax" class="text-danger">0</th>
                                     </tr>
                                     <tr border="1">
                                         <th colspan="14" style="text-align:right;border-block-color:#333333;" border="1">@L["TotalTax"]</th>
-                                        <th style="border-block-color:#333333;" id="totalTax" class="text-danger">0</th>
+                                        <th style="border-block-color:#333333;" name="InvoiceDto.TotalTax" id="totalTax" class="text-danger">0</th>
                                     </tr>
                                     <tr border="1">
                                         <th colspan="14" style="text-align:right;border-block-color:#333333;" border="1">@L["Display:TotalAmount"]</th>
-                                        <th style="border-block-color:#333333;" id="totalAmount" class="text-danger">0</th>
+                                        <th style="border-block-color:#333333;" name="InvoiceDto.TotalAmount" id="totalAmount" class="text-danger">0</th>
                                         @*<th id="totalAmount">0 <input type="hidden" name="" /></th>*@
                                     </tr>
                                 </tfoot>

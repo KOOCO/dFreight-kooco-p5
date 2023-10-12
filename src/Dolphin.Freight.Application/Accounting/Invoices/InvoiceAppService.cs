@@ -11,6 +11,7 @@ using Dolphin.Freight.Accounting.Inv;
 using Volo.Abp.Uow;
 using Dolphin.Freight.Settings.Substations;
 using Volo.Abp.Identity;
+using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 
 namespace Dolphin.Freight.Accounting.Invoices
 {
@@ -29,11 +30,10 @@ namespace Dolphin.Freight.Accounting.Invoices
         private IRepository<InvoiceBill, Guid> _billRepository;
         private IRepository<IdentityUser, Guid> _userRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
+        private readonly IIdentityUserRepository _identityUserRepository;
 
         private readonly IRepository<SysCode, Guid> _sysCideRepository;
-        public InvoiceAppService(IRepository<Invoice, Guid> repository, IRepository<SysCode, Guid> sysCideRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner,
-            Guid> tradePartnerRepository, IRepository<InvoiceBill, Guid> billRepository, IInvoiceRepository invoiceRepository, IRepository<Substation,
-            Guid> substationRepository, IRepository<IdentityUser, Guid> userRepository)
+        public InvoiceAppService(IRepository<Invoice, Guid> repository, IRepository<SysCode, Guid> sysCideRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<InvoiceBill, Guid> billRepository, IInvoiceRepository invoiceRepository, IIdentityUserRepository identityUserRepository, IRepository<IdentityUser, Guid> userRepository)
             : base(repository)
         {
             _repository = repository;
@@ -42,11 +42,15 @@ namespace Dolphin.Freight.Accounting.Invoices
             _billRepository = billRepository;
             _substationRepository = substationRepository;
             _userRepository = userRepository;
+            _identityUserRepository = identityUserRepository;
+
         }
         public async Task<PagedResultDto<InvoiceDto>> QueryListAsync(QueryInvoiceDto query)
         {
             var tradePartners = await _tradePartnerRepository.GetListAsync();
+            var Users = await _identityUserRepository.GetListAsync();
             Dictionary<Guid, string> tDictionary = new Dictionary<Guid, string>();
+            Dictionary<Guid, string> UserDictionary = new Dictionary<Guid, string>();
             if (tradePartners != null)
             {
                 foreach (var tradePartner in tradePartners)
@@ -73,6 +77,13 @@ namespace Dolphin.Freight.Accounting.Invoices
                 }
             }
 
+            if (Users != null)
+            {
+                foreach (var User in Users)
+                {
+                    UserDictionary.Add(User.Id, User.Name);
+                }
+            }
             var result= await _repository.GetQueryableAsync();
             var rs=result.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.InvoiceNo
                                            .Contains(query.Search) || x.FilingNo
@@ -91,7 +102,7 @@ namespace Dolphin.Freight.Accounting.Invoices
                                   
                                  
                                           .OrderByDescending(x => x.CreationTime).ToList();
-          
+           
             List<InvoiceDto> list = new List<InvoiceDto>();
             if (query != null && query.ParentId != null)
             {
@@ -108,26 +119,38 @@ namespace Dolphin.Freight.Accounting.Invoices
             {
                 rs = rs.Where(x => x.InvoiceType > 2).ToList();
             }
-
+            var count = rs.Count();
+            rs = rs.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             if (rs != null && rs.Count > 0)
             {
 
                 foreach (var r in rs)
                 {
+                    var invoiceBillQueryable = await _billRepository.GetQueryableAsync();
                     var bill = ObjectMapper.Map<Invoice, InvoiceDto>(r);
                     if (r.ShipToId is not null) bill.ShipToName = tDictionary[r.ShipToId.Value];
-                    if (r.InvoiceCompanyId != null) bill.InvoiceCompanyName = tDictionary[r.InvoiceCompanyId.Value];
                     if (r.OfficeId is not null) bill.OfficeName = subDictionary[r.OfficeId.Value];
-                    if (r.CreatorId is not null) bill.IssuedBy = userDictionary[r.CreatorId.Value];
+                    if (r.InvoiceCompanyId != null) bill.InvoiceCompanyName = tDictionary[r.InvoiceCompanyId.Value];
+                    if (r.ShipToId != null) bill.ShipTo = tDictionary[r.ShipToId.Value];
+                    if (r.CreatorId != null) bill.OpName = UserDictionary[r.CreatorId.Value];
+                    if (r.CreatorId != null) bill.IssuedBy = UserDictionary[r.CreatorId.Value];
+                    if (r.LastModifierId != null) bill.LastModifiedBy = UserDictionary[r.LastModifierId.Value];
                     if (r.MblId != null && r.MblId != Guid.Empty) { 
                         
                     }
+
                     list.Add(bill);
+                    var invoiceBills = invoiceBillQueryable.Where(w => w.InvoiceId.Value == r.Id).ToList();
+                    bill.InvoiceBillDtos = ObjectMapper.Map<List<InvoiceBill>, List<CreateUpdateInvoiceBillDto>>(invoiceBills);
+                    bill.Amount =(decimal)bill.InvoiceBillDtos.Sum(x => x.Amount);
+                    bill.AmountAc = (decimal)bill.InvoiceBillDtos.Sum(x => x.Amount);
+                    bill.BalanceAmount = (decimal)bill.InvoiceBillDtos.Sum(x => x.Amount);
+                    bill.BalanceAc = (decimal)bill.InvoiceBillDtos.Sum(x => x.Amount);
                 }
             }
             PagedResultDto<InvoiceDto> listDto = new PagedResultDto<InvoiceDto>();
             listDto.Items = list;
-            listDto.TotalCount = list.Count;
+            listDto.TotalCount = count;
             return listDto;
         }
         public async Task<IList<InvoiceDto>> QueryInvoicesAsync(QueryInvoiceDto query) 
