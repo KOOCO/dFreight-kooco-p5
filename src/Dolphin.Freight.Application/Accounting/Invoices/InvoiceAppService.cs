@@ -12,6 +12,7 @@ using Volo.Abp.Uow;
 using Dolphin.Freight.Settings.Substations;
 using Volo.Abp.Identity;
 using static Volo.Abp.Identity.Settings.IdentitySettingNames;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Dolphin.Freight.Accounting.Invoices
 {
@@ -31,19 +32,20 @@ namespace Dolphin.Freight.Accounting.Invoices
         private IRepository<IdentityUser, Guid> _userRepository;
         private readonly IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IIdentityUserRepository _identityUserRepository;
-
+        private readonly IInvoiceBillAppService _invoiceBillAppService;
         private readonly IRepository<SysCode, Guid> _sysCideRepository;
-        public InvoiceAppService(IRepository<Invoice, Guid> repository, IRepository<SysCode, Guid> sysCideRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<InvoiceBill, Guid> billRepository, IInvoiceRepository invoiceRepository, IIdentityUserRepository identityUserRepository, IRepository<IdentityUser, Guid> userRepository)
+        public InvoiceAppService(IRepository<Invoice, Guid> repository, IInvoiceBillAppService invoiceBillAppService, IRepository<SysCode, Guid> sysCideRepository, IRepository<Substation, Guid> substationRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<InvoiceBill, Guid> billRepository, IInvoiceRepository invoiceRepository, IIdentityUserRepository identityUserRepository, IRepository<IdentityUser, Guid> userRepository)
             : base(repository)
         {
             _repository = repository;
+            _sysCideRepository = sysCideRepository;
             _tradePartnerRepository = tradePartnerRepository;
             _invoiceRepository = invoiceRepository;
             _billRepository = billRepository;
             _substationRepository = substationRepository;
             _userRepository = userRepository;
             _identityUserRepository = identityUserRepository;
-
+            _invoiceBillAppService = invoiceBillAppService;
         }
         public async Task<PagedResultDto<InvoiceDto>> QueryListAsync(QueryInvoiceDto query)
         {
@@ -289,5 +291,47 @@ namespace Dolphin.Freight.Accounting.Invoices
 
         }
 
+        public async Task DeleteGAInvoicesByIdAsync(Guid[] Ids)
+        {
+            foreach (var Id in Ids)
+            {
+                var Invoice = await _invoiceRepository.GetAsync(Id);
+
+                Invoice.IsDeleted = true;
+                var Query = await _billRepository.GetQueryableAsync();
+                var InvoiceBills = Query.Where(w => w.InvoiceId == Id).ToList();
+
+                foreach (var InvoiceBill in InvoiceBills)
+                {
+                    InvoiceBill.IsDeleted = true;
+
+                    await _billRepository.UpdateAsync(InvoiceBill);
+                }
+
+                await _invoiceRepository.UpdateAsync(Invoice);
+            }
+        }
+
+        public async Task<JsonResult> CopyGAInvoiceAsync(Guid Id)
+        {
+            var Invoice = ObjectMapper.Map<Invoice, InvoiceDto>(await _invoiceRepository.GetAsync(Id));
+            var InvoiceId = Invoice.Id;
+            Invoice.Id = Guid.Empty;
+
+            var NewInvoice = await _invoiceRepository.InsertAsync(ObjectMapper.Map<InvoiceDto, Invoice>(Invoice));
+
+            var Query = await _billRepository.GetQueryableAsync();
+            var InvoiceBills = ObjectMapper.Map<List<InvoiceBill>, List<InvoiceBillDto>>(Query.Where(w => w.InvoiceId == InvoiceId).ToList());
+
+            foreach (var InvoiceBill in InvoiceBills)
+            {
+                InvoiceBill.Id = Guid.Empty;
+                InvoiceBill.InvoiceId = NewInvoice.Id;
+
+                await _billRepository.InsertAsync(ObjectMapper.Map<InvoiceBillDto, InvoiceBill>(InvoiceBill));
+            }
+
+            return new JsonResult(new { invoiceId = NewInvoice.Id, invoiceType = NewInvoice.InvoiceType });
+        }
     }
 }

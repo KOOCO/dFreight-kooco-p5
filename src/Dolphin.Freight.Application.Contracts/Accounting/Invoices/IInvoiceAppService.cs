@@ -1,6 +1,7 @@
 ﻿
 using Dolphin.Freight.Accounting.Inv;
 using Dolphin.Freight.ImportExport.OceanExports;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,5 +21,7 @@ namespace Dolphin.Freight.Accounting.Invoices
         Task<IList<InvoiceDto>> QueryInvoicesAsync(QueryInvoiceDto query);
         Task<List<CopyIdDto>> CopyByBookingId(QueryInvoiceDto query,int IsAR,int IsAp,int IsDC);
         Task<bool> QueryInvoicesCheckAsync(QueryInvoiceDto query);
+        Task DeleteGAInvoicesByIdAsync(Guid[] Ids);
+        Task<JsonResult> CopyGAInvoiceAsync(Guid Id);
     }
 }

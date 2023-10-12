@@ -264,7 +264,6 @@ namespace Dolphin.Freight.Accounting.Invoices
         public decimal? BalanceAc { get; set; }
         public DateTime LastPaidDate { get; set; }
         public int OverDue { get; set; }
-        public string IssuedBy { get; set; }
         public DateTime IssueDate { get; set; }
         public string LastModifiedBy { get; set; }
         public DateTime LastModifiedDate { get; set; }
