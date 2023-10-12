@@ -36,6 +36,8 @@ namespace Dolphin.Freight.Web.Pages.Accounting
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid? InvoiceId { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public Guid? CopyInvoiceId { get; set; }
         /// <summary>
         /// 0：海運進口、1：海運出口、2：空運進口、3：空運出口、4：SO清單、5：船期
         /// </summary>
@@ -148,14 +150,19 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                 case 6:
                     await InitAirImport();
                     break;
+                case 7:
+                    await InitAirImport();
+                    break;
                 default:
                     await InitOceanExport();
                     break;
             }
-            if (InvoiceId != null)
+            if (InvoiceId != null||CopyInvoiceId!=null)
             {
-                var invoice = await _invoiceAppService.GetAsync(InvoiceId.Value);
+                var id = InvoiceId != null ? InvoiceId : CopyInvoiceId;
+                var invoice = await _invoiceAppService.GetAsync((Guid)id);
                 InvoiceDto = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+                InvoiceDto.Id = CopyInvoiceId != null ? Guid.Empty : InvoiceDto.Id;
             }
 
             if (InvoiceMblDto != null ) 
@@ -283,7 +290,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
             var oceanExportMbl = new OceanExportMblDto();
             InvoiceMblDto = ObjectMapper.Map<OceanExportMblDto, InvoiceMblDto>(oceanExportMbl);
 
-            backUrl = "/AirImports/EditModal3?Id=" + Mid;
+            backUrl =CopyInvoiceId==null? "/AirImports/EditModal3?Id=" + Mid:"/Accounting/Invoices/List";
         }
         private async Task InitAirExport()
         {
@@ -373,6 +380,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                 foreach (var dto in InvoiceBillDtos) 
                 { 
                     dto.InvoiceId = invoice.Id;
+                    dto.Id = CopyInvoiceId != null ? Guid.Empty : dto.Id;
                     if(dto.Id == Guid.Empty) 
                     {
                         await _invoiceBillAppService.CreateAsync(dto);

@@ -290,6 +290,16 @@ namespace Dolphin.Freight.Accounting.Invoices
             
 
         }
+        public async Task DeleteMultipleInvoicesByIdsAsync(Guid[] ids)
+        {
+            foreach (var id in ids)
+            {
+                 await _repository.DeleteAsync(id);
+
+               
+
+            }
+        }
 
         public async Task DeleteGAInvoicesByIdAsync(Guid[] Ids)
         {
