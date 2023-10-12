@@ -268,6 +268,9 @@ namespace Dolphin.Freight.Accounting.Invoices
         public DateTime LastModifiedDate { get; set; }
         public string Status { get; set; }
         public string OpName { get; set; }
+        public double? TotalBeforeTax { get; set; }
+        public double? TotalTax { get; set; }
+        public double? TotalAmount { get; set; }
     }
 }
 
