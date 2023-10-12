@@ -84,6 +84,10 @@ public class FreightWebAutoMapperProfile : Profile
         CreateMap<OceanExportHblDto, CreateUpdateOceanExportHblDto>();
         CreateMap<InvoiceDto, CreateUpdateInvoiceDto>();
         CreateMap<Invoice, CreateUpdateInvoiceDto>();
+        CreateMap<Invoice, InvoiceDto>();
+        CreateMap<InvoiceDto, Invoice>();
+        CreateMap<InvoiceBill, InvoiceBillDto>();
+        CreateMap<InvoiceBillDto, InvoiceBill>();
         CreateMap<InvoiceBillDto, CreateUpdateInvoiceBillDto>();
         CreateMap<VesselScheduleDto, CreateUpdateVesselScheduleDto>();
         CreateMap<OceanExportHblDto, CreateUpdateOceanExportHblDto>();

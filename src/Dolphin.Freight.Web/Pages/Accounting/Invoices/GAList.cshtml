@@ -11,6 +11,7 @@
 @inject IDropdownService _dropdown;
 @section scripts
     {
+    <abp-script src="/Pages/Accounting/Invoices/GAList.js" />
     <script type="text/javascript">
         var cardIndex = 0;
         var dataTable;
@@ -34,11 +35,22 @@
         invoiceNo: $("#InvoiceNo").val(),
                 };
             };
-        var columns=[    {
-                            className: 'dtr-control',
-                            orderable: false,
-                            "defaultContent": ""
-                        },
+        var columns=[    
+            //{
+            //                className: 'dtr-control',
+            //                orderable: false,
+            //                "defaultContent": ""
+            //            },
+                {
+                    title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="GAListJS.selectAllCheckbox(this)" style=" cursor: pointer;">',
+                    data: null,
+                    orderable: false,
+                    render: function (data, type, row) {
+                        var id = row.id;
+                        $('#selectAllCheckbox').prop('checked', false);
+                        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="GAListJS.selectCheckbox(this)" style=" cursor: pointer;">';
+                    }
+                },
                         {
                             title: l('Actions'),
                             rowAction: {
@@ -51,7 +63,7 @@
                                                 if (data.record.isLocked) {
 
                                                 }
-                                                location.href = 'EditModal?Id=' + data.record.id;
+                                                location.href = 'GACreate?InvoiceId=' + data.record.id + '&InvoiceType=' + data.record.invoiceType;
 
                                             }
                                         },
@@ -317,12 +329,19 @@
                
                     <abp-button type="button" id="CancelFilter" text="@L["Cancel"]" button-type="Danger" />
 
-                    <abp-button type="button" id="Search" text="@L["Search"]" button-type="Primary" />
+                    @*<abp-button type="button" id="Search" text="@L["Search"]" button-type="Primary" />*@
                
                 </abp-abp-column>
             </abp-row>
             </abp-card-body>
     <abp-card-body>
+            <div class="portlet-tool">
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                    <button type="button" class="btn btn-outline-secondary" id="copyBtn" onclick="GAListJS.copyInvoice()" disabled><i class="fa fa-files-o me-0"></i></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-trash" id="deleteBtn" onclick="GAListJS.deleteInvoices()" disabled></button>
+                </div>
+            </div>
+
             <abp-table class="nowrap" striped-rows="true" id="ListTable" style="width:2000px;"></abp-table>
     </abp-card-body>
 </abp-card>

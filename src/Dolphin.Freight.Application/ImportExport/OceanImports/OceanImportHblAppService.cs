@@ -156,18 +156,22 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             
             if (rs.Any())
             {
-
                 foreach (var pu in rs)
                 {
                     var dto = ObjectMapper.Map<OceanImportHbl, OceanImportHblDto>(pu);
+                    var containers = await _containerAppService.GetContainerListByHblId(dto.Id);
+
                     dto.FilingNo = mdictionary[dto.MblId].FilingNo;
                     dto.MblNo = mdictionary[dto.MblId].SoNo;
                     dto.OfficeName = sdictionary[mdictionary[dto.MblId].OfficeId.Value];
                     dto.Voyage = mdictionary[dto.MblId].Voyage;
+                    dto.VesselName = mdictionary[dto.MblId].VesselName;
+                    dto.ContainerNo = string.Join(",", containers.Where(w => w.HblId == dto.Id).Select(s => s.PackageNum));
                     //SysCode
                     if (mdictionary[dto.MblId].OblTypeId != null) dto.OblTypeName = dictionary[mdictionary[dto.MblId].OblTypeId.Value];
                     if (dto.SvcTermFromId is not null) dto.SvcTermFromName = dictionary[dto.SvcTermFromId.Value];
                     //人
+                    if (dto.HblNotifyId is not null) dto.HblNotifyName = tdictionary[dto.HblNotifyId.Value];
                     if (dto.AgentId != null) dto.AgentName = tdictionary[dto.AgentId.Value];
                     if (dto.CyCfsLocationId is not null) dto.CyCfsLocationName = tdictionary[dto.CyCfsLocationId.Value];
                     if (dto.TruckerId is not null) dto.TruckerName = tdictionary[dto.TruckerId.Value];
@@ -175,8 +179,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     if (dto.HblConsigneeId != null) dto.HblConsigneeName = tdictionary[dto.HblConsigneeId.Value];
                     if (mdictionary[dto.MblId].MblCarrierId != null) dto.MblCarrierName = tdictionary[mdictionary[dto.MblId].MblCarrierId.Value];
                     if (mdictionary[dto.MblId].ShipModeId != null) dto.shipModeName = dictionary[mdictionary[dto.MblId].ShipModeId.Value];
-
                     //港口
+                    if (dto.DeliveryToId is not null) dto.DeliveryLocation = pdictionary[dto.DeliveryToId.Value];
                     if (dto.PodId != null) dto.PodName = pdictionary[dto.PodId.Value];
                     if (dto.PolId != null) dto.PolName = pdictionary[dto.PolId.Value];
                     if (dto.PorId != null) dto.PorName = pdictionary[dto.PorId.Value];

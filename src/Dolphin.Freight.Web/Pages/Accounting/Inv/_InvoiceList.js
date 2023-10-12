@@ -1,4 +1,35 @@
-﻿var invDataTable;
+﻿class InvoiceListJS {
+    static getAllRowsData() {
+        var allData = [];
+
+        $('#InvTable tbody tr').each(function (index, row) {
+            var rowData = {};
+            var currentDate = getCurrentDate();
+
+            $(row).find('td').each(function (cellIndex, cell) {
+                var input = $(cell).find('input, select');
+                if (input.length) {
+                    var key = input.attr('name');
+                    var value = input.val();
+
+                    if (key === 'postDate' || key === 'dueDate') {
+                        value = currentDate;
+                    }
+
+                    rowData[key] = value;
+                }
+            });
+
+            allData.push(rowData);
+        });
+
+        var allDataJson = JSON.stringify(allData);
+
+        return allDataJson;
+    }
+}
+
+var invDataTable;
 var currencies;
 var glcodes;
 var exchangeRate;
@@ -28,27 +59,27 @@ $(function () {
 
 
 
-    $(document).on('show.bs.modal', "[id^='altEditor-modal-']", function () {
-        $("#invoiceDate").on("change", function (event) {
-            if (df) {
-                df = false;
-            } else {
-                full_cal();
-            }
-        });
-        $("#currency").on("change", function (event) {
-            if (cf) {
-                cf = false;
-            } else {
-                full_cal();
-            }
-        });
-    });
+    //$(document).on('show.bs.modal', "[id^='altEditor-modal-']", function () {
+    //    $("#invoiceDate").on("change", function (event) {
+    //        if (df) {
+    //            df = false;
+    //        } else {
+    //            full_cal();
+    //        }
+    //    });
+    //    $("#currency").on("change", function (event) {
+    //        if (cf) {
+    //            cf = false;
+    //        } else {
+    //            full_cal();
+    //        }
+    //    });
+    //});
 
-    $(document).on('hidden.bs.modal', "[id^='altEditor-modal-']", function () {
-        df = true;
-        cf = true;
-    })
+    //$(document).on('hidden.bs.modal', "[id^='altEditor-modal-']", function () {
+    //    df = true;
+    //    cf = true;
+    //})
 
     $(document).on('click', "[id^='InvTable'] tbody ", 'tr', function () {
         var selectedData = invDataTable.rows({ selected: true }).data()[0];
@@ -75,9 +106,8 @@ var load = function () {
                 abp.libs.datatables.normalizeConfiguration({
                     paging: false,
                     info: false,
-                    searching: true,
+                    searching: false,
                     scrollX: true,
-                    select: 'single',
                     responsive: true,
                     data: result,
                     columnDefs: [
@@ -135,7 +165,8 @@ var load = function () {
                                 }
                             },
                             type: "select",
-                            "options": glcodes
+                            "options": glcodes,
+                            width: "50px"
                         },
                         {
                             title: l('InvoiceList:Currency'),
@@ -194,31 +225,136 @@ var load = function () {
                         }
                     ],
                     dom: 'Bfrtip',        // Needs button container
-                    altEditor: true,     // Enable altEditor
+                    altEditor: false,     // Enable altEditor
                     buttons: [
                         {
-                            text: l('Create'),
-                            name: 'add'        // do not change name
+                            text: '<i class="fa fa-plus"></i>',
+                            className: 'btn btn-outline-success',
+                            name: 'add',// do not change name
+                            action: function (e, dt, node, config) {
+                                var blankData = {
+                                    id: "",
+                                    postDate: "",
+                                    invoiceDate: "Test",
+                                    dueDate: "",
+                                    type: "",
+                                    officeId: "",
+                                    customerId: "",
+                                    invoiceNo: "",
+                                    glCodeId: "",
+                                    currency: "",
+                                    invoiceAmount: "",
+                                    balanceAmount: "",
+                                    paymentAmount: "",
+                                    paymentAmountTwd: "",
+                                    invoiceDescription: "",
+                                    docNo: "",
+                                    blNo: "",
+                                    poNo: "",
+                                    csCode: "",
+                                    salesCode: ""
+                                };
+                                console.log(blankData);
+                                dt.row.add(blankData).draw();
+                            }
                         },
                         {
                             extend: 'selected', // Bind to Selected row
-                            text: l('Edit'),
+                            text: '<i class="fa fa-pencil-alt"></i>',
+                            className: 'btn btn-outline-secondary',
                             name: 'edit'        // do not change name
                         },
                         {
                             extend: 'selected', // Bind to Selected row
-                            text: l('Delete'),
+                            text: '<i class="fa fa-trash"></i>',
+                            className: 'btn btn-outline-danger',
                             name: 'delete'      // do not change name
                         }
-                    ]
+                    ],
+                    createdRow: function (row, data, dataIndex) {
+                        if (!data.id) {
+                            $('td:eq(0)', row).attr('style', 'display: none;').html("<input type='hidden' id='id' name='id'>");
+                            $('td:eq(1)', row).html("<input class='form-control' type='text' pattern='.*' name='postDate' readonly='' id='postDate' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(2)', row).html("<input class='form-control' type='readonly'' pattern='.*' name='invoiceDate' value='" + getCurrentDate() + "' id='invoiceDate' readonly='' placeholder='' data-special='' data-unique='false' style='overflow: hidden;'>");
+                            $('td:eq(3)', row).html("<input class='form-control' type='readonly' pattern='.*' name='dueDate' readonly='' id='dueDate' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(4)', row).html("<input class='form-control' type='readonly' pattern='.*' name='type' readonly='' id='type' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(5)', row).html("<input class='form-control' type='readonly' pattern='.*' name='officeId' readonly='' id='officeId' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(6)', row).html("<input class='form-control' type='readonly' pattern='.*' name='customerId' readonly='' id='customerId' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(7)', row).html("<input class='form-control' type='text' pattern='.*' name='invoiceNo' id='invoiceNo' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(8)', row).html("<select class='form-control' name='glCodeId' id='glCodeI' placeholder='' data-special='' data-unique='false'><option value='1bc83dd9-dc0a-89e2-8512-3a0c7629f213'>10100</option><option value='3c912a9d-83d0-5a86-ade0-3a0c762abb3a'>10101</option><option value='65ad1f59-28a6-cc76-552b-3a0cac5bab51'>10120</option><option value='afa44b26-8089-a9eb-3a13-3a0cac5c28db'>40100</option><option value='129bf766-1ce6-3776-3301-3a0cac5d0b7f'>212305</option><option value='698fda7c-6449-2839-af58-3a0cbd54a010'>40101</option></select>");
+                            $('td:eq(9)', row).html("<select class='form-control' name='currency' id='currency' placeholder='' data-special='' data-unique='false'><option value='RMB'>RMB</option><option value='USD'>USD</option><option value='19'>19</option><option value='18'>18</option><option value='TWD'>TWD</option><option value='HKD'>HKD</option></select>");
+                            $('td:eq(10)', row).html("<input class='form-control' type='readonly' pattern='.*' name='invoiceAmount' readonly='' id='invoiceAmount' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(11)', row).html("<input class='form-control' type='readonly' pattern='.*' name='balanceAmount' readonly='' id='balanceAmount' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(12)', row).html("<input class='form-control' type='number' pattern='.*' name='paymentAmount' title='' id='paymentAmount' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(13)', row).html("<input class='form-control' type='readonly' pattern='.*' name='paymentAmountTwd' readonly='' id='paymentAmountTwd' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(14)', row).html("<input class='form-control' type='text' pattern='.*' name='invoiceDescription' title='' id='invoiceDescription' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(15)', row).html("<input class='form-control' type='readonly' pattern='.*' name='docNo' readonly='' id='docNo' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(16)', row).html("<input class='form-control' type='readonly' pattern='.*' name='blNo' readonly='' id='blNo' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(17)', row).html("<input class='form-control' type='readonly' pattern='.*' name='poNo' readonly='' id='poNo' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(18)', row).html("<input class='form-control' type='readonly' pattern='.*' name='csCode' readonly='' id='csCode' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(19)', row).html("<input class='form-control' type='readonly' pattern='.*' name='salesCode' readonly='' id='salesCode' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                        } else if (data.id != null) {
+                            $('td:eq(0)', row).attr('style', 'display: none;').html("<input type='hidden' id='id' name='id' value='" + data.id + "'>");
+                            $('td:eq(1)', row).html("<input class='form-control' type='readonly' pattern='.*' name='postDate' value='" + (data.postDate ?? "") + "' readonly='' id='postDate' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(2)', row).html("<input class='form-control' type='readonly'' pattern='.*' name='invoiceDate' value='" + (data.invoiceDate ?? "") + "' id='invoiceDate' readonly='' placeholder='' data-special='' data-unique='false' style='overflow: hidden;'>");
+                            $('td:eq(3)', row).html("<input class='form-control' type='readonly' pattern='.*' name='dueDate' value='" + (data.dueDate ?? "") + "' readonly='' id='dueDate' readonly='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(4)', row).html("<input class='form-control' type='readonly' pattern='.*' name='type' readonly='' value='" + (data.type ?? "") + "' id='type' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(5)', row).html("<input class='form-control' type='readonly' pattern='.*' name='officeId' value='" + (data.officeId ?? "") + "' readonly='' id='officeId' readonly='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(6)', row).html("<input class='form-control' type='readonly' pattern='.*' name='customerId' readonly='' value='" + (data.customerId ?? "") + "' id='customerId' readonly='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(7)', row).html("<input class='form-control' type='readonly' pattern='.*' name='invoiceNo' id='invoiceNo' value='" + data.invoiceNo + "' readonly='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(8)', row).html("<select class='form-control' type='readonly' name='glCodeId' value='" + (data.glCodeId ?? "") + "' id='glCodeI' readonly='' placeholder='' data-special='' data-unique='false'><option value='1bc83dd9-dc0a-89e2-8512-3a0c7629f213'>10100</option><option value='3c912a9d-83d0-5a86-ade0-3a0c762abb3a'>10101</option><option value='65ad1f59-28a6-cc76-552b-3a0cac5bab51'>10120</option><option value='afa44b26-8089-a9eb-3a13-3a0cac5c28db'>40100</option><option value='129bf766-1ce6-3776-3301-3a0cac5d0b7f'>212305</option><option value='698fda7c-6449-2839-af58-3a0cbd54a010'>40101</option></select>");
+                            $('td:eq(9)', row).html("<select class='form-control' type='readonly' name='currency' id='currency' value='" + data.currency + "' placeholder='' readonly='' data-special='' data-unique='false'><option value='RMB'>RMB</option><option value='USD'>USD</option><option value='19'>19</option><option value='18'>18</option><option value='TWD'>TWD</option><option value='HKD'>HKD</option></select>");
+                            $('td:eq(10)', row).html("<input class='form-control' type='readonly' pattern='.*' name='invoiceAmount' value='" + (data.invoiceAmount ?? "") + "' readonly='' id='invoiceAmount' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(11)', row).html("<input class='form-control' type='readonly' pattern='.*' name='balanceAmount' readonly='' value='" + (data.balanceAmount ?? "") + "' id='balanceAmount' title='' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(12)', row).html("<input class='form-control' type='number' pattern='.*' name='paymentAmount' title='' id='paymentAmount' value='" + (data.paymentAmount ?? "") + "' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(13)', row).html("<input class='form-control' type='readonly' pattern='.*' name='paymentAmountTwd' value='" + (data.paymentAmountTwd ?? "") + "' readonly='' id='paymentAmountTwd' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(14)', row).html("<input class='form-control' type='text' pattern='.*' name='invoiceDescription' value='" + (data.invoiceDescription ?? "") + "' title='' id='invoiceDescription' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(15)', row).html("<input class='form-control' type='readonly' pattern='.*' name='docNo' value='" + (data.docNo ?? "") + "' readonly='' id='docNo' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(16)', row).html("<input class='form-control' type='readonly' pattern='.*' name='blNo' readonly='' value='" + (data.blNo ?? "") + "' id='blNo' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(17)', row).html("<input class='form-control' type='readonly' pattern='.*' name='poNo' readonly='' value='" + (data.poNo ?? "") + "' id='poNo' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(18)', row).html("<input class='form-control' type='readonly' pattern='.*' name='csCode' readonly='' value='" + (data.csCode ?? "") + "' id='csCode' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                            $('td:eq(19)', row).html("<input class='form-control' type='readonly' pattern='.*' name='salesCode' readonly='' value='" + (data.salesCode ?? "") + "' id='salesCode' placeholder='' data-special='' data-unique='false' style='overflow: hidden; '>");
+                        }
+                    }
                 })
             );
+
+            $($('th:contains("Post Date")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Invoice Date")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Due Date")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Type")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Office")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Customer")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Invoice No.")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("G/L")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Currency")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Invoice AMT")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Balance AMT")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Payment")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Payment(TWD)")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Invoice Description")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("File No.")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("B/L No.")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("P.O.No.")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("OP")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
+            $($('th:contains("Sales")')[0]).css({ "background-color": "#888888", "color": "#FFFFFF"});
 
             $("InvTable_filter").find('[type=search]').on('keyup', function () {
                 invDataTable.search(this.value).draw();
             });
         }
     );
+}
+
+function getCurrentDate() {
+    let currentDate = new Date();
+    formattedDate = currentDate.getFullYear() +
+        '-' + ('0' + (currentDate.getMonth() + 1)).slice(-2) +
+        '-' + ('0' + currentDate.getDate()).slice(-2) +
+        ' ' + ('0' + currentDate.getHours()).slice(-2) +
+        ':' + ('0' + currentDate.getMinutes()).slice(-2);
+
+    return formattedDate;
 }
 
 const getExchangeRate = async (exchageDate, ccy1, ccy2) => {

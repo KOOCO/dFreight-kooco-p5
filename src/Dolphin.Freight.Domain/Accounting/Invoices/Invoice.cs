@@ -251,5 +251,9 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+
+        public double? TotalBeforeTax { get; set; }
+        public double? TotalTax { get; set; }
+        public double? TotalAmount { get; set; }
     }
 }

@@ -24,6 +24,7 @@ using Newtonsoft.Json;
 using System.Runtime.ConstrainedExecution;
 using System.Xml.Linq;
 using Volo.Abp;
+using static Dolphin.Freight.Permissions.AccountingPermissions;
 
 namespace Dolphin.Freight.Web.Pages.Payment
 {
@@ -93,8 +94,8 @@ namespace Dolphin.Freight.Web.Pages.Payment
                 Payment.Edit = edit;
                 ViewData["PId"] = PaymentDto.PaymentId;
             }
-            else 
-            { 
+            else
+            {   Payment.ReleaseDate = DateTime.Now.Date;
                 QueryCurrency.Ccy1Id = "19B90321-C852-451D-A1C0-5FA47373ED55";
                 QueryCurrency.Ccy2Id = "9D571C85-3C78-41B1-A098-BBB22E8D159B";
                 Payment.U2T = await _currencyAppService.QueryRateInternalAsync(QueryCurrency);
@@ -119,7 +120,7 @@ namespace Dolphin.Freight.Web.Pages.Payment
                 PLList = new List<SelectListItem>();
                 if (id.ToString() == "00000000-0000-0000-0000-000000000000")
                 {
-                    foreach (var pl in list)
+                    foreach (var pl in list.DistinctBy(x=>x.CodeValue))
                     {
                         if (pl.CodeValue == "1")
                         {
@@ -133,7 +134,7 @@ namespace Dolphin.Freight.Web.Pages.Payment
                 }
                 else 
                 {
-                    foreach (var pl in list)
+                    foreach (var pl in list.DistinctBy(x => x.CodeValue))
                     {
                         if (pl.CodeValue == PaymentDto.PaymentLevel)
                         {
@@ -160,9 +161,9 @@ namespace Dolphin.Freight.Web.Pages.Payment
                 CategoryList = new List<SelectListItem>();
                 if (id.ToString() == "00000000-0000-0000-0000-000000000000")
                 {
-                    foreach (var pl in list)
+                    foreach (var pl in list.DistinctBy(x => x.CodeValue))
                     {
-                        if (pl.CodeValue == "0")
+                        if (pl.CodeValue == "10")
                         {
                             CategoryList.Add(new SelectListItem() { Text = pl.ShowName, Value = pl.CodeValue, Selected = true });
                         }
@@ -174,7 +175,7 @@ namespace Dolphin.Freight.Web.Pages.Payment
                 }
                 else 
                 {
-                    foreach (var pl in list)
+                    foreach (var pl in list.DistinctBy(x => x.CodeValue))
                     {
                         if (pl.CodeValue == PaymentDto.Category)
                         {
@@ -260,14 +261,19 @@ namespace Dolphin.Freight.Web.Pages.Payment
             //之後改為讀取DB，暫時寫死
             BankList = new List<SelectListItem>
             {
-                new SelectListItem { Value = "中央銀行", Text = "中央銀行"},
-                new SelectListItem { Value = "國泰銀行", Text = "國泰銀行", Selected = true},
-                new SelectListItem { Value = "土地銀行", Text = "土地銀行"},
-                new SelectListItem { Value = "富邦銀行", Text = "富邦銀行"},
-                new SelectListItem { Value = "永豐銀行", Text = "永豐銀行"},
-                new SelectListItem { Value = "玉山銀行", Text = "玉山銀行"},
-                new SelectListItem { Value = "連線商業銀行", Text = "連線商業銀行"},
-                new SelectListItem { Value = "遠東銀行", Text = "遠東銀行"}
+                new SelectListItem { Value = "UOB", Text = "UOB" },
+                new SelectListItem { Value = "????-USD", Text = "\u83EF\u5357\u9280\u884C-USD",Selected=true },
+
+                new SelectListItem { Value = "Chase Credit Card Example", Text = "Chase Credit Card Example" },
+
+                new SelectListItem { Value = "Credit Card Example", Text = "Credit Card Example" },
+                new SelectListItem { Value = "Petty Cash", Text = "Petty Cash" },
+                new SelectListItem { Value = "Petty Cash", Text = "Petty Cash" },
+                new SelectListItem { Value = "testing", Text = "testing" },
+                new SelectListItem { Value = "OCBC", Text = "OCBC" },
+                new SelectListItem { Value = "HSBC", Text = "HSBC" },
+                new SelectListItem { Value = "UOB", Text = "UOB" },
+                new SelectListItem { Value = "???", Text = "\u96F6\u7528\u91D1" }
             };
 
             if (id.ToString() != "00000000-0000-0000-0000-000000000000")
@@ -291,24 +297,27 @@ namespace Dolphin.Freight.Web.Pages.Payment
 
             if (PaymentDto != null)
             {
-                if (Payment.Edit != "Y")
-                {
-                    throw new BusinessException(FreightDomainErrorCodes.PaymentAlreadyExists);
-                }
+                //if (Payment.Edit != "Y")
+                //{
+                //    throw new BusinessException(FreightDomainErrorCodes.PaymentAlreadyExists);
+                //}
                 payment.PaymentId = Payment.GU;
-                await _paymentAppService.UpdateAsync(Guid.Parse(payment.Id), payment);
+                PaymentDto= await _paymentAppService.UpdateAsync(Guid.Parse(payment.Id), payment);
             }
             else
             {
                 payment.PaymentId = Payment.GU;
-                await _paymentAppService.CreateAsync(payment);
+                PaymentDto= await _paymentAppService.CreateAsync(payment);
             }
 
             List<CreateUpdateInvDto> list = JsonConvert.DeserializeObject<List<CreateUpdateInvDto>>(datatablelist);
-            await _invAppService.UpdateList(Payment.GU, list);
+            if (!(list.Count == 1 && !list[0].GetType().GetProperties().Any(prop => prop.GetValue(list[0]) != null)))
+            {
+                await _invAppService.UpdateList(Payment.GU, list);
+            }
             Dictionary<string, Guid> rs = new Dictionary<string, Guid>
             {
-                { "id", Payment.GU }
+                { "id", PaymentDto.Id }
             };
             return new JsonResult(rs);
         }
