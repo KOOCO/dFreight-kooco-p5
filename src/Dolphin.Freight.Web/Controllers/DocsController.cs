@@ -2733,32 +2733,59 @@ namespace Dolphin.Freight.Web.Controllers
         public async Task<IActionResult> ProfitReport(Guid id, FreightPageType pageType, string reportType, bool isPartialView = false)
         {
             string returnUrl = string.Empty;
-
-            var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
-
-            var measurement = Convert.ToDouble(airExportDetails.ChargeableWeightCneeLB) * 35.315;
-
-            var profitReport = new ProfitReportViewModel()
+            ProfitReportViewModel profitReport = new ProfitReportViewModel();
+            if (pageType == FreightPageType.AEMBL)
             {
-                AgentName = airExportDetails.OverSeaAgentName,
-                Consignee = airExportDetails.ConsigneeName,
-                Currency = "USD",
-                Customer = airExportDetails.CustomerName,
-                HawbNo = airExportDetails.HawbNo,
-                Operator = airExportDetails.Operator,
-                Measurement = measurement.ToString("0.00"),
-                PolEtd = string.Concat(airExportDetails.DepartureName, " / ", airExportDetails.DepatureDate),
-                PodEtd = string.Concat(airExportDetails.DestinationName, " / ", airExportDetails.ArrivalDate),
-                Sales = airExportDetails.SalesName,
-                Shipper = airExportDetails.CarrierName,
-                MawbNo = airExportDetails.MawbNo,
-                ChargableWeight = string.Concat(airExportDetails.ChargeableWeightCneeKG, " / ", airExportDetails.ChargeableWeightCneeLB),
-                PageType = pageType,
-                ReportType = reportType,
-                FileNo = airExportDetails.DocNumber
-            };
+                var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
+                var measurement = Convert.ToDouble(airExportDetails.ChargeableWeightCneeLB) * 35.315;
 
-            var queryType = pageType == FreightPageType.AEMBL ? 0 : 4;
+                profitReport = new ProfitReportViewModel()
+                {
+                    AgentName = airExportDetails.OverSeaAgentName,
+                    Consignee = airExportDetails.ConsigneeName,
+                    Currency = "USD",
+                    Customer = airExportDetails.CustomerName,
+                    HawbNo = airExportDetails.HawbNo,
+                    Operator = airExportDetails.Operator,
+                    Measurement = measurement.ToString("0.00"),
+                    PolEtd = string.Concat(airExportDetails.DepartureName, " / ", airExportDetails.DepatureDate),
+                    PodEtd = string.Concat(airExportDetails.DestinationName, " / ", airExportDetails.ArrivalDate),
+                    Sales = airExportDetails.SalesName,
+                    Shipper = airExportDetails.CarrierName,
+                    MawbNo = airExportDetails.MawbNo,
+                    ChargableWeight = string.Concat(airExportDetails.ChargeableWeightCneeKG, " / ", airExportDetails.ChargeableWeightCneeLB),
+                    PageType = pageType,
+                    ReportType = reportType,
+                    FileNo = airExportDetails.DocNumber
+                };
+            }
+            if (pageType == FreightPageType.AIMBL)
+            {
+                var airExportDetails = await GetAirImportDetailsByPageType(id, pageType);
+                      var measurement = Convert.ToDouble(airExportDetails.ChargeableWeightLb) * 35.315;
+
+                profitReport = new ProfitReportViewModel()
+                {
+                    AgentName = airExportDetails.OverseaAgentTPName,
+                    Consignee = airExportDetails.ConsigneeName,
+                    Currency = "USD",
+                    Customer = airExportDetails.CustomerName,
+                    HawbNo = airExportDetails.HawbNo,
+                    Operator = airExportDetails.OPName,
+                    Measurement = measurement.ToString("0.00"),
+                    PolEtd = string.Concat(airExportDetails.DepatureName, " / ", airExportDetails.DepatureDate),
+                    PodEtd = string.Concat(airExportDetails.DestinationAirportName, " / ", airExportDetails.ArrivalDate),
+                    Sales = airExportDetails.SalesName,
+                    Shipper = airExportDetails.CarrierTPName,
+                    MawbNo = airExportDetails.MawbNo,
+                    ChargableWeight = string.Concat(airExportDetails.ChargeableWeightKg, " / ", airExportDetails.ChargeableWeightLb),
+                    PageType = pageType,
+                    ReportType = reportType,
+                    FileNo = airExportDetails.DocNumber
+                };
+            }
+
+            var queryType = pageType == FreightPageType.AEMBL|| pageType == FreightPageType.AIMBL ? 0 : 4;
 
             QueryInvoiceDto queryDto = new QueryInvoiceDto() { QueryType = queryType, ParentId = id };
             profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
@@ -2972,6 +2999,21 @@ namespace Dolphin.Freight.Web.Controllers
         public async Task<IActionResult> PrintMawb(Guid id, FreightPageType pageType)
         {
             var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
+            if (airExportDetails.ExtraProperties != null && airExportDetails.ExtraProperties.ContainsKey("OtherCharges"))
+            {
+              
+               
+                    airExportDetails.OtherCharges = new List<OtherCharges>();
+                string jsonOtherCharges = airExportDetails.ExtraProperties["OtherCharges"].ToString();
+
+                // Deserialize the JSON array into a list of OtherCharges objects
+                airExportDetails.OtherCharges = JsonConvert.DeserializeObject<List<OtherCharges>>(jsonOtherCharges);
+
+                airExportDetails.OtherChargesDueCarrier = airExportDetails.OtherCharges.Sum(x => Convert.ToDouble(x.ChargeAmount));
+                  airExportDetails.TotalPrepaid = (airExportDetails.OtherCharges.Sum(x => Convert.ToDouble(x.ChargeAmount))+airExportDetails.AwbChargeableWeightAmount);
+            }
+
+          
 
             return View(airExportDetails);
         }
@@ -5417,8 +5459,8 @@ namespace Dolphin.Freight.Web.Controllers
                 Del = oceanImportDetails.DelName,
                 FileNo =oceanImportDetails.DocNo,
                 Measurement = totalMeasure + " CBM / " + (Math.Round(totalMeasure * 2.20462, 2)) + " CFT",
-                PodEtd     = oceanImportDetails.PodEta.ToString(),
-                PolEtd = oceanImportDetails.PolEtd.ToString(),
+                PodEtd = !string.IsNullOrWhiteSpace(oceanImportDetails.PodEta.ToString()) ? Convert.ToDateTime(oceanImportDetails.PodEta.ToString()).ToShortDateString() : string.Empty,
+                PolEtd = !string.IsNullOrWhiteSpace(oceanImportDetails.PolEtd.ToString()) ? Convert.ToDateTime(oceanImportDetails.PolEtd.ToString()).ToShortDateString() : string.Empty,
                 Operator = oceanImportDetails.MblOperatorName,
                 MawbNo = oceanImportDetails.MblNo,
                 ContainerNo = containerNums.TrimEnd(' ', ','),
@@ -5654,6 +5696,32 @@ namespace Dolphin.Freight.Web.Controllers
             return await ProfitReport(model);
         }
 
+        public IActionResult ProfitReportMblListOceanImport(string reportType, FreightPageType pageType, string param)
+        {
+            OceanImportDetails OceanImportDetails = new();
+
+            OceanImportDetails.DDLItems = param.Split(',').ToList();
+
+            OceanImportDetails.ReportType = reportType;
+
+            return View(OceanImportDetails);
+        }
+
+        public IActionResult ProfitReportMawbListAirImport(string reportType, FreightPageType pageType, string param)
+        {
+            AirExportDetails airExportDetails = new();
+
+            airExportDetails.DDLItems = param.Split(',').ToList();
+
+            airExportDetails.ReportType = reportType;
+
+            return View(airExportDetails);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ProfitReportMawbListAirImport(ProfitReportViewModel model)
+        {
+            return await ProfitReport(model);
+        }
         public IActionResult ProfitReportHawbListAirExport(FreightPageType pageType, string param)
         {
             AirExportDetails airExportDetails = new();
@@ -5667,6 +5735,7 @@ namespace Dolphin.Freight.Web.Controllers
         {
             return await ProfitReport(model);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> TotalProfitVolumeSummary(Guid id, string shippingType, string reportType, string salesType,string outputType)

@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Dolphin.Freight.ImportExport.AirExports;
+using System;
 using System.Collections.Generic;
 using System.Security.Principal;
 using System.Text;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.Common
 {
@@ -49,5 +51,14 @@ namespace Dolphin.Freight.Common
         public FreightPageType PageType { get; set; }
         public bool IsLocked { get; set; }
         public List<string> DDLItems { get; set; }
+        public string Insurance { get; set; }
+        public double SellingRate { get; set; }
+        public double ChargeableWeightAmount { get; set; }
+        public double AwbChargeableWeightAmount { get; set; }
+        public double OtherChargesDueCarrier { get; set; }
+        public double TotalPrepaid { get; set; }
+        public List<OtherCharges> OtherCharges { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
+
     }
 }

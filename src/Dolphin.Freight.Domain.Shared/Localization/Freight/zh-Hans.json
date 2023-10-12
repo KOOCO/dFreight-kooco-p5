@@ -5,7 +5,7 @@
 
     "Welcome": "欢迎",
 
-
+    "AddHBL": "新增HBL",
     "Permission:Settings": "设定",
     "Permission:OceanExports": "海运出口",
     "Permission:OceanImports": "海运进口",
@@ -247,6 +247,7 @@
     "Delete": "删除",
     "Edit": "编辑",
     "Save": "储存",
+    "Customer": "客戶",
     "AreYouSure": "确定?",
     "AreYouSureToDelete": "确定删除此项目?",
     "AreYouSureToEdit": "确定编辑此项目?",
@@ -262,7 +263,7 @@
     "Note": "备註",
     "CurrentNo": "当前分配的号码",
     //Menu:OceanExports
-
+    "ChargeableWeightCNEE": "提單計費重量",
     "FilingNo": "文件编号",
     "MblNo": "MB/L号码",
     "PostDate": "发布日期 ",
@@ -332,7 +333,7 @@
     "ItNo": "IT号码",
     "ItDate": "IT日期",
     "ItLocation": "IT发布地点",
-    "IsEcommerce": "电子商务",
+    "IsEcommerce": "E-Commerce",
     "MblShipperId": "託运人",
     "MblConsigneeId": "收货人",
     "MblCustomerId": "客户",
@@ -344,7 +345,7 @@
     "CompanyId": "航空公司",
     "PackageCode": "代码",
     "PackageName": "名称",
-    "AmsNo": "AMS代码",
+    "AmsNo": "AMS号码",
     "AmsNoId": "AMS代码",
     "EManifestNo": "eManifest代码",
     "EManifestNoId": "eManifest代码",
@@ -480,7 +481,7 @@
     "Total": "加总",
     "ReceivedAmount": "已接收金额",
     "PaidTo": "收款人",
-    "ReferenceNo": "船期编号",
+    "ReferenceNo": "参考编号(MAWB)",
     "SoCode": "S/O 号码",
     "SoNoDate": "S/O 日期",
     "SalespersonId": "业务员",
@@ -495,8 +496,8 @@
     "VesselSchedule": "船期",
     "CancelName": "取消者",
     "CarrierBkgNo": "船公司S/O号码",
-    "CarrierId": "船公司",
-    "ShipperId": "实际託运人",
+    "CarrierId": "航空公司",
+    "ShipperId": "托运人",
     "CustomerId": "客户",
     "HblAgentId": "HB/L代理",
     "ContainerQtyInputText": "集装箱 柜型/尺寸",
@@ -560,8 +561,8 @@
     "Prepaid": "预付",
     "Collect": "运费到付",
     "showingAt": "显示于",
-
-
+    "TotalTax": "总税额",
+    "TotalBeforeTax": "税前总额",
 
 
     // Menu: Trade Partner
@@ -651,7 +652,8 @@
     "DisplayName:IataCode": "IATA Code",
     "DisplayName:IataPrefix": "IATA Prefix",
     "DisplayName:ScacCode": "SCAC",
-
+    "Display:Price": "单价",
+    "Display:Tax": "税收",
     "DisplayName:FirmsCode": "Firms Code",
     "DisplayName:CbsaCode": "CBSA Carrier Code",
     "DisplayName:DutyPaymentType": "付税方式",
@@ -927,10 +929,11 @@
     "MAWBInformation": "MAWB资讯",
     "MawbCarrierId": "航空公司",
     "IssuingCarrierId": "承运人/代理",
+    "IssuingCarrier": "承运人/代理",
     "AwbType": "提单类别",
     "MawbNo": "MAWB号码",
     "AwbDate": "提单日期",
-    "ConsigneeId": "收货人(海外代理)",
+    "ConsigneeId": "收貨人",
     "NotifyId": "通知方",
     "Office": "分站",
     "CoShipper": "联合托运人",
@@ -1013,7 +1016,44 @@
     "OrDragItHere.": "在此拖放档案",
     "Display:Action": "功能",
     "Display:Creator": "建立者",
-    "Display:Type": "类别"
+    "Display:Type": "类别",
+    //Ocean Import Hbl New Fields
+    "CyCfsLocationId": "CY/CFS地点",
+    "Available": "可提柜日期",
+
+    "IsfMatchDate": "ISF匹配日期",
+    "Lfd": "场内延滞免费期",
+    "ItIssuedLocation": "IT发布地点",
+    "Rail": "铁路",
+    "EntryNo": "报关号码",
+    "EntryDocSent": "报关文件已寄出",
+    "OblReceived": "OB/L Received",
+    "Ror": "ROR",
+    "FreightReleased": "已放货",
+    "DoorDeliveryATA": "已送货到府",
+    "DoorMove": "送货到府",
+    "CClearance": "海关清关",
+    "CHold": "海关扣留",
+    "CReleasedDate": "C. Released Date",
+    "ExpressBl": "快速提单",
+    "ExpiryDate": "期日",
+    "GoDate": "出闸日期",
+    "ANSentDate": "AN寄出日期",
+    "DOSentDate": "DO寄出日期",
+    "ShipTypeId": "业务推荐人",
+    "HblSaleId": "业务员",
+    "SubAgentAwb": "子代理提單",
+    "Shipper": "托运人 (本地代理)",
+    "CargoDetails": "货运细节",
+    "GrossWeight(SHPR)": "毛重(托运人)",
+    "GrossWeight(CNEE)": "毛重(收货人)",
+    "ChargeableWeight(CNEE)": "计费重量(收货人)",
+    "ChargeableWeight(SHPR)": "计费重量(托运人)",
+    "NatureandQuantityOfGoods": "货描",
+    "HandlingInformation": "儲運事項",
+    "BookingRemarks": "S/O备注",
+    "Pickup/DeliveryInstruction": "收货/交货指示",
+    "ActualShipper": "實際託運人"
 
 
   }

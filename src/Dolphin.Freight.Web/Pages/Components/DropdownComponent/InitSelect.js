@@ -43,7 +43,10 @@ function initializeDropdownSearch(id, selectType) {
             allowClear: true,
         });
     }
-    
+
+    $(id).on('select2:open', () => {
+        document.querySelector('.select2-search__field').focus();
+    });
 
     setWidth(id, selectType);
 }

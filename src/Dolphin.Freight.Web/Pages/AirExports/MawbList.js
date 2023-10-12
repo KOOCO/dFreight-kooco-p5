@@ -265,7 +265,7 @@ $(function () {
 });
 
 var AirExportsMawbList = {
-    selectAllCheckbox: function (element){
+    selectAllCheckbox: function (element) {
         var isChecked = $(element).prop('checked');
         $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
 

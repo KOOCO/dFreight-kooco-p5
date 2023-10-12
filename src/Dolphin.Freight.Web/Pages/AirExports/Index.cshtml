@@ -102,21 +102,21 @@
             </abp-column>
             </abp-row>
          <abp-row class="mb-3">
-                
-              
-              
                 <abp-column size-md="_1">
-                    <label>@L["Depature"].Value</label>
+                    <label>@L["AwbType"].Value</label>
+                </abp-column>
+                 <abp-column size-md="_2">
+               <abp-select suppress-label asp-for="@Model.AwbType"  id="awbType" >
+                   <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
+                   </abp-select>
+              </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Depature/Destination"].Value</label>
                 </abp-column>
                 <abp-column size-md="_2">
                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DepatureId", AspItems = _dropdown.PortsManagementLookupList,  IsShowLabel = false, FieldName = "DepatureId", SelectType = 0, ShowFiledContentValue =null })
                                 </abp-column>
- <abp-column size-md="_1">
-                    <label>@L["Destination"].Value</label>
-                </abp-column>
-                <abp-column size-md="_2">
-                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DestinationId", AspItems = _dropdown.PortsManagementLookupList,  IsShowLabel = false, FieldName = "DepatureId", SelectType = 0, ShowFiledContentValue =null })
-                    </abp-column>
+
                     <abp-column size-md="_1">
                     <label>@L["DepatureDate"].Value</label>
                 </abp-column>
@@ -170,11 +170,21 @@
             </abp-row>
 
             <abp-row class="mb-3">
+                 <abp-column size-md="_1">
+                    <label>@L["Block"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <select id="block" class="form-select">
+                         <option value=""></option>
+                         <option value="true">Yes</option>
+                         <option value="false">No</option>
+                    </select>
+                </abp-column>
                 <abp-column size-md="_1">
                     <label>@L["AWBCancelled"].Value</label>
                 </abp-column>
                 <abp-column size-md="_2">
-                    <select id="AwbCancelled" class="form-control">
+                    <select id="AwbCancelled" class="form-select">
                          <option value=""></option>
                          <option value="true">Yes</option>
                          <option value="false">No</option>
@@ -184,7 +194,7 @@
                     <label>@L["DirectMaster"].Value</label>
                 </abp-column>
                 <abp-column size-md="_2">
-                    <select id="DirectMaster" class="form-control">
+                    <select id="DirectMaster" class="form-select">
                          <option value=""></option>
                          <option value="true">Yes</option>
                          <option value="false">No</option>

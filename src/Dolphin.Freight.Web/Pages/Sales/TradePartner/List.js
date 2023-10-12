@@ -157,13 +157,13 @@
             tpAccountGroupName: $("#tpAccountGroupName").val() == '' ? null : $("#tpAccountGroupName").val(),
             tpCountryCode: $("#tpCountryCode").val() == '' ? null : $("#tpCountryCode").val(),
             status: $("#status").val() == '' ? null : $("#status").val(),
-           
+            zip: $("#zip").val() == '' ? null : $("#zip").val(),
            
             creationDate: $("#CreationDate").val() == '' || $("#CreationDate").val() == null ? null : new Date($("#CreationDate").val()),
             name: $("#name").val(),
             address: $("#address").val(),
             city: $("#city").val(),
-            city: $("#state").val(),
+            state: $("#state").val(),
             taxId: $("#taxid").val(),
             salePerson: $("#salePerson").val(),
             saleOffice: $("#saleOffice").val(),
@@ -469,7 +469,7 @@ function exportToExcel() {
 
 
     var table = document.getElementById("TPListTable");
-    var columnsToExclude = [1,2];
+    var columnsToExclude = [0,1];
 
     // Create a new worksheet
     var ws = XLSX.utils.aoa_to_sheet([]);
@@ -486,7 +486,7 @@ function exportToExcel() {
         var row = table.rows[rowIndex];
         var newRow = [];
         for (var colIndex = 0; colIndex < row.cells.length; colIndex++) {
-            if (columnsToExclude.includes(colIndex)) {
+            if (!columnsToExclude.includes(colIndex)) {
                 newRow.push(row.cells[colIndex].innerText);
             }
         }

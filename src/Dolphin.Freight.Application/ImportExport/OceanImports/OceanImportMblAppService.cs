@@ -1,5 +1,6 @@
 ﻿using AutoMapper.Internal.Mappers;
 using Dolphin.Freight.Common;
+using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Permissions;
 using Dolphin.Freight.Settings.Countries;
@@ -44,9 +45,10 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly IIdentityUserAppService _identityUserAppService;
         private readonly IIdentityUserRepository _identityUserRepository;
         private readonly IOceanImportHblAppService _oceanImportHblAppService;
+        private readonly IContainerAppService _containerAppService;
         public OceanImportMblAppService(IRepository<OceanImportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository,
                                          PortsManagementAppService portRepository1, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
-                                        IRepository<OceanImportHbl, Guid> oceanImportHblRepository, IIdentityUserAppService identityUserAppService,
+                                        IRepository<OceanImportHbl, Guid> oceanImportHblRepository, IIdentityUserAppService identityUserAppService, IContainerAppService containerAppService,
                                         IRepository<Country, Guid> countryRepository, IIdentityUserRepository identityUserRepository, IRepository<PortsManagement, Guid> portRepository, IOceanImportHblAppService oceanImportHblAppService)
             : base(repository)
         {
@@ -61,6 +63,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             _countryRepository = countryRepository;
             _oceanImportHblAppService = oceanImportHblAppService;
             _identityUserRepository = identityUserRepository;
+            _containerAppService = containerAppService;
             /*
             GetPolicyName = OceanImportPermissions.OceanImportMbls.Default;
             GetListPolicyName = OceanImportPermissions.OceanImportMbls.Default;
@@ -490,6 +493,26 @@ namespace Dolphin.Freight.ImportExport.OceanImports
 
                 await _repository.DeleteAsync(Id);
             }
+        }
+        public async Task SaveDimensionsAsync(DimensionDataModel DataModel)
+        {
+            var Dimensions = DataModel.Dimensions;
+            var ContainerId = DataModel.ContainerId;
+
+            var container = await _containerAppService.GetAsync(ContainerId);
+
+            if (container.ExtraProperties == null)
+            {
+                container.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+            }
+
+            if (Dimensions != null && Dimensions.Any())
+            {
+                container.ExtraProperties.Remove("Dimensions");
+                container.ExtraProperties.Add("Dimensions", Dimensions);
+            }
+
+            await _containerAppService.UpdateAsync(ContainerId, ObjectMapper.Map<ContainerDto, CreateUpdateContainerDto>(container));
         }
     }
 }

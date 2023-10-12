@@ -97,6 +97,11 @@ namespace Dolphin.Freight.Accounting.Payment
         /// 建立者
         /// </summary>
         public string Creator { get; set; }
+        public bool Void
+        {
+            get { return Invalid != null; }
+            set { /* You can't set a value for Void since it's based on Invalid property */ }
+        }
     }
 }
 

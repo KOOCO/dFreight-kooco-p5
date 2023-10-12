@@ -11,11 +11,15 @@
 @inject IDropdownService _dropdown
 @section styles {
     <style type="text/css">
-        #ejo .btn-primary {
-            color: #fff;
-            background-color: rgb(0 123 255 / 52%);
-            border-color: #007bff;
-        }
+                #ejo .btn-primary {
+    color: #fff;
+    background-color: rgb(25 28 32 / 52%);
+    border-color: #000000;
+}
+.grossWeightTable {
+    flex: -1 0 55.333333% !important;
+    max-width: 55.333333% !important;
+}
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
@@ -28,8 +32,35 @@
     <script type="text/javascript">
         var cardIndex = 0;
         var l = abp.localization.getResource('Freight');
+        function getCurrentDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+          
+
+            const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}`;
+            return formattedDateTime;
+        }
 
         $(document).ready(function () {
+             $('#cardSettingArea').hide();
+              if("@Model.OceanImportMbl.IsOblReceived"=="True")
+            {
+                debugger;
+            $('#OceanImportMbl_OblReceivedDate').prop('disabled', false);
+             $('#OceanImportMbl_IsOblReceived').prop('checked', true);
+            }
+            if("@Model.OceanImportMbl.IsReleased"=="True")
+            {
+                debugger;
+                $('#OceanImportMbl_MblReleaseDate').prop('disabled', false);
+                 $('#OceanImportMbl_IsReleased').prop('checked', true);
+
+            }
+
             const ids = [
                 "OceanImportMbl_PostDate",
                 "OceanImportMbl_PolEtd",
@@ -41,7 +72,9 @@
                 "OceanImportMbl_MblReleaseDate",
                 "OceanImportMbl_LatestContainerEntryDate",
                 "OceanImportMbl_PorEtd",
-                "OceanImportMbl_ItDate"
+                "OceanImportMbl_ItDate",
+                
+          
             ];
 
             ids.forEach(function (id) {
@@ -62,12 +95,50 @@
                     dateElem.val(currentVal.replace('T', ' '));
                 }
             });
-        });
+           
+              $('#OceanImportMbl_IsOblReceived').on('change', function (e, val) { 
+                if (this.checked) {
+                    $('#OceanImportMbl_OblReceivedDate').prop('disabled', false);
+                    var currentDate = new Date();
+                    $("#OceanImportMbl_OblReceivedDate").val(getCurrentDateTime());
+                
+                } 
+                else{
+                $('#OceanImportMbl_OblReceivedDate').prop('disabled', true);
+                    $("#OceanImportMbl_OblReceivedDate").val( null);
+                   
+                 
+                }
+            })
+            $('#OceanImportMbl_IsReleased').on('change', function (e, val) { 
+                if (this.checked) { 
+                    $('#OceanImportMbl_MblReleaseDate').prop('disabled',false);
+                  var currentDate = new Date();
 
+                    $("#OceanImportMbl_MblReleaseDate").val(getCurrentDateTime());
+                
+                } 
+                else{
+                    $('#OceanImportMbl_MblReleaseDate').prop('disabled', true);
+                    $("#OceanImportMbl_MblReleaseDate").val(null);
+                   
+                 
+                }
+            })
+        });
+     
         $(document).ready(function () {
-            var l = abp.localization.getResource('Freight');
+          
+
             var showMsg = '@Model.ShowMsg';
-            if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
+             var showMsg = '@Model.ShowMsg';
+            if (showMsg == 'True') {
+              
+                            abp.message.success(l("Message:SuccessAdd"));
+
+               
+            }
+           
             var isLocked = '@Model.OceanImportMbl.IsLocked';
             if (isLocked == 'True') {
                 abp.message.warn(l("Message:LockMessage"));
@@ -152,7 +223,6 @@
         //}
 
         $('#addHBtn').on('click', function () {
-            debugger;
             if ($('#mblDiv')[0].classList.contains('show')) {
                 $('#btnMawbCollapse').click();
             }
@@ -161,7 +231,6 @@
                 showAlert(alertConfirmation2, 'Store');
             }
             else {
-
                 let hawbcard = createHawbCard();
 
                 let index = $('.hbl_sm_area').find('.card').length;
@@ -179,7 +248,8 @@
             console.log("enter here");
             event.preventDefault();
             abp.message.success('Successfully Saved').then(function () {
-                location.href = "/OceanImports/Index";
+                // location.href = "/OceanImports/Index";
+                location.reload();
             });
             //location.href = '/AirImports/EditMawb/' + rs.responseText.id + '/show';
         });
@@ -195,7 +265,6 @@
                 showAlert(alertConfirmation, 'Continue');
             }
             else {
-
                 var color = getComputedStyle(element.parentElement.parentElement).backgroundColor;
 
                 if (!$('#btnHawbCardCollapse_' + hblNo).attr('class').includes('collapsed')) {
@@ -222,7 +291,109 @@
                         $('#partialContainer').html(partial);
                         setFilteredDropdown();
                         setDateTimeforCards('OIHBL');
+                       
+                          updateRequiredAttribute();
+                        $('#OceanImportHbl_AmsNo').change(function () {
+                         if ($('#OceanImportHbl_AmsNo').val() == '') {
+            $("#OceanImportHbl_AmsNo-error").text("AMS No. is mandatory for creating ISF");
+        }else{
+        
+        $("#OceanImportHbl_AmsNo-error").text("");
+        }
+                        
+                        });
+                         $('#OceanImportHbl_IsfByThirdParty').change(function () {
+                              debugger;
+                        updateRequiredAttribute();
+                         });
+                              $('#OceanImportHbl_IsfNo').change(function () {
+                     updateRequiredAttribute();
+                        });
+
+
+                         $('#OceanImportHbl_IsRailwayCode').change(function() {
+                        if (this.checked) {
+                            $('#OceanImportHbl_RailwayCodeId').prop('disabled', false);
+                        }
+                        else {
+                        $('#OceanImportHbl_RailwayCodeId').prop('disabled', true);
+            
+            }
+        
+        })
+        
+            $('#OceanImportHbl_IsOblReceived').change(function () {
+                if (this.checked) {
+                    // Checkbox is checked, set OblReceivedDate to current date time
+                    var currentDate = new Date();
+                    $('#OceanImportHbl_OblReceivedDate').val(currentDate.toISOString().slice(0, 19).replace("T", " "));
+                    $('#OceanImportHbl_IsReleased').removeAttr('disabled');
+                     $('#OceanImportHbl_OblReceivedDate').prop('disabled', false);
+                } else {
+                    // Checkbox is unchecked, clear OblReceivedDate
+                    $('#OceanImportHbl_OblReceivedDate').val('');
+                    $('#OceanImportHbl_IsReleased').attr('disabled', 'disabled');
+                     $('#OceanImportHbl_OblReceivedDate').prop('disabled', true);
+                }
+            });
+                 $('#OceanImportHbl_IsReleased').on('change', function (e, val) { 
+                if (this.checked) { 
+                    $('#OceanImportHbl_HblReleaseDate').removeAttr('disabled');
+                    $('#OceanImportHbl_ReleaseById').removeAttr('disabled');
+                    $("#OceanImportHbl_HblReleaseDate").datepicker("setDate", new Date());
+                    $('#releasedBy').val('@(CurrentUser.Name + " " + CurrentUser.SurName)');
+                } 
+                else{
+                    $('#OceanImportHbl_HblReleaseDate').attr('disabled', 'disabled');
+                    $("#OceanImportHbl_HblReleaseDate").datepicker("setDate", null);
+                    $('#OceanImportHbl_ReleaseById').val(null);
+                    $('#releasedBy').val(null);
+                }
+            })
+            $('#OceanImportHbl_IsHold').on('change', function () {
+                if (this.checked) {
+
+
+                    $('#OceanImportHbl_HoldReason').removeAttr('disabled');
+
+                }
+                else { 
+                
+                $('#OceanImportHbl_HoldReason').attr('disabled','disabled');
+                }
+
+                // Call your other functions or perform desired actions here
+            });   
+        $('#OceanImportMbl_IsReleased').change(function() {
+            if(this.checked) {
+                // Checkbox is checked, set MblReleaseDate to current date time
+                var currentDate = new Date();
+                $('#OceanImportMbl_MblReleaseDate').val(currentDate.toISOString().slice(0, 19).replace("T", " "));
+            } else {
+                // Checkbox is unchecked, clear MblReleaseDate
+                $('#OceanImportMbl_MblReleaseDate').val('');
+            }
+        });
+        
+      initHideHblBtn();
+    $("#checkHideHblBtn").click(function () {
+        initHideHblBtn();
+    });
+
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white');
+                        var backGroundColor = $('#hblCardHeader').css('background-color');
+                        var hexColor = EditModelScript.RextoHexColorCode(backGroundColor);
+                        $('#hCardColorValue').val(hexColor);
+                        if (hawbId != '00000000-0000-0000-0000-000000000000'){
+                            dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardById(hawbId).then(function (res) {
+                                var cardColorId = res.cardColorId;
+                                $('#hCardColorId').val(cardColorId);
+                            });
+                        } else if (hawbId == '00000000-0000-0000-0000-000000000000'){
+                            $('#hCardColorId').val('');
+                        } else {
+                            $('#hCardColorId').val('');
+                        }
                         Swal.clickCancel();
                     })
 
@@ -250,16 +421,36 @@
             }
         }
 
-        function createHawbCard() {
-            debugger
-            let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
-                ' onclick="onHawbCardClick(event,{{hblCardId}})">{{hblNo}}</h5>' +
-                ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
-                ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse customForm" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
-            return abpCard;
+       function createHawbCard() {
+             $('#cardSettingArea').show();
+            var check='False';
+            if ($('#cardCheck').prop('checked')) {
+                check = 'True';
+            
+            }
+           let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h6 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
+    ' onclick="onHawbCardClick(event,{{hblCardId}})">';
+
+  // Check the condition and add the <i> tag if check is true
+            debugger;
+            if (check=="False") {
+                abpCard += '<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="{{hblCosigneeName}} {{hblShipperName}}"></i>';
+                abpCard += '{{hblNo}}</h6>' +
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+
+            }
+            else {
+                // Add the rest of the card content
+                abpCard += '{{hblNo}}<br>{{hblCosigneeName}}<br>{{hblShipperName}}</h6>' +
+                
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+            }
+  return abpCard;
         }
 
-        function setHawbCardValues(abpcard, cardId, hblNo, index) {
+        function setHawbCardValues(abpcard, cardId, hblNo, index,hblCosigneeName,hblShipperName) {
             let apbCardClass = 'card board-item hbl-sm-' + index;
             let cardBodyId = 'hawbCard_' + index;
             cardId = "'" + cardId + "'";
@@ -269,6 +460,17 @@
             abpcard = abpcard.replaceAll("{{hblCardId}}", cardId);
             abpcard = abpcard.replaceAll("{{index}}", index);
             abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
+             if (hblCosigneeName !== null) {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", hblCosigneeName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", "");
+  }
+
+  if (hblShipperName !== null) {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", hblShipperName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", "");
+  }
 
             return abpcard;
         }
@@ -281,6 +483,7 @@
                 confirmButtonText: buttonName,
             }).then(funName)
         }
+
 
         function alertConfirmation(result) {
             if (result.isConfirmed) {
@@ -430,6 +633,78 @@
                 }
             }
         }
+          function cardSettingClick() {
+           
+            $("#checkModal").modal("show");  
+        }
+        const toggleLink = document.getElementById("toggleLink");
+
+        // Set an initial state
+        let isAsc = true;
+        let selectedValue = 1;
+        
+        // Add a click event listener to the anchor
+        toggleLink.addEventListener("click", function (e) {
+            e.preventDefault(); // Prevent the default link behavior
+
+            // Toggle between "Asc" and "Desc"
+            if (isAsc) {
+                toggleLink.innerHTML = '<i class="fa fa-sort-down"></i> Desc';
+            } else {
+                toggleLink.innerHTML = '<i class="fa fa-sort-up"></i> Asc';
+            }
+
+            // Invert the state
+            isAsc = !isAsc;
+            SortHblCard();
+        });
+        function changeSetting() { 
+        $("#checkModal").modal("hide");
+            SortHblCard();
+        
+        
+        }
+        function SortHblCard(){
+        selectedValue = $('#sortType').val();
+
+            var url = new URL(window.location.href);
+            var selectedHblNo;
+
+            dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(url.searchParams.get('Id'), isAsc,selectedValue)
+                .done(function (hblCards) {
+                    if (hblCards && hblCards.length) {
+                        $('#hblCards').empty();
+                        hblCards.forEach(function (hblCard, index) {
+
+                            let abpcard = createHawbCard();
+
+                            abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index,hblCard.hblConsigneeName,hblCard.hblShipperName);
+
+                            $('#hblCards').append(abpcard);
+
+                            if (hblCard.id == url.searchParams.get('Hid')) {
+                                selectedHblNo = hblCard.hblNo;
+                            }
+
+                        })
+                        setTimeout(() => {
+                            if (selectedHblNo) {
+                                $('#title_' + selectedHblNo).click();
+                            }
+                            else { $('.hblCardTitle')[0].click(); }
+
+                        }, 500);
+                    }
+                })
+        
+        
+        
+        
+        
+        
+        
+        
+        }
     </script>
 }
 <div class="page-header">
@@ -562,7 +837,7 @@
                             </div>
                             </div>*@
 
-                            <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
+                            <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" id="btnMawbCollapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
                             </button>
 
                         </abp-card-header>
@@ -741,7 +1016,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.FreightTermId", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = "FreightTermId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.FreightTermId) })
         </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.FdestId", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.FdestId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.ShipModeId", AspItems = _dropdown.ShipModeLookupList, IsShowLabel = true, FieldName = "ShipModeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.ShipModeId) })
         </abp-column>
 
 
@@ -762,12 +1037,12 @@
             <input type="hidden" name="OceanImportMbl.OblTypeId" id="mOblTypeId" value="@Model.OceanImportMbl.OblTypeId" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsOblReceived" class="form-label">@L["IsOblReceived"]<input type="checkbox" name="OceanImportMbl.IsOblReceived" id="OceanImportMbl_IsOblReceived" value="true" /></label>
-                                    <abp-input asp-for="OceanImportMbl.OblReceivedDate" type="text" abp-data-datetimepicker="false" suppress-label="true"  />
+                                    <label for="OceanImportMbl_IsOblReceived" class="form-label">@L["IsOblReceived"]<input type="checkbox"  name="OceanImportMbl.IsOblReceived" id="OceanImportMbl_IsOblReceived" value="true" /></label>
+                                    <abp-input asp-for="OceanImportMbl.OblReceivedDate" type="text"  abp-data-datetimepicker="false"  suppress-label disabled />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsReleased" class="form-label">@L["IsReleased"]<input type="checkbox" name="OceanImportMbl.IsReleased" id="OceanImportMbl_IsReleased" value="true" /></label>
-                                    <abp-input asp-for="OceanImportMbl.MblReleaseDate" type="text" abp-data-datetimepicker="false" suppress-label="true" />
+            <label for="OceanImportMbl_IsReleased" class="form-label">@L["IsReleased"]<input type="checkbox"  name="OceanImportMbl.IsReleased" id="OceanImportMbl_IsReleased" value="true" /></label>
+                                    <abp-input asp-for="OceanImportMbl.MblReleaseDate" type="text" abp-data-datetimepicker="false"  suppress-label disabled />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -843,15 +1118,64 @@
 
                 <div class="card-wrap">
                     <button class="btn btn-block btn-add" type="button" id="addHBtn">
-                        <i class="fa-solid fa-plus"></i>Add HAWB
+                        <i class="fa-solid fa-plus"></i>@L["AddHBL"]
                     </button>
+                    <div id="cardSettingArea">     
+                            <div class="d-flex flex-row">
+                        <div class="p-2"><label>Sort By</label>
+                        <select id="sortType">
+                            <option selected value="1">HB/L No</option>
+                             <option value="2">Created Date</option>
+                        </select>    
+                        </div>
+                        <div class="p-2">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+                        <div class="p-2">
+                            <a href="#" id="toggleLink"><i class="fa fa-sort-up"></i> Asc</a>
+                        </div>
+                            </div>
+                            <div class="d-flex flex-row">
+                        <div class="p-2" ><a href='javascript:void(0)' class="text-muted" onclick="cardSettingClick()"><i class="fa fa-cogs"></i> Card Setting</a>
+                            </div>
+                            </div>
+                            </div>
                     <div id="hblCards" class="hbl_sm_area">
 
                     </div>
                 </div>
             </abp-column>
         </abp-row>
-
+         <div id="checkModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Card Setting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+        <div class="pull-left w-80per _pd-sm">
+            <div class="_text-blue-steel _font-15 bold _mg-bottom-10">Collapsed Card View</div>
+            <div class="_font-13 _mg-bottom-xs">Show Shipper and Consignee</div>
+            <div class="_font-11 text-muted">Show Shipper and Consignee name without hovering on the <i class="fa fa-info-circle _font-11"></i> icon when the cards are collapsed</div>
+        </div>
+        <div class="pull-left w-20per _mg-top-50">
+    <abp-input asp-for="@Model.ISToolTipShow" id="cardCheck" suppress-label />
+        </div><!---->
+    </div>
+                    
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="changeSetting()">@L["Btn:Ok"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
         <div class="modal mymodal" id="consolidatedModal" tabindex="-1" role="dialog">
         </div>
 
@@ -906,8 +1230,14 @@
         <input type="hidden" name="OceanImportHbl.HDelId" id="hHDelId" value="@Model.OceanImportHbl.DelId" />
         <input type="hidden" name="OceanImportHbl.FdestId" id="hHFdestId" value="@Model.OceanImportHbl.FdestId" />
         <input type="hidden" name="OceanImportHbl.CardColorId" id="hCardColorId" value="@Model.OceanImportHbl.CardColorId" />
+        <input type="hidden" name="OceanImportHbl.CardColorValue" id="hCardColorValue" />
         <div  id="ejo" style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
-            <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Save"].Value</abp-button>
+
+           <button class="btn btn-primary me-md-2 rounded-circle" type="submit" id="saveBtn" style="width: 60px; height: 60px;">
+  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-save fa-w-14 fa-2x">
+    <path fill="currentColor" d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM224 416c-35.346 0-64-28.654-64-64 0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64zm96-304.52V212c0 6.627-5.373 12-12 12H76c-6.627 0-12-5.373-12-12V108c0-6.627 5.373-12 12-12h228.52c3.183 0 6.235 1.264 8.485 3.515l3.48 3.48A11.996 11.996 0 0 1 320 111.48z"></path>
+  </svg>
+</button>
         </div>
     </form>
     </div>

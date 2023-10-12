@@ -21,6 +21,7 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
+using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
 using static Dolphin.Freight.Permissions.AccountingPermissions;
 
@@ -46,9 +47,10 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly ContainerAppService _containerRepository;
         private readonly IRepository<Container, Guid> _containerAppService;
+        private readonly IContainerAppService _containerService;
         public OceanExportMblAppService(IRepository<OceanExportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository, PortsManagementAppService portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
             IIdentityUserAppService identityUserAppService, IRepository<OceanExportHbl, Guid> oceanExportHblRepository,
-            IInvoiceAppService invoiceAppService,
+            IInvoiceAppService invoiceAppService, IContainerAppService containerService,
             ContainerAppService containerRepository, ISysCodeAppService sysCodeAppService, IRepository<Container, Guid> containerAppService)
             : base(repository)
         {
@@ -63,6 +65,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             _containerRepository = containerRepository;
             _sysCodeAppService = sysCodeAppService;
             _containerAppService = containerAppService;
+            _containerService = containerService;
             /*
             GetPolicyName = OceanExportPermissions.OceanExportMbls.Default;
             GetListPolicyName = OceanExportPermissions.OceanExportMbls.Default;
@@ -598,6 +601,27 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 }
                 await _repository.UpdateAsync(mbl);
             }
+        }
+
+        public async Task SaveDimensionsAsync(DimensionDataModel DataModel)
+        {
+            var Dimensions = DataModel.Dimensions;
+            var ContainerId = DataModel.ContainerId;
+
+            var container = await _containerService.GetAsync(ContainerId);
+
+            if (container.ExtraProperties == null)
+            {
+                container.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+            }
+
+            if (Dimensions != null && Dimensions.Any())
+            {
+                container.ExtraProperties.Remove("Dimensions");
+                container.ExtraProperties.Add("Dimensions", Dimensions);
+            }
+
+            await _containerService.UpdateAsync(ContainerId, ObjectMapper.Map<ContainerDto, CreateUpdateContainerDto>(container));
         }
     }
 }

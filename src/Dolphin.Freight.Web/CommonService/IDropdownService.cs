@@ -19,6 +19,7 @@ namespace Dolphin.Freight.Web.CommonService
         List<SelectItems> ShipModeLookupList { get; }
         List<SelectItems> FreightTermLookupList { get; }
         List<SelectItems> ReferenceLookupList { get; }
+        List<SelectItems> ReferenceMawbLookupList { get; }
         List<SelectItems> CancelReasonLookupList { get; }
         List<SelectItems> SvgTermLookupList { get; }
         List<SelectItems> IncotermsLookupList { get; }
@@ -31,5 +32,6 @@ namespace Dolphin.Freight.Web.CommonService
         List<SelectItems> CreditLimitGroupNameLookupList { get; }
         List<SelectItems> AccountGroupnameLookupList { get; }
         List<SelectItems> AirImportMawbLookupList { get;}
+        List<SelectItems> OperatorLookupList { get; }
     }
 }

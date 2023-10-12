@@ -39,6 +39,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         private readonly IRepository<AirImportHawb, Guid> _airImportHawbAppService;
         private readonly IIdentityUserAppService _identityUserAppService;
         private readonly IRepository<Substation, Guid> _substationRepository;
+       
 
         public AirImportMawbAppService(
             IRepository<AirImportMawb, Guid> repository,
@@ -91,12 +92,14 @@ namespace Dolphin.Freight.ImportExport.AirImports
                                  .Contains(input.Search))
                                   .WhereIf(input.CarrierId.HasValue, e => e.AwbAcctCarrierId == input.CarrierId)
                                    .WhereIf(input.ConsigneeId.HasValue, e => e.ConsigneeId == input.ConsigneeId)
-
+                                    .WhereIf(input.OverseaAgentId.HasValue, e => e.OverseaAgentId == input.OverseaAgentId)
                                    .WhereIf(input.DestinationId.HasValue, e => e.DestinationId == input.DestinationId)
                                    .WhereIf(input.DepatureId.HasValue, e => e.DepatureId == input.DepatureId)
                                    .WhereIf(!string.IsNullOrWhiteSpace(input.FlightNo), x => x.FlightNo == input.FlightNo)
                                    .WhereIf(input.OfficeId.HasValue, e => e.OfficeId == input.OfficeId)
                                    .WhereIf(input.AwbType.HasValue, e => e.AwbType == input.AwbType)
+                                   .WhereIf(input.Block.HasValue, e => e.IsLocked == input.Block)
+                                   .WhereIf(input.CreatorId.HasValue, e => e.CreatorId == input.CreatorId)
                                    .WhereIf(input.FreightLocationId.HasValue, e => e.FreightLocationId == input.FreightLocationId)
                                    .WhereIf(input.DirectMaster.HasValue, e => e.IsDirectMaster == input.DirectMaster)
                                    .WhereIf(input.PostDate.HasValue, e => e.PostDate.Date == input.PostDate.Value.Date.AddDays(1))
@@ -156,6 +159,11 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     {
                         var MblSale = ObjectMapper.Map<IdentityUserDto, UserData>(await _identityUserAppService.GetAsync(airImportMawb.SalesId.GetValueOrDefault()));
                         airImportMawbDto.SalesName = string.Concat(MblSale?.Name, "/", MblSale?.Surname)?.TrimStart('/');
+                    }
+                    if (airImportMawb.CreatorId != null)
+                    {
+                        var MblSale = await _identityUserAppService.GetAsync(airImportMawb.CreatorId.GetValueOrDefault());
+                        airImportMawbDto.OpName = MblSale?.Name;
                     }
                     else
                     {
@@ -386,6 +394,33 @@ namespace Dolphin.Freight.ImportExport.AirImports
             return ObjectMapper.Map<List<AirImportMawb>, List<AirImportMawbDto>>(query.ToList());
         
         }
+        public async Task SelectedUnLockedAirImportMawbAsync(Guid[] ids)
+        {
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var mbl = await _repository.GetAsync(id);
 
+                    mbl.IsLocked = false;
+                    var query = await _airImportHawbAppService.GetQueryableAsync();
+                    var hbls = query.Where(x => x.MawbId == id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = false;
+
+                        await _airImportHawbAppService.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+
+        }
     }
 }

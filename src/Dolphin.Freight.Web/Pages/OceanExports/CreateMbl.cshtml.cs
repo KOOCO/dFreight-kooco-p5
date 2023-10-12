@@ -30,6 +30,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
      
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
+        public List<SelectListItem> BlTypeLookupList { get; set; }
         public List<SelectListItem> PortsManagementLookupList { get; set; }
         [BindProperty]
         public CreateUpdateOceanExportMblDto OceanExportMbl { get; set; }
@@ -65,6 +66,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
 
             releasedBy = _currentUser.Id;
 
+            await FillBlType();
             await FillSubstationAsync();
             await FillTradePartnerAsync();
             await FillPortAsync();
@@ -127,5 +129,14 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                                    .ToList();
         }
         #endregion
+
+        public async Task FillBlType()
+        {
+            var blTypeLookup = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "BlTypeId" });
+
+            BlTypeLookupList = blTypeLookup.Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
+                                     .ToList();
+
+        }
     }
 }

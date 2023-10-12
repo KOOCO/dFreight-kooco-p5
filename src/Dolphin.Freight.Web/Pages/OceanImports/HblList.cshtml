@@ -35,6 +35,10 @@
                                 icon="filter"
                                 button-type="Primary"
                                 data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
+                                 <abp-button id="btnConfiguration"
+                                text="@L["Configuration"].Value"
+                                icon="gear"
+                                button-type="Primary" />
                    
                 </abp-column>
             </abp-row>
@@ -209,10 +213,11 @@
             
             <div class="portlet-tool">
                 <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
-                    <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="deleteHbl()" id="deleteBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-plus" onclick="HblList.createNew()" id="newBtn"></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="HblList.deleteHbl()" id="deleteBtn" disabled></button>
                     <button type="button" class="btn btn-outline-secondary" id="copyBtn" onclick="copyMbl(true)" disabled><i class="fa fa-files-o me-0"></i></button>
-                    <button type="button" class="btn btn-outline-secondary" onclick="setSelectedLockStatus(true)" id="lockId" disabled>Lock</button>
-                    <button type="button" class="btn btn-outline-secondary" id="unlockId" onclick="setSelectedLockStatus(false)" disabled>Unlock</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="HblList.setSelectedLockStatus(true)" id="lockId" disabled>Lock</button>
+                    <button type="button" class="btn btn-outline-secondary" id="unlockId" onclick="HblList.setSelectedLockStatus(false)" disabled>Unlock</button>
                     <button type="button" class="btn btn-outline-secondary" id="profitReport" disabled>Profit Report</button>
                     <button type="button" class="btn btn-outline-secondary" id="arrivalNotice" disabled>Arrival Notice</button>
                 </div>

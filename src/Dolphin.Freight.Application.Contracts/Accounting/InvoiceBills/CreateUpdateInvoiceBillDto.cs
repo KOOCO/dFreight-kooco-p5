@@ -35,6 +35,8 @@ namespace Dolphin.Freight.Accounting.InvoiceBills
         /// 幣種
         /// </summary>
         public string Currency { get; set; }
+        public int Price { get; set; }
+        public Guid? TaxId { get; set; }
         /// <summary>
         /// 數量
         /// </summary>

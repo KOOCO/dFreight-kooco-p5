@@ -277,6 +277,11 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string ARBalance { get; set; }
         public string APBalance { get; set; }
         public string DCBalance { get; set; }
+        public string Mark { get; set; }
+        public string NatureAndQuantityOfGoods { get; set; }
+        public string ManifestNatureAndQuantityOfGoods { get; set; }
+        public string HandlingInformation { get; set; }
+        public string OpName { get; set; }
     }
     public class AllHawbListAirImport
     {

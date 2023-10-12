@@ -17,6 +17,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
 
         private readonly ISubstationAppService _substationAppService;
         public string Search { get; set; }
+        public AWBType AwbType { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         private readonly ITradePartnerAppService _tradePartnerAppService;

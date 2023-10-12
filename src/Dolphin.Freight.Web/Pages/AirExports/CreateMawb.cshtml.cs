@@ -794,11 +794,11 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             public double AwbChargeableWeightLb { get; set; }
             public double AwbChargeableWeightAmount { get; set; }
 
-            public IncotermsType IncotermsType { get; set; }
-            public ServiceTermType ServiceTermTypeFrom { get; set; }
+            public IncotermsType? IncotermsType { get; set; }
+            public ServiceTermType? ServiceTermTypeFrom { get; set; }
             [DisplayName("~")]
-            public ServiceTermType ServiceTermTypeTo { get; set; }
-            public DisplayUnitType DisplayUnit { get; set; }
+            public ServiceTermType? ServiceTermTypeTo { get; set; }
+            public DisplayUnitType? DisplayUnit { get; set; }
 
             public bool IsAwbCancelled { get; set; }
            
@@ -812,6 +812,10 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             public string PONo { get; set; }
             public List<OtherCharges> OtherCharges { get; set; }
             public ExtraPropertyDictionary ExtraProperties { get; set; }
+            public string Mark { get; set; }
+            public string NatureAndQuantityOfGoods { get; set; }
+            public string ManifestNatureAndQuantityOfGoods { get; set; }
+            public string HandlingInformation { get; set; }
         }
         #endregion
         private List<SelectListItem> GetIncotermsSelectList()

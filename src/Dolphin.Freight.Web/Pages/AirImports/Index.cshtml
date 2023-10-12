@@ -79,7 +79,7 @@
               
               
                 <abp-column size-md="_1">
-                    <label>@L["Depature"].Value</label>
+                    <label>@L["Departure"].Value</label>
                 </abp-column>
                 <abp-column size-md="_2">
                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DepatureId", AspItems = _dropdown.PortsManagementLookupList,  IsShowLabel = false, FieldName = "DepatureId", SelectType = 0, ShowFiledContentValue =null })

@@ -13,57 +13,8 @@
 @inject IStringLocalizer<FreightResource> L
 
 @model Dolphin.Freight.Web.ViewModels.ImportExport.HawbHblViewModel
-
+<abp-script src="/Pages/AirImports/AirImportHawb.js" />
 <script>
-
-    $(document).ready(function () {
-        const ids = [
-            "HawbModel_FinalETA",
-            "HawbModel_LastFreeDay",
-            "HawbModel_StorageStartDate",
-            "HawbModel_ITDate",
-            "HawbModel_FrtRelease",
-            "HawbModel_CReleasedDate",
-            "HawbModel_DoorDelivered"
-        ];
-
-        ids.forEach(function (id) {
-            let dateElem = $('#' + id);
-
-            if (dateElem.length === 0) {
-                return;
-            }
-
-            dateElem.removeAttr('type').datetimepicker({
-                format: 'Y-m-d H:i',
-                step: 15,
-                allowInput: false
-            });
-
-            let currentVal = dateElem.val();
-            if (currentVal.includes('T')) {
-                dateElem.val(currentVal.replace('T', ' '));
-            }
-        });
-    });
-
-      $(document).ready(function () {
-        if ($('#HawbCancelledDate').val() == '0001-01-01T00:00') {
-            $('#HawbCancelledDate').val('');
-        }
-           if ($('#HawbModel_FrtRelease').val() == '0001-01-01T00:00') {
-            $('#HawbModel_FrtRelease').val('');
-        }
-    });
-  
-    function OpenInTrackTrace() {
-        var url = new URL(window.location.href);
-        var mawbId = url.searchParams.get('Id');
-        dolphin.freight.importExport.airImports.airImportMawb.get(mawbId).done(function (res) {
-            myWindow = window.open('https://www.track-trace.com/bol#' + res.mawbNo, '_blank', 'width=1200,height=1000');
-            myWindow.focus();
-        });
-    }
     const createHawbCopyModal = new abp.ModalManager({
                 viewUrl: '/AirImports/CopyHawbModal',
             });
@@ -105,46 +56,6 @@
         myWindow = window.open(url, pname, 'width=1200,height=800')
         myWindow.focus()
     }
-      function setHawbLockUnlock(isLockedCheck) {
-            var id = '@Model.HawbModel.Id';
-            isLockedCheck = isLockedCheck === "True";
-            if(isLockedCheck){
-                
-            abp.message.confirm(l('UnlockConfirmationMessage'))
-                .then(function (confirmed) {
-                    if (confirmed) {
-                        dolphin.freight.importExport.airImports.airImportHawb
-                            .lockedOrUnLockedAirImportHawb(id)
-                            .then(function () {
-                                abp.message.success(l('SuccessfullyUnlocked'));
-                                window.location.reload();
-                            });
-                    }
-                });
-            } else{
-                abp.message.confirm(l('LockConfirmationMessage'))
-                .then(function (confirmed) {
-                    if (confirmed) {
-                      dolphin.freight.importExport.airImports.airImportHawb
-                            .lockedOrUnLockedAirImportHawb(id)
-                            .then(function () {
-                                abp.message.success(l('SuccessfullyLocked'));
-                                window.location.reload();
-                            });
-                    }
-                });
-            }
-        }
-            function onCopyToHawbClick(){
-            var id = '@Model.HawbModel.Id';
-                createHawbCopyModal.open({
-                    id,
-                   
-                });
-          
-        
-        
-        }
 </script>
 <!-- HABL Card -->
 <abp-card class="card board-item" id="hblCard">
@@ -173,7 +84,7 @@
             </button>
             <input asp-for="@Model.HawbModel.IsLocked" type="hidden"/>
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                  <a class='dropdown-item' href='javascript:void(0)' onclick="setHawbLockUnlock('@Model.HawbModel.IsLocked')">
+                  <a class='dropdown-item' href='javascript:void(0)' onclick="AirImportHawb.setHawbLockUnlock('@Model.HawbModel.IsLocked')">
                                         @if(@Model.HawbModel.IsLocked)
                                         {
                                             <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
@@ -189,7 +100,7 @@
                 <a class='dropdown-item' href='javascript:void(0)' onclick="deleteHawbAirImport()">
                     <i class="fa fa-trash"></i> @L["Btn:Delete"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="onCopyToHawbClick()">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirImportHawb.onCopyToHawbClick()">
                     <i class="fa fa-copy"></i> @L["Btn:CopyTo"]
                 </a>
                     <a class='dropdown-item' href='javascript:void(0)' onclick="editMawbAirImport('@Model.HawbModel.MawbId' ,'@Model.HawbModel.Id')">
@@ -222,7 +133,7 @@
                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='javascript:void(0)' style="color: #4B77BE; font-weight: 500;" onclick="OpenInTrackTrace()">
+                <a class='dropdown-item' href='javascript:void(0)' style="color: #4B77BE; font-weight: 500;" onclick="AirImportHawb.OpenInTrackTrace()">
                     <i class="fa fa-location-arrow"></i> @L["Btn:Open in Track-Trace"]
                 </a>
             </div>
@@ -339,22 +250,22 @@
         <!--第七列-->
         <abp-row>
             <abp-column size-md="_2">
-                <abp-input asp-for="@Model.HawbModel.GrossWeightKG" size="Small" />
+                <abp-input asp-for="@Model.HawbModel.GrossWeightKG" onkeyup="AirImportHawb.KgToLbConversion(event, 'KG')" size="Small" />
             </abp-column>
             <abp-column size-md="_2">
-                <abp-input asp-for="@Model.HawbModel.GrossWeightLB" size="Small" />
+                <abp-input asp-for="@Model.HawbModel.GrossWeightLB" onkeyup="AirImportHawb.KgToLbConversion(event, 'LB')" size="Small" />
             </abp-column>
             <abp-column size-md="_2">
-                <abp-input asp-for="@Model.HawbModel.ChargeableWeightKG" size="Small" />
+                <abp-input asp-for="@Model.HawbModel.ChargeableWeightKG" onkeyup="AirImportHawb.KgToLbConversion(event, 'KG')" size="Small" />
             </abp-column>
             <abp-column size-md="_2">
-                <abp-input asp-for="@Model.HawbModel.ChargeableWeightLB" size="Small" />
+                <abp-input asp-for="@Model.HawbModel.ChargeableWeightLB" onkeyup="AirImportHawb.KgToLbConversion(event, 'LB')" size="Small" />
             </abp-column>
             <abp-column size-md="_2">
-                <abp-input asp-for="@Model.HawbModel.VolumeWeightKG" size="Small" />
+                <abp-input asp-for="@Model.HawbModel.VolumeWeightKG" onkeyup="AirImportHawb.KgToLbConversion(event, 'VolKG')" size="Small" />
             </abp-column>
             <abp-column size-md="_2">
-                <abp-input asp-for="@Model.HawbModel.VolumeWeightCBM" size="Small" />
+                <abp-input asp-for="@Model.HawbModel.VolumeWeightCBM" onkeyup="AirImportHawb.KgToLbConversion(event, 'CBM')" size="Small" />
             </abp-column>
         </abp-row>
       
@@ -401,16 +312,32 @@
         <!--第10列-->
         <abp-row>
             <abp-column size-md="_3">
-                <abp-input asp-for="@Model.HawbModel.ShipType" size="Small" />
+                <label class="form-label" for="@Model.HawbModel.ShipType">@L["ShipType"]</label>
+                <select asp-for="@Model.HawbModel.ShipType" class="form-select form-control cursor-pointer">
+                    <option></option>
+                    @foreach (SelectListItem item in Html.GetEnumSelectList(typeof(ShipType)))
+                    {
+                        @if (item.Value == @Model.HawbModel.ShipType)
+                        {
+                            <option value="@item.Value" selected>@item.Text</option>
+                        } else if (item.Value == Convert.ToString(1))
+                        {
+                            <option value="@item.Value" selected>@item.Text</option>
+                        } else
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                </select>
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.Incoterms", AspItems = _dropdown.IncotermsLookupList, IsShowLabel = true, IsRequired = true, FieldName = @L["Incoterms"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.Incoterms) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.Incoterms", AspItems = _dropdown.IncotermsLookupList, IsShowLabel = true, FieldName = @L["Incoterms"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.Incoterms) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.ServiceTermStart", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, IsRequired = true, FieldName = @L["ServiceTermStart"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.ServiceTermStart) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.ServiceTermStart", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, FieldName = @L["ServiceTermStart"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.ServiceTermStart) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.ServiceTermTo", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, IsRequired = true, FieldName = @L["ServiceTermTo"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.ServiceTermTo) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.ServiceTermTo", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = true, FieldName = @L["ServiceTermTo"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.ServiceTermTo) })
             </abp-column>
         </abp-row>
         <!-- SUB HAWB -->
@@ -510,18 +437,21 @@
         </abp-row>
         <abp-row class="mt-4">
             <abp-column size-md="_6">
-  
-                <abp-input asp-for="@Model.HawbModel.Mark" size="Small" />
+                <label class="form-label">@L["Mark"]</label>
+   <textarea  asp-for="HawbModel.Mark" id="HawbModel_Mark" name="HawbModel.Mark" class="form-control">@Model.HawbModel.Mark</textarea>
+              @*   <abp-input asp-for="@Model.HawbModel.Mark" size="Small" /> *@
             </abp-column>
             <abp-column size-md="_6">
-
-                <abp-input asp-for="@Model.HawbModel.Description" size="Small" />
+                  <label class="form-label">@L["Description"]</label>
+   <textarea  asp-for="HawbModel.Description" id="HawbModel_Description" name="HawbModel.Description" class="form-control">@Model.HawbModel.Description</textarea>
+              @*   <abp-input asp-for="@Model.HawbModel.Description" size="Small" /> *@
             </abp-column>
         </abp-row>
         <abp-row>
             <abp-column size-md="_12">
-
-                <abp-input asp-for="@Model.HawbModel.Remark" size="Small" />
+                 <label class="form-label">@L["Description"]</label>
+                 <textarea  asp-for="HawbModel.Remark" id="HawbModel_Remark" name="HawbModel.Remark" class="form-control">@Model.HawbModel.Remark</textarea>
+               @*  <abp-input asp-for="@Model.HawbModel.Remark" size="Small" /> *@
             </abp-column>
         </abp-row>
         <abp-row class="d-none">

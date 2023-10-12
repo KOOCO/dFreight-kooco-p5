@@ -9,6 +9,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Volo.Abp.Users;
 using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.SysCodes;
+using Dolphin.Freight.AirImports;
+using Dolphin.Freight.OceanImports;
 
 namespace Dolphin.Freight.ImportExport.OceanImports
 {
@@ -432,15 +434,15 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// W/O號碼
         /// </summary>
         public string WoNo { get; set; }
+
         /// <summary>
         /// 運輸類別ID
         /// </summary>
-        public Guid? ShipTypeId { get; set; }
+        public ShipType? ShipTypeId { get; set; }
         /// <summary>
         /// 運輸類別
         /// </summary>
-        [ForeignKey("ShipTypeId")]
-        public virtual SysCode ShipType { get; set; }
+
         /// <summary>
         /// 國貿條規ID
         /// </summary>
@@ -474,12 +476,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 目的地鐵路ID
         /// </summary>
-        public Guid? RailwayCodeId { get; set; }
+        public RailCode? RailwayCodeId { get; set; }
         /// <summary>
         /// 目的地鐵路
         /// </summary>
-        [ForeignKey("RailwayCodeId")]
-        public virtual SysCode RailwayCode { get; set; }
+       
         /// <summary>
         /// 預計最終交付時間
         /// </summary>
@@ -667,5 +668,34 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// Group Comm
         /// </summary>
         public string LineCode { get; set; }
+   
+        /// <summary>
+        /// 由第三方申報ISF
+        /// </summary>
+       
+        public bool DoorMove { get; set; }
+        public bool CClearance { get; set; }
+        public bool CHold { get; set; }
+      
+        public bool Ror { get; set; }
+
+        public DateTime? IsfMatchDate { get; set; }
+        public DateTime? Lfd { get; set; }
+       
+       
+        public DateTime? GoDate { get; set; }
+       
+        public DateTime? CReleasedDate { get; set; }
+        public DateTime? EntryDocSent { get; set; }
+      
+      
+        public ItIssuedLocation? ItIssuedLocation { get; set; }
+        public FreightType? Freight { get; set; }
+      
+        public string EntryNo { get; set; }
+    
+     
+        public bool CustomDoc { get; set; }
+        public DateTime? Available { get; set; }
     }
 }

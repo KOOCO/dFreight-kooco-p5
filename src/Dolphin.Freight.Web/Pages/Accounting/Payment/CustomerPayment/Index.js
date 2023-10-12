@@ -29,7 +29,7 @@
     //});
  
     $("#saveBtn").click(function () {
-        var datatable = JSON.stringify(invDataTable.data().toArray());
+        var datatable = InvoiceListJS.getAllRowsData();
         $("#datatablelist").val(datatable);
         $("#createForm").submit();
     });

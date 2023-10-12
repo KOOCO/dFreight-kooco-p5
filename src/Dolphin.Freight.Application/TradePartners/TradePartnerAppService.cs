@@ -280,6 +280,7 @@ namespace Dolphin.Freight.TradePartners
                                    .WhereIf(!string.IsNullOrWhiteSpace(input.SaleOffice), x => x.tradePartner.SalesOfficeCode == input.SaleOffice)
                                    .WhereIf(!string.IsNullOrWhiteSpace(input.SalePerson), x => x.tradePartner.SalesCode == input.SalePerson)
                                    .WhereIf(!string.IsNullOrWhiteSpace(input.TaxId), x => x.tradePartner.TaxId == input.TaxId)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.Zip), x => x.tradePartner.PostCode == input.Zip)
                                    .WhereIf(input.Status.HasValue, e => e.tradePartner.IsActive == input.Status)
                                   
                                    .WhereIf(input.CreatedDate.HasValue, e => e.tradePartner.CreationTime.Date == input.CreatedDate.Value.Date.AddDays(1));

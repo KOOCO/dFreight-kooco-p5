@@ -31,7 +31,7 @@ namespace Dolphin.Freight.Common
         public string FlightNo { get; set; }
         public Guid? DepatureId { get; set; }
         public Guid? DestinationId { get; set; }
-
+        public Guid? OverseaAgentId { get; set; }
         public Guid? CarrierId { get; set; }
         public Guid? FreightLocationId { get; set; }
 
@@ -41,13 +41,15 @@ namespace Dolphin.Freight.Common
         public DateTime? DepatureDate { get; set; }
         public DateTime? ArrivalDate { get; set; }
         public DateTime? PostDate { get; set; }
-
+        public Guid? CreatorId { get; set; }
+        public bool? Block { get; set; }
         public TPType? TpType { get; set; }
         public Guid? TpAccountGroupName { get; set; }
         public Guid? TpCountryCode { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
+        public string Zip { get; set; }
         public string State { get; set; }
         public string TaxId { get; set; }
         public string SalePerson { get; set; }

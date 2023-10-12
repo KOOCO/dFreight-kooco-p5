@@ -10,6 +10,7 @@ using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
+using Microsoft.AspNetCore.Mvc;
 using NPOI.POIFS.Crypt.Dsig.Facets;
 using NPOI.SS.Formula.Functions;
 using System;
@@ -44,8 +45,10 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly IRepository<PortsManagement, Guid> _portsManagementRepository;
         private readonly ICurrentUser _currentUser;
         private readonly IRepository<Container, Guid> _containerRepository;
+        private readonly IContainerAppService _containerAppService;
         private readonly IRepository<Country, Guid> _countryRepository;
-        public OceanImportHblAppService(IRepository<OceanImportHbl, Guid> repository, IRepository<Container, Guid> containerRepository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanImportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<PortsManagement, Guid> portsManagementRepository, ICurrentUser currentUser, IRepository<Country, Guid> countryRepository)
+
+        public OceanImportHblAppService(IRepository<OceanImportHbl, Guid> repository, IRepository<Container, Guid> containerRepository, IContainerAppService containerAppService, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanImportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<PortsManagement, Guid> portsManagementRepository, ICurrentUser currentUser, IRepository<Country, Guid> countryRepository)
             : base(repository)
         {
             _repository = repository;
@@ -58,6 +61,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             _currentUser = currentUser;
             _containerRepository = containerRepository;
             _countryRepository = countryRepository;
+            _containerAppService = containerAppService;
             /*
             GetPolicyName = OceanImportPermissions.OceanImportHbls.Default;
             GetListPolicyName = OceanImportPermissions.OceanImportHbls.Default;
@@ -152,27 +156,31 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             
             if (rs.Any())
             {
-
                 foreach (var pu in rs)
                 {
                     var dto = ObjectMapper.Map<OceanImportHbl, OceanImportHblDto>(pu);
+                    var containers = await _containerAppService.GetContainerListByHblId(dto.Id);
+
                     dto.FilingNo = mdictionary[dto.MblId].FilingNo;
                     dto.MblNo = mdictionary[dto.MblId].SoNo;
                     dto.OfficeName = sdictionary[mdictionary[dto.MblId].OfficeId.Value];
                     dto.Voyage = mdictionary[dto.MblId].Voyage;
+                    dto.VesselName = mdictionary[dto.MblId].VesselName;
+                    dto.ContainerNo = string.Join(",", containers.Where(w => w.HblId == dto.Id).Select(s => s.PackageNum));
                     //SysCode
                     if (mdictionary[dto.MblId].OblTypeId != null) dto.OblTypeName = dictionary[mdictionary[dto.MblId].OblTypeId.Value];
                     if (dto.SvcTermFromId is not null) dto.SvcTermFromName = dictionary[dto.SvcTermFromId.Value];
                     //人
+                    if (dto.HblNotifyId is not null) dto.HblNotifyName = tdictionary[dto.HblNotifyId.Value];
                     if (dto.AgentId != null) dto.AgentName = tdictionary[dto.AgentId.Value];
                     if (dto.CyCfsLocationId is not null) dto.CyCfsLocationName = tdictionary[dto.CyCfsLocationId.Value];
                     if (dto.TruckerId is not null) dto.TruckerName = tdictionary[dto.TruckerId.Value];
                     if (dto.HblShipperId != null) dto.HblShipperName = tdictionary[dto.HblShipperId.Value];
                     if (dto.HblConsigneeId != null) dto.HblConsigneeName = tdictionary[dto.HblConsigneeId.Value];
                     if (mdictionary[dto.MblId].MblCarrierId != null) dto.MblCarrierName = tdictionary[mdictionary[dto.MblId].MblCarrierId.Value];
-                    if (mdictionary[dto.MblId].ShipModeId != null) dto.shipModeName = tdictionary[mdictionary[dto.MblId].ShipModeId.Value];
-
+                    if (mdictionary[dto.MblId].ShipModeId != null) dto.shipModeName = dictionary[mdictionary[dto.MblId].ShipModeId.Value];
                     //港口
+                    if (dto.DeliveryToId is not null) dto.DeliveryLocation = pdictionary[dto.DeliveryToId.Value];
                     if (dto.PodId != null) dto.PodName = pdictionary[dto.PodId.Value];
                     if (dto.PolId != null) dto.PolName = pdictionary[dto.PolId.Value];
                     if (dto.PorId != null) dto.PorName = pdictionary[dto.PorId.Value];
@@ -250,19 +258,68 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             Hbl.IsLocked = !Hbl.IsLocked;
             await _repository.UpdateAsync(Hbl);
         }
-        public async Task<List<OceanImportHblDto>> GetHblCardsById(Guid Id)
+        public async Task<List<OceanImportHblDto>> GetHblCardsById(Guid Id, bool isAsc = true, int sortType = 1)
         {
             var data = await _repository.GetListAsync(f => f.MblId == Id);
-            var retVal = ObjectMapper.Map<List<OceanImportHbl>, List<OceanImportHblDto>>(data);
+            var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
+            var sysCodes = await _sysCodeRepository.GetListAsync();
 
+            if (!isAsc)
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderByDescending(x => x.HblNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderByDescending(x => x.CreationTime).ToList();
+
+                }
+            }
+            else
+            {
+
+                if (sortType == 1)
+                {
+                    data = data.OrderBy(x => x.HblNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(x => x.CreationTime).ToList();
+
+                }
+            }
+
+            var retVal = ObjectMapper.Map<List<OceanImportHbl>, List<OceanImportHblDto>>(data);
+            foreach (var item in retVal)
+            {
+                if (item.HblShipperId != null)
+                {
+                    var shipper = tradePartners.Where(w => w.Id == item.HblShipperId).FirstOrDefault();
+                    item.HblShipperName = shipper.TPName;
+                }
+
+                if (item.HblConsigneeId != null)
+                {
+                    var consignee = tradePartners.Where(w => w.Id == item.HblConsigneeId).FirstOrDefault();
+                    item.HblConsigneeName = consignee.TPName;
+                }
+
+                if (item.CardColorId is not null)
+                {
+                    var colorValue = sysCodes.Where(w => w.Id == item.CardColorId).FirstOrDefault();
+                    item.CardColorValue = colorValue.CodeValue;
+                }
+            }
             return retVal;
         }
         public async Task<OceanImportHblDto> GetHblCardById(Guid Id)
         {
-            if (await _repository.AnyAsync(f => f.Id == Id))
+            if (Id != Guid.Empty && await _repository.AnyAsync(f => f.Id == Id))
             {
                 var data = await _repository.GetAsync(f => f.Id == Id);
                 var retVal = ObjectMapper.Map<OceanImportHbl, OceanImportHblDto>(data);
+
                 return retVal;
             }
 
@@ -496,6 +553,49 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 Hbl.IsLocked = IsLock;
 
                 await _repository.UpdateAsync(Hbl);
+            }
+        }
+
+        public async Task SaveAssignContainerToHblAsync(OceanImportHblAppModel AppModel)
+        {
+            var Ids = AppModel.Ids;
+            var Containers = AppModel.Containers;
+            var ContainerId = AppModel.ContainerId;
+
+            foreach (var Id in Ids)
+            {
+                foreach (var Container in Containers)
+                {
+                    QueryHblDto queryHblDto = new QueryHblDto() { Id = Id };
+                    var OceanImportHbl = await this.GetHblById(queryHblDto);
+
+                    if (OceanImportHbl.Id != Guid.Empty)
+                    {
+                        foreach (var containerId in ContainerId)
+                        {
+                            if (containerId != Guid.Empty)
+                            {
+                                CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                                {
+                                    Id = containerId,
+                                    HblId = Id,
+                                    PackageNum = Convert.ToInt32(Container)
+                                };
+                                await _containerAppService.UpdateAsync(containerId, containerDto);
+                            }
+                            else
+                            {
+                                CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
+                                {
+                                    HblId = Id,
+                                    PackageNum = Convert.ToInt32(Container)
+                                };
+
+                                await _containerAppService.CreateAsync(containerDto);
+                            }
+                        }
+                    }
+                }
             }
         }
     }

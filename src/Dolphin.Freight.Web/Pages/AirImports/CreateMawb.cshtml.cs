@@ -463,16 +463,16 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             
             public IncotermsType? IncotermsType { get; set; }
             
-            public ServiceTermType ServiceTermTypeFrom { get; set; }
+            public ServiceTermType? ServiceTermTypeFrom { get; set; }
             
-            public ServiceTermType ServiceTermTypeTo { get; set; }
+            public ServiceTermType? ServiceTermTypeTo { get; set; }
 
             [SelectItems(nameof(TradePartnerLookupList))]
             public String BusinessReferredId { get; set; }
             
             public bool IsECom { get; set; }
             
-            public DisplayUnitType DisplayUnit { get; set; }
+            public DisplayUnitType? DisplayUnit { get; set; }
         }
         #endregion
     }

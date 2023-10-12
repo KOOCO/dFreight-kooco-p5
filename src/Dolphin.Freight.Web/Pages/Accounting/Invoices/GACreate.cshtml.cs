@@ -1,10 +1,12 @@
 using Dolphin.Freight.Accounting.InvoiceBills;
 using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.Settings.CurrencySetting;
 using Dolphin.Freight.Settinngs.Ports;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,7 +24,10 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
         public int InvoiceType { get; set; }
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
-        public Guid? InvoiceId { get; set; }
+        public Guid InvoiceId { get; set; }
+        [HiddenInput]
+        [BindProperty(SupportsGet = true)]
+        public Guid? Id { get; set; }
         [BindProperty]
         public IList<CreateUpdateInvoiceBillDto> InvoiceBillDtos { get; set; }
         [BindProperty(SupportsGet = true)]
@@ -30,6 +35,8 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
         public InvoiceBasicDto InvoiceBasicDto { get; set; }
         [BindProperty]
         public InvoiceMblDto InvoiceMblDto { get; set; }
+        public Dictionary<string, float> DictCurrencyConversion { get; set; }
+        public string CurrencyConversionJSON { get; set; }
 
         public string backUrl { get; set; }
         private readonly IInvoiceAppService _invoiceAppService;
@@ -38,12 +45,14 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
         private readonly ITradePartnerAppService _tradePartnerAppService;
         private readonly IPortAppService _portAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
+        private readonly ICurrencySettingAppService _currencySettingAppService;
         public GACreateModel(ITradePartnerAppService tradePartnerAppService,
                             ISubstationAppService substationAppService,
                             IInvoiceAppService invoiceAppService,
                             IInvoiceBillAppService invoiceBillAppService,
                             IPortAppService portAppService,
-                            ISysCodeAppService sysCodeAppService
+                            ISysCodeAppService sysCodeAppService,
+                            ICurrencySettingAppService currencySettingAppService
                             )
         {
             _invoiceAppService = invoiceAppService;
@@ -52,14 +61,15 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
             _tradePartnerAppService = tradePartnerAppService;
             _portAppService = portAppService;
             _sysCodeAppService = sysCodeAppService;
+            _currencySettingAppService = currencySettingAppService;
         }
         public async Task OnGetAsync()
         {
             InvoiceBasicDto = new InvoiceBasicDto();
 
-            if (InvoiceId != null)
+            if (InvoiceId != Guid.Empty || Id != null)
             {
-                var invoice = await _invoiceAppService.GetAsync(InvoiceId.Value);
+                var invoice = await _invoiceAppService.GetAsync(InvoiceId);
                 InvoiceDto = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
             }
 
@@ -88,36 +98,72 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
                     InvoiceBasicDto.VesselNameVoyage = InvoiceBasicDto.VesselNameVoyage + InvoiceMblDto.Voyage;
                 }
             }
+
+            await FillCurrencySettingsDictionary();
         }
-        
+
         public async Task<JsonResult> OnPostAsync()
         {
-            
-            if (InvoiceDto.InvoiceNo == null)
+            if (InvoiceDto.Id == Guid.Empty)
             {
                 if (InvoiceType == 3)
                 {
+                    if (InvoiceDto.InvoiceNo == null)
+                    {
+                        Random rnd = new Random(Guid.NewGuid().GetHashCode());
+                        int ai = rnd.Next(20230000);
+                        var s = ai.ToString("00000000");
+                        InvoiceDto.InvoiceNo = "AP" + s;
+                    }
                     InvoiceDto.InvoiceType = InvoiceType;
-                    InvoiceDto.InvoiceNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "In_InvoiceNo" });
                 }
                 else {
+                    if (InvoiceDto.InvoiceNo == null)
+                    {
+                        Random rnd = new Random(Guid.NewGuid().GetHashCode());
+                        int ai = rnd.Next(20230000);
+                        var s = ai.ToString("00000000");
+                        InvoiceDto.InvoiceNo = s;
+                    }
                     InvoiceDto.InvoiceType = 4;
-                    InvoiceDto.InvoiceNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "OUT_InvoiceNo" });
                 }
+                var invoice = await _invoiceAppService.CreateAsync(InvoiceDto);
+                InvoiceDto.Id = invoice.Id;
+            } else if (InvoiceDto.Id != Guid.Empty)
+            {
+                await _invoiceAppService.UpdateAsync(InvoiceDto.Id, InvoiceDto);
             }
-            var invoice = await _invoiceAppService.CreateAsync(InvoiceDto);
-            InvoiceDto.Id = invoice.Id;
+
             if (InvoiceBillDtos != null && InvoiceBillDtos.Count > 0)
             {
                 foreach (var dto in InvoiceBillDtos)
                 {
-                    dto.InvoiceId = invoice.Id;
-                    await _invoiceBillAppService.CreateAsync(dto);
+                    dto.InvoiceId = InvoiceDto.Id;
+                    if (dto.Id != Guid.Empty)
+                    {
+                        await _invoiceBillAppService.UpdateAsync(dto.Id, dto);
+                    } else
+                    {
+                        await _invoiceBillAppService.CreateAsync(dto);
+                    }
                 }
             }
             Dictionary<string, object> rs = new Dictionary<string, object>();
             rs.Add("a1", "ejo");
             return new JsonResult(rs);
+        }
+
+        public async Task FillCurrencySettingsDictionary()
+        {
+            var currencySettings = await _currencySettingAppService.GetCurrenciesAsync();
+
+            DictCurrencyConversion = new Dictionary<string, float>();
+            foreach (var currencySetting in currencySettings)
+            {
+                DictCurrencyConversion.Add($"{currencySetting.StartingCurrency}-{currencySetting.EndCurrency}", currencySetting.ExChangeRate);
+            }
+
+            CurrencyConversionJSON = JsonConvert.SerializeObject(DictCurrencyConversion);
         }
     }
 }

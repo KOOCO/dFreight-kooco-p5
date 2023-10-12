@@ -15,8 +15,8 @@
     <style>
         #ejo .btn-primary {
             color: #fff;
-            background-color: rgb(0 123 255 / 52%);
-            border-color: #007bff;
+            background-color: rgb(25 28 32 / 52%);
+            border-color: #000000;
         }
         .redStar::before {
             content: "* ";
@@ -100,17 +100,17 @@
               <input type="checkbox" name="chk_mawbOtherCharges" id="chk_mawbOtherCharges_${chkIndex}" />
           </td>
           
-           <td> <select  name="AirExportMawbDto.OtherCharges[${chkIndex}].CarrierAgent" id="desc_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
+           <td> <select style="font-size: 0.8rem!important;"  name="AirExportMawbDto.OtherCharges[${chkIndex}].CarrierAgent" id="desc_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
         <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
         <option value="Carrier" {{if "Carrier" === CarrierAgent}}selected{{/if}}  > Carrier</option>
          <option value="Agent" {{if "Agent" === CarrierAgent}}selected{{/if}} > Agent</option>
         </select></td>
-          <td> <select  name="AirExportMawbDto.OtherCharges[${chkIndex}].CollectPaid" id="htscode_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
+          <td> <select  style="font-size: 0.8rem!important;" name="AirExportMawbDto.OtherCharges[${chkIndex}].CollectPaid" id="htscode_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
         <option value="" > @L["Display:Dropdownlist:Option:Select"]</option>
         <option value="Collect" {{if "Collect" === CollectPaid}}selected{{/if}} > Collect</option>
          <option value="Prepaid" {{if "Prepaid" === CollectPaid}}selected{{/if}} >Prepaid</option>
         </select></td>
-         <td> <select name="AirExportMawbDto.OtherCharges[${chkIndex}].ChargeItem"  class="filteredDropdown form-select form-control cursor-pointer ">
+         <td> <select style="font-size: 0.8rem!important;" name="AirExportMawbDto.OtherCharges[${chkIndex}].ChargeItem"  class="filteredDropdown form-select form-control cursor-pointer ">
         <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
       {{each chargeItems}}
          <option value="${$value.value}" {{if $value.value === ChargeItem}}selected{{/if}}>${$value.text}</option>
@@ -1189,7 +1189,7 @@
                                 <abp-column size-md="_3">
                                     <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapseRoute" role="button" aria-expanded="false" aria-controls="collapseRoute" style="margin-top:2em;">
                                         <i class="fa fa-plane" aria-hidden="true"></i>
-                                        Add Connecting Flight
+                                        @L["AddConnectingFlight"]
                                     </a>
                                 </abp-column>
                             </abp-row>
@@ -1286,7 +1286,7 @@
                                                 <tr>
                                                     <th>Trans2</th>
                                                    <td>
-                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans2Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans1Id) })
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans2Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans2Id) })
                                                     </td>
                                                     <td>
                                                         <input asp-for="@Model.AirExportMawbDto.RouteTrans2ArrivalDate" abp-data-datepicker="false" size="Small" />
@@ -1304,7 +1304,7 @@
                                                 <tr>
                                                     <th>Trans3</th>
                                                    <td>
-                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans3Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans1Id) })
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans3Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans3Id) })
                                                     </td>
                                                     <td>
                                                         <input asp-for="@Model.AirExportMawbDto.RouteTrans3ArrivalDate" abp-data-datepicker="false" size="Small" />
@@ -1375,10 +1375,10 @@
                                                     </tr>
                                                     <tr>
                                                         <th class="packageTable">@L["VolumeWeight"]</th>
-                                                        <td><input asp-for="@Model.AirExportMawbDto.VolumeWeightKg" class="form-control" /></td>
+                                                <td><input asp-for="@Model.AirExportMawbDto.VolumeWeightKg" class="form-control" onkeyup="AirExportMawb.KgToCbmConversion(event, 'KG')" /></td>
                                                         <td>@L["KG"]</td>
                                                         <td>
-                                                            <input asp-for="@Model.AirExportMawbDto.VolumeWeightCbm" class="form-control" />
+                                                            <input asp-for="@Model.AirExportMawbDto.VolumeWeightCbm" class="form-control" onkeyup="AirExportMawb.KgToCbmConversion(event, 'CBM')" />
                                                         </td>
                                                         <td>@L["CBM"]</td>
                                                     </tr>
@@ -1402,8 +1402,8 @@
                                                 <tbody>
                                                     <tr>
                                                         <th class="packageTable">@L["GrossWeightKG"]</th>
-                                                        <td><input asp-for="@Model.AirExportMawbDto.GrossWeightKg" class="form-control" id="GrossWeightKg" /></td>
-                                                        <td><input asp-for="@Model.AirExportMawbDto.GrossWeightLb" class="form-control" id="GrossWeightLb" /></td>
+                                                        <td><input asp-for="@Model.AirExportMawbDto.GrossWeightKg" class="form-control" onkeyup="AirExportMawb.GrossWeightConversion(event, 'KG')" id="GrossWeightKg" /></td>
+                                                        <td><input asp-for="@Model.AirExportMawbDto.GrossWeightLb" class="form-control" onkeyup="AirExportMawb.GrossWeightConversion(event, 'LB')" id="GrossWeightLb" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.GrossWeightAmount" class="form-control" /></td>
                                                     </tr>
                                                     <tr>
@@ -1554,8 +1554,10 @@
                                 <abp-column>
                                     <abp-card-header style="background:#cccccc;color:#FFFFFF;">
                                         @L["More"]
+                                                 <button type="button" id="btnMoreInfoCollapse" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#moreInfoDiv" aria-expanded="true" aria-controls="moreInfoDiv">
+                            </button>
                                     </abp-card-header>
-                                    <abp-card>
+                                    <abp-card class="collapse show customForm" id="moreInfoDiv">
                                         <abp-card-body>
                                             <div class="table-responsive">
                                                 <abp-table class="nowrap">
@@ -1658,17 +1660,20 @@
                                             <abp-row class="mt-4">
                                                 <abp-column size-md="_6">
                                                     <h3>@L["Mark"]</h3>
-                                                    <abp-input asp-for="@Model.AirExportHawbDto.Mark" />
+                                                     <textarea  id="AirExportMawbDto_Mark" name="AirExportMawbDto.Mark" class="form-control">@Model.AirExportMawbDto.Mark</textarea>
+                                                  @*   <abp-input asp-for="@Model.AirExportHawbDto.Mark" /> *@
                                                 </abp-column>
                                                 <abp-column size-md="_6">
                                                     <h3>@L["NatureAndQuantityOfGoods"]</h3>
-                                                    <abp-input asp-for="@Model.AirExportHawbDto.NatureAndQuantityOfGoods" />
+                                                      <textarea  id="AirExportMawbDto_NatureAndQuantityOfGoods" name="AirExportMawbDto.NatureAndQuantityOfGoods" class="form-control">@Model.AirExportMawbDto.NatureAndQuantityOfGoods</textarea>
+                                                   @*  <abp-input asp-for="@Model.AirExportHawbDto.NatureAndQuantityOfGoods" /> *@
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column size-md="_12">
                                                     <h3>@L["HandlingInformation"]</h3>
-                                                    <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation" />
+                                                      <textarea  id="AirExportMawbDto_HandlingInformation" name="AirExportMawbDto.HandlingInformation" class="form-control">@Model.AirExportMawbDto.HandlingInformation</textarea>
+                                                    @* <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation" /> *@
                                                 </abp-column>
                                             </abp-row>
                                         </abp-card-body>
@@ -1710,7 +1715,12 @@
             <abp-row class="mt-3" id="ejo">
                 <abp-column>
                     <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
-                         <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Save"]</abp-button>
+                        @*  <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Save"]</abp-button> *@
+                           <button class="btn btn-primary me-md-2 rounded-circle" type="submit" id="saveBtn" style="width: 60px; height: 60px;">
+  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-save fa-w-14 fa-2x">
+    <path fill="currentColor" d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM224 416c-35.346 0-64-28.654-64-64 0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64zm96-304.52V212c0 6.627-5.373 12-12 12H76c-6.627 0-12-5.373-12-12V108c0-6.627 5.373-12 12-12h228.52c3.183 0 6.235 1.264 8.485 3.515l3.48 3.48A11.996 11.996 0 0 1 320 111.48z"></path>
+  </svg>
+</button>
                     </div>
                 </abp-column>
             </abp-row>
