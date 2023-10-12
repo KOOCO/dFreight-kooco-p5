@@ -35,11 +35,22 @@
         invoiceNo: $("#InvoiceNo").val(),
                 };
             };
-        var columns=[    {
-                            className: 'dtr-control',
-                            orderable: false,
-                            "defaultContent": ""
-                        },
+        var columns=[    
+            //{
+            //                className: 'dtr-control',
+            //                orderable: false,
+            //                "defaultContent": ""
+            //            },
+                {
+                    title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="GAListJS.selectAllCheckbox(this)" style=" cursor: pointer;">',
+                    data: null,
+                    orderable: false,
+                    render: function (data, type, row) {
+                        var id = row.id;
+                        $('#selectAllCheckbox').prop('checked', false);
+                        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="GAListJS.selectCheckbox(this)" style=" cursor: pointer;">';
+                    }
+                },
                         {
                             title: l('Actions'),
                             rowAction: {

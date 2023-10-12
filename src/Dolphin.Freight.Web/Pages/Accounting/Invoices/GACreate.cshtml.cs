@@ -131,6 +131,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting.Invoices
                 InvoiceDto.Id = invoice.Id;
             } else if (InvoiceDto.Id != Guid.Empty)
             {
+                InvoiceDto.InvoiceType = InvoiceType;
                 await _invoiceAppService.UpdateAsync(InvoiceDto.Id, InvoiceDto);
             }
 
