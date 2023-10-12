@@ -34,11 +34,18 @@
         invoiceNo: $("#InvoiceNo").val(),
                 };
             };
-            var columns=[ {
-                            className: 'dtr-control',
-                            orderable: false,
-                            "defaultContent": ""
-                        },
+            var columns=[{
+        title: '<input type="checkbox" id="selectAllCheckbox" onclick="Invoice.selectAllCheckbox(this)" style=" cursor: pointer;">',
+        data: null,
+        orderable: false,
+        "render": function (data, type, row) {
+
+            var id = row.id;
+            // var filingNo = row.filingNo;
+
+            return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" " onclick="Invoice.selectCheckbox(this)" style=" cursor: pointer;">';
+        }
+    },
                         {
                             title: l('Actions'),
                             rowAction: {
@@ -125,11 +132,11 @@
                                             default:
                                                 return "";
                                             case 0:
-                                                return "應收";
+                                                return l('A/R');
                                             case 1:
-                                                return "應收/應付";
+                                                return l('A/P');
                                             case 2:
-                                                return "應付";
+                                                return l('Debit');
 
                                         }
                                     }
@@ -198,7 +205,67 @@
     });
             });
         });
-
+        var Invoice = {
+    selectAllCheckbox: function(element){
+        var isChecked = $(element).prop('checked');
+        $('#ListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+        
+        if (isChecked) {
+            $('#btnDelete').prop('disabled', false);
+            $('#detailedId').prop('disabled', false);
+        
+        
+        } else {
+            $('#btnDelete').prop('disabled', true);
+            $('#detailedId').prop('disabled', true);
+        }
+    },
+    selectCheckbox: function (checkbox) {
+        var checkedCheckboxes = $('.selectCheckbox:checked');
+        if (checkbox.checked) {
+            $('#summaryId').prop('disabled', false);
+            $('#btnDelete').prop('disabled', false);
+        
+            if (checkedCheckboxes.length == 1) {
+                $('#copyId').prop('disabled', false);
+            }
+            else {
+                $('#copyId').prop('disabled', true);
+            }
+            var isAnyLocked = false;
+            var isAnyUnlocked = false
+           
+        } else {
+            $('#summaryId').prop('disabled', true);
+            $('#btnDelete').prop('disabled', true);
+            var checkedCheckboxes = $('.selectCheckbox:checked');
+            if (checkedCheckboxes.length == 1) {
+                $('#copyId').prop('disabled', false);
+            }
+            else {
+                $('#copyId').prop('disabled', true);
+            }
+         
+        }
+        if (!$(checkbox).prop('checked')) {
+            $('#selectAllCheckbox').prop('checked', false);
+        } else {
+            var allChecked = true;
+            $('#ListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
+                if (!$(this).prop('checked')) {
+                    allChecked = false;
+                    return false;
+                }
+            });
+            $('#selectAllCheckbox').prop('checked', allChecked);
+        }
+    },
+   
+    
+    createNew: function () {
+        window.location.href = '/AirExports/CreateMawb';
+    }
+}
     </script>
 }
 <div class="page-header">
@@ -215,10 +282,22 @@
         <abp-card-header>
            
         <abp-row class="w-100">
-                <abp-column size-md="_6">
-                   <abp-card-title>@L["Menu:Invoice.List"]</abp-card-title>
-                </abp-column>
-                <abp-column size-md="_6" class="text-end p-0">
+                <abp-column style="display: flex;" size-md="_8">
+    <abp-card-title style="margin-right: 5px;">@L["Menu:Invoice.List"]</abp-card-title>
+<ul style="margin-top: -5px;" class="porlet-title-list">
+                    <li class="title ng-binding">Total:</li>
+                    <li>
+                        <strong class="ng-binding">Invoice Amount:</strong><span class="font-blue ng-binding">0</span>
+                    </li>
+                    <li>
+                        <strong class="ng-binding">Paid Amount:</strong><span class="font-blue ng-binding">0</span>
+                    </li>
+                    <li>
+                        <strong class="ng-binding">Balance:</strong><span ng-class="{'text-success':vm.invoice_total_balance>=0, 'text-danger':vm.invoice_total_balance<0}" class="ng-binding text-success" style="">0</span>
+                    </li>
+                </ul>
+</abp-column>
+                <abp-column size-md="_4" class="text-end p-0">
                     <abp-button id="FilterGlCodeButton"
                             text="@L["Filter"].Value"
                             icon="filter"
@@ -323,6 +402,14 @@
             </abp-row>
             </abp-card-body>
     <abp-card-body>
+          <div class="portlet-tool">
+                <div class="btn-group" role="group" aria-label="Basic outlined example" >
+                  <button type="button" id="newBtn" class="btn btn-outline-secondary" disabled >@L["Batchupdateinvoices"]</button>
+                    <button type="button" id="copyId" class="btn btn-outline-secondary" onclick="" disabled><i class="fa fa-files-o me-0"></i></button>
+                    <button type="button" class="btn btn-outline-secondary" style="cursor: no-drop;" id="btnDelete" disabled><i class="fa fa-trash me-0"></i></button>
+                </div>
+               
+            </div>
             <abp-table striped-rows="true" id="ListTable" style="width:2000px;" class="nowrap"></abp-table>
     </abp-card-body>
 </abp-card>

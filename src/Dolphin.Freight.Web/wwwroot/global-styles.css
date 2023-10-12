@@ -903,3 +903,16 @@ switch-success {
     font-weight: 600;
     color: #444;
 }
+ul.porlet-title-list {
+    padding: 0px;
+    margin: 0px;
+    list-style: none;
+    display: inline-block;
+    margin-left: 10px;
+}
+    ul.porlet-title-list li {
+        display: inline-block;
+        border-right: 1px dotted rgba(0, 0, 0, 0.3);
+        font-size: 13px;
+        padding: 0px 5px;
+    }

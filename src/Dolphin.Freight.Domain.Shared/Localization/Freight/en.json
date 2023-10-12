@@ -78,7 +78,7 @@
     "Menu:OceanExports": "Ocean Export",
     "Menu:OceanExports.CreateMbl": "Add a Shipment",
     "Menu:Invoice": "Invoice",
-    "Menu:Invoice.List": "Invoice List",
+    "Menu:Invoice.List": "Invoice / Cost List",
     "Menu:Invoice.GAList": "G&A Invoice List",
     "Menu:Invoice.GARCreate": "Create G&A Invoice",
     "Menu:Invoice.GAPCreate": "Create G&A Expense",
@@ -1572,8 +1572,11 @@
     "CargoDetails": "Cargo Details",
     "GrossWeight(SHPR)": "GrossWeight (SHPR)",
     "BookingRemarks": "Booking Remarks",
-    "Pickup/DeliveryInstruction": "Pickup / Delivery Instruction"
-
+    "Pickup/DeliveryInstruction": "Pickup / Delivery Instruction",
+    "Batchupdateinvoices": "Batch update invoices",
+    "A/R": "A/R",
+    "A/P": "A/P",
+    "Debit": "Debit"
 
 
   }
