@@ -20,7 +20,6 @@
 
            
             var queryAction = function (){
-                debugger;
                 var parm;
                 var typeId=$("#TypeId").val();
                 if (typeId == "0") { parm = 0; }
@@ -146,10 +145,9 @@
                                             case 0:
                                                 return l('A/R');
                                             case 1:
-                                                return l('A/P');
-                                            case 2:
                                                 return l('Debit');
-
+                                            case 2:
+                                                return l('A/P');
                                         }
                                     }
                                 }
