@@ -77,7 +77,7 @@ namespace Dolphin.Freight.Accounting.Payment
             list=list.WhereIf(!string.IsNullOrWhiteSpace(query.RefNo), x => x.CheckNo == query.RefNo)
                     .WhereIf(!string.IsNullOrWhiteSpace(query.Bank), x => x.Bank == query.Bank)
                     .WhereIf(query.PostDate.HasValue, e => e.ReleaseDate == query.PostDate.Value.Date.AddDays(1))
-                    .WhereIf(query.ClearDate.HasValue, e => e.Clear == query.ClearDate.Value.Date.AddDays(1))
+                    .WhereIf(query.ClearDate.HasValue  , e =>  e.Clear?.Month == query.ClearDate.Value.Month && e.Clear?.Year==query.ClearDate.Value.Year)
                     .WhereIf(query.VoidDate.HasValue, e => e.Invalid == query.VoidDate.Value.Date.AddDays(1))
                     .WhereIf(query.PaidTo.HasValue,e=>e.PaidTo==query.PaidTo)
                     .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)

@@ -916,3 +916,6 @@ ul.porlet-title-list {
         font-size: 13px;
         padding: 0px 5px;
     }
+.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-top {
+    z-index: 1000 !important;
+}
