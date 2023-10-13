@@ -27,7 +27,12 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public Guid? CyLocationId { get; set; }
         public DateTime? PostDate { get; set; }
         public Guid? SaleId { get; set; }
-   
+        public Guid? BlTypeId { get; set; }
+        public Guid? SvcTermFrom { get; set; }
+        public Guid? SvcTermTo { get; set; }
+        public Guid? OpId { get; set; }
+        public bool? Block { get; set; }
         public DateTime? CreationDate { get; set; }
+        public DateTime? ReleaseDate { get; set; }
     }
 }
