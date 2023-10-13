@@ -11,10 +11,12 @@ using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.HSSF.Record.Chart;
 using NPOI.POIFS.Crypt.Dsig.Facets;
 using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +26,7 @@ using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
+using Container = Dolphin.Freight.ImportExport.Containers.Container;
 
 namespace Dolphin.Freight.ImportExport.OceanImports
 {
@@ -310,6 +313,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     var colorValue = sysCodes.Where(w => w.Id == item.CardColorId).FirstOrDefault();
                     item.CardColorValue = colorValue.CodeValue;
                 }
+
+                List<CreateUpdateContainerDto> containers = await _containerAppService.GetContainerListByHblId(item.Id);
+                item.ContainerIds = containers.Select(s => s.Id.ToString()).ToArray();
             }
             return retVal;
         }
@@ -596,6 +602,36 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                         }
                     }
                 }
+            }
+        }
+
+        public async Task SaveAssignContainerNoToHblAsync(OceanImportHblAppModel AppModel)
+        {
+            var MblId = AppModel.MblId;
+            var HblId = AppModel.HblId;
+            var containers = await _containerRepository.GetQueryableAsync();
+            var containerList = containers.Where(w => w.MblId == MblId).ToList();
+
+            foreach (var container in containerList)
+            {
+                container.HblId = HblId;
+                var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
+                await _containerAppService.UpdateAsync(container.Id, dto);
+            }
+        }
+
+        public async Task SaveDeAssignContainerNoFromHblAsync(OceanImportHblAppModel AppModel)
+        {
+            var MblId = AppModel.MblId;
+            var HblId = AppModel.HblId;
+            var containers = await _containerRepository.GetQueryableAsync();
+            var containerList = containers.Where(w => w.MblId == MblId).ToList();
+
+            foreach (var container in containerList)
+            {
+                container.HblId = Guid.Empty;
+                var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
+                await _containerAppService.UpdateAsync(container.Id, dto);
             }
         }
     }

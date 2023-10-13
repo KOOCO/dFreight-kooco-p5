@@ -62,6 +62,17 @@
                         }
                         addPackageUnitNameddl();
                     });
+                    var hblId = $('#OceanExportHbl_Id').val();
+                    dolphin.freight.importExport.containers.container.getContainerListByHblId(hblId).done(function (result) {
+                        if (result != null && result.length > 0) {
+                            for (var i = 0; i < result.length; i++) {
+                                var containerNo = result[i].containerNo;
+                                var containerId = result[i].id;
+                                var hblid = result[i].hblId;
+                                EditModelOEContainer.AddHblContainerTr(containerNo, containerId, hblid);
+                            }
+                        }
+                    });
                 }
             });
             var IsShowHbl = '@Model.IsShowHbl';
@@ -413,15 +424,15 @@
 
             trindex = newIndex;
         }
-
+        var checkboxIndex = 0;
         function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, mblId) {
-            EditModelOEContainer.getHblCheckbox(mblId, trindex, function (checkboxesHTML, headersHTML) {
+            EditModelOEContainer.getHblCheckbox(mblId, checkboxIndex, function (checkboxesHTML, headersHTML) {
                 if (!$('input[id^="hblHeaders_"]').length) {
                     $('#trttable > tbody > tr:first > th:eq(11)').after(headersHTML);
                 }
 
                 var serialNo = trindex + 1;
-                var trhtml = "<tr id='tr_" + trindex + "'><td style='text-align: center;'><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "' /></td>"
+                var trhtml = "<tr class='tr' id='tr_" + trindex + "'><td style='text-align: center;'><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "' data-id='" + value9 + "' /></td>"
                 trhtml = trhtml + "<td style='text-align: center;'>" + serialNo + "</td>"
                 trhtml = trhtml + `<td>${value7 === true ? '√' : ''}</td>`;
                 trhtml = trhtml + `<td>${value8 === true ? '√' : ''}</td>`;
@@ -454,6 +465,7 @@
                 countTotal('MBL', 'KG');
                 countTotalVolume('MBL', 'CBM');
             });
+            checkboxIndex++;
         }
         function getcontainerSizeSelect(index, selectedId) {
             var selectHtml = "<select name='CreateUpdateContainerDtos[" + index + "].ContainerSizeId' class='form-control' >";
@@ -1105,14 +1117,14 @@
                     <td></td>
                 </tr>
                 <tbody id="htrtbody">
-                    <tr>
+                    @*<tr>
                         <td style="align-items:center"><input type="radio" name="SurplusType" /></td>
                         <td><input asp-for="@Model.OceanExportHbl.PackageNo" type="text" class="form-control" value="@Model.OceanExportHbl.PackageNo" readonly /></td>
                         <td><input type="text" class="form-control" id="oceanImportHbl_PackageType" onkeyup="countPackageType('HBL')" value="" /></td>
                         <td><input asp-for="@Model.OceanExportHbl.PackageWeight" type="text" class="form-control" onkeyup="countTotal('HBL')" value="@Model.OceanExportHbl.PackageWeight" /></td>
                         <td><input asp-for="@Model.OceanExportHbl.PackageMeasurement" type="text" class="form-control" onkeyup="countTotalVolume('HBL')" value="@Model.OceanExportHbl.PackageMeasurement" /></td>
                         <td></td>
-                    </tr>
+                    </tr>*@
                 </tbody>
                 <tfoot>
                     <tr>
