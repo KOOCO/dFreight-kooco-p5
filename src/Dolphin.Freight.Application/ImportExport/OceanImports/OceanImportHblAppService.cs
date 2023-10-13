@@ -605,25 +605,30 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         {
             var MblId = AppModel.MblId;
             var HblId = AppModel.HblId;
-            var test = await _containerRepository.GetQueryableAsync();
-            var test1 = test.Where(w => w.MblId == MblId);
-            var test2 = await AsyncExecuter.ToListAsync(test1);
-            
-            //var cs = await _containerAppService.QueryListAsync(new QueryContainerDto());
-            //var filtered = cs.Where(w => w.MblId ==  MblId).ToList();
-            //var containers = ObjectMapper.Map<List<ContainerDto>, List<Container>>(filtered);
+            var containers = await _containerRepository.GetQueryableAsync();
+            var containerList = containers.Where(w => w.MblId == MblId).ToList();
 
-            //var containers = await _containerAppService.GetContainerByMblId(MblId);
-
-            //var filtered = containers.Where(w => w.MblId == MblId).ToList();
-
-            foreach (var container in test2)
+            foreach (var container in containerList)
             {
                 container.HblId = HblId;
                 var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
                 await _containerAppService.UpdateAsync(container.Id, dto);
             }
-            
+        }
+
+        public async Task SaveDeAssignContainerNoFromHblAsync(OceanImportHblAppModel AppModel)
+        {
+            var MblId = AppModel.MblId;
+            var HblId = AppModel.HblId;
+            var containers = await _containerRepository.GetQueryableAsync();
+            var containerList = containers.Where(w => w.MblId == MblId).ToList();
+
+            foreach (var container in containerList)
+            {
+                container.HblId = Guid.Empty;
+                var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
+                await _containerAppService.UpdateAsync(container.Id, dto);
+            }
         }
     }
 }

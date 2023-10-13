@@ -135,6 +135,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
                 {
                     CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
                     {
+                        ContainerNo = item.ContainerNo,
                         PackageNum = item.PackageNo,
                         PackageWeight = item.PackageWeight,
                         PackageMeasure = item.PackageMeasurement,

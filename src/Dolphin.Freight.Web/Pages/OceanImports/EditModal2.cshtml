@@ -47,11 +47,10 @@
                     dolphin.freight.importExport.containers.container.getContainerListByHblId(hblId).done(function (result) {
                         if (result != null && result.length > 0){
                             for (var i = 0; i < result.length; i++){
-                                var packageNum = result[i].packageNum;
+                                var containerNo = result[i].containerNo;
                                 var containerId = result[i].id;
                                 var hblid = result[i].hblId;
-                                debugger;
-                                EditModel2.AddHblContainerTr(packageNum, containerId, hblid);
+                                EditModel2.AddHblContainerTr(containerNo, containerId, hblid);
                             }
                         }
                     });

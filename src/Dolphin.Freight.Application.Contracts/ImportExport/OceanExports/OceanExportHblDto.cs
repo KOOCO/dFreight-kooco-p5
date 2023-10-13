@@ -36,6 +36,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 
         /// </summary>
         public string MblCarrierName { get; set; }
+        public string[] ContainerIds { get; set; }
         /// <summary>
         /// 
         /// </summary>

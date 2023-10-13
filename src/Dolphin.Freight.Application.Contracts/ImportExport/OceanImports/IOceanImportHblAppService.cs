@@ -27,5 +27,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         Task SetLockOrUnlockStatusOceanImportHblAsync(Guid[] Ids, bool IsLock);
         Task SaveAssignContainerToHblAsync(OceanImportHblAppModel AppModel);
         Task SaveAssignContainerNoToHblAsync(OceanImportHblAppModel AppModel);
+        Task SaveDeAssignContainerNoFromHblAsync(OceanImportHblAppModel AppModel);
     }
 }
