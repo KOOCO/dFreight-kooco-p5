@@ -565,36 +565,32 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public async Task SaveAssignContainerToHblAsync(OceanImportHblAppModel AppModel)
         {
             var Ids = AppModel.Ids;
-            var Containers = AppModel.Containers;
-            var ContainerId = AppModel.ContainerId;
+            var ContainerNo = AppModel.ContainerNo;
+            var ContainerId = AppModel.Containersid;
+            var MblId = AppModel.MblId;
 
             foreach (var Id in Ids)
             {
-                foreach (var Container in Containers)
-                {
-                    QueryHblDto queryHblDto = new QueryHblDto() { Id = Id };
-                    var OceanImportHbl = await this.GetHblById(queryHblDto);
+                QueryHblDto queryHblDto = new QueryHblDto() { Id = Id };
+                var OceanImportHbl = await this.GetHblById(queryHblDto);
 
-                    if (OceanImportHbl.Id != Guid.Empty)
+                if (OceanImportHbl.Id != Guid.Empty)
+                {
+                    var containers = await _containerRepository.GetQueryableAsync();
+                    var containerList = containers.Where(w => w.MblId == MblId && w.Id == Guid.Parse(ContainerId)).ToList();
+                    if (containerList.Count > 0)
                     {
-                        foreach (var containerId in ContainerId)
+                        foreach (var container in containerList)
                         {
-                            if (containerId != Guid.Empty)
+                            if (container.HblId == Guid.Empty)
                             {
-                                CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
-                                {
-                                    Id = containerId,
-                                    HblId = Id,
-                                    PackageNum = Convert.ToInt32(Container)
-                                };
-                                await _containerAppService.UpdateAsync(containerId, containerDto);
-                            }
-                            else
-                            {
+                                container.HblId = Id;
+                                await _containerAppService.UpdateAsync(container.Id, ObjectMapper.Map<Container, CreateUpdateContainerDto>(container));
+                            } else {
                                 CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
                                 {
                                     HblId = Id,
-                                    PackageNum = Convert.ToInt32(Container)
+                                    ContainerNo = ContainerNo
                                 };
 
                                 await _containerAppService.CreateAsync(containerDto);
@@ -615,6 +611,28 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             foreach (var container in containerList)
             {
                 container.HblId = HblId;
+                var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
+                await _containerAppService.UpdateAsync(container.Id, dto);
+            }
+        }
+
+        public async Task SaveAssignSingleContainerNoToHblAsync(OceanImportHblAppModel AppModel, bool IsSave = true)
+        {
+            var MblId = AppModel.MblId;
+            var HblId = AppModel.HblId;
+            var ContainerId = AppModel.Containersid;
+            var containers = await _containerRepository.GetQueryableAsync();
+            var containerList = containers.Where(w => w.MblId == MblId && w.Id == Guid.Parse(ContainerId)).ToList();
+
+            foreach (var container in containerList)
+            {
+                if (IsSave)
+                {
+                    container.HblId = HblId;
+                } else
+                {
+                    container.HblId = Guid.Empty;
+                }
                 var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
                 await _containerAppService.UpdateAsync(container.Id, dto);
             }

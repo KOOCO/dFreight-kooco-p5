@@ -14,4 +14,6 @@ public class OceanImportHblAppModel
     public List<Guid> ContainerIds { get; set; }
     public List<int> ContainerNos { get; set; }
     public string Containersid { get; set; }
+
+    public string ContainerNo { get; set; }
 }
