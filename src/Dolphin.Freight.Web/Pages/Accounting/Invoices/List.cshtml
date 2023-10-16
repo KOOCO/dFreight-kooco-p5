@@ -14,16 +14,25 @@
     <script type="text/javascript">
         var cardIndex = 0;
         var dataTable;
+         var l = abp.localization.getResource('Freight');
+
         $(document).ready(function () {
 
-            var l = abp.localization.getResource('Freight');
+           
             var queryAction = function (){
+                var parm;
+                var typeId=$("#TypeId").val();
+                if (typeId == "0") { parm = 0; }
+                if (typeId == "1") {parm = 1; }
+                if (typeId == "2") { parm = 2; }
+
                 return {
+                     
                         QueryInvoiceType: 1,
                          search: $("#Keyword").val(),
-       
+       typeId:parm,
         officeId: $("#VesselSchedule_OfficeId").val() == '' ? null : $("#VesselSchedule_OfficeId").val(),
-        invoiceType:$("#TypeId").val() == '' ? null :parseInt($("#TypeId").val()),
+       
         postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
          invoiceDate: $("#InvoiceDate").val() == '' || $("#InvoiceDate").val() == null? null : new Date($("#InvoiceDate").val()),
         dueDate: $("#DueDate").val() == '' || $("#DueDate").val() == null ? null : new Date($("#DueDate").val()),
@@ -58,7 +67,9 @@
                                                 if (data.record.isLocked) {
 
                                                 }
-                                                location.href = 'EditModal?Id=' + data.record.id;
+                                                 var hid = data.record.hblId;
+                                        if (hid == null || hid == "null") hid = "";
+                                                location.href = '/Accounting/Invoice?MethodType=7&InvoiceType=' + data.record.invoiceType + '&Mid=' + data.record.mblId + '&Hid=' + hid + '&InvoiceId=' + data.record.id;
 
                                             }
                                         },
@@ -120,7 +131,7 @@
                                     render: function (data, type, row) {
                                         var hid = row.hblId;
                                         if (hid == null || hid == "null") hid = "";
-                                        return '<a href="/Accounting/Invoice?MethodType=2&InvoiceType=' + row.invoiceType + '&Mid=' + row.mblId + '&Hid=' + hid + '&InvoiceId=' + row.id + '" >' + row.invoiceNo + '</a> ';
+                                        return '<a href="/Accounting/Invoice?MethodType=7&InvoiceType=' + row.invoiceType + '&Mid=' + row.mblId + '&Hid=' + hid + '&InvoiceId=' + row.id + '" >' + row.invoiceNo + '</a> ';
                                     }
                                 }
                             }
@@ -134,10 +145,9 @@
                                             case 0:
                                                 return l('A/R');
                                             case 1:
-                                                return l('A/P');
-                                            case 2:
                                                 return l('Debit');
-
+                                            case 2:
+                                                return l('A/P');
                                         }
                                     }
                                 }
@@ -193,7 +203,7 @@
         // $("#VesselSchedule_OfficeId").val(null);
         $("select[name='VesselSchedule_OfficeId']").val(null);
         
-        $("#Type").val(null).trigger("change");
+        $("#TypeId").val(null).trigger("change");
         $("#PostDate").val(null);
         $("#ETA").val(null);
         $("#ETD").val(null);
@@ -224,7 +234,11 @@
         var checkedCheckboxes = $('.selectCheckbox:checked');
         if (checkbox.checked) {
             $('#summaryId').prop('disabled', false);
-            $('#btnDelete').prop('disabled', false);
+              if (checkedCheckboxes.length > 0) {
+        $('#btnDelete').prop('disabled', false);
+    } else {
+        $('#btnDelete').prop('disabled', true);
+    }
         
             if (checkedCheckboxes.length == 1) {
                 $('#copyId').prop('disabled', false);
@@ -232,12 +246,15 @@
             else {
                 $('#copyId').prop('disabled', true);
             }
-            var isAnyLocked = false;
-            var isAnyUnlocked = false
+           
            
         } else {
             $('#summaryId').prop('disabled', true);
-            $('#btnDelete').prop('disabled', true);
+             if (checkedCheckboxes.length > 0) {
+        $('#btnDelete').prop('disabled', false);
+    } else {
+        $('#btnDelete').prop('disabled', true);
+    }
             var checkedCheckboxes = $('.selectCheckbox:checked');
             if (checkedCheckboxes.length == 1) {
                 $('#copyId').prop('disabled', false);
@@ -260,12 +277,44 @@
             $('#selectAllCheckbox').prop('checked', allChecked);
         }
     },
-   
+    
     
     createNew: function () {
         window.location.href = '/AirExports/CreateMawb';
     }
 }
+ function deleteInvoices() {
+            var ids = [];
+            var selectedCheckboxes = $('#ListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+            for (var i = 0; i < selectedCheckboxes.length; i++) {
+                var id = selectedCheckboxes[i].attributes[2].value;
+                ids.push(id);
+
+                abp.message.confirm(l('DeleteConfirmationMessage')).then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.accounting.invoices.invoice.deleteMultipleInvoicesByIds(ids).done(function () 
+                        {
+                            abp.message.success(l('Message:SuccessDelete')).then(function () {
+                                dataTable.ajax.reload();
+                            });
+                        });
+                    }
+                });
+            }
+        }
+        function doCopy() {
+            var checkedCheckboxes =$('#ListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+
+    // Find the first checked checkbox
+    var firstCheckedCheckbox = checkedCheckboxes.first();
+     var id = checkedCheckboxes[0].attributes[2].value;
+            dolphin.freight.accounting.invoices.invoice.get(id).done(function (data) {
+            debugger
+            var href="/Accounting/Invoice?MethodType=7&InvoiceType=" + data.invoiceType + "&Mid=" + data.mblId + "&Hid=" + data.hblId + "&CopyInvoiceId=" + data.id;
+                location.href = href;
+            })
+            
+        }
     </script>
 }
 <div class="page-header">
@@ -336,9 +385,9 @@
                 <abp-column size-md="_2">
                <select id="TypeId" class="form-select" />
                 <option value=""></option>
-                   <option value="0">應收</option>
-                    <option value="1">應收/應付</option>
-                    <option value="2">應付</option>
+                   <option value="0">@L["A/R"]</option>
+                    <option value="1">@L["A/P"]</option>
+                    <option value="2">@L["Debit"]</option>
                </select>
                 
                 </abp-column>
@@ -405,8 +454,8 @@
           <div class="portlet-tool">
                 <div class="btn-group" role="group" aria-label="Basic outlined example" >
                   <button type="button" id="newBtn" class="btn btn-outline-secondary" disabled >@L["Batchupdateinvoices"]</button>
-                    <button type="button" id="copyId" class="btn btn-outline-secondary" onclick="" disabled><i class="fa fa-files-o me-0"></i></button>
-                    <button type="button" class="btn btn-outline-secondary" style="cursor: no-drop;" id="btnDelete" disabled><i class="fa fa-trash me-0"></i></button>
+                    <button type="button" id="copyId" class="btn btn-outline-secondary" onclick="doCopy()" disabled><i class="fa fa-files-o me-0"></i></button>
+                    <button type="button" class="btn btn-outline-secondary"  id="btnDelete" onclick="deleteInvoices()" disabled><i class="fa fa-trash me-0"></i></button>
                 </div>
                
             </div>

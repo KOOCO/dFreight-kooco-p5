@@ -35,6 +35,10 @@
                                 icon="filter"
                                 button-type="Primary"
                                 data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
+                                   <abp-button id="btnConfiguration"
+                                text="@L["Configuration"].Value"
+                                icon="gear"
+                                button-type="Primary" />
                 </abp-column>
             </abp-row>
         </abp-card-header>
@@ -115,22 +119,73 @@
                  <abp-column size-md="_2">
                     <input class="form-control" type="date" id="PostDate" />
                 </abp-column>
-                 <abp-column size-md="_1">
-                    <label>@L["CreatedDate"].Value</label>
-                </abp-column>
-                <abp-column size-md="_2">
-                    <input type="date" id="CreationDate" class="form-control" />
-
-                </abp-column>
-            </abp-row>
-            <abp-row class="mb-3">
                   <abp-column size-md="_1">
                     <label>@L["Office"].Value</label>
                 </abp-column>
                 <abp-column size-md="_2">
                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OfficeId", AspItems = _dropdown.SubstationLookupList, IsShowLabel = false, FieldName = "OfficeId", SelectType = 0, ShowFiledContentValue =null })
-               </abp-column>
+              </abp-column>
             </abp-row>
+
+            <abp-row class="mb-3">
+               
+                    <abp-column size-md="_1">
+                    <label>@L["BlTypeId"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                  @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.BlTypeId", AspItems = _dropdown.BlTypeLookupList, IsShowLabel = false, FieldName = "BlTypeId", ShowFiledContentValue =null })
+                 </abp-column>
+                  <abp-column size-md="_1">
+                    <label>@L["OP"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.Op", AspItems = _dropdown.OperatorLookupList, IsShowLabel = false, FieldName = "IssuedBy",IsRequired=true, /*SelectType = 1,*/ ShowFiledContentValue =null })
+
+
+                </abp-column>
+                 <abp-column size-md="_1">
+                    <label>@L["Block"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+               <select id="block" class="form-control" />
+                <option value=""></option>
+                   <option value="true">Yes</option>
+                    <option value="false">No</option>
+               </select>
+                
+                </abp-column>
+                  <abp-column size-md="_1">
+                    <label>@L["MblSvcTerm"].Value</label>
+                </abp-column>
+                    <abp-column size-md="_1">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.SvcTermFromId", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = false, FieldName = "SvcTermFromId", ShowFiledContentValue =null })
+                                </abp-column>
+                                
+                                <abp-column size-md="_1">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.SvcTermToId", AspItems = _dropdown.SvgTermLookupList, IsShowLabel = false, FieldName = "SvcTermToId", ShowFiledContentValue = null })
+                                </abp-column>
+
+                
+            </abp-row>
+            <abp-row class="mb-3">
+            
+                  <abp-column size-md="_1">
+                    <label>@L["Release Date"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+              <input type="date" id="ReleaseDate" class="form-control" />
+                
+                </abp-column>
+               
+                     <abp-column size-md="_1">
+                    <label>@L["CreationDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+              <input type="date" id="CreationDate" class="form-control" />
+                
+                </abp-column>
+                </abp-row>
+
 
             <abp-row>
                 <abp-abp-column class="text-center">

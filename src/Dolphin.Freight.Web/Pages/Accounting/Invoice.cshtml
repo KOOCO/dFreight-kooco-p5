@@ -124,9 +124,11 @@
             })
             $('#createForm').on('abp-ajax-success', function (result) {
                 event.preventDefault();
-
+                debugger
+                var check = '@Model.CopyInvoiceId';
                 switch (formControl) {
                     case 0:
+                        if (@Model.MethodType==7) abp.message.success('儲存成功', '系統訊息').then(function () { location.href = '/Accounting/Invoices/List'; });
                         if (@Model.MethodType == 0) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/OceanImports/EditModal3?Id=@Model.Mid'; });
                         if (@Model.MethodType == 1) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/OceanExports/EditModal3?Id=@Model.Mid'; });
                         if (@Model.MethodType == 2) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/AirImports/EditModal3?Id=@Model.MawbId'; });
@@ -160,6 +162,9 @@
                                                     });
                         break;
                     case 1:
+                        if (@Model.MethodType==7) {
+                 abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/Accounting/Invoices/List'; });
+                }
                         abp.message.success('以草稿儲存成功', '系統訊息');
                         if (@Model.MethodType == 0) location.href = '/OceanImports/EditModal3?Id=@Model.Mid';
                         if (@Model.MethodType == 1) location.href = '/OceanExports/EditModal3?Id=@Model.Mid';

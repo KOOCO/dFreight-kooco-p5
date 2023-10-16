@@ -24,7 +24,7 @@
                      search: $("#Keyword").val(),
        
         officeId: $("#VesselSchedule_OfficeId").val() == '' ? null : $("#VesselSchedule_OfficeId").val(),
-        invoiceType:$("#TypeId").val() == '' ? null :parseInt($("#TypeId").val()),
+        typeId:$("#TypeId").val() == '' ? null :parseInt($("#TypeId").val()),
         postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
          invoiceDate: $("#InvoiceDate").val() == '' || $("#InvoiceDate").val() == null? null : new Date($("#InvoiceDate").val()),
         dueDate: $("#DueDate").val() == '' || $("#DueDate").val() == null ? null : new Date($("#DueDate").val()),
@@ -329,7 +329,7 @@
                
                     <abp-button type="button" id="CancelFilter" text="@L["Cancel"]" button-type="Danger" />
 
-                    @*<abp-button type="button" id="Search" text="@L["Search"]" button-type="Primary" />*@
+                    <abp-button type="button" id="Search" text="@L["search"]" button-type="Primary" />
                
                 </abp-abp-column>
             </abp-row>

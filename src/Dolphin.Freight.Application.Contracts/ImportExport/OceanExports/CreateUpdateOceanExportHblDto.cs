@@ -32,6 +32,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 客戶參考編號
         /// </summary>
         public string CustomerRefNo { get; set; }
+        public string ContainerNo { get; set; }
         /// <summary>
         /// 文件號碼
         /// </summary>

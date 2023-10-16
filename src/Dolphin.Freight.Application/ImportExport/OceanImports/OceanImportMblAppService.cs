@@ -135,9 +135,15 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                                             .WhereIf(query.SaleId.HasValue, e => e.MblSaleId == query.SaleId)
                                             .WhereIf(query.OvearseaAgentId.HasValue, e => e.MblOverseaAgentId == query.OvearseaAgentId)
                                             .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
+                                            .WhereIf(query.OpId.HasValue, e => e.CreatorId == query.OpId)
+                                            .WhereIf(query.BlTypeId.HasValue, e => e.BlTypeId == query.BlTypeId)
+                                            .WhereIf(query.SvcTermFrom.HasValue, e => e.SvcTermFromId == query.SvcTermFrom)
+                                            .WhereIf(query.SvcTermTo.HasValue, e => e.SvcTermToId == query.SvcTermTo)
+                                            .WhereIf(query.Block.HasValue, e => e.IsLocked == query.Block)
                                             .WhereIf(query.CoLoaderId.HasValue, e => e.CoLoaderId == query.CoLoaderId)
                                             .WhereIf(query.PostDate.HasValue, e => e.PostDate.Date == query.PostDate.Value.Date.AddDays(1))
                                             .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1))
+                                              .WhereIf(query.ReleaseDate.HasValue, e => e.MblReleaseDate == query.ReleaseDate.Value.Date.AddDays(1))
                                             .OrderByDescending(x => x.CreationTime);
             List<OceanImportMbl> rs = OceanImportMbls.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<OceanImportMblDto> list = new List<OceanImportMblDto>();

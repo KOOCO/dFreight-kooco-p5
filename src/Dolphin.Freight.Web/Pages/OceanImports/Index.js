@@ -17,8 +17,12 @@ var queryListFilter = function () {
         coLoaderId: $("#VesselSchedule_CoLoaderId").val() == '' ? null : $("#VesselSchedule_CoLoaderId").val(),
         officeId: $("#VesselSchedule_officeId").val() == '' ? null : $("#VesselSchedule_officeId").val(),
         postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
-
-
+        releaseDate: $("#ReleaseDate").val() == '' || $("#ReleaseDate").val() == null ? null : new Date($("#ReleaseDate").val()),
+        block: $("#block").val() == '' ? null : $("#block").val(),
+        blTypeId: $("#VesselSchedule_BlTypeId").val() == '' ? null : $("#VesselSchedule_BlTypeId").val(),
+        svcTermFrom: $("#VesselSchedule_SvcTermFromId").val() == '' ? null : $("#VesselSchedule_SvcTermFromId").val(),
+        svcTermTo: $("#VesselSchedule_SvcTermToId").val() == '' ? null : $("#VesselSchedule_SvcTermToId").val(),
+        opId: $("#VesselSchedule_OpId").val() == '' ? null : $("#VesselSchedule_OpId").val(),
         creationDate: $("#CreationDate").val() == '' || $("#CreationDate").val() == null ? null : new Date($("#CreationDate").val()),
         vessel: $("#Vessel").val(),
     };
