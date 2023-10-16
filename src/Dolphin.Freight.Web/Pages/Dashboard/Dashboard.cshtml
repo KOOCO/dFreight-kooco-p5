@@ -74,6 +74,135 @@
         padding: 12px 20px 15px 20px;
         background-color: #fff;
     }
+
+    .tile-group .tile {
+        width: 100%;
+        height: 100px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        display: inline-block;
+        position: relative;
+        cursor: default;
+        overflow: hidden;
+    }
+
+    .tile-group .col-sm-2:nth-child(1) .tile, .tile-group .col-sm-2:nth-child(10) .tile {
+        background-color: #26A69A;
+    }
+
+    .tile-group .col-sm-2:nth-child(2) .tile, .tile-group .col-sm-2:nth-child(8) .tile, .tile-group .col-sm-2:nth-child(11) .tile {
+        background-color: #467ABE;
+        color: #467ABE;
+    }
+
+    .tile-group .col-sm-2:nth-child(3) .tile, .tile-group .col-sm-2:nth-child(6) .tile {
+        background-color: #4A4A4A;
+    }
+
+    .tile-group .col-sm-2:nth-child(4) .tile, .tile-group .col-sm-2:nth-child(7) .tile {
+        background-color: #F3C200;
+    }
+
+    .tile-group .col-sm-2:nth-child(5) .tile, .tile-group .col-sm-2:nth-child(9) .tile {
+        background-color: #E08283;
+    }
+
+    .tile-group .col-sm-2:nth-child(2) .tile .tile-title {
+        color: #325b8f;
+    }
+
+    .tile-group .col-sm-2:nth-child(3) .tile .tile-title, .tile-group .col-sm-2:nth-child(6) .tile .tile-title {
+        color: #292929;
+    }
+
+    .tile-group .col-sm-2:nth-child(4) .tile .tile-title, .tile-group .col-sm-2:nth-child(7) .tile .tile-title {
+        color: #b18d00;
+    }
+
+    .tile-group .col-sm-2:nth-child(5) .tile .tile-title {
+        color: #d34d4e;
+    }
+
+
+    .tile-group ul {
+        list-style-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAMCAQAAAD1lzQWAAAARklEQVR42mNgYGBg+M/GgAD/mf4v/H/tvzhCwPk/CKAINZAl9F/8/2uwUCyMew3MrcfKFUXhMjD8N/j/FYkLFrL/n4/gAQBFl1K9rkGyBgAAAABJRU5ErkJggg==');
+        display: inline-block;
+        padding-left: 26px;
+        margin-top: 10px;
+        z-index: 1;
+        position: relative;
+    }
+
+        .tile-group ul li {
+            margin-bottom: 7px;
+        }
+
+            .tile-group ul li a {
+                color: #fff;
+            }
+
+    .tile.tile-list .tile-icon {
+        position: absolute;
+        right: 16px;
+        opacity: 0.2;
+        top: -38px;
+    }
+
+        .tile.tile-list .tile-icon img {
+            width: 135%;
+        }
+
+    .tile-group .tile .tile-title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 13px;
+    }
+
+    .tile.tile-list .tile-title {
+        position: absolute;
+        right: 2px;
+        bottom: 4px;
+        line-height: 19px;
+        font-size: 27px;
+        color: #007b70;
+        text-align: right;
+        letter-spacing: -1px;
+    }
+
+    .tile-group .col-sm-2 {
+        flex: 0 0 14.2857%;
+        max-width: 14.2857%;
+    }
+
+    .row-sm {
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+
+        .row-sm [class*="col-"] {
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+
+    .tile.unique {
+        height: 38px;
+        cursor: pointer;
+        color: #fff !important;
+    }
+
+        .tile.unique > .tile-body {
+            padding-top: 8px;
+            padding-left: 10px;
+        }
+
+    .tile.tile-list .tile-icon.tile-icon--font-icon i {
+        font-size: 90px;
+    }
+
+    .tile.tile-list .tile-icon.tile-icon--font-icon {
+        top: 12px;
+        right: -10px;
+    }
 </style>
 <div class="page-header">
     <div class="breadcrumb-wrapper">
@@ -363,6 +492,166 @@
                         </font>
                     </font>
                 </h5>
+            </div>
+        </div>
+
+        <div class="row margin-top-20">
+            <div class="container-fluid">
+                <div class="tile-group">
+                    <div class="row row-sm">
+                        <div class="col-sm-2">
+                            <div class="tile tile-list ng-scope" ng-if="vm.quickLink.oi">
+                                <ul>
+                                    <li class="ng-scope">
+                                        <a href="/OceanImports/Index">my shipping</a>
+                                    </li>
+                                    <li class="ng-scope">
+                                        <a href="/OceanImports/MblList">MB/L list</a>
+                                    </li>
+                                    <li class="ng-scope">
+                                        <a href="/OceanImports/HblList">HB/L list</a>
+                                    </li>
+                                </ul>
+                                <div class="tile-icon"><img src="~/img/icon_ocean_import_white.png"></div>
+                                <div class="tile-title">Import by sea</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="tile tile-list ng-scope" ng-if="vm.quickLink.oi">
+                                <ul>
+                                    <li class="ng-scope">
+                                        <a href="/OceanExports/Index">my shipping</a>
+                                    </li>
+                                    <li class="ng-scope">
+                                        <a href="/OceanExports/MblList">MB/L list</a>
+                                    </li>
+                                    <li class="ng-scope">
+                                        <a href="/OceanExports/HblList">HB/L list</a>
+                                    </li>
+                                </ul>
+                                <div class="tile-icon"><img src="~/img/icon_ocean_import_white.png"></div>
+                                <div class="tile-title">Sea<br> Export</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="tile tile-list ng-scope" ng-if="vm.quickLink.oi">
+                                <ul>
+                                    <li class="ng-scope">
+                                        <a href="/AirImports/Index">my shipping</a>
+                                    </li>
+                                    <li class="ng-scope">
+                                        <a href="/AirImports/MawbList">MAWB Checklist</a>
+                                    </li>
+                                    <li class="ng-scope">
+                                        <a href="/AirImports/HawbList">HAWB Checklist</a>
+                                    </li>
+                                </ul>
+                                <div class="tile-icon"><img src="~/img/icon_air_import_white.png"></div>
+                                <div class="tile-title">Air<br> import</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="tile tile-list ng-scope" ng-if="vm.quickLink.oi">
+                                <ul>
+                                    <li class="ng-scope">
+                                        <a href="/AirExports/Index">my shipping</a>
+                                    </li>
+                                    <li class="ng-scope">
+                                        <a href="/AirExports/MawbList">MAWB Checklist</a>
+                                    </li>
+                                    <li class="ng-scope">
+                                        <a href="/AirExports/HawbList">HAWB Checklist</a>
+                                    </li>
+                                </ul>
+                                <div class="tile-icon"><img src="~/img/icon_air_import_white.png"></div>
+                                <div class="tile-title">Air<br>export</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="tile tile-list ng-scope" ng-if="vm.quickLink.oi">
+                                <ul>
+                                    <li class="ng-scope">
+                                        <a href="javascript:void(0)">my shipping</a>
+                                    </li>
+                                    <li class="ng-scope">
+                                        <a href="javascript:void(0)">Add a new ticket for Transportation</a>
+                                    </li>
+                                    <li class="ng-scope">
+                                        <a href="javascript:void(0)">MB/L list</a>
+                                    </li>
+                                </ul>
+                                <div class="tile-icon"><img src="~/img/icon_truck_white.png"></div>
+                                <div class="tile-title">Truck Business</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="tile tile-list ng-scope" ng-if="vm.quickLink.oi">
+                                <ul>
+                                    <li class="ng-scope">
+                                        <a href="javascript:void(0)">My Homework</a>
+                                    </li>
+                                    <li class="ng-scope">
+                                        <a href="javascript:void(0)">Add a new job</a>
+                                    </li>
+                                    <li class="ng-scope">
+                                        <a href="javascript:void(0)">Homework list</a>
+                                    </li>
+                                </ul>
+                                <div class="tile-icon tile-icon--font-icon  "><i class="fa fa-cubes"></i></div>
+                                <div class="tile-title">Integrated <br>Services</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="tile tile-list ng-scope" ng-if="vm.quickLink.oi">
+                                <ul>
+                                    <li class="ng-scope">
+                                        <a href="javascript:void(0)">Warehousing receipt list</a>
+                                    </li>
+                                    <li class="ng-scope">
+                                        <a href="javascript:void(0)">Warehousing list</a>
+                                    </li>
+                                    <li class="ng-scope">
+                                        <a href="javascript:void(0)">Outbound list</a>
+                                    </li>
+                                </ul>
+                                <div class="tile-icon"><img src="~/img/icon_warehouse.svg"></div>
+                                <div class="tile-title">Warehousing</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="tile unique ng-scope" onclick="location.href='/Sales/TradePartner/List'">
+                                <div class="tile-body">
+                                    <span class="tile-icon"><i class="fa fa-user-group fa-xl"></i></span>
+                                    <span class="tile-title">Trading partner list</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="tile unique ng-scope" onclick="location.href='/Accounting/Invoices/List'">
+                                <div class="tile-body">
+                                    <span class="tile-icon"><i class="fa fa-table-list fa-xl"></i></span>
+                                    <span class="tile-title">Receivables and Payables</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="tile unique ng-scope" onclick="location.href='/Accounting/Payment/PaymentMadeList'">
+                                <div class="tile-body">
+                                    <span class="tile-icon"><i class="fa fa-credit-card fa-xl"></i></span>
+                                    <span class="tile-title">Payment list</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="tile unique ng-scope" onclick="location.href='/Accounting/Payment/Customer'">
+                                <div class="tile-body">
+                                    <span class="tile-icon"><i class="fa fa-receipt fa-xl"></i></span>
+                                    <span class="tile-title">Collection list</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
