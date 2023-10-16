@@ -1,7 +1,20 @@
 {
   "culture": "zh-Hant",
   "texts": {
-
+    "BANK BALANCE": "銀行存款餘額",
+    "MY SHIPMENT / OCEAN EXPORT": "我的運輸/海運出口",
+    "NEGATIVE PROFIT SHIPMENTS": "虧損票貨",
+    "TO DO LIST": "待辦事項",
+    "Warnings": "警告",
+    "Alerts": "提醒",
+    "*Percentage are calculated based on customers with positive profit only": "*只有真正有利潤的客戶才會被列入計算",
+    "TOP 5 Volume Customers(No. of B/L, AWB)": "貨量前五大客戶 (提單數量)",
+    "TOP 5 Profit Customers": "利潤前五大客戶",
+    "No. of Lost Customers": "流失客戶數量",
+    "No. of Active Customers": "有效客戶數量",
+    "Total Volume(No. of B/L, AWB)": "總貨量(提單數量)",
+    "TotalProfit": "總利潤",
+    "Prev": "前期",
     "Customer": "客戶",
     "Welcome": "歡迎",
     "LongWelcomeMessage": "歡迎使用",

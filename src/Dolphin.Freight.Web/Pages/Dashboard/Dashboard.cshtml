@@ -1,9 +1,92 @@
 ﻿@page
-<div id="performance_div" ng-controller="dashPerformanceController as vm" ng-init="vm.initial({
-     })" class="ng-scope">
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Dolphin.Freight.Localization
+@inject IHtmlLocalizer<FreightResource> L
+<style>
+    .dashboard-stat2, .dashboard-stat2--noprogress {
+        padding: 28px 20px 26px;
+        border: 1px solid #EBEDF2;
+        position: relative;
+        text-align: center;
+    }
+
+    .font-green {
+        color: #26a69a !important;
+    }
+
+    .font-yellow-crusta {
+        color: #f3c200 !important;
+    }
+
+    .font-red-pink {
+        color: #E08283 !important;
+    }
+        .dashboard-stat2 .display, .dashboard-stat2--noprogress .display {
+            margin-bottom: 18px;
+        }
+        .dashboard-stat2 .display .number {
+    display: inline-block;
+}
+
+                .dashboard-stat2 .display .number small {
+                    font-size: 14px;
+                    color: #4A4A4A;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                }
+                .dashboard-stat2.dashboard-stat2--noprogress .status {
+    margin-top: 10px;
+}
+
+            .dashboard-stat2.dashboard-stat2--noprogress .status .status-number {
+                font-weight: 600;
+                font-size: 17px;
+                color: #4A4A4A;
+            }
+
+            .dashboard-stat2.dashboard-stat2--noprogress .status .status-title {
+                color: #9699A2;
+                font-weight: normal;
+            }
+
+    .font-blue-steel {
+        color: #4B77BE !important;
+    }
+
+    .portlet.light.bordered {
+        border: 1px solid #e1e1e1 !important;
+    }
+
+        .portlet.light.bordered > .portlet-title {
+            border-bottom: 1px solid #eee;
+        }
+
+    .portlet.light > .portlet-title {
+        padding: 0;
+        min-height: 48px;
+    }
+
+    .portlet.light .portlet-body {
+        padding-top: 8px;
+    }
+
+    .portlet.light {
+        padding: 12px 20px 15px 20px;
+        background-color: #fff;
+    }
+</style>
+<div class="page-header">
+    <div class="breadcrumb-wrapper">
+        <abp-breadcrumb>
+            <abp-breadcrumb-item title=@L["Menu:FrontPage"].Value />
+            <abp-breadcrumb-item title=@L["Menu:Dashboard"].Value href="javascript:void(0)" />
+        </abp-breadcrumb>
+    </div>
+</div>
+<div id="performance_div" class="ng-scope">
     <div class="portlet light bordered">
         <div class="row margin-top-20">
-            <div class="col-md-6 col-xs-12 kpi-date">
+            @*<div class="col-md-6 col-xs-12 kpi-date">
                 <select class="select mg-right-sm input-inline form-control w-auto ng-pristine ng-valid ng-not-empty ng-touched" ng-model="vm.office" ng-options="o.id as o.text for o in vm.options.office_for_dashboard" ng-change="vm.reloadData(true)" style=""><option label="所有分站" value="number:-1" selected="selected"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">All substations</font></font></option><option label="LAX" value="number:1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">LAX</font></font></option></select>
 
                 <div class="btn-group _mg-right-xs tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="這個月 (截至本月)">
@@ -90,11 +173,11 @@
                         <div class="daterangepicker dropdown-menu 698624 ltr show-calendar opensright"><div class="calendar left"><div class="daterangepicker_input"><input class="input-mini form-control" type="text" name="daterangepicker_start" value="" tabindex="1"><i class="fa fa-calendar"></i><div class="calendar-time" style="display: none;"><div></div><i class="fa fa-clock-o glyphicon glyphicon-time"></i></div></div><div class="calendar-table"></div><div><button class="btn btn-default btn-clear" type="button"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Clear</font></font></button><button class="btn btn-default btn-now" type="button"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Now</font></font></button></div></div><div class="calendar right"><div class="daterangepicker_input"><input class="input-mini form-control" type="text" name="daterangepicker_end" value="" tabindex="2"><i class="fa fa-calendar"></i><div class="calendar-time" style="display: none;"><div></div><i class="fa fa-clock-o glyphicon glyphicon-time"></i></div></div><div class="calendar-table"></div><div class="text-right"><button class="btn btn-default btn-apply bold" type="button" tabindex="3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Apply</font></font></button></div></div></div>
                     </span>
                 </div>
-            </div>
-            <div class="col-md-6 col-xs-12 kpi-compare">
+            </div>*@
+            <div class="col-md-12 col-xs-12 kpi-compare mb-4">
                 <div class="name-sm w-auto margin-right-10"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">comparison method</font></font></div>
-                <!-- ngRepeat: c in vm.COMPARE_LIST --><button class="btn btn-default btn-sm tooltips ng-binding ng-scope" ng-repeat="c in vm.COMPARE_LIST" ng-bind="c" ng-click="vm.changeCompare(c)" ng-disabled="!vm.canCompare(c)" ng-class="{active: vm.currCompare === c}" uib-tooltip-html="vm.getCompareTip(c) | nl2br | empty2space" data-original-title="" title=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">monthly growth rate</font></font></button><!-- end ngRepeat: c in vm.COMPARE_LIST --><button class="btn btn-default btn-sm tooltips ng-binding ng-scope active" ng-repeat="c in vm.COMPARE_LIST" ng-bind="c" ng-click="vm.changeCompare(c)" ng-disabled="!vm.canCompare(c)" ng-class="{active: vm.currCompare === c}" uib-tooltip-html="vm.getCompareTip(c) | nl2br | empty2space" data-original-title="" title=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">annual growth rate</font></font></button><!-- end ngRepeat: c in vm.COMPARE_LIST -->
-                <button class="btn btn-primary btn-sm pull-right" ng-click="vm.reloadData(true)">
+                <button class="btn btn-default btn-sm tooltips ng-binding ng-scope"  data-original-title="" title=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">monthly growth rate</font></font></button><button class="btn btn-default btn-sm tooltips ng-binding ng-scope active" data-original-title="" title=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">annual growth rate</font></font></button>
+                <button class="btn btn-primary btn-sm pull-right">
                     <i class="fa fa-refresh"></i><font style="vertical-align: inherit;">
                         <font style="vertical-align: inherit;">
                             Reorganize
@@ -103,128 +186,42 @@
                 </button>
             </div>
         </div>
+
         <div class="row margin-top-20">
-            <div class="col-xs-12 col-stat" ng-show="vm.P.DASHBOARD_PERFORMANCE_TOTAL_PROFIT_VIEW" style="">
+            <div class="col-sm-3 mb-4">
                 <div class="dashboard-stat2 dashboard-stat2--noprogress">
                     <div class="display">
                         <div class="number">
-                            <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Total profit</font></font></small>
-                            <!-- ngIf: vm.totalVolumeProfit.baseStatus.loading -->
-                            <!-- ngIf: !vm.totalVolumeProfit.baseStatus.loading --><h3 ng-if="!vm.totalVolumeProfit.baseStatus.loading" class="font-blue-steel ng-scope" style="">
+                            <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@L["TotalProfit"]</font></font></small>
+                            <h3 class="font-blue-steel ng-scope" style="">
                                 <small class="font-blue-steel ng-binding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">$</font></font></small>
-                                <span count-up="" start-val="0" end-val="vm.totalVolumeProfit.profitData.base" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">0</font></font></span>
-                            </h3><!-- end ngIf: !vm.totalVolumeProfit.baseStatus.loading -->
-                        </div>
-                    </div>
-                    <div class="status">
-                        <div class="status-number">
-                            <!-- ngIf: vm.totalVolumeProfit.compareStatus.loading -->
-                            <!-- ngIf: !vm.totalVolumeProfit.compareStatus.loading --><span ng-if="!vm.totalVolumeProfit.compareStatus.loading" class="ng-scope" style="">
-                                <!-- ngIf: vm.totalVolumeProfit.profitData.deltaPercent === null --><span ng-if="vm.totalVolumeProfit.profitData.deltaPercent === null" class="ng-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- - %</font></font></span><!-- end ngIf: vm.totalVolumeProfit.profitData.deltaPercent === null -->
-                                <!-- ngIf: vm.totalVolumeProfit.profitData.deltaPercent !== null -->
-                            </span><!-- end ngIf: !vm.totalVolumeProfit.compareStatus.loading -->
-                        </div>
-                        <div class="status-title">
-                            <font style="vertical-align: inherit;"></font><!-- ngIf: vm.totalVolumeProfit.compareStatus.loading -->
-                            <!-- ngIf: !vm.totalVolumeProfit.compareStatus.loading --><span ng-if="!vm.totalVolumeProfit.compareStatus.loading" class="ng-binding ng-scope" style="">
-                                <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">
-                                        $
-                                    </font>
-                                </font><span count-up="" start-val="0" end-val="vm.totalVolumeProfit.profitData.compare" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">-4,518</font></font></span>
-                            </span><!-- end ngIf: !vm.totalVolumeProfit.compareStatus.loading -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-stat" ng-show="vm.P.DASHBOARD_PERFORMANCE_TOTAL_VOLUME_VIEW">
-                <div class="dashboard-stat2 dashboard-stat2--noprogress">
-                    <div class="display">
-                        <div class="number">
-                            <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Total cargo volume </font></font><small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">(bill of lading quantity)</font></font></small></small>
-                            <!-- ngIf: vm.totalVolumeProfit.baseStatus.loading -->
-                            <!-- ngIf: !vm.totalVolumeProfit.baseStatus.loading --><h3 ng-if="!vm.totalVolumeProfit.baseStatus.loading" class="font-green ng-scope" style="">
-                                <span count-up="" start-val="0" end-val="vm.totalVolumeProfit.volumeData.base" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">1</font></font></span>
-                            </h3><!-- end ngIf: !vm.totalVolumeProfit.baseStatus.loading -->
-                        </div>
-                    </div>
-                    <div class="status">
-                        <div class="status-number">
-                            <!-- ngIf: vm.totalVolumeProfit.compareStatus.loading -->
-                            <!-- ngIf: !vm.totalVolumeProfit.compareStatus.loading --><span ng-if="!vm.totalVolumeProfit.compareStatus.loading" class="ng-scope" style="">
-                                <!-- ngIf: vm.totalVolumeProfit.volumeData.deltaPercent === null -->
-                                <!-- ngIf: vm.totalVolumeProfit.volumeData.deltaPercent !== null --><span ng-if="vm.totalVolumeProfit.volumeData.deltaPercent !== null" class="ng-scope">
-                                    <!-- ngIf: vm.totalVolumeProfit.volumeData.deltaPercent >= 0 -->
-                                    <!-- ngIf: vm.totalVolumeProfit.volumeData.deltaPercent < 0 --><i ng-if="vm.totalVolumeProfit.volumeData.deltaPercent < 0" class="fa fa-caret-down text-danger ng-scope"></i><!-- end ngIf: vm.totalVolumeProfit.volumeData.deltaPercent < 0 -->
-                                    <span count-up="" start-val="0" end-val="vm.totalVolumeProfit.volumeData.deltaPercent" duration="vm.countUpDuration" reanimate-on-click="false" options="vm.countUpPercentOptions" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">-97%</font></font></span>
-                                </span><!-- end ngIf: vm.totalVolumeProfit.volumeData.deltaPercent !== null -->
-                            </span><!-- end ngIf: !vm.totalVolumeProfit.compareStatus.loading -->
-                        </div>
-                        <div class="status-title">
-                            <font style="vertical-align: inherit;">
-                                <font style="vertical-align: inherit;">
-                                    Early stage:
-                                </font>
-                            </font><!-- ngIf: vm.totalVolumeProfit.compareStatus.loading -->
-                            <!-- ngIf: !vm.totalVolumeProfit.compareStatus.loading --><span class="ng-scope" style="">
-                                <span count-up="" start-val="0" end-val="vm.totalVolumeProfit.volumeData.compare" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">34</font></font></span>
-                            </span><!-- end ngIf: !vm.totalVolumeProfit.compareStatus.loading -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-stat">
-                <div class="dashboard-stat2 dashboard-stat2--noprogress">
-                    <div class="display">
-                        <div class="number">
-                            <small>
-                                <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">
-                                        Effective number of customers
-                                    </font>
-                                </font><i class="fa fa-info-circle text-muted tooltips" uib-tooltip="Last shipment’s post date within last 60 days." tooltip-placement="top" data-original-title="" title=""></i>
-                            </small>
-                            <!-- ngIf: vm.activeCustomer.baseStatus.loading -->
-                            <!-- ngIf: !vm.activeCustomer.baseStatus.loading --><h3 class="font-red-pink ng-scope" style="">
-                                <span count-up="" start-val="0" end-val="vm.activeCustomer.activeData.base" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">5</font></font></span>
-                            </h3><!-- end ngIf: !vm.activeCustomer.baseStatus.loading -->
+                                <span class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">0</font></font></span>
+                            </h3>
                         </div>
                     </div>
                     <div class="status">
                         <div class="status-number">
                             <span class="ng-scope" style="">
-                                <i class="fa fa-caret-down text-danger ng-scope"></i>
-                                    <span count-up="" start-val="0" end-val="vm.activeCustomer.activeData.deltaPercent" duration="vm.countUpDuration" reanimate-on-click="false" options="vm.countUpPercentOptions" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">-50%</font></font></span>
+                                <span class="ng-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- - %</font></font></span>
                             </span>
                         </div>
-                        <div class="status-title">
-                            <font style="vertical-align: inherit;">
-                                <font style="vertical-align: inherit;">
-                                    Early stage:
-                                </font>
-                            </font><!-- ngIf: vm.activeCustomer.compareStatus.loading -->
-                            <!-- ngIf: !vm.activeCustomer.compareStatus.loading --><span class="ng-scope" style="">
-                                <span count-up="" start-val="0" end-val="vm.activeCustomer.activeData.compare" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">10</font></font></span>
-                            </span><!-- end ngIf: !vm.activeCustomer.compareStatus.loading -->
+                        <div class="status-title"><font style="vertical-align: inherit;"></font>
+                            <span class="ng-binding ng-scope" style=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                                $
+                                </font></font><span class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">-4,518</font></font></span>
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-stat">
-                <div class="dashboard-stat2 dashboard-stat2--noprogress">
+            <div class="col-sm-3 mb-4">
+                <div class="dashboard-stat2 dashboard-stat2--noprogress px-2">
                     <div class="display">
                         <div class="number">
-                            <small>
-                                <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">
-                                        Number of lost customers
-                                    </font>
-                                </font><i class="fa fa-info-circle text-muted" uib-tooltip="Last shipment’s post date within last 60 days." tooltip-placement="top"></i>
-                            </small>
-                            <!-- ngIf: vm.lostCustomer.baseStatus.loading -->
-                            <!-- ngIf: !vm.lostCustomer.baseStatus.loading --><h3 class="font-yellow-crusta ng-scope" style="">
-                                <span count-up="" start-val="0" end-val="vm.lostCustomer.lostData.base" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">2</font></font></span>
-                            </h3><!-- end ngIf: !vm.lostCustomer.baseStatus.loading -->
+                            <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Total cargo volume </font></font><small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">(bill of lading quantity)</font></font></small></small>
+                            <h3 class="font-green ng-scope" style="">
+                                <span class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">1</font></font></span>
+                            </h3>
                         </div>
                     </div>
                     <div class="status">
@@ -232,7 +229,7 @@
                             <span class="ng-scope" style="">
                                 <span class="ng-scope">
                                     <i class="fa fa-caret-down text-danger ng-scope"></i>
-                                    <span count-up="" start-val="0" end-val="vm.lostCustomer.lostData.deltaPercent" duration="vm.countUpDuration" reanimate-on-click="false" options="vm.countUpPercentOptions" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">-33%</font></font></span>
+                                    <span class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">-97%</font></font></span>
                                 </span>
                             </span>
                         </div>
@@ -241,106 +238,114 @@
                                 <font style="vertical-align: inherit;">
                                     Early stage:
                                 </font>
-                            </font>
-                            <span class="ng-scope" style="">
-                                <span count-up="" start-val="0" end-val="vm.lostCustomer.lostData.compare" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">3</font></font></span>
+                            </font><span class="ng-scope" style="">
+                                <span class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">34</font></font></span>
                             </span>
                         </div>
                     </div>
-                    <mgmt-lost-customer-detail period-start="vm.lostCustomer.lostData.period.period_start" period-end="vm.lostCustomer.lostData.period.period_end" detail-list="vm.lostCustomer.lostData.detail" class="ng-isolate-scope">
-                        <button class="btn btn-default btn-sm ng-binding" type="button">
+                </div>
+                </div>
+            <div class="col-sm-3 mb-4">
+                <div class="dashboard-stat2 dashboard-stat2--noprogress">
+                    <div class="display">
+                        <div class="number">
+                            <small>
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        @L["No. of Active Customers"]
+                                    </font>
+                                </font><i class="fa fa-info-circle text-muted tooltips" uib-tooltip="Last shipment’s post date within last 60 days." tooltip-placement="top" data-original-title="" title=""></i>
+                            </small>
+                            <h3 class="font-red-pink ng-scope" style="">
+                                <span class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">5</font></font></span>
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="status">
+                        <div class="status-number">
+                            <span class="ng-scope" style="">
+                                <span class="ng-scope">
+                                    <i class="fa fa-caret-down text-danger ng-scope"></i>
+                                    <span class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">-50%</font></font></span>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="status-title">
                             <font style="vertical-align: inherit;">
                                 <font style="vertical-align: inherit;">
-                                    Details
+                                    Early stage:
                                 </font>
-                            </font><i class="fa fa-external-link-square _font-12"></i>
-                        </button>
-
-
-                        <script type="text/ng-template" id="lostCustomerDetail.html">
-                            <div class="modal-header">
-                                <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title"></h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <div class="btn-group">
-                                        <button class="btn btn-default btn-sm"
-                                        ></button>
-                                        <button class="btn btn-default btn-sm"
-                                        ></button>
-                                        <button class="btn btn-default btn-sm"
-                                        ></button>
-                                    </div>
-                                </div>
-
-                                <table class="table table-bordered table-striped table-hover">
-                                    <colgroup>
-                                        <col class="td-55per">
-                                        <col class="td-20per">
-                                        <col class="td-20per">
-                                        <col class="td-5per">
-                                    </colgroup>
-                                    <thead>
-                                        <tr>
-                                            <th class="valign-middle" ng-bind="::_T.HEADER.NAME"></th>
-                                            <th ng-bind="::_T.HEADER.DAYS"></th>
-                                            <th ng-bind="::_T.HEADER.POST_DATE"></th>
-                                            <th class="text-center valign-middle" ng-bind="::_T.HEADER.IGNORE"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr ng-repeat="d in vm.detailList | filter:vm.getFilter()">
-                                            <td><a target="_blank"></a></td>
-                                            <td ng-bind="d.lost_days"></td>
-                                            <td ng-bind="d.last_post_date | date_format"></td>
-                                            <td class="text-center">
-                                                <input type="checkbox"
-                                                >
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn blue"
-                                        ng-bind="::_T.BTN.PRINT"
-                                ></button>
-                                <button type="button" class="btn blue"
-                                        ng-bind="::_T.BTN.OK"
-                                ></button>
-                            </div>
-                        </script>
-                    </mgmt-lost-customer-detail>
+                            </font><span class="ng-scope" style="">
+                                <span class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">10</font></font></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 mb-4">
+                <div class="dashboard-stat2 dashboard-stat2--noprogress">
+                    <div class="display">
+                        <div class="number">
+                            <small>
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        @L["No. of Lost Customers"]
+                                    </font>
+                                </font><i class="fa fa-info-circle text-muted" uib-tooltip="Last shipment’s post date within last 60 days." tooltip-placement="top"></i>
+                            </small>
+                            <h3 class="font-yellow-crusta ng-scope" style="">
+                                <span class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">2</font></font></span>
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="status">
+                        <div class="status-number">
+                            <span class="ng-scope" style="">
+                                <span class="ng-scope">
+                                    <i class="fa fa-caret-down text-danger ng-scope"></i>
+                                    <span class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">-33%</font></font></span>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="status-title">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    Early stage:
+                                </font>
+                            </font><span class="ng-scope" style="">
+                                <span class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">3</font></font></span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="row margin-top-20">
-            <div class="col-xs-12 col-pie" style="">
-                <div class="dashboard-stat2 dashboard-stat2--lg">
+            <div class="col-sm-6">
+                <div class="dashboard-stat2 dashboard-stat2--lg px-2">
                     <div class="display margin-bottom-15">
                         <div class="number">
-                            <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Top five profitable customers</font></font></small>
+                            <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@L["TOP 5 Profit Customers"]</font></font></small>
                         </div>
                     </div>
                     <div class="chart-flex" style="">
                         <div id="top5-customer-profit-chart" style="background-color: rgb(255, 255, 255); height: 250px; overflow: hidden; text-align: left;"><div class="amcharts-main-div" style="position: relative; width: 100%; height: 100%;"><div class="amcharts-chart-div" style="overflow: hidden; position: relative; text-align: left; width: 294px; height: 250px; padding: 0px; touch-action: auto;"><svg version="1.1" style="position: absolute; width: 294px; height: 250px; top: 0.277771px; left: -0.222221px;"><desc>JavaScript chart by amCharts 3.21.14</desc><g><path cs="100,100" d="M0.5,0.5 L293.5,0.5 L293.5,249.5 L0.5,249.5 Z" fill="#FFFFFF" stroke="#000000" fill-opacity="0" stroke-width="1" stroke-opacity="0" class="amcharts-bg"></path></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g><g></g></g><g></g><g></g><g></g><g></g><g></g></svg><a href="http://www.amcharts.com" title="JavaScript charts" target="_self" style="position: absolute; text-decoration: none; color: rgb(0, 0, 0); font-family: Verdana; font-size: 11px; opacity: 0.7; display: block; left: 5px; top: 5px;"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">JS chart by amCharts</font></font></a></div></div></div>
-                        <div id="top5-customer-profit-legend" class="div-amcharts-lagend" style="background-color: rgb(255, 255, 255); height: 38px; position: relative;"><svg version="1.1" style="position: absolute; width: 440px; height: 38.3333px;"><desc>JavaScript chart by amCharts 3.21.14</desc><g transform="translate(20,0)"><path cs="100,100" d="M0.5,0.5 L399.5,0.5 L399.5,37.5 L0.5,37.5 Z" fill="#FFFFFF" stroke="#000000" fill-opacity="0" stroke-width="1" stroke-opacity="0" class="amcharts-legend-bg"></path><g transform="translate(146,11)"><g cursor="pointer" aria-label="Other" transform="translate(0,0)"><path cs="100,100" d="M-7.5,8.5 L8.5,8.5 L8.5,-7.5 L-7.5,-7.5 Z" fill="#9B9B9B" stroke="#9B9B9B" fill-opacity="1" stroke-width="1" stroke-opacity="1" transform="translate(8,8)" class="amcharts-legend-marker"></path><g transform="translate(8,8)" visibility="hidden" class="amcharts-legend-switch"><path cs="100,100" d="M-5.5,-5.5 L6.5,6.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path><path cs="100,100" d="M-5.5,6.5 L6.5,-5.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path></g><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="start" class="amcharts-legend-label" transform="translate(21,7)"><tspan y="6" x="0">Other</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" class="amcharts-legend-value" transform="translate(108,7)">0</text><rect x="16" y="0" width="91.82893943786621" height="18.333333015441895" rx="0" ry="0" stroke-width="0" stroke="none" fill="#fff" fill-opacity="0.005"></rect></g></g></g></svg></div>
-                        <div class="dashboard-stat2__remark"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">*Only truly profitable customers will be included in the calculation</font></font></div>
+                        <div id="top5-customer-profit-legend" class="div-amcharts-lagend" style="background-color: rgb(255, 255, 255); height: 38px; position: relative;"><svg version="1.1" style="position: absolute; width: 440px; height: 38.3333px; top: -0.222229px; left: 0.305573px;"><desc>JavaScript chart by amCharts 3.21.14</desc><g transform="translate(20,0)"><path cs="100,100" d="M0.5,0.5 L399.5,0.5 L399.5,37.5 L0.5,37.5 Z" fill="#FFFFFF" stroke="#000000" fill-opacity="0" stroke-width="1" stroke-opacity="0" class="amcharts-legend-bg"></path><g transform="translate(146,11)"><g cursor="pointer" aria-label="Other" transform="translate(0,0)"><path cs="100,100" d="M-7.5,8.5 L8.5,8.5 L8.5,-7.5 L-7.5,-7.5 Z" fill="#9B9B9B" stroke="#9B9B9B" fill-opacity="1" stroke-width="1" stroke-opacity="1" transform="translate(8,8)" class="amcharts-legend-marker"></path><g transform="translate(8,8)" visibility="hidden" class="amcharts-legend-switch"><path cs="100,100" d="M-5.5,-5.5 L6.5,6.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path><path cs="100,100" d="M-5.5,6.5 L6.5,-5.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path></g><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="start" class="amcharts-legend-label" transform="translate(21,7)"><tspan y="6" x="0">Other</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" class="amcharts-legend-value" transform="translate(108,7)">0</text><rect x="16" y="0" width="91.82893943786621" height="18.333333015441895" rx="0" ry="0" stroke-width="0" stroke="none" fill="#fff" fill-opacity="0.005"></rect></g></g></g></svg></div>
+                        <div class="dashboard-stat2__remark"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@L["*Percentage are calculated based on customers with positive profit only"]</font></font></div>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-pie">
+            <div class="col-sm-6">
                 <div class="dashboard-stat2 dashboard-stat2--lg">
                     <div class="display margin-bottom-15">
                         <div class="number">
-                            <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Top five customers by volume </font></font><small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">(number of bills of lading)</font></font></small></small>
+                            <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@L["TOP 5 Volume Customers(No. of B/L, AWB)"]</font></font><small><font style="vertical-align: inherit;"></font></small></small>
                         </div>
                     </div>
                     <div class="chart-flex" style="">
                         <div id="top5-customer-volume-chart" style="background-color: rgb(255, 255, 255); height: 250px; overflow: hidden; text-align: left;"><div class="amcharts-main-div" style="position: relative; width: 100%; height: 100%;"><div class="amcharts-chart-div" style="overflow: hidden; position: relative; text-align: left; width: 294px; height: 250px; padding: 0px; touch-action: auto;"><svg version="1.1" style="position: absolute; width: 294px; height: 250px; top: 0.277771px; left: 0.388916px;"><desc>JavaScript chart by amCharts 3.21.14</desc><g><path cs="100,100" d="M0.5,0.5 L293.5,0.5 L293.5,249.5 L0.5,249.5 Z" fill="#FFFFFF" stroke="#000000" fill-opacity="0" stroke-width="1" stroke-opacity="0" class="amcharts-bg"></path></g><g></g><g></g><g></g><g></g><g></g><g><g class="amcharts-pie-item" aria-label=": 100.00% 1 "><path cs="1000,1000" d=" M147,103 L147,51 A74,74,0,1,1,146.9225073953748,51.00004057503661 L146.9769616580844,103.00001206284873 A22,22,0,1,0,147,103 Z" fill="#4B77BE" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0" fill-opacity="1" class="amcharts-pie-slice"></path></g></g><g></g><g></g><g></g><g></g><g></g><g><g></g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg><a href="http://www.amcharts.com" title="JavaScript charts" target="_self" style="position: absolute; text-decoration: none; color: rgb(0, 0, 0); font-family: Verdana; font-size: 11px; opacity: 0.7; display: block; left: 5px; top: 5px;"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">JS chart by amCharts</font></font></a></div></div></div>
-                        <div id="top5-customer-volume-legend" class="div-amcharts-lagend" style="background-color: rgb(255, 255, 255); height: 38px; position: relative;"><svg version="1.1" style="position: absolute; width: 440px; height: 38.3333px;"><desc>JavaScript chart by amCharts 3.21.14</desc><g transform="translate(20,0)"><path cs="100,100" d="M0.5,0.5 L399.5,0.5 L399.5,37.5 L0.5,37.5 Z" fill="#FFFFFF" stroke="#000000" fill-opacity="0" stroke-width="1" stroke-opacity="0" class="amcharts-legend-bg"></path><g transform="translate(84,11)"><g cursor="pointer" aria-label="" transform="translate(0,0)"><path cs="100,100" d="M-7.5,8.5 L8.5,8.5 L8.5,-7.5 L-7.5,-7.5 Z" fill="#4B77BE" stroke="#4B77BE" fill-opacity="1" stroke-width="1" stroke-opacity="1" transform="translate(8,8)" class="amcharts-legend-marker"></path><g transform="translate(8,8)" visibility="hidden" class="amcharts-legend-switch"><path cs="100,100" d="M-5.5,-5.5 L6.5,6.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path><path cs="100,100" d="M-5.5,6.5 L6.5,-5.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path></g><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" class="amcharts-legend-value" transform="translate(108,7)">1</text><rect x="16" y="0" width="91.82893943786621" height="18" rx="0" ry="0" stroke-width="0" stroke="none" fill="#fff" fill-opacity="0.005"></rect></g><g cursor="pointer" aria-label="Other" transform="translate(123,0)"><path cs="100,100" d="M-7.5,8.5 L8.5,8.5 L8.5,-7.5 L-7.5,-7.5 Z" fill="#9B9B9B" stroke="#9B9B9B" fill-opacity="1" stroke-width="1" stroke-opacity="1" transform="translate(8,8)" class="amcharts-legend-marker"></path><g transform="translate(8,8)" visibility="hidden" class="amcharts-legend-switch"><path cs="100,100" d="M-5.5,-5.5 L6.5,6.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path><path cs="100,100" d="M-5.5,6.5 L6.5,-5.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path></g><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="start" class="amcharts-legend-label" transform="translate(21,7)"><tspan y="6" x="0">Other</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" class="amcharts-legend-value" transform="translate(108,7)">0</text><rect x="16" y="0" width="91.82893943786621" height="18.333333015441895" rx="0" ry="0" stroke-width="0" stroke="none" fill="#fff" fill-opacity="0.005"></rect></g></g></g></svg></div>
+                        <div id="top5-customer-volume-legend" class="div-amcharts-lagend" style="background-color: rgb(255, 255, 255); height: 38px; position: relative;"><svg version="1.1" style="position: absolute; width: 440px; height: 38.3333px; top: -0.222229px; left: -0.083374px;"><desc>JavaScript chart by amCharts 3.21.14</desc><g transform="translate(20,0)"><path cs="100,100" d="M0.5,0.5 L399.5,0.5 L399.5,37.5 L0.5,37.5 Z" fill="#FFFFFF" stroke="#000000" fill-opacity="0" stroke-width="1" stroke-opacity="0" class="amcharts-legend-bg"></path><g transform="translate(84,11)"><g cursor="pointer" aria-label="" transform="translate(0,0)"><path cs="100,100" d="M-7.5,8.5 L8.5,8.5 L8.5,-7.5 L-7.5,-7.5 Z" fill="#4B77BE" stroke="#4B77BE" fill-opacity="1" stroke-width="1" stroke-opacity="1" transform="translate(8,8)" class="amcharts-legend-marker"></path><g transform="translate(8,8)" visibility="hidden" class="amcharts-legend-switch"><path cs="100,100" d="M-5.5,-5.5 L6.5,6.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path><path cs="100,100" d="M-5.5,6.5 L6.5,-5.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path></g><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" class="amcharts-legend-value" transform="translate(108,7)">1</text><rect x="16" y="0" width="91.82893943786621" height="18" rx="0" ry="0" stroke-width="0" stroke="none" fill="#fff" fill-opacity="0.005"></rect></g><g cursor="pointer" aria-label="Other" transform="translate(123,0)"><path cs="100,100" d="M-7.5,8.5 L8.5,8.5 L8.5,-7.5 L-7.5,-7.5 Z" fill="#9B9B9B" stroke="#9B9B9B" fill-opacity="1" stroke-width="1" stroke-opacity="1" transform="translate(8,8)" class="amcharts-legend-marker"></path><g transform="translate(8,8)" visibility="hidden" class="amcharts-legend-switch"><path cs="100,100" d="M-5.5,-5.5 L6.5,6.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path><path cs="100,100" d="M-5.5,6.5 L6.5,-5.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path></g><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="start" class="amcharts-legend-label" transform="translate(21,7)"><tspan y="6" x="0">Other</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" class="amcharts-legend-value" transform="translate(108,7)">0</text><rect x="16" y="0" width="91.82893943786621" height="18.333333015441895" rx="0" ry="0" stroke-width="0" stroke="none" fill="#fff" fill-opacity="0.005"></rect></g></g></g></svg></div>
                     </div>
                 </div>
             </div>
@@ -349,15 +354,39 @@
             <div>
                 <h5 class="text-center text-danger" style="">
                     <font style="vertical-align: inherit;">
-                        <font style="vertical-align: inherit;">
+                        <font style="vertical-align: inherit; font-size: small;">
                             Some shipments are missing customer information, click
                         </font>
-                    </font><a class="ng-binding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">here</font></font></a><font style="vertical-align: inherit;">
-                        <font style="vertical-align: inherit;">
+                    </font><a class="ng-binding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit; font-size: small;">here</font></font></a><font style="vertical-align: inherit;">
+                        <font style="vertical-align: inherit; font-size: small;">
                             to review and correct for correct results
                         </font>
                     </font>
                 </h5>
+            </div>
+        </div>
+
+        <div class="row margin-top-20">
+            <div class="col-sm-12">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-bar-chart font-blue-steel"></i>
+                            <span class="caption-subject font-blue-steel bold uppercase"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@L["BANK BALANCE"]</font></font></span>
+                            <span class="caption-helper ng-binding" style="">
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        Update time
+                                    </font>
+                                </font><i class="fa fa-info-circle text-muted" uib-tooltip="數據於一小時內更新" tooltip-placement="top">
+                                </i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div id="chartdiv" style="width: 100%; height: 550px; background-color: rgb(255, 255, 255); overflow: hidden; text-align: left;" class=""><div class="amcharts-main-div" style="position: relative; width: 100%; height: 100%;"><div class="amcharts-chart-div" style="overflow: hidden; position: relative; text-align: left; height: 502px; cursor: default; width: 1581px; padding: 0px; touch-action: none;"><svg version="1.1" style="position: absolute; width: 1581px; height: 502px; top: 0.055664px; left: -0.111107px;"><desc>JavaScript chart by amCharts 3.21.14</desc><g><path cs="100,100" d="M0.5,0.5 L1580.5,0.5 L1580.5,501.5 L0.5,501.5 Z" fill="#FFFFFF" stroke="#000000" fill-opacity="0" stroke-width="1" stroke-opacity="0"></path><path cs="100,100" d="M0.5,0.5 L1448.5,0.5 L1448.5,341.5 L0.5,341.5 L0.5,0.5 Z" fill="#FFFFFF" stroke="#000000" fill-opacity="0" stroke-width="1" stroke-opacity="0" transform="translate(112,30)"></path></g><g><g transform="translate(112,30)"><g><path cs="100,100" d="M25.5,0.5 L25.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M0.5,341.5 L0.5,341.5 L0.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M75.5,0.5 L75.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M50.5,341.5 L50.5,341.5 L50.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M125.5,0.5 L125.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M100.5,341.5 L100.5,341.5 L100.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M175.5,0.5 L175.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M150.5,341.5 L150.5,341.5 L150.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M225.5,0.5 L225.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M200.5,341.5 L200.5,341.5 L200.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M275.5,0.5 L275.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M250.5,341.5 L250.5,341.5 L250.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M325.5,0.5 L325.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M300.5,341.5 L300.5,341.5 L300.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M374.5,0.5 L374.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M349.5,341.5 L349.5,341.5 L349.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M424.5,0.5 L424.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M399.5,341.5 L399.5,341.5 L399.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M474.5,0.5 L474.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M449.5,341.5 L449.5,341.5 L449.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M524.5,0.5 L524.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M499.5,341.5 L499.5,341.5 L499.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M574.5,0.5 L574.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M549.5,341.5 L549.5,341.5 L549.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M624.5,0.5 L624.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M599.5,341.5 L599.5,341.5 L599.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M674.5,0.5 L674.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M649.5,341.5 L649.5,341.5 L649.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M724.5,0.5 L724.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M699.5,341.5 L699.5,341.5 L699.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M774.5,0.5 L774.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M749.5,341.5 L749.5,341.5 L749.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M824.5,0.5 L824.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M799.5,341.5 L799.5,341.5 L799.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M874.5,0.5 L874.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M849.5,341.5 L849.5,341.5 L849.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M924.5,0.5 L924.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M899.5,341.5 L899.5,341.5 L899.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M974.5,0.5 L974.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M949.5,341.5 L949.5,341.5 L949.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M1024.5,0.5 L1024.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M999.5,341.5 L999.5,341.5 L999.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M1074.5,0.5 L1074.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M1049.5,341.5 L1049.5,341.5 L1049.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M1123.5,0.5 L1123.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M1098.5,341.5 L1098.5,341.5 L1098.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M1173.5,0.5 L1173.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M1148.5,341.5 L1148.5,341.5 L1148.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M1223.5,0.5 L1223.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M1198.5,341.5 L1198.5,341.5 L1198.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M1273.5,0.5 L1273.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M1248.5,341.5 L1248.5,341.5 L1248.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M1323.5,0.5 L1323.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M1298.5,341.5 L1298.5,341.5 L1298.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M1373.5,0.5 L1373.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M1348.5,341.5 L1348.5,341.5 L1348.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M1423.5,0.5 L1423.5,5.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(0,341)"></path><path cs="100,100" d="M1398.5,341.5 L1398.5,341.5 L1398.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g><g><path cs="100,100" d="M1448.5,341.5 L1448.5,341.5 L1448.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.15" stroke="#000000"></path></g></g><g transform="translate(112,30)" visibility="visible"><g><path cs="100,100" d="M0.5,341.5 L6.5,341.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(-6,0)"></path><path cs="100,100" d="M0.5,341.5 L0.5,341.5 L1448.5,341.5" fill="none" stroke-width="1" stroke-opacity="0.07" stroke="#000000"></path></g><g><path cs="100,100" d="M0.5,292.5 L6.5,292.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(-6,0)"></path><path cs="100,100" d="M0.5,292.5 L0.5,292.5 L1448.5,292.5" fill="none" stroke-width="1" stroke-opacity="0.07" stroke="#000000"></path></g><g><path cs="100,100" d="M0.5,244.5 L6.5,244.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(-6,0)"></path><path cs="100,100" d="M0.5,244.5 L0.5,244.5 L1448.5,244.5" fill="none" stroke-width="1" stroke-opacity="0.07" stroke="#000000"></path></g><g><path cs="100,100" d="M0.5,195.5 L6.5,195.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(-6,0)"></path><path cs="100,100" d="M0.5,195.5 L0.5,195.5 L1448.5,195.5" fill="none" stroke-width="1" stroke-opacity="0.07" stroke="#000000"></path></g><g><path cs="100,100" d="M0.5,146.5 L6.5,146.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(-6,0)"></path><path cs="100,100" d="M0.5,146.5 L0.5,146.5 L1448.5,146.5" fill="none" stroke-width="1" stroke-opacity="0.07" stroke="#000000"></path></g><g><path cs="100,100" d="M0.5,97.5 L6.5,97.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(-6,0)"></path><path cs="100,100" d="M0.5,97.5 L0.5,97.5 L1448.5,97.5" fill="none" stroke-width="1" stroke-opacity="0.07" stroke="#000000"></path></g><g><path cs="100,100" d="M0.5,49.5 L6.5,49.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(-6,0)"></path><path cs="100,100" d="M0.5,49.5 L0.5,49.5 L1448.5,49.5" fill="none" stroke-width="1" stroke-opacity="0.07" stroke="#000000"></path></g><g><path cs="100,100" d="M0.5,0.5 L6.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(-6,0)"></path><path cs="100,100" d="M0.5,0.5 L0.5,0.5 L1448.5,0.5" fill="none" stroke-width="1" stroke-opacity="0.07" stroke="#000000"></path></g></g></g><g transform="translate(112,30)" clip-path="url(#AmChartsEl-11)"><g visibility="hidden"></g></g><g></g><g></g><g></g><g><g transform="translate(112,30)"><g><g transform="translate(5,146)" aria-label="銀行存款餘額 BANK1234 -2,142,155.58"><path cs="100,100" d="M0.5,0.5 L0.5,52.5 L40.5,52.5 L40.5,0.5 L0.5,0.5 Z" fill="#FFC54D" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1"></path></g><g transform="translate(55,146)" aria-label="銀行存款餘額 Bank11 20,559.95"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g><g transform="translate(105,146)" aria-label="銀行存款餘額 Bank12 50,280.24"><path cs="100,100" d="M0.5,0.5 L0.5,-0.5 L40.5,-0.5 L40.5,0.5 L0.5,0.5 Z" fill="#FFC54D" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1"></path></g><g transform="translate(155,146)" aria-label="銀行存款餘額 Bank13 47,885.23"><path cs="100,100" d="M0.5,0.5 L0.5,-0.5 L40.5,-0.5 L40.5,0.5 L0.5,0.5 Z" fill="#FFC54D" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1"></path></g><g transform="translate(205,146)" aria-label="銀行存款餘額 Bank15 136,147.28"><path cs="100,100" d="M0.5,0.5 L0.5,-2.5 L40.5,-2.5 L40.5,0.5 L0.5,0.5 Z" fill="#FFC54D" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1"></path></g><g transform="translate(255,146)" aria-label="銀行存款餘額 Bank16 -195,398.03"><path cs="100,100" d="M0.5,0.5 L0.5,5.5 L40.5,5.5 L40.5,0.5 L0.5,0.5 Z" fill="#FFC54D" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1"></path></g><g transform="translate(305,146)" aria-label="銀行存款餘額 Bank17 26.86"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g><g transform="translate(354,146)" aria-label="銀行存款餘額 Bank18 0.00"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g><g transform="translate(404,146)" aria-label="銀行存款餘額 Bank19 4,459.10"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g><g transform="translate(454,146)" aria-label="銀行存款餘額 Bank20 48,406.74"><path cs="100,100" d="M0.5,0.5 L0.5,-0.5 L40.5,-0.5 L40.5,0.5 L0.5,0.5 Z" fill="#FFC54D" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1"></path></g><g transform="translate(504,146)" aria-label="銀行存款餘額 Bank21 100.00"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g><g transform="translate(554,146)" aria-label="銀行存款餘額 Bank3 4,276,122.89"><path cs="100,100" d="M0.5,0.5 L0.5,-103.5 L40.5,-103.5 L40.5,0.5 L0.5,0.5 Z" fill="#FFC54D" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1"></path></g><g transform="translate(604,146)" aria-label="銀行存款餘額 Bank4 59,386.80"><path cs="100,100" d="M0.5,0.5 L0.5,-0.5 L40.5,-0.5 L40.5,0.5 L0.5,0.5 Z" fill="#FFC54D" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1"></path></g><g transform="translate(654,146)" aria-label="銀行存款餘額 Bank5 -168,255.35"><path cs="100,100" d="M0.5,0.5 L0.5,4.5 L40.5,4.5 L40.5,0.5 L0.5,0.5 Z" fill="#FFC54D" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1"></path></g><g transform="translate(704,146)" aria-label="銀行存款餘額 Bank6 103,920.21"><path cs="100,100" d="M0.5,0.5 L0.5,-2.5 L40.5,-2.5 L40.5,0.5 L0.5,0.5 Z" fill="#FFC54D" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1"></path></g><g transform="translate(754,146)" aria-label="銀行存款餘額 Bank7 579.00"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g><g transform="translate(804,146)" aria-label="銀行存款餘額 Bank8 3,371.70"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g><g transform="translate(854,146)" aria-label="銀行存款餘額 Bank9 -2,650.14"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g><g transform="translate(904,146)" aria-label="銀行存款餘額 Chase Credit Card Example 57,830.95"><path cs="100,100" d="M0.5,0.5 L0.5,-0.5 L40.5,-0.5 L40.5,0.5 L0.5,0.5 Z" fill="#FFC54D" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1"></path></g><g transform="translate(954,146)" aria-label="銀行存款餘額 Credit Card Example 0.00"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g><g transform="translate(1004,146)" aria-label="銀行存款餘額 HSBC 0.00"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g><g transform="translate(1054,146)" aria-label="銀行存款餘額 OCBC 0.00"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g><g transform="translate(1103,146)" aria-label="銀行存款餘額 Petty Cash 13,342.00"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g><g transform="translate(1153,146)" aria-label="銀行存款餘額 Petty Cash 0.00"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g><g transform="translate(1203,146)" aria-label="銀行存款餘額 UOB -120,900.01"><path cs="100,100" d="M0.5,0.5 L0.5,3.5 L40.5,3.5 L40.5,0.5 L0.5,0.5 Z" fill="#FFC54D" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1"></path></g><g transform="translate(1253,146)" aria-label="銀行存款餘額 UOB 7,350.00"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g><g transform="translate(1303,146)" aria-label="銀行存款餘額 testing 35,937.62"><path cs="100,100" d="M0.5,0.5 L0.5,-0.5 L40.5,-0.5 L40.5,0.5 L0.5,0.5 Z" fill="#FFC54D" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1"></path></g><g transform="translate(1353,146)" aria-label="銀行存款餘額 華南銀行-USD -6,382,624.00"><path cs="100,100" d="M0.5,0.5 L0.5,155.5 L40.5,155.5 L40.5,0.5 L0.5,0.5 Z" fill="#FFC54D" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1"></path></g><g transform="translate(1403,146)" aria-label="銀行存款餘額 零用金 0.00"><path cs="100,100" d="M0.5,0.5 L40.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#FFFFFF"></path></g></g></g></g><g></g><g><path cs="100,100" d="M0.5,146.5 L1448.5,146.5 L1448.5,146.5" fill="none" stroke-width="1" stroke-opacity="0.14" stroke="#000000" transform="translate(112,30)"></path><g><path cs="100,100" d="M0.5,0.5 L1448.5,0.5" fill="none" stroke-width="1" stroke-opacity="0" stroke="#000000" transform="translate(0,20)"></path></g><g><path cs="100,100" d="M0.5,0.5 L1448.5,0.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(112,371)"></path></g><g><path cs="100,100" d="M0.5,0.5 L0.5,341.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#000000" transform="translate(112,30)" visibility="visible"></path></g></g><g><g transform="translate(112,30)" clip-path="url(#AmChartsEl-12)" style="pointer-events: none;"><path cs="100,100" d="M0.5,0.5 L0.5,0.5 L0.5,341.5" fill="none" stroke-width="1" stroke-opacity="1" stroke="#CC0000" visibility="hidden" transform="translate(25,0)"></path><path cs="100,100" d="M0.5,0.5 L1448.5,0.5 L1448.5,0.5" fill="none" stroke-width="1" stroke="#CC0000" visibility="hidden" transform="translate(0,157)"></path></g><clipPath id="AmChartsEl-12"><rect x="0" y="0" width="1448" height="341" rx="0" ry="0" stroke-width="0"></rect></clipPath></g><g><g visibility="visible" transform="translate(112,10)" style="touch-action: none;"><rect x="0.5" y="0.5" width="1449" height="20" rx="0" ry="0" stroke-width="1" fill="#D4D4D4" stroke="#D4D4D4" fill-opacity="1" stroke-opacity="1"></rect><rect x="0.5" y="0.5" width="1448" height="21" rx="0" ry="0" stroke-width="0" fill="#EFEFEF" stroke="#EFEFEF" fill-opacity="1" stroke-opacity="1" transform="translate(0,0)"></rect><g transform="translate(0,0)"></g><g transform="translate(0,0)" visibility="visible"></g><rect x="0.5" y="0.5" width="1449" height="20" rx="0" ry="0" stroke-width="0" fill="#000" stroke="#000" fill-opacity="0.005" stroke-opacity="0.005"></rect><rect x="0" y="0.5" width="1448" height="20" rx="0" ry="0" stroke-width="0" fill="#000" stroke="#000" fill-opacity="0.005" stroke-opacity="0.005" aria-label="Zoom chart using cursor arrows" role="menuitem" style="cursor: -webkit-grab;"></rect><g aria-label="Zoom chart using cursor arrows" role="menuitem" transform="translate(-17,-7)" visibility="visible"><image x="0" y="0" width="35" height="35" xlink:href="https://fms-static.gofreight.cn/v231013-1051/static/metronic/plugins/amcharts/images/dragIconRoundBig.svg"></image><rect x="0.5" y="0.5" width="25" height="20" rx="0" ry="0" stroke-width="0" fill="#000" stroke="#000" fill-opacity="0.005" stroke-opacity="0.005" transform="translate(5,8)"></rect></g><g aria-label="Zoom chart using cursor arrows" role="menuitem" transform="translate(1431,-7)" visibility="visible"><image x="0" y="0" width="35" height="35" xlink:href="https://fms-static.gofreight.cn/v231013-1051/static/metronic/plugins/amcharts/images/dragIconRoundBig.svg"></image><rect x="0.5" y="0.5" width="25" height="20" rx="0" ry="0" stroke-width="0" fill="#000" stroke="#000" fill-opacity="0.005" stroke-opacity="0.005" transform="translate(5,8)"></rect></g></g></g><g><g transform="translate(112,30)"></g></g><g><g></g></g><g><g transform="translate(112,30)" visibility="visible"><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(4.11285885278193,369.8526583885974) rotate(-45)"><tspan y="6" x="0">BANK1234</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(60.25867858516169,363.7068386562176) rotate(-45)"><tspan y="6" x="0">Bank11</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(110.21936130747241,363.7461559339069) rotate(-45)"><tspan y="6" x="0">Bank12</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(160.25867858516168,363.7068386562176) rotate(-45)"><tspan y="6" x="0">Bank13</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(210.2193613074724,363.7461559339069) rotate(-45)"><tspan y="6" x="0">Bank15</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(260.2193613074724,363.7461559339069) rotate(-45)"><tspan y="6" x="0">Bank16</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(310.2193613074724,363.7461559339069) rotate(-45)"><tspan y="6" x="0">Bank17</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(359.2193613074724,363.7461559339069) rotate(-45)"><tspan y="6" x="0">Bank18</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(409.2193613074724,363.7461559339069) rotate(-45)"><tspan y="6" x="0">Bank19</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(459.2193613074724,363.7461559339069) rotate(-45)"><tspan y="6" x="0">Bank20</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(509.2586785851617,363.7068386562176) rotate(-45)"><tspan y="6" x="0">Bank21</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(561.7286417057009,361.2368755356784) rotate(-45)"><tspan y="6" x="0">Bank3</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(611.6908160892741,361.2747011521052) rotate(-45)"><tspan y="6" x="0">Bank4</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(661.6908160892741,361.2747011521052) rotate(-45)"><tspan y="6" x="0">Bank5</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(711.6908160892741,361.2747011521052) rotate(-45)"><tspan y="6" x="0">Bank6</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(761.6908160892741,361.2747011521052) rotate(-45)"><tspan y="6" x="0">Bank7</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(811.6908160892741,361.2747011521052) rotate(-45)"><tspan y="6" x="0">Bank8</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(861.6908160892741,361.2747011521052) rotate(-45)"><tspan y="6" x="0">Bank9</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(870.4905669141466,402.47495032723265) rotate(-45)"><tspan y="6" x="0">Chase Credit Card Example</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(933.7095341524848,389.2559830888945) rotate(-45)"><tspan y="6" x="0">Credit Card Example</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(1012.8932076832264,360.07230955815294) rotate(-45)"><tspan y="6" x="0">HSBC</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(1062.6976908132078,360.2678264281714) rotate(-45)"><tspan y="6" x="0">OCBC</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(1102.1500613702003,369.815455871179) rotate(-45)"><tspan y="6" x="0">Petty Cash</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(1152.1500613702003,369.815455871179) rotate(-45)"><tspan y="6" x="0">Petty Cash</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(1214.2317872758395,357.73372996553974) rotate(-45)"><tspan y="6" x="0">UOB</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(1264.2317872758395,357.73372996553974) rotate(-45)"><tspan y="6" x="0">UOB</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(1309.609055519256,362.35646172212347) rotate(-45)"><tspan y="6" x="0">testing</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(1347.1512077657574,374.8143094756218) rotate(-45)"><tspan y="6" x="0">華南銀行-USD</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="middle" transform="translate(1411.2982553518013,360.667261889578) rotate(-45)"><tspan y="6" x="0">零用金</tspan></text></g><g transform="translate(112,30)" visibility="visible"><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" transform="translate(-12,339.83333349227905)"><tspan y="6" x="0">-8,000,000</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" transform="translate(-12,290.83333349227905)"><tspan y="6" x="0">-6,000,000</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" transform="translate(-12,242.83333349227905)"><tspan y="6" x="0">-4,000,000</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" transform="translate(-12,193.83333349227905)"><tspan y="6" x="0">-2,000,000</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" transform="translate(-12,144.83333349227905)"><tspan y="6" x="0">0</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" transform="translate(-12,95.83333349227905)"><tspan y="6" x="0">2,000,000</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" transform="translate(-12,47.83333349227905)"><tspan y="6" x="0">4,000,000</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" transform="translate(-12,-1.1666665077209473)"><tspan y="6" x="0">6,000,000</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="12px" opacity="1" font-weight="bold" text-anchor="middle" transform="translate(-91,171) rotate(-90)"><tspan y="6" x="0">餘額</tspan></text></g></g><g></g><g transform="translate(112,30)"></g><g></g><g></g><clipPath id="AmChartsEl-11"><rect x="-1" y="-1" width="1450" height="343" rx="0" ry="0" stroke-width="0"></rect></clipPath></svg><a href="http://www.amcharts.com" title="JavaScript charts" style="position: absolute; text-decoration: none; color: rgb(0, 0, 0); font-family: Verdana; font-size: 11px; opacity: 0.7; display: block; left: 117px; top: 35px;"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">JS chart by amCharts</font></font></a></div><div class="amChartsLegend amcharts-legend-div" style="overflow: hidden; position: relative; text-align: left; width: 1581px; top: 0px; height: 48px; cursor: default;"><svg version="1.1" style="position: absolute; width: 1581px; height: 48.3333px; top: 0.055664px; left: -0.111107px;"><desc>JavaScript chart by amCharts 3.21.14</desc><g transform="translate(112,0)"><path cs="100,100" d="M0.5,0.5 L1448.5,0.5 L1448.5,37.5 L0.5,37.5 Z" fill="#FFFFFF" stroke="#000000" fill-opacity="0" stroke-width="1" stroke-opacity="0"></path><g transform="translate(0,11)"><g cursor="pointer" aria-label="銀行存款餘額" transform="translate(0,0)"><path cs="100,100" d="M-7.5,8.5 L8.5,8.5 L8.5,-7.5 L-7.5,-7.5 Z" fill="#FFFFFF" stroke="#FFFFFF" fill-opacity="1" stroke-width="1" stroke-opacity="1" transform="translate(8,8)"></path><g transform="translate(8,8)" visibility="hidden"><path cs="100,100" d="M-5.5,-5.5 L6.5,6.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path><path cs="100,100" d="M-5.5,6.5 L6.5,-5.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path></g><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="start" transform="translate(21,7)"><tspan y="6" x="0">銀行存款餘額</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="start" transform="translate(92,7)">總額: -4,146,276.54</text><rect x="16" y="0" width="175.98611450195312" height="18.333333015441895" rx="0" ry="0" stroke-width="0" stroke="none" fill="#fff" fill-opacity="0.005"></rect></g></g></g></svg></div></div></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -11,6 +11,8 @@
     "Menu:ItNoRanges": "IT No. Management",
     "Menu:AwbNoRanges": "AWB No. Management",
     "Menu:AirOtherCharge": "Air Other Charge",
+    "Menu:FrontPage": "Front Page",
+    "Menu:Dashboard": "Dashboard",
     "Actions": "Actions",
     "Close": "Close",
     "Create": "Create",
@@ -1584,8 +1586,20 @@
     "Batchupdateinvoices": "Batch update invoices",
     "A/R": "A/R",
     "A/P": "A/P",
-    "Debit": "Debit"
-
-
+    "Debit": "Debit",
+    "TotalProfit": "Total Profit",
+    "Prev": "Prev",
+    "Total Volume(No. of B/L, AWB)": "Total Volume(No. of B/L, AWB)",
+    "No. of Active Customers": "No. of Active Customers",
+    "No. of Lost Customers": "No. of Lost Customers",
+    "TOP 5 Profit Customers": "TOP 5 Profit Customers",
+    "TOP 5 Volume Customers(No. of B/L, AWB)": "TOP 5 Volume Customers(No. of B/L, AWB)",
+    "*Percentage are calculated based on customers with positive profit only": "*Percentage are calculated based on customers with positive profit only",
+    "Alerts": "Alerts",
+    "Warnings": "Warnings",
+    "TO DO LIST": "TO DO LIST",
+    "NEGATIVE PROFIT SHIPMENTS": "NEGATIVE PROFIT SHIPMENTS",
+    "MY SHIPMENT / OCEAN EXPORT": "MY SHIPMENT / OCEAN EXPORT",
+    "BANK BALANCE": "BANK BALANCE"
   }
 }
