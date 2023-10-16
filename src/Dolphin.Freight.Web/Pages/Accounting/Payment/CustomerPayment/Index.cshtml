@@ -183,12 +183,23 @@ var formattedDate = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes
     </div>
     <nav class="submenu">
         <ol>
-            <li class="menu-item" style="display: flex!important; align-items: flex-start!important;flex-direction: column">
-                <a class="nav-link active" href="CustomerPayment">@L["Tab:Basic"]</a>
+            @*<li class="menu-item" style="display: flex!important; align-items: flex-start!important;flex-direction: column">*@
+            <li class="menu-item">
+                <a class="nav-link active" href="javascript:void(0)">@L["Tab:Basic"]</a>
             </li>
-         @*    <li class="menu-item">
-                <a class="nav-link disabled" href="EditModal2">@L["Tab:Doc"]</a>
-            </li> *@
+            @{
+                if(Model.Id != Guid.Empty){
+                    <li class="menu-item">
+                        <a class="nav-link" href="CustomerPayment/DocCenter?Id=@Model.Id">@L["Tab:Doc"]</a>
+                    </li>
+                } else
+                {
+                    <li class="menu-item">
+                        <a class="nav-link disabled" href="DocCenter">@L["Tab:Doc"]</a>
+                    </li>
+                }
+            }
+            
         </ol>
     </nav>
 </div>
