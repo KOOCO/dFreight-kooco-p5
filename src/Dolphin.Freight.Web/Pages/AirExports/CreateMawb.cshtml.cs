@@ -157,7 +157,6 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             }
             else
             {
-               
                 MawbModel = new CreateMawbViewModel
                 {
                     // set default value

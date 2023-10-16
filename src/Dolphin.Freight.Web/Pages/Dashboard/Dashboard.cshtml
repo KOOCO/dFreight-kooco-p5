@@ -1,0 +1,364 @@
+﻿@page
+<div id="performance_div" ng-controller="dashPerformanceController as vm" ng-init="vm.initial({
+     })" class="ng-scope">
+    <div class="portlet light bordered">
+        <div class="row margin-top-20">
+            <div class="col-md-6 col-xs-12 kpi-date">
+                <select class="select mg-right-sm input-inline form-control w-auto ng-pristine ng-valid ng-not-empty ng-touched" ng-model="vm.office" ng-options="o.id as o.text for o in vm.options.office_for_dashboard" ng-change="vm.reloadData(true)" style=""><option label="所有分站" value="number:-1" selected="selected"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">All substations</font></font></option><option label="LAX" value="number:1"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">LAX</font></font></option></select>
+
+                <div class="btn-group _mg-right-xs tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="這個月 (截至本月)">
+                    <a class="btn btn-default btn-sm ng-binding" href="javascript:;" data-toggle="dropdown">
+                        <font style="vertical-align: inherit;">
+                            <font style="vertical-align: inherit;">
+                                ~ &emsp;
+                            </font>
+                        </font><i class="fa fa-angle-down"></i>
+                    </a>
+
+                    <ul class="dropdown-menu list-group active">
+
+                        <!-- ngRepeat: p in vm.PERIOD_LIST -->
+                        <li class="_border-b-gray-light ng-scope active" ng-repeat="p in vm.PERIOD_LIST" ng-click="vm.changeBasePeriod(p)" ng-class="{ active: vm.currPeriod === p }" style="">
+                            <a class="list-group-item _pd-sm ng-binding">
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        This month
+                                    </font>
+                                </font><span class="_text-grey _mg-left-xs ng-binding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">ends this month</font></font></span>
+                            </a>
+                        </li><!-- end ngRepeat: p in vm.PERIOD_LIST -->
+                        <li class="_border-b-gray-light ng-scope" ng-repeat="p in vm.PERIOD_LIST" ng-click="vm.changeBasePeriod(p)" ng-class="{ active: vm.currPeriod === p }">
+                            <a class="list-group-item _pd-sm ng-binding">
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        This month
+                                    </font>
+                                </font><span class="_text-grey _mg-left-xs ng-binding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">as of today</font></font></span>
+                            </a>
+                        </li><!-- end ngRepeat: p in vm.PERIOD_LIST -->
+                        <li class="_border-b-gray-light ng-scope" ng-repeat="p in vm.PERIOD_LIST" ng-click="vm.changeBasePeriod(p)" ng-class="{ active: vm.currPeriod === p }">
+                            <a class="list-group-item _pd-sm ng-binding">
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        last month
+                                    </font>
+                                </font><span class="_text-grey _mg-left-xs ng-binding"> </span>
+                            </a>
+                        </li><!-- end ngRepeat: p in vm.PERIOD_LIST -->
+                        <li class="_border-b-gray-light ng-scope" ng-repeat="p in vm.PERIOD_LIST" ng-click="vm.changeBasePeriod(p)" ng-class="{ active: vm.currPeriod === p }">
+                            <a class="list-group-item _pd-sm ng-binding">
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        last two months
+                                    </font>
+                                </font><span class="_text-grey _mg-left-xs ng-binding"> </span>
+                            </a>
+                        </li><!-- end ngRepeat: p in vm.PERIOD_LIST -->
+                        <li class="_border-b-gray-light ng-scope" ng-repeat="p in vm.PERIOD_LIST" ng-click="vm.changeBasePeriod(p)" ng-class="{ active: vm.currPeriod === p }">
+                            <a class="list-group-item _pd-sm ng-binding">
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        Last 30 days
+                                    </font>
+                                </font><span class="_text-grey _mg-left-xs ng-binding"> </span>
+                            </a>
+                        </li><!-- end ngRepeat: p in vm.PERIOD_LIST -->
+                        <li class="_border-b-gray-light ng-scope" ng-repeat="p in vm.PERIOD_LIST" ng-click="vm.changeBasePeriod(p)" ng-class="{ active: vm.currPeriod === p }">
+                            <a class="list-group-item _pd-sm ng-binding">
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        past 60 days
+                                    </font>
+                                </font><span class="_text-grey _mg-left-xs ng-binding"> </span>
+                            </a>
+                        </li><!-- end ngRepeat: p in vm.PERIOD_LIST -->
+                        <li class="inlineflex-alignitems-center _border-b-gray-light" ng-class="{ active: vm.currPeriod === vm.PERIOD_KEY.CUSTOM }">
+                            <a class="list-group-item _pd-sm ng-binding" ng-click="vm.changeBasePeriod(vm.PERIOD_KEY.CUSTOM)">
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        ~
+                                    </font>
+                                </font>
+                            </a>
+                            <span id="custom-period-date-range-picker-button">
+                                <a href="javascript:;" class="tooltips _text-link-blue _pd-sm" ng-click="vm.onCustomPeriodButtonClick()" data-original-title="" title=""><i class="fa fa-pencil _text-color-inherit"></i></a>
+                            </span>
+                        </li>
+                    </ul>
+                    <span id="performance-date-range-picker-hook" class="performance-date-range-picker-hook">
+                        <a href="javascript:;" class="tooltips _text-link-blue ng-isolate-scope" date-range-picker="" model-date-start="vm.customPeriodStart" model-date-end="vm.customPeriodEnd" append-to-body="false" hide-range="true" on-date-range-apply-callback="vm.changeCustomPeriod()" data-original-title="" title=""></a>
+                        <div class="daterangepicker dropdown-menu 698624 ltr show-calendar opensright"><div class="calendar left"><div class="daterangepicker_input"><input class="input-mini form-control" type="text" name="daterangepicker_start" value="" tabindex="1"><i class="fa fa-calendar"></i><div class="calendar-time" style="display: none;"><div></div><i class="fa fa-clock-o glyphicon glyphicon-time"></i></div></div><div class="calendar-table"></div><div><button class="btn btn-default btn-clear" type="button"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Clear</font></font></button><button class="btn btn-default btn-now" type="button"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Now</font></font></button></div></div><div class="calendar right"><div class="daterangepicker_input"><input class="input-mini form-control" type="text" name="daterangepicker_end" value="" tabindex="2"><i class="fa fa-calendar"></i><div class="calendar-time" style="display: none;"><div></div><i class="fa fa-clock-o glyphicon glyphicon-time"></i></div></div><div class="calendar-table"></div><div class="text-right"><button class="btn btn-default btn-apply bold" type="button" tabindex="3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Apply</font></font></button></div></div></div>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-12 kpi-compare">
+                <div class="name-sm w-auto margin-right-10"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">comparison method</font></font></div>
+                <!-- ngRepeat: c in vm.COMPARE_LIST --><button class="btn btn-default btn-sm tooltips ng-binding ng-scope" ng-repeat="c in vm.COMPARE_LIST" ng-bind="c" ng-click="vm.changeCompare(c)" ng-disabled="!vm.canCompare(c)" ng-class="{active: vm.currCompare === c}" uib-tooltip-html="vm.getCompareTip(c) | nl2br | empty2space" data-original-title="" title=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">monthly growth rate</font></font></button><!-- end ngRepeat: c in vm.COMPARE_LIST --><button class="btn btn-default btn-sm tooltips ng-binding ng-scope active" ng-repeat="c in vm.COMPARE_LIST" ng-bind="c" ng-click="vm.changeCompare(c)" ng-disabled="!vm.canCompare(c)" ng-class="{active: vm.currCompare === c}" uib-tooltip-html="vm.getCompareTip(c) | nl2br | empty2space" data-original-title="" title=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">annual growth rate</font></font></button><!-- end ngRepeat: c in vm.COMPARE_LIST -->
+                <button class="btn btn-primary btn-sm pull-right" ng-click="vm.reloadData(true)">
+                    <i class="fa fa-refresh"></i><font style="vertical-align: inherit;">
+                        <font style="vertical-align: inherit;">
+                            Reorganize
+                        </font>
+                    </font>
+                </button>
+            </div>
+        </div>
+        <div class="row margin-top-20">
+            <div class="col-xs-12 col-stat" ng-show="vm.P.DASHBOARD_PERFORMANCE_TOTAL_PROFIT_VIEW" style="">
+                <div class="dashboard-stat2 dashboard-stat2--noprogress">
+                    <div class="display">
+                        <div class="number">
+                            <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Total profit</font></font></small>
+                            <!-- ngIf: vm.totalVolumeProfit.baseStatus.loading -->
+                            <!-- ngIf: !vm.totalVolumeProfit.baseStatus.loading --><h3 ng-if="!vm.totalVolumeProfit.baseStatus.loading" class="font-blue-steel ng-scope" style="">
+                                <small class="font-blue-steel ng-binding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">$</font></font></small>
+                                <span count-up="" start-val="0" end-val="vm.totalVolumeProfit.profitData.base" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">0</font></font></span>
+                            </h3><!-- end ngIf: !vm.totalVolumeProfit.baseStatus.loading -->
+                        </div>
+                    </div>
+                    <div class="status">
+                        <div class="status-number">
+                            <!-- ngIf: vm.totalVolumeProfit.compareStatus.loading -->
+                            <!-- ngIf: !vm.totalVolumeProfit.compareStatus.loading --><span ng-if="!vm.totalVolumeProfit.compareStatus.loading" class="ng-scope" style="">
+                                <!-- ngIf: vm.totalVolumeProfit.profitData.deltaPercent === null --><span ng-if="vm.totalVolumeProfit.profitData.deltaPercent === null" class="ng-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">- - %</font></font></span><!-- end ngIf: vm.totalVolumeProfit.profitData.deltaPercent === null -->
+                                <!-- ngIf: vm.totalVolumeProfit.profitData.deltaPercent !== null -->
+                            </span><!-- end ngIf: !vm.totalVolumeProfit.compareStatus.loading -->
+                        </div>
+                        <div class="status-title">
+                            <font style="vertical-align: inherit;"></font><!-- ngIf: vm.totalVolumeProfit.compareStatus.loading -->
+                            <!-- ngIf: !vm.totalVolumeProfit.compareStatus.loading --><span ng-if="!vm.totalVolumeProfit.compareStatus.loading" class="ng-binding ng-scope" style="">
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        $
+                                    </font>
+                                </font><span count-up="" start-val="0" end-val="vm.totalVolumeProfit.profitData.compare" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">-4,518</font></font></span>
+                            </span><!-- end ngIf: !vm.totalVolumeProfit.compareStatus.loading -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-stat" ng-show="vm.P.DASHBOARD_PERFORMANCE_TOTAL_VOLUME_VIEW">
+                <div class="dashboard-stat2 dashboard-stat2--noprogress">
+                    <div class="display">
+                        <div class="number">
+                            <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Total cargo volume </font></font><small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">(bill of lading quantity)</font></font></small></small>
+                            <!-- ngIf: vm.totalVolumeProfit.baseStatus.loading -->
+                            <!-- ngIf: !vm.totalVolumeProfit.baseStatus.loading --><h3 ng-if="!vm.totalVolumeProfit.baseStatus.loading" class="font-green ng-scope" style="">
+                                <span count-up="" start-val="0" end-val="vm.totalVolumeProfit.volumeData.base" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">1</font></font></span>
+                            </h3><!-- end ngIf: !vm.totalVolumeProfit.baseStatus.loading -->
+                        </div>
+                    </div>
+                    <div class="status">
+                        <div class="status-number">
+                            <!-- ngIf: vm.totalVolumeProfit.compareStatus.loading -->
+                            <!-- ngIf: !vm.totalVolumeProfit.compareStatus.loading --><span ng-if="!vm.totalVolumeProfit.compareStatus.loading" class="ng-scope" style="">
+                                <!-- ngIf: vm.totalVolumeProfit.volumeData.deltaPercent === null -->
+                                <!-- ngIf: vm.totalVolumeProfit.volumeData.deltaPercent !== null --><span ng-if="vm.totalVolumeProfit.volumeData.deltaPercent !== null" class="ng-scope">
+                                    <!-- ngIf: vm.totalVolumeProfit.volumeData.deltaPercent >= 0 -->
+                                    <!-- ngIf: vm.totalVolumeProfit.volumeData.deltaPercent < 0 --><i ng-if="vm.totalVolumeProfit.volumeData.deltaPercent < 0" class="fa fa-caret-down text-danger ng-scope"></i><!-- end ngIf: vm.totalVolumeProfit.volumeData.deltaPercent < 0 -->
+                                    <span count-up="" start-val="0" end-val="vm.totalVolumeProfit.volumeData.deltaPercent" duration="vm.countUpDuration" reanimate-on-click="false" options="vm.countUpPercentOptions" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">-97%</font></font></span>
+                                </span><!-- end ngIf: vm.totalVolumeProfit.volumeData.deltaPercent !== null -->
+                            </span><!-- end ngIf: !vm.totalVolumeProfit.compareStatus.loading -->
+                        </div>
+                        <div class="status-title">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    Early stage:
+                                </font>
+                            </font><!-- ngIf: vm.totalVolumeProfit.compareStatus.loading -->
+                            <!-- ngIf: !vm.totalVolumeProfit.compareStatus.loading --><span class="ng-scope" style="">
+                                <span count-up="" start-val="0" end-val="vm.totalVolumeProfit.volumeData.compare" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">34</font></font></span>
+                            </span><!-- end ngIf: !vm.totalVolumeProfit.compareStatus.loading -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-stat">
+                <div class="dashboard-stat2 dashboard-stat2--noprogress">
+                    <div class="display">
+                        <div class="number">
+                            <small>
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        Effective number of customers
+                                    </font>
+                                </font><i class="fa fa-info-circle text-muted tooltips" uib-tooltip="Last shipment’s post date within last 60 days." tooltip-placement="top" data-original-title="" title=""></i>
+                            </small>
+                            <!-- ngIf: vm.activeCustomer.baseStatus.loading -->
+                            <!-- ngIf: !vm.activeCustomer.baseStatus.loading --><h3 class="font-red-pink ng-scope" style="">
+                                <span count-up="" start-val="0" end-val="vm.activeCustomer.activeData.base" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">5</font></font></span>
+                            </h3><!-- end ngIf: !vm.activeCustomer.baseStatus.loading -->
+                        </div>
+                    </div>
+                    <div class="status">
+                        <div class="status-number">
+                            <span class="ng-scope" style="">
+                                <i class="fa fa-caret-down text-danger ng-scope"></i>
+                                    <span count-up="" start-val="0" end-val="vm.activeCustomer.activeData.deltaPercent" duration="vm.countUpDuration" reanimate-on-click="false" options="vm.countUpPercentOptions" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">-50%</font></font></span>
+                            </span>
+                        </div>
+                        <div class="status-title">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    Early stage:
+                                </font>
+                            </font><!-- ngIf: vm.activeCustomer.compareStatus.loading -->
+                            <!-- ngIf: !vm.activeCustomer.compareStatus.loading --><span class="ng-scope" style="">
+                                <span count-up="" start-val="0" end-val="vm.activeCustomer.activeData.compare" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">10</font></font></span>
+                            </span><!-- end ngIf: !vm.activeCustomer.compareStatus.loading -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-stat">
+                <div class="dashboard-stat2 dashboard-stat2--noprogress">
+                    <div class="display">
+                        <div class="number">
+                            <small>
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        Number of lost customers
+                                    </font>
+                                </font><i class="fa fa-info-circle text-muted" uib-tooltip="Last shipment’s post date within last 60 days." tooltip-placement="top"></i>
+                            </small>
+                            <!-- ngIf: vm.lostCustomer.baseStatus.loading -->
+                            <!-- ngIf: !vm.lostCustomer.baseStatus.loading --><h3 class="font-yellow-crusta ng-scope" style="">
+                                <span count-up="" start-val="0" end-val="vm.lostCustomer.lostData.base" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">2</font></font></span>
+                            </h3><!-- end ngIf: !vm.lostCustomer.baseStatus.loading -->
+                        </div>
+                    </div>
+                    <div class="status">
+                        <div class="status-number">
+                            <span class="ng-scope" style="">
+                                <span class="ng-scope">
+                                    <i class="fa fa-caret-down text-danger ng-scope"></i>
+                                    <span count-up="" start-val="0" end-val="vm.lostCustomer.lostData.deltaPercent" duration="vm.countUpDuration" reanimate-on-click="false" options="vm.countUpPercentOptions" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">-33%</font></font></span>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="status-title">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    Early stage:
+                                </font>
+                            </font>
+                            <span class="ng-scope" style="">
+                                <span count-up="" start-val="0" end-val="vm.lostCustomer.lostData.compare" duration="vm.countUpDuration" reanimate-on-click="false" class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">3</font></font></span>
+                            </span>
+                        </div>
+                    </div>
+                    <mgmt-lost-customer-detail period-start="vm.lostCustomer.lostData.period.period_start" period-end="vm.lostCustomer.lostData.period.period_end" detail-list="vm.lostCustomer.lostData.detail" class="ng-isolate-scope">
+                        <button class="btn btn-default btn-sm ng-binding" type="button">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    Details
+                                </font>
+                            </font><i class="fa fa-external-link-square _font-12"></i>
+                        </button>
+
+
+                        <script type="text/ng-template" id="lostCustomerDetail.html">
+                            <div class="modal-header">
+                                <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title"></h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <div class="btn-group">
+                                        <button class="btn btn-default btn-sm"
+                                        ></button>
+                                        <button class="btn btn-default btn-sm"
+                                        ></button>
+                                        <button class="btn btn-default btn-sm"
+                                        ></button>
+                                    </div>
+                                </div>
+
+                                <table class="table table-bordered table-striped table-hover">
+                                    <colgroup>
+                                        <col class="td-55per">
+                                        <col class="td-20per">
+                                        <col class="td-20per">
+                                        <col class="td-5per">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th class="valign-middle" ng-bind="::_T.HEADER.NAME"></th>
+                                            <th ng-bind="::_T.HEADER.DAYS"></th>
+                                            <th ng-bind="::_T.HEADER.POST_DATE"></th>
+                                            <th class="text-center valign-middle" ng-bind="::_T.HEADER.IGNORE"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="d in vm.detailList | filter:vm.getFilter()">
+                                            <td><a target="_blank"></a></td>
+                                            <td ng-bind="d.lost_days"></td>
+                                            <td ng-bind="d.last_post_date | date_format"></td>
+                                            <td class="text-center">
+                                                <input type="checkbox"
+                                                >
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn blue"
+                                        ng-bind="::_T.BTN.PRINT"
+                                ></button>
+                                <button type="button" class="btn blue"
+                                        ng-bind="::_T.BTN.OK"
+                                ></button>
+                            </div>
+                        </script>
+                    </mgmt-lost-customer-detail>
+                </div>
+            </div>
+        </div>
+
+        <div class="row margin-top-20">
+            <div class="col-xs-12 col-pie" style="">
+                <div class="dashboard-stat2 dashboard-stat2--lg">
+                    <div class="display margin-bottom-15">
+                        <div class="number">
+                            <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Top five profitable customers</font></font></small>
+                        </div>
+                    </div>
+                    <div class="chart-flex" style="">
+                        <div id="top5-customer-profit-chart" style="background-color: rgb(255, 255, 255); height: 250px; overflow: hidden; text-align: left;"><div class="amcharts-main-div" style="position: relative; width: 100%; height: 100%;"><div class="amcharts-chart-div" style="overflow: hidden; position: relative; text-align: left; width: 294px; height: 250px; padding: 0px; touch-action: auto;"><svg version="1.1" style="position: absolute; width: 294px; height: 250px; top: 0.277771px; left: -0.222221px;"><desc>JavaScript chart by amCharts 3.21.14</desc><g><path cs="100,100" d="M0.5,0.5 L293.5,0.5 L293.5,249.5 L0.5,249.5 Z" fill="#FFFFFF" stroke="#000000" fill-opacity="0" stroke-width="1" stroke-opacity="0" class="amcharts-bg"></path></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g><g></g></g><g></g><g></g><g></g><g></g><g></g></svg><a href="http://www.amcharts.com" title="JavaScript charts" target="_self" style="position: absolute; text-decoration: none; color: rgb(0, 0, 0); font-family: Verdana; font-size: 11px; opacity: 0.7; display: block; left: 5px; top: 5px;"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">JS chart by amCharts</font></font></a></div></div></div>
+                        <div id="top5-customer-profit-legend" class="div-amcharts-lagend" style="background-color: rgb(255, 255, 255); height: 38px; position: relative;"><svg version="1.1" style="position: absolute; width: 440px; height: 38.3333px;"><desc>JavaScript chart by amCharts 3.21.14</desc><g transform="translate(20,0)"><path cs="100,100" d="M0.5,0.5 L399.5,0.5 L399.5,37.5 L0.5,37.5 Z" fill="#FFFFFF" stroke="#000000" fill-opacity="0" stroke-width="1" stroke-opacity="0" class="amcharts-legend-bg"></path><g transform="translate(146,11)"><g cursor="pointer" aria-label="Other" transform="translate(0,0)"><path cs="100,100" d="M-7.5,8.5 L8.5,8.5 L8.5,-7.5 L-7.5,-7.5 Z" fill="#9B9B9B" stroke="#9B9B9B" fill-opacity="1" stroke-width="1" stroke-opacity="1" transform="translate(8,8)" class="amcharts-legend-marker"></path><g transform="translate(8,8)" visibility="hidden" class="amcharts-legend-switch"><path cs="100,100" d="M-5.5,-5.5 L6.5,6.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path><path cs="100,100" d="M-5.5,6.5 L6.5,-5.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path></g><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="start" class="amcharts-legend-label" transform="translate(21,7)"><tspan y="6" x="0">Other</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" class="amcharts-legend-value" transform="translate(108,7)">0</text><rect x="16" y="0" width="91.82893943786621" height="18.333333015441895" rx="0" ry="0" stroke-width="0" stroke="none" fill="#fff" fill-opacity="0.005"></rect></g></g></g></svg></div>
+                        <div class="dashboard-stat2__remark"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">*Only truly profitable customers will be included in the calculation</font></font></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-pie">
+                <div class="dashboard-stat2 dashboard-stat2--lg">
+                    <div class="display margin-bottom-15">
+                        <div class="number">
+                            <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Top five customers by volume </font></font><small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">(number of bills of lading)</font></font></small></small>
+                        </div>
+                    </div>
+                    <div class="chart-flex" style="">
+                        <div id="top5-customer-volume-chart" style="background-color: rgb(255, 255, 255); height: 250px; overflow: hidden; text-align: left;"><div class="amcharts-main-div" style="position: relative; width: 100%; height: 100%;"><div class="amcharts-chart-div" style="overflow: hidden; position: relative; text-align: left; width: 294px; height: 250px; padding: 0px; touch-action: auto;"><svg version="1.1" style="position: absolute; width: 294px; height: 250px; top: 0.277771px; left: 0.388916px;"><desc>JavaScript chart by amCharts 3.21.14</desc><g><path cs="100,100" d="M0.5,0.5 L293.5,0.5 L293.5,249.5 L0.5,249.5 Z" fill="#FFFFFF" stroke="#000000" fill-opacity="0" stroke-width="1" stroke-opacity="0" class="amcharts-bg"></path></g><g></g><g></g><g></g><g></g><g></g><g><g class="amcharts-pie-item" aria-label=": 100.00% 1 "><path cs="1000,1000" d=" M147,103 L147,51 A74,74,0,1,1,146.9225073953748,51.00004057503661 L146.9769616580844,103.00001206284873 A22,22,0,1,0,147,103 Z" fill="#4B77BE" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0" fill-opacity="1" class="amcharts-pie-slice"></path></g></g><g></g><g></g><g></g><g></g><g></g><g><g></g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg><a href="http://www.amcharts.com" title="JavaScript charts" target="_self" style="position: absolute; text-decoration: none; color: rgb(0, 0, 0); font-family: Verdana; font-size: 11px; opacity: 0.7; display: block; left: 5px; top: 5px;"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">JS chart by amCharts</font></font></a></div></div></div>
+                        <div id="top5-customer-volume-legend" class="div-amcharts-lagend" style="background-color: rgb(255, 255, 255); height: 38px; position: relative;"><svg version="1.1" style="position: absolute; width: 440px; height: 38.3333px;"><desc>JavaScript chart by amCharts 3.21.14</desc><g transform="translate(20,0)"><path cs="100,100" d="M0.5,0.5 L399.5,0.5 L399.5,37.5 L0.5,37.5 Z" fill="#FFFFFF" stroke="#000000" fill-opacity="0" stroke-width="1" stroke-opacity="0" class="amcharts-legend-bg"></path><g transform="translate(84,11)"><g cursor="pointer" aria-label="" transform="translate(0,0)"><path cs="100,100" d="M-7.5,8.5 L8.5,8.5 L8.5,-7.5 L-7.5,-7.5 Z" fill="#4B77BE" stroke="#4B77BE" fill-opacity="1" stroke-width="1" stroke-opacity="1" transform="translate(8,8)" class="amcharts-legend-marker"></path><g transform="translate(8,8)" visibility="hidden" class="amcharts-legend-switch"><path cs="100,100" d="M-5.5,-5.5 L6.5,6.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path><path cs="100,100" d="M-5.5,6.5 L6.5,-5.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path></g><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" class="amcharts-legend-value" transform="translate(108,7)">1</text><rect x="16" y="0" width="91.82893943786621" height="18" rx="0" ry="0" stroke-width="0" stroke="none" fill="#fff" fill-opacity="0.005"></rect></g><g cursor="pointer" aria-label="Other" transform="translate(123,0)"><path cs="100,100" d="M-7.5,8.5 L8.5,8.5 L8.5,-7.5 L-7.5,-7.5 Z" fill="#9B9B9B" stroke="#9B9B9B" fill-opacity="1" stroke-width="1" stroke-opacity="1" transform="translate(8,8)" class="amcharts-legend-marker"></path><g transform="translate(8,8)" visibility="hidden" class="amcharts-legend-switch"><path cs="100,100" d="M-5.5,-5.5 L6.5,6.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path><path cs="100,100" d="M-5.5,6.5 L6.5,-5.5" fill="none" stroke="#FFFFFF" stroke-width="3"></path></g><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="start" class="amcharts-legend-label" transform="translate(21,7)"><tspan y="6" x="0">Other</tspan></text><text y="6" fill="#000000" font-family="Verdana" font-size="11px" opacity="1" text-anchor="end" class="amcharts-legend-value" transform="translate(108,7)">0</text><rect x="16" y="0" width="91.82893943786621" height="18.333333015441895" rx="0" ry="0" stroke-width="0" stroke="none" fill="#fff" fill-opacity="0.005"></rect></g></g></g></svg></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div>
+                <h5 class="text-center text-danger" style="">
+                    <font style="vertical-align: inherit;">
+                        <font style="vertical-align: inherit;">
+                            Some shipments are missing customer information, click
+                        </font>
+                    </font><a class="ng-binding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">here</font></font></a><font style="vertical-align: inherit;">
+                        <font style="vertical-align: inherit;">
+                            to review and correct for correct results
+                        </font>
+                    </font>
+                </h5>
+            </div>
+        </div>
+    </div>
+</div>
