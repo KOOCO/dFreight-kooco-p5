@@ -7,6 +7,7 @@
     "TO DO LIST": "待辦事項",
     "Warnings": "警告",
     "Alerts": "提醒",
+    "Name": "名稱",
     "*Percentage are calculated based on customers with positive profit only": "*只有真正有利潤的客戶才會被列入計算",
     "TOP 5 Volume Customers(No. of B/L, AWB)": "貨量前五大客戶 (提單數量)",
     "TOP 5 Profit Customers": "利潤前五大客戶",
@@ -291,6 +292,7 @@
     "PolName": "裝貨港(POL)",
     "PolEtd": "ETD",
     "PodId": "卸貨港(POD)",
+    "POD": "卸貨港(POD)",
     "PoDId": "卸貨港(POD)",
     "PodName": "卸貨港(POD)",
     "PodEta": "ETA",
@@ -298,6 +300,7 @@
     "DelName": "交貨地(DEL)",
     "DelEta": "交貨地(DEL) ETA",
     "FdestId": "最終目的地",
+    "Mode": "運輸模式",
     "FdestEta": "最終目的地ETA",
     "EmptyPickupId": "提空櫃地點",
     "DeliveryToId": "卡車交貨地",
@@ -1131,8 +1134,8 @@
     "Depature": "出發地",
     "Destination": "目的地",
     "OverseaAgent": "海外代理",
-
-
+    "Profit": "利潤",
+    "Remarks": "備註",
     "Display:TradePartner:DefaultFreight:NavTab:OI": "海運進口",
     "Display:TradePartner:DefaultFreight:NavTab:OE": "海運出口",
     "Display:TradePartner:DefaultFreight:NavTab:AI": "空運進口",
@@ -1222,7 +1225,7 @@
     "ActualShippedr": "實際託運人",
     "OP": "創建者",
     "sales": "業務員",
-
+    "Ignore": "忽略",
     "tracker": "卡車行",
     "SubAgentAwb": "子代理提單",
     "CargoPickup": "卡車收貨地",

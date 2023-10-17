@@ -39,7 +39,8 @@
     "EndNo": "End No.",
     "Note": "Remark",
     "CurrentNo": "Current Assigned No.",
-
+    "Name": "Name",
+    "Alerts": "Alerts",
     "Permission:OceanExportMbls": "Ocean Export Mbl",
     "Permission:OceanImportMbls": "Ocean Import Mbl",
     "Permission:Settings": "Setting",
@@ -363,7 +364,7 @@
     "DelEta": "DEL ETA",
     "FdestId": "Final dest",
     "FdestEta": "Final dest ETA",
-
+    "Mode": "Mode",
     "EmptyPickupId": "Empty Pickup",
     "DeliveryToId": "Delivery",
     "PreCarriageVesselNameId": "Pre-carriage by",
@@ -524,6 +525,7 @@
     "HPorId": "Por",
     "HPodId": "POD",
     "HDelId": "DEL",
+    "POD": "POD",
     "HFdestId": "Final Dest",
     "FbaFcId": "FBA Fc",
     "HEmptyPickupId": "Empty Pickup",
@@ -946,6 +948,7 @@
     "Display:BillStatus": "Status",
     "Display:NoneProfit": "",
     "Display:TotalAmount": "Total Amount",
+    "Profit": "Profit",
     //enum itemCharges
     "Enum:ItemCharge.DG": "AWB Cancellation",
     "Enum:ItemCharge.DH": "AWB Charges Correction Advice",
@@ -1206,6 +1209,7 @@
     "JobNo": "JobNo",
     "FreightRemarks": "FreightRemarks",
     "ContractNo": "ContractNo",
+    "Remarks": "Remarks",
     // "CustomerId": "CustomerId",
     "Permission:FreightCenter": "Freight Center",
     "Permission:FreightCenterContractCostQuery": "Contract Cost Query",
@@ -1479,7 +1483,7 @@
     "CurrentPassword": "current password",
     "NewPassword": "new password",
     "NewPasswordConfirm": "re-enter new password",
-
+    "Ignore": "Ignore",
     "ActualShippedr": "ActualShipper",
     "OP": "Operator",
     "sales": "Sales",
