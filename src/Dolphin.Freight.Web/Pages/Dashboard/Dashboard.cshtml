@@ -303,7 +303,7 @@
                     </span>
                 </div>
             </div>*@
-            <div class="col-md-12 col-xs-12 kpi-compare mb-4">
+            @*<div class="col-md-12 col-xs-12 kpi-compare mb-4">
                 <div class="name-sm w-auto margin-right-10"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">comparison method</font></font></div>
                 <button class="btn btn-default btn-sm tooltips ng-binding ng-scope"  data-original-title="" title=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">monthly growth rate</font></font></button><button class="btn btn-default btn-sm tooltips ng-binding ng-scope active" data-original-title="" title=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">annual growth rate</font></font></button>
                 <button class="btn btn-primary btn-sm pull-right">
@@ -313,7 +313,7 @@
                         </font>
                     </font>
                 </button>
-            </div>
+            </div>*@
         </div>
 
         <div class="row margin-top-20">
@@ -347,7 +347,7 @@
                 <div class="dashboard-stat2 dashboard-stat2--noprogress px-2">
                     <div class="display">
                         <div class="number">
-                            <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Total cargo volume </font></font><small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">(bill of lading quantity)</font></font></small></small>
+                            <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@L["Total Volume(No. of B/L, AWB)"]</font></font></small>
                             <h3 class="font-green ng-scope" style="">
                                 <span class="ng-isolate-scope"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">1</font></font></span>
                             </h3>
@@ -480,20 +480,90 @@
             </div>
         </div>
         <div class="row">
-            <div>
-                <h5 class="text-center text-danger" style="">
-                    <font style="vertical-align: inherit;">
-                        <font style="vertical-align: inherit; font-size: small;">
-                            Some shipments are missing customer information, click
-                        </font>
-                    </font><a class="ng-binding"><font style="vertical-align: inherit;"><font style="vertical-align: inherit; font-size: small;">here</font></font></a><font style="vertical-align: inherit;">
-                        <font style="vertical-align: inherit; font-size: small;">
-                            to review and correct for correct results
-                        </font>
-                    </font>
-                </h5>
-            </div>
+            <br />
         </div>
+
+        <div class="row margin-top-20">
+                <div class="portlet-body">
+                        <div class="portlet light bordered">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="fa fa-bar-chart font-blue-steel"></i>
+                                    <span class="caption-subject font-blue-steel bold uppercase"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@L["NEGATIVE PROFIT SHIPMENTS"]</font></font></span>
+                                    <font style="vertical-align: inherit;">
+                                            <font style="vertical-align: inherit;">
+                                                Export ETD, Import ETA: ~
+                                            </font>
+                                        </font><a class="tooltips ng-isolate-scope">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    <span class="caption-helper" style="float: right;">
+                                        
+                                <button class="btn btn-default btn-sm mbl-btn active">
+                                    <font style="vertical-align: inherit;">
+                                        <font style="vertical-align: inherit;">
+                                            Show by MB/L
+                                        </font>
+                                    </font>
+                                </button>
+                                <button class="btn btn-default btn-sm hbl-btn">
+                                    <font style="vertical-align: inherit;">
+                                        <font style="vertical-align: inherit;">
+                                            Show by HB/L
+                                        </font>
+                                    </font>
+                                </button>
+                                <label>Status:</label>
+                                <select class="form form-control-sm" style="margin-right: 1rem;">
+                                    <option>All</option>
+                                    <option>Need Attention</option>
+                                    <option>Ignored</option>
+                                </select>
+                                    <button class="btn btn-primary btn-sm pull-right">
+                                        <i class="fa fa-refresh"></i><font style="vertical-align: inherit;">
+                                            <font style="vertical-align: inherit;">
+                                                Reorganize
+                                            </font>
+                                        </font>
+                                    </button>
+                                        <a daterangepicker="" class="date-range-picker-hidden-input"></a>
+                                    </span>
+                                </div>                        
+                            </div>
+                            <div class="portlet-body">
+                                <div class="table-responsive">
+                                    <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:10px;">
+                                        <tr border="1" style="font-size: 10px;">
+                                            <th width="10%" style="background-color: #888888; color: #fff;">@L["Shipment Type"]</th>
+                                            <th width="15%" style="background-color: #888888; color: #fff;">@L["File No."]</th>
+                                            <th width="10%" style="background-color: #888888; color: #fff;">@L["MB/L MAWB No."]</th>
+                                            <th width="10%" style="background-color: #888888; color: #fff;">@L["ETD"]</th>
+                                            <th width="10%" style="background-color: #888888; color: #fff;">@L["ETA"]</th>
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["Profit"]</th>
+                                            <th width="10%" style="background-color: #888888; color: #fff;">@L["OP"]</th>
+                                            <th width="10%" style="background-color: #888888; color: #fff;">@L["Ignore"]</th>
+                                        </tr>
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="8" align="center">No Data Available</td>
+                                            </tr> 
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td><strong>Total:</strong></td>
+                                                <td colspan="2" id="htotalPackageType">Shipment(s)</td>
+                                                <td colspan="3" align="right" id="htotalWeight">0.00</td>
+                                                <td id="htotalVolume"></td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+        </div>
+        <br />
 
         <div class="row margin-top-20">
             <div class="container-fluid">
@@ -503,7 +573,7 @@
                             <div class="tile tile-list ng-scope" ng-if="vm.quickLink.oi">
                                 <ul>
                                     <li class="ng-scope">
-                                        <a href="/OceanImports/Index">my shipping</a>
+                                        <a href="/OceanImports/Index">My shipments</a>
                                     </li>
                                     <li class="ng-scope">
                                         <a href="/OceanImports/MblList">MB/L list</a>
@@ -520,7 +590,7 @@
                             <div class="tile tile-list ng-scope" ng-if="vm.quickLink.oi">
                                 <ul>
                                     <li class="ng-scope">
-                                        <a href="/OceanExports/Index">my shipping</a>
+                                        <a href="/OceanExports/Index">My shipments</a>
                                     </li>
                                     <li class="ng-scope">
                                         <a href="/OceanExports/MblList">MB/L list</a>
@@ -537,13 +607,13 @@
                             <div class="tile tile-list ng-scope" ng-if="vm.quickLink.oi">
                                 <ul>
                                     <li class="ng-scope">
-                                        <a href="/AirImports/Index">my shipping</a>
+                                        <a href="/AirImports/Index">My shipments</a>
                                     </li>
                                     <li class="ng-scope">
-                                        <a href="/AirImports/MawbList">MAWB Checklist</a>
+                                        <a href="/AirImports/MawbList">MAWB list</a>
                                     </li>
                                     <li class="ng-scope">
-                                        <a href="/AirImports/HawbList">HAWB Checklist</a>
+                                        <a href="/AirImports/HawbList">HAWB list</a>
                                     </li>
                                 </ul>
                                 <div class="tile-icon"><img src="~/img/icon_air_import_white.png"></div>
@@ -554,13 +624,13 @@
                             <div class="tile tile-list ng-scope" ng-if="vm.quickLink.oi">
                                 <ul>
                                     <li class="ng-scope">
-                                        <a href="/AirExports/Index">my shipping</a>
+                                        <a href="/AirExports/Index">My shipments</a>
                                     </li>
                                     <li class="ng-scope">
-                                        <a href="/AirExports/MawbList">MAWB Checklist</a>
+                                        <a href="/AirExports/MawbList">MAWB list</a>
                                     </li>
                                     <li class="ng-scope">
-                                        <a href="/AirExports/HawbList">HAWB Checklist</a>
+                                        <a href="/AirExports/HawbList">HAWB list</a>
                                     </li>
                                 </ul>
                                 <div class="tile-icon"><img src="~/img/icon_air_import_white.png"></div>
@@ -571,7 +641,7 @@
                             <div class="tile tile-list ng-scope" ng-if="vm.quickLink.oi">
                                 <ul>
                                     <li class="ng-scope">
-                                        <a href="javascript:void(0)">my shipping</a>
+                                        <a href="javascript:void(0)">My shipments</a>
                                     </li>
                                     <li class="ng-scope">
                                         <a href="javascript:void(0)">Add a new ticket for Transportation</a>
@@ -630,7 +700,7 @@
                             <div class="tile unique ng-scope" onclick="location.href='/Accounting/Invoices/List'">
                                 <div class="tile-body">
                                     <span class="tile-icon"><i class="fa fa-table-list fa-xl"></i></span>
-                                    <span class="tile-title">Receivables and Payables</span>
+                                    <span class="tile-title">Invoice list</span>
                                 </div>
                             </div>
                         </div>
@@ -646,7 +716,7 @@
                             <div class="tile unique ng-scope" onclick="location.href='/Accounting/Payment/Customer'">
                                 <div class="tile-body">
                                     <span class="tile-icon"><i class="fa fa-receipt fa-xl"></i></span>
-                                    <span class="tile-title">Collection list</span>
+                                    <span class="tile-title">Receive list</span>
                                 </div>
                             </div>
                         </div>
@@ -654,6 +724,97 @@
                 </div>
             </div>
         </div>
+        <br />
+
+        <div class="row margin-top-20">
+            <div class="portlet-body">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-bar-chart font-blue-steel"></i>
+                            <span class="caption-subject font-blue-steel bold uppercase"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@L["TO DO LIST"]</font></font></span>
+                            <span class="caption-helper" style="float: right;">
+                                <button class="btn btn-default btn-sm mbl-btn active">
+                                    <font style="vertical-align: inherit;">
+                                        <font style="vertical-align: inherit;">
+                                            Summary
+                                        </font>
+                                    </font>
+                                </button>
+                                <button class="btn btn-default btn-sm hbl-btn">
+                                    <font style="vertical-align: inherit;">
+                                        <font style="vertical-align: inherit;">
+                                            Details
+                                        </font>
+                                    </font>
+                                </button>
+                                <label>Operator:</label>
+                                <select class="form form-control-sm"><option>Operator</option></select>
+                                <a daterangepicker="" class="date-range-picker-hidden-input"></a>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-responsive">
+                            <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:10px;">
+                                <tr border="1" style="font-size: 10px;">
+                                    <th width="33%" style="background-color: #888888; color: #fff;">@L["Name"]</th>
+                                    <th width="33%" style="background-color: #888888; color: #fff;">@L["Remind"]</th>
+                                    <th width="33%" style="background-color: #888888; color: #fff;">@L["Warn"]</th>
+                                </tr>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="8" align="center">No Data Available</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+
+        <div class="row margin-top-20">
+            <div class="portlet-body">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-bar-chart font-blue-steel"></i>
+                            <span class="caption-subject font-blue-steel bold uppercase"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@L["MY SHIPPING / OCEAN EXPORT"]</font></font></span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-responsive">
+                            <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:10px;">
+                                <tr border="1" style="font-size: 10px;">
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["File No"]</th>
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["MB/L Number"]</th>
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["HB/L Number"]</th>
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["Shipping company S/O number"]</th>
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["Client"]</th>
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["ETD"]</th>
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["ETA"]</th>
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["Place of Receipt"]</th>
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["Port of Loading"]</th>
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["Port of Discharge"]</th>
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["Overseas agent"]</th>
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["Shipping Company"]</th>
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["Transportation Mode"]</th>
+                                    <th width="5%" style="background-color: #888888; color: #fff;">@L["State"]</th>
+                                </tr>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="14" align="center">No Data Available</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
 
         <div class="row margin-top-20">
             <div class="col-sm-12">
