@@ -1,10 +1,22 @@
 {
   "culture": "zh-Hans",
   "texts": {
-
-
+    "BANK BALANCE": "银行存款余额",
+    "MYSHIPMENT/OCEANEXPORT": "我的运输/海运出口",
+    "NEGATIVE PROFIT SHIPMENTS": "亏损票货",
+    "TO DO LIST": "待办事项",
+    "Warnings": "警告",
+    "Alerts": "提醒",
+    "Name": "名称",
+    "*Percentage are calculated based on customers with positive profit only": "*只有真正有利润的客户才会被列入计算",
+    "TOP 5 Volume Customers(No. of B/L, AWB)": "货量前五大客户 (提单数量)",
+    "TOP 5 Profit Customers": "利润前五大客户",
+    "No. of Lost Customers": "流失客户数量",
+    "No. of Active Customers": "有效客户数量",
+    "Total Volume(No. of B/L, AWB)": "总货量(提单数量)",
+    "Prev": "前期",
     "Welcome": "欢迎",
-
+    "TotalProfit": "总利润",
     "AddHBL": "新增HBL",
     "Permission:Settings": "设定",
     "Permission:OceanExports": "海运出口",
@@ -307,6 +319,7 @@
     "PrepreCarriageVoyage": "",
     "FreightTermId": "运费",
     "ShipModeId": "运输模式",
+    "Mode": "运输模式",
     "ShipModeName": "运输模式",
     "SvcTermFromId": "运输条款",
     "SvcTermToId": "",
@@ -497,6 +510,7 @@
     "CancelName": "取消者",
     "CarrierBkgNo": "船公司S/O号码",
     "CarrierId": "航空公司",
+    "POD": "卸货港(POD)",
     "ShipperId": "托运人",
     "CustomerId": "客户",
     "HblAgentId": "HB/L代理",
@@ -993,8 +1007,9 @@
     "Destination": "目的地",
     "OverseaAgent": "收货人(海外代理)",
     "GlGroupId": "群组",
-
-
+    "Profit": "利润",
+    "Remarks": "备注",
+    "Ignore": "忽略",
     "CargoReadyDate": "货物就绪日期",
     "Manifest:CargoManifest": "货物舱单",
     "Manifest:MBLNo": "MB/L号码",

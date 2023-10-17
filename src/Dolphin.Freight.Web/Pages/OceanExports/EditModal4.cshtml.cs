@@ -18,7 +18,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
 {
     public class EditModal4Model :  FreightPageModel
     {
-        [HiddenInput]
+    [HiddenInput]
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
     [BindProperty(SupportsGet = true)]

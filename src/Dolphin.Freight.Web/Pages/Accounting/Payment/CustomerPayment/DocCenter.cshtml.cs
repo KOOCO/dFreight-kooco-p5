@@ -1,33 +1,25 @@
-using Microsoft.AspNetCore.Mvc;
-using System;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Components.Forms;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Dolphin.Freight.Accounting.Payment;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Linq;
-using Dolphin.Freight.AccountingSettings.CurrencyTables;
 using Dolphin.Freight.Accounting.Inv;
-using Newtonsoft.Json;
-using Dolphin.Freight.ImportExport.Common;
-using Dolphin.Freight.Settings.SysCodes;
-using Dolphin.Freight.Settinngs.SysCodes;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using Volo.Abp.Domain.Repositories;
-using Dolphin.Freight.Settings.Substations;
+using Dolphin.Freight.Accounting.Payment;
+using Dolphin.Freight.AccountingSettings.CurrencyTables;
 using Dolphin.Freight.Common;
-using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
+using Dolphin.Freight.ImportExport.Attachments;
+using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Settinngs.Substations;
-using Dolphin.Freight.TradePartners;
-using System.Runtime.ConstrainedExecution;
-using System.Xml.Linq;
-using Volo.Abp;
-using static Dolphin.Freight.Permissions.AccountingPermissions;
+using Dolphin.Freight.Settinngs.SysCodes;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Dolphin.Freight.Web.Pages.CustomerPayment
+namespace Dolphin.Freight.Web.Pages.Accounting.Payment.CustomerPayment
 {
-    public class IndexModel : AbpPageModel
+    public class DocCenterModel : FreightPageModel
     {
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
@@ -52,8 +44,12 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
         private readonly ISubstationAppService _substationAppService;
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly IInvAppService _invAppService;
+        public readonly IAttachmentAppService _attachmentAppService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public IndexModel(ICustomerPaymentAppService customerPaymentAppService , ICurrencyTableAppService currencyAppService, ISysCodeAppService sysCodeRepository, ISubstationAppService substationAppService, IAjaxDropdownAppService ajaxDropdownAppService, IInvAppService invAppService)
+        public DocCenterModel(ICustomerPaymentAppService customerPaymentAppService, ICurrencyTableAppService currencyAppService, ISysCodeAppService sysCodeRepository,
+            ISubstationAppService substationAppService, IAjaxDropdownAppService ajaxDropdownAppService, IInvAppService invAppService, IAttachmentAppService attachmentAppService,
+            IWebHostEnvironment webHostEnvironment)
         {
             _customerPaymentAppService = customerPaymentAppService;
             _currencyAppService = currencyAppService;
@@ -61,18 +57,19 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
             _substationAppService = substationAppService;
             _ajaxDropdownAppService = ajaxDropdownAppService;
             _invAppService = invAppService;
+            _attachmentAppService = attachmentAppService;
+            _webHostEnvironment = webHostEnvironment;
         }
-        public async Task<IActionResult> OnGetAsync(Guid id,string edit,Guid copyId)
+        public async Task<IActionResult> OnGetAsync(Guid id, string edit, Guid copyId)
         {
-            //id = Guid.Parse("9A2B557D-1E43-6504-DECE-3A09461EDB60");
             CustomerPayment = new CreateUpdateCustomerPaymentDto();
             QueryCurrency = new QueryCurrencyTableDto();
 
-            if (id.ToString() != "00000000-0000-0000-0000-000000000000"|| copyId.ToString() != "00000000-0000-0000-0000-000000000000")
+            if (id.ToString() != "00000000-0000-0000-0000-000000000000" || copyId.ToString() != "00000000-0000-0000-0000-000000000000")
             {
                 var newId = copyId != Guid.Empty ? copyId : id;
                 CustomerPaymentDto = await _customerPaymentAppService.GetDataAsync(newId);
-                CustomerPayment.Id = copyId == Guid.Empty? id.ToString():null;
+                CustomerPayment.Id = copyId == Guid.Empty ? id.ToString() : null;
                 CustomerPayment.PaymentId = CustomerPaymentDto.PaymentId;
                 CustomerPayment.PaymentLevel = CustomerPaymentDto.PaymentLevel;
                 CustomerPayment.ReceivablesSources = CustomerPaymentDto.ReceivablesSources;
@@ -91,11 +88,11 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                 CustomerPayment.H2T = CustomerPaymentDto.H2T;
                 CustomerPayment.Memo = CustomerPaymentDto.Memo;
 
-                CustomerPayment.GU = copyId == Guid.Empty ? CustomerPaymentDto.PaymentId: Guid.NewGuid();
+                CustomerPayment.GU = copyId == Guid.Empty ? CustomerPaymentDto.PaymentId : Guid.NewGuid();
                 CustomerPayment.Edit = edit;
                 ViewData["PId"] = CustomerPaymentDto.PaymentId;
             }
-            else 
+            else
             {
                 CustomerPayment.ReleaseDate = DateTime.Now.Date;
                 QueryCurrency.Ccy1Id = "19B90321-C852-451D-A1C0-5FA47373ED55";
@@ -107,7 +104,7 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                 CustomerPayment.H2T = await _currencyAppService.QueryRateInternalAsync(QueryCurrency);
 
                 CustomerPayment.GU = Guid.NewGuid();
-            }                       
+            }
 
             #region ¨ú¦¬¥I´Ú¯Å§O
             QueryDto queryDto = new QueryDto();
@@ -117,12 +114,12 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
             List<SysCodeDto> list = new List<SysCodeDto>();
             list = rs;
 
-            if (list.Count > 0 )
-            { 
+            if (list.Count > 0)
+            {
                 PLList = new List<SelectListItem>();
                 if (id.ToString() == "00000000-0000-0000-0000-000000000000" && CopyId.ToString() == "00000000-0000-0000-0000-000000000000")
                 {
-                    foreach (var pl in list.DistinctBy(x=>x.CodeValue))
+                    foreach (var pl in list.DistinctBy(x => x.CodeValue))
                     {
                         if (pl.CodeValue == "1")
                         {
@@ -134,7 +131,7 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                         }
                     }
                 }
-                else 
+                else
                 {
                     foreach (var pl in list.DistinctBy(x => x.CodeValue))
                     {
@@ -147,7 +144,7 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                             PLList.Add(new SelectListItem() { Text = pl.ShowName, Value = pl.CodeValue });
                         }
                     }
-                }                    
+                }
             }
             #endregion
 
@@ -161,7 +158,7 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
             if (list.Count > 0)
             {
                 CategoryList = new List<SelectListItem>();
-                if (id.ToString() == "00000000-0000-0000-0000-000000000000"&& copyId.ToString() == "00000000-0000-0000-0000-000000000000")
+                if (id.ToString() == "00000000-0000-0000-0000-000000000000" && copyId.ToString() == "00000000-0000-0000-0000-000000000000")
                 {
                     foreach (var pl in list.DistinctBy(x => x.CodeValue))
                     {
@@ -175,7 +172,7 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                         }
                     }
                 }
-                else 
+                else
                 {
                     foreach (var pl in list.DistinctBy(x => x.CodeValue))
                     {
@@ -188,7 +185,7 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                             CategoryList.Add(new SelectListItem() { Text = pl.ShowName, Value = pl.CodeValue });
                         }
                     }
-                }                    
+                }
             }
             #endregion
 
@@ -215,15 +212,15 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                     {
                         if (substation.Id.ToString().ToUpper() == CustomerPaymentDto.OfficeId.ToString().ToUpper())
                         {
-                            SubstationList.Add(new SelectListItem() { Text = substation.SubstationName + "(" + substation.AbbreviationName + ")", Value = substation.Id.ToString() ,Selected = true});
+                            SubstationList.Add(new SelectListItem() { Text = substation.SubstationName + "(" + substation.AbbreviationName + ")", Value = substation.Id.ToString(), Selected = true });
                         }
-                        else 
-                        { 
+                        else
+                        {
                             SubstationList.Add(new SelectListItem() { Text = substation.SubstationName + "(" + substation.AbbreviationName + ")", Value = substation.Id.ToString() });
-                        }                        
+                        }
                     }
                 }
-                
+
             }
             #endregion
 
@@ -239,24 +236,24 @@ namespace Dolphin.Freight.Web.Pages.CustomerPayment
                     RSList.Add(new SelectListItem() { Text = "", Value = "", Selected = true });
                     foreach (var receivablessource in receivablessources)
                     {
-                        RSList.Add(new SelectListItem() { Text = receivablessource.TPName + "\r\n" + (receivablessource.TPAliasName == null ? "null" : receivablessource.TPAliasName) + "\r\n" + receivablessource.TPCode , Value = receivablessource.Id.ToString() });
+                        RSList.Add(new SelectListItem() { Text = receivablessource.TPName + "\r\n" + (receivablessource.TPAliasName == null ? "null" : receivablessource.TPAliasName) + "\r\n" + receivablessource.TPCode, Value = receivablessource.Id.ToString() });
                     }
                 }
                 else
                 {
-                    RSList.Add(new SelectListItem() { Text = "", Value = ""});
+                    RSList.Add(new SelectListItem() { Text = "", Value = "" });
                     foreach (var receivablessource in receivablessources)
                     {
                         if (receivablessource.Id.ToString().ToUpper() == CustomerPaymentDto.ReceivablesSources.ToString().ToUpper())
                         {
-                            RSList.Add(new SelectListItem() { Text = receivablessource.TPName + "\r\n" + (receivablessource.TPAliasName == null ? "null" : receivablessource.TPAliasName) + "\r\n" + receivablessource.TPCode, Value = receivablessource.Id.ToString() ,Selected = true});
+                            RSList.Add(new SelectListItem() { Text = receivablessource.TPName + "\r\n" + (receivablessource.TPAliasName == null ? "null" : receivablessource.TPAliasName) + "\r\n" + receivablessource.TPCode, Value = receivablessource.Id.ToString(), Selected = true });
                         }
-                        else 
+                        else
                         {
                             RSList.Add(new SelectListItem() { Text = receivablessource.TPName + "\r\n" + (receivablessource.TPAliasName == null ? "null" : receivablessource.TPAliasName) + "\r\n" + receivablessource.TPCode, Value = receivablessource.Id.ToString() });
-                        }                       
+                        }
                     }
-                }               
+                }
             }
             #endregion
 
@@ -289,39 +286,81 @@ new SelectListItem { Value = "???", Text = "\u96F6\u7528\u91D1" }
                     }
                 }
             }
-            
+
             return Page();
         }
 
-        public async Task<JsonResult> OnPostAsync(string datatablelist, CreateUpdateCustomerPaymentDto customerPayment)
+        public async Task<IActionResult> OnPostAsync()
         {
-            CustomerPaymentDto = await _customerPaymentAppService.CheckByPaymentIdAsync(customerPayment.GU);
+            await _customerPaymentAppService.UpdateAsync(Id, CustomerPayment);
+            return NoContent();
+        }
+        public async Task<IActionResult> OnPostMyUploader(List<IFormFile> MyUploader, Guid fid, int ftype)
+        {
+            string fname = "";
+            if (MyUploader != null)
+            {
+                foreach (var file in MyUploader)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        DirectoryInfo folder = Directory.CreateDirectory(uploadsFolder);
+                    }
+                    string filePath = Path.Combine(uploadsFolder, file.FileName);
 
-            if (CustomerPaymentDto != null)
-            {
-                //if (customerPayment.Edit != "Y")
-                //{
-                //    throw new BusinessException(FreightDomainErrorCodes.CustomerPaymentAlreadyExists);
-                //}
-                customerPayment.PaymentId = customerPayment.GU;
-                CustomerPaymentDto= await _customerPaymentAppService.UpdateAsync(Guid.Parse(customerPayment.Id), customerPayment);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                    fname = file.FileName;
+                    CreateUpdateAttachmentDto dto = new CreateUpdateAttachmentDto() { FileName = fname, ShowName = fname, Ftype = ftype, Fid = fid, Size = file.Length / 1024 };
+                    await _attachmentAppService.CreateAsync(dto);
+                }
+                return new ObjectResult(new { status = "success", fname = fname, udate = DateTime.Now.ToString("yyyy-MM-dd"), size = 1024 });
             }
-            else 
-            { 
-                customerPayment.PaymentId = customerPayment.GU;
-                CustomerPaymentDto= await _customerPaymentAppService.CreateAsync(customerPayment);
-            }
+            return new ObjectResult(new { status = "fail" });
 
-            List<CreateUpdateInvDto> list = JsonConvert.DeserializeObject<List<CreateUpdateInvDto>>(datatablelist);
-            if (!(list.Count == 1 && !list[0].GetType().GetProperties().Any(prop => prop.GetValue(list[0]) != null)))
+        }
+        public async Task<IActionResult> OnGetDownload(string filename)
+        {
+            if (filename == null)
+                return Content("filename is not availble");
+            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload");
+            var path = Path.Combine(uploadsFolder, filename);
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(path, FileMode.Open))
             {
-                await _invAppService.UpdateList(customerPayment.GU, list);
+                await stream.CopyToAsync(memory);
             }
-            Dictionary<string, Guid> rs = new Dictionary<string, Guid>
-            {
-                { "id",CustomerPaymentDto.Id }
-            };
-            return new JsonResult(rs);
+            memory.Position = 0;
+            return File(memory, GetContentType(path), Path.GetFileName(path));
+        }
+
+        // Get content type
+        private string GetContentType(string path)
+        {
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
+        }
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+                {
+                    {".txt", "text/plain"},
+                    {".pdf", "application/pdf"},
+                    {".doc", "application/vnd.ms-word"},
+                    {".docx", "application/vnd.ms-word"},
+                    {".xls", "application/vnd.ms-excel"},
+                    {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+                    {".png", "image/png"},
+                    {".jpg", "image/jpeg"},
+                    {".jpeg", "image/jpeg"},
+                    {".gif", "image/gif"},
+                    {".csv", "text/csv"}
+                };
         }
     }
 }

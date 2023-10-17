@@ -257,7 +257,17 @@ namespace Dolphin.Freight.ImportExport.AirImports
             await Repository.DeleteAsync(Id);
             await _airImportHawbAppService.DeleteManyAsync(ids);
         }
+        public  async Task DeleteMultipalAsync(List<Guid> Ids)
+        {
+            foreach (var id in Ids)
+            {
+                
+               
 
+                await base.DeleteAsync(id);
+               
+            }
+        }
         public async Task<AirImportDetails> GetAirImportDetailsById(Guid Id)
         {
             var tradePartners = await _tradePartnerRepository.GetListAsync();
@@ -408,6 +418,34 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     foreach (var hbl in hbls)
                     {
                         hbl.IsLocked = false;
+
+                        await _airImportHawbAppService.UpdateAsync(hbl);
+                    }
+                    await _repository.UpdateAsync(mbl);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(ex.Message);
+            }
+
+        }
+        public async Task SelectedLockedAirImportMawbAsync(Guid[] ids)
+        {
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var mbl = await _repository.GetAsync(id);
+
+                    mbl.IsLocked = true;
+                    var query = await _airImportHawbAppService.GetQueryableAsync();
+                    var hbls = query.Where(x => x.MawbId == id).ToList();
+                    foreach (var hbl in hbls)
+                    {
+                        hbl.IsLocked = true;
 
                         await _airImportHawbAppService.UpdateAsync(hbl);
                     }

@@ -190,9 +190,10 @@ var AirImportsMawbList = {
             var isAnyLocked = false;
             var isAnyUnlocked = false
             checkedCheckboxes.each(function (index, checkbox1) {
+                $('#deleteBtn').prop('disabled', false);
                 var id = $(checkbox1).data('id');
+                var isLock = $('.lockUnlockCheckbox[data-id="' + id + '"]').prop('checked');
 
-                var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
                 if (isLock) {
                     isAnyLocked = true;
                 }
@@ -212,9 +213,16 @@ var AirImportsMawbList = {
             else {
                 $('#copyId').prop('disabled', true);
             }
+            if (checkedCheckboxes.length == 1 || checkedCheckboxes.length > 1) {
+                $('#deleteBtn').prop('disabled', false);
+            }
+            else {
+
+                $('#deleteBtn').prop('disabled', true);
+            }
             checkedCheckboxes.each(function (index, checkbox1) {
                 var id = $(checkbox1).data('id');
-                var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+                var isLock = $('.lockUnlockCheckbox[data-id="' + id + '"]').prop('checked');
                 if (isLock) {
                     isAnyLocked = true;
                 }
@@ -224,6 +232,7 @@ var AirImportsMawbList = {
             });
             $('#lockId').prop('disabled', !isAnyUnlocked);
             $('#unlockId').prop('disabled', !isAnyLocked);
+            
         }
         if (!$(checkbox).prop('checked')) {
             $('#selectAllCheckbox').prop('checked', false);
@@ -260,7 +269,7 @@ var AirImportsMawbList = {
         var selectedCheckboxes = $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
         for (var i = 0; i < selectedCheckboxes.length; i++) {
             var id = selectedCheckboxes[i].attributes[2].value;
-            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
+            var isLock = $('.lockUnlockCheckbox[data-id="' + id + '"]').prop('checked');
             if (!isLock) {
                 ids.push(id);
             }
@@ -279,15 +288,16 @@ var AirImportsMawbList = {
         var selectedCheckboxes = $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
         for (var i = 0; i < selectedCheckboxes.length; i++) {
             var id = selectedCheckboxes[i].attributes[2].value;
-            var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
+            var isLock = $('.lockUnlockCheckbox[data-id="' + id + '"]').prop('checked');
             if (isLock) {
                 ids.push(id);
             }
             abp.message.confirm(l('UnlockConfirmationMessage')).then(function (confirmed) {
                 if (confirmed) {
-                    dolphin.freight.importExport.airImports.airImportMawb.selectedLockedAirImportMawb(ids).done(function () {
-                        abp.message.success(l('Message:Message:SuccessUnlock'));
+                    dolphin.freight.importExport.airImports.airImportMawb.selectedUnLockedAirImportMawb(ids).done(function () {
                         dataTable.ajax.reload();
+                        abp.message.success(l('Message:Message:SuccessUnlock'));
+                        
                     });
                 }
             });
@@ -330,4 +340,24 @@ var lock = function (id) {
                 });
         }
     });
+}
+function deleteMbls() {
+    var ids = [];
+    var selectedCheckboxes = $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+    for (var i = 0; i < selectedCheckboxes.length; i++) {
+        var id = selectedCheckboxes[i].attributes[2].value;
+        var isLock = $('.lockUnlockCheckbox[data-id="' + id + '"]').prop('checked');
+        if (!isLock) {
+            ids.push(id);
+        }
+        abp.message.confirm(l('DeleteConfirmationMessage')).then(function (confirmed) {
+            if (confirmed) {
+                dolphin.freight.importExport.airImports.airImportMawb.deleteMultipal(ids)
+                    .done(function () {
+                        abp.message.success(l('Message:SuccessDelete'));
+                        dataTable.ajax.reload();
+                    });
+            }
+        });
+    }
 }

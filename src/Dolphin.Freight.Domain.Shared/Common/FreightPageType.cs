@@ -17,6 +17,7 @@ namespace Dolphin.Freight.Common
         SO, // S/O
         VS, // 船期
         TP, // 貿易夥伴
-        GA
+        GA,
+        RP // Receive Payment
     }
 }

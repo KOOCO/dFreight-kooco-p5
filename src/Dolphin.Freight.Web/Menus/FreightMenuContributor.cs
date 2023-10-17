@@ -29,7 +29,7 @@ public class FreightMenuContributor : IMenuContributor
             new ApplicationMenuItem(
                 FreightMenus.Home,
                 l["Menu:Home"],
-                "~/",
+                url: "/Dashboard/Dashboard",
                 icon: "fa fa-home",
                 order: 0
             )
