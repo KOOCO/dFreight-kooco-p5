@@ -75,6 +75,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public Guid? HblShipperId { get; set; }
         public string HblShipperName { get; set; }
+        public bool isMblHblHaveContainer { get; set; }
         /// <summary>
         /// 客戶ID
         /// </summary>

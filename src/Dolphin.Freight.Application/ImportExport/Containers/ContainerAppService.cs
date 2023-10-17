@@ -133,6 +133,14 @@ namespace Dolphin.Freight.ImportExport.Containers
 
             return containerDto;
         }
+        public async Task<CreateUpdateContainerDto> GetSingleContainerByMblId(Guid id)
+        {
+            var list = await Repository.GetListAsync();
+            var container = list.Where(w => w.MblId == id).FirstOrDefault();
+            var containerDto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
+
+            return containerDto;
+        }
         public async Task<CreateUpdateContainerDto> GetContainerByHblId(Guid id)
         {
             var list = await Repository.GetListAsync();

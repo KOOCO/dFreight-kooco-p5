@@ -128,10 +128,13 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                 OceanExportHbl = new CreateUpdateOceanExportHblDto();
 
                 OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl);
-                OceanExportHbl.PackageNo = container.PackageNum;
-                OceanExportHbl.PackageWeight = container.PackageWeight;
-                OceanExportHbl.PackageMeasurement = container.PackageMeasure;
-                OceanExportHbl.ContainerId = container.Id;
+                if (container is not null)
+                {
+                    OceanExportHbl.PackageNo = container.PackageNum;
+                    OceanExportHbl.PackageWeight = container.PackageWeight;
+                    OceanExportHbl.PackageMeasurement = container.PackageMeasure;
+                    OceanExportHbl.ContainerId = container.Id;
+                }
                 IsShowHbl = true;
             }
         }

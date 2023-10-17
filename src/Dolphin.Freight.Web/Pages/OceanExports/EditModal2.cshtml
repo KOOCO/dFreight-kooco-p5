@@ -178,6 +178,24 @@
             });
         }
 
+        function checkHeaderCheckboxes() {
+            $('th input[id^="hblHeaders_"]').each(function (i, e) {
+                var associatedCheckboxes = $('input[id^="assignContainerCheckbox_"]').filter(function () {
+                    return this.id.match(new RegExp("assignContainerCheckbox_\\d+_" + i + "$"));
+                });
+
+                var allChecked = true;
+                associatedCheckboxes.each(function () {
+                    if (!$(this).prop('checked')) {
+                        allChecked = false;
+                        return false;
+                    }
+                });
+
+                $(e).prop('checked', allChecked);
+            });
+        }
+
         function countTotal(module, Unit) {
             switch (module) {
                 case 'MBL':
@@ -197,6 +215,7 @@
                         $('#totalWeight').text(parseFloat(totalWgt).toFixed(2) + ' LB');
                         $('#totalWeightUnit').text(parseFloat(totalWgt / 2.20462062).toFixed(2) + ' KG');
                     }
+                    checkHeaderCheckboxes();
                 break;
 
                 case 'HBL':
@@ -228,6 +247,7 @@
                         $('#totalWeight').text(parseFloat(totalWgt).toFixed(2) + ' LB');
                         $('#totalWeightUnit').text(parseFloat(totalWgt / 2.20462062).toFixed(2) + ' KG');
                     }
+                    checkHeaderCheckboxes();
                 break;
             }
         }
@@ -456,7 +476,7 @@
 
                 $("#selectAllAssignContainerCheckbox_" + currentIndex).click(function () {
                     $('input[id^="assignContainerCheckbox_' + currentIndex + '_"]').prop('checked', $(this).prop('checked'));
-                    EditModelOEContainer.SaveHBLContainer();
+                    EditModelOEContainer.SaveHorizontalHBLContainer(this, currentIndex);
                 });
 
                 trindex++;
