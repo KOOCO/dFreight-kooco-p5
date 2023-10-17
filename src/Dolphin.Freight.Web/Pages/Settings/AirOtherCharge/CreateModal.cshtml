@@ -19,7 +19,7 @@
             <abp-input asp-for="@Model.AirOtherCharge.showOnMAWB" label="MAWB" />
             <abp-input asp-for="@Model.AirOtherCharge.showOnHAWB" label="HAWB" />
             <abp-select asp-for="@Model.AirOtherCharge.chargeItem" asp-items="@Model.ChargeItemList" label="@L["chargeItem"].Value" display-required-symbol />
-            <abp-select asp-for="@Model.AirOtherCharge.chargeItemSubitem" asp-items="@Model.DescriptionList" label="@L["chargeItemSubitem"].Value" display-required-symbol />
+            <abp-input asp-for="@Model.AirOtherCharge.chargeItemSubitem"  label="@L["chargeItemSubitem"].Value" display-required-symbol />
             <abp-input asp-for="@Model.AirOtherCharge.chargeRate" label="@L["chargeRate"].Value" />
             <abp-select asp-for="@Model.AirOtherCharge.chargeRateUnit" asp-items="@Model.ChargeUnitList" label="@L["chargeRateUnit"].Value" display-required-symbol />
             <abp-input asp-for="@Model.AirOtherCharge.minPrice" label="@L["minPrice"].Value" />
