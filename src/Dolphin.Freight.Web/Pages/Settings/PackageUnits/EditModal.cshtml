@@ -25,13 +25,13 @@
         </abp-row>
         <abp-row>
             <abp-column>
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "AmsNoId", FieldName = "AmsNoId",DefaultValue="@Model.PackageUnit.AmsNoId", IsShowLabel = true , IsRequired = false  })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "PackageUnit.AmsNoId", AspItems = Model.AmsNoLookup, IsShowLabel = true, IsRequired = true, FieldName = L["AmsNo"], SelectType = 0, ShowFiledContentValue = Model.PackageUnit.AmsNoId.ToString() })
             </abp-column>
         </abp-row>
 
         <abp-row>
             <abp-column>
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "EManifestId", FieldName = "EManifestId",DefaultValue="@Model.PackageUnit.EManifestId", IsShowLabel = true , IsRequired = false  })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "PackageUnit.EManifestId", AspItems = Model.EManifestLookup, IsShowLabel = true, IsRequired = true, FieldName = L["EManifest"], SelectType = 0, ShowFiledContentValue = Model.PackageUnit.EManifestId.ToString() })
             </abp-column>
         </abp-row>
         <abp-row>
