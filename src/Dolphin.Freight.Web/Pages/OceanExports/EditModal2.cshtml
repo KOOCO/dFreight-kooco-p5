@@ -42,6 +42,7 @@
                 if (result != null && result.length > 0) {
                     containerSizes = result;
                     dolphin.freight.importExport.containers.container.queryList({ QueryId: '@Model.Id' }).done(function (result) {
+                        var packageUnitId;
                         if (result != null && result.length > 0) {
                             for (var i = 0; i < result.length; i++) {
                                 var value1 = result[i].containerNo;
@@ -53,6 +54,7 @@
                                 var value7 = result[i].isPP;
                                 var value8 = result[i].isCTF;
                                 var value9 = result[i].id;
+                                packageUnitId = result[i].packageUnitId;
                                 if (value3 == null) value3 = '';
                                 addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, '@Model.OceanExportMbl.Id');
                             }
@@ -60,7 +62,7 @@
                             countTotalVolume('HBL');
                             countPackageType('HBL');
                         }
-                        addPackageUnitNameddl();
+                        addPackageUnitNameddl(packageUnitId);
                     });
                     var hblId = $('#OceanExportHbl_Id').val();
                     dolphin.freight.importExport.containers.container.getContainerListByHblId(hblId).done(function (result) {
@@ -391,13 +393,14 @@
             }
         }
 
-        function addPackageUnitNameddl() {
+        function addPackageUnitNameddl(packageUnitIdValue) {
             dolphin.freight.settings.packageUnits.packageUnit.getPackageUnitsLookup({}).done(function (res) {
                 if (res.items != null && res.items.length > 0) {
                     packageUnitsName = res.items;
-                    var selectHtml = "<select id='PackagingUnit' name='PackagingUnit' class='form-control select-search' >";
+                    var selectHtml = "<select id='PackagingUnit' name='CreateUpdateContainerDtos[0].PackageUnitId' class='form-control select-search' >";
                     for (var i = 0; i < packageUnitsName.length; i++) {
                         selectHtml = selectHtml + "<option value='" + packageUnitsName[i].id + "' ";
+                        if (packageUnitsName[i].id == packageUnitIdValue) selectHtml= selectHtml + " selected ";
                         selectHtml = selectHtml + ">" + packageUnitsName[i].packageName + "</option>"
                     }
                     selectHtml = selectHtml + "</select>";
