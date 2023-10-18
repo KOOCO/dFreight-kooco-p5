@@ -26,7 +26,12 @@
             </abp-row>
             <abp-row>
                 <abp-column>
-                    @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "ContainerGroupId", FieldName = "ContainerGroupId",DefaultValue="", IsShowLabel = true , IsRequired = false  })
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ContainerSize.AmsTypeCodeId", AspItems = Model.AmsTypeCodeLookup, IsShowLabel = true, FieldName = L["AmsTypeCode"], SelectType = 0, ShowFiledContentValue = Model.ContainerSize.AmsTypeCodeId.ToString() })
+                </abp-column>
+            </abp-row>
+            <abp-row>
+                <abp-column>
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ContainerSize.ContainerGroupId", AspItems = Model.ContainerGroupLookup, IsShowLabel = true, FieldName = L["ContainerGroup"], SelectType = 0, ShowFiledContentValue = Model.ContainerSize.ContainerGroupId.ToString() })
                 </abp-column>
             </abp-row>
             <abp-row>

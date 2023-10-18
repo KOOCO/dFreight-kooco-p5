@@ -1,6 +1,7 @@
 {
   "culture": "zh-Hant",
   "texts": {
+    "AmsTypeCode": "AMS櫃型代碼",
     "BANK BALANCE": "銀行存款餘額",
     "MYSHIPMENT/OCEANEXPORT": "我的運輸/海運出口",
     "NEGATIVE PROFIT SHIPMENTS": "虧損票貨",
@@ -45,7 +46,7 @@
     "Menu:AwbNoRanges": "Awb號碼管理",
     "Menu:AirOtherCharge": "空運出口其他費用",
     "Menu:PackageUnits": "包裝管理",
-    "Menu:ContainerSizes": "集裝箱管理",
+    "Menu:ContainerSizes": "集裝箱櫃型/尺寸管理",
     "Menu:CountryDisplayName": "國家管理",
     "Menu:AccountingSettings": "會計設定",
     "Menu:GlCodes": "科目代碼管理",
@@ -364,7 +365,7 @@
     "SizeDescription": "貨描",
     "ContainerGroup": "類別",
     "ContainerGroupId": "類別",
-    "Teu": "Teu",
+    "Teu": "TEU",
     "IsUseed": "啟用",
     "GlCode": "科目代碼",
     "GlTypeName": "類別",

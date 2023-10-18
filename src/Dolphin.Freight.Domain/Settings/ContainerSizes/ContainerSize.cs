@@ -27,11 +27,14 @@ namespace Dolphin.Freight.Settings.ContainerSizes
         /// 類別
         /// </summary>
         public Guid? ContainerGroupId { get; set; }
+        public Guid? AmsTypeCodeId { get; set; }
         /// <summary>
         /// 類別
         /// </summary>
         [ForeignKey("ContainerGroupId")]
         public SysCode ContainerGroup { get; set; }
+        [ForeignKey("AmsTypeCodeId")]
+        public SysCode AmsTypeCode { get; set; }
         /// <summary>
         /// 長度
         /// </summary>
