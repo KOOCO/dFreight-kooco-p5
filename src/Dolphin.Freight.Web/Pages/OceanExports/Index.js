@@ -59,7 +59,9 @@ var columns = [{
                 [
                     {
                         text: l('Edit'),
-                        visible: abp.auth.isGranted('Settings.ItNoRanges.Edit'), //CHECK for the PERMISSION
+                        visible: function (data) {
+                            return abp.auth.isGranted('Settings.ItNoRanges.Edit'); //CHECK for the PERMISSION
+                        },
                         action: function (data) {
                             if (data.record.isLocked) {
 
