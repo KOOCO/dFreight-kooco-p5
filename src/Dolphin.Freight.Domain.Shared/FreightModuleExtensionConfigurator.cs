@@ -69,18 +69,18 @@ public static class FreightModuleExtensionConfigurator
          * https://docs.abp.io/en/abp/latest/Module-Entity-Extensions
          */
 
-        ObjectExtensionManager.Instance.Modules()
-              .ConfigureIdentity(identity =>
-              {
-                  identity.ConfigureUser(user =>
-                  {
-                      user.AddOrUpdateProperty<Guid>( //property type: Guid
-                          "LanguageId"
-                      );
-                      user.AddOrUpdateProperty<string>( //property type: string
-                          "Gender"
-                      );
-                  });
-              });
+        //ObjectExtensionManager.Instance.Modules()
+        //      .ConfigureIdentity(identity =>
+        //      {
+        //          identity.ConfigureUser(user =>
+        //          {
+        //              user.AddOrUpdateProperty<Guid>( //property type: Guid
+        //                  "LanguageId"
+        //              );
+        //              user.AddOrUpdateProperty<string>( //property type: string
+        //                  "Gender"
+        //              );
+        //          });
+        //      });
     }
 }
