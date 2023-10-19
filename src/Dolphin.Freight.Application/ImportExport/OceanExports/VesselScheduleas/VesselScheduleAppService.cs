@@ -19,6 +19,7 @@ using Dolphin.Freight.Settinngs.ContainerSizes;
 using Dolphin.Freight.Settings.ContainerSizes;
 using Dolphin.Freight.Accounting.Invoices;
 using Volo.Abp;
+using Volo.Abp.Identity;
 
 namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
 {
@@ -42,11 +43,13 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         private readonly IRepository<OceanExportMbl, Guid> _oceanExportMblRepository;
         private readonly IContainerSizeAppService _containerSizeAppService;
         private readonly IRepository<ContainerSize, Guid> _containerSizeRepository;
+        private IRepository<ExportBooking, Guid> _bookingRepository;
         private IRepository<Invoice, Guid> _invoiceRepository;
+        private readonly IIdentityUserRepository _userRepositroy;
         public VesselScheduleAppService(IRepository<VesselSchedule, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Port, Guid> portRepository, IRepository<Substation, Guid> substationRepository, 
                                         IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IPortsManagementAppService portsManagementAppService, IContainerAppService containerAppService,
                                         IOceanExportMblAppService oceanExportMblAppService, IRepository<OceanExportMbl, Guid> oceanExportMblRepository, IContainerSizeAppService containerSizeAppService,
-                                        IRepository<ContainerSize, Guid> containerSizeRepository, IRepository<Invoice, Guid> invoiceRepository)
+                                        IRepository<ContainerSize, Guid> containerSizeRepository, IRepository<Invoice, Guid> invoiceRepository, IRepository<ExportBooking, Guid> bookingRepository, IIdentityUserRepository userRepositroy)
                                        
             : base(repository)
         {
@@ -62,6 +65,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
             _containerSizeAppService = containerSizeAppService;
             _containerSizeRepository = containerSizeRepository;
             _invoiceRepository = invoiceRepository;
+            _bookingRepository = bookingRepository;
+            _userRepositroy= userRepositroy;
             /*
             GetPolicyName = OceanExportPermissions.VesselScheduleas.Default;
             GetListPolicyName = OceanExportPermissions.VesselScheduleas.Default;
@@ -127,6 +132,17 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
                 foreach (var pu in rs)
                 {
                     var pud = ObjectMapper.Map<VesselSchedule, VesselScheduleDto>(pu);
+                    var bookings = await _bookingRepository.GetListAsync(x => x.VesselScheduleId == pu.Id);
+                    if (bookings != null)
+                    { pud.SoNos = string.Join(",", bookings.Select(x => x.SoNo)); 
+                    pud.SoNoCount=bookings.Count().ToString();
+                    
+                    }
+                    if (pud.CreatorId != null)
+                    {
+                        var user = await _userRepositroy.GetAsync((Guid)pud.CreatorId);
+                        pud.OpName = user.Name;
+                            }
                     if (pud.PolId != null) pud.PolName = pdictionary[pud.PolId.Value];
                     if (pud.PorId != null) pud.PorName = pdictionary[pud.PorId.Value];
                     if (pud.PodId != null) pud.PodName = pdictionary[pud.PodId.Value];
