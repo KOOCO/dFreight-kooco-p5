@@ -63,7 +63,7 @@
             return actionList.addManyTail(
                 [
                     {
-                        text: 'Reset Password',                       
+                        text: 'Reset Password',
                         action: function (data) {
                             _ResetPasswordModal.open({
                                 id: data.record.id,
@@ -94,7 +94,11 @@
             );
         }
     );
-
+    abp.ui.extensions.tableColumns.get('identity.user').addContributor(
+        function (columnList) {
+            columnList.drop().byIndex(5);
+        }
+    );
     abp.ui.extensions.tableColumns.get('identity.user').addContributor(
         function (columnList) {
             columnList.addManyByIndex(
@@ -106,11 +110,70 @@
                     {
                         title: 'Surname',
                         data: 'surname'
-                    }
+                    },
+
+
                 ], 1
             );
         }
     );
+    abp.ui.extensions.tableColumns.get('identity.user').addContributor(
+        function (columnList) {
+            columnList.addManyTail(
+                [
+                    {
+                        title: l('Office(Code-Name)'),
+                        data: ''
+                    },
+                    {
+                        title: l('Department(Office Code-Name)'),
+                        data: ''
+                    },
+                    {
+                        title: l('Branch'),
+                        data: ''
+                    }
+
+
+
+                ], 3
+            );
+        }
+    );
+    abp.ui.extensions.tableColumns.get('identity.user').addContributor(
+        function (columnList) {
+            columnList.addManyTail(
+                [
+                    {
+                        title: l('Status'),
+                        data: 'isActive',
+                        render: function (data, type, row) {
+                            if (row.isActive) {
+                                return 'Enabel';
+                            } else {
+                                return 'Disable';
+                            }
+                        }
+                    },
+                    {
+                        title: l('CreateDate'),
+                        data: 'creationTime',
+                        render: function (data) {
+                            return luxon
+                                .DateTime
+                                .fromISO(data, {
+                                    locale: abp.localization.currentCulture.name
+                                }).toLocaleString();
+                        }
+                    }
+
+
+
+                ], 3
+            );
+        }
+    );
+   
 
     $(function () {
         var _$wrapper = $('#IdentityUsersWrapper');
@@ -129,7 +192,7 @@
                 columnDefs: abp.ui.extensions.tableColumns.get('identity.user').columns.toArray()
             })
         );
-        
+
         _createModal.onResult(function () {
             _dataTable.ajax.reload();
         });
