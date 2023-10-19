@@ -1,6 +1,6 @@
 ﻿(function ($) {
     var l = abp.localization.getResource('AbpIdentity');
-
+    var loc = abp.localization.getResource('Freight');
     var _identityUserAppService = volo.abp.identity.identityUser;
 
     var togglePasswordVisibility = function () {
@@ -122,15 +122,15 @@
             columnList.addManyTail(
                 [
                     {
-                        title: l('Office(Code-Name)'),
+                        title: loc('Office(Code-Name)'),
                         data: ''
                     },
                     {
-                        title: l('Department(Office Code-Name)'),
+                        title: loc('Department(Office Code-Name)'),
                         data: ''
                     },
                     {
-                        title: l('Branch'),
+                        title: loc('Branch'),
                         data: ''
                     }
 
@@ -145,18 +145,18 @@
             columnList.addManyTail(
                 [
                     {
-                        title: l('Status'),
+                        title: loc('Status'),
                         data: 'isActive',
                         render: function (data, type, row) {
                             if (row.isActive) {
-                                return 'Enabel';
+                                return l('Enable');
                             } else {
-                                return 'Disable';
+                                return l('Disable');
                             }
                         }
                     },
                     {
-                        title: l('CreateDate'),
+                        title: loc('CreateDate'),
                         data: 'creationTime',
                         render: function (data) {
                             return luxon
