@@ -154,6 +154,12 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             new SelectListItem { Value = "yes", Text = L["YES"]},
              new SelectListItem { Value = "no", Text = L["NO"], Selected = true}
         };
+            FreightTerm  = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "all", Text = L["All"]},
+             new SelectListItem { Value = "collect", Text = L["COLLECT"]},
+              new SelectListItem { Value = "prepaid", Text = L["PREPAID"]}
+        };
         }
 
         #region FillTradePartnerAsync()
@@ -500,12 +506,7 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
 
         public List<SelectListItem> FreightCode { get; set; } 
     
-        public List<SelectListItem> FreightTerm { get; set; } = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "all", Text = "All"},
-             new SelectListItem { Value = "collect", Text = "COLLECT"},
-              new SelectListItem { Value = "prepaid", Text = "PREPAID"}
-        };
+        public List<SelectListItem> FreightTerm { get; set; } 
 
         public List<SelectListItem> Detail { get; set; } = new List<SelectListItem>
         {

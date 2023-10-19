@@ -686,12 +686,13 @@
                     <!--第三列-->
                     <abp-row>
                         <abp-column size-md="_3">
-
-                            <abp-select asp-for="VPRM.ShipModeId" size="Small" asp-items="@Model.ShipMode">
+                            <label asp-for="VPRM.ShipModeId" class="form-label">@L["ShipModeId"]</label>
+                            <abp-select suppress-label asp-for="VPRM.ShipModeId" size="Small" asp-items="@Model.ShipMode">
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.FreightTerm" size="Small" asp-items="@Model.FreightTerm">
+                            <label asp-for="VPRM.FreightTerm" class="form-label">@L["FreightTerm"]</label>
+                            <abp-select suppress-label asp-for="VPRM.FreightTerm" size="Small" asp-items="@Model.FreightTerm">
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
@@ -716,7 +717,8 @@
 
                         </abp-column>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.Sales" size="Small" asp-items="@Model.Sales">
+                            <label asp-for="VPRM.Sales" class="form-label">@L["Sales"]</label>
+                            <abp-select suppress-label asp-for="VPRM.Sales" size="Small" asp-items="@Model.Sales">
                             </abp-select>
                             <span asp-validation-for="MawbModel.OfficeId" class="text-danger"></span>
                         </abp-column>
@@ -724,7 +726,8 @@
                     <!--第四列-->
                     <abp-row>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.OutputType" size="Small" asp-items="@Model.OutputType">
+                            <label asp-for="VPRM.OutputType" class="form-label">@L["OutputType"]</label>
+                            <abp-select suppress-label asp-for="VPRM.OutputType" size="Small" asp-items="@Model.OutputType">
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_12" id="tradePartnerDiv">
@@ -736,10 +739,12 @@
                             </select>
                         </abp-column>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.ServiceTermTypeFrom" size="Small" asp-items="@Model.ServiceTermStart"></abp-select>
+                            <label asp-for="VPRM.ServiceTermTypeFrom" class="form-label">@L["ServiceTermStart"]</label>
+                            <abp-select suppress-label asp-for="VPRM.ServiceTermTypeFrom" size="Small" asp-items="@Model.ServiceTermStart"></abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.ServiceTermTypeTo" size="Small" asp-items="@Model.ServiceTermEnd">
+                            <label asp-for="VPRM.ServiceTermTypeTo" class="form-label">@L["ServiceTermEnd"]</label>
+                            <abp-select suppress-label asp-for="VPRM.ServiceTermTypeTo" size="Small" asp-items="@Model.ServiceTermEnd">
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
@@ -771,7 +776,8 @@
 
                         </abp-column>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.InvoiceType" size="Small" asp-items="@Model.InvoiceType">
+                            <label asp-for="VPRM.InvoiceType" class="form-label">@L["InvoiceType"]</label>
+                            <abp-select suppress-label asp-for="VPRM.InvoiceType" size="Small" asp-items="@Model.InvoiceType">
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
@@ -782,7 +788,7 @@
                     </abp-row>
                     <!--第六列-->
                     <abp-row id="OutputBySection">
-                        <label asp-for="VPRM.OutputBy" class="form-label">Output By</label>
+                        <label asp-for="VPRM.OutputBy" class="form-label">@L["OutputBy"]</label>
                         <abp-row>
                             <abp-column size-md="_2">
                                 <abp-input size-md="Auto" asp-for="VPRM.IsShipper" label="@L["IsShipper"]" />
@@ -949,7 +955,7 @@
     <abp-row class="mt-3">
         <abp-column size-md="_10">
             <button class="btn btn-block btn-primary" type="button" id="showResultBtn" onclick="showTable()">
-                <i class="fa-solid"></i>Show Result
+                <i class="fa-solid"></i>@L["ShowResult"]
             </button>
         </abp-column>
     </abp-row>

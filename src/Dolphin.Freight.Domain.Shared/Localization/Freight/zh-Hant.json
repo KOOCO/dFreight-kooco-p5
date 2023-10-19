@@ -1232,6 +1232,7 @@
     "ActualShippedr": "實際託運人",
     "OP": "操作者",
     "sales": "業務員",
+    "Sales": "業務員",
     "Ignore": "忽略",
     "tracker": "卡車行",
     "SubAgentAwb": "子代理提單",
@@ -1463,7 +1464,7 @@
     "B/LType": "提單類別",
     "LatestGateIn": "最遲貨櫃進場日期",
     //
-    "Title:VolumeProfileReport": "搜尋選項",
+    "Title:VolumeProfileReport": "Volume Profile Report",
     "Report": "報表內容",
     "Volume&Profit": "貨量與利潤",
     "VolumeOnly": "只有貨量",
@@ -1471,7 +1472,7 @@
     "DataSheet": "數據表",
     "PDF": "PDF",
     "PeriodType": "區間",
-    "PeriodRange": "Period Range",
+    "PeriodRange": "日期區間",
     "ShippingType": "運輸類別",
     "OceanImport": "海運進口",
     "OceanExport": "海運出口",
@@ -1514,7 +1515,13 @@
     "Enable": "啟用",
     "Disable": "停用",
     "Menu:UserManagement": "使用者管理",
-    "Users": "使用者管理"
+    "Users": "使用者管理",
+    "Detail": "詳情",
+    "InvoiceType": "發票類別",
+    "OutputBy": "輸出資訊",
+    "ShowResult": "查看",
+    "COLLECT": "到付",
+    "PREPAID": "預付"
 
 
 

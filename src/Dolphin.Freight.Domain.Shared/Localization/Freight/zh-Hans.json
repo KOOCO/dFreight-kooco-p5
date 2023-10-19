@@ -1129,7 +1129,7 @@
     "B/LType": "提單類別",
     "LatestGateIn": "最遲貨櫃進場日期",
     //
-    "Title:VolumeProfileReport": "搜寻选项",
+    "Title:VolumeProfileReport": "Volume Profile Report",
     "Report": "报表内容",
     "Volume&Profit": "货量与利润 ",
     "VolumeOnly": "只有货量",
@@ -1137,7 +1137,7 @@
     "DataSheet": "数据表",
     "PDF": "PDF",
     "PeriodType": "区间",
-    "PeriodRange": "Period Range",
+    "PeriodRange": "日期区间",
     "ShippingType": "运输类别",
     "OceanImport": "海运进口",
     "OceanExport": "海运出口",
@@ -1181,7 +1181,16 @@
     "Enable": "启用",
     "Disable": "停用",
     "Menu:UserManagement": "使用者管理",
-    "Users": "使用者管理"
+    "Users": "使用者管理",
+    "Detail": "详情",
+    "ServiceTermStart": "运输条款",
+    "ServiceTermEnd": "至运输条款",
+    "InvoiceType": "发票类别",
+    "OutputBy": "输出资讯",
+    "ShowResult": "查看",
+    "COLLECT": "到付",
+    "PREPAID": "预付"
+
 
 
 
