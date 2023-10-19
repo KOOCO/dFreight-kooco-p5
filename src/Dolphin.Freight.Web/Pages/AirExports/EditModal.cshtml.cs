@@ -26,6 +26,7 @@ using Volo.Abp.Uow;
 using System.Threading;
 using Newtonsoft.Json;
 using Dolphin.Freight.Accounting;
+using Dolphin.Freight.ImportExport.Containers;
 
 namespace Dolphin.Freight.Web.Pages.AirExports
 {
@@ -69,6 +70,10 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public bool ShowMsg { get; set; } = false;
+        [BindProperty]
+        public string DimensionsJSON { get; set; }
+        [BindProperty]
+        public List<Dimension> Dimensions { get; set; }
         [BindProperty]
         public List<MoreInformation> MoreInformations { get; set; }
         [BindProperty]
@@ -163,6 +168,12 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                 updateItem.ExtraProperties.Add("MoreInformation", MoreInformations);
 
             }
+            if (DimensionsJSON is not null) {
+                Dimensions = JsonConvert.DeserializeObject<List<Dimension>>(DimensionsJSON);
+
+                updateItem.ExtraProperties.Remove("Dimensions");
+                updateItem.ExtraProperties.Add("Dimensions", Dimensions);
+            }
             _airExportMawbAppService.UpdateAsync(AirExportMawbDto.Id, updateItem).Wait();
 
             if (AirExportHawbDto is not null && !string.IsNullOrEmpty(AirExportHawbDto.HawbNo))
@@ -193,6 +204,14 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                 {
                     AirExportHawbDto.Id = Guid.NewGuid();
                     isUpdate = false;
+                }
+
+                if (AirExportHawbDto.HawbDimensionsJSON is not null)
+                {
+                    Dimensions = JsonConvert.DeserializeObject<List<Dimension>>(AirExportHawbDto.HawbDimensionsJSON);
+
+                    updateHawb.ExtraProperties.Remove("Dimensions");
+                    updateHawb.ExtraProperties.Add("Dimensions", Dimensions);
                 }
 
                 if (isUpdate)

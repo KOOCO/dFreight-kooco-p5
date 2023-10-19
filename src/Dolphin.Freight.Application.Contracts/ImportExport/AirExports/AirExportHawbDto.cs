@@ -16,6 +16,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// Mawb Id
         /// </summary>
+        public string HawbDimensionsJSON { get; set; }
         public Guid? MawbId { get; set; }
         public Guid? HawbId { get; set; }
         /// <summary>

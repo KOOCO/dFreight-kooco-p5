@@ -74,12 +74,12 @@ function applyPopupValues() {
     let dimensionsData = [];
 
     $('#popuptrtbody tr').each(function () {
-        const length = parseFloat($(this).find('input[name^="length_"]').val()) || 0;
-        const width = parseFloat($(this).find('input[name^="width_"]').val()) || 0;
-        const height = parseFloat($(this).find('input[name^="height_"]').val()) || 0;
-        const pcs = parseFloat($(this).find('input[name^="pcs_"]').val()) || 0;
-        const kg = parseFloat($(this).find('input[name^="kg_"]').val()) || 0;
-        const cbm = parseFloat($(this).find('input[name^="cbm_"]').val()) || 0;
+        const length = parseFloat($(this).find('input[id^="length_"]').val()) || 0;
+        const width = parseFloat($(this).find('input[id^="width_"]').val()) || 0;
+        const height = parseFloat($(this).find('input[id^="height_"]').val()) || 0;
+        const pcs = parseFloat($(this).find('input[id^="pcs_"]').val()) || 0;
+        const kg = parseFloat($(this).find('input[id^="kg_"]').val()) || 0;
+        const cbm = parseFloat($(this).find('input[id^="cbm_"]').val()) || 0;
 
         totalPCS += pcs;
         totalKG += kg;

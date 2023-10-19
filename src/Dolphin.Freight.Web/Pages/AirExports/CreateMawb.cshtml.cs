@@ -23,6 +23,8 @@ using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Accounting.InvoiceBills;
 using static Dolphin.Freight.Permissions.AccountingPermissions;
+using Dolphin.Freight.ImportExport.Containers;
+using Newtonsoft.Json;
 
 namespace Dolphin.Freight.Web.Pages.AirExports
 {
@@ -65,7 +67,11 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         [BindProperty]
         public CreateMawbViewModel MawbModel { get; set; }
         [BindProperty]
+        public string DimensionsJSON { get; set; }
+        [BindProperty]
         public List<Commodity> Commodities { get; set; }
+        [BindProperty]
+        public List<Dimension> Dimensions { get; set; }
         [BindProperty]
         public List<AccountingInformation> AccountingInformation { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
@@ -606,6 +612,11 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                 {
                     NewMawab.ExtraProperties.Add("AccountingInformation", AccountingInformation);
                 }
+                if (DimensionsJSON is not null)
+                {
+                    Dimensions = JsonConvert.DeserializeObject<List<Dimension>>(DimensionsJSON);
+                    NewMawab.ExtraProperties.Add("Dimensions", Dimensions);
+                }
 
                 var inputDto = await _airExportMawbAppService.CreateAsync(NewMawab);
                 MawbId = inputDto.Id;
@@ -627,6 +638,11 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                         AirExportHawbDto.ExtraProperties.Add("OtherCharges", AirExportHawbDto.OtherCharges);
                     }
 
+                    if (AirExportHawbDto.HawbDimensionsJSON is not null)
+                    {
+                        Dimensions = JsonConvert.DeserializeObject<List<Dimension>>(AirExportHawbDto.HawbDimensionsJSON);
+                        AirExportHawbDto.ExtraProperties.Add("Dimensions", Dimensions);
+                    }
 
                     var addHawb = ObjectMapper.Map<AirExportHawbDto, CreateUpdateAirExportHawbDto>(AirExportHawbDto);
                     addHawb.MawbId = MawbId;
