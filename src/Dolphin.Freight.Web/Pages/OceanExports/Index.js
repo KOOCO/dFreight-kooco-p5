@@ -338,8 +338,9 @@ $(function () {
         );
     })
 
-
-
+    $('#MblListTable').on('init.dt', function () {
+        $('.abp-action-button').find('li').css('padding', '-5px');
+    });
     $('#Search').keyup(function () {
         clearInterval(_changeInterval)
         _changeInterval = setInterval(function () {

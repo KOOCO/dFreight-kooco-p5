@@ -45,7 +45,7 @@ namespace Dolphin.Freight.Web.Pages.Settings.ContainerSizes
         {
             var AmsTypeCodeLookUp = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "AmsTypeCodeId" });
 
-            AmsTypeCodeLookup = AmsTypeCodeLookUp.Select(s => new SelectListItem(s.CodeValue, s.Id.ToString(), false)).ToList();
+            AmsTypeCodeLookup = AmsTypeCodeLookUp.Select(s => new SelectListItem(s.CodeValue, s.Id.ToString(), false)).OrderBy(o => o.Text).ToList();
         }
 
         public async Task FillContainerGroupCode()
