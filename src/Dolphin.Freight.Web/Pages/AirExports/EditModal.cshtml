@@ -997,7 +997,7 @@
 <div class="page-content-area">
     <div class="board-wrap">
         <form abp-model="@Model.AirExportMawbDto" submit-button="true" data-ajaxForm="true" id="createForm">
-            <abp-input type="hidden" asp-for="@Model.DimensionsJSON" id="dimensionsJSON" value="@Model.AirExportMawbDto.ExtraProperties.GetValueOrDefault("Dimensions").ToString()" />
+            <abp-input type="hidden" asp-for="@Model.DimensionsJSON" id="dimensionsJSON" value="Convert.ToString(@Model.AirExportMawbDto?.ExtraProperties?.GetValueOrDefault("Dimensions"))" />
             <abp-row>
                 <abp-column size-md="_9" id="parentCard">
                     <!-- MBL Card-->

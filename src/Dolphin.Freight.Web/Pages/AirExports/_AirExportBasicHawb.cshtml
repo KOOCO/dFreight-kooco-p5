@@ -693,7 +693,7 @@
                 <abp-input asp-for="AirExportHawbDto.ExtraProperties" value="@Json.Serialize(Model.AirExportHawbDto.ExtraProperties)" type="hidden" />
                 <abp-input asp-for="@Model.AirExportHawbDto.Id" type="hidden" />
                 <abp-input asp-for="@Model.AirExportHawbDto.CurrentHawbNo" type="hidden" />
-                <abp-input asp-for="@Model.AirExportHawbDto.HawbDimensionsJSON" type="hidden" value="@Model.AirExportHawbDto?.ExtraProperties?.GetValueOrDefault("Dimensions").ToString()" />
+                <abp-input asp-for="@Model.AirExportHawbDto.HawbDimensionsJSON" type="hidden" value="Convert.ToString(@Model.AirExportHawbDto?.ExtraProperties?.GetValueOrDefault("Dimensions"))" />
             </abp-column>
         </abp-row>
     </abp-card-body>
