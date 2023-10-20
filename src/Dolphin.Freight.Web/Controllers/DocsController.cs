@@ -113,6 +113,7 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IOceanImportMblAppService _oceanImportMblAppService;
         private IRepository<AirImportHawb, Guid> _airImportHawbRepository;
         private IRepository<AirImportMawb, Guid> _airImportMawbRepository;
+        private readonly IRepository<PackageUnit, Guid> _packageRepository;
 
         private Dolphin.Freight.ReportLog.ReportLogDto ReportLog;
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
@@ -129,7 +130,8 @@ namespace Dolphin.Freight.Web.Controllers
         
           IRepository<AirImportHawb, Guid> airImportHawbRepository,
           IRepository<AirImportMawb, Guid> airImportMawbRepository,
-          IOceanImportMblAppService oceanImportMblAppService)
+          IOceanImportMblAppService oceanImportMblAppService,
+          IRepository<PackageUnit, Guid> packageRepository)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -152,6 +154,7 @@ namespace Dolphin.Freight.Web.Controllers
             _airImportMawbRepository = airImportMawbRepository;
           
             _containerSizeAppService = containerSizeAppService;
+            _packageRepository = packageRepository;
             ReportLog = new ReportLog.ReportLogDto();
 
         }
@@ -4252,7 +4255,7 @@ namespace Dolphin.Freight.Web.Controllers
             foreach (var item in containers)
             {
                 var containerSizeName = string.Concat(containerName.Where(w => w.Value == string.Concat(item.ContainerSizeId)).Select(s => s.Text));
-
+                
                 var items = new CreateUpdateContainerDto
                 {
                     ContainerNo = item.ContainerNo,
@@ -4262,7 +4265,12 @@ namespace Dolphin.Freight.Web.Controllers
                     PackageMeasure = item.PackageMeasure,
                    PackageNum=item.PackageNum,
                 };
+                if (item.PackageUnitId != null)
+                {
+                   var units =await _packageRepository.GetQueryableAsync();
+                    items.PackageUnitName = units.Where(x => x.Id == item.PackageUnitId).Select(x => x.PackageName).FirstOrDefault();
 
+                }
                 totalPackageWeight += item.PackageWeight;
                 totalPackageMeasure += item.PackageMeasure;
 

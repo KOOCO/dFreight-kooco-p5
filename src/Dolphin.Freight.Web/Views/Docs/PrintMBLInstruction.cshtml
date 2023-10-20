@@ -499,7 +499,7 @@
                         <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="33" class="text-scroll ng-isolate-scope" id="id_good_items">
                              @foreach (var item in Model.CreateUpdateContainerDtos)
                                 { 
-                                    @( item.PackageNum+' '+item.PackageUnitName)
+                                    @( item.PackageNum+" "+item.PackageUnitName)
                                     @:
                                 }</textarea></div>
                     </td>
@@ -524,7 +524,7 @@
                         <div class="text-sm padding-b-xs"><span class="seal-mark">"EXPRESS BILL OF LADING"</span></div>
                     </td>
                     <td class="border-r td-item valign-bottom">
-                        <div class="padding-b-xs">MOVE TYPE: CY/CY</div>
+                        <div class="padding-b-xs">MOVE TYPE: @Model.SvcTermFromName / @Model.SvcTermToName</div>
                         <div>ITN NO.: </div>
                     </td>
                     <td class="_position-relative">
