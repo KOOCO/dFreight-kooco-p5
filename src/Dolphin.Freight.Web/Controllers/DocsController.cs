@@ -4259,7 +4259,8 @@ namespace Dolphin.Freight.Web.Controllers
                     SealNo = item.SealNo,
                     ContainerSizeName = containerSizeName,
                     PackageWeight = item.PackageWeight,
-                    PackageMeasure = item.PackageMeasure
+                    PackageMeasure = item.PackageMeasure,
+                   PackageNum=item.PackageNum,
                 };
 
                 totalPackageWeight += item.PackageWeight;

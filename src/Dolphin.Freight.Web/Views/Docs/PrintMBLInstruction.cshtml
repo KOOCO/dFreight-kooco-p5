@@ -488,11 +488,20 @@
                     </td>
                     <td class="td td-item border-r text-right border-b" rowspan="3">
                         <div class="item-edit hover-toggle-icon-text-template"><textarea name="packages" cols="40" rows="33" class="text-scroll no-adjustment ng-isolate-scope" id="id_packages">
-                            
+                             @foreach (var item in Model.CreateUpdateContainerDtos)
+                                { 
+                                    @( item.ContainerSizeName)
+                                    @:
+                                }
                         </textarea></div>
                     </td>
                     <td class="td td-item border-r" rowspan="2">
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="33" class="text-scroll ng-isolate-scope" id="id_good_items">@Model.Description</textarea></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="33" class="text-scroll ng-isolate-scope" id="id_good_items">
+                             @foreach (var item in Model.CreateUpdateContainerDtos)
+                                { 
+                                    @( item.PackageNum+' '+item.PackageUnitName)
+                                    @:
+                                }</textarea></div>
                     </td>
                     <td class="td td-item border-r text-right">
                         <div class="item-edit hover-toggle-icon-text-template"><textarea name="gross_weight" cols="40" rows="20" class="text-scroll no-adjustment ng-isolate-scope"  id="id_gross_weight">@Model.TotalWeightStr</textarea></div>
