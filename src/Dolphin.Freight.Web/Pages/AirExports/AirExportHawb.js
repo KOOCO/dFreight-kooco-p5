@@ -41,7 +41,7 @@ class AirExportHawb {
 
                     $('#HCreateModal').modal('show');
                 }
-                else if (hblId != null) {
+                else if (hblId != null && hblId != '00000000-0000-0000-0000-000000000000') {
                     $('#Hpopuptrtbody').empty();
                     dolphin.freight.importExport.airExports.airExportHawb.get(hblId).then(function (response) {
                         if (response && response.extraProperties && response.extraProperties.Dimensions) {
@@ -58,6 +58,9 @@ class AirExportHawb {
 
                         $('#HCreateModal').modal('show');
                     });
+                }
+                else {
+                    $('#HCreateModal').modal('show');
                 }
                 break;
 
