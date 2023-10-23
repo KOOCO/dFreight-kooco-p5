@@ -26,7 +26,7 @@ $("#saveBtn").click(function () {
 let rowCount = 0;
 var htrindex = 0;
 
-async function getHblCheckbox(mblId, index, callback) {
+async function getHblCheckbox(mblId, index, currentContainerId, callback) {
     let res = await new Promise((resolve, reject) => {
         dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(mblId).done(function (data) {
             resolve(data);
@@ -40,11 +40,12 @@ async function getHblCheckbox(mblId, index, callback) {
     var tdindex = 0;
 
     for (let hbl of res) {
-        var checked = hbl.isMblHblHaveContainer ? 'checked' : '';
+        var checked = hbl.hblContainers.includes(currentContainerId) ? 'checked' : '';
         checkboxesHTML += `<td style='display: none;'><input type='checkbox' data-id='${hbl.id}' data-containerNo='' data-containerid='${hbl.containerIds}' data-mblid='${mblId}' onclick='EditModel2.SaveHBLContainer(this)' id='assignContainerCheckbox_${index}_${tdindex}' ${checked} style='cursor: pointer;'></td>`;
         headersHTML += `<th style="text-align: center; display: none;"><div style="background-color: ${hbl.cardColorValue}; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto;"></div><input type="checkbox" data-hblid='${hbl.id}' onclick="checkAllHeaderCheckbox(this, '${index}', '${tdindex}')" id="hblHeaders_${hbl.hblNo}" style="cursor: pointer; margin-top: 10px;"></th>`;
         tdindex++;
     }
+
     callback(checkboxesHTML, headersHTML);
 }
 

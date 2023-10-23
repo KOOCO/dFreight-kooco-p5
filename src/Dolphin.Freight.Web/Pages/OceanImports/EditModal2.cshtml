@@ -163,23 +163,23 @@
         });
 
 
-        function checkHeaderCheckboxes(){
-            $('th input[id^="hblHeaders_"]').each(function (i, e) {
-                var associatedCheckboxes = $('input[id^="assignContainerCheckbox_"]').filter(function () {
-                    return this.id.match(new RegExp("assignContainerCheckbox_\\d+_" + i + "$"));
-                });
+        //function checkHeaderCheckboxes(){
+        //    $('th input[id^="hblHeaders_"]').each(function (i, e) {
+        //        var associatedCheckboxes = $('input[id^="assignContainerCheckbox_"]').filter(function () {
+        //            return this.id.match(new RegExp("assignContainerCheckbox_\\d+_" + i + "$"));
+        //        });
 
-                var allChecked = true;
-                associatedCheckboxes.each(function () {
-                    if (!$(this).prop('checked')) {
-                        allChecked = false;
-                        return false;
-                    }
-                });
+        //        var allChecked = true;
+        //        associatedCheckboxes.each(function () {
+        //            if (!$(this).prop('checked')) {
+        //                allChecked = false;
+        //                return false;
+        //            }
+        //        });
 
-                $(e).prop('checked', allChecked);
-            });
-        }
+        //        $(e).prop('checked', allChecked);
+        //    });
+        //}
 
         function copyContainertoHBL(i, index) {
             $('input[id^="assignContainerCheckbox_'+index+'_"]').attr('data-containerno', $('#f1_' + index).val());
@@ -213,7 +213,7 @@
         }
         var checkboxIndex = 0;
         function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, mblId) {
-            getHblCheckbox(mblId, checkboxIndex, function (checkboxesHTML, headersHTML) {
+            getHblCheckbox(mblId, checkboxIndex, value9, function (checkboxesHTML, headersHTML) {
                     if (!$('input[id^="hblHeaders_"]').length) {
                         $('#trttable > tbody > tr:first > th:eq(10)').after(headersHTML);
                     }
@@ -230,6 +230,7 @@
                     trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
                     trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
                     trhtml = trhtml + "<td style='display: none;'><input type='checkbox' id='selectAllAssignContainerCheckbox_" + trindex + "' style='cursor: pointer;'></td>"
+                    debugger;
                     trhtml = trhtml + checkboxesHTML
                     trhtml = trhtml + "</tr>"
                     trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"

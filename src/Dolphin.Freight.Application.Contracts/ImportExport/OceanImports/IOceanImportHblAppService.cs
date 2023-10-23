@@ -17,7 +17,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         PagedAndSortedResultRequestDto, 
         CreateUpdateOceanImportHblDto> 
     {
-        Task<bool> CheckContainerHasHblIdAsync(Guid MblId, Guid HblId);
+        Task<string> CheckContainerHasHblIdAsync(Guid MblId, Guid HblId);
         Task<PagedResultDto<OceanImportHblDto>> QueryListAsync(QueryHblDto query);
         Task<IList<OceanImportHblDto>> QueryListByMidAsync(QueryHblDto query);
         Task<CreateUpdateOceanImportHblDto> GetHblById(QueryHblDto query);

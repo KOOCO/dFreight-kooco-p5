@@ -468,5 +468,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         {
             return (SubBlNo == null && IsEcommerce) ? 1 : 1;
         }
+        public string HblContainers { get; set; }
+        public string MblContainers { get; set; }
     }
 }

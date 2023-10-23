@@ -11,9 +11,11 @@ using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NPOI.HSSF.Record.Chart;
 using NPOI.POIFS.Crypt.Dsig.Facets;
 using NPOI.SS.Formula.Functions;
+using Org.BouncyCastle.Crypto;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -316,26 +318,16 @@ namespace Dolphin.Freight.ImportExport.OceanImports
 
                 List<CreateUpdateContainerDto> containers = await _containerAppService.GetContainerListByHblId(item.Id);
                 item.ContainerIds = containers.Select(s => s.Id.ToString()).ToArray();
-
-                item.isMblHblHaveContainer = await this.CheckContainerHasHblIdAsync(item.MblId, item.Id);
+                item.HblContainers = string.Join(",", containers.Select(s => s.Id.ToString()));
             }
             return retVal;
         }
-        public async Task<bool> CheckContainerHasHblIdAsync(Guid MblId, Guid HblId)
+        public async Task<string> CheckContainerHasHblIdAsync(Guid MblId, Guid HblId)
         {
-            bool isChecked = false;
-
             var containers = await _containerAppService.GetContainerByMblId(MblId);
+            string mblContainers = string.Join(",", containers.Select(s => Convert.ToString(s.Id)));
 
-            foreach ( var container in containers)
-            {
-                if (container.HblId == HblId)
-                {
-                    isChecked = true;
-                }
-            }
-
-            return isChecked;
+            return mblContainers;
         }
         public async Task<OceanImportHblDto> GetHblCardById(Guid Id)
         {

@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.Common;
+using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.TradePartners;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         PagedAndSortedResultRequestDto, 
         CreateUpdateOceanExportHblDto> 
     {
+        Task<List<CreateUpdateContainerDto>> GetContainerByHblExtraProperties(Guid Id);
         Task<PagedResultDto<OceanExportHblDto>> QueryListAsync(QueryHblDto query);
         Task<IList<OceanExportHblDto>> QueryListByMidAsync(QueryHblDto query);
         Task<CreateUpdateOceanExportHblDto> GetHblById(QueryHblDto query);

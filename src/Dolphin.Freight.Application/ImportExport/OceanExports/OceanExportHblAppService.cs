@@ -21,6 +21,9 @@ using Volo.Abp.Validation.Localization;
 using Volo.Abp.Auditing;
 using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanImports;
+using Volo.Abp.ObjectMapping;
+using NPOI.SS.Formula.Functions;
+using Newtonsoft.Json;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -302,6 +305,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 }
                 List<CreateUpdateContainerDto> containers = await _containerAppService.GetContainerListByHblId(item.Id);
                 item.ContainerIds = containers.Select(s => s.Id.ToString()).ToArray();
+                item.HblContainers = string.Join(",", containers.Select(s => s.Id.ToString()));
             }
             return retVal;
         }
@@ -559,42 +563,50 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public async Task SaveAssignContainerToHblAsync(OceanExportHblAppModel AppModel)
         {
             var Ids = AppModel.Ids;
-            var ContainerNo = AppModel.ContainerNo;
             var ContainerId = AppModel.Containersid;
-            var MblId = AppModel.MblId;
 
             foreach (var Id in Ids)
             {
-                QueryHblDto queryHblDto = new QueryHblDto() { Id = Id };
-                var OceanExportHbl = await this.GetHblById(queryHblDto);
+                var HblDto = await this.GetAsync(Id);
 
-                if (OceanExportHbl.Id != Guid.Empty)
+                if (HblDto.ExtraProperties is null)
                 {
-                    var containers = await _containerRepository.GetQueryableAsync();
-                    var containerList = containers.Where(w => w.MblId == MblId && w.Id == Guid.Parse(ContainerId)).ToList();
-                    if (containerList.Count > 0)
-                    {
-                        foreach (var container in containerList)
-                        {
-                            if (container.HblId == Guid.Empty)
-                            {
-                                container.HblId = Id;
-                                await _containerAppService.UpdateAsync(container.Id, ObjectMapper.Map<Container, CreateUpdateContainerDto>(container));
-                            }
-                            else
-                            {
-                                CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
-                                {
-                                    HblId = Id,
-                                    ContainerNo = ContainerNo
-                                };
+                    HblDto.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                }
 
-                                await _containerAppService.CreateAsync(containerDto);
-                            }
-                        }
-                    }
+                List<string> CurrentContainerList = JsonConvert.DeserializeObject<List<string>>(HblDto.ExtraProperties.GetValueOrDefault("ContainerIdList").ToString());
+
+                if (!CurrentContainerList.Contains(ContainerId))
+                {
+                    CurrentContainerList.Add(ContainerId);
+
+                    HblDto.ExtraProperties.Add("ContainerIdList", CurrentContainerList);
+
+                    await this.UpdateAsync(HblDto.Id, ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(HblDto));
                 }
             }
+        }
+
+        public async Task<List<CreateUpdateContainerDto>> GetContainerByHblExtraProperties(Guid Id)
+        {
+            List<CreateUpdateContainerDto> CreateUpdateContainerDtos = new List<CreateUpdateContainerDto>();
+
+            var Hbl = await _repository.GetAsync(Id);
+
+            string ContainerIds = Hbl.ExtraProperties.GetValueOrDefault("ContainerIdList").ToString();
+
+            List<string> ContainerIdsList = new List<string>();
+
+            ContainerIdsList = ContainerIds.Split(",").ToList();
+
+            foreach (var ContainerId in ContainerIdsList)
+            {
+                var container = await _containerRepository.GetAsync(Guid.Parse(ContainerId));
+
+                CreateUpdateContainerDtos.Add(ObjectMapper.Map<Container, CreateUpdateContainerDto>(container));
+            }
+
+            return CreateUpdateContainerDtos;
         }
 
         public async Task SaveAssignContainerNoToHblAsync(OceanExportHblAppModel AppModel)

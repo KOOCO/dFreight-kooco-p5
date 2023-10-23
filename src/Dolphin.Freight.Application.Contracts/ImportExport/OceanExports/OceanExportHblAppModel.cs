@@ -12,6 +12,7 @@ public class OceanExportHblAppModel
     public string[] Containers { get; set; }
     public Guid[] ContainerId { get; set; }
     public List<Guid> ContainerIds { get; set; }
+    public List<string> ContainerStrIds { get; set; }
     public List<int> ContainerNos { get; set; }
     public string Containersid { get; set; }
     public string ContainerNo { get; set; }

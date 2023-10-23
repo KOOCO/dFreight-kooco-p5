@@ -16,6 +16,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// MB/LID
         /// </summary>
         public Guid MblId { get; set; }
+        public string HblContainers { get; set; }
         /// <summary>
         /// MBL的文件號碼
         /// </summary>

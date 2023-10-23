@@ -449,7 +449,7 @@
         }
         var checkboxIndex = 0;
         function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, mblId) {
-            EditModelOEContainer.getHblCheckbox(mblId, checkboxIndex, function (checkboxesHTML, headersHTML) {
+            EditModelOEContainer.getHblCheckbox(mblId, checkboxIndex, value9, function (checkboxesHTML, headersHTML) {
                 if (!$('input[id^="hblHeaders_"]').length) {
                     $('#trttable > tbody > tr:first > th:eq(11)').after(headersHTML);
                 }
@@ -467,7 +467,7 @@
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
                 trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
-                trhtml = trhtml + "<td style='display: none;'><input type='checkbox' id='selectAllAssignContainerCheckbox_" + trindex + "' style='cursor: pointer;'></td>"
+                trhtml = trhtml + "<td style='display: none;'><input type='checkbox' id='selectAllAssignContainerCheckbox_" + trindex + "' data-containerid='" + value9 + "' style='cursor: pointer;'></td>"
                 trhtml = trhtml + checkboxesHTML
                 trhtml = trhtml + "</tr>"
                 trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"

@@ -193,21 +193,7 @@ function checkContainerHasHblIdAsync(mblId, hblId) {
 }
 
 class EditModelOEContainer {
-    //static getHblCheckbox(mblId, index, callback) {
-    //    dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(mblId).done(function (res) {
-    //        let checkboxesHTML = '';
-    //        let headersHTML = '';
-    //        var tdindex = 0;
-    //        for (let hbl of res) {
-    //            checkboxesHTML += `<td style='display: none;'><input type='checkbox' data-id='${hbl.id}' data-containerNo='' onclick='EditModelOEContainer.SaveHBLContainer()' id='assignContainerCheckbox_${index}_${tdindex}' style='cursor: pointer;'></td>`;
-    //            headersHTML += `<th style="text-align: center; display: none;"><div style="background-color: ${hbl.cardColorValue}; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto;"></div><input type="checkbox" id="hblHeaders_${hbl.hblNo}" style="cursor: pointer; margin-top: 10px;"></th>`
-    //            tdindex++;
-    //        }
-    //        callback(checkboxesHTML, headersHTML);
-    //    });
-    //}
-
-    static async getHblCheckbox(mblId, index, callback) {
+    static async getHblCheckbox(mblId, index, currentContainerId, callback) {
         let res = await new Promise((resolve, reject) => {
             dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(mblId).done(function (data) {
                 resolve(data);
@@ -221,10 +207,9 @@ class EditModelOEContainer {
         var tdindex = 0;
     
         for (let hbl of res) {
-            var isChecked = await checkContainerHasHblIdAsync(mblId, hbl.id);
-            var checked = isChecked ? 'checked' : '';
+            var checked = hbl.hblContainers.includes(currentContainerId) ? 'checked' : '';
             checkboxesHTML += `<td style='display: none;'><input type='checkbox' data-id='${hbl.id}' data-containerNo='' data-containerid='${hbl.containerIds}' data-mblid='${mblId}' onclick='EditModelOEContainer.SaveHBLContainer(this)' id='assignContainerCheckbox_${index}_${tdindex}' ${checked} style='cursor: pointer;'></td>`;
-            headersHTML += `<th style="text-align: center; display: none;"><div style="background-color: ${hbl.cardColorValue}; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto;"></div><input type="checkbox" data-hblid='${hbl.id}' onclick="checkAllHeaderCheckbox(this, '${index}', '${tdindex}')" id="hblHeaders_${hbl.hblNo}" ${checked} style="cursor: pointer; margin-top: 10px;"></th>`;
+            headersHTML += `<th style="text-align: center; display: none;"><div style="background-color: ${hbl.cardColorValue}; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto;"></div><input type="checkbox" data-hblid='${hbl.id}' onclick="checkAllHeaderCheckbox(this, '${index}', '${tdindex}')" id="hblHeaders_${hbl.hblNo}" style="cursor: pointer; margin-top: 10px;"></th>`;
             tdindex++;
         }
     
@@ -252,16 +237,18 @@ class EditModelOEContainer {
         if (!$(Elem).prop('checked')) {
             
         } else {
-            var ids = []; var container; var containerid; var mblId;
+            var ids = []; var container; var containerid; var containerIdList = []; var mblId;
+            containerid = $(Elem).data('containerid');
             $('input[id^="assignContainerCheckbox_"]:checked').filter(function () { return this.id.match(new RegExp("assignContainerCheckbox_" + index + "_\\d+")); }).each(function (i, e) {
                 var id = e.attributes[1].value;
                 container = e.attributes[2].value;
-                containerid = $('input[name="CreateUpdateContainerDtos[' + i + '].Id"]').attr('value');
                 mblId = e.attributes[4].value;
                 ids.push(id);
             });
 
             var AppModel = { Ids: ids, ContainerNo: container, Containersid: containerid, MblId: mblId };
+            console.log(AppModel);
+            debugger;
             dolphin.freight.importExport.oceanExports.oceanExportHbl.saveAssignContainerToHbl(AppModel).done(function (res) { }).then(function () {
                 location.reload();
             });
@@ -281,7 +268,7 @@ class EditModelOEContainer {
                     abp.message.confirm(l('Message:DeAssignHblFromContainers')).then(function (confirmed) {
                         if (confirmed) {
                             var AppModel = { MblId: mblId, HblId: hblId, Containersid: containerId };
-                            dolphin.freight.importExport.oceanExports.oceanExportHbl.saveAssignSingleContainerNoToHbl(AppModel).done(function (res) { }).then(function () {
+                            dolphin.freight.importExport.oceanExports.oceanExportHbl.saveAssignSingleContainerNoToHbl(AppModel, false).done(function (res) { }).then(function () {
                                 location.reload();
                             });
                         }
