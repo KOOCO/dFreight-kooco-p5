@@ -309,6 +309,7 @@ var AirImportsMawbList = {
                         debugger;
                         abp.message.success(l('Message:SuccessLock'));
                         dataTable.ajax.reload();
+                        $('#selectAllCheckbox').prop('checked', false);
                     });
                 }
             });
@@ -328,7 +329,7 @@ var AirImportsMawbList = {
                     dolphin.freight.importExport.airImports.airImportMawb.selectedUnLockedAirImportMawb(ids).done(function () {
                         dataTable.ajax.reload();
                         abp.message.success(l('Message:Message:SuccessUnlock'));
-                        
+                        $('#selectAllCheckbox').prop('checked', false);
                     });
                 }
             });
