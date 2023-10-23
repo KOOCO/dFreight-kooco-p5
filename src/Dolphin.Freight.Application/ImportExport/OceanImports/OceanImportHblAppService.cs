@@ -316,8 +316,26 @@ namespace Dolphin.Freight.ImportExport.OceanImports
 
                 List<CreateUpdateContainerDto> containers = await _containerAppService.GetContainerListByHblId(item.Id);
                 item.ContainerIds = containers.Select(s => s.Id.ToString()).ToArray();
+
+                item.isMblHblHaveContainer = await this.CheckContainerHasHblIdAsync(item.MblId, item.Id);
             }
             return retVal;
+        }
+        public async Task<bool> CheckContainerHasHblIdAsync(Guid MblId, Guid HblId)
+        {
+            bool isChecked = false;
+
+            var containers = await _containerAppService.GetContainerByMblId(MblId);
+
+            foreach ( var container in containers)
+            {
+                if (container.HblId == HblId)
+                {
+                    isChecked = true;
+                }
+            }
+
+            return isChecked;
         }
         public async Task<OceanImportHblDto> GetHblCardById(Guid Id)
         {

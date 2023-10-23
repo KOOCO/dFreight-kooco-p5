@@ -63,6 +63,10 @@
                     data: "sizeDescription"
                 },
                 {
+                    title: l('AmsTypeCode'),
+                    data: "amsTypeCode"
+                },
+                {
                     //類別
                     title: l('ContainerGroup'),
                     data: "containerGroup"

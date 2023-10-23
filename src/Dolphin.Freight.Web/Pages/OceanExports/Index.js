@@ -59,7 +59,9 @@ var columns = [{
                 [
                     {
                         text: l('Edit'),
-                        visible: abp.auth.isGranted('Settings.ItNoRanges.Edit'), //CHECK for the PERMISSION
+                        visible: function (data) {
+                            return abp.auth.isGranted('Settings.ItNoRanges.Edit'); //CHECK for the PERMISSION
+                        },
                         action: function (data) {
                             if (data.record.isLocked) {
 
@@ -336,8 +338,9 @@ $(function () {
         );
     })
 
-
-
+    $('#MblListTable').on('init.dt', function () {
+        $('.abp-action-button').find('li').css('padding', '-5px');
+    });
     $('#Search').keyup(function () {
         clearInterval(_changeInterval)
         _changeInterval = setInterval(function () {

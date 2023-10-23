@@ -40,10 +40,9 @@ async function getHblCheckbox(mblId, index, callback) {
     var tdindex = 0;
 
     for (let hbl of res) {
-        var isChecked = await checkContainerHasHblIdAsync(mblId, hbl.id);
-        var checked = isChecked ? 'checked' : '';
+        var checked = hbl.isMblHblHaveContainer ? 'checked' : '';
         checkboxesHTML += `<td style='display: none;'><input type='checkbox' data-id='${hbl.id}' data-containerNo='' data-containerid='${hbl.containerIds}' data-mblid='${mblId}' onclick='EditModel2.SaveHBLContainer(this)' id='assignContainerCheckbox_${index}_${tdindex}' ${checked} style='cursor: pointer;'></td>`;
-        headersHTML += `<th style="text-align: center; display: none;"><div style="background-color: ${hbl.cardColorValue}; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto;"></div><input type="checkbox" data-hblid='${hbl.id}' onclick="checkAllHeaderCheckbox(this, '${index}', '${tdindex}')" id="hblHeaders_${hbl.hblNo}" ${checked} style="cursor: pointer; margin-top: 10px;"></th>`;
+        headersHTML += `<th style="text-align: center; display: none;"><div style="background-color: ${hbl.cardColorValue}; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto;"></div><input type="checkbox" data-hblid='${hbl.id}' onclick="checkAllHeaderCheckbox(this, '${index}', '${tdindex}')" id="hblHeaders_${hbl.hblNo}" style="cursor: pointer; margin-top: 10px;"></th>`;
         tdindex++;
     }
     callback(checkboxesHTML, headersHTML);
@@ -232,62 +231,34 @@ class EditModel2 {
         }
     }
 
+    static SaveHorizontalHBLContainer(Elem, index) {
+        if (!$(Elem).prop('checked')) {
+
+        } else {
+            var ids = []; var container; var containerid; var mblId;
+            $('input[id^="assignContainerCheckbox_"]:checked').filter(function () { return this.id.match(new RegExp("assignContainerCheckbox_" + index + "_\\d+")); }).each(function (i, e) {
+                var id = e.attributes[1].value;
+                container = e.attributes[2].value;
+                containerid = $('input[name="CreateUpdateContainerDtos[' + i + '].Id"]').attr('value');
+                mblId = e.attributes[4].value;
+                ids.push(id);
+            });
+
+            var AppModel = { Ids: ids, ContainerNo: container, Containersid: containerid, MblId: mblId };
+            dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignContainerToHbl(AppModel).done(function (res) { }).then(function () {
+                location.reload();
+            });
+        }
+    }
+
     static SaveHBLContainer(Elem) {
         debugger;
-        if (Elem === undefined) Elem = 'undefined';
         switch (Elem) {
-            case 'undefined':
-                if ($('input[id^="assignContainerCheckbox_"]:checked').length === 1) {
-                    var id; var mblId; var containerId;
-                    $('input[id^="assignContainerCheckbox_"]:checked').each(function (i, e) {
-                        id = e.attributes[1].value;
-                        mblId = e.attributes[4].value;
-                        containerId = $('input[name="CreateUpdateContainerDtos[' + i + '].Id"]').attr('value');
-                    });
-
-                    var AppModel = { MblId: mblId, HblId: id, Containersid: containerId };
-                    dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignSingleContainerNoToHbl(AppModel).done(function (res) { }).then(function () {
-                        location.reload();
-                    });
-                } else if ($('input[id^="assignContainerCheckbox_"]:checked').length > 0 && $('input[id^="assignContainerCheckbox_"]:checked').is(":visible")) {
-                    var ids = [];
-                    var containerNo;
-                    var containerid;
-                    var mblId;
-                    $('input[id^="assignContainerCheckbox_"]:checked').each(function (i, e) {
-                        var id = e.attributes[1].value;
-                        containerNo = e.attributes[2].value;
-                        containerid = $('input[name="CreateUpdateContainerDtos[' + i + '].Id"]').attr('value');
-                        mblId = e.attributes[4].value;
-                        ids.push(id);
-                    });
-
-                    //const promises = ids.map(id => {
-                    //    return new Promise((resolve) => {
-                    //        dolphin.freight.importExport.containers.container.getContainerByHblId(id).done(function (r) {
-                    //            if (r && r.id) {
-                    //                resolve(r.id);
-                    //            } else {
-                    //                resolve('00000000-0000-0000-0000-000000000000');
-                    //            }
-                    //        });
-                    //    });
-                    //});
-
-                    //Promise.all(promises).then(results => {
-                    var AppModel = { Ids: ids, ContainerNo: containerNo, Containersid: containerid, MblId: mblId };
-                        dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignContainerToHbl(AppModel).done(function (res) { }).done(function () {
-                            location.reload();
-                        });
-                    /*});*/
-                }
-                break;
             default:
-                if ($(Elem).prop('checked', false)) {
+                if (!$(Elem).prop('checked')) {
                     var url = new URL(window.location.href);
                     var hblId = $(Elem).attr('data-id');
                     var mblId = url.searchParams.get('Id');
-                    debugger;
                     var i = $(Elem).attr('id').split('_')[1];
                     var containerId = $('input[name="CreateUpdateContainerDtos[' + i + '].Id"]').attr('value');
                     abp.message.confirm(l('Message:DeAssignHblFromContainers')).then(function (confirmed) {
@@ -298,18 +269,28 @@ class EditModel2 {
                             });
                         }
                     })
+                } else {
+                    var url = new URL(window.location.href);
+                    var hblId = $(Elem).attr('data-id');
+                    var mblId = url.searchParams.get('Id');
+                    var i = $(Elem).attr('id').split('_')[1];
+                    var containerId = $('input[name="CreateUpdateContainerDtos[' + i + '].Id"]').attr('value');
+                    var AppModel = { MblId: mblId, HblId: hblId, Containersid: containerId };
+                    dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignSingleContainerNoToHbl(AppModel).done(function (res) { }).then(function () {
+                        location.reload();
+                    });
                 }
                 break;
         }        
     }
 
     static SaveHBLContinerNo(tdindex, Elem) {
-        if ($('input[id^="assignContainerCheckbox_"]:checked').filter(function () { return this.id.match(/assignContainerCheckbox_\d+_$/); }).prevObject.length > 0 && $('input[id^="assignContainerCheckbox_"]:checked').filter(function () { return this.id.match(/assignContainerCheckbox_\d+_0$/); }).prevObject.is(":visible")) {
+        if ($('input[id^="assignContainerCheckbox_"]:checked').filter(function () { return this.id.match(new RegExp("assignContainerCheckbox_\\d+_" + tdindex + "$")); }).length > 0) {
             var id;
             var hblid;
             var containers = [];
             var containerids;
-            $('input[id^="assignContainerCheckbox_"]:checked').filter(function () { return this.id.match(/assignContainerCheckbox_\d+_$/); }).prevObject.each(function (i, e) {
+            $('input[id^="assignContainerCheckbox_"]:checked').filter(function () { return this.id.match(new RegExp("assignContainerCheckbox_\\d+_" + tdindex + "$")); }).each(function (i, e) {
                 id = e.attributes[4].value;
                 hblid = e.attributes[1].value;
                 containerids = e.attributes[3].value;
@@ -323,7 +304,13 @@ class EditModel2 {
             var url = new URL(window.location.href);
             var hblId = $(Elem).attr('data-hblid');
             var mblId = url.searchParams.get('Id');
-
+            var containers = [];
+            var containerids;
+            $('input[id^="assignContainerCheckbox_"]').filter(function () { return this.id.match(new RegExp("assignContainerCheckbox_\\d+_" + tdindex + "$")); }).each(function (i, e) {
+                id = e.attributes[4].value;
+                hblid = e.attributes[1].value;
+                containerids = e.attributes[3].value;
+            })
             abp.message.confirm(l('Message:DeAssignHblFromContainers')).then(function (confirmed) {
                 if (confirmed) {
                     var AppModel = { MblId: mblId, HblId: hblId };

@@ -29,6 +29,7 @@ using Dolphin.Freight.ReportLog;
 using Dolphin.Freight.Web.CommonService;
 using Dolphin.Freight.AccountingSettings.BillingCodes;
 
+
 namespace Dolphin.Freight.Web.Pages.ReportScreen
 {
     public class VolumeProfileReportModel : AbpPageModel
@@ -104,7 +105,61 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             await FillPackageUnitAsync();
             ShipMode = _dropdownService.ShipModeLookupList;
             await FillFreightCodeAsync();
+            ReportList = new List<SelectListItem>
+        {
+            new SelectListItem
+            {
+                Value = "vp",
+                Text = L["Volume&Profit"]
+            },
+            new SelectListItem
+            {
+                Value = "v",
+                Text = L["VolumeOnly"]
+            }
+        };
+            Format  = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "DS", Text = L["DataSheet"]},
+            new SelectListItem { Value = "PDF", Text = L["PDF"]},
 
+        };
+            PeriodType = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "postdate", Text = @L["PostDate"]},
+            new SelectListItem { Value = "ETD", Text = "ETD"},
+            new SelectListItem { Value = "ETA", Text = "ETA"}
+
+        };
+            Profit  = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "all", Text = L["ALL"]},
+             new SelectListItem { Value = "range", Text = L["Range"]},
+              new SelectListItem { Value = "negative", Text = L["Negative"]}
+
+        };
+            Status  = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "all", Text = L["All"] },
+             new SelectListItem { Value = "open", Text = L["Open"]},
+              new SelectListItem { Value = "blocked", Text = L["Blocked"]}
+        };
+            InvoiceType = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "normal-only", Text = L["NormalOnly"]},
+             new SelectListItem { Value = "normal-draft", Text = L["Normal+Draft"]}
+        };
+            ECommerce  = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "yes", Text = L["YES"]},
+             new SelectListItem { Value = "no", Text = L["NO"], Selected = true}
+        };
+            FreightTerm  = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "all", Text = L["All"]},
+             new SelectListItem { Value = "collect", Text = L["COLLECT"]},
+              new SelectListItem { Value = "prepaid", Text = L["PREPAID"]}
+        };
         }
 
         #region FillTradePartnerAsync()
@@ -421,26 +476,10 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
 
         }
 
-        public List<SelectListItem> ReportList { get; set; } = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "vp", Text = "Volume & Profit"},
-            new SelectListItem { Value = "v", Text = "Volume Only"}
+        public List<SelectListItem> ReportList { get; set; } 
+        public List<SelectListItem> PeriodType { get; set; } 
 
-        };
-        public List<SelectListItem> PeriodType { get; set; } = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "postdate", Text = "Post Date"},
-            new SelectListItem { Value = "ETD", Text = "ETD"},
-            new SelectListItem { Value = "ETA", Text = "ETA"}
-
-        };
-
-        public List<SelectListItem> Format { get; set; } = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "DS", Text = "Data Sheet"},
-            new SelectListItem { Value = "PDF", Text = "PDF"},
-
-        };
+        public List<SelectListItem> Format { get; set; }
         public List<SelectListItem> Office { get; set; } = new List<SelectListItem>
         {
             new SelectListItem { Value = "D7972F83-91D9-9F5D-D038-3A0ADA6A3515", Text = "Sub 1"}
@@ -457,13 +496,7 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
             new SelectListItem { Value = "usd", Text = "usd"}
 
         };
-        public List<SelectListItem> Profit { get; set; } = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "all", Text = "ALL"},
-             new SelectListItem { Value = "range", Text = "Range"},
-              new SelectListItem { Value = "negative", Text = "Negative"}
-
-        };
+        public List<SelectListItem> Profit { get; set; } 
         public List<SelectListItem> ShipMode { get; set; }
        
            
@@ -473,12 +506,7 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
 
         public List<SelectListItem> FreightCode { get; set; } 
     
-        public List<SelectListItem> FreightTerm { get; set; } = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "all", Text = "All"},
-             new SelectListItem { Value = "collect", Text = "COLLECT"},
-              new SelectListItem { Value = "prepaid", Text = "PREPAID"}
-        };
+        public List<SelectListItem> FreightTerm { get; set; } 
 
         public List<SelectListItem> Detail { get; set; } = new List<SelectListItem>
         {
@@ -579,12 +607,7 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
               new SelectListItem { Value = "9", Text = "TACKLE"}
         };
 
-        public List<SelectListItem> Status { get; set; } = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "all", Text = "All"},
-             new SelectListItem { Value = "open", Text = "Open"},
-              new SelectListItem { Value = "blocked", Text = "Blocked"}
-        };
+        public List<SelectListItem> Status { get; set; } 
 
         public List<SelectListItem> SalesType { get; set; } = new List<SelectListItem>
         {
@@ -594,17 +617,9 @@ namespace Dolphin.Freight.Web.Pages.ReportScreen
               new SelectListItem { Value = "nomi", Text = "NOMI"},
         };
 
-        public List<SelectListItem> InvoiceType { get; set; } = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "normal-only", Text = "Normal Only"},
-             new SelectListItem { Value = "normal-draft", Text = "Normal + Draft"}
-        };
+        public List<SelectListItem> InvoiceType { get; set; } 
 
-        public List<SelectListItem> ECommerce { get; set; } = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "yes", Text = "YES"},
-             new SelectListItem { Value = "no", Text = "NO", Selected = true}
-        };
+        public List<SelectListItem> ECommerce { get; set; } 
 
 
         

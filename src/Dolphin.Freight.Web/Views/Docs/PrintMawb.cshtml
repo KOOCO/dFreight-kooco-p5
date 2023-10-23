@@ -72,15 +72,32 @@
 <script>
     var zoom = 1;
     $(document).ready(function(){
-		$('#zin').on('click', function(){
-			zoom += 0.1;
-			$('#form').css('transform', 'scale(' + zoom + ')');
-		});
+    document.getElementById('zin').onclick = function() {
+            zoom += 0.1;
+            document.getElementById('myForm').style.transform = 'scale('+zoom+')';
+            document.getElementById('zout').disabled = false;
+        }
 
-		$('#zout').on('click', function(){
-			zoom -= 0.1;
-			$('#form').css('transform', 'scale(' + zoom + ')');
-		});
+        document.getElementById('zout').onclick = function() {
+            if(zoom > 1){
+                zoom -= 0.1;
+                document.getElementById('myForm').style.transform = 'scale('+zoom+')';
+            }
+            else{
+                document.getElementById('zout').disabled = true;
+            }
+        }
+        
+        //      $('#zin').on('click', function(){
+  //      debugger;
+		//	zoom += 0.1;
+		//	$('#myForm').css('transform', 'scale(' + zoom + ')');
+		//});
+
+		//$('#zout').on('click', function(){
+		//	zoom -= 0.1;
+		//	$('#myForm').css('transform', 'scale(' + zoom + ')');
+		//});
 
         document.getElementById("reportLink").onclick = function() {
             document.getElementById("myForm").submit();
@@ -92,14 +109,7 @@
         }
     });
 </script>
-<form id="myForm" name="myForm" method="POST">
-    <input type="hidden" asp-for="@Model.MawbNo" />
-    <input type="hidden" asp-for="@Model.DepartureName" />
-    <input type="hidden" name="AirWayBillNo" /> 
-    <input type="hidden" name="@Model.NVD" />
-    <input type="hidden" name="@Model.NCV" />
-    <div id="main" class="edit">
-    @if (!Model.IsPDF)
+@if (!Model.IsPDF)
     {
         <div class="nav">
            <ul>
@@ -117,21 +127,28 @@
             <option value="zh-hant">繁體中文 (Traditional Chinese)</option>
     </select>
         
-    </li><!-- end ngIf: vm.canSelectLanguage -->
+    </li>
 
     </ul>
-
         <div class="view-setting">
             <div class="btn-group">
-                <button class="button btn btn-sm" title="Zoom Out" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"><i class="fa fa-search-minus"></i>
+                <button class="button btn-sm" type="button" title="Zoom Out" id="zout" disabled="disabled"><i class="fa fa-search-minus"></i>
                 </button>
-                <button class="button btn btn-sm" title="Zoom In" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"><i class="fa fa-search-plus"></i>
+                <button class="button btn-sm" type="button" title="Zoom In" id="zin"><i class="fa fa-search-plus"></i>
                 </button>
             </div>
-        </div>
+        </div> 
     </div>
-    }
-            
+    }   
+<form id="myForm" name="myForm" method="POST">
+    <input type="hidden" asp-for="@Model.MawbNo" />
+    <input type="hidden" asp-for="@Model.DepartureName" />
+    <input type="hidden" name="AirWayBillNo" /> 
+    <input type="hidden" name="@Model.NVD" />
+    <input type="hidden" name="@Model.NCV" />
+    <div id="main" class="edit">
+    
+    
             <div id="form-wrap" class="wrap  border-red" ng-class="vm.borderClass">
                 @if (!Model.IsPDF)
                 {
@@ -744,20 +761,39 @@
                             </td>
                             <td class="w-60 td border-b">
                                 <table class="table-padding">
-                                    <tbody><tr>
-                                        <td class="w-60 td">
-                                            <div class="title-oblique text-var">Other Charges</div>
-                                            <div class="item-edit"><textarea name="other_charges_area" cols="40" rows="5">@(Model.OtherCharges.Sum(x=>Convert.ToDouble(x.ChargeAmount)))</textarea></div>
-                                        </td>
-                                        <td class="w-20 td text-center">
-                                            <div class="title-oblique text-var">PREPAID</div>
-                                            <div class="item-edit"><textarea name="other_charges_area_prepaid" cols="40" rows="5">@(Model.OtherCharges.Where(x=>x.CollectPaid=="Paid").Sum(x=>Convert.ToDouble(x.ChargeAmount)))</textarea></div>
-                                        </td>
-                                        <td class="w-20 td text-center">
-                                            <div class="title-oblique text-var">COLLECT</div>
-                                            <div class="item-edit"><textarea name="other_charges_area_collect" cols="40" rows="5">@(Model.OtherCharges.Where(x=>x.CollectPaid=="Collect").Sum(x=>Convert.ToDouble(x.ChargeAmount)))</textarea></div>
-                                        </td>
-                                    </tr>
+                                    <tbody>
+                                        @if(Model.OtherCharges is not null) {
+                                            <tr>
+                                                <td class="w-60 td">
+                                                    <div class="title-oblique text-var">Other Charges</div>
+                                                    <div class="item-edit"><textarea name="other_charges_area" cols="40" rows="5">@(Model.OtherCharges.Sum(x=>Convert.ToDouble(x.ChargeAmount)))</textarea></div>
+                                                </td>
+                                                <td class="w-20 td text-center">
+                                                    <div class="title-oblique text-var">PREPAID</div>
+                                                    <div class="item-edit"><textarea name="other_charges_area_prepaid" cols="40" rows="5">@(Model.OtherCharges.Where(x=>x.CollectPaid=="Paid").Sum(x=>Convert.ToDouble(x.ChargeAmount)))</textarea></div>
+                                                </td>
+                                                <td class="w-20 td text-center">
+                                                    <div class="title-oblique text-var">COLLECT</div>
+                                                    <div class="item-edit"><textarea name="other_charges_area_collect" cols="40" rows="5">@(Model.OtherCharges.Where(x=>x.CollectPaid=="Collect").Sum(x=>Convert.ToDouble(x.ChargeAmount)))</textarea></div>
+                                                </td>
+                                            </tr>
+                                        } else
+                                        {
+                                            <tr>
+                                                <td class="w-60 td">
+                                                    <div class="title-oblique text-var">Other Charges</div>
+                                                    <div class="item-edit"><textarea name="other_charges_area" cols="40" rows="5">0.00</textarea></div>
+                                                </td>
+                                                <td class="w-20 td text-center">
+                                                    <div class="title-oblique text-var">PREPAID</div>
+                                                    <div class="item-edit"><textarea name="other_charges_area_prepaid" cols="40" rows="5">0.00</textarea></div>
+                                                </td>
+                                                <td class="w-20 td text-center">
+                                                    <div class="title-oblique text-var">COLLECT</div>
+                                                    <div class="item-edit"><textarea name="other_charges_area_collect" cols="40" rows="5">0.00</textarea></div>
+                                                </td>
+                                            </tr>   
+                                        }
                                 </tbody></table>
                             </td>
                         </tr>

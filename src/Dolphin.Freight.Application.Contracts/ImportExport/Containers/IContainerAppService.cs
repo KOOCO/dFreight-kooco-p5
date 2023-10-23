@@ -21,6 +21,7 @@ namespace Dolphin.Freight.ImportExport.Containers
         Task<List<CreateUpdateContainerDto>> GetContainersListByBookingId(Guid Id);
         Task SwitchPP(Guid id);
         Task SwitchCTF(Guid id);
+        Task<CreateUpdateContainerDto> GetSingleContainerByMblId(Guid id);
         Task<List<CreateUpdateContainerDto>> GetContainerByMblId(Guid id);
         Task<CreateUpdateContainerDto> GetContainerByHblId(Guid id);
         Task<List<ContainerDto>> QueryListHblAsync(Guid hblId);

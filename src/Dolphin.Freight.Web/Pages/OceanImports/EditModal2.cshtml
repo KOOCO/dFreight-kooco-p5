@@ -16,10 +16,11 @@
         var trindex = 0;
         var containerSizes = [];
         var packageUnitsName = [];
+
         $(document).ready(function () {
             var isLocked = '@Model.OceanImportMbl.IsLocked';
             if (isLocked == 'True') abp.message.warn("此項已經被鎖定，若需修改請小心！\n您作的變更可能導致會計報表不一致！");
-            
+           
             dolphin.freight.settings.containerSizes.containerSize.queryAllList({}).done(function (result) {
                 if (result != null && result.length > 0) {
                     containerSizes = result;
@@ -56,7 +57,7 @@
                     });
                 }
             });
-
+            
             var IsShowHbl = '@Model.IsShowHbl';
             if (IsShowHbl == 'True'){
                 $("#hblCard").show();
@@ -161,6 +162,25 @@
             
         });
 
+
+        function checkHeaderCheckboxes(){
+            $('th input[id^="hblHeaders_"]').each(function (i, e) {
+                var associatedCheckboxes = $('input[id^="assignContainerCheckbox_"]').filter(function () {
+                    return this.id.match(new RegExp("assignContainerCheckbox_\\d+_" + i + "$"));
+                });
+
+                var allChecked = true;
+                associatedCheckboxes.each(function () {
+                    if (!$(this).prop('checked')) {
+                        allChecked = false;
+                        return false;
+                    }
+                });
+
+                $(e).prop('checked', allChecked);
+            });
+        }
+
         function copyContainertoHBL(i, index) {
             $('input[id^="assignContainerCheckbox_'+index+'_"]').attr('data-containerno', $('#f1_' + index).val());
 
@@ -221,7 +241,7 @@
 
                     $("#selectAllAssignContainerCheckbox_" + currentIndex).click(function () {
                         $('input[id^="assignContainerCheckbox_' + currentIndex + '_"]').prop('checked', $(this).prop('checked'));
-                        EditModel2.SaveHBLContainer();
+                        EditModel2.SaveHorizontalHBLContainer(this, currentIndex);
                     });
                     trindex++;
                     countPackageType('MBL');
@@ -326,6 +346,7 @@
                         $('#totalWeight').text(parseFloat(totalWgt).toFixed(2) + ' LB');
                         $('#totalWeightUnit').text(parseFloat(totalWgt / 2.2).toFixed(2) + ' KG');
                     }
+                    checkHeaderCheckboxes();
                 break;
 
                 case 'HBL':
@@ -357,6 +378,8 @@
                         $('#totalWeight').text(parseFloat(totalWgt).toFixed(2) + ' LB');
                         $('#totalWeightUnit').text(parseFloat(totalWgt / 2.2).toFixed(2) + ' KG');
                     }
+
+                    checkHeaderCheckboxes();
                 break;
             }
         }

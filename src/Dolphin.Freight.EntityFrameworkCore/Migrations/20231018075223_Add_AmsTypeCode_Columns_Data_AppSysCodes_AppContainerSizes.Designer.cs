@@ -4,6 +4,7 @@ using Dolphin.Freight.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,10 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Dolphin.Freight.Migrations
 {
     [DbContext(typeof(FreightDbContext))]
-    partial class FreightDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231018075223_Add_AmsTypeCode_Columns_Data_AppSysCodes_AppContainerSizes")]
+    partial class Add_AmsTypeCode_Columns_Data_AppSysCodes_AppContainerSizes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -5411,9 +5413,6 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AmsTypeCodeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasMaxLength(40)
@@ -5465,8 +5464,6 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AmsTypeCodeId");
 
                     b.HasIndex("ContainerGroupId");
 
@@ -11058,15 +11055,9 @@ namespace Dolphin.Freight.Migrations
 
             modelBuilder.Entity("Dolphin.Freight.Settings.ContainerSizes.ContainerSize", b =>
                 {
-                    b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "AmsTypeCode")
-                        .WithMany()
-                        .HasForeignKey("AmsTypeCodeId");
-
                     b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "ContainerGroup")
                         .WithMany()
                         .HasForeignKey("ContainerGroupId");
-
-                    b.Navigation("AmsTypeCode");
 
                     b.Navigation("ContainerGroup");
                 });

@@ -73,6 +73,7 @@ namespace Dolphin.Freight.Settings.ContainerSizes
                 {
                     var pud = ObjectMapper.Map<ContainerSize, ContainerSizeDto>(pu);
                     if (pu.ContainerGroupId != null) pud.ContainerGroup = dictionary[pu.ContainerGroupId.Value];
+                    if (pu.AmsTypeCodeId is not null) pud.AmsTypeCode = dictionary[pu.AmsTypeCodeId.Value];
                     list.Add(pud);
                 }
             }

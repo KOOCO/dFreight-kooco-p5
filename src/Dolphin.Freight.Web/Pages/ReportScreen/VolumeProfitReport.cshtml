@@ -595,17 +595,17 @@
                 <!-- 標題區域 -->
                 <abp-card-header style="background:#555555;color:#FFFFFF;">
                     <abp-row>
-                        <abp-column size-md="_9">
+                        <abp-column size-md="_12">
                             <abp-card-title>
                                 @L["Title:VolumeProfileReport"]
 
                             </abp-card-title>
                         </abp-column>
-                        <abp-column size-md="_3" class="text-end">
+                      @*   <abp-column size-md="_3" class="text-end">
                             <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#mawbDiv" aria-expanded="false" aria-controls="mawbDiv">
                                 <i class="fa fa-caret-down" style="color:#FFFFFF;"></i>
                             </button>
-                        </abp-column>
+                        </abp-column> *@
                     </abp-row>
                 </abp-card-header>
                 <!-- Mawb資訊欄 -->
@@ -613,19 +613,19 @@
                     <!--第一列-->
                     <abp-row>
                         <abp-column size-md="_3">
-                            <label asp-for="VPRM.Report" class="form-label">Report</label>
+                            <label asp-for="VPRM.Report" class="form-label">@L["Report"]</label>
                             <abp-radio asp-for="VPRM.Report" asp-items="Model.ReportList" inline="true" />
                         </abp-column>
                         <abp-column size-md="_3">
-                            <label asp-for="VPRM.OutputFormat" class="form-label">Output Format</label>
+                            <label asp-for="VPRM.OutputFormat" class="form-label">@L["OutputFormat"]</label>
                             <abp-radio asp-for="VPRM.OutputFormat" asp-items="Model.Format" inline="true" />
                         </abp-column>
                         <abp-column size-md="_3">
-                            <label asp-for="VPRM.PeriodType" class="form-label">Period Type</label>
+                            <label asp-for="VPRM.PeriodType" class="form-label">@L["PeriodType"]</label>
                             <abp-radio asp-for="VPRM.PeriodType" asp-items="Model.PeriodType" inline="true" />
                         </abp-column>
                         <abp-column size-md="_3">
-                            <label asp-for="VPRM.PeriodRange" class="form-label">Period Range</label>
+                            <label asp-for="VPRM.PeriodRange" class="form-label">@L["PeriodRange"]</label>
                             <input asp-for="VPRM.PeriodRange" class="form-control" />
                         </abp-column>
 
@@ -641,28 +641,28 @@
                             @*<label asp-for="VPRM.ShippingType" class="form-label">Shipping Type</label>
                             <input asp-for="VPRM.ShippingType" class="form-control" />*@
 
-                            <label asp-for="VPRM.ShippingType" class="form-label">Shipping Type</label>
+                            <label asp-for="VPRM.ShippingType" class="form-label">@L["ShippingType"]</label>
                             <abp-row>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsOceanImport" label="Ocean Import" checked/>
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsOceanImport" label="@L["OceanImport"]" checked/>
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsOceanExport" label="Ocean Export" />
+                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsOceanExport" label="@L["OceanExport"]" />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsAirImport" label="Air Import" />
+                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsAirImport" label="@L["AirImport"]" />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsAirExport" label="Air Export" />
+                                    <abp-input size-md="Auto" checked asp-for="VPRM.IsAirExport" label="@L["AirExport"]" />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsTruck" label="Truck" disabled/>
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsTruck" label="@L["Truck"]" disabled/>
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsMisc" label="Misc." disabled/>
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsMisc" label="@L["Misc."]" disabled/>
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsWarehouse" label="Warehouse" disabled />
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsWarehouse" label="@L["Warehouse"]" disabled />
                                 </abp-column>
                             </abp-row>
 
@@ -672,7 +672,7 @@
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
-                            <label asp-for="VPRM.Profit" class="form-label">Profit</label>
+                            <label asp-for="VPRM.Profit" class="form-label">@L["Profit"]</label>
                             <abp-radio asp-for="VPRM.Profit" asp-items="Model.Profit" inline="true" />
                             <div style="display:flex; padding-top:10px;">
                                 <input asp-for="VPRM.MinProfit" class="form-control" style="margin-right:10px;"/>
@@ -686,37 +686,39 @@
                     <!--第三列-->
                     <abp-row>
                         <abp-column size-md="_3">
-
-                            <abp-select asp-for="VPRM.ShipModeId" size="Small" asp-items="@Model.ShipMode">
+                            <label asp-for="VPRM.ShipModeId" class="form-label">@L["ShipModeId"]</label>
+                            <abp-select suppress-label asp-for="VPRM.ShipModeId" size="Small" asp-items="@Model.ShipMode">
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.FreightTerm" size="Small" asp-items="@Model.FreightTerm">
+                            <label asp-for="VPRM.FreightTerm" class="form-label">@L["FreightTerm"]</label>
+                            <abp-select suppress-label asp-for="VPRM.FreightTerm" size="Small" asp-items="@Model.FreightTerm">
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
                             @*<label asp-for="VPRM.Detail" class="form-label">Detail</label>
                             <input asp-for="VPRM.Detail" class="form-control" />*@
 
-                            <label asp-for="VPRM.Detail" class="form-label">Detail</label>
+                            <label asp-for="VPRM.Detail" class="form-label">@L["Detail"]</label>
                             <abp-row>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsVolumeDetail" label="Show Volume Detail" />
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsVolumeDetail" label="@L["ShowVolumeDetail"]" />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsProfitDetail" label="Show Profit Detail" />
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsProfitDetail" label="@L["ShowProfitDetail"]" />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsContainerDetail" label="Show Container Detail" />
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsContainerDetail" label="@L["ShowContainerDetail"]" />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsVolByCntrAndSalesType" label="Volume By Container Type And Sales Type" disabled/>
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsVolByCntrAndSalesType" label="@L["VolumeByContainerTypeAndSalesType"]" disabled/>
                                 </abp-column>
                             </abp-row>
 
                         </abp-column>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.Sales" size="Small" asp-items="@Model.Sales">
+                            <label asp-for="VPRM.Sales" class="form-label">@L["Sales"]</label>
+                            <abp-select suppress-label asp-for="VPRM.Sales" size="Small" asp-items="@Model.Sales">
                             </abp-select>
                             <span asp-validation-for="MawbModel.OfficeId" class="text-danger"></span>
                         </abp-column>
@@ -724,7 +726,8 @@
                     <!--第四列-->
                     <abp-row>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.OutputType" size="Small" asp-items="@Model.OutputType">
+                            <label asp-for="VPRM.OutputType" class="form-label">@L["OutputType"]</label>
+                            <abp-select suppress-label asp-for="VPRM.OutputType" size="Small" asp-items="@Model.OutputType">
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_12" id="tradePartnerDiv">
@@ -736,10 +739,12 @@
                             </select>
                         </abp-column>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.ServiceTermTypeFrom" size="Small" asp-items="@Model.ServiceTermStart"></abp-select>
+                            <label asp-for="VPRM.ServiceTermTypeFrom" class="form-label">@L["ServiceTermStart"]</label>
+                            <abp-select suppress-label asp-for="VPRM.ServiceTermTypeFrom" size="Small" asp-items="@Model.ServiceTermStart"></abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.ServiceTermTypeTo" size="Small" asp-items="@Model.ServiceTermEnd">
+                            <label asp-for="VPRM.ServiceTermTypeTo" class="form-label">@L["ServiceTermEnd"]</label>
+                            <abp-select suppress-label asp-for="VPRM.ServiceTermTypeTo" size="Small" asp-items="@Model.ServiceTermEnd">
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
@@ -753,25 +758,26 @@
                             @*<label asp-for="VPRM.SalesTypeId" class="form-label">Sales Type</label>
                             <input asp-for="VPRM.SalesTypeId" class="form-control" />*@
 
-                            <label asp-for="VPRM.SalesTypeId" class="form-label">Sales Type</label>
+                            <label asp-for="VPRM.SalesTypeId" class="form-label">@L["SalesType"]</label>
                             <abp-row>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsNA" label="N/A" checked/>
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsNA" label="@L["N/A"]" checked/>
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsCOLoad" label="CO-LOAD" />
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsCOLoad" label="@L["CO-LOAD"]" />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsFreeCargo" label="FREE CARGO" />
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsFreeCargo" label="@L["FREECARGO"]" />
                                 </abp-column>
                                 <abp-column size-md="Auto">
-                                    <abp-input size-md="Auto" asp-for="VPRM.IsNomi" label="NOMI" />
+                                    <abp-input size-md="Auto" asp-for="VPRM.IsNomi" label="@L["NOMI"]" />
                                 </abp-column>
                             </abp-row>
 
                         </abp-column>
                         <abp-column size-md="_3">
-                            <abp-select asp-for="VPRM.InvoiceType" size="Small" asp-items="@Model.InvoiceType">
+                            <label asp-for="VPRM.InvoiceType" class="form-label">@L["InvoiceType"]</label>
+                            <abp-select suppress-label asp-for="VPRM.InvoiceType" size="Small" asp-items="@Model.InvoiceType">
                             </abp-select>
                         </abp-column>
                         <abp-column size-md="_3">
@@ -782,148 +788,162 @@
                     </abp-row>
                     <!--第六列-->
                     <abp-row id="OutputBySection">
-                        <label asp-for="VPRM.OutputBy" class="form-label">Output By</label>
+                        <label asp-for="VPRM.OutputBy" class="form-label">@L["OutputBy"]</label>
                         <abp-row>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsShipper" label="Shipper" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsShipper" label="@L["IsShipper"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsOverseaAgent" label="Oversea Agent" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsOverseaAgent" label="@L["IsOverseaAgent"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" checked="true" disabled="true" asp-for="VPRM.IsConsignee" label="Consignee" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" checked="true" disabled="true" asp-for="VPRM.IsConsignee" label="@L["IsConsignee"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsCustomer" label="Customer" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsCustomer" label="@L["IsCustomer"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsCarrier" label="Carrier" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsCarrier" label="@L["IsCarrier"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsCustomsBroker" label="Customs Broker" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsCustomsBroker" label="@L["CustomsBroker"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsTrucker" label="Trucker" />
+                            </abp-row>
+                            <abp-row>
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsTrucker" label="@L["IsTrucker"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsAccountGroup" label="Account Group" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsAccountGroup" label="@L["AccountGroup"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsBillTo" label="Bill To" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsBillTo" label="@L["BillTo"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsReferredBy" label="Referred By" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsReferredBy" label="@L["IsReferredBy"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsOutputOffice" label="Output Office" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsOutputOffice" label="@L["OutputOffice"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsBLPostDate" label="BL Post Date" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsBLPostDate" label="@L["BLPostDate"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
+                             </abp-row>
+                            <abp-row>
+                            <abp-column size-md="_2">
                                 <abp-input size-md="Auto" asp-for="VPRM.IsETD" label="ETD" />
                             </abp-column>
-                            <abp-column size-md="Auto">
+                            <abp-column size-md="_2">
                                 <abp-input size-md="Auto" asp-for="VPRM.IsETA" label="ETA" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsOutputFreightTerm" label="Freight Term" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsOutputFreightTerm" label="@L["IsFreightTerm"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsIncoterms" label="Incoterms" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsIncoterms" label="@L["IsIncoterms"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsServiceTerm" label="Service Term" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsServiceTerm" label="@L["IsServiceTerm"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsCargoType" label="Cargo Type" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsCargoType" label="@L["IsCargoType"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsSalesPerson" label="Sales Person" />
+                             </abp-row>
+                            <abp-row>
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsSalesPerson" label="@L["IsSalesPerson"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsMBLOP" label="MB/L OP" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsMBLOP" label="@L["MB/LOP"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsOperation" label="Operation" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsOperation" label="@L["IsOperation"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsOPCOOPOP" label="OP/Co-op OP" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsOPCOOPOP" label="@L["OP/Co-opOP"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsShipLine" label="Ship Line" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsShipLine" label="@L["IsShipLine"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsPOL" label="POL" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsPOL" label="@L["IsPOL"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsPOD" label="POD" />
+                              </abp-row>
+                            <abp-row>
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsPOD" label="@L["IsPOD"]"/>
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsCountryOfPOL" label="Country of POL" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsCountryOfPOL" label="@L["CountryofPOL"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsCountryOfPOD" label="Country of POD" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsCountryOfPOD" label="@L["CountryofPOD"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsDEL" label="DEL" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsDEL" label="@L["IsDEL"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsFinalDestination" label="Final Destination" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsFinalDestination" label="@L["IsFinalDestination"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsVesselFlight" label="Vessel / Flight" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsVesselFlight" label="@L["Vessel/Flight"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsMblMawbWarehouse" label="MBL / MAWB No. / Warehouse B/L No." />
+                              </abp-row>
+                            <abp-row>
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsMblMawbWarehouse" label="@L["MBL/MAWBNo./WarehouseB/LNo."]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsHblHawb" label="HB/L | HAWB No." />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsHblHawb" label="@L["HB/L|HAWBNo."]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsOutputFile" label="File No." />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsOutputFile" label="@L["FileNo."]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsDoorMove" label="Door Move" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsDoorMove" label="@L["IsDoorMove"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsClearance" label="C.Clearance" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsClearance" label="@L["C.Clearance"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsISF" label="ISF No." />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsISF" label="@L["IsISFNo."]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsFBAFC" label="FBA FC" />
+                              </abp-row>
+                            <abp-row>
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsFBAFC" label="@L["FBAFC"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsOutputSalesType" label="Sales Type" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsOutputSalesType" label="@L["SalesType"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsHblNominatedAgent" label="HB/L Referred By / Nominated Agent" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsHblNominatedAgent" label="@L["HB/LReferredBy/NominatedAgent"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsOutputECommerce" label="E-Commerce" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsOutputECommerce" label="@L["IsE-Commerce"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsForwardingAgent" label="Forwarding Agent" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsForwardingAgent" label="@L["IsForwardingAgent"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsCarrierContractNo" label="Carrier Contract No." />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsCarrierContractNo" label="@L["CarrierContractNo."]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsMblColorRemark" label="MBL Color Remark" />
+                              </abp-row>
+                            <abp-row>
+                            <abp-column size-md="_2">
+                                <abp-input size-md="_2" asp-for="VPRM.IsMblColorRemark" label="@L["MBLColorRemark"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsHblColorRemark" label="HBL Color Remark" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsHblColorRemark" label="@L["HBLColorRemark"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsCoLoader" label="Co-Loader" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsCoLoader" label="@L["IsCo-Loader"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsBlType" label="B/L Type" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsBlType" label="@L["B/LType"]" />
                             </abp-column>
-                            <abp-column size-md="Auto">
-                                <abp-input size-md="Auto" asp-for="VPRM.IsLatestGateIn" label="Latest Gate In" />
+                            <abp-column size-md="_2">
+                                <abp-input size-md="Auto" asp-for="VPRM.IsLatestGateIn" label="@L["LatestGateIn"]" />
                             </abp-column>
                         </abp-row>
                     </abp-row>
@@ -933,9 +953,9 @@
     </abp-row>
     <!-- 下方Save按鈕 -->
     <abp-row class="mt-3">
-        <abp-column>
+        <abp-column size-md="_10">
             <button class="btn btn-block btn-primary" type="button" id="showResultBtn" onclick="showTable()">
-                <i class="fa-solid"></i>Show Result
+                <i class="fa-solid"></i>@L["ShowResult"]
             </button>
         </abp-column>
     </abp-row>

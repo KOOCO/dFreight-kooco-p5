@@ -15,6 +15,7 @@ using Dolphin.Freight.ImportExport.OceanImports;
 using static Dolphin.Freight.Permissions.OceanImportPermissions;
 using Volo.Abp.ObjectMapping;
 using Newtonsoft.Json;
+using Dolphin.Freight.Settinngs.PackageUnits;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
 {
@@ -128,10 +129,13 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                 OceanExportHbl = new CreateUpdateOceanExportHblDto();
 
                 OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl);
-                OceanExportHbl.PackageNo = container.PackageNum;
-                OceanExportHbl.PackageWeight = container.PackageWeight;
-                OceanExportHbl.PackageMeasurement = container.PackageMeasure;
-                OceanExportHbl.ContainerId = container.Id;
+                if (container is not null)
+                {
+                    OceanExportHbl.PackageNo = container.PackageNum;
+                    OceanExportHbl.PackageWeight = container.PackageWeight;
+                    OceanExportHbl.PackageMeasurement = container.PackageMeasure;
+                    OceanExportHbl.ContainerId = container.Id;
+                }
                 IsShowHbl = true;
             }
         }

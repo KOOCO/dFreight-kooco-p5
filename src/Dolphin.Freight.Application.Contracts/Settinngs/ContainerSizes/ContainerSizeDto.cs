@@ -20,10 +20,12 @@ namespace Dolphin.Freight.Settinngs.ContainerSizes
         /// 類別
         /// </summary>
         public Guid? ContainerGroupId { get; set; }
+        public Guid? AmsTypeCodeId { get; set; }
         /// <summary>
         /// 類別
         /// </summary>
         public string ContainerGroup { get; set; }
+        public string AmsTypeCode { get; set; }
         /// <summary>
         /// 長度
         /// </summary>
