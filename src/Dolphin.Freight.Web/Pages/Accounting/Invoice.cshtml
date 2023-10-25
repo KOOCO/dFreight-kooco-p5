@@ -102,17 +102,26 @@
                         let index = id.substr(id.lastIndexOf('_') + 1);
                         let invoiceBillId = parent.find('[name="InvoiceBillDtos[' + index + '].Id"]').attr('value')
 
+                        if ($('#Tax_' + (index-1)).find(':selected').text().split('%')[0] == '7') {
+                            var taxAmount = $('#Amount_' + (index-1)).text() * 0.07;
+                        } else {
+                            var taxAmount = $('#Amount_' + (index - 1)).text() * 0;
+                        }
+
                         if (invoiceBillId) {
                             dolphin.freight.accounting.invoiceBills.invoiceBill.delete(invoiceBillId).done(function (result) {
                                 parent.remove();
+                                getTotalSubAmount();
+                                getTotalAmount(parseFloat(taxAmount).toFixed(2));
                             });
                         }
                         else {
                             parent.remove();
+                            getTotalSubAmount();
+                            getTotalAmount(parseFloat(taxAmount).toFixed(2));
                         }
-
                     }
-                })
+                });
             })
             $("#copyBtn").click(function () {
                 $(".checkItem").each(function () {
@@ -124,7 +133,6 @@
             })
             $('#createForm').on('abp-ajax-success', function (result) {
                 event.preventDefault();
-                debugger
                 var check = '@Model.CopyInvoiceId';
                 switch (formControl) {
                     case 0:
@@ -304,7 +312,7 @@
             for (var i = 0; i < table[0].rows.length; i++) {
               var amountCell = document.getElementById("Amount_" + i);
               
-              var amount = parseFloat(amountCell.innerHTML);
+              if (amountCell != null) var amount = parseFloat(amountCell.innerHTML);
               
               total += amount;
             }
@@ -328,7 +336,7 @@
             for (var i = 0; i < table[0].rows.length; i++) {
               var amountCell = document.getElementById("Amount_" + i);
               
-              var amount = parseFloat(amountCell.innerHTML);
+              if (amountCell != null) var amount = parseFloat(amountCell.innerHTML);
               
               total += amount;
             }
@@ -399,23 +407,51 @@
         }
 
         function copyItems(id) {
+            var invoice = new Invoice();
             id = id.replace("new_", "");
-            let amount = parseInt($("#Quantity_" + id).val() || 0) * ($("#Rate_" + id).val() || 0);
+            let amount = parseFloat(($("#Quantity_" + id).val() || 0) * ($("#Rate_" + id).val() || 0) * ($('#Price_' + id).val() || 0)).toFixed(2);
             var trhtml = "<tr id='_" + index + "'><th style='text-align:center'><input class='checkItem' type='checkbox' name='InvoiceBillDtos[" + index + "].BillId' id='InvoiceBillDtosId_" + index + "' data-val='new_" + index + "'/></th>";
             trhtml = trhtml + "<th>" + getBillCodeSelect(index, '', ($('#Code_0').val() || '')) + "</th>";
             trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Description' id='Description_" + index + "' value='" + ($("#Description_" + id).val() || '') + "' /></th>";
-            trhtml = trhtml + "<th>" + getPPOrCCSelect(index, '', ($('#PPOrCC_0').val() || '')) + "</th>";
-            trhtml = trhtml + "<th>" + getBillTypeSelect(index, '', ($('#BillType_0').val() || '')) + "</th>";
-            trhtml = trhtml + "<th>" + getUnitSelect(index, '', ($('#Unit_0').val() || '')) + "</th>";
-            trhtml = trhtml + "<th>" + getCurrencySelect(index, '', ($('#Currency_0').val() || '')) + "</th>";
-            trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' id='Quantity_" + index + "' value='" + ($("#Quantity_" + id).val() || '') + "' /></th>";
-            trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Rate' id='Rate_" + index + "' value='" + ($("#Rate_" + id).val() || '') + "' /><input type='hidden' name='InvoiceBillDtos[" + index + "].Amount' id='Amount_" + index + "' value='" + $("#Amount_" + id).val() + "'  /></th>";
-            trhtml = trhtml + "<th id='td_Amount_" + index + "'><label name='InvoiceBillDtos[" + index + "].AmountLabel'>" + amount + "</label></th>";
+            trhtml = trhtml + "<th>" + getPPOrCCSelect(index, '', ($('#PPOrCC_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th>" + getBillTypeSelect(index, '', ($('#BillType_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th>" + getUnitSelect(index, '', ($('#Unit_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th>" + getCurrencySelect(index, '', ($('#Currency_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' id='Quantity_" + index + "' onchange='onQuantityChange(event)' value='" + ($("#Quantity_" + id).val() || '') + "' /></th>";
+            trhtml = trhtml + "<th><input style='background-color: #d3d3d394;' type='text' name='InvoiceBillDtos[" + index + "].Rate' id='Rate_" + index + "' onchange='onRateChange(event)' value='" + ($("#Rate_" + id).val() || '') + "' /></th>";
+            trhtml = trhtml + "<th>" + invoice.getPrice(index, ($('#Price_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th>" + invoice.getTax(index, ($('#Tax_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th id='td_Amount_" + index + "' value='"+ amount +"'><label name='InvoiceBillDtos[" + index + "].AmountLabel' id='Amount_" + index + "'>" + amount + "</label></th>";
             trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].AmountToAgent' id='AmountToAgent_" + index + "' value='" + ($("#AmountToAgent_" + id).val() || '') + "'  /></th>";
             trhtml = trhtml + "<th  style='text-align:center'><input type='checkbox' name='InvoiceBillDtos[" + index + "].IsNonProfit' id='IsNonProfit_" + index + "' disabled /></th>";
             trhtml = trhtml + "<th><input type='hidden' name='InvoiceBillDtos[" + index + "].Id'></th>";
             trhtml = trhtml + "<th></th></tr>";
             $("#trtbody").append(trhtml);
+            debugger;
+            let val = currencyCodeToName[$('#Currency_' + index).val() || ''];
+            let conversion = JSON.parse(currencyConvertor);
+            let rate = conversion["" + val + "-TWD"];
+            if (val == undefined) {
+                $('#Quantity_' + index).val(0);
+                $('#Rate_' + index).val(0);
+                $('#Price_' + index).val(0);
+            } else {
+                getRate(index, parseFloat($('#Rate_' + index).val()).toFixed(2));
+            }
+            var amount1 = $('#Quantity_' + index).val() * $("#Rate_" + index + "").val() * $('#Price_' + index).val();
+            if (val == undefined || amount1 == NaN) {
+                $('#Amount_' + index + '').text(0);
+            } else {
+                $('#Amount_' + index + '').text(parseFloat(amount1).toFixed(2));
+            }
+            if ($('#Tax_' + index).find(':selected').text().split('%')[0] == '7') {
+                var taxAmount = amount1 * 0.07;
+            } else {
+                var taxAmount = amount1 * 0;
+            }
+            setCurrencyRate($('#Currency_0').val());
+            getTotalSubAmount();
+            getTotalAmount(parseFloat(taxAmount).toFixed(2));
             index++;
         }
 
@@ -479,7 +515,7 @@
             return selectHtml;
         }
         function getRate(id, rate){
-            var selectHtml = "<input type='text' name='InvoiceBillDtos[" + id + "].Rate' onchange='onRateChange(event)' value='" + rate + "' id='Rate_" + index + "' readonly/><input type='hidden' name='InvoiceBillDtos[" + id + "].Amount' id='Amount_[" + id + "]' /></td>"
+            var selectHtml = "<input type='text' style='background-color: #d3d3d394;' name='InvoiceBillDtos[" + id + "].Rate' onchange='onRateChange(event)' value='" + rate + "' id='Rate_" + index + "' readonly/><input type='hidden' name='InvoiceBillDtos[" + id + "].Amount' id='Amount_[" + id + "]' /></td>"
             return selectHtml;
         }
         function goBlank() {
