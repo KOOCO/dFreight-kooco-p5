@@ -93,7 +93,6 @@
 
     function printDoc()
     {
-        debugger;
         document.getElementById("myForm").submit();
     }
 
@@ -102,6 +101,42 @@
     }
     function onBillOfLandingChangeMaster(){
         $('#BillOfLandingMaster').val($('#ddlBillOfLandingMaster > option:selected').val());
+    }
+
+    function convertUnit(value) {
+        if (value === 'LB') {
+            $('.weight').each(function(i, e){
+                if ($('#weight_' + i).text().includes('.')) {
+                    $('#weight_' + i).text(parseFloat($('#weight_' + i).text() * 2.20462).toFixed(2));
+                } else {
+                    $('#weight_' + i).text(parseFloat($('#weight_' + i).text().split('\n')[1].trimStart('') * 2.20462).toFixed(2));
+                }
+            });
+        } else if (value === 'KG') {
+            $('.weight').each(function(i, e){
+                if ($('#weight_' + i).text().includes('.')) {
+                    $('#weight_' + i).text(parseFloat($('#weight_' + i).text() / 2.20462).toFixed(2));
+                } else {
+                    $('#weight_' + i).text(parseFloat($('#weight_' + i).text().split('\n')[1].trimStart('') / 2.20462).toFixed(2));
+                }
+            });
+        } else if (value === 'CFT') {
+            $('.measure').each(function(i, e){
+                if ($('#measure_' + i).text().includes('.')) {
+                    $('#measure_' + i).text(parseFloat($('#measure_' + i).text() * 35.315).toFixed(2));
+                } else {
+                    $('#measure_' + i).text(parseFloat($('#measure_' + i).text().split('\n')[1].trimStart('') * 35.315).toFixed(2));
+                }
+            });
+        } else if (value === 'CBM') {
+            $('.measure').each(function(i, e){
+                if ($('#measure_' + i).text().includes('.')){
+                    $('#measure_' + i).text(parseFloat($('#measure_' + i).text() / 35.315).toFixed(2));
+                } else {
+                    $('#measure_' + i).text(parseFloat($('#measure_' + i).text().split('\n')[1].trimStart('') / 35.315).toFixed(2));
+                }
+            });
+        }
     }
 </script>
 
@@ -427,26 +462,25 @@
                                         <td class="text-right">
                                             
                                             <div class="item-edit margin-t">
-                                                <select name="weight_unit" class="select ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="vm.weightUnit" id="id_weight_unit">
+                                                <select name="weight_unit" class="select ng-pristine ng-untouched ng-valid ng-not-empty" onchange="convertUnit($(this).val())" id="id_weight_unit">
                                                   <option value="KG" selected="">KG</option>
-
                                                   <option value="LB">LB</option>
-
                                                 </select>
                                             </div>
                                         </td>
                                         <td class="text-right">
                                             
                                             <div class="item-edit margin-t">
-                                                <select name="measure_unit" class="select ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="vm.measureUnit" id="id_measure_unit">
+                                                <select name="measure_unit" class="select ng-pristine ng-untouched ng-valid ng-not-empty" onchange="convertUnit($(this).val())" id="id_measure_unit">
                                                   <option value="CBM" selected="">CBM</option>
-
                                                   <option value="CFT">CFT</option>
-
                                                 </select>
                                             </div>
                                         </td>
                                     </tr>
+                                    @{
+                                        var index = 0;
+                                    }
                                     @foreach(var item2 in Model.CreateUpdateContainerDtos)
                                     {
                                        <tr>
@@ -471,16 +505,17 @@
                                                 </div>
                                             </td>
                                             <td class="text-right">
-                                                <div class="item-edit">
+                                                <div class="item-edit weight" id="weight_@index">
                                                     @item2.PackageWeight
                                                 </div>
                                             </td>
                                             <td class="text-right">
-                                                <div class="item-edit">
+                                                <div class="item-edit measure" id="measure_@index">
                                                     @item2.PackageMeasure
                                                 </div>
                                             </td>
-                                        </tr>     
+                                        </tr>
+                                        index++;
                                     }
                                             
                                 </tbody></table>
@@ -514,12 +549,17 @@
                     <td class="border-r col-padding text-sm border-b margin-b-md" rowspan="2">
                         <div class="item-edit margin-b-md hover-toggle-icon-text-template">
                             <input type="checkbox" name="show_on_board_watermark" id="id_show_on_board_watermark" checked="">
-                            <textarea cols="40" rows="9" class="edit-seal text-scroll no-adjustment ng-isolate-scope"  id="id_on_board_watermark">@Model.PolEtd?.ToShortDateString()</textarea>
+                            <textarea cols="40" rows="9" class="edit-seal text-scroll no-adjustment ng-isolate-scope"  id="id_on_board_watermark">@Model.PolEtd?.ToShortDateString() @Environment.NewLine ---------------- @Environment.NewLine @Model.VesselName @Model.Voyage</textarea>
                         </div>
                     </td>
                 </tr>
                 <tr class="border-b">
                     <td class="border-r td-item valign-bottom">
+                        @if (Model.FreightTermName == "預付") {
+                            <div class="text-sm padding-b-xs"><span class="seal-mark">"FREIGHT PREPAID"</span></div>
+                        } else {
+                            <div class="text-sm padding-b-xs"><span class="seal-mark">"FREIGHT COLLECT"</span></div>
+                        }
                         
                         <div class="text-sm padding-b-xs"><span class="seal-mark">"EXPRESS BILL OF LADING"</span></div>
                     </td>

@@ -4276,8 +4276,8 @@ namespace Dolphin.Freight.Web.Controllers
                 list.Add(items);
             }
 
-            oceanExportDetails.TotalWeightStr = string.Concat(totalPackageWeight + " KGS " + Math.Round(totalPackageWeight * 2.20462, 2) + " LBS");
-            oceanExportDetails.TotalMeasureStr = string.Concat(totalPackageMeasure + " CBM " + Math.Round(totalPackageMeasure * 35.315, 2) + " CFT");
+            oceanExportDetails.TotalWeightStr = string.Concat(Math.Round(totalPackageWeight, 2) + " KGS " + Math.Round(totalPackageWeight * 2.20462, 2) + " LBS");
+            oceanExportDetails.TotalMeasureStr = string.Concat(Math.Round(totalPackageMeasure, 2) + " CBM " + Math.Round(totalPackageMeasure * 35.315, 2) + " CFT");
             oceanExportDetails.CreateUpdateContainerDtos = list;
             oceanExportDetails.CreateUpdateContainerDtosJson = JsonConvert.SerializeObject(list);
             oceanExportDetails.IsPartialView = isPartialView;
