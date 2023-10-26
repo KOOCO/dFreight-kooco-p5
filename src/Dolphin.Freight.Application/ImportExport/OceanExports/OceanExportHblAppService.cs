@@ -649,5 +649,20 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 await _containerAppService.UpdateAsync(container.Id, dto);
             }
         }
+
+        public async Task UpdateMblIdOfHblAsync(Guid hblId, Guid newMblId)
+        {
+            try
+            {
+                var hbl = await _repository.GetAsync(hblId);
+                hbl.MblId = newMblId;
+                await _repository.UpdateAsync(hbl);
+            }
+            catch (Exception ex)
+            {
+
+                throw new UserFriendlyException(ex.Message);
+            }
+        }
     }
 }

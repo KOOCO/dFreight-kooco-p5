@@ -2,6 +2,7 @@
 using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.AirImports;
+using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Settings.Countries;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settinngs.ContainerSizes;
@@ -40,6 +41,7 @@ namespace Dolphin.Freight.Web.CommonService
         private readonly IAccountGroupAppService _accountGroupAppService;
         private readonly IAirImportMawbAppService _airImportMawbAppService;
         private readonly IIdentityUserAppService _identityUserAppService;
+        private readonly IOceanExportMblAppService _oceanExportMblAppService;
 
         public DropdownService(ITradePartnerAppService tradePartnerAppService,
                                ISubstationAppService substationAppService,
@@ -54,7 +56,8 @@ namespace Dolphin.Freight.Web.CommonService
                                ICreditLimitGroupAppService creditLimitGroupAppService,
                                IAccountGroupAppService accountGroupAppService,
                                IAirImportMawbAppService airImportMawbAppService,
-                               IIdentityUserAppService identityUserAppService
+                               IIdentityUserAppService identityUserAppService,
+                               IOceanExportMblAppService oceanExportMblAppService
                                )
         {
             _tradePartnerAppService = tradePartnerAppService;
@@ -71,6 +74,7 @@ namespace Dolphin.Freight.Web.CommonService
             _accountGroupAppService = accountGroupAppService;
             _airImportMawbAppService = airImportMawbAppService;
             _identityUserAppService = identityUserAppService;
+            _oceanExportMblAppService = oceanExportMblAppService;
         }
         public List<SelectItems> TradePartnerLookupList => FillTradePartnerAsync().Result;
 
@@ -115,9 +119,18 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> GiCodeLookupList => FillGiCodesAsync().Result;
         public List<SelectItems> CreditLimitGroupNameLookupList => FillCreditLimitGroupName().Result;
         public List<SelectItems> AccountGroupnameLookupList => FillAccountGroupName().Result;
-
+        public List<SelectItems> OceanExportMblLookupList => FillOceanExportMblAsync().Result;
         public List<SelectItems> OperatorLookupList => FillOperatorAsync().Result;
 
+
+        #region
+        private async Task<List<SelectItems>> FillOceanExportMblAsync()
+        {
+            var oceanExportLookup = await _oceanExportMblAppService.GetMblListAsync();
+
+            return oceanExportLookup.Select(s => new SelectListItem(s.FilingNo + '/' + s.MblNo, s.Id.ToString(), false)).ToList();
+        }
+        #endregion
 
         #region FillTradePartnerAsync()
         private async Task<List<SelectItems>> FillTradePartnerAsync()

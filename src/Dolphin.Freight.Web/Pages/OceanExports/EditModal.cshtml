@@ -131,13 +131,11 @@
             abp.message.confirm(l('DeletionConfirmationMessage'))
                 .then(function (confirmed) {
                     if (confirmed) {
-                        dolphin.freight.importExport.oceanExports.oceanExportHbl
-                            .delete($('#OceanExportHbl_Id').val())
-                            .then(function () {
-                                abp.message.success(l('SuccessfullyDeleted'));
-                                $('#hblCard').remove();
-                                $('#hblCards').find('.card-body.show').closest('.card.board-item').remove()
-                            });
+                        dolphin.freight.importExport.oceanExports.oceanExportHbl.delete($('#OceanExportHbl_Id').val()).then(function () {
+                            abp.message.success(l('SuccessfullyDeleted'));
+                            $('#hblCard').remove();
+                            $('#hblCards').find('.card-body.show').closest('.card.board-item').remove()
+                        });
                     }
                 });
         }
@@ -736,8 +734,6 @@
                                 }
                             </abp-card-title>
 
-
-
                             <div class="btn-group dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDropMbl" data-bs-toggle="dropdown">
                                     
@@ -1261,6 +1257,9 @@
 </div>
  
 <div class="modal" id="MBLDocumentPackageModal">
+</div>
+
+<div id="myMoveModal">
 </div>
 
 <script>

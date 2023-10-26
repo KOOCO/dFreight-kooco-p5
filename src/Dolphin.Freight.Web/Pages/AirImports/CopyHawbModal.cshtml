@@ -101,14 +101,20 @@
       
         <abp-modal-body>
          
-              <abp-input type="hidden" asp-for="@Model.Id" />
-          <abp-column size="_12">
+            <abp-input type="hidden" asp-for="@Model.Id" />
+            <abp-input type="hidden" asp-for="@Model.isOceanExportHbl" />
+            <abp-column size="_12">
                 <p>Please select which MB/L you want to copy HB/L to?</p>
-
-               </abp-column>
+            </abp-column>
             
-                <abp-column size="_12">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CopyModel.MawbId", AspItems = _dropdown.AirImportMawbLookupList,Selected=Model.CopyModel.MawbId.ToString(),IsRequired=true, IsShowLabel = false, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.CopyModel.MawbId) })
+            <abp-column size="_12">
+                @if (Model.isOceanExportHbl)
+                {
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CopyModel.MawbId", AspItems = _dropdown.OceanExportMblLookupList,Selected=Model.CopyModel.MawbId.ToString(),IsRequired=true, IsShowLabel = false, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.CopyModel.MawbId) })
+                } else
+                {
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CopyModel.MawbId", AspItems = _dropdown.AirImportMawbLookupList,Selected=Model.CopyModel.MawbId.ToString(),IsRequired=true, IsShowLabel = false, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.CopyModel.MawbId) })
+                }
 
             </abp-column>
    @*          <abp-column size="_12">

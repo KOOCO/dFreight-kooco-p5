@@ -2,6 +2,7 @@
 using Dolphin.Freight.ImportExport.Containers;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -24,5 +25,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         Task<JsonResult> CreateOneMBLWithContainerAsync(Guid[] ids);
         Task<JsonResult> CreateMblWithDiffContainersAsync(Guid[] ids);
         Task SaveDimensionsAsync(DimensionDataModel DataModel);
+        Task<List<OceanExportMblDto>> GetMblListAsync();
     }
 }

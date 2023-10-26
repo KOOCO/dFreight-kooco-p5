@@ -16,77 +16,70 @@
 @inject IDropdownService _dropdown
 @inject IStringLocalizer<FreightResource> L
 
-<script type="text/javascript">
-    var l = abp.localization.getResource('Freight');
-    function OpenInTrackTrace() {
-        var url = new URL(window.location.href);
-        var mblId = url.searchParams.get('Id');
-        dolphin.freight.importExport.oceanExports.oceanExportMbl.get(mblId).done(function (res) {
-            myWindow = window.open('https://www.track-trace.com/bol#' + res.mblNo, '_blank', 'width=1200,height=1000');
-            myWindow.focus();
-        });
-    }
+    <abp-script src="/Pages/OceanExports/OceanExportBasicHbl.js" />
+    <script type="text/javascript">
+         var l = abp.localization.getResource('Freight');
+         const createHblCopyModal = new abp.ModalManager({
+             viewUrl: '/AirImports/CopyHawbModal',
+         });
 
-    function getDocPackagePopUp() {
-        $.ajax({
-            url: abp.appPath + 'Docs/DocumentPackageHBLPopupPartial?id=@Model.OceanExportHbl.Id',
-            type: 'GET',
-            dataType: "html",
-            success: function (res) {
-                $('#documentPackageModal').html(res);
-                $('#documentPackageModal').modal('show');
+        class OceanExportBasicHbl {
+            static onCopyToHblClick() {
+                var id = '@Model.OceanExportHbl.Id';
+                var isOceanExportHbl = true;
+                createHblCopyModal.open({
+                    id,
+                    isOceanExportHbl
+                });
             }
-        });
-    }
-    $(document).ready(function () {
-        var isHblLocked = '@Model.OceanExportHbl.IsLocked';
-        if (isHblLocked != 'True') {
-            $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
-            $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+
+            static editMawbAirImport(prevMawbId, hawbId) {
+                $.ajax({
+                    url: abp.appPath + 'Docs/AirImportPartialView',
+                    type: 'GET',
+                    data: { prevMawbId: prevMawbId, hawbId: hawbId, isOceanExportHbl: true },
+                    dataType: "html",
+                    success: function (res) {
+                        $('#myMoveModal').html(res);
+                        $('#myModal').modal('show');
+                    }
+                });
+            }
         }
-        else {
-            $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
-            $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
-        }
+         
+         function OpenInTrackTrace() {
+             var url = new URL(window.location.href);
+             var mblId = url.searchParams.get('Id');
+             dolphin.freight.importExport.oceanExports.oceanExportMbl.get(mblId).done(function (res) {
+                 myWindow = window.open('https://www.track-trace.com/bol#' + res.mblNo, '_blank', 'width=1200,height=1000');
+                 myWindow.focus();
+             });
+         }
+         function getDocPackagePopUp() {
+             $.ajax({
+                 url: abp.appPath + 'Docs/DocumentPackageHBLPopupPartial?id=@Model.OceanExportHbl.Id',
+                 type: 'GET',
+                 dataType: "html",
+                 success: function (res) {
+                     $('#documentPackageModal').html(res);
+                     $('#documentPackageModal').modal('show');
+                 }
+             });
+         }
+         $(document).ready(function () {
+             var isHblLocked = '@Model.OceanExportHbl.IsLocked';
+             if (isHblLocked != 'True') {
+                 $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                 $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+             }
+             else {
+                 $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+                 $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+             }
+         });
+    </script>
 
-        //$(document).ready(function () {
-        //    const ids = [
-        //        'OceanExportHbl_PolEtd',
-        //        'OceanExportHbl_PorEtd',
-        //        'OceanExportHbl_PodEta',
-        //        'OceanExportHbl_DelEta',
-        //        'OceanExportHbl_FdestEta',
-        //        'OceanExportHbl_CargoArrivalDate',
-        //        'OceanExportHbl_HblWhCutOffTime',
-        //        'OceanExportHbl_EarlyReturnDatetime',
-        //        'OceanExportHbl_LcIssueDate',
-        //        'OceanExportHbl_OnBoardDate',
-        //        'OceanExportHbl_HblReleaseDate'
-        //    ];
-            
-        //    ids.forEach(function (id) {
-        //        let dateElem = $('#' + id);
 
-        //        if (dateElem.length === 0) {
-        //            return;
-        //        }
-
-        //        dateElem.removeAttr('type').datetimepicker({
-        //            format: 'Y-m-d H:i',
-        //            step: 15,
-        //            allowInput: false
-        //        });
-
-        //        let currentVal = dateElem.val();
-        //        if (currentVal.includes('T')) {
-        //            dateElem.val(currentVal.replace('T', ' '));
-        //        }
-        //    });
-        //});
-    });
-        
-
-</script>
 
 <abp-card class="card board-item" id="hblCard">
 
@@ -108,16 +101,16 @@
                         <a class='dropdown-item' id="lockButtonHbl" href='javascript:void(0)' onclick="lockUnlockHbl('@Model.OceanExportHbl.Id')">
                            
                         </a>
-                        <a class='dropdown-item' href='#'>
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="copyHawb('@Model.OceanExportHbl.Id')">
                             <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                         </a>
                         <a class='dropdown-item' id="deleteButtonHbl" href='javascript:void(0)' onclick="deleteHbl()" style="display:none">
                             <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
                         </a>
-                        <a class='dropdown-item' href='#'>
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="OceanExportBasicHbl.onCopyToHblClick()">
                             <i class="fa fa-file-text-o"></i> @L["Btn:Copy to"]
                         </a>
-                        <a class='dropdown-item' href='#'>
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="OceanExportBasicHbl.editMawbAirImport('@Model.OceanExportHbl.MblId', '@Model.OceanExportHbl.Id')">
                             <i class="fa fa-share"></i> @L["Btn:Move"]
                         </a>
                         <a class='dropdown-item' href='#'>

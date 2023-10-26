@@ -11,14 +11,25 @@
 }
 
 
-<abp-modal size="Large">
+<abp-modal size="Large" id="linkModal">
 
     <abp-modal-header style="color: black;" title="@L["MoveHawb"]"></abp-modal-header>
     <abp-modal-body>
 
         <div>
-
-            <p style="color: black; font-size: 16px;">Hawb copied successfully. You can click the link below to directly access Mawb</p><a href="EditMawb?Id=@Model.Id">@Model.FilingNo</a>
+            @if (Model.IsOceanExportHbl)
+            {
+                if (Model.FilingNo == null || Model.FilingNo == "")
+                {
+                    <p style="color: black; font-size: 16px;">Hbl copied successfully. You can click the link below to directly access Mbl</p><a href="EditModal?Id=@Model.Id">Click Here</a>
+                } else
+                {
+                    <p style="color: black; font-size: 16px;">Hbl copied successfully. You can click the link below to directly access Mbl</p><a href="EditModal?Id=@Model.Id">@Model.FilingNo</a>   
+                }
+            } else
+            {
+                <p style="color: black; font-size: 16px;">Hawb copied successfully. You can click the link below to directly access Mawb</p><a href="EditMawb?Id=@Model.Id">@Model.FilingNo</a>   
+            }
         </div>
     </abp-modal-body>
     <abp-modal-footer>

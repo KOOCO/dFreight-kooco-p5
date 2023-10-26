@@ -3044,31 +3044,44 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/SecurityEndorsement.cshtml", model);
         }
 
-        public IActionResult AirImportPartialView(Guid prevMawbId, Guid hawbId)
+        public IActionResult AirImportPartialView(Guid prevMawbId, Guid hawbId, bool isOceanExportHbl = false)
         { 
             AirImportDetails airImportDetails = new();
 
+            airImportDetails.IsOceanExportHbl = isOceanExportHbl;
             airImportDetails.MawbId = prevMawbId;
             airImportDetails.HawbId = hawbId;
 
             return PartialView("Pages/Shared/_mblAirImportDropdownList.cshtml", airImportDetails);
 
         }
-        public async Task<IActionResult> AirImportChangeMawbParent(Guid mawbId, Guid hawbId)
+        public async Task<IActionResult> AirImportChangeMawbParent(Guid mawbId, Guid hawbId, bool isOceanExportHbl = false)
         {
-            // Upate selcted mawb id for particular  hawb
-            await _airImportHawbAppService.UpdateMawbIdOfHawbAsync(hawbId, mawbId);
+            if (isOceanExportHbl)
+            {
+                await _oceanExportHblAppService.UpdateMblIdOfHblAsync(hawbId, mawbId);
 
-            var mawb = await _airImportMawbAppService.GetAsync(mawbId);
-            var docNo = mawb.FilingNo;
+                var mbl = await _oceanExportMblAppService.GetAsync(mawbId);
+                var docNo = mbl.FilingNo;
 
-            return Json(new { id = mawbId, fileNo = docNo });
+                return Json(new { id = mawbId, fileNo = docNo });
+            }
+            else
+            {
+                await _airImportHawbAppService.UpdateMawbIdOfHawbAsync(hawbId, mawbId);
+
+                var mawb = await _airImportMawbAppService.GetAsync(mawbId);
+                var docNo = mawb.FilingNo;
+
+                return Json(new { id = mawbId, fileNo = docNo });
+            }
         }
-        public IActionResult GetAirImportMawbPopUp(string id, string fileNo)
+        public IActionResult GetAirImportMawbPopUp(string id, string fileNo, bool isOceanExportHbl = false)
         {
             AirImportDetails ViewModel = new();
             ViewModel.Id = Guid.Parse(id);
             ViewModel.FilingNo = fileNo;
+            ViewModel.IsOceanExportHbl = isOceanExportHbl;
 
             return PartialView("Pages/Shared/_airImportMawbPopUp.cshtml", ViewModel);
         }

@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanImports;
 using Dolphin.Freight.Settings.PortsManagement;
@@ -641,6 +642,13 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }
 
             await _containerService.UpdateAsync(ContainerId, ObjectMapper.Map<ContainerDto, CreateUpdateContainerDto>(container));
+        }
+
+        public async Task<List<OceanExportMblDto>> GetMblListAsync()
+        {
+            var query = await _repository.GetQueryableAsync();
+
+            return ObjectMapper.Map<List<OceanExportMbl>, List<OceanExportMblDto>>(query.ToList());
         }
     }
 }
