@@ -1,6 +1,13 @@
 {
   "culture": "zh-Hant",
   "texts": {
+    "Our Cost": "我們的成本",
+    "Pay For Agent": "為代理付款",
+    "Cost For Agent": "代理的成本",
+    "Debit (Origin Revenue)": "借記(目的地收入)",
+    "Profit Share - Revenue": "利潤分成-收入",
+    "Profit Share - Cost": "利潤分成-成本",
+    "Credit (Origin Cost)": "貸記(目的地成本)",
     "AmsTypeCode": "AMS櫃型代碼",
     "BANK BALANCE": "銀行存款餘額",
     "MYSHIPMENT/OCEANEXPORT": "我的運輸/海運出口",
@@ -966,7 +973,7 @@
     "DepartmentCode": "部門代碼",
     "SalesDepartmentId": "業屬部門",
     "JobNo": "工作單號",
-   
+
     "FreightRemarks": "運價備註",
     "ContractNo": "合約號",
     // "CustomerId": "客戶Id",

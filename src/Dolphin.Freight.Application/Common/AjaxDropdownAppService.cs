@@ -53,7 +53,7 @@ namespace Dolphin.Freight.Common
             }
             else
             {
-                var rs = sysCodes.Where(x => x.CodeType.Contains(query.QueryType)).ToList();
+                var rs = sysCodes.Where(x => x.CodeType.Equals(query.QueryType)).ToList();
                 var list = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(rs);
                 return list;
             }

@@ -9,9 +9,11 @@
     {
     <abp-script src="/Pages/Accounting/Invoice.js" />
     <script type="text/javascript">
+        var l = abp.localization.getResource('Freight');
         var BillCodeItems = [];
         var PPOrCCItems = [];
         var BillTypeItems = [];
+        var BillTypeItemsDC = [];
         var UnitItems = [];
         var CurrencyItems = [];
         var InvoiceBills = [];
@@ -37,6 +39,11 @@
             dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'BillType' }).done(function (result) {
                 if (result != null && result.length > 0) {
                     BillTypeItems = result;
+                }
+            });
+            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'BillTypeDC' }).done(function (result) {
+                if (result != null && result.length > 0) {
+                    BillTypeItemsDC = result;
                 }
             });
             dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'Unit' }).done(function (result) {
@@ -111,12 +118,14 @@
                         if (invoiceBillId) {
                             dolphin.freight.accounting.invoiceBills.invoiceBill.delete(invoiceBillId).done(function (result) {
                                 parent.remove();
+                                resetIndexes();
                                 getTotalSubAmount();
                                 getTotalAmount(parseFloat(taxAmount).toFixed(2));
                             });
                         }
                         else {
                             parent.remove();
+                            resetIndexes();
                             getTotalSubAmount();
                             getTotalAmount(parseFloat(taxAmount).toFixed(2));
                         }
@@ -329,7 +338,6 @@
             $('#InvoiceDto_TotalAmount').val(parseFloat(total).toFixed(2));
         }
 
-
         function getTotalSubAmount(){
             var table = $('#trtbody');
             var total = 0;
@@ -349,6 +357,30 @@
 
                 document.getElementById("converted" + currency).innerHTML = (convertedRate * total).toFixed(2);
             })
+        }
+
+        function resetIndexes() {
+            var newIndex = 0;
+            $("#trtbody tr:visible").each(function () {
+                if ($(this).attr("id").startsWith("_")) {
+                    $(this).attr("id", "_" + newIndex);
+
+                    $(this).find("input, label, div.input-group, select").each(function () {
+                        if (this.name) {
+                            this.name = this.name.replace(/\[.*?\]/, "[" + newIndex + "]");
+                        }
+                        if (this.id) {
+                            var parts = this.id.split("_");
+                            this.id = parts[0] + "_" + newIndex;
+                        }
+                    });
+
+                    $(this).find("td:eq(1)").text(newIndex + 1);
+                    newIndex++;
+                }
+            });
+
+            index = newIndex;
         }
 
         var index = 0;
@@ -480,12 +512,27 @@
             return selectHtml;
         }
         function getBillTypeSelect(id, billType, value) {
+            var url = new URL(window.location.href)
+            var invoiceType = url.searchParams.get('InvoiceType');
             var selectHtml = "<select name='InvoiceBillDtos[" + index + "].BillType' id='BillType_" + id + "'>";
             billType = billType || value;
-            for (var i = 0; i < BillTypeItems.length; i++) {
-                selectHtml = selectHtml + "<option value='" + BillTypeItems[i].codeValue + "'";
-                if (BillTypeItems[i].codeValue == billType) selectHtml = selectHtml + " selected ";
-                selectHtml = selectHtml + " > " + BillTypeItems[i].showName + "</option>"
+            if (invoiceType == '1') 
+            {
+                for (var i = 0; i < BillTypeItemsDC.length; i++)
+                {
+                    selectHtml = selectHtml + "<option value='" + BillTypeItemsDC[i].codeValue + "'";
+                    if (BillTypeItemsDC[i].codeValue == billType) selectHtml = selectHtml + " selected ";
+                    selectHtml = selectHtml + " > " + l(BillTypeItemsDC[i].showName) + "</option>"
+                }
+            } else {
+                debugger;
+                for (var i = 0; i < BillTypeItems.length; i++)
+                {
+                    debugger;
+                    selectHtml = selectHtml + "<option value='" + BillTypeItems[i].codeValue + "'";
+                    if (BillTypeItems[i].codeValue == billType) selectHtml = selectHtml + " selected ";
+                    selectHtml = selectHtml + " > " + l(BillTypeItems[i].showName) + "</option>"
+                }
             }
             selectHtml = selectHtml + "</select>";
             return selectHtml;
