@@ -141,7 +141,7 @@
                         if (@Model.MethodType == 1) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/OceanExports/EditModal3?Id=@Model.Mid'; });
                         if (@Model.MethodType == 2) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/AirImports/EditModal3?Id=@Model.MawbId'; });
                         if (@Model.MethodType == 3) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/AirExports/EditModal3?Id=@Model.MawbId'; });
-                        if (@Model.MethodType == 4) abp.message.success('儲存成功', '系統訊息').then(function () { location.href = '/OceanExports/VesselSchedules/Edit2?Id=@Model.VesselId'; });
+                        if (@Model.MethodType == 4) abp.message.success('儲存成功', '系統訊息').then(function () { location.href = '/OceanExports/ExportBookings/Edit2?Id=@Model.Bid'; });
                           if (@Model.MethodType == 5) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/OceanExports/VesselSchedules/Edit2?Id=@Model.VesselId'; });
                         // if (@Model.MethodType == 5) $.ajax({
                         //                                 url: '/api/ImportExport/OceanExportAccountingHbl',
