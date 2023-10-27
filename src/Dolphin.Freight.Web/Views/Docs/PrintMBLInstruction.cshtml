@@ -455,16 +455,16 @@
                                         <col class="w-20"><!-- cbm -->
                                     </colgroup>
                                     <tbody><tr class="border-b">
-                                        <td class="text-left">CONTAINER NO.</td>
-                                        <td class="text-center">TYPE</td>
-                                        <td class="text-left">SEAL NO.</td>
-                                        <td class="text-center">PKG</td>
+                                        <td class="text-left" style="font-size: small;">CONTAINER NO.</td>
+                                        <td class="text-center" style="font-size: small;">TYPE</td>
+                                        <td class="text-left" style="font-size: small;">SEAL NO.</td>
+                                        <td class="text-center" style="font-size: small;">PKG</td>
                                         <td class="text-right">
                                             
                                             <div class="item-edit margin-t">
                                                 <select name="weight_unit" class="select ng-pristine ng-untouched ng-valid ng-not-empty" onchange="convertUnit($(this).val())" id="id_weight_unit">
-                                                  <option value="KG" selected="">KG</option>
-                                                  <option value="LB">LB</option>
+                                                  <option value="KG" selected="" style="font-size: small;">KG</option>
+                                                  <option value="LB" style="font-size: small;">LB</option>
                                                 </select>
                                             </div>
                                         </td>
@@ -472,8 +472,8 @@
                                             
                                             <div class="item-edit margin-t">
                                                 <select name="measure_unit" class="select ng-pristine ng-untouched ng-valid ng-not-empty" onchange="convertUnit($(this).val())" id="id_measure_unit">
-                                                  <option value="CBM" selected="">CBM</option>
-                                                  <option value="CFT">CFT</option>
+                                                  <option value="CBM" selected="" style="font-size: small;">CBM</option>
+                                                  <option value="CFT" style="font-size: small;">CFT</option>
                                                 </select>
                                             </div>
                                         </td>
@@ -506,12 +506,12 @@
                                             </td>
                                             <td class="text-right">
                                                 <div class="item-edit weight" id="weight_@index">
-                                                    @item2.PackageWeight
+                                                    @item2.PackageWeight?.ToString("0.00")
                                                 </div>
                                             </td>
                                             <td class="text-right">
                                                 <div class="item-edit measure" id="measure_@index">
-                                                    @item2.PackageMeasure
+                                                    @item2.PackageMeasure?.ToString("0.00")
                                                 </div>
                                             </td>
                                         </tr>

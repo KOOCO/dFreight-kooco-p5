@@ -4275,13 +4275,12 @@ namespace Dolphin.Freight.Web.Controllers
                     ContainerSizeName = containerSizeName,
                     PackageWeight = item.PackageWeight,
                     PackageMeasure = item.PackageMeasure,
-                   PackageNum=item.PackageNum,
+                    PackageNum = item.PackageNum,
                 };
                 if (item.PackageUnitId != null)
                 {
-                   var units =await _packageRepository.GetQueryableAsync();
+                    var units =await _packageRepository.GetQueryableAsync();
                     items.PackageUnitName = units.Where(x => x.Id == item.PackageUnitId).Select(x => x.PackageName).FirstOrDefault();
-
                 }
                 totalPackageWeight += item.PackageWeight;
                 totalPackageMeasure += item.PackageMeasure;
