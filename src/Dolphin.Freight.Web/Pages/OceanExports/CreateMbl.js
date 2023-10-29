@@ -216,6 +216,9 @@
     $("#OceanExportMbl_VesselName").change(function () {
         $("#title5").text('<i class="fa fa-anchor"></i>'+$(this).val());
     });
+    $('#editForm').on('abp-ajax-success', function () {
+        location.reload();
+    });
     $('#createForm').on('abp-ajax-success', function (result, rs) {
         debugger;
         event.preventDefault();

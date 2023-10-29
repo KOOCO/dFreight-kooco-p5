@@ -13,7 +13,14 @@
 
 <abp-modal size="Large" id="linkModal">
 
-    <abp-modal-header style="color: black;" title="@L["MoveHawb"]"></abp-modal-header>
+    @if (Model.IsOceanExportHbl)
+    {
+        <abp-modal-header style="color: black;" title="@L["MoveHbl"]"></abp-modal-header>
+    } else
+    {
+        <abp-modal-header style="color: black;" title="@L["MoveHawb"]"></abp-modal-header>
+    }
+    
     <abp-modal-body>
 
         <div>

@@ -128,7 +128,13 @@ namespace Dolphin.Freight.Web.CommonService
         {
             var oceanExportLookup = await _oceanExportMblAppService.GetMblListAsync();
 
-            return oceanExportLookup.Select(s => new SelectListItem(s.FilingNo + '/' + s.MblNo, s.Id.ToString(), false)).ToList();
+            return oceanExportLookup.Select(s => new SelectListItem(
+                                    string.IsNullOrEmpty(s.FilingNo)
+                                        ? s.MblNo
+                                        : (string.IsNullOrEmpty(s.MblNo)
+                                            ? s.FilingNo
+                                            : s.FilingNo + '/' + s.MblNo),
+                                    s.Id.ToString(), false)).ToList();
         }
         #endregion
 

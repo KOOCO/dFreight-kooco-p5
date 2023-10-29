@@ -636,6 +636,11 @@ function copyHawb(hawbId) {
     setTimeout(() => {
         $('.hblCardTitle')[index].click();
     }, 500);
+
+    setTimeout(() => {
+        debugger;
+        $('#OceanExportHbl_Id').val('00000000-0000-0000-0000-000000000000');
+    }, 5000);
 }
 
 class CustomDateTimePicker {

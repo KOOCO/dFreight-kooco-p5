@@ -96,8 +96,13 @@
 <form abp-model="CopyModel" id="copyForm" method="post" action="@Url.Page("/AirImports/CopyHawbModal")">
     <abp-modal size="Large">
  
+        @if (Model.isOceanExportHbl)
+        {
+            <abp-modal-header title="Copy HBL"></abp-modal-header>
+        } else
+        {
             <abp-modal-header title="@L["CopyHawb"]"></abp-modal-header>
-      
+        }
       
         <abp-modal-body>
          
