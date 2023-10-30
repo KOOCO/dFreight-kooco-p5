@@ -46,19 +46,16 @@
         }
 
         $(document).ready(function () {
-             $('#cardSettingArea').hide();
-              if("@Model.OceanImportMbl.IsOblReceived"=="True")
+            $('#cardSettingArea').hide();
+            if("@Model.OceanImportMbl.IsOblReceived"=="True")
             {
-                debugger;
-            $('#OceanImportMbl_OblReceivedDate').prop('disabled', false);
-             $('#OceanImportMbl_IsOblReceived').prop('checked', true);
+                $('#OceanImportMbl_OblReceivedDate').prop('disabled', false);
+                $('#OceanImportMbl_IsOblReceived').prop('checked', true);
             }
             if("@Model.OceanImportMbl.IsReleased"=="True")
             {
-                debugger;
                 $('#OceanImportMbl_MblReleaseDate').prop('disabled', false);
-                 $('#OceanImportMbl_IsReleased').prop('checked', true);
-
+                $('#OceanImportMbl_IsReleased').prop('checked', true);
             }
 
             const ids = [
@@ -68,35 +65,20 @@
                 "OceanImportMbl_DelEta",
                 "OceanImportMbl_FdestEta",
                 "OceanImportMbl_Etb",
+                "OceanImportMbl_ATD",
+                "OceanImportMbl_ATA",
                 "OceanImportMbl_OblReceivedDate",
                 "OceanImportMbl_MblReleaseDate",
                 "OceanImportMbl_LatestContainerEntryDate",
                 "OceanImportMbl_PorEtd",
-                "OceanImportMbl_ItDate",
-                
-          
+                "OceanImportMbl_ItDate"
             ];
 
-            ids.forEach(function (id) {
-                let dateElem = $('#' + id);
+            var MbldateTimePicker = new CustomDateTimePicker();
+            MbldateTimePicker.dateTimePicker(ids);
 
-                if (dateElem.length === 0) {
-                    return;
-                }
-
-                dateElem.removeAttr('type').datetimepicker({
-                    format: 'Y-m-d H:i',
-                    step: 15,
-                    allowInput: false
-                });
-
-                let currentVal = dateElem.val();
-                if (currentVal.includes('T')) {
-                    dateElem.val(currentVal.replace('T', ' '));
-                }
-            });
            
-              $('#OceanImportMbl_IsOblReceived').on('change', function (e, val) { 
+            $('#OceanImportMbl_IsOblReceived').on('change', function (e, val) { 
                 if (this.checked) {
                     $('#OceanImportMbl_OblReceivedDate').prop('disabled', false);
                     var currentDate = new Date();
@@ -938,7 +920,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblBillToId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblBillToId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblBillToId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblSalesTypeId", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "MblBillToId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblSalesTypeId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblSalesTypeId", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "MblSalesTypeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblSalesTypeId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblCargoTypeId", AspItems = _dropdown.CargoTypeLookupList, IsShowLabel = true, FieldName = "MblCargoTypeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.CargoTypeId) })
@@ -982,7 +964,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.PodId) })
         </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.PodEta" abp-data-datepicker="false" />
+                                    <abp-input asp-for="OceanImportMbl.PodEta" abp-data-datepicker="false" required />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -1000,7 +982,13 @@
                                 </abp-column>
                             </abp-row>
                             <abp-row>
-                                <abp-column size-md="_9">
+                                <abp-column size-md="_3">
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="OceanImportMbl.ATD" abp-data-datepicker="false" />
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="OceanImportMbl.ATA" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanImportMbl.Etb" abp-data-datepicker="false" />
