@@ -368,7 +368,7 @@
     "MblBillToId": "收票人",
     "MblCargoTypeId": "貨物類別",
     "MblSaleId": "業務員",
-
+    "CommodityAndHTS": "商品與HTS",
     //包裝
     "CompanyId": "航空公司",
     "PackageCode": "代碼",
@@ -378,7 +378,7 @@
     "EManifestNo": "eManifest代碼",
     "EManifestNoId": "eManifest代碼",
     "EManifestId": "eManifest代碼",
-    "Description": "描述",
+    "Description": "貨描",
     //集裝箱
     "ContainerCode": "代碼",
     "SizeDescription": "貨描",
@@ -744,7 +744,9 @@
     "DisplayName:IataCode": "IATA Code",
     "DisplayName:IataPrefix": "IATA Prefix",
     "DisplayName:ScacCode": "SCAC",
-
+    "Display:ContainerNo": "集裝箱號",
+    "Display:TP/SZ": "櫃型/尺寸",
+    "Display:Seal No": "封條號碼",
     "DisplayName:FirmsCode": "Firms Code",
     "DisplayName:CbsaCode": "CBSA Carrier Code",
     "DisplayName:DutyPaymentType": "付稅方式",
@@ -1326,8 +1328,10 @@
     "CReleasedDate": "海關清關日期",
     "DoorDelivered": "已送貨到府",
     "SubHAWB": "子HAWB",
+    "Display:DomesticRouting/ExportInstructions": "國內行程/出口指示",
     "DescriptionITNo": "貨描/IT號碼",
     "PCS": "件數",
+    "PKG": "包裝種類",
     "PKGUnit": "包裝種類",
     "LoadFromWarhouse": "從倉儲載入",
     "ASPWM": "自動同步件重尺",

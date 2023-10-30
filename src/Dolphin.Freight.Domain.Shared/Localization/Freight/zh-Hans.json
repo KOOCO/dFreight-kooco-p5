@@ -1,6 +1,7 @@
 {
   "culture": "zh-Hans",
   "texts": {
+    "Measurement": "测量",
     "AttachToMbl": "附加到MB/L",
     "BookingRemark": "S/O备注",
     "PackageMeasure": "材积(CBM)",
@@ -645,7 +646,13 @@
     "DisplayName:ContactFax": "传真",
     "DisplayName:ContactEmailAddress": "电子邮件地址",
     "DisplayName:ContactRemark": "备註",
-
+    "Display:ContainerNo": "集装箱号",
+    "Display:TP/SZ": "机柜类型/尺寸",
+    "Display:Seal No": "封条码",
+    "Commodity": "商品",
+    "PKG": "包装类型",
+    "Display:DomesticRouting/ExportInstructions": "国内行程/出口须知",
+    "CommodityAndHTS": "产品和HTS",
     // TradePartner
     "Display:TradePartner:NavTab:Basic": "基本",
     "Display:TradePartner:NavTab:AccountingSetting": "会计设定",

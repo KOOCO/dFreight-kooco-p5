@@ -23,6 +23,8 @@ $("#saveBtn").click(function () {
     $("#edit2Form").submit();
 });
 
+
+
 let rowCount = 0;
 var htrindex = 0;
 function updateDeleteButtonState() {
@@ -193,20 +195,6 @@ function checkContainerHasHblIdAsync(mblId, hblId) {
 }
 
 class EditModelOEContainer {
-    //static getHblCheckbox(mblId, index, callback) {
-    //    dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(mblId).done(function (res) {
-    //        let checkboxesHTML = '';
-    //        let headersHTML = '';
-    //        var tdindex = 0;
-    //        for (let hbl of res) {
-    //            checkboxesHTML += `<td style='display: none;'><input type='checkbox' data-id='${hbl.id}' data-containerNo='' onclick='EditModelOEContainer.SaveHBLContainer()' id='assignContainerCheckbox_${index}_${tdindex}' style='cursor: pointer;'></td>`;
-    //            headersHTML += `<th style="text-align: center; display: none;"><div style="background-color: ${hbl.cardColorValue}; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto;"></div><input type="checkbox" id="hblHeaders_${hbl.hblNo}" style="cursor: pointer; margin-top: 10px;"></th>`
-    //            tdindex++;
-    //        }
-    //        callback(checkboxesHTML, headersHTML);
-    //    });
-    //}
-
     static async getHblCheckbox(mblId, index, callback) {
         let res = await new Promise((resolve, reject) => {
             dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(mblId).done(function (data) {
@@ -391,5 +379,18 @@ class EditModelOEContainer {
         $('#htrtbody').append(htrHtml);
 
         htrindex++;
+    }
+
+    static SelectAllCheckboxes(e) {
+        debugger;
+        if ($(e.currentTarget).prop('checked') || $(e.target).prop('checked') || $(e.srcElement).prop('checked')) {
+            $('input[id^="f0_"]').each(function (i, elem) {
+                $(elem).prop('checked', true);
+            });
+        } else {
+            $('input[id^="f0_"]:checked').each(function (i, elem) {
+                $(elem).prop('checked', false);
+            });
+        }
     }
 }
