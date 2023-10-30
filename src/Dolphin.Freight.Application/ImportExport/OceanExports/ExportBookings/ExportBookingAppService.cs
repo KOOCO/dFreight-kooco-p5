@@ -11,6 +11,7 @@ using System.Linq.Dynamic.Core;
 using Volo.Abp.Domain.Repositories;
 using static Volo.Abp.Identity.IdentityPermissions;
 using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
+using Dolphin.Freight.ImportExport.Containers;
 
 namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
 {
@@ -27,10 +28,11 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         private IRepository<SysCode, Guid> _sysCodeRepository;
         private IRepository<PortsManagement, Guid> _portsManagementRepository;
         private IRepository<Substation, Guid> _substationRepository;
-        private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository; 
+        private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
+        private IRepository<Container, Guid> _containerRepository;
         public ExportBookingAppService(IRepository<ExportBooking, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<PortsManagement, 
                                        Guid> portsManagementRepository, IRepository<Substation, Guid> substationRepository, IRepository<TradePartners.TradePartner, 
-                                       Guid> tradePartnerRepository)
+                                       Guid> tradePartnerRepository, IRepository<Container, Guid> containerRepository)
             : base(repository)
         {
             _repository = repository;
@@ -38,6 +40,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
             _portsManagementRepository = portsManagementRepository;
             _substationRepository = substationRepository;
             _tradePartnerRepository = tradePartnerRepository;
+            _containerRepository = containerRepository;
             /*
             GetPolicyName = OceanExportPermissions.ExportBookingas.Default;
             GetListPolicyName = OceanExportPermissions.ExportBookingas.Default;
@@ -83,6 +86,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
                     sysdictionary.Add(sysCode.Id, sysCode.ShowName);
                 }
             }
+            
             var ExportBookings = await _repository.GetQueryableAsync();
             var c = from jobProfile in ExportBookings
                     select jobProfile.Carrier;
@@ -92,37 +96,36 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
                     select jobProfile.Office;
 
             ExportBookings = ExportBookings.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.HblNo
-                                    .Contains(query.Search) || x.SoNo
-                                    .Contains(query.Search) || x.CarrierBkgNo
-                                    .Contains(query.Search) || x.VesselName
-                                    .Contains(query.Search) || x.Voyage
-                                    .Contains(query.Search) || x.Shipper.TPName
-                                    .Contains(query.Search) || x.Office.SubstationName
-                                    .Contains(query.Search) || x.ShippingAgent.TPName
-                                    .Contains(query.Search) || x.Carrier.TPName
-                                    .Contains(query.Search))
-                                .WhereIf(query.CarrierId.HasValue, e => e.CarrierId == query.CarrierId)
-                                .WhereIf(query.ShipperId.HasValue, e => e.ShipperId == query.ShipperId)
-                                .WhereIf(query.ConsigneeId.HasValue, e => e.ConsigneeId == query.ConsigneeId)
-                                   .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
-                                   .WhereIf(query.NotifyId.HasValue, e => e.NotifyId == query.NotifyId)
-                                   .WhereIf(query.FbaFcId.HasValue, e => e.FbaId == query.FbaFcId)
-                                   .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
-                                   .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
-                                   .WhereIf(query.DeliverTo.HasValue, e => e.DeliveryToId == query.DeliverTo)
-                                   .WhereIf(query.ShipModeId.HasValue, e => e.ShipModeId == query.ShipModeId)
-                                   .WhereIf(query.CustomerId.HasValue, e => e.CustomerId == query.CustomerId)
-                                   .WhereIf(query.BlCancelled.HasValue, e => e.IsCanceled == query.BlCancelled)
-                                   .WhereIf(query.CargoReadyDate.HasValue, e => e.CargoArrivalDate.Value.Date == query.CargoReadyDate.Value.Date.AddDays(1))
-                                   .WhereIf(query.Eta.HasValue, e => e.PodEta.Date == query.Eta.Value.Date.AddDays(1))
-                                   .WhereIf(query.Etd.HasValue, e => e.PolEtd.Date == query.Etd.Value.Date.AddDays(1))
-                                   .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1));
+                                           .Contains(query.Search) || x.SoNo
+                                           .Contains(query.Search) || x.CarrierBkgNo
+                                           .Contains(query.Search) || x.VesselName
+                                           .Contains(query.Search) || x.Voyage
+                                           .Contains(query.Search) || x.Shipper.TPName
+                                           .Contains(query.Search) || x.Office.SubstationName
+                                           .Contains(query.Search) || x.ShippingAgent.TPName
+                                           .Contains(query.Search) || x.Carrier.TPName
+                                           .Contains(query.Search))
+                                           .WhereIf(query.CarrierId.HasValue, e => e.CarrierId == query.CarrierId)
+                                           .WhereIf(query.ShipperId.HasValue, e => e.ShipperId == query.ShipperId)
+                                           .WhereIf(query.ConsigneeId.HasValue, e => e.ConsigneeId == query.ConsigneeId)
+                                           .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
+                                           .WhereIf(query.NotifyId.HasValue, e => e.NotifyId == query.NotifyId)
+                                           .WhereIf(query.FbaFcId.HasValue, e => e.FbaId == query.FbaFcId)
+                                           .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
+                                           .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
+                                           .WhereIf(query.DeliverTo.HasValue, e => e.DeliveryToId == query.DeliverTo)
+                                           .WhereIf(query.ShipModeId.HasValue, e => e.ShipModeId == query.ShipModeId)
+                                           .WhereIf(query.CustomerId.HasValue, e => e.CustomerId == query.CustomerId)
+                                           .WhereIf(query.BlCancelled.HasValue, e => e.IsCanceled == query.BlCancelled)
+                                           .WhereIf(query.CargoReadyDate.HasValue, e => e.CargoArrivalDate.Value.Date == query.CargoReadyDate.Value.Date.AddDays(1))
+                                           .WhereIf(query.Eta.HasValue, e => e.PodEta.Date == query.Eta.Value.Date.AddDays(1))
+                                           .WhereIf(query.Etd.HasValue, e => e.PolEtd.Date == query.Etd.Value.Date.AddDays(1))
+                                           .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1));
             List<ExportBooking> rs = ExportBookings.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<ExportBookingDto> list = new List<ExportBookingDto>();
 
             if (rs.Any())
             {
-
                 foreach (var pu in rs)
                 {
                     var pud = ObjectMapper.Map<ExportBooking, ExportBookingDto>(pu);
@@ -141,6 +144,14 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
                         SvcName = SvcName + sysdictionary[pud.SvcTermToId.Value];
                     }
                     if (pud.OfficeId != null) pud.OfficeName = sdictionary[pud.OfficeId.Value];
+                    if (pud.FbaId is not null) pud.FbaName = tdictionary[pud.FbaId.Value];
+
+                    var containers = await _containerRepository.GetListAsync();
+
+                    pud.PackageNum = containers.Where(w => w.BookingId == pud.Id).Select(s => s.PackageNum).FirstOrDefault();
+                    pud.PackageWeight = "KG " + containers.Where(w => w.BookingId == pud.Id).Select(s => s.PackageWeight).FirstOrDefault().ToString();
+                    pud.PackageMeasure = "CBM " + containers.Where(w => w.BookingId == pud.Id).Select(s => s.PackageMeasure).FirstOrDefault().ToString();
+
                     //if (pud.MblOverseaAgentId != null) pud.MblOverseaAgentName = tdictionary[pud.MblOverseaAgentId.Value];
                     list.Add(pud);
                 }

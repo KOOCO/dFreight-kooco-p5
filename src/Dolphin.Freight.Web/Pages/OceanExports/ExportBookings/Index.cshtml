@@ -187,6 +187,7 @@ $('#checkAll').change(function() {
                         data: null,
                         orderable: false,
                         render: function (data, type, row) {
+                            debugger;
                             var id = row.id;
                             $('#selectAllCheckbox').prop('checked', false);
                             return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
@@ -254,10 +255,10 @@ $('#checkAll').change(function() {
                     
                         var column;
 
-
                         column = {
                             title: l(item.text),
-                            data: item.name
+                            data: item.name,
+                            defaultContent: ''
                         };
                  
                     columns.push(column);
