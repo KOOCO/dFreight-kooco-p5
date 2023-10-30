@@ -287,6 +287,48 @@ class AirExportMawb {
 
         updateDeleteButtonState();
     }
+
+    static onChangeSellingRate(e) {
+        if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) {
+            var sellingRate = $(e.currentTarget || e.target || e.srcElement).val();
+            var chargableWeightKG = $('#ChargeableWeightKg').val();
+            var awbChargableWeightKG = $('#AwbChargeableWeightKg').val();
+            $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(sellingRate * chargableWeightKG).toFixed(2));
+            $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat(sellingRate * awbChargableWeightKG).toFixed(2));
+        }
+        else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 2) {
+            var sellingRate = $(e.currentTarget || e.target || e.srcElement).val();
+            var chargableWeightLB = $('#ChargeableWeightLb').val();
+            var awbChargableWeightLB = $('#AwbChargeableWeightLb').val();
+            $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(sellingRate * chargableWeightLB).toFixed(2));
+            $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat(sellingRate * awbChargableWeightLB).toFixed(2));
+        }
+        else {
+            $('#AirExportMawbDto_ChargeableWeightAmount').val(0);
+            $('#AirExportMawbDto_AwbChargeableWeightAmount').val(0);
+        }
+    }
+
+    static onChangeUnit(e) {
+        if ($(e.currentTarget || e.target || e.srcElement).val() == 1) {
+            var sellingRate = $('#AirExportMawbDto_SellingRate').val();
+            var chargableWeightKG = $('#ChargeableWeightKg').val();
+            var awbChargableWeightKG = $('#AwbChargeableWeightKg').val();
+            $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(sellingRate * chargableWeightKG).toFixed(2));
+            $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat(sellingRate * awbChargableWeightKG).toFixed(2));
+        }
+        else if ($(e.currentTarget || e.target || e.srcElement).val() == 2) {
+            var sellingRate = $('#AirExportMawbDto_SellingRate').val();
+            var chargableWeightLB = $('#ChargeableWeightLb').val();
+            var awbChargableWeightLB = $('#AwbChargeableWeightLb').val();
+            $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(sellingRate * chargableWeightLB).toFixed(2));
+            $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat(sellingRate * awbChargableWeightLB).toFixed(2));
+        }
+        else {
+            $('#AirExportMawbDto_ChargeableWeightAmount').val(0);
+            $('#AirExportMawbDto_AwbChargeableWeightAmount').val(0);
+        }
+    }
 }
 
 function applyPopupValues() {
