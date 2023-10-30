@@ -629,6 +629,7 @@ function checkGuid(id) {
     return id && id.length == 36;
 }
 function copyHawb(hawbId) {
+    debugger;
     let hawbcard = createHawbCard();
     let index = $('.hbl_sm_area').find('.card').length;
     hawbcard = setHawbCardValues(hawbcard, hawbId, '0', index);
@@ -638,7 +639,6 @@ function copyHawb(hawbId) {
     }, 500);
 
     setTimeout(() => {
-        debugger;
         $('#OceanExportHbl_Id').val('00000000-0000-0000-0000-000000000000');
     }, 5000);
 }

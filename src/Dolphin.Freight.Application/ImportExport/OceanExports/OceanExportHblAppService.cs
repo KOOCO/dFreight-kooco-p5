@@ -269,8 +269,13 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 
                 }
             }
+            else if (isAsc) {
+                if (sortType == 0)
+                {
+                    data = data.ToList();
+                }
+            }
             else {
-
                 if (sortType == 1)
                 {
                     data = data.OrderBy(x => x.HblNo).ToList();

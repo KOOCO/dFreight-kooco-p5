@@ -2,8 +2,9 @@
     var url = new URL(window.location.href);
     var selectedHblNo;
 
-    dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(url.searchParams.get('Id'))
+    dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(url.searchParams.get('Id'), true, 0)
         .done(function (hblCards) {
+            debugger;
             if (hblCards && hblCards.length) {
                 $('#cardSettingArea').show();
                 hblCards.forEach(function (hblCard, index) {
