@@ -131,6 +131,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             await FillSubstationAsync();
             await FillAirportAsync();
             FillWtValOther();
+            FillOther();
             await FillPackageUnitAsync();
             await FillCountryNameAsync();
         }
@@ -232,6 +233,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> AirportLookupList { get; set; }
         public List<SelectListItem> WtValOtherList { get; set; }
+        public List<SelectListItem> OtherList { get; set; }
         public List<SelectListItem> PackageUnitLookupList { get; set; }
         public List<SelectListItem> CountryName { get; set; }
 
@@ -286,8 +288,17 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         {
             WtValOtherList = new List<SelectListItem>
             {
-                new SelectListItem { Value = "PPD", Text = L["PPD"]},
-                new SelectListItem { Value = "COLL", Text = L["COLL"]}
+                new SelectListItem { Value = "PPD", Text = L["PPD"] },
+                new SelectListItem { Value = "COLL", Text = L["COLL"] }
+            };
+        }
+
+        private void FillOther()
+        {
+            OtherList = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "PPD", Text = L["PPD"] },
+                new SelectListItem { Value = "COLL", Text = L["COLL"] }
             };
         }
         #endregion
