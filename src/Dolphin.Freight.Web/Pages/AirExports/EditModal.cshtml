@@ -198,6 +198,8 @@
                 }
                 else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) {
                     $('#AirExportMawbDto_ChargeableWeightAmount').val(Math.round($('#ChargeableWeightKg').val() * $('#AirExportMawbDto_SellingRate').val()));
+                } else {
+                    $('#AirExportMawbDto_ChargeableWeightAmount').val(0);
                 }
             });
             $("#AwbChargeableWeightKg").on('keyup', function () {
@@ -208,6 +210,8 @@
                 }
                 else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) {
                     $('#AirExportMawbDto_AwbChargeableWeightAmount').val(Math.round($('#AwbChargeableWeightKg').val() * $('#AirExportMawbDto_SellingRate').val()));
+                } else {
+                    $('#AirExportMawbDto_AwbChargeableWeightAmount').val(0);
                 }
             });
             // Calculate Weight Lb to Kg
@@ -225,6 +229,8 @@
                 }
                 else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) {
                     $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat((($("#ChargeableWeightLb").val() * 0.45359237 * 100) / 100).toFixed(2) * $('#AirExportMawbDto_SellingRate').val()));
+                } else {
+                    $('#AirExportMawbDto_ChargeableWeightAmount').val(0);
                 }
             });
             $("#AwbChargeableWeightLb").on('keyup', function () {
@@ -235,6 +241,8 @@
                 } 
                 else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) { 
                     $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat((($("#AwbChargeableWeightLb").val() * 0.45359237 * 100) / 100).toFixed(2) * $('#AirExportMawbDto_SellingRate').val()));
+                } else {
+                    $('#AirExportMawbDto_AwbChargeableWeightAmount').val(0);
                 }
             });
         });
