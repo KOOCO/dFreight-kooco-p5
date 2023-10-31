@@ -28,6 +28,7 @@
     <abp-script src="/Pages/OceanImports/CreateMbl.js" />
 
     <script type="text/javascript">$(document).ready(function () {
+        debugger;
             var l = abp.localization.getResource('Freight');
              
              $('#OceanImportMbl_IsOblReceived').change(function() {
@@ -541,7 +542,18 @@
                                     <label for="OceanImportMbl_IsEcommerce" class="form-label customCheck">@L["IsEcommerce"]<input type="checkbox" name="OceanImportMbl.IsEcommerce" id="OceanImportMbl_IsEcommerce" value="true" checked="@Model.OceanImportMbl.IsEcommerce" /></label>
                                 </abp-column>
                             </abp-row>
-                           
+                            <abp-row>
+                                <abp-column>
+                                    <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                                        @L["Title:Memo"]
+                                    </abp-card-header>
+                                    <abp-card>
+                                        <abp-card-body>
+                                            <partial name="Memos/_Memo" model="new _MemoModel(Model.OceanImportMbl.Id, Dolphin.Freight.Common.FreightPageType.OIMBL)" />
+                                        </abp-card-body>
+                                    </abp-card>
+                                </abp-column>
+                            </abp-row>
                         </abp-card-body>
                     </abp-card>
                     <br />
