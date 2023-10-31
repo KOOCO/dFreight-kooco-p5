@@ -628,8 +628,7 @@ function OpenWindow(url) {
 function checkGuid(id) {
     return id && id.length == 36;
 }
-function copyHawb(hawbId) {
-    debugger;
+function copyHawb(hawbId, IdElem) {
     let hawbcard = createHawbCard();
     let index = $('.hbl_sm_area').find('.card').length;
     hawbcard = setHawbCardValues(hawbcard, hawbId, '0', index);
@@ -639,7 +638,7 @@ function copyHawb(hawbId) {
     }, 500);
 
     setTimeout(() => {
-        $('#OceanExportHbl_Id').val('00000000-0000-0000-0000-000000000000');
+        $('#' + IdElem).val('00000000-0000-0000-0000-000000000000');
     }, 5000);
 }
 
@@ -672,6 +671,7 @@ class CustomDateTimePicker {
                         let todayDate = ct.getFullYear() + '-' + ('0' + (ct.getMonth() + 1)).slice(-2) + '-' + ('0' + ct.getDate()).slice(-2);
                         let todayTime = ct.getHours() + ':' + ct.getMinutes();
                         $input.data('previousDate', todayDate + ' ' + todayTime);
+        
                     }
                     $('.xdsoft_today_button').remove();
                 },
