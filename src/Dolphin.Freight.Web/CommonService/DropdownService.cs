@@ -12,6 +12,7 @@ using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Dolphin.Freight.TradePartners.Credits;
 using NPOI.POIFS.Storage;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +21,13 @@ using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
 using Volo.Abp.Users;
+using Dolphin.Freight.Localization;
+using Volo.Abp.Localization;
 using SelectItems = Microsoft.AspNetCore.Mvc.Rendering.SelectListItem;
 using SelectListItem = Microsoft.AspNetCore.Mvc.Rendering.SelectListItem;
+using Microsoft.Extensions.Localization;
+using Volo.Abp.DependencyInjection;
+using Volo.Abp;
 
 namespace Dolphin.Freight.Web.CommonService
 {
@@ -84,6 +90,8 @@ namespace Dolphin.Freight.Web.CommonService
 
         public List<SelectItems> PackageUnitLookupList => FillPackageUnitAsync().Result;
 
+        public List<SelectItems> OtherLookupList => FillOther();
+
         public List<SelectItems> WtValOtherLookupList => FillWtValOther();
 
         public List<SelectItems> BlTypeLookupList => FillBlType().Result;
@@ -121,6 +129,48 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> AccountGroupnameLookupList => FillAccountGroupName().Result;
         public List<SelectItems> OceanExportMblLookupList => FillOceanExportMblAsync().Result;
         public List<SelectItems> OperatorLookupList => FillOperatorAsync().Result;
+        public IAbpLazyServiceProvider LazyServiceProvider { get; set; }
+        protected IStringLocalizerFactory StringLocalizerFactory => LazyServiceProvider.LazyGetRequiredService<IStringLocalizerFactory>();
+        private Type _localizationResource = typeof(FreightResource);
+        private IStringLocalizer _localizer;
+        protected Type LocalizationResource
+        {
+            get => _localizationResource;
+            set
+            {
+                _localizationResource = value;
+                _localizer = null;
+            }
+        }
+
+        protected virtual IStringLocalizer CreateLocalizer()
+        {
+            if (LocalizationResource != null)
+            {
+                return StringLocalizerFactory.Create(LocalizationResource);
+            }
+
+            var localizer = StringLocalizerFactory.CreateDefaultOrNull();
+            if (localizer == null)
+            {
+                throw new AbpException($"Set {nameof(LocalizationResource)} or define the default localization resource type (by configuring the {nameof(AbpLocalizationOptions)}.{nameof(AbpLocalizationOptions.DefaultResourceType)}) to be able to use the {nameof(L)} object!");
+            }
+
+            return localizer;
+        }
+
+        protected IStringLocalizer L
+        {
+            get
+            {
+                if (_localizer == null)
+                {
+                    _localizer = CreateLocalizer();
+                }
+
+                return _localizer;
+            }
+        }
 
 
         #region
@@ -183,8 +233,17 @@ namespace Dolphin.Freight.Web.CommonService
         {
             return new List<SelectListItem>
             {
-                new SelectListItem { Value = "PPD", Text = "PPD"},
-                new SelectListItem { Value = "COLL", Text = "COLL"}
+                new SelectListItem { Value = "PPD", Text = L["PPD"] },
+                new SelectListItem { Value = "COLL", Text = L["COLL"] }
+            };
+        }
+
+        private List<SelectListItem> FillOther()
+        {
+            return new List<SelectListItem>
+            {
+                new SelectListItem { Value = "PPD", Text = L["PPD"] },
+                new SelectListItem { Value = "COLL", Text = L["COLL"] }
             };
         }
         #endregion

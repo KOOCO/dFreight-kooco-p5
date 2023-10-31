@@ -1,6 +1,10 @@
 {
   "culture": "zh-Hant",
   "texts": {
+    "PPD": "預付",
+    "COLL": "到付",
+    "AirExportHawbDto.WTVALRadioPPD": "預付",
+    "Information": "資訊",
     "AttachToMbl": "附加到MB/L",
     "BookingRemark": "S/O備註",
     "PackageMeasure": "材積(CBM)",
@@ -1263,8 +1267,6 @@
     "FinalEta": "最終目的地ETA",
     "DVCustoms": "海關聲明價值",
     "WT/VAL": "運費及聲明價值費",
-    "PPD": "預付",
-    "COLL": "到付",
     "AWBChargeableWeight": "AWB計費重量",
     "Incoterms": "國貿條規",
     "ServiceTermEnd": "至運輸條款",
