@@ -3008,17 +3008,9 @@ namespace Dolphin.Freight.Web.Controllers
             var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
             if (airExportDetails.ExtraProperties != null && airExportDetails.ExtraProperties.ContainsKey("OtherCharges"))
             {
-                airExportDetails.OtherCharges = new List<OtherCharges>();
-                string jsonOtherCharges = airExportDetails.ExtraProperties["OtherCharges"].ToString();
-
-                // Deserialize the JSON array into a list of OtherCharges objects
-                airExportDetails.OtherCharges = JsonConvert.DeserializeObject<List<OtherCharges>>(jsonOtherCharges);
-
                 airExportDetails.OtherChargesDueCarrier = airExportDetails.OtherCharges.Sum(x => Convert.ToDouble(x.ChargeAmount));
                 airExportDetails.TotalPrepaid = (airExportDetails.OtherCharges.Sum(x => Convert.ToDouble(x.ChargeAmount))+airExportDetails.AwbChargeableWeightAmount);
             }
-
-          
 
             return View(airExportDetails);
         }
@@ -3027,6 +3019,8 @@ namespace Dolphin.Freight.Web.Controllers
         public async Task<IActionResult> PrintMawb(AirExportDetails model)
         {
             model.IsPDF = true;
+
+            model.OtherCharges = JsonConvert.DeserializeObject<List<OtherCharges>>(model.OtherChargesJSON);
 
             return await _generatePdf.GetPdf("Views/Docs/PrintMawb.cshtml", model);
         }
