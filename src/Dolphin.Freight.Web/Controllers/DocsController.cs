@@ -3008,8 +3008,15 @@ namespace Dolphin.Freight.Web.Controllers
             var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
             if (airExportDetails.ExtraProperties != null && airExportDetails.ExtraProperties.ContainsKey("OtherCharges"))
             {
-                airExportDetails.OtherChargesDueCarrier = airExportDetails.OtherCharges.Sum(x => Convert.ToDouble(x.ChargeAmount));
-                airExportDetails.TotalPrepaid = (airExportDetails.OtherCharges.Sum(x => Convert.ToDouble(x.ChargeAmount))+airExportDetails.AwbChargeableWeightAmount);
+                airExportDetails.OtherChargesDueCarrier = airExportDetails.OtherCharges.Sum(x => 
+                                                            { double amount;
+                                                              if (double.TryParse(new string(x.ChargeAmount.Where(char.IsDigit).ToArray()), out amount))
+                                                              {
+                                                                  return amount;
+                                                              }
+                                                              return 0.0; 
+                                                            });
+                airExportDetails.TotalPrepaid = airExportDetails.OtherChargesDueCarrier + airExportDetails.AwbChargeableWeightAmount;
             }
 
             return View(airExportDetails);
