@@ -907,7 +907,7 @@
         }
 
         function deleteMawb() {
-            if (isLocked) {
+            if (isLocked == 'True') {
                 abp.message.error(l('Delete Error Data Is Locked'))
             }
             else {
