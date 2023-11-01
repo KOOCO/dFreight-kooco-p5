@@ -89,6 +89,7 @@ using Dolphin.Freight.ImportExport.OceanImports;
 using NPOI.POIFS.Crypt.Dsig;
 using Dolphin.Freight.Web.ViewModels.VesselSchedules;
 using System.Data.SqlClient;
+using Dolphin.Freight.Web.ViewModels.Print;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -2666,13 +2667,15 @@ namespace Dolphin.Freight.Web.Controllers
 
             return await _generatePdf.GetPdf("Views/Docs/Pdf/BookingConfirmation/BookingConfirmationAirExportHawb.cshtml", model);
         }
-        public async Task<IActionResult> HawbPrintAirExportHawb()
+        public async Task<IActionResult> HawbPrintAirExportHawb(Guid hawbId)
         {
+            HawbPrintAirExportHawbModel Model = new();
 
+            var data = await _airExportHawbAppService.GetAsync(hawbId);
 
+            Model.HawbNo = data.HawbNo;
 
-
-            return View();
+            return View(Model);
         }
 
         [HttpPost]

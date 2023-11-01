@@ -15,9 +15,9 @@
 
 @section styles {
     <style>
-    .form-control + span {
-        margin-left: 5px;
-    }
+        .form-control + span {
+            margin-left: 5px;
+        }
     </style>
 }
 <abp-script src="/Pages/AirExports/AirExportHawb.js" />
@@ -133,8 +133,7 @@
         myWindow.focus()
     }
     function getHawbPrintAirExportHawb() {
-        var idNo = '@Model.AirExportHawbDto.Id';
-        myWindow = window.open("@Url.Action("HawbPrintAirExportHawb", "Docs")", 'width=1200,height=800');
+        myWindow = window.open("@Url.Action("HawbPrintAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })", 'Empty', 'width=1200,height=800');
         myWindow.focus()
     }
     isHawbLocked;
