@@ -88,6 +88,8 @@ using Dolphin.Freight.Web.ViewModels.DeliveryOrder;
 using Dolphin.Freight.ImportExport.OceanImports;
 using NPOI.POIFS.Crypt.Dsig;
 using Dolphin.Freight.Web.ViewModels.VesselSchedules;
+using System.Data.SqlClient;
+using Dolphin.Freight.Web.ViewModels.Print;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -2665,13 +2667,15 @@ namespace Dolphin.Freight.Web.Controllers
 
             return await _generatePdf.GetPdf("Views/Docs/Pdf/BookingConfirmation/BookingConfirmationAirExportHawb.cshtml", model);
         }
-        public async Task<IActionResult> HawbPrintAirExportHawb()
+        public async Task<IActionResult> HawbPrintAirExportHawb(Guid hawbId)
         {
+            HawbPrintAirExportHawbModel Model = new();
 
+            var data = await _airExportHawbAppService.GetAsync(hawbId);
 
+            Model.HawbNo = data.HawbNo;
 
-
-            return View();
+            return View(Model);
         }
 
         [HttpPost]
@@ -3004,17 +3008,9 @@ namespace Dolphin.Freight.Web.Controllers
             var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
             if (airExportDetails.ExtraProperties != null && airExportDetails.ExtraProperties.ContainsKey("OtherCharges"))
             {
-                airExportDetails.OtherCharges = new List<OtherCharges>();
-                string jsonOtherCharges = airExportDetails.ExtraProperties["OtherCharges"].ToString();
-
-                // Deserialize the JSON array into a list of OtherCharges objects
-                airExportDetails.OtherCharges = JsonConvert.DeserializeObject<List<OtherCharges>>(jsonOtherCharges);
-
                 airExportDetails.OtherChargesDueCarrier = airExportDetails.OtherCharges.Sum(x => Convert.ToDouble(x.ChargeAmount));
                 airExportDetails.TotalPrepaid = (airExportDetails.OtherCharges.Sum(x => Convert.ToDouble(x.ChargeAmount))+airExportDetails.AwbChargeableWeightAmount);
             }
-
-          
 
             return View(airExportDetails);
         }
@@ -3023,6 +3019,8 @@ namespace Dolphin.Freight.Web.Controllers
         public async Task<IActionResult> PrintMawb(AirExportDetails model)
         {
             model.IsPDF = true;
+
+            model.OtherCharges = JsonConvert.DeserializeObject<List<OtherCharges>>(model.OtherChargesJSON);
 
             return await _generatePdf.GetPdf("Views/Docs/PrintMawb.cshtml", model);
         }
@@ -3043,31 +3041,44 @@ namespace Dolphin.Freight.Web.Controllers
             return await _generatePdf.GetPdf("Views/Docs/SecurityEndorsement.cshtml", model);
         }
 
-        public IActionResult AirImportPartialView(Guid prevMawbId, Guid hawbId)
+        public IActionResult AirImportPartialView(Guid prevMawbId, Guid hawbId, bool isOceanExportHbl = false)
         { 
             AirImportDetails airImportDetails = new();
 
+            airImportDetails.IsOceanExportHbl = isOceanExportHbl;
             airImportDetails.MawbId = prevMawbId;
             airImportDetails.HawbId = hawbId;
 
             return PartialView("Pages/Shared/_mblAirImportDropdownList.cshtml", airImportDetails);
 
         }
-        public async Task<IActionResult> AirImportChangeMawbParent(Guid mawbId, Guid hawbId)
+        public async Task<IActionResult> AirImportChangeMawbParent(Guid mawbId, Guid hawbId, bool isOceanExportHbl = false)
         {
-            // Upate selcted mawb id for particular  hawb
-            await _airImportHawbAppService.UpdateMawbIdOfHawbAsync(hawbId, mawbId);
+            if (isOceanExportHbl)
+            {
+                await _oceanExportHblAppService.UpdateMblIdOfHblAsync(hawbId, mawbId);
 
-            var mawb = await _airImportMawbAppService.GetAsync(mawbId);
-            var docNo = mawb.FilingNo;
+                var mbl = await _oceanExportMblAppService.GetAsync(mawbId);
+                var docNo = mbl.FilingNo;
 
-            return Json(new { id = mawbId, fileNo = docNo });
+                return Json(new { id = mawbId, fileNo = docNo });
+            }
+            else
+            {
+                await _airImportHawbAppService.UpdateMawbIdOfHawbAsync(hawbId, mawbId);
+
+                var mawb = await _airImportMawbAppService.GetAsync(mawbId);
+                var docNo = mawb.FilingNo;
+
+                return Json(new { id = mawbId, fileNo = docNo });
+            }
         }
-        public IActionResult GetAirImportMawbPopUp(string id, string fileNo)
+        public IActionResult GetAirImportMawbPopUp(string id, string fileNo, bool isOceanExportHbl = false)
         {
             AirImportDetails ViewModel = new();
             ViewModel.Id = Guid.Parse(id);
             ViewModel.FilingNo = fileNo;
+            ViewModel.IsOceanExportHbl = isOceanExportHbl;
 
             return PartialView("Pages/Shared/_airImportMawbPopUp.cshtml", ViewModel);
         }
@@ -4261,13 +4272,12 @@ namespace Dolphin.Freight.Web.Controllers
                     ContainerSizeName = containerSizeName,
                     PackageWeight = item.PackageWeight,
                     PackageMeasure = item.PackageMeasure,
-                   PackageNum=item.PackageNum,
+                    PackageNum = item.PackageNum,
                 };
                 if (item.PackageUnitId != null)
                 {
-                   var units =await _packageRepository.GetQueryableAsync();
+                    var units =await _packageRepository.GetQueryableAsync();
                     items.PackageUnitName = units.Where(x => x.Id == item.PackageUnitId).Select(x => x.PackageName).FirstOrDefault();
-
                 }
                 totalPackageWeight += item.PackageWeight;
                 totalPackageMeasure += item.PackageMeasure;
@@ -4275,8 +4285,8 @@ namespace Dolphin.Freight.Web.Controllers
                 list.Add(items);
             }
 
-            oceanExportDetails.TotalWeightStr = string.Concat(totalPackageWeight + " KGS " + Math.Round(totalPackageWeight * 2.20462, 2) + " LBS");
-            oceanExportDetails.TotalMeasureStr = string.Concat(totalPackageMeasure + " CBM " + Math.Round(totalPackageMeasure * 35.315, 2) + " CFT");
+            oceanExportDetails.TotalWeightStr = string.Concat(Math.Round(totalPackageWeight, 2) + " KGS " + Math.Round(totalPackageWeight * 2.20462, 2) + " LBS");
+            oceanExportDetails.TotalMeasureStr = string.Concat(Math.Round(totalPackageMeasure, 2) + " CBM " + Math.Round(totalPackageMeasure * 35.315, 2) + " CFT");
             oceanExportDetails.CreateUpdateContainerDtos = list;
             oceanExportDetails.CreateUpdateContainerDtosJson = JsonConvert.SerializeObject(list);
             oceanExportDetails.IsPartialView = isPartialView;

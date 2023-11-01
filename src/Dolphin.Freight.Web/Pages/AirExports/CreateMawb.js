@@ -97,14 +97,31 @@ class AirExportMawb {
                 if (Number(Elem.currentTarget.value) >= Number($('#GrossWeightKg').val())) {
                     $('#ChargeableWeightKg').val(Elem.currentTarget.value);
                     $('#AwbChargeableWeightKg').val(Elem.currentTarget.value);
-                    $('#ChargeableWeightLb').val(parseFloat(Elem.currentTarget.value * 2.2).toFixed(2));
-                    $('#AwbChargeableWeightLb').val(parseFloat(Elem.currentTarget.value * 2.2).toFixed(2));
+                    $('#ChargeableWeightLb').val(parseFloat(Elem.currentTarget.value * 2.20462).toFixed(2));
+                    $('#AwbChargeableWeightLb').val(parseFloat(Elem.currentTarget.value * 2.20462).toFixed(2));
                     if ($('#MawbModel_ChargeableWeightAmount').length == 0) {
-                        $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(Elem.currentTarget.value * SellingRate).toFixed(2));
-                        $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat(Elem.currentTarget.value * SellingRate).toFixed(2));
+                        if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) {
+                            $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(Elem.currentTarget.value * SellingRate).toFixed(2));
+                            $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat(Elem.currentTarget.value * SellingRate).toFixed(2));
+                        }
+                        else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 2) {
+                            $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(Elem.currentTarget.value * 2.20462 * SellingRate).toFixed(2));
+                            $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat(Elem.currentTarget.value * 2.20462 * SellingRate).toFixed(2));
+                        } else {
+                            $('#AirExportMawbDto_ChargeableWeightAmount').val(0);
+                            $('#AirExportMawbDto_AwbChargeableWeightAmount').val(0);
+                        }
                     } else {
-                        $('#MawbModel_ChargeableWeightAmount').val(parseFloat(Elem.currentTarget.value * SellingRate).toFixed(2));
-                        $('#MawbModel_AwbChargeableWeightAmount').val(parseFloat(Elem.currentTarget.value * SellingRate).toFixed(2));
+                        if ($('#MawbModel_SellingRateUnit').val() == 1) {
+                            $('#MawbModel_ChargeableWeightAmount').val(parseFloat(Elem.currentTarget.value * SellingRate).toFixed(2));
+                            $('#MawbModel_AwbChargeableWeightAmount').val(parseFloat(Elem.currentTarget.value * SellingRate).toFixed(2));
+                        } else if ($('#MawbModel_SellingRateUnit').val() == 2) {
+                            $('#MawbModel_ChargeableWeightAmount').val(parseFloat(Elem.currentTarget.value * 2.20462 * SellingRate).toFixed(2));
+                            $('#MawbModel_AwbChargeableWeightAmount').val(parseFloat(Elem.currentTarget.value * 2.20462 * SellingRate).toFixed(2));
+                        } else {
+                            $('#MawbModel_ChargeableWeightAmount').val(0);
+                            $('#MawbModel_AwbChargeableWeightAmount').val(0);
+                        }
                     }
                 } else {
                     $('#ChargeableWeightKg').val($('#GrossWeightKg').val());
@@ -123,12 +140,28 @@ class AirExportMawb {
                 $($(Elem.currentTarget).parent().prev().prev().children()[0]).val(KG);
                 if (Number(KG) >= Number($('#GrossWeightKg').val())) {
                     $('#ChargeableWeightKg').val(KG);
+                    $('#ChargeableWeightLb').val(parseFloat(KG * 2.20462).toFixed(2));
+                    $('#AwbChargeableWeightKg').val(KG);
+                    $('#AwbChargeableWeightLb').val(parseFloat(KG * 2.20462).toFixed(2));
                     if ($('#MawbModel_ChargeableWeightAmount').length == 0) {
-                        $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(KG * SellingRate).toFixed(2));
-                        $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat(KG * SellingRate).toFixed(2));
+                        if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) {
+                            $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(KG * SellingRate).toFixed(2));
+                            $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat(KG * SellingRate).toFixed(2));
+                        } else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 2) {
+                            $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(KG * 2.2046 * SellingRate).toFixed(2));
+                            $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat(KG * 2.2046 * SellingRate).toFixed(2));
+                        } else {
+                            $('#AirExportMawbDto_ChargeableWeightAmount').val(0);
+                            $('#AirExportMawbDto_AwbChargeableWeightAmount').val(0);
+                        }
                     } else {
-                        $('#MawbModel_ChargeableWeightAmount').val(parseFloat(KG * SellingRate).toFixed(2));
-                        $('#MawbModel_AwbChargeableWeightAmount').val(parseFloat(KG * SellingRate).toFixed(2));
+                        if ($('#MawbModel_SellingRateUnit').val() == 1) {
+                            $('#MawbModel_ChargeableWeightAmount').val(parseFloat(KG * SellingRate).toFixed(2));
+                            $('#MawbModel_AwbChargeableWeightAmount').val(parseFloat(KG * SellingRate).toFixed(2));
+                        } else if ($('#MawbModel_SellingRateUnit').val() == 2) {
+                            $('#MawbModel_ChargeableWeightAmount').val(parseFloat(KG * 2.2046 * SellingRate).toFixed(2));
+                            $('#MawbModel_AwbChargeableWeightAmount').val(parseFloat(KG * 2.2046 * SellingRate).toFixed(2));
+                        }
                     }
                 } else {
                     $('#ChargeableWeightKg').val($('#GrossWeightKg').val());
@@ -154,14 +187,14 @@ class AirExportMawb {
         } else {
             VolumeWeightKg = $('#MawbModel_VolumeWeightKg').val();
         }
-        if ($('#MawbModel_SellingRate').val() == undefined) {
+        if ($('#MawbModel_SellingRateUnit').val() == undefined) {
             if ($('#AirExportMawbDto_SellingRate').val() != undefined) {
                 SellingRate = $('#AirExportMawbDto_SellingRate').val();
             } else {
                 SellingRate = 0;
             }
         } else {
-            SellingRate = $('#MawbModel_SellingRate').val();
+            SellingRate = $('#MawbModel_SellingRateUnit').val();
         }
         switch (Unit) {
             case 'KG':
@@ -204,14 +237,12 @@ class AirExportMawb {
     }
 
     static openPopUp(situation) {
-        debugger;
         switch (situation) {
             case 'withId':
                 var url = new URL(window.location.href);
                 const mblId = url.searchParams.get('Id');
 
                 $('#popuptrtbody').empty();
-                debugger;
                 if (extraProperties != undefined && extraProperties.dimensions != null && extraProperties.dimensions.length > 0) {
                     for (let dimension of extraProperties.dimensions) {
                         addDimensionRow(dimension);
@@ -240,7 +271,6 @@ class AirExportMawb {
                 break;
 
             default:
-                debugger;
                 $('#popuptrtbody').empty();
                 if (extraProperties != undefined && extraProperties.dimensions != null && extraProperties.dimensions.length > 0) {
                     for (let dimension of extraProperties.dimensions) {
@@ -286,6 +316,88 @@ class AirExportMawb {
         updateTotals();
 
         updateDeleteButtonState();
+    }
+
+    static onChangeSellingRate(e) {
+        if ($('#MawbModel_ChargeableWeightAmount').length == 0) {
+            if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) {
+                var sellingRate = $(e.currentTarget || e.target || e.srcElement).val();
+                var chargableWeightKG = $('#ChargeableWeightKg').val();
+                var awbChargableWeightKG = $('#AwbChargeableWeightKg').val();
+                $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(sellingRate * chargableWeightKG).toFixed(2));
+                $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat(sellingRate * awbChargableWeightKG).toFixed(2));
+            }
+            else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 2) {
+                var sellingRate = $(e.currentTarget || e.target || e.srcElement).val();
+                var chargableWeightLB = $('#ChargeableWeightLb').val();
+                var awbChargableWeightLB = $('#AwbChargeableWeightLb').val();
+                $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(sellingRate * chargableWeightLB).toFixed(2));
+                $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat(sellingRate * awbChargableWeightLB).toFixed(2));
+            }
+            else {
+                $('#AirExportMawbDto_ChargeableWeightAmount').val(0);
+                $('#AirExportMawbDto_AwbChargeableWeightAmount').val(0);
+            }
+        }
+        else {
+            if ($('#MawbModel_SellingRateUnit').val() == 1) {
+                var sellingRate = $(e.currentTarget || e.target || e.srcElement).val();
+                var chargableWeightKG = $('#ChargeableWeightKg').val();
+                var awbChargableWeightKG = $('#AwbChargeableWeightKg').val();
+                $('#MawbModel_ChargeableWeightAmount').val(parseFloat(sellingRate * chargableWeightKG).toFixed(2));
+                $('#MawbModel_AwbChargeableWeightAmount').val(parseFloat(sellingRate * awbChargableWeightKG).toFixed(2));
+            }
+            else if ($('#MawbModel_SellingRateUnit').val() == 2) {
+                var sellingRate = $(e.currentTarget || e.target || e.srcElement).val();
+                var chargableWeightLB = $('#ChargeableWeightLb').val();
+                var awbChargableWeightLB = $('#AwbChargeableWeightLb').val();
+                $('#MawbModel_ChargeableWeightAmount').val(parseFloat(sellingRate * chargableWeightLB).toFixed(2));
+                $('#MawbModel_AwbChargeableWeightAmount').val(parseFloat(sellingRate * awbChargableWeightLB).toFixed(2));
+            }
+            else {
+                $('#MawbModel_ChargeableWeightAmount').val(0);
+                $('#MawbModel_AwbChargeableWeightAmount').val(0);
+            }
+        }
+    }
+
+    static onChangeUnit(e) {
+        if ($('#MawbModel_ChargeableWeightAmount').length == 0) {
+            if ($(e.currentTarget || e.target || e.srcElement).val() == 1) {
+                var sellingRate = $('#AirExportMawbDto_SellingRate').val();
+                var chargableWeightKG = $('#ChargeableWeightKg').val();
+                var awbChargableWeightKG = $('#AwbChargeableWeightKg').val();
+                $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(sellingRate * chargableWeightKG).toFixed(2));
+                $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat(sellingRate * awbChargableWeightKG).toFixed(2));
+            }
+            else if ($(e.currentTarget || e.target || e.srcElement).val() == 2) {
+                var sellingRate = $('#AirExportMawbDto_SellingRate').val();
+                var chargableWeightLB = $('#ChargeableWeightLb').val();
+                var awbChargableWeightLB = $('#AwbChargeableWeightLb').val();
+                $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(sellingRate * chargableWeightLB).toFixed(2));
+                $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat(sellingRate * awbChargableWeightLB).toFixed(2));
+            }
+            else {
+                $('#AirExportMawbDto_ChargeableWeightAmount').val(0);
+                $('#AirExportMawbDto_AwbChargeableWeightAmount').val(0);
+            }
+        }
+        else {
+            if ($(e.currentTarget || e.target || e.srcElement).val() == 1) {
+                var sellingRate = $('#MawbModel_SellingRate').val();
+                var chargableWeightKG = $('#ChargeableWeightKg').val();
+                var awbChargableWeightKG = $('#AwbChargeableWeightKg').val();
+                $('#MawbModel_ChargeableWeightAmount').val(parseFloat(sellingRate * chargableWeightKG).toFixed(2));
+                $('#MawbModel_AwbChargeableWeightAmount').val(parseFloat(sellingRate * awbChargableWeightKG).toFixed(2));
+            }
+            else if ($(e.currentTarget || e.target || e.srcElement).val() == 2) {
+                var sellingRate = $('#MawbModel_SellingRate').val();
+                var chargableWeightLB = $('#ChargeableWeightLb').val();
+                var awbChargableWeightLB = $('#AwbChargeableWeightLb').val();
+                $('#MawbModel_ChargeableWeightAmount').val(parseFloat(sellingRate * chargableWeightLB).toFixed(2));
+                $('#MawbModel_AwbChargeableWeightAmount').val(parseFloat(sellingRate * awbChargableWeightLB).toFixed(2));
+            }
+        }
     }
 }
 

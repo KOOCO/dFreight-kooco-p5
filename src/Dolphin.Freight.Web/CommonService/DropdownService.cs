@@ -2,6 +2,7 @@
 using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.AirImports;
+using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Settings.Countries;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settinngs.ContainerSizes;
@@ -11,6 +12,7 @@ using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Dolphin.Freight.TradePartners.Credits;
 using NPOI.POIFS.Storage;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +21,13 @@ using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
 using Volo.Abp.Users;
+using Dolphin.Freight.Localization;
+using Volo.Abp.Localization;
 using SelectItems = Microsoft.AspNetCore.Mvc.Rendering.SelectListItem;
 using SelectListItem = Microsoft.AspNetCore.Mvc.Rendering.SelectListItem;
+using Microsoft.Extensions.Localization;
+using Volo.Abp.DependencyInjection;
+using Volo.Abp;
 
 namespace Dolphin.Freight.Web.CommonService
 {
@@ -40,6 +47,7 @@ namespace Dolphin.Freight.Web.CommonService
         private readonly IAccountGroupAppService _accountGroupAppService;
         private readonly IAirImportMawbAppService _airImportMawbAppService;
         private readonly IIdentityUserAppService _identityUserAppService;
+        private readonly IOceanExportMblAppService _oceanExportMblAppService;
 
         public DropdownService(ITradePartnerAppService tradePartnerAppService,
                                ISubstationAppService substationAppService,
@@ -54,7 +62,8 @@ namespace Dolphin.Freight.Web.CommonService
                                ICreditLimitGroupAppService creditLimitGroupAppService,
                                IAccountGroupAppService accountGroupAppService,
                                IAirImportMawbAppService airImportMawbAppService,
-                               IIdentityUserAppService identityUserAppService
+                               IIdentityUserAppService identityUserAppService,
+                               IOceanExportMblAppService oceanExportMblAppService
                                )
         {
             _tradePartnerAppService = tradePartnerAppService;
@@ -71,6 +80,7 @@ namespace Dolphin.Freight.Web.CommonService
             _accountGroupAppService = accountGroupAppService;
             _airImportMawbAppService = airImportMawbAppService;
             _identityUserAppService = identityUserAppService;
+            _oceanExportMblAppService = oceanExportMblAppService;
         }
         public List<SelectItems> TradePartnerLookupList => FillTradePartnerAsync().Result;
 
@@ -79,6 +89,8 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> AirportLookupList => FillAirportAsync().Result;
 
         public List<SelectItems> PackageUnitLookupList => FillPackageUnitAsync().Result;
+
+        public List<SelectItems> OtherLookupList => FillOther();
 
         public List<SelectItems> WtValOtherLookupList => FillWtValOther();
 
@@ -115,9 +127,66 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> GiCodeLookupList => FillGiCodesAsync().Result;
         public List<SelectItems> CreditLimitGroupNameLookupList => FillCreditLimitGroupName().Result;
         public List<SelectItems> AccountGroupnameLookupList => FillAccountGroupName().Result;
-
+        public List<SelectItems> OceanExportMblLookupList => FillOceanExportMblAsync().Result;
         public List<SelectItems> OperatorLookupList => FillOperatorAsync().Result;
+        public IAbpLazyServiceProvider LazyServiceProvider { get; set; }
+        protected IStringLocalizerFactory StringLocalizerFactory => LazyServiceProvider.LazyGetRequiredService<IStringLocalizerFactory>();
+        private Type _localizationResource = typeof(FreightResource);
+        private IStringLocalizer _localizer;
+        protected Type LocalizationResource
+        {
+            get => _localizationResource;
+            set
+            {
+                _localizationResource = value;
+                _localizer = null;
+            }
+        }
 
+        protected virtual IStringLocalizer CreateLocalizer()
+        {
+            if (LocalizationResource != null)
+            {
+                return StringLocalizerFactory.Create(LocalizationResource);
+            }
+
+            var localizer = StringLocalizerFactory.CreateDefaultOrNull();
+            if (localizer == null)
+            {
+                throw new AbpException($"Set {nameof(LocalizationResource)} or define the default localization resource type (by configuring the {nameof(AbpLocalizationOptions)}.{nameof(AbpLocalizationOptions.DefaultResourceType)}) to be able to use the {nameof(L)} object!");
+            }
+
+            return localizer;
+        }
+
+        protected IStringLocalizer L
+        {
+            get
+            {
+                if (_localizer == null)
+                {
+                    _localizer = CreateLocalizer();
+                }
+
+                return _localizer;
+            }
+        }
+
+
+        #region
+        private async Task<List<SelectItems>> FillOceanExportMblAsync()
+        {
+            var oceanExportLookup = await _oceanExportMblAppService.GetMblListAsync();
+
+            return oceanExportLookup.Select(s => new SelectListItem(
+                                    string.IsNullOrEmpty(s.FilingNo)
+                                        ? s.MblNo
+                                        : (string.IsNullOrEmpty(s.MblNo)
+                                            ? s.FilingNo
+                                            : s.FilingNo + '/' + s.MblNo),
+                                    s.Id.ToString(), false)).ToList();
+        }
+        #endregion
 
         #region FillTradePartnerAsync()
         private async Task<List<SelectItems>> FillTradePartnerAsync()
@@ -164,8 +233,17 @@ namespace Dolphin.Freight.Web.CommonService
         {
             return new List<SelectListItem>
             {
-                new SelectListItem { Value = "PPD", Text = "PPD"},
-                new SelectListItem { Value = "COLL", Text = "COLL"}
+                new SelectListItem { Value = "PPD", Text = L["PPD"] },
+                new SelectListItem { Value = "COLL", Text = L["COLL"] }
+            };
+        }
+
+        private List<SelectListItem> FillOther()
+        {
+            return new List<SelectListItem>
+            {
+                new SelectListItem { Value = "PPD", Text = L["PPD"] },
+                new SelectListItem { Value = "COLL", Text = L["COLL"] }
             };
         }
         #endregion

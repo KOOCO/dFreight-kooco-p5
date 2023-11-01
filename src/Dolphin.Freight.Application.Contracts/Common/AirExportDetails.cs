@@ -10,15 +10,26 @@ namespace Dolphin.Freight.Common
     public class AirExportDetails
     {
         public Guid HawbId { get; set; }
+        public double GrossWeightKg { get; set; }
+        public double GrossWeightLb { get; set; }
         public string ShippperName { get; set; }
+        public string RouteTrans1 { get; set; }
+        public string RouteTrans2 { get; set; }
+        public string RouteTrans3 { get; set; }
+        public string RouteTrans1Carrier { get; set; }
+        public string RouteTrans2Carrier { get; set; }
+        public string RouteTrans3Carrier { get; set; }
         public string IssuingCarrierName { get; set; }
         public string NotifyName { get; set; }
         public string AirWayBillNo { get; set; }
+        public string WtVal { get; set; }
+        public string Other { get; set; }
         public string HawbNo { get; set; }
         public string MawbNo { get; set; }
         public string ConsigneeName { get; set; }
         public string DepartureName { get; set; }
         public string CarrierName { get; set; }
+        public string MawbPackageUnit { get; set; }
         public string DestinationName { get; set; }
         public string HandlingInformation { get; set; }
         public string GrossWeight { get; set; }
@@ -36,6 +47,9 @@ namespace Dolphin.Freight.Common
         public string Package { get; set; }
         public string ChargableWeight { get; set; }
         public string Operator { get; set; }
+        public DateTime AwbDate { get; set; }
+        public string Mark { get; set; }
+        public string NatureAndQuantityOfGoods { get; set; }
         public string OverSeaAgentName { get; set; }
         public string SalesName { get; set; }
         public string CustomerName { get; set; }
@@ -57,6 +71,7 @@ namespace Dolphin.Freight.Common
         public double AwbChargeableWeightAmount { get; set; }
         public double OtherChargesDueCarrier { get; set; }
         public double TotalPrepaid { get; set; }
+        public string OtherChargesJSON { get; set; }
         public List<OtherCharges> OtherCharges { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
 

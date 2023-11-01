@@ -279,7 +279,6 @@
             $('#saveBtn').click();
         }
         function editMawbAirImport(prevMawbId, hawbId) {
-            debugger;
             $.ajax({
                 url: abp.appPath + 'Docs/AirImportPartialView',
                 type: 'GET',
@@ -1027,10 +1026,7 @@
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BusinessReferredId", AspItems = _dropdownService.TradePartnerLookupList, IsShowLabel = true, FieldName = "BusinessReferredBy", ShowFiledContentValue = Convert.ToString(Model.MawbModel.BusinessReferredId) })
                                 </abp-column>
-                                <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DisplayUnit", AspItems = Html.GetEnumSelectList(typeof(DisplayUnitType)).ToList(), IsShowLabel = true, FieldName = "DisplayUnit", ShowFiledContentValue = Convert.ToString(((int)Model.MawbModel.DisplayUnit)) })
-                                </abp-column>
-                                <abp-column size-md="_3">
+                                <abp-column size-md="_3" class="expandCheck">
                                     <abp-input asp-for="MawbModel.IsECom" />
                                 </abp-column>
                                 <abp-column size-md="_3">

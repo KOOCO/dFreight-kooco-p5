@@ -2,5 +2,6 @@
 {
     public class HawbPrintAirExportHawbModel
     {
+        public string HawbNo { get; set; }
     }
 }

@@ -99,12 +99,20 @@
                 });
             });
             $("#deleteBtn").click(function () {
-                $("input[name='f0']:checked").each(function () {
+                $("input[name='f0']:checked").each(function (i, e) {
+                    if ($(e).attr('data-id') != '' && $(e).attr('data-id') != null && $(e).attr('data-id') != undefined){
+                        dolphin.freight.importExport.containers.container.delete($(e).attr('data-id')).done(function(){ });
+                    }
                     var tid = $(this).val();
                     $("#did_" + tid).val("1");
                     $("#tr_" + $(this).val()).hide();
                 });
+                $('#selectAllCheckboxes').prop('checked', false);
                 resetIndexes();
+                debugger;
+                countPackageType('MBL');
+                countTotal('MBL', 'KG');
+                countTotalVolume('MBL', 'CBM');
             });
             $('#edit2Form').on('abp-ajax-success', function (result, rs) {
                 event.preventDefault();
@@ -193,7 +201,6 @@
                         return false;
                     }
                 });
-
                 $(e).prop('checked', allChecked);
             });
         }
@@ -203,7 +210,7 @@
                 case 'MBL':
                     var totalWgt = 0;
 
-                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length / 2; i++) {
                         var cells = parseFloat($('#f5_' + i).val());
                         if (!isNaN(cells)) {
                             totalWgt += cells;
@@ -233,7 +240,7 @@
                 default:
                     var totalWgt = 0;
 
-                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length / 2; i++) {
                         var cells = parseFloat($('#f5_' + i).val());
                         if (!isNaN(cells)) {
                             totalWgt += cells;
@@ -259,7 +266,7 @@
                 case 'MBL':
                     var totalVol = 0;
 
-                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length / 2; i++) {
                         var cells = parseFloat($('#f6_' + i).val());
                         if (!isNaN(cells)) {
                             totalVol += cells;
@@ -288,7 +295,7 @@
                 default:
                     var totalVol = 0;
 
-                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length / 2; i++) {
                         var cells = parseFloat($('#f6_' + i).val());
                         if (!isNaN(cells)) {
                             totalVol += cells;
@@ -313,7 +320,7 @@
                 case 'MBL':
                     var totalPKG = 0;
 
-                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length / 2; i++) {
                         var cells = parseFloat($('#f4_' + i).val());
                         if (!isNaN(cells)) {
                             totalPKG += cells;
@@ -334,7 +341,7 @@
                 default:
                     var totalPKG = 0;
 
-                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length / 2; i++) {
                         var cells = parseFloat($('#f4_' + i).val());
                         if (!isNaN(cells)) {
                             totalPKG += cells;
@@ -950,7 +957,7 @@
                                     <br />
                                     <table width="100%" class="table table-bordered" id="trttable">
                                         <tr>
-                                            <th width="5%"></th>
+                                            <th width="5%" style="text-align: center;"><input type="checkbox" id="selectAllCheckboxes" onclick="EditModelOEContainer.SelectAllCheckboxes(event)" /></th>
                                             <th width="5%" style="text-align: center;"><b>#</b></th>
                                             <th width="5%">PP</th>
                                             <th width="5%">CTF</th>
@@ -1207,7 +1214,7 @@
             <div>
                 商品 / 艙單商品
                 <abp-button class="btn btn-success me-md-2" type="button" id="addCommodityBtn" onclick="onAddCommodity()">+</abp-button>
-                <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteCommodityBtn" onclick="onRemoveCommodity()">delete</abp-button>
+                <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteCommodityBtn" onclick="onRemoveCommodity()"><i class="fa fa-trash mx-1"></i></abp-button>
             </div>
             <abp-table width="100%" border="1">
                 <tr>
@@ -1236,9 +1243,9 @@
         </abp-column>
         <abp-column size-md="_6">
             <div>
-                <div class="pull-left"><h7 class="form-section">Description</h7></div>
+                <div class="pull-left"><h7 class="form-section">@L["Description"]</h7></div>
                 <div class="pull-right">
-                    <div class="_font-12 inline-block">Copy: </div>
+                    <div class="_font-12 inline-block">@L["Btn:Copy"]: </div>
                     <div class="btn-group">
                         <abp-button id="btnPO" onclick="addPONumberForDescription()" size="Small" abp-border="Default" disabled="true">@L["P.O"]</abp-button>
                         <abp-button id="btnCommodity" onclick="addCommodityForDescription()" size="Small" abp-border="Default" disabled="true">@L["Commodity"]</abp-button>

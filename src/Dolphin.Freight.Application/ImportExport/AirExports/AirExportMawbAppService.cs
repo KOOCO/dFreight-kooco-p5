@@ -16,6 +16,7 @@ using Dolphin.Freight.Accounting.Invoices;
 using Newtonsoft.Json;
 using NPOI.POIFS.Crypt.Dsig;
 using Dolphin.Freight.ImportExport.AirImports;
+using Dolphin.Freight.Settings.PackageUnits;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -37,6 +38,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
         private IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> _tradePartnerRepository;
         private readonly IRepository<AirExportHawb, Guid> _airExportHawbRepository;
         private readonly IInvoiceAppService _invoiceAppService;
+        private readonly IRepository<PackageUnit, Guid> _packageUnitRepository;
 
         public AirExportMawbAppService(
             IRepository<AirExportMawb, Guid> repository,
@@ -47,7 +49,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
             IRepository<Airport, Guid> airportRepository,
             IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
             IRepository<AirExportHawb, Guid> airExportHawbRepository,
-            IInvoiceAppService invoiceAppService
+            IInvoiceAppService invoiceAppService,
+            IRepository<PackageUnit, Guid> packageUnitRepository
         ) : base(repository)
         {
             _repository = repository;
@@ -59,6 +62,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
             _tradePartnerRepository = tradePartnerRepository;
             _airExportHawbRepository = airExportHawbRepository; 
             _invoiceAppService = invoiceAppService;
+            _packageUnitRepository = packageUnitRepository;
         }
 
         public async Task<PagedResultDto<AirExportMawbDto>> QueryListAsync(QueryHblDto query)
@@ -361,6 +365,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
         {
             var tradePartners = await _tradePartnerRepository.GetListAsync();
             var portMangements = await _portRepository.QueryListAsync();
+            var packageUnits = await _packageUnitRepository.GetListAsync();
+            var airPorts = await _airportRepository.GetListAsync();
 
             var data = await Repository.GetAsync(Id);
 
@@ -410,8 +416,49 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 airExportDetails.CarrierName = string.Concat(carrier.TPName, "/", carrier.TPCode);
             }
 
+            if (data.MawbPackageUnitId is not null)
+            {
+                var mawbPackageUnit = packageUnits.Where(w => w.Id == data.MawbPackageUnitId).FirstOrDefault();
+                airExportDetails.MawbPackageUnit = mawbPackageUnit.PackageName;
+            }
+
+            if (data.RouteTrans1Id is not null)
+            {
+                var routeTrans1 = airPorts.Where(w => w.Id == data.RouteTrans1Id).FirstOrDefault();
+                airExportDetails.RouteTrans1 = routeTrans1.AirportName;
+            }
+
+            if (data.RouteTrans2Id is not null)
+            {
+                var routeTrans2 = airPorts.Where(w => w.Id == data.RouteTrans2Id).FirstOrDefault();
+                airExportDetails.RouteTrans2 = routeTrans2.AirportName;
+            }
+            if (data.RouteTrans3Id is not null)
+            {
+                var routeTrans3 = airPorts.Where(w => w.Id == data.RouteTrans3Id).FirstOrDefault();
+                airExportDetails.RouteTrans3 = routeTrans3.AirportName;
+            }
+
+            if (data.RouteTrans1CarrierId is not null)
+            {
+                var routeTrans1Carrier = tradePartners.Where(w => w.Id == data.RouteTrans1CarrierId).FirstOrDefault();
+                airExportDetails.RouteTrans1Carrier = string.Concat(routeTrans1Carrier.TPName, "/", routeTrans1Carrier.TPCode);
+            }
+
+            if (data.RouteTrans2CarrierId is not null)
+            {
+                var routeTrans2Carrier = tradePartners.Where(w => w.Id == data.RouteTrans2CarrierId).FirstOrDefault();
+                airExportDetails.RouteTrans2Carrier = string.Concat(routeTrans2Carrier.TPName, "/", routeTrans2Carrier.TPCode);
+            }
+
+            if (data.RouteTrans3CarrierId is not null)
+            {
+                var routeTrans3Carrier = tradePartners.Where(w => w.Id == data.RouteTrans3CarrierId).FirstOrDefault();
+                airExportDetails.RouteTrans3Carrier = string.Concat(routeTrans3Carrier.TPName, "/", routeTrans3Carrier.TPCode);
+            }
+            
             airExportDetails.AirWayBillNo = data.MawbNo;
-            airExportDetails.MawbNo = airExportDetails.MawbNo;
+            airExportDetails.MawbNo = data.MawbNo;
             airExportDetails.DocNumber = data.FilingNo;
             airExportDetails.GrossWeight = Convert.ToString(data.AwbChargeableWeightKg);
             airExportDetails.ArrivalDate = data.ArrivalDate?.ToShortDateString();
@@ -420,9 +467,11 @@ namespace Dolphin.Freight.ImportExport.AirExports
             airExportDetails.ChargableWeight = string.Concat(data.ChargeableWeightKg, " ", data.ChargeableWeightLb);
             airExportDetails.Package = Convert.ToString(data.Package);
             airExportDetails.DepatureDate = data.DepatureDate;
-            airExportDetails.ChargeableWeightCneeKG = Convert.ToString(data.ChargeableWeightKg);
-            airExportDetails.ChargeableWeightCneeLB = Convert.ToString(data.ChargeableWeightLb);
+            airExportDetails.ChargeableWeightCneeKG = Convert.ToString(data.ChargeableWeightKg + " KGS");
+            airExportDetails.ChargeableWeightCneeLB = Convert.ToString(data.ChargeableWeightLb + " LBS");
             airExportDetails.Operator = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
+            airExportDetails.OtherCharges = JsonConvert.DeserializeObject<List<OtherCharges>>(data.ExtraProperties.GetValueOrDefault("OtherCharges").ToString());
+            airExportDetails.OtherChargesJSON = data.ExtraProperties.GetValueOrDefault("OtherCharges").ToString();
 
             return airExportDetails;
         }

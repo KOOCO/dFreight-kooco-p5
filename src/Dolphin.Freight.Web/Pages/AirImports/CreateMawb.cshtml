@@ -630,9 +630,6 @@
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BusinessReferredId", AspItems = _dropdown.TradePartnerLookupList,Selected=Model.MawbModel.BusinessReferredId, IsShowLabel = true, FieldName = "BusinessReferredId", ShowFiledContentValue = Convert.ToString(Model.MawbModel.BusinessReferredId) })
                                 </abp-column>
-                                <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DisplayUnit", AspItems = Html.GetEnumSelectList(typeof(DisplayUnitType)).ToList(),Selected=Convert.ToString(Model.MawbModel.DisplayUnit), IsShowLabel = true, FieldName = "DisplayUnit", ShowFiledContentValue = Convert.ToString((Model.MawbModel.DisplayUnit)) })
-                                </abp-column>
                                 <abp-column size-md="_3" class="expandCheck">
                                     <abp-input asp-for="MawbModel.IsECom" />
                                 </abp-column>

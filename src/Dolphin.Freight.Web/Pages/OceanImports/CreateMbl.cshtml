@@ -368,7 +368,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblBillToId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblBillToId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblBillToId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblSalesTypeId", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "MblBillToId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblSalesTypeId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblSalesTypeId", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "MblSalesTypeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblSalesTypeId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblCargoTypeId", AspItems = _dropdown.CargoTypeLookupList, IsShowLabel = true, FieldName = "MblCargoTypeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.CargoTypeId) })
@@ -415,8 +415,7 @@
 
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.PodEta" type="text" abp-data-datepicker="false" />
-
+                                    <abp-input asp-for="OceanImportMbl.PodEta" type="text" abp-data-datepicker="false" required />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -436,7 +435,13 @@
                                 </abp-column>
                             </abp-row>
                             <abp-row>
-                                <abp-column size-md="_9">
+                                <abp-column size-md="_3">
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="OceanImportMbl.ATD" type="text" abp-data-datepicker="false" />
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="OceanImportMbl.ATA" type="text" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanImportMbl.Etb" type="text" abp-data-datepicker="false" />

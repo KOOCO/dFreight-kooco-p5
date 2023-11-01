@@ -226,6 +226,9 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// FBA倉儲ID
         /// </summary>
         public Guid? FbaId { get; set; }
+        public int PackageNum { get; set; }
+        public string PackageWeight { get; set; }
+        public string PackageMeasure { get; set; }
         /// <summary>
         /// 中轉港 ID
         /// </summary>
@@ -305,6 +308,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// </summary>
         public Guid? OfficeId { get; set; }
         public string OfficeName { get; set; }
+        public string FbaName { get; set; }
         /// <summary>
         /// 是否可堆積
         /// </summary>

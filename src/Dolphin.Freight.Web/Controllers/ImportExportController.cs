@@ -58,6 +58,7 @@ namespace Dolphin.Freight.Web.Controllers
         public List<SelectListItem> PackageUnitLookupList { get; set; }
         public List<SelectListItem> CountryName { get; set; }
         public List<SelectListItem> WtValOtherList { get; set; }
+        public List<SelectListItem> OtherList { get; set; }
         public List<SelectListItem> PortsManagementLookupList { get; set; }
 
         private readonly int fileType = 10;
@@ -198,6 +199,7 @@ namespace Dolphin.Freight.Web.Controllers
         public async Task<PartialViewResult> GetAirExportBasicHawb(Guid Id, string hawbNo)
         {
             FillWtValOther();
+            FillOther();
 
             HawbHblViewModel model = new();
 
@@ -206,6 +208,7 @@ namespace Dolphin.Freight.Web.Controllers
             model.TradePartnerLookupList = TradePartnerLookupList;
             model.PackageUnitLookupList = PackageUnitLookupList;
             model.WtValOtherList = WtValOtherList;
+            model.OtherList = OtherList;
             model.CountryName = CountryName;
 
             model.AirExportHawbDto = await _airExportHawbAppService.GetHawbCardById(Id);
@@ -578,8 +581,17 @@ namespace Dolphin.Freight.Web.Controllers
         {
             WtValOtherList = new List<SelectListItem>
             {
-                new SelectListItem { Value = "PPD", Text = L["PPD"]},
-                new SelectListItem { Value = "COLL", Text = L["COLL"]}
+                new SelectListItem { Value = L["PPD"], Text = L["PPD"] },
+                new SelectListItem { Value = L["COLL"], Text = L["COLL"] }
+            };
+        }
+
+        private void FillOther()
+        {
+            OtherList = new List<SelectListItem>
+            {
+                new SelectListItem { Value = L["PPD"], Text = L["PPD"] },
+                new SelectListItem { Value = L["COLL"], Text = L["COLL"] }
             };
         }
         #endregion

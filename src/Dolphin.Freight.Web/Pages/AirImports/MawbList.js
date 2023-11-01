@@ -166,13 +166,43 @@ var AirImportsMawbList = {
     selectAllCheckbox: function (element) {
         var isChecked = $(element).prop('checked');
         $('#MawbListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
-
+        var checkedCheckboxes = $('.selectCheckbox:checked');
+        var isAnyLocked = false;
+        var isAnyUnlocked = false
         if (isChecked) {
             $('#summaryId').prop('disabled', false);
             $('#detailedId').prop('disabled', false);
+            debugger;
+            checkedCheckboxes.each(function (index, checkbox1) {
+                $('#deleteBtn').prop('disabled', false);
+                var id = $(checkbox1).data('id');
+                var isLock = $('.lockUnlockCheckbox[data-id="' + id + '"]').prop('checked');
+
+                if (isLock) {
+                    isAnyLocked = true;
+                }
+                else {
+                    isAnyUnlocked = true;
+                }
+            });
+            $('#lockId').prop('disabled', !isAnyUnlocked);
+            $('#unlockId').prop('disabled', !isAnyLocked);
+
         } else {
             $('#summaryId').prop('disabled', true);
             $('#detailedId').prop('disabled', true);
+            checkedCheckboxes.each(function (index, checkbox1) {
+                var id = $(checkbox1).data('id');
+                var isLock = $('.lockUnlockCheckbox[data-id="' + id + '"]').prop('checked');
+                if (isLock) {
+                    isAnyLocked = true;
+                }
+                else {
+                    isAnyUnlocked = true;
+                }
+            });
+            $('#lockId').prop('disabled', !isAnyUnlocked);
+            $('#unlockId').prop('disabled', !isAnyLocked);
         }
     },
     selectCheckbox: function (checkbox) {
@@ -276,8 +306,10 @@ var AirImportsMawbList = {
             abp.message.confirm(l('LockConfirmationMessage')).then(function (confirmed) {
                 if (confirmed) {
                     dolphin.freight.importExport.airImports.airImportMawb.selectedLockedAirImportMawb(ids).done(function () {
+                        debugger;
                         abp.message.success(l('Message:SuccessLock'));
                         dataTable.ajax.reload();
+                        $('#selectAllCheckbox').prop('checked', false);
                     });
                 }
             });
@@ -297,7 +329,7 @@ var AirImportsMawbList = {
                     dolphin.freight.importExport.airImports.airImportMawb.selectedUnLockedAirImportMawb(ids).done(function () {
                         dataTable.ajax.reload();
                         abp.message.success(l('Message:Message:SuccessUnlock'));
-                        
+                        $('#selectAllCheckbox').prop('checked', false);
                     });
                 }
             });

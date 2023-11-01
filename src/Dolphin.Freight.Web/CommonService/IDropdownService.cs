@@ -33,5 +33,7 @@ namespace Dolphin.Freight.Web.CommonService
         List<SelectItems> AccountGroupnameLookupList { get; }
         List<SelectItems> AirImportMawbLookupList { get;}
         List<SelectItems> OperatorLookupList { get; }
+        List<SelectItems> OceanExportMblLookupList { get; }
+        List<SelectItems> OtherLookupList { get; }
     }
 }
