@@ -12,7 +12,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
     public class CreateUpdateAirImportHawbDto : AuditedEntityDto<Guid>
     {
         public Guid? MawbId { get; set; }
-                                    
+        public string HawbDimensionsJSON { get; set; }
+
         /// <summary>
         /// Hawb 號碼
         /// </summary>

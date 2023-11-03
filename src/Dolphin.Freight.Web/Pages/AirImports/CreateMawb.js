@@ -21,7 +21,7 @@ $(document).on('click', '#applyDimensions', function () {
 });
 
 var extraProperties;
-
+let rowCount = 0;
 class AirImportMawb {
     static openPopUp(situation) {
         switch (situation) {
@@ -30,6 +30,7 @@ class AirImportMawb {
                 const mblId = url.searchParams.get('Id');
 
                 $('#popuptrtbody').empty();
+                debugger;
                 if (extraProperties != undefined && extraProperties.dimensions != null && extraProperties.dimensions.length > 0) {
                     for (let dimension of extraProperties.dimensions) {
                         addDimensionRow(dimension);
@@ -41,6 +42,7 @@ class AirImportMawb {
                     $('#popuptrtbody').empty();
                     dolphin.freight.importExport.airImports.airImportMawb.get(mblId).then(function (response) {
                         if (response && response.extraProperties && response.extraProperties.Dimensions) {
+                            debugger;
                             for (let dimension of response.extraProperties.Dimensions) {
                                 addDimensionRow(dimension);
                             }

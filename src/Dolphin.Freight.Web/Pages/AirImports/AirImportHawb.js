@@ -302,3 +302,8 @@ function HupdateTotals() {
     $('#HtotalCFT').text(HtotalCFT.toFixed(2));
     $('#HtotalCBM').text(HtotalCBM.toFixed(2));
 }
+
+function checkforId() {
+    debugger;
+    new URL(window.location.href).searchParams.get('Id') == null ? AirImportHawb.openPopUp() : AirImportHawb.openPopUp('withId');
+}

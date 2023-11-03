@@ -290,15 +290,15 @@ namespace Dolphin.Freight.Web.Pages.AirImports
 
             else
             {
+                var newMawb = ObjectMapper.Map<CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>(MawbModel);
+
                 if (DimensionsJSON is not null)
                 {
                     Dimensions = JsonConvert.DeserializeObject<List<Dimension>>(DimensionsJSON);
-                    MawbModel.ExtraProperties.Add("Dimensions", Dimensions);
+                    newMawb.ExtraProperties.Add("Dimensions", Dimensions);
                 }
 
-                var inputDto = await _airImportMawbAppService.CreateAsync(
-                       ObjectMapper.Map<CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>(MawbModel)
-                    );
+                var inputDto = await _airImportMawbAppService.CreateAsync(newMawb);
 
                 MawbId = inputDto.Id;
 
