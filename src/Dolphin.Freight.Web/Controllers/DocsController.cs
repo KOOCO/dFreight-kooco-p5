@@ -2744,7 +2744,7 @@ namespace Dolphin.Freight.Web.Controllers
             if (pageType == FreightPageType.AEMBL)
             {
                 var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
-                var measurement = Convert.ToDouble(airExportDetails.ChargeableWeightCneeLB) * 35.315;
+                var measurement = Convert.ToDouble(airExportDetails.ChargeableWeightLB) * 35.315;
 
                 profitReport = new ProfitReportViewModel()
                 {
@@ -3240,7 +3240,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             InfoModel.AllHblLists = await GetAllHblLists(mblId);
             InfoModel.Mbl_No = mbl.MblNo;
-            InfoModel.Hbl_No = hbl[0].HblNo;
+            InfoModel.Hbl_No =hbl.Count>0? hbl[0]?.HblNo:"";
             InfoModel.To = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mbl.MblOverseaAgentId)).Select(s => s.Text));
             InfoModel.Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mbl.ShippingAgentId)).Select(s => s.Text));
             InfoModel.Destination = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mbl.PodId)).Select(s => s.Text));

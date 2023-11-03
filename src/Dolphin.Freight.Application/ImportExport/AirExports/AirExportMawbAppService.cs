@@ -469,9 +469,16 @@ namespace Dolphin.Freight.ImportExport.AirExports
             airExportDetails.DepatureDate = data.DepatureDate;
             airExportDetails.ChargeableWeightCneeKG = Convert.ToString(data.ChargeableWeightKg + " KGS");
             airExportDetails.ChargeableWeightCneeLB = Convert.ToString(data.ChargeableWeightLb + " LBS");
+            airExportDetails.ChargeableWeightKG = data.ChargeableWeightKg;
+            airExportDetails.ChargeableWeightLB = data.ChargeableWeightLb;
             airExportDetails.Operator = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
-            airExportDetails.OtherCharges = JsonConvert.DeserializeObject<List<OtherCharges>>(data.ExtraProperties.GetValueOrDefault("OtherCharges").ToString());
-            airExportDetails.OtherChargesJSON = data.ExtraProperties.GetValueOrDefault("OtherCharges").ToString();
+            if (data.ExtraProperties.Count > 0)
+            {if (data.ExtraProperties.ContainsKey("OtherCharges"))
+                {
+                    airExportDetails.OtherCharges = JsonConvert.DeserializeObject<List<OtherCharges>>(data.ExtraProperties?.GetValueOrDefault("OtherCharges").ToString());
+                    airExportDetails.OtherChargesJSON = data.ExtraProperties.GetValueOrDefault("OtherCharges").ToString();
+                }
+                }
 
             return airExportDetails;
         }
