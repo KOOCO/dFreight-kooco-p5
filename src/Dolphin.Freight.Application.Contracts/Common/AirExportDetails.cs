@@ -70,6 +70,8 @@ namespace Dolphin.Freight.Common
         public double ChargeableWeightAmount { get; set; }
         public double AwbChargeableWeightAmount { get; set; }
         public double OtherChargesDueCarrier { get; set; }
+        public double ChargeableWeightKG { get; set; }
+        public double ChargeableWeightLB { get; set; }
         public double TotalPrepaid { get; set; }
         public string OtherChargesJSON { get; set; }
         public List<OtherCharges> OtherCharges { get; set; }
