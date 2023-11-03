@@ -2928,8 +2928,8 @@ namespace Dolphin.Freight.Web.Controllers
             InfoModel.Destination = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DestinationId)).Select(s => s.Text));
             InfoModel.Name_Of_Forwarder = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.IssuingCarrierId)).Select(s => s.Text));
             InfoModel.Origin = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DepatureId)).Select(s => s.Text));
-            InfoModel.Hawb_No = hawb[0].HawbNo;
-            InfoModel.Hawb_Pc = hawb[0].Package;
+            if (hawb.Count > 0) InfoModel.Hawb_No = hawb[0].HawbNo;
+            if (hawb.Count > 0) InfoModel.Hawb_Pc = hawb[0].Package;
             InfoModel.Total_No_Of_Pieces = string.Concat(mawb.Package);
 
             return View(InfoModel);
