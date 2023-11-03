@@ -2744,7 +2744,7 @@ namespace Dolphin.Freight.Web.Controllers
             if (pageType == FreightPageType.AEMBL)
             {
                 var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
-                var measurement = Convert.ToDouble(airExportDetails.ChargeableWeightCneeLB) * 35.315;
+                var measurement = Convert.ToDouble(airExportDetails.ChargeableWeightLB) * 35.315;
 
                 profitReport = new ProfitReportViewModel()
                 {
@@ -2928,8 +2928,8 @@ namespace Dolphin.Freight.Web.Controllers
             InfoModel.Destination = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DestinationId)).Select(s => s.Text));
             InfoModel.Name_Of_Forwarder = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mawb.IssuingCarrierId)).Select(s => s.Text));
             InfoModel.Origin = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mawb.DepatureId)).Select(s => s.Text));
-            InfoModel.Hawb_No = hawb[0].HawbNo;
-            InfoModel.Hawb_Pc = hawb[0].Package;
+            if (hawb.Count > 0) InfoModel.Hawb_No = hawb[0].HawbNo;
+            if (hawb.Count > 0) InfoModel.Hawb_Pc = hawb[0].Package;
             InfoModel.Total_No_Of_Pieces = string.Concat(mawb.Package);
 
             return View(InfoModel);
@@ -3008,8 +3008,15 @@ namespace Dolphin.Freight.Web.Controllers
             var airExportDetails = await GetAirExportDetailsByPageType(id, pageType);
             if (airExportDetails.ExtraProperties != null && airExportDetails.ExtraProperties.ContainsKey("OtherCharges"))
             {
-                airExportDetails.OtherChargesDueCarrier = airExportDetails.OtherCharges.Sum(x => Convert.ToDouble(x.ChargeAmount));
-                airExportDetails.TotalPrepaid = (airExportDetails.OtherCharges.Sum(x => Convert.ToDouble(x.ChargeAmount))+airExportDetails.AwbChargeableWeightAmount);
+                airExportDetails.OtherChargesDueCarrier = airExportDetails.OtherCharges.Sum(x => 
+                                                            { double amount;
+                                                              if (double.TryParse(new string(x.ChargeAmount.Where(char.IsDigit).ToArray()), out amount))
+                                                              {
+                                                                  return amount;
+                                                              }
+                                                              return 0.0; 
+                                                            });
+                airExportDetails.TotalPrepaid = airExportDetails.OtherChargesDueCarrier + airExportDetails.AwbChargeableWeightAmount;
             }
 
             return View(airExportDetails);
@@ -3233,7 +3240,7 @@ namespace Dolphin.Freight.Web.Controllers
 
             InfoModel.AllHblLists = await GetAllHblLists(mblId);
             InfoModel.Mbl_No = mbl.MblNo;
-            InfoModel.Hbl_No = hbl[0].HblNo;
+            InfoModel.Hbl_No =hbl.Count>0? hbl[0]?.HblNo:"";
             InfoModel.To = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mbl.MblOverseaAgentId)).Select(s => s.Text));
             InfoModel.Carrier = string.Concat(tradePartner.Where(w => w.Value == Convert.ToString(mbl.ShippingAgentId)).Select(s => s.Text));
             InfoModel.Destination = string.Concat(portManagement.Where(w => w.Value == Convert.ToString(mbl.PodId)).Select(s => s.Text));

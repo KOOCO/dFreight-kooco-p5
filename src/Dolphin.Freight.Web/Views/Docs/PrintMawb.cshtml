@@ -687,7 +687,7 @@
                                 <table class="table-padding piece-table">
                                     <tbody><tr>
                                         <td class="border-t">
-                                            <div class="item-edit"><textarea name="Package" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope">@Model.Package @Environment.NewLine @Model.MawbPackageUnit</textarea></div>
+                                            <div class="item-edit"><textarea name="Package" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope">@Model.Package @Model.MawbPackageUnit</textarea></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -848,11 +848,11 @@
                                                 </td>
                                                 <td class="w-20 td text-center">
                                                     <div class="title-oblique text-var">PREPAID</div>
-                                                    <div class="item-edit"><textarea name="other_charges_area_prepaid" cols="40" rows="5">@foreach(var item in Model.OtherCharges.Where(w => w.CollectPaid == "Prepaid").Select(s => s.ChargeAmount)){ @item @Environment.NewLine }</textarea></div>
+                                                    <div class="item-edit"><textarea name="other_charges_area_prepaid" cols="40" rows="5">@foreach(var item in Model.OtherCharges.Select(s => s.ChargeAmount)){ @item @Environment.NewLine }</textarea></div>
                                                 </td>
                                                 <td class="w-20 td text-center">
                                                     <div class="title-oblique text-var">COLLECT</div>
-                                                    <div class="item-edit"><textarea name="other_charges_area_collect" cols="40" rows="5">@foreach(var item in Model.OtherCharges.Where(w => w.CollectPaid == "Collect").Select(s => s.ChargeAmount)){ @item @Environment.NewLine }</textarea></div>
+                                                    <div class="item-edit"><textarea name="other_charges_area_collect" cols="40" rows="5"></textarea></div>
                                                 </td>
                                             </tr>
                                         } else

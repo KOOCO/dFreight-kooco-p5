@@ -3,6 +3,7 @@ using Dolphin.Freight.AirImports;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.AirImports
 {
@@ -161,6 +162,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string Mark { get; set; }
         public string NatureAndQuantityOfGoods { get; set; }
         public string ManifestNatureAndQuantityOfGoods { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
         public string HandlingInformation { get; set; }
     }
 }

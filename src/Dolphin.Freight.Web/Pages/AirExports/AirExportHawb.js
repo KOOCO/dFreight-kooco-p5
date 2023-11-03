@@ -114,7 +114,6 @@ class AirExportHawb {
     }
 }
 
-
 function HapplyPopupValues() {
     let HtotalPCS = 0, HtotalKG = 0, HtotalCBM = 0;
 

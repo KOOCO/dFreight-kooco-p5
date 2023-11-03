@@ -2,7 +2,7 @@
     var l = abp.localization.getResource('AbpIdentity');
     var loc = abp.localization.getResource('Freight');
     var _identityUserAppService = volo.abp.identity.identityUser;
-
+    debugger;
     var togglePasswordVisibility = function () {
         $("#PasswordVisibilityButton").click(function (e) {
             var button = $(this);
@@ -96,7 +96,7 @@
     );
     abp.ui.extensions.tableColumns.get('identity.user').addContributor(
         function (columnList) {
-            columnList.drop().byIndex(5);
+            columnList.drop().byIndex(6);
         }
     );
     abp.ui.extensions.tableColumns.get('identity.user').addContributor(
@@ -121,22 +121,16 @@
         function (columnList) {
             columnList.addManyTail(
                 [
-                    {
-                        title: loc('Office(Code-Name)'),
-                        data: ''
-                    },
-                    {
-                        title: loc('Department(Office Code-Name)'),
-                        data: ''
-                    },
-                    {
-                        title: loc('Branch'),
-                        data: ''
-                    }
+                    //{
+                    //    title: loc('Office(Code-Name)'),
+                    //    data: 'office'
+                    //},
+                    //{
+                    //    title: loc('Department(Office Code-Name)'),
+                    //    data: 'department'
+                    //}
 
-
-
-                ], 3
+                ], 6
             );
         }
     );
@@ -169,7 +163,7 @@
 
 
 
-                ], 3
+                ], 6
             );
         }
     );

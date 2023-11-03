@@ -4,11 +4,13 @@ using Dolphin.Freight.AirExports;
 using Dolphin.Freight.AirImports;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.AirImports;
+using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.Settinngs.PackageUnits;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.TradePartners;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,6 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
 using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
+using Volo.Abp.Data;
 using Volo.Abp.ObjectMapping;
 
 namespace Dolphin.Freight.Web.Pages.AirImports
@@ -46,7 +49,11 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         private readonly IInvoiceBillAppService _invoiceBillAppService;
 
         [BindProperty]
+        public string DimensionsJSON { get; set; }
+        [BindProperty]
         public CreateAIMMawbViewModel MawbModel { get; set; }
+        [BindProperty]
+        public List<Dimension> Dimensions { get; set; }
         [BindProperty]
         public AirImportHawbDto HawbModel { get; set; }
         [BindProperty]
@@ -149,6 +156,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             if (Id != Guid.Empty)
             {
                 MawbModel.Id = Guid.Empty;
+
                 var inputDto = await _airImportMawbAppService.CreateAsync(
                   ObjectMapper.Map<CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>(MawbModel)
                );
@@ -282,10 +290,15 @@ namespace Dolphin.Freight.Web.Pages.AirImports
 
             else
             {
+                var newMawb = ObjectMapper.Map<CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>(MawbModel);
 
-                var inputDto = await _airImportMawbAppService.CreateAsync(
-                       ObjectMapper.Map<CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>(MawbModel)
-                    );
+                if (DimensionsJSON is not null)
+                {
+                    Dimensions = JsonConvert.DeserializeObject<List<Dimension>>(DimensionsJSON);
+                    newMawb.ExtraProperties.Add("Dimensions", Dimensions);
+                }
+
+                var inputDto = await _airImportMawbAppService.CreateAsync(newMawb);
 
                 MawbId = inputDto.Id;
 
@@ -304,6 +317,11 @@ namespace Dolphin.Freight.Web.Pages.AirImports
                     if (HawbModel.SubHawbs != null)
                     {
                         HawbModel.ExtraProperties.Add("SubHawbs", HawbModel.SubHawbs);
+                    }
+
+                    if (HawbModel.HawbDimensionsJSON is not null)
+                    {
+                        HawbModel.ExtraProperties.Add("Dimensions", Dimensions);
                     }
 
                     var addHawb = ObjectMapper.Map<AirImportHawbDto, CreateUpdateAirImportHawbDto>(HawbModel);
@@ -471,7 +489,8 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             public String BusinessReferredId { get; set; }
             
             public bool IsECom { get; set; }
-            
+            public ExtraPropertyDictionary ExtraProperties { get; set; }
+
             public DisplayUnitType? DisplayUnit { get; set; }
         }
         #endregion
