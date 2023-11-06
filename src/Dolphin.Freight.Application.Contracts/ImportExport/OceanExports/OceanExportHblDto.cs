@@ -17,6 +17,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// </summary>
         public Guid MblId { get; set; }
         public string HblContainers { get; set; }
+        public string HblVerticalContainers { get; set; }
         /// <summary>
         /// MBL的文件號碼
         /// </summary>
@@ -427,5 +428,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public bool IsDeleted { get; set; }
         public CreateUpdateContainerDto CreateUpdateHBLContainerDto { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public Dictionary<string, string> HblContainerIdContains { get; set; }
     }
 }

@@ -55,6 +55,16 @@
                             }
                         }
                     });
+                    dolphin.freight.importExport.containers.container.getContainersByExtraPropertiesHblIds(hblId).done(function(result1){
+                        if (result1 != null && result1.length > 0) {
+                            for (var i = 0; i < result1.length; i++) {
+                                var containerNo = result1[i].containerNo;
+                                var containerId = result1[i].id;
+                                var hblid = result1[i].hblId;
+                                EditModel2.AddHblContainerTr(containerNo, containerId, hblid);
+                            }
+                        }
+                    });
                 }
             });
             
@@ -230,7 +240,6 @@
                     trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
                     trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
                     trhtml = trhtml + "<td style='display: none;'><input type='checkbox' id='selectAllAssignContainerCheckbox_" + trindex + "' style='cursor: pointer;'></td>"
-                    debugger;
                     trhtml = trhtml + checkboxesHTML
                     trhtml = trhtml + "</tr>"
                     trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
@@ -248,6 +257,7 @@
                     countPackageType('MBL');
                     countTotal('MBL', 'KG');
                     countTotalVolume('MBL', 'CBM');
+                    debugger;
                 });
                 checkboxIndex++;
         }
@@ -347,7 +357,7 @@
                         $('#totalWeight').text(parseFloat(totalWgt).toFixed(2) + ' LB');
                         $('#totalWeightUnit').text(parseFloat(totalWgt / 2.2).toFixed(2) + ' KG');
                     }
-                    checkHeaderCheckboxes();
+                    //checkHeaderCheckboxes();
                 break;
 
                 case 'HBL':
@@ -380,7 +390,7 @@
                         $('#totalWeightUnit').text(parseFloat(totalWgt / 2.2).toFixed(2) + ' KG');
                     }
 
-                    checkHeaderCheckboxes();
+                    //checkHeaderCheckboxes();
                 break;
             }
         }

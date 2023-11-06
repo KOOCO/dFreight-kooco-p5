@@ -5,12 +5,14 @@ using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
 
@@ -171,6 +173,29 @@ namespace Dolphin.Freight.ImportExport.Containers
             var containerList = list.Where(w => w.BookingId == Id).ToList();
 
             return ObjectMapper.Map<List<Container>, List<CreateUpdateContainerDto>>(containerList);
+        }
+        public async Task<List<CreateUpdateContainerDto>> GetContainersByExtraPropertiesHblIds(Guid hblId)
+        {
+            var containerList = await Repository.GetListAsync();
+
+            containerList = containerList.Where(w => w.ExtraProperties != null && w.ExtraProperties.Count > 0).ToList();
+
+            List<CreateUpdateContainerDto> containerDtoList = new();
+
+            foreach (var item in containerList)
+            {
+                object a = item.ExtraProperties.GetValueOrDefault("HblIds");
+
+                if (a is not null)
+                {
+                    if (a.ToString().Contains(Convert.ToString(hblId)))
+                    {
+                        containerDtoList.Add(ObjectMapper.Map<Container, CreateUpdateContainerDto>(item));
+                    }
+                }
+            }
+
+            return containerDtoList;
         }
     }
 }

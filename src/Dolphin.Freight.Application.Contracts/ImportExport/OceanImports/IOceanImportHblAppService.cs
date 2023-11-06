@@ -21,7 +21,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         Task<PagedResultDto<OceanImportHblDto>> QueryListAsync(QueryHblDto query);
         Task<IList<OceanImportHblDto>> QueryListByMidAsync(QueryHblDto query);
         Task<CreateUpdateOceanImportHblDto> GetHblById(QueryHblDto query);
-        Task<List<OceanImportHblDto>> GetHblCardsById(Guid Id, bool isAsc = true, int sortType = 1);
+        Task<List<OceanImportHblDto>> GetHblCardsById(Guid Id, bool isAsc = true, int sortType = 1, string ContainerId = "");
         Task<OceanImportHblDto> GetHblCardById(Guid Id);
         Task<OceanImportDetails> GetOceanImportDetailsById(Guid Id);
         Task DeleteMultipleHblsAsync(Guid[] Ids);

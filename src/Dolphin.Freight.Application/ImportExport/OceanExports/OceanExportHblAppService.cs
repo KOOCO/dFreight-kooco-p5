@@ -24,6 +24,7 @@ using Dolphin.Freight.ImportExport.OceanImports;
 using Volo.Abp.ObjectMapping;
 using NPOI.SS.Formula.Functions;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -255,7 +256,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             return rs;
         }
 
-        public async Task<List<OceanExportHblDto>> GetHblCardsById(Guid Id,bool isAsc=true,int sortType=1) {
+        public async Task<List<OceanExportHblDto>> GetHblCardsById(Guid Id,bool isAsc=true,int sortType=1, string ContainerId = "") {
             var data = await _repository.GetListAsync(f => f.MblId == Id);
             var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
             var sysCodes = await _sysCodeRepository.GetListAsync();
@@ -291,6 +292,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }
 
             var retVal = ObjectMapper.Map<List<OceanExportHbl>, List<OceanExportHblDto>>(data);
+            Dictionary<string, string> dictHblContains = new();
             foreach (var item in retVal)
             {
                 if (item.HblShipperId != null)
@@ -308,9 +310,24 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var cardColor = sysCodes.Where(w => w.Id == item.CardColorId).FirstOrDefault();
                     item.CardColorValue = cardColor.CodeValue;
                 }
-                List<CreateUpdateContainerDto> containers = await _containerAppService.GetContainerListByHblId(item.Id);
-                item.ContainerIds = containers.Select(s => s.Id.ToString()).ToArray();
-                item.HblContainers = string.Join(",", containers.Select(s => s.Id.ToString()));
+
+                if (ContainerId is not null && ContainerId != "")
+                {
+                    List<CreateUpdateContainerDto> containersMbl = await _containerAppService.GetContainerByMblId(item.MblId);
+                    item.ContainerIds = containersMbl.Select(s => s.Id.ToString()).ToArray();
+
+                    List<CreateUpdateContainerDto> containers = await _containerAppService.GetContainerListByHblId(item.Id);
+                    item.HblVerticalContainers = string.Join(",", containers.Select(s => s.Id.ToString()));
+
+                    item.HblContainers = string.Join(",", containersMbl.Where(w => w.Id == Guid.Parse(ContainerId)).Select(s => Convert.ToString(s.ExtraProperties.GetValueOrDefault("HblIds"))));
+
+                    string currentContainerHbls = string.Join("", containersMbl.Where(w => w.Id == Guid.Parse(ContainerId)).Select(s => Convert.ToString(s.ExtraProperties.GetValueOrDefault("HblIds"))));
+                    if (currentContainerHbls.Contains(item.Id.ToString()))
+                    {
+                        dictHblContains.Add(item.Id.ToString(), ContainerId);
+                    }
+                    item.HblContainerIdContains = dictHblContains;
+                }
             }
             return retVal;
         }
@@ -567,29 +584,42 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         }
         public async Task SaveAssignContainerToHblAsync(OceanExportHblAppModel AppModel)
         {
-            var Ids = AppModel.Ids;
+            var Ids = AppModel.HblIds.ToList();
             var ContainerId = AppModel.Containersid;
+            var MblId = AppModel.MblId;
 
-            foreach (var Id in Ids)
+            var containers = await _containerRepository.GetQueryableAsync();
+            var containerList = containers.Where(w => w.MblId == MblId && w.Id == Guid.Parse(ContainerId)).ToList();
+
+            foreach (var container in containers)
             {
-                var HblDto = await this.GetAsync(Id);
+                container.ExtraProperties.Remove("HblIds");
+                container.ExtraProperties.Add("HblIds", Ids);
 
-                if (HblDto.ExtraProperties is null)
-                {
-                    HblDto.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
-                }
-
-                List<string> CurrentContainerList = JsonConvert.DeserializeObject<List<string>>(HblDto.ExtraProperties.GetValueOrDefault("ContainerIdList").ToString());
-
-                if (!CurrentContainerList.Contains(ContainerId))
-                {
-                    CurrentContainerList.Add(ContainerId);
-
-                    HblDto.ExtraProperties.Add("ContainerIdList", CurrentContainerList);
-
-                    await this.UpdateAsync(HblDto.Id, ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(HblDto));
-                }
+                var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
+                await _containerAppService.UpdateAsync(container.Id, dto);
             }
+
+            //foreach (var Id in Ids)
+            //{
+            //    var HblDto = await this.GetAsync(Id);
+
+            //    if (HblDto.ExtraProperties is null)
+            //    {
+            //        HblDto.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+            //    }
+
+            //    List<string> CurrentContainerList = JsonConvert.DeserializeObject<List<string>>(HblDto.ExtraProperties.GetValueOrDefault("ContainerIdList").ToString());
+
+            //    if (!CurrentContainerList.Contains(ContainerId))
+            //    {
+            //        CurrentContainerList.Add(ContainerId);
+
+            //        HblDto.ExtraProperties.Add("ContainerIdList", CurrentContainerList);
+
+            //        await this.UpdateAsync(HblDto.Id, ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(HblDto));
+            //    }
+            //}
         }
 
         public async Task<List<CreateUpdateContainerDto>> GetContainerByHblExtraProperties(Guid Id)
@@ -632,7 +662,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public async Task SaveAssignSingleContainerNoToHblAsync(OceanExportHblAppModel AppModel, bool IsSave = true)
         {
             var MblId = AppModel.MblId;
-            var HblId = AppModel.HblId;
+            var HblIds = AppModel.HblIds.ToList();
             var ContainerId = AppModel.Containersid;
             var containers = await _containerRepository.GetQueryableAsync();
             var containerList = containers.Where(w => w.MblId == MblId && w.Id == Guid.Parse(ContainerId)).ToList();
@@ -641,7 +671,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             {
                 if (IsSave)
                 {
-                    container.HblId = HblId;
+                    container.ExtraProperties.Remove("HblIds");
+                    container.ExtraProperties.Add("HblIds", HblIds);
                 }
                 else
                 {
