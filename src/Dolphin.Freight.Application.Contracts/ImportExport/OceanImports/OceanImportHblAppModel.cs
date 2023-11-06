@@ -6,6 +6,7 @@ using System.Text;
 namespace Dolphin.Freight.ImportExport.OceanImports;
 public class OceanImportHblAppModel
 {
+    public Guid UncheckedHblId { get; set; }
     public Guid MblId { get; set; }
     public Guid HblId { get; set; }
     public Guid[] HblIds { get; set; }

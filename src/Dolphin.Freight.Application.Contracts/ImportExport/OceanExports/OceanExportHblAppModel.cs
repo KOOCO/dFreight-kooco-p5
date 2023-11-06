@@ -6,6 +6,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports;
 
 public class OceanExportHblAppModel
 {
+    public Guid UncheckedHblId { get; set; }
     public Guid MblId { get; set; }
     public Guid HblId { get; set; }
     public Guid[] HblIds { get; set; }

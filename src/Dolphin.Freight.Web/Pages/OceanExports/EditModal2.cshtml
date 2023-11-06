@@ -456,7 +456,7 @@
         }
         var checkboxIndex = 0;
         function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, mblId) {
-            EditModelOEContainer.getHblCheckbox(mblId, checkboxIndex, value9, function (checkboxesHTML, headersHTML) {
+            EditModelOEContainer.getHblCheckbox(mblId, value9, function (checkboxesHTML, headersHTML, currentIndex) {
                 if (!$('input[id^="hblHeaders_"]').length) {
                     $('#trttable > tbody > tr:first > th:eq(11)').after(headersHTML);
                 }
@@ -484,6 +484,18 @@
 
                 var currentIndex = trindex;
 
+                var checkboxesToCheck = $('input[id^="assignContainerCheckbox_' + currentIndex + '_"]');
+                var allChecked = true;
+
+                checkboxesToCheck.each(function () {
+                    if (!$(this).prop('checked')) {
+                        allChecked = false;
+                        return false;
+                    }
+                });
+
+                $("#selectAllAssignContainerCheckbox_" + trindex).prop('checked', allChecked);
+
                 $("#selectAllAssignContainerCheckbox_" + currentIndex).click(function () {
                     $('input[id^="assignContainerCheckbox_' + currentIndex + '_"]').prop('checked', $(this).prop('checked'));
                     EditModelOEContainer.SaveHorizontalHBLContainer(this, currentIndex);
@@ -494,9 +506,31 @@
                 countPackageType('MBL');
                 countTotal('MBL', 'KG');
                 countTotalVolume('MBL', 'CBM');
+
+                updateHeaderCheckboxes();
             });
-            checkboxIndex++;
         }
+
+        function updateHeaderCheckboxes() {
+            for (var tdIndex = 0; tdIndex < headerTdIndex; tdIndex++) {
+                updateHeaderCheckboxStatus(tdIndex);
+            }
+        }
+
+        function updateHeaderCheckboxStatus(tdIndex) {
+            var checkboxIds = [];
+            var headerCheckboxId = "hblHeaders_" + tdIndex;
+
+            for (var i = 0; i < checkboxIndex; i++) {
+                var checkboxId = "assignContainerCheckbox_" + i + "_" + tdIndex;
+                if ($('#' + checkboxId).prop('checked')) {
+                    checkboxIds.push(checkboxId);
+                }
+            }
+
+            $('input[name="' + headerCheckboxId + '"').prop('checked', checkboxIds.length === checkboxIndex);
+        }
+
         function getcontainerSizeSelect(index, selectedId) {
             var selectHtml = "<select name='CreateUpdateContainerDtos[" + index + "].ContainerSizeId' class='form-control' >";
             for (var i = 0; i < containerSizes.length; i++) {
