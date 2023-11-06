@@ -458,6 +458,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// ETB
         /// </summary>
         public DateTime? Etb { get; set; }
+        public DateTime? ATA { get; set; }
+        public DateTime? ATD { get; set; }
         ///// <summary>
         ///// OB/L已接收
         ///// </summary>

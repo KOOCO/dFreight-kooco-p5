@@ -9,9 +9,11 @@
     {
     <abp-script src="/Pages/Accounting/Invoice.js" />
     <script type="text/javascript">
+        var l = abp.localization.getResource('Freight');
         var BillCodeItems = [];
         var PPOrCCItems = [];
         var BillTypeItems = [];
+        var BillTypeItemsDC = [];
         var UnitItems = [];
         var CurrencyItems = [];
         var InvoiceBills = [];
@@ -37,6 +39,11 @@
             dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'BillType' }).done(function (result) {
                 if (result != null && result.length > 0) {
                     BillTypeItems = result;
+                }
+            });
+            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'BillTypeDC' }).done(function (result) {
+                if (result != null && result.length > 0) {
+                    BillTypeItemsDC = result;
                 }
             });
             dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'Unit' }).done(function (result) {
@@ -102,17 +109,28 @@
                         let index = id.substr(id.lastIndexOf('_') + 1);
                         let invoiceBillId = parent.find('[name="InvoiceBillDtos[' + index + '].Id"]').attr('value')
 
+                        if ($('#Tax_' + (index-1)).find(':selected').text().split('%')[0] == '7') {
+                            var taxAmount = $('#Amount_' + (index-1)).text() * 0.07;
+                        } else {
+                            var taxAmount = $('#Amount_' + (index - 1)).text() * 0;
+                        }
+
                         if (invoiceBillId) {
                             dolphin.freight.accounting.invoiceBills.invoiceBill.delete(invoiceBillId).done(function (result) {
                                 parent.remove();
+                                resetIndexes();
+                                getTotalSubAmount();
+                                getTotalAmount(parseFloat(taxAmount).toFixed(2));
                             });
                         }
                         else {
                             parent.remove();
+                            resetIndexes();
+                            getTotalSubAmount();
+                            getTotalAmount(parseFloat(taxAmount).toFixed(2));
                         }
-
                     }
-                })
+                });
             })
             $("#copyBtn").click(function () {
                 $(".checkItem").each(function () {
@@ -124,7 +142,6 @@
             })
             $('#createForm').on('abp-ajax-success', function (result) {
                 event.preventDefault();
-                debugger
                 var check = '@Model.CopyInvoiceId';
                 switch (formControl) {
                     case 0:
@@ -133,7 +150,7 @@
                         if (@Model.MethodType == 1) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/OceanExports/EditModal3?Id=@Model.Mid'; });
                         if (@Model.MethodType == 2) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/AirImports/EditModal3?Id=@Model.MawbId'; });
                         if (@Model.MethodType == 3) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/AirExports/EditModal3?Id=@Model.MawbId'; });
-                        if (@Model.MethodType == 4) abp.message.success('儲存成功', '系統訊息').then(function () { location.href = '/OceanExports/VesselSchedules/Edit2?Id=@Model.VesselId'; });
+                        if (@Model.MethodType == 4) abp.message.success('儲存成功', '系統訊息').then(function () { location.href = '/OceanExports/ExportBookings/Edit2?Id=@Model.Bid'; });
                           if (@Model.MethodType == 5) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/OceanExports/VesselSchedules/Edit2?Id=@Model.VesselId'; });
                         // if (@Model.MethodType == 5) $.ajax({
                         //                                 url: '/api/ImportExport/OceanExportAccountingHbl',
@@ -304,7 +321,7 @@
             for (var i = 0; i < table[0].rows.length; i++) {
               var amountCell = document.getElementById("Amount_" + i);
               
-              var amount = parseFloat(amountCell.innerHTML);
+              if (amountCell != null) var amount = parseFloat(amountCell.innerHTML);
               
               total += amount;
             }
@@ -321,14 +338,13 @@
             $('#InvoiceDto_TotalAmount').val(parseFloat(total).toFixed(2));
         }
 
-
         function getTotalSubAmount(){
             var table = $('#trtbody');
             var total = 0;
             for (var i = 0; i < table[0].rows.length; i++) {
               var amountCell = document.getElementById("Amount_" + i);
               
-              var amount = parseFloat(amountCell.innerHTML);
+              if (amountCell != null) var amount = parseFloat(amountCell.innerHTML);
               
               total += amount;
             }
@@ -341,6 +357,30 @@
 
                 document.getElementById("converted" + currency).innerHTML = (convertedRate * total).toFixed(2);
             })
+        }
+
+        function resetIndexes() {
+            var newIndex = 0;
+            $("#trtbody tr:visible").each(function () {
+                if ($(this).attr("id").startsWith("_")) {
+                    $(this).attr("id", "_" + newIndex);
+
+                    $(this).find("input, label, div.input-group, select").each(function () {
+                        if (this.name) {
+                            this.name = this.name.replace(/\[.*?\]/, "[" + newIndex + "]");
+                        }
+                        if (this.id) {
+                            var parts = this.id.split("_");
+                            this.id = parts[0] + "_" + newIndex;
+                        }
+                    });
+
+                    $(this).find("td:eq(1)").text(newIndex + 1);
+                    newIndex++;
+                }
+            });
+
+            index = newIndex;
         }
 
         var index = 0;
@@ -399,23 +439,51 @@
         }
 
         function copyItems(id) {
+            var invoice = new Invoice();
             id = id.replace("new_", "");
-            let amount = parseInt($("#Quantity_" + id).val() || 0) * ($("#Rate_" + id).val() || 0);
+            let amount = parseFloat(($("#Quantity_" + id).val() || 0) * ($("#Rate_" + id).val() || 0) * ($('#Price_' + id).val() || 0)).toFixed(2);
             var trhtml = "<tr id='_" + index + "'><th style='text-align:center'><input class='checkItem' type='checkbox' name='InvoiceBillDtos[" + index + "].BillId' id='InvoiceBillDtosId_" + index + "' data-val='new_" + index + "'/></th>";
             trhtml = trhtml + "<th>" + getBillCodeSelect(index, '', ($('#Code_0').val() || '')) + "</th>";
             trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Description' id='Description_" + index + "' value='" + ($("#Description_" + id).val() || '') + "' /></th>";
-            trhtml = trhtml + "<th>" + getPPOrCCSelect(index, '', ($('#PPOrCC_0').val() || '')) + "</th>";
-            trhtml = trhtml + "<th>" + getBillTypeSelect(index, '', ($('#BillType_0').val() || '')) + "</th>";
-            trhtml = trhtml + "<th>" + getUnitSelect(index, '', ($('#Unit_0').val() || '')) + "</th>";
-            trhtml = trhtml + "<th>" + getCurrencySelect(index, '', ($('#Currency_0').val() || '')) + "</th>";
-            trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' id='Quantity_" + index + "' value='" + ($("#Quantity_" + id).val() || '') + "' /></th>";
-            trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Rate' id='Rate_" + index + "' value='" + ($("#Rate_" + id).val() || '') + "' /><input type='hidden' name='InvoiceBillDtos[" + index + "].Amount' id='Amount_" + index + "' value='" + $("#Amount_" + id).val() + "'  /></th>";
-            trhtml = trhtml + "<th id='td_Amount_" + index + "'><label name='InvoiceBillDtos[" + index + "].AmountLabel'>" + amount + "</label></th>";
+            trhtml = trhtml + "<th>" + getPPOrCCSelect(index, '', ($('#PPOrCC_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th>" + getBillTypeSelect(index, '', ($('#BillType_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th>" + getUnitSelect(index, '', ($('#Unit_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th>" + getCurrencySelect(index, '', ($('#Currency_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' id='Quantity_" + index + "' onchange='onQuantityChange(event)' value='" + ($("#Quantity_" + id).val() || '') + "' /></th>";
+            trhtml = trhtml + "<th><input style='background-color: #d3d3d394;' type='text' name='InvoiceBillDtos[" + index + "].Rate' id='Rate_" + index + "' onchange='onRateChange(event)' value='" + ($("#Rate_" + id).val() || '') + "' /></th>";
+            trhtml = trhtml + "<th>" + invoice.getPrice(index, ($('#Price_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th>" + invoice.getTax(index, ($('#Tax_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th id='td_Amount_" + index + "' value='"+ amount +"'><label name='InvoiceBillDtos[" + index + "].AmountLabel' id='Amount_" + index + "'>" + amount + "</label></th>";
             trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].AmountToAgent' id='AmountToAgent_" + index + "' value='" + ($("#AmountToAgent_" + id).val() || '') + "'  /></th>";
             trhtml = trhtml + "<th  style='text-align:center'><input type='checkbox' name='InvoiceBillDtos[" + index + "].IsNonProfit' id='IsNonProfit_" + index + "' disabled /></th>";
             trhtml = trhtml + "<th><input type='hidden' name='InvoiceBillDtos[" + index + "].Id'></th>";
             trhtml = trhtml + "<th></th></tr>";
             $("#trtbody").append(trhtml);
+            debugger;
+            let val = currencyCodeToName[$('#Currency_' + index).val() || ''];
+            let conversion = JSON.parse(currencyConvertor);
+            let rate = conversion["" + val + "-TWD"];
+            if (val == undefined) {
+                $('#Quantity_' + index).val(0);
+                $('#Rate_' + index).val(0);
+                $('#Price_' + index).val(0);
+            } else {
+                getRate(index, parseFloat($('#Rate_' + index).val()).toFixed(2));
+            }
+            var amount1 = $('#Quantity_' + index).val() * $("#Rate_" + index + "").val() * $('#Price_' + index).val();
+            if (val == undefined || amount1 == NaN) {
+                $('#Amount_' + index + '').text(0);
+            } else {
+                $('#Amount_' + index + '').text(parseFloat(amount1).toFixed(2));
+            }
+            if ($('#Tax_' + index).find(':selected').text().split('%')[0] == '7') {
+                var taxAmount = amount1 * 0.07;
+            } else {
+                var taxAmount = amount1 * 0;
+            }
+            setCurrencyRate($('#Currency_0').val());
+            getTotalSubAmount();
+            getTotalAmount(parseFloat(taxAmount).toFixed(2));
             index++;
         }
 
@@ -444,12 +512,27 @@
             return selectHtml;
         }
         function getBillTypeSelect(id, billType, value) {
+            var url = new URL(window.location.href)
+            var invoiceType = url.searchParams.get('InvoiceType');
             var selectHtml = "<select name='InvoiceBillDtos[" + index + "].BillType' id='BillType_" + id + "'>";
             billType = billType || value;
-            for (var i = 0; i < BillTypeItems.length; i++) {
-                selectHtml = selectHtml + "<option value='" + BillTypeItems[i].codeValue + "'";
-                if (BillTypeItems[i].codeValue == billType) selectHtml = selectHtml + " selected ";
-                selectHtml = selectHtml + " > " + BillTypeItems[i].showName + "</option>"
+            if (invoiceType == '1') 
+            {
+                for (var i = 0; i < BillTypeItemsDC.length; i++)
+                {
+                    selectHtml = selectHtml + "<option value='" + BillTypeItemsDC[i].codeValue + "'";
+                    if (BillTypeItemsDC[i].codeValue == billType) selectHtml = selectHtml + " selected ";
+                    selectHtml = selectHtml + " > " + l(BillTypeItemsDC[i].showName) + "</option>"
+                }
+            } else {
+                debugger;
+                for (var i = 0; i < BillTypeItems.length; i++)
+                {
+                    debugger;
+                    selectHtml = selectHtml + "<option value='" + BillTypeItems[i].codeValue + "'";
+                    if (BillTypeItems[i].codeValue == billType) selectHtml = selectHtml + " selected ";
+                    selectHtml = selectHtml + " > " + l(BillTypeItems[i].showName) + "</option>"
+                }
             }
             selectHtml = selectHtml + "</select>";
             return selectHtml;
@@ -479,7 +562,7 @@
             return selectHtml;
         }
         function getRate(id, rate){
-            var selectHtml = "<input type='text' name='InvoiceBillDtos[" + id + "].Rate' onchange='onRateChange(event)' value='" + rate + "' id='Rate_" + index + "' readonly/><input type='hidden' name='InvoiceBillDtos[" + id + "].Amount' id='Amount_[" + id + "]' /></td>"
+            var selectHtml = "<input type='text' style='background-color: #d3d3d394;' name='InvoiceBillDtos[" + id + "].Rate' onchange='onRateChange(event)' value='" + rate + "' id='Rate_" + index + "' readonly/><input type='hidden' name='InvoiceBillDtos[" + id + "].Amount' id='Amount_[" + id + "]' /></td>"
             return selectHtml;
         }
         function goBlank() {

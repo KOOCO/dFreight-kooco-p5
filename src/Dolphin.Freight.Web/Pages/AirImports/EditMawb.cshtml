@@ -35,6 +35,7 @@
 @section scripts
     {
     <script src="https://cdn.jsdelivr.net/npm/jquery-templates@1.0.0/jquery.tmpl.min.js"></script>
+    <abp-script src="/Pages/AirImports/CreateMawb.js" />
     <abp-script src="/Pages/AirImports/EditMawb.js" />
     <script type="text/javascript">
         var l = abp.localization.getResource('Freight');
@@ -279,7 +280,6 @@
             $('#saveBtn').click();
         }
         function editMawbAirImport(prevMawbId, hawbId) {
-            debugger;
             $.ajax({
                 url: abp.appPath + 'Docs/AirImportPartialView',
                 type: 'GET',
@@ -658,6 +658,7 @@
     <div class="board-wrap">
 
         <form submit-button="true" data-ajaxForm="true" id="editForm" data-check-form-on-close="true">
+            <abp-input type="hidden" asp-for="@Model.DimensionsJSON" id="dimensionsJSON" value="@Convert.ToString(@Model.MawbModel?.ExtraProperties?.GetValueOrDefault("Dimensions"))" />
             <abp-row>
                 <abp-column size-md="_9" id="parentCard">
                     <!-- MBL Card-->
@@ -971,7 +972,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td></td>
-                                                        <td colspan="4"><abp-button size="Small" button-type="Primary" text="@L["SetDimensions"]" disabled="true" icon="pencil-square" /></td>
+                                                        <td colspan="4"><abp-button size="Small" button-type="Primary" text="@L["SetDimensions"]" onclick="AirImportMawb.openPopUp('withId')" icon="pencil-square" /></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -1027,10 +1028,7 @@
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.BusinessReferredId", AspItems = _dropdownService.TradePartnerLookupList, IsShowLabel = true, FieldName = "BusinessReferredBy", ShowFiledContentValue = Convert.ToString(Model.MawbModel.BusinessReferredId) })
                                 </abp-column>
-                                <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.DisplayUnit", AspItems = Html.GetEnumSelectList(typeof(DisplayUnitType)).ToList(), IsShowLabel = true, FieldName = "DisplayUnit", ShowFiledContentValue = Convert.ToString(((int)Model.MawbModel.DisplayUnit)) })
-                                </abp-column>
-                                <abp-column size-md="_3">
+                                <abp-column size-md="_3" class="expandCheck">
                                     <abp-input asp-for="MawbModel.IsECom" />
                                 </abp-column>
                                 <abp-column size-md="_3">
@@ -1087,6 +1085,67 @@
             </abp-row>
 
         </form>
+
+        <div class="modal fade" id="CreateModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create New Item</h5>
+                        <button type="button" class="close" onclick="$('#CreateModal').modal('hide')" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="portlet-tool">
+                            <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                                <button type="button" class="btn btn-outline-success fa fa-plus" onclick="AirImportMawb.createNewDimension()" id="newDimensionBtn"></button>
+                                <button type="button" class="btn btn-outline-danger fa fa-trash" onclick="AirImportMawb.deleteDimension()" id="deleteDimensionBtn" disabled></button>
+                            </div>
+                        </div>
+
+                        <table class="table-responsive" width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                            <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                <th width="5%" style="background: #888888; color: #fff"><input type="checkbox" name="dimensionCheckbox" /></th>
+                                <th width="20%" style="background: #888888; color: #fff">@L["Length"]</th>
+                                <th width="15%" style="background: #888888; color: #fff">@L["Width"]</th>
+                                <th width="15%" style="background: #888888; color: #fff">@L["Height"]</th>
+                                <th width="15%" style="background: #888888; color: #fff">@L["PCS"]</th>
+                                <th colspan="2" width="20%" style="text-align: center; background: #888888; color: #fff">@L["Volume"]</th>
+                                <th colspan="2" width="20%" style="text-align: center; background: #888888; color: #fff">@L["Measurement"]</th>
+                            </tr>
+                            <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                <th rowspan="2"></th>
+                                <th rowspan="2"></th>
+                                <th rowspan="2"></th>
+                                <th rowspan="2"></th>
+                                <th rowspan="2"></th>
+                                <th width="10%">@L["KG"]</th>
+                                <th width="10%">@L["LB"]</th>
+                                <th width="10%">@L["CBM"]</th>
+                                <th width="10%">@L["CFT"]</th>
+                            </tr>
+                            <tbody id="popuptrtbody">
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" align="right"><strong>Total:</strong></td>
+                                    <td id="totalPCS">0</td>
+                                    <td id="totalKG">0.00</td>
+                                    <td id="totalLB">0.00</td>
+                                    <td id="totalCBM">0.00</td>
+                                    <td id="totalCFT">0.00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="$('#CreateModal').modal('hide')" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="applyDimensions">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 

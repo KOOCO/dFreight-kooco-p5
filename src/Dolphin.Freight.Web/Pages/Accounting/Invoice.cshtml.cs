@@ -331,7 +331,6 @@ namespace Dolphin.Freight.Web.Pages.Accounting
         }
         public async Task<JsonResult> OnPostAsync()
         {
-
             InvoiceDto.MblId = Mid;
             InvoiceDto.HblId = Hid;
             InvoiceDto.BookingId = Bid;

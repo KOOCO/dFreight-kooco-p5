@@ -272,8 +272,13 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 
                 }
             }
+            else if (isAsc) {
+                if (sortType == 0)
+                {
+                    data = data.ToList();
+                }
+            }
             else {
-
                 if (sortType == 1)
                 {
                     data = data.OrderBy(x => x.HblNo).ToList();
@@ -659,6 +664,21 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 container.HblId = Guid.Empty;
                 var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
                 await _containerAppService.UpdateAsync(container.Id, dto);
+            }
+        }
+
+        public async Task UpdateMblIdOfHblAsync(Guid hblId, Guid newMblId)
+        {
+            try
+            {
+                var hbl = await _repository.GetAsync(hblId);
+                hbl.MblId = newMblId;
+                await _repository.UpdateAsync(hbl);
+            }
+            catch (Exception ex)
+            {
+
+                throw new UserFriendlyException(ex.Message);
             }
         }
     }

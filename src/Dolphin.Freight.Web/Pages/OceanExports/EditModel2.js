@@ -23,6 +23,8 @@ $("#saveBtn").click(function () {
     $("#edit2Form").submit();
 });
 
+
+
 let rowCount = 0;
 var htrindex = 0;
 function updateDeleteButtonState() {
@@ -378,5 +380,18 @@ class EditModelOEContainer {
         $('#htrtbody').append(htrHtml);
 
         htrindex++;
+    }
+
+    static SelectAllCheckboxes(e) {
+        debugger;
+        if ($(e.currentTarget).prop('checked') || $(e.target).prop('checked') || $(e.srcElement).prop('checked')) {
+            $('input[id^="f0_"]').each(function (i, elem) {
+                $(elem).prop('checked', true);
+            });
+        } else {
+            $('input[id^="f0_"]:checked').each(function (i, elem) {
+                $(elem).prop('checked', false);
+            });
+        }
     }
 }

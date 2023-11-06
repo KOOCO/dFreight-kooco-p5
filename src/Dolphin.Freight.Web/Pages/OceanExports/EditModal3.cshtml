@@ -458,22 +458,9 @@
                                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m0invoiceDtos.Count">@L["Menu:AccountingAR"]</td>
                                                     <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                     <td>@dto.InvoiceCompanyName</td>
-                                                    @{
-                                                        double j = 0;
-                                                    }
-                                                    @foreach(var invBill in dto.InvoiceBillDtos){
-                                                        j = j + @invBill.Quantity;
-                                                    }
-                                                    <td style="text-align: right;">@j</td>
+                                                    <td style="text-align: right;">@dto.TotalBeforeTax</td>
                                                     <td style="text-align: right;">0.00</td>
-                                                    @{
-                                                        double r = 0;
-                                                    }
-                                                    @foreach(var invRate in dto.InvoiceBillDtos)
-                                                    {
-                                                        r += @invRate.Quantity * @invRate.Rate;
-                                                    }
-                                                    <td style="text-align: right;">@r.ToString("0.00")</td>
+                                                    <td style="text-align: right;">@dto.TotalAmount</td>
                                                     <td style="text-align: right;"></td>
                                                     <td style="text-align: right;">@dto.PostDate</td>
                                                     <td style="text-align: right;">@dto.InvoiceDate</td>
@@ -485,22 +472,9 @@
                                                 <tr style="font-size: 10px;">
                                                     <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                     <td >@dto.InvoiceCompanyName</td>
-                                                    @{
-                                                        double j = 0;
-                                                    }
-                                                    @foreach(var invBill in dto.InvoiceBillDtos){
-                                                        j = j + @invBill.Quantity;
-                                                    }
-                                                    <td style="text-align: right;">@j</td>
+                                                    <td style="text-align: right;">@dto.TotalBeforeTax</td>
                                                     <td style="text-align: right;">0.00</td>
-                                                    @{
-                                                        double r = 0;
-                                                    }
-                                                    @foreach(var invRate in dto.InvoiceBillDtos)
-                                                    {
-                                                        r += @invRate.Quantity * @invRate.Rate;
-                                                    }
-                                                    <td style="text-align: right;">@r.ToString("0.00")</td>
+                                                    <td style="text-align: right;">@dto.TotalAmount</td>
                                                     <td style="text-align: right;"></td>
                                                     <td style="text-align: right;">@dto.PostDate</td>
                                                     <td style="text-align: right;">@dto.InvoiceDate</td>
@@ -522,23 +496,9 @@
                                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m1invoiceDtos.Count">@L["Menu:AccountingDC"]</td>
                                                     <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                     <td>@dto.InvoiceCompanyName</td>
-                                                    @{
-                                                        double j = 0;
-                                                    }
-                                                    @foreach (var invBill in dto.InvoiceBillDtos)
-                                                    {
-                                                        j = j + @invBill.Quantity;
-                                                    }
-                                                    <td style="text-align: right;">@j</td>
+                                                    <td style="text-align: right;">@dto.TotalBeforeTax</td>
                                                     <td style="text-align: right;">0.00</td>
-                                                    @{
-                                                        double r = 0;
-                                                    }
-                                                    @foreach (var invRate in dto.InvoiceBillDtos)
-                                                    {
-                                                        r += invRate.Quantity * invRate.Rate;
-                                                    }
-                                                    <td style="text-align: right;">@r.ToString("0.00")</td>
+                                                    <td style="text-align: right;">@dto.TotalAmount</td>
                                                     <td style="text-align: right;"></td>
                                                     <td style="text-align: right;">@dto.PostDate</td>
                                                     <td style="text-align: right;">@dto.InvoiceDate</td>
@@ -550,23 +510,9 @@
                                                 <tr style="font-size: 10px;">
                                                     <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                     <td>@dto.InvoiceCompanyName</td>
-                                                    @{
-                                                        double j = 0;
-                                                    }
-                                                    @foreach (var invBill in dto.InvoiceBillDtos)
-                                                    {
-                                                        j = j + @invBill.Quantity;
-                                                    }
-                                                    <td style="text-align: right;">@j</td>
+                                                    <td style="text-align: right;">@dto.TotalBeforeTax</td>
                                                     <td style="text-align: right;">0.00</td>
-                                                    @{
-                                                        double r = 0;
-                                                    }
-                                                    @foreach (var invRate in dto.InvoiceBillDtos)
-                                                    {
-                                                        r += invRate.Quantity * invRate.Rate;
-                                                    }
-                                                    <td style="text-align: right;">@r.ToString("0.00")</td>
+                                                    <td style="text-align: right;">@dto.TotalAmount</td>
                                                     <td style="text-align: right;"></td>
                                                     <td style="text-align: right;">@dto.PostDate</td>
                                                     <td style="text-align: right;">@dto.InvoiceDate</td>
@@ -588,22 +534,9 @@
                                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m2invoiceDtos.Count">@L["Menu:AccountingAP"]</td>
                                                     <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                     <td>@dto.ShipTo</td>
-                                                    @{
-                                                        double j = 0;
-                                                    }
-                                                    @foreach(var invBill in dto.InvoiceBillDtos)
-                                                    {
-                                                        j = j + @invBill.Quantity;
-                                                    }
-                                                    <td style="text-align: right;">@j</td>
+                                                    <td style="text-align: right;">@dto.TotalBeforeTax</td>
                                                     <td style="text-align: right;">0.00</td>
-                                                    @{
-                                                        double r = 0;
-                                                    }
-                                                    @foreach(var invRate in dto.InvoiceBillDtos){
-                                                        r += invRate.Quantity * invRate.Rate;
-                                                    }
-                                                    <td style="text-align: right;">@r.ToString("0.00")</td>
+                                                    <td style="text-align: right;">@dto.TotalAmount</td>
                                                     <td style="text-align: right;"></td>
                                                     <td style="text-align: right;">@dto.PostDate</td>
                                                     <td style="text-align: right;">@dto.InvoiceDate</td>
@@ -615,21 +548,9 @@
                                                 <tr style="font-size: 10px;">
                                                     <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                     <td>@dto.ShipTo</td>
-                                                    @{
-                                                        double j = 0;
-                                                    }
-                                                    @foreach(var invBill in dto.InvoiceBillDtos){
-                                                        j = j + @invBill.Quantity;
-                                                    }
-                                                    <td>@j</td>
+                                                    <td>@dto.TotalBeforeTax</td>
                                                     <td>0.00</td>
-                                                    @{
-                                                        double r = 0;
-                                                    }
-                                                    @foreach(var invRate in dto.InvoiceBillDtos){
-                                                        r += invRate.Quantity * invRate.Rate;
-                                                    }
-                                                    <td>@r.ToString("0.00")</td>
+                                                    <td>@dto.TotalAmount</td>
                                                     <td></td>
                                                     <td>@dto.PostDate</td>
                                                     <td>@dto.InvoiceDate</td>
@@ -641,22 +562,37 @@
                                     }
                                     <tr style="font-size: 10px;">
                                         <td colspan="3" style="text-align: right;font-weight: 700;">Total</td>
-                                        <td style="text-align: right;font-weight: 700;">@((Model.m0invoiceDtos.Sum(x=>x.InvoiceBillDtos.Sum(x=>x.Quantity))+Model.m1invoiceDtos.Sum(x=>x.InvoiceBillDtos.Sum(x=>x.Quantity))+Model.m2invoiceDtos.Sum(x=>x.InvoiceBillDtos.Sum(x=>x.Quantity))).ToString("N2"))</td>
-                                    <td style="text-align: right;font-weight: 700;">0.00</td>
-                                    <td style="text-align: right;font-weight: 700;">@((Model.m0invoiceDtos.Sum(x=>x.InvoiceBillDtos.Sum(x=>x.Quantity*x.Rate))+Model.m1invoiceDtos.Sum(x=>x.InvoiceBillDtos.Sum(x=>x.Quantity*x.Rate))+Model.m2invoiceDtos.Sum(x=>x.InvoiceBillDtos.Sum(x=>x.Quantity*x.Rate))).ToString("N2"))</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                        <td style="text-align: right;font-weight: 700;">@(Math.Round(Model.m0invoiceDtos.Sum(x => x.TotalBeforeTax ?? 0.00) + Model.m1invoiceDtos.Sum(x => x.TotalBeforeTax ?? 0.00) + Model.m2invoiceDtos.Sum(x => x.TotalBeforeTax ?? 0.00), 2))</td>
+                                        <td style="text-align: right;font-weight: 700;">0.00</td>
+                                        <td style="text-align: right;font-weight: 700;">@(Math.Round(Model.m0invoiceDtos.Sum(x => x.TotalAmount ?? 0.00) + Model.m1invoiceDtos.Sum(x => x.TotalAmount ?? 0.00) + Model.m2invoiceDtos.Sum(x => x.TotalAmount ?? 0.00), 2))</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
-                                     <tr style="font-size: 10px;">
+                                    <tr style="font-size: 10px;">
+                                        <td colspan="3" style="text-align: right;font-weight: 700;">Total Before Tax</td>
+                                        <td colspan="2" style="text-align: right;font-weight: 700;">@(Math.Round(Model.m0invoiceDtos.Sum(x=>x.TotalBeforeTax ?? 0.00) + Model.m1invoiceDtos.Sum(x=>x.TotalBeforeTax ?? 0.00) + Model.m2invoiceDtos.Sum(x=>x.TotalBeforeTax ?? 0.00), 2))</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr> 
+                                    <tr style="font-size: 10px;">
+                                        <td colspan="3" style="text-align: right;font-weight: 700;">Total Tax</td>
+                                        <td colspan="2" style="text-align: right;font-weight: 700;">@(Math.Round(Model.m0invoiceDtos.Sum(x => x.TotalTax ?? 0.00) + Model.m1invoiceDtos.Sum(x => x.TotalTax ?? 0.00) + Model.m2invoiceDtos.Sum(x => x.TotalTax ?? 0.00), 2))</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr> 
+                                    <tr style="font-size: 10px;">
                                         <td colspan="3" style="text-align: right;font-weight: 700;">Total Amount</td>
-                                     
-                                    <td colspan="2" style="text-align: right;font-weight: 700;" >@((Model.m0invoiceDtos.Sum(x=>x.InvoiceBillDtos.Sum(x=>x.Quantity*x.Rate))+Model.m1invoiceDtos.Sum(x=>x.InvoiceBillDtos.Sum(x=>x.Quantity*x.Rate))+Model.m2invoiceDtos.Sum(x=>x.InvoiceBillDtos.Sum(x=>x.Quantity*x.Rate))).ToString("N2"))</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                        <td colspan="2" style="text-align: right;font-weight: 700;">@(Math.Round(Model.m0invoiceDtos.Sum(x => x.TotalAmount ?? 0.00) + Model.m1invoiceDtos.Sum(x => x.TotalAmount ?? 0.00) + Model.m2invoiceDtos.Sum(x => x.TotalAmount ?? 0.00), 2))</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                     <tr>
                                         <td colspan="10"></td>

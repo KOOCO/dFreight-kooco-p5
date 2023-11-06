@@ -14,6 +14,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
     {
         public Guid? Id { get; set; }
         public bool IsPDF { get; set; }
+        public bool IsOceanExportHbl { get; set; }
         public string AirWayBillNo { get; set; }
         public string TotalPackage { get; set; }
         public Guid? HawbId { get; set; }

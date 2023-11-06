@@ -36,7 +36,8 @@ var columns = [
     title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="HblList.selectAllCheckbox(this)" style=" cursor: pointer;">',
     data: null,
     orderable: false,
-    render: function (data, type, row) {
+        render: function (data, type, row) {
+            debugger;
         var id = row.id;
         $('#selectAllCheckbox').prop('checked', false);
         return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="HblList.selectCheckbox(this)" style=" cursor: pointer;">';
@@ -157,6 +158,7 @@ $(function () {
                         title: l(item.text),
                         data: item.name,
                         render: function (data, type, row) {
+                            debugger;
                             return data === null ? " " : data;
                         }
                     };

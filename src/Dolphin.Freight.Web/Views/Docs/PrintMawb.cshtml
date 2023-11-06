@@ -103,10 +103,12 @@
             document.getElementById("myForm").submit();
         }
 
-        if($('[name="ArrivalDate"]').val() == '1/1/0001')
-        {
-            $('#ArrivalDate').val('');
-        }
+        //if($('[name="ArrivalDate"]').val() == '1/1/0001')
+        //{
+        //    $('#ArrivalDate').val('');
+        //}
+
+        //if ($())
     });
 </script>
 @if (!Model.IsPDF)
@@ -146,6 +148,7 @@
     <input type="hidden" name="AirWayBillNo" /> 
     <input type="hidden" name="@Model.NVD" />
     <input type="hidden" name="@Model.NCV" />
+    <input type="hidden" asp-for="@Model.OtherChargesJSON" />
     <div id="main" class="edit">
     
     
@@ -389,7 +392,7 @@
                                     <tbody><tr>
                                         <td class="w-12 border-r text-center td">
                                             <div class="title text-var">To</div>
-                                            <div class="item-edit"><input type="text" name="DestinationName" value="@Model.DestinationName" style="top: 3px; left: 23px;"></div>
+                                            <div class="item-edit"><input type="text" name="DestinationName" value="@Model.RouteTrans1" style="top: 3px; left: 23px;"></div>
                                         </td>
                                         <td class="w-48 border-r td">
                                             <table class="table-padding">
@@ -406,25 +409,25 @@
                                                 </tr>
                                             </tbody></table>
                                             <div class="col-padding-double">
-                                                <div class="item-edit"><input type="text" name="BillToName" value="@Model.BillToName" style="top: 3px; left: 143px;">
+                                                <div class="item-edit"><input type="text" name="RouteTrans1Carrier" value="@Model.RouteTrans1Carrier" style="top: 3px; left: 143px;">
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="w-10 border-r text-center td">
                                             <div class="title text-var padding-b-xs">to</div>
-                                            <div class="item-edit"><input type="text" name="routing_to_1"></div>
+                                            <div class="item-edit"><input type="text" name="RouteTrans2" value="@Model.RouteTrans2"></div>
                                         </td>
                                         <td class="w-10 border-r text-center td">
                                             <div class="title text-var padding-b-xs">by</div>
-                                            <div class="item-edit"><input type="text" name="routing_by_1"></div>
+                                            <div class="item-edit"><input type="text" name="RouteTrans2Carrier" value="@Model.RouteTrans2Carrier"></div>
                                         </td>
                                         <td class="w-10 border-r text-center td">
                                             <div class="title text-var padding-b-xs">to</div>
-                                            <div class="item-edit"><input type="text" name="routing_to_2"></div>
+                                            <div class="item-edit"><input type="text" name="RouteTrans3" value="@Model.RouteTrans3"></div>
                                         </td>
                                         <td class="w-10 text-center td">
                                             <div class="title text-var padding-b-xs">by</div>
-                                            <div class="item-edit"><input type="text" name="routing_by_2"></div>
+                                            <div class="item-edit"><input type="text" name="RouteTrans3Carrier" value="@Model.RouteTrans3Carrier"></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -449,26 +452,78 @@
                                             <div class="item-edit"><input type="text" name="charges_code" value="PP"></div>
                                             <div class="item-pdf">PP</div>
                                         </td>
-                                        <td class="w-7 border-r">
-                                            <div class="title-oblique text-var"><small>PPD</small></div>
-                                            <div class="item-edit"><input type="checkbox" name="weight_valuation_charge_prepaid" id="id_weight_valuation_charge_prepaid" checked=""></div>
-                                            <div class="item-pdf">X</div>
-                                        </td>
-                                        <td class="w-8 border-r">
-                                            <div class="title-oblique text-var"><small>COLL</small></div>
-                                            <div class="item-edit"><input type="checkbox" name="weight_valuation_charge_collect" id="id_weight_valuation_charge_collect"></div>
-                                            <div class="item-pdf">&nbsp;</div>
-                                        </td>
-                                        <td class="w-7 border-r">
-                                            <div class="title-oblique text-var"><small>PPD</small></div>
-                                            <div class="item-edit"><input type="checkbox" name="other_charges_prepaid" id="id_other_charges_prepaid" checked=""></div>
-                                            <div class="item-pdf">X</div>
-                                        </td>
-                                        <td class="w-8 border-r">
-                                            <div class="title-oblique text-var"><small>COLL</small></div>
-                                            <div class="item-edit"><input type="checkbox" name="other_charges_collect" id="id_other_charges_collect"></div>
-                                            <div class="item-pdf">&nbsp;</div>
-                                        </td>
+                                        @if (Model.WtVal == "PPD")
+                                        {
+                                            <td class="w-7 border-r">
+                                                <div class="title-oblique text-var"><small>PPD</small></div>
+                                                <div class="item-edit"><input type="checkbox" name="weight_valuation_charge_prepaid" id="id_weight_valuation_charge_prepaid" checked></div>
+                                                <div class="item-pdf">X</div>
+                                            </td>
+                                            <td class="w-8 border-r">
+                                                <div class="title-oblique text-var"><small>COLL</small></div>
+                                                <div class="item-edit"><input type="checkbox" name="weight_valuation_charge_collect" id="id_weight_valuation_charge_collect"></div>
+                                                <div class="item-pdf">&nbsp;</div>
+                                            </td>   
+                                        } else if (Model.WtVal == "COLL") {
+                                            <td class="w-7 border-r">
+                                                <div class="title-oblique text-var"><small>PPD</small></div>
+                                                <div class="item-edit"><input type="checkbox" name="weight_valuation_charge_prepaid" id="id_weight_valuation_charge_prepaid"></div>
+                                                <div class="item-pdf">X</div>
+                                            </td>
+                                            <td class="w-8 border-r">
+                                                <div class="title-oblique text-var"><small>COLL</small></div>
+                                                <div class="item-edit"><input type="checkbox" name="weight_valuation_charge_collect" id="id_weight_valuation_charge_collect" checked></div>
+                                                <div class="item-pdf">&nbsp;</div>
+                                            </td>
+                                        } else
+                                        {
+                                            <td class="w-7 border-r">
+                                                <div class="title-oblique text-var"><small>PPD</small></div>
+                                                <div class="item-edit"><input type="checkbox" name="weight_valuation_charge_prepaid" id="id_weight_valuation_charge_prepaid"></div>
+                                                <div class="item-pdf">X</div>
+                                            </td>
+                                            <td class="w-8 border-r">
+                                                <div class="title-oblique text-var"><small>COLL</small></div>
+                                                <div class="item-edit"><input type="checkbox" name="weight_valuation_charge_collect" id="id_weight_valuation_charge_collect"></div>
+                                                <div class="item-pdf">&nbsp;</div>
+                                            </td>
+                                        }
+
+                                        @if (Model.Other == "PPD") {
+                                            <td class="w-7 border-r">
+                                                <div class="title-oblique text-var"><small>PPD</small></div>
+                                                <div class="item-edit"><input type="checkbox" name="other_charges_prepaid" id="id_other_charges_prepaid" checked></div>
+                                                <div class="item-pdf">X</div>
+                                            </td>
+                                            <td class="w-8 border-r">
+                                                <div class="title-oblique text-var"><small>COLL</small></div>
+                                                <div class="item-edit"><input type="checkbox" name="other_charges_collect" id="id_other_charges_collect"></div>
+                                                <div class="item-pdf">&nbsp;</div>
+                                            </td>
+                                        } else if (Model.Other == "COLL") {
+                                            <td class="w-7 border-r">
+                                                <div class="title-oblique text-var"><small>PPD</small></div>
+                                                <div class="item-edit"><input type="checkbox" name="other_charges_prepaid" id="id_other_charges_prepaid"></div>
+                                                <div class="item-pdf">X</div>
+                                            </td>
+                                            <td class="w-8 border-r">
+                                                <div class="title-oblique text-var"><small>COLL</small></div>
+                                                <div class="item-edit"><input type="checkbox" name="other_charges_collect" id="id_other_charges_collect" checked></div>
+                                                <div class="item-pdf">&nbsp;</div>
+                                            </td>
+                                        } else
+                                        {
+                                            <td class="w-7 border-r">
+                                                <div class="title-oblique text-var"><small>PPD</small></div>
+                                                <div class="item-edit"><input type="checkbox" name="other_charges_prepaid" id="id_other_charges_prepaid"></div>
+                                                <div class="item-pdf">X</div>
+                                            </td>
+                                            <td class="w-8 border-r">
+                                                <div class="title-oblique text-var"><small>COLL</small></div>
+                                                <div class="item-edit"><input type="checkbox" name="other_charges_collect" id="id_other_charges_collect"></div>
+                                                <div class="item-pdf">&nbsp;</div>
+                                            </td>
+                                        }
                                         <td class="w-25 border-r">@Model.NVD</td>
                                         <td class="w-25">@Model.NCV</td>
                                     </tr>
@@ -494,10 +549,12 @@
                                             <table class="table-padding">
                                                 <tbody><tr>
                                                     <td class="w-50 text-center border-r">
-                                                        <div class="item-edit"><input type="text" id="ArrivalDate" name="ArrivalDate" value="@Model.ArrivalDate" /></div>
+                                                        <div class="item-edit"><input type="text" id="ArrivalDate" name="DepartureName" value="@Model.DepartureName / @Model.DepatureDate" /></div>
+                                                        <input type="hidden" name="DepatureDate" value="@Model.DepatureDate" />
                                                     </td>
                                                     <td class="w-50 text-center">
-                                                        <div class="item-edit"><input type="text" name="flight_no_last"></div>
+                                                        <div class="item-edit"><input type="text" name="DestinationName" value="@Model.DestinationName / @Model.ArrivalDate"></div>
+                                                        <input type="hidden" name="ArrivalDate" value="@Model.ArrivalDate" />
                                                     </td>
                                                 </tr>
                                             </tbody></table>
@@ -613,13 +670,16 @@
                         <tr>
                             <td class="td col-padding border-r _position-relative">
                                 <div class="item-edit padding-b-xs hover-toggle-icon-text-template">
-                                    <textarea name="Package" cols="40" rows="4" >@Model.Package CARTON(S)</textarea>
+                                    <textarea name="Package" cols="40" rows="4" >@Model.Package @Environment.NewLine @Model.MawbPackageUnit</textarea>
                                 </div>
                                 <div class="mark-area ">
                                     <div class="item-edit">
                                         <label class="text-10 text-bold _bg-white _margin-b-0"><input type="checkbox" name="show_dimension" id="id_show_dimension" checked=""> Show Mark</label>
                                         <div>
-                                            <textarea name="mark_dimension" cols="40" rows="5" style="position: relative; z-index: 2;" id="id_mark_dimension"></textarea>
+                                            <textarea name="mark_dimension" cols="40" rows="5" style="position: relative; z-index: 2;" id="id_mark_dimension">@Model.Mark</textarea>
+                                            <input type="hidden" name="Mark" value="@Model.Mark" />
+                                            <input type="hidden" name="Package" value="@Model.Package" />
+                                            <input type="hidden" name="MawbPackageUnit" value="@Model.MawbPackageUnit" />
                                         </div>
                                     </div>
                                 </div>
@@ -627,19 +687,32 @@
                                 <table class="table-padding piece-table">
                                     <tbody><tr>
                                         <td class="border-t">
-                                            <div class="item-edit"><textarea name="Package" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope">@Model.Package CARTON(S)</textarea></div>
+                                            <div class="item-edit"><textarea name="Package" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope">@Model.Package @Model.MawbPackageUnit</textarea></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
                             </td>
                             <td class="td col-padding border-r text-right" colspan="2">
                                 <div class="item-edit">
-                                    <textarea name="gross_weight_area" cols="40" rows="4"></textarea>
+                                    @if (!Model.GrossWeightKg.Equals(0))
+                                    {
+                                        <textarea name="gross_weight_area" cols="40" rows="4">@Model.GrossWeightKg KGS @Environment.NewLine @Model.GrossWeightLb LBS</textarea>
+                                    } else
+                                    {
+                                        <textarea name="gross_weight_area" cols="40" rows="4"></textarea>
+                                    }
+                                    <input type="hidden" name="GrossWeightKg" value="@Model.GrossWeightKg" />
+                                    <input type="hidden" name="GrossWeightLb" value="@Model.GrossWeightLb" />
                                 </div>
                                 <table class="table-padding gw-table">
                                     <tbody><tr>
                                         <td class="border-t">
-                                            <div class="item-edit"><textarea name="GrossWeight" cols="40" rows="2">@Model.GrossWeight</textarea></div>
+                                            @if (!Model.GrossWeightKg.Equals(0)) {
+                                                <div class="item-edit"><textarea name="GrossWeight" cols="40" rows="2">@Model.GrossWeightKg KGS @Environment.NewLine @Model.GrossWeightLb LBS</textarea></div>
+                                            } else {
+                                                 <div class="item-edit"><textarea name="GrossWeight" cols="40" rows="2"></textarea></div>
+                                            }
+                                           
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -650,23 +723,27 @@
                             </td>
                             <td class="border-r bg-light">&nbsp;</td>
                             <td class="td col-padding border-r text-right">
-                                <div class="item-edit"><textarea name="ChargableWeight" cols="40" rows="13">@Model.ChargableWeight</textarea></div>
+                                <div class="item-edit"><textarea name="ChargableWeight" cols="40" rows="13">@Model.ChargeableWeightCneeKG @Environment.NewLine @Model.ChargeableWeightCneeLB</textarea></div>
+                                <input type="hidden" name="ChargeableWeightCneeKG" value="@Model.ChargeableWeightCneeKG" />
+                                <input type="hidden" name="ChargeableWeightCneeLB" value="@Model.ChargeableWeightCneeLB" />
                             </td>
                             <td class="border-r bg-light">&nbsp;</td>
                             <td class="td col-padding border-r">
                                 <div class="item-edit">
                                     <textarea name="rate_charge_area" cols="40" rows="13">@Model.SellingRate</textarea>
+                                    <input type="hidden" name="SellingRate" value="@Model.SellingRate" />
                                 </div>
                             </td>
                             <td class="border-r bg-light">&nbsp;</td>
                             <td class="td col-padding border-r">
                                 <div class="item-edit">
-                                    <textarea name="total_charge_area" cols="40" rows="9">@Model.AwbChargeableWeightAmount</textarea>
+                                    <textarea name="total_charge_area" cols="40" rows="9">@Model.ChargeableWeightAmount</textarea>
+                                    <input type="hidden" name="ChargeableWeightAmount" value="@Model.ChargeableWeightAmount" />
                                 </div>
                                 <table class="table-padding">
                                     <tbody><tr>
                                         <td class="border-t">
-                                            <div class="item-edit"><textarea name="total_charge_area_summary" cols="40" rows="2"></textarea></div>
+                                            <div class="item-edit"><textarea name="total_charge_area_summary" cols="40" rows="2">@Model.ChargeableWeightAmount</textarea></div>
                                         </td>
                                     </tr>
                                 </tbody></table>
@@ -674,7 +751,8 @@
                             <td class="border-r bg-light">&nbsp;</td>
                             <td class="td col-padding">
                                 <div class="item-edit">
-                                    <textarea name="nature_and_quantity_goods" cols="40" rows="12"></textarea>
+                                    <textarea name="nature_and_quantity_goods" cols="40" rows="12">@Model.NatureAndQuantityOfGoods</textarea>
+                                    <input type="hidden" name="NatureAndQuantityOfGoods" value="@Model.NatureAndQuantityOfGoods" />
                                 </div>
                                 "FREIGHT PREPAID"
                             </td>
@@ -766,15 +844,15 @@
                                             <tr>
                                                 <td class="w-60 td">
                                                     <div class="title-oblique text-var">Other Charges</div>
-                                                    <div class="item-edit"><textarea name="other_charges_area" cols="40" rows="5">@(Model.OtherCharges.Sum(x=>Convert.ToDouble(x.ChargeAmount)))</textarea></div>
+                                                    <div class="item-edit"><textarea name="other_charges_area" cols="40" rows="5">@foreach(var item in Model.OtherCharges.Select(s => s.Description)){ @item @Environment.NewLine }</textarea></div>
                                                 </td>
                                                 <td class="w-20 td text-center">
                                                     <div class="title-oblique text-var">PREPAID</div>
-                                                    <div class="item-edit"><textarea name="other_charges_area_prepaid" cols="40" rows="5">@(Model.OtherCharges.Where(x=>x.CollectPaid=="Paid").Sum(x=>Convert.ToDouble(x.ChargeAmount)))</textarea></div>
+                                                    <div class="item-edit"><textarea name="other_charges_area_prepaid" cols="40" rows="5">@foreach(var item in Model.OtherCharges.Select(s => s.ChargeAmount)){ @item @Environment.NewLine }</textarea></div>
                                                 </td>
                                                 <td class="w-20 td text-center">
                                                     <div class="title-oblique text-var">COLLECT</div>
-                                                    <div class="item-edit"><textarea name="other_charges_area_collect" cols="40" rows="5">@(Model.OtherCharges.Where(x=>x.CollectPaid=="Collect").Sum(x=>Convert.ToDouble(x.ChargeAmount)))</textarea></div>
+                                                    <div class="item-edit"><textarea name="other_charges_area_collect" cols="40" rows="5"></textarea></div>
                                                 </td>
                                             </tr>
                                         } else
@@ -948,13 +1026,13 @@
                                 <table class="col-padding">
                                     <tbody><tr class="text-bold">
                                         <td class="w-25 text-center">
-                                            <div class="item-edit"><input type="text" name="executed_on_date" value=""></div>
+                                            <div class="item-edit"><input type="text" name="AwbDate" value="@Model.AwbDate.ToShortDateString()"></div>
                                         </td>
                                         <td class="w-25 text-center">
-                                            <div class="item-edit"><input type="text" name="executed_at_place" value=""></div>
+                                            <div class="item-edit"><input type="text" name="DepartureName" value="@Model.DepartureName"></div>
                                         </td>
                                         <td class="w-50 text-center">
-                                            <div class="item-edit"><input type="text" name="OverSeaAgentName" value="@Model.OverSeaAgentName"></div>
+                                            <div class="item-edit"><input type="text" name="Operator" value="@Model.Operator"></div>
                                         </td>
                                     </tr>
                                     <tr class="border-t text-sm text-var text-center">

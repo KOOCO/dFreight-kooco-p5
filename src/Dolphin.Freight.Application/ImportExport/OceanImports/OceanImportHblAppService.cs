@@ -166,6 +166,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     var dto = ObjectMapper.Map<OceanImportHbl, OceanImportHblDto>(pu);
                     var containers = await _containerAppService.GetContainerListByHblId(dto.Id);
 
+                    dto.ATA = mdictionary[dto.MblId].ATA;
+                    dto.ATD = mdictionary[dto.MblId].ATD;
                     dto.FilingNo = mdictionary[dto.MblId].FilingNo;
                     dto.MblNo = mdictionary[dto.MblId].SoNo;
                     dto.OfficeName = sdictionary[mdictionary[dto.MblId].OfficeId.Value];

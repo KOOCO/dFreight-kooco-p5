@@ -22,7 +22,9 @@
     }
 
     .dropdownselect {
-        margin-left: 80px;
+        display: block;
+        margin-left: 20px;
+        margin-right: 40px;
     }
 
     .dropdownlabel {
@@ -46,23 +48,34 @@
 
         var mawbId = $('#MawbLookup_Id').val();
         $.ajax({
-            url: abp.appPath + 'Docs/AirImportChangeMawbParent?mawbId=' + mawbId + '&hawbId=@Model.HawbId',
+            url: abp.appPath + 'Docs/AirImportChangeMawbParent?mawbId=' + mawbId + '&hawbId=@Model.HawbId' + '&isOceanExportHbl=@Model.IsOceanExportHbl',
             type: 'post',
             dataType: "html",
             success: function (res) {
-                debugger;
-                $('.modal').modal('hide');
+                if (@(Model.IsOceanExportHbl ? "true" : "false")) {
+                    $('#myModal').modal('hide');
+                } else
+                {
+                    $('.modal').modal('hide');
+                }
+                
                 newMawb = JSON.parse(res).id;
                 fileNo = JSON.parse(res).fileNo;
 
                 $.ajax({
                     url: abp.appPath + 'Docs/GetAirImportMawbPopUp',
                     type: 'GET',
-                    data: { id: newMawb, fileNo: fileNo },
+                    data: { id: newMawb, fileNo: fileNo, isOceanExportHbl: '@Model.IsOceanExportHbl' },
                     success: function (result) {
                         debugger;
-                        $('.modal-content').html(result);
-                        $('.modal').modal('show');
+                        if (@(Model.IsOceanExportHbl ? "true" : "false")) {
+                            $('#myMoveModal').html('');
+                            $('#myMoveModal').html(result);
+                            $('#linkModal').modal('show');
+                        } else {
+                            $('.modal-content').html(result);
+                            $('.modal').modal('show');
+                        }
                     }
                 });
             }
@@ -79,19 +92,33 @@
 <form id="frmManifest" class="ddlMoveTo" data-check-form-on-close="false">
 
     <abp-modal id="myModal">
-        <abp-modal-header title="@L["HBLMBL"]" style="color:black"></abp-modal-header>
-
+        @if (Model.IsOceanExportHbl)
+        {
+            <abp-modal-header title="@L["MoveHblToMbl"]" style="color:black"></abp-modal-header>
+        } else
+        {
+            <abp-modal-header title="@L["HBLMBL"]" style="color:black"></abp-modal-header>
+        }
+        
         <label class="form-label dropdownlabel" style="color:black;"> @L["MoveHBLtoOtherMBL"]</label>
+        
         <abp-modal-body class="dropdownselect" style="color:black">
+            @if (Model.IsOceanExportHbl)
+            {
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbLookup.Id", AspItems = _dropdown.OceanExportMblLookupList, IsShowLabel = true, FieldName = "", SelectType = 0, ShowFiledContentValue = "" })
+            }
+            else
+            {
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbLookup.Id", AspItems = _dropdown.AirImportMawbLookupList, IsShowLabel = true, FieldName = "", SelectType = 0, ShowFiledContentValue = "" })
+            }
 
-            @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbLookup.Id", AspItems = _dropdown.AirImportMawbLookupList, IsShowLabel = true, FieldName = "", SelectType = 0, ShowFiledContentValue = "" })
         </abp-modal-body>
         <br /><br />
         <abp-modal-footer>
             <abp-button id="btnManifestCancel"
                         text="@L["Btn:Cancel"].Value"
                         button-type="Default"
-                        onclick="ManifestCancel()" />
+                        onclick="$('#myModal').modal('hide');" />
             <abp-button id="btnManifestSave"
                         text="@L["Btn:Ok"].Value"
                         button-type="Primary"

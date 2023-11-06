@@ -29,6 +29,8 @@
             "OceanImportMbl_DelEta",
             "OceanImportMbl_FdestEta",
             "OceanImportMbl_Etb",
+            "OceanImportMbl_ATA",
+            "OceanImportMbl_ATD",
             "OceanImportMbl_LatestContainerEntryDate",
             "OceanImportMbl_PorEtd",
             "OceanImportMbl_ItDate",
@@ -56,24 +58,8 @@
             "OceanImportHbl_DoorDeliveryATA",
         ];
 
-        ids.forEach(function (id) {
-            let dateElem = $('#' + id);
-
-            if (dateElem.length === 0) {
-                return;
-            }
-
-            dateElem.removeAttr('type').datetimepicker({
-                format: 'Y-m-d H:i',
-                step: 15,
-                allowInput: false
-            });
-
-            let currentVal = dateElem.val();
-            if (currentVal.includes('T')) {
-                dateElem.val(currentVal.replace('T', ' '));
-            }
-        });
+        var dateTimePicker = new CustomDateTimePicker();
+        dateTimePicker.dateTimePicker(ids);
     });
 
     $(".cdatetime").change(function () {

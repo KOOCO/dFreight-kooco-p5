@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanImports;
 using Dolphin.Freight.Settings.PortsManagement;
@@ -48,13 +49,15 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         private readonly ContainerAppService _containerRepository;
         private readonly IRepository<Container, Guid> _containerAppService;
         private readonly IContainerAppService _containerService;
+        private readonly IOceanExportHblAppService _oceanExportHblAppService;
         public OceanExportMblAppService(IRepository<OceanExportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository, PortsManagementAppService portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
             IIdentityUserAppService identityUserAppService, IRepository<OceanExportHbl, Guid> oceanExportHblRepository,
-            IInvoiceAppService invoiceAppService, IContainerAppService containerService,
+            IInvoiceAppService invoiceAppService, IContainerAppService containerService, IOceanExportHblAppService oceanExportHblAppService,
             ContainerAppService containerRepository, ISysCodeAppService sysCodeAppService, IRepository<Container, Guid> containerAppService)
             : base(repository)
         {
             _repository = repository;
+            _oceanExportHblAppService = oceanExportHblAppService;
             _sysCodeRepository = sysCodeRepository;
             _substationRepository = substationRepository;
             _portRepository = portRepository;
@@ -603,6 +606,23 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }
         }
 
+        public async Task DeleteMblAsync(Guid Id)
+        {
+            var mbl = await _repository.GetAsync(Id);
+            var hbls = await _oceanExportHblAppService.GetHblCardsById(Id);
+
+            mbl.IsDeleted = true;
+
+            foreach (var hbl in hbls)
+            {
+                hbl.IsDeleted = true;
+
+                await _oceanExportHblAppService.UpdateAsync(hbl.Id, ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl));
+            }
+
+            await _repository.UpdateAsync(mbl);
+        }
+
         public async Task SaveDimensionsAsync(DimensionDataModel DataModel)
         {
             var Dimensions = DataModel.Dimensions;
@@ -622,6 +642,13 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }
 
             await _containerService.UpdateAsync(ContainerId, ObjectMapper.Map<ContainerDto, CreateUpdateContainerDto>(container));
+        }
+
+        public async Task<List<OceanExportMblDto>> GetMblListAsync()
+        {
+            var query = await _repository.GetQueryableAsync();
+
+            return ObjectMapper.Map<List<OceanExportMbl>, List<OceanExportMblDto>>(query.ToList());
         }
     }
 }

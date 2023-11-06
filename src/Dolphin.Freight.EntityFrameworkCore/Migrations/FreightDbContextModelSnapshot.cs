@@ -4743,6 +4743,12 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("ATA")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ATD")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("AgentRefNo")
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
@@ -7748,6 +7754,10 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("DeletionTime");
 
+                    b.Property<string>("Department")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -7812,6 +7822,10 @@ namespace Dolphin.Freight.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)")
                         .HasColumnName("NormalizedUserName");
+
+                    b.Property<string>("Office")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<string>("PasswordHash")
                         .HasMaxLength(256)

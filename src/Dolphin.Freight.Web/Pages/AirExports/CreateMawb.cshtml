@@ -59,9 +59,21 @@
             });
             $("#ChargeableWeightKg").on('keyup', function () {
                 $("#ChargeableWeightLb").val(Math.round($("#ChargeableWeightKg").val() * 2.2046226218 * 100) / 100);
+
+                if ($('#MawbModel_SellingRateUnit').val() == 2) {
+                    $('#MawbModel_ChargeableWeightAmount').val(parseFloat((($("#ChargeableWeightKg").val() * 2.2046226218 * 100) / 100).toFixed(2) * $('#MawbModel_SellingRate').val()));
+                } else if ($('#MawbModel_SellingRateUnit').val() == 1) {
+                    $('#MawbModel_ChargeableWeightAmount').val(Math.round($("#ChargeableWeightKg").val() * $('#MawbModel_SellingRate').val()));
+                }
             });
             $("#AwbChargeableWeightKg").on('keyup', function () {
                 $("#AwbChargeableWeightLb").val(Math.round($("#AwbChargeableWeightKg").val() * 2.2046226218 * 100) / 100);
+
+                if ($('#MawbModel_SellingRateUnit').val() == 2) {
+                    $('#MawbModel_AwbChargeableWeightAmount').val(parseFloat((($("#AwbChargeableWeightKg").val() * 2.2046226218 * 100) / 100).toFixed(2) * $('#MawbModel_SellingRate').val()));
+                } else if ($('#MawbModel_SellingRateUnit').val() == 1) {
+                    $('#MawbModel_AwbChargeableWeightAmount').val(Math.round($("#AwbChargeableWeightKg").val() * $('#MawbModel_SellingRate').val()));
+                }
             });
             // Calculate Weight Lb to Kg
             $("#GrossWeightLb").on('keyup', function () {
@@ -72,9 +84,23 @@
             });
             $("#ChargeableWeightLb").on('keyup', function () {
                 $("#ChargeableWeightKg").val(Math.round($("#ChargeableWeightLb").val() * 0.45359237 * 100) / 100);
+
+                if ($('#MawbModel_SellingRateUnit').val() == 2) {
+                    $('#MawbModel_ChargeableWeightAmount').val(Math.round($("#ChargeableWeightLb").val() * $('#MawbModel_SellingRate').val()));
+                } 
+                else if ($('#MawbModel_SellingRateUnit').val() == 1) {
+                    $('#MawbModel_ChargeableWeightAmount').val(parseFloat((($("#ChargeableWeightLb").val() * 0.45359237 * 100) / 100).toFixed(2) * $('#MawbModel_SellingRate').val()));
+                }
             });
             $("#AwbChargeableWeightLb").on('keyup', function () {
                 $("#AwbChargeableWeightKg").val(Math.round($("#AwbChargeableWeightLb").val() * 0.45359237 * 100) / 100);
+
+                if ($('#MawbModel_SellingRateUnit').val() == 2) {
+                    $('#MawbModel_AwbChargeableWeightAmount').val(Math.round($("#AwbChargeableWeightLb").val() * $('#MawbModel_SellingRate').val()));
+                }
+                else if ($('#MawbModel_SellingRateUnit').val() == 1) {
+                    $('#MawbModel_AwbChargeableWeightAmount').val(parseFloat((($("#AwbChargeableWeightLb").val() * 0.45359237 * 100) / 100).toFixed(2) * $('#MawbModel_SellingRate').val()));
+                }
             });
              onSetMawbCommodity();
             onSetMoreInformation();
@@ -986,10 +1012,10 @@
                                             </tr>
                                             <tr>
                                                 <th class="redStar packageTable">@L["SellingRate"]</th>
-                                                <td><input asp-for="MawbModel.SellingRate" class="form-control form-control-sm" /></td>
+                                                <td><input asp-for="MawbModel.SellingRate" class="form-control form-control-sm" onchange="AirExportMawb.onChangeSellingRate(event)" /></td>
                                                 <td>@L["per"]</td>
                                                 <td>
-                                                    <abp-select asp-for="MawbModel.SellingRate" suppress-label="true" class="form-control-sm" asp-items="Html.GetEnumSelectList(typeof(RateUnitType))" />
+                                                    <abp-select asp-for="MawbModel.SellingRate" id="MawbModel_SellingRateUnit" suppress-label="true" class="form-control-sm" asp-items="Html.GetEnumSelectList(typeof(RateUnitType))" onchange="AirExportMawb.onChangeUnit(event)" />
                                                 </td>
                                                 <td></td>
                                             </tr>

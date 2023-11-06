@@ -31,5 +31,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         Task SaveAssignContainerNoToHblAsync(OceanExportHblAppModel AppModel);
         Task SaveDeAssignContainerNoFromHblAsync(OceanExportHblAppModel AppModel);
         Task SaveAssignSingleContainerNoToHblAsync(OceanExportHblAppModel AppModel, bool IsSave = true);
+        Task UpdateMblIdOfHblAsync(Guid hblId, Guid newMblId);
     }
 }

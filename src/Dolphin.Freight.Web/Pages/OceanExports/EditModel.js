@@ -2,8 +2,9 @@
     var url = new URL(window.location.href);
     var selectedHblNo;
 
-    dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(url.searchParams.get('Id'))
+    dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(url.searchParams.get('Id'), true, 0)
         .done(function (hblCards) {
+            debugger;
             if (hblCards && hblCards.length) {
                 $('#cardSettingArea').show();
                 hblCards.forEach(function (hblCard, index) {
@@ -33,10 +34,18 @@
 
 var EditModelOEScript = {
     RextoHexColorCode: function (rgb) {
-        var result = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/.exec(rgb);
+        var result = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d*(?:\.\d+)?))?\)$/.exec(rgb);
         if (result) {
-            return '#' +
+            var hex = '#' +
                 (1 << 24 | parseInt(result[1]) << 16 | parseInt(result[2]) << 8 | parseInt(result[3])).toString(16).slice(1).toUpperCase();
+
+            if (result[4]) {  // If alpha is provided
+                var alpha = Math.round(parseFloat(result[4]) * 255);
+                var alphaHex = ("00" + alpha.toString(16)).slice(-2).toUpperCase();
+                hex += alphaHex;
+            }
+
+            return hex;
         } else {
             return undefined;
         }

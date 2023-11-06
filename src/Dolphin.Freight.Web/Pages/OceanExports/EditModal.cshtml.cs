@@ -97,14 +97,14 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             }
             else
             {
-                var hbls = await _oceanExportHblAppService.GetHblCardsById(Id);
+                var hbls = await _oceanExportHblAppService.GetHblCardsById(Id, true, 0);
                 if (hbls.Any())
                 {
                     OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(await _oceanExportHblAppService.GetAsync(hbls[0].Id));
                 }
                 else
                 {
-                    OceanExportHbl = new();
+                OceanExportHbl = new();
                 }
             }
             IsShowHbl = true;

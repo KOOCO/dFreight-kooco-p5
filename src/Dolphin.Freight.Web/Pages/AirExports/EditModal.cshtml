@@ -192,9 +192,27 @@
             });
             $("#ChargeableWeightKg").on('keyup', function () {
                 $("#ChargeableWeightLb").val(Math.round($("#ChargeableWeightKg").val() * 2.2046226218 * 100) / 100);
+
+                if ($('#AirExportMawbDto_SellingRateUnitType').val() == 2) {
+                    $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat((($("#ChargeableWeightKg").val() * 2.2046226218 * 100) / 100).toFixed(2) * $('#AirExportMawbDto_SellingRate').val()));
+                }
+                else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) {
+                    $('#AirExportMawbDto_ChargeableWeightAmount').val(Math.round($('#ChargeableWeightKg').val() * $('#AirExportMawbDto_SellingRate').val()));
+                } else {
+                    $('#AirExportMawbDto_ChargeableWeightAmount').val(0);
+                }
             });
             $("#AwbChargeableWeightKg").on('keyup', function () {
                 $("#AwbChargeableWeightLb").val(Math.round($("#AwbChargeableWeightKg").val() * 2.2046226218 * 100) / 100);
+
+                if ($('#AirExportMawbDto_SellingRateUnitType').val() == 2) {
+                    $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat((($("#AwbChargeableWeightKg").val() * 2.2046226218 * 100) / 100).toFixed(2) * $('#AirExportMawbDto_SellingRate').val()));
+                }
+                else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) {
+                    $('#AirExportMawbDto_AwbChargeableWeightAmount').val(Math.round($('#AwbChargeableWeightKg').val() * $('#AirExportMawbDto_SellingRate').val()));
+                } else {
+                    $('#AirExportMawbDto_AwbChargeableWeightAmount').val(0);
+                }
             });
             // Calculate Weight Lb to Kg
             $("#GrossWeightLb").on('keyup', function () {
@@ -205,9 +223,27 @@
             });
             $("#ChargeableWeightLb").on('keyup', function () {
                 $("#ChargeableWeightKg").val(Math.round($("#ChargeableWeightLb").val() * 0.45359237 * 100) / 100);
+
+                if ($('#AirExportMawbDto_SellingRateUnitType').val() == 2) {
+                    $('#AirExportMawbDto_ChargeableWeightAmount').val(Math.round($('#ChargeableWeightLb').val() * $('#AirExportMawbDto_SellingRate').val()));
+                }
+                else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) {
+                    $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat((($("#ChargeableWeightLb").val() * 0.45359237 * 100) / 100).toFixed(2) * $('#AirExportMawbDto_SellingRate').val()));
+                } else {
+                    $('#AirExportMawbDto_ChargeableWeightAmount').val(0);
+                }
             });
             $("#AwbChargeableWeightLb").on('keyup', function () {
                 $("#AwbChargeableWeightKg").val(Math.round($("#AwbChargeableWeightLb").val() * 0.45359237 * 100) / 100);
+
+                if ($('#AirExportMawbDto_SellingRateUnitType').val() == 2) {
+                    $('#AirExportMawbDto_AwbChargeableWeightAmount').val(Math.round($('#AwbChargeableWeightLb').val() * $('#AirExportMawbDto_SellingRate').val()));
+                } 
+                else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) { 
+                    $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat((($("#AwbChargeableWeightLb").val() * 0.45359237 * 100) / 100).toFixed(2) * $('#AirExportMawbDto_SellingRate').val()));
+                } else {
+                    $('#AirExportMawbDto_AwbChargeableWeightAmount').val(0);
+                }
             });
         });
 
@@ -871,7 +907,7 @@
         }
 
         function deleteMawb() {
-            if (isLocked) {
+            if (isLocked == 'True') {
                 abp.message.error(l('Delete Error Data Is Locked'))
             }
             else {
@@ -1226,7 +1262,7 @@
 
                                     <abp-column>
                                         @L["Other"]
-                                        <abp-radio asp-for="@Model.AirExportMawbDto.Other" asp-items="@Model.WtValOtherList" inline="true" />
+                                        <abp-radio asp-for="@Model.AirExportMawbDto.Other" asp-items="@Model.OtherList" inline="true" />
                                     </abp-column>
     
                                 </abp-column>
@@ -1362,12 +1398,12 @@
                                                     </tr>
                                                     <tr>
                                                         <th class="packageTable">@L["SellingRate"]</th>
-                                                        <td><input asp-for="@Model.AirExportMawbDto.SellingRate" class="form-control" /></td>
+                                                        <td><input asp-for="@Model.AirExportMawbDto.SellingRate" class="form-control" onchange="AirExportMawb.onChangeSellingRate(event)" /></td>
                                                         <td>@L["per"]</td>
                                                         <td>
-                                                            <select asp-for="@Model.AirExportMawbDto.SellingRateUnitType" asp-items="Html.GetEnumSelectList(typeof(RateUnitType))" class="form-select form-control">
+                                                        <select asp-for="@Model.AirExportMawbDto.SellingRateUnitType" asp-items="Html.GetEnumSelectList(typeof(RateUnitType))" class="form-select form-control" onchange="AirExportMawb.onChangeUnit(event)">
                                                                 <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            </select>
+                                                        </select>
                                                         </td>
                                                         <td></td>
                                                     </tr>

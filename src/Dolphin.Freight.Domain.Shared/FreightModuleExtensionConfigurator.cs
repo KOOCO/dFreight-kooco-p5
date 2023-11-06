@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Volo.Abp.Identity;
+using Volo.Abp.Localization;
 using Volo.Abp.ObjectExtending;
 using Volo.Abp.Threading;
 
@@ -44,43 +45,37 @@ public static class FreightModuleExtensionConfigurator
          * This class can be used to define these extra properties
          * with a high level, easy to use API.
          *
-         * Example: Add a new property to the user entity of the identity module
+         * Example: Add a new property to the user entity of the identity module */
 
-           ObjectExtensionManager.Instance.Modules()
-              .ConfigureIdentity(identity =>
-              {
-                  identity.ConfigureUser(user =>
-                  {
-                      user.AddOrUpdateProperty<string>( //property type: string
-                          "SocialSecurityNumber", //property name
-                          property =>
-                          {
-                              //validation rules
-                              property.Attributes.Add(new RequiredAttribute());
-                              property.Attributes.Add(new StringLengthAttribute(64) {MinimumLength = 4});
-
-                              //...other configurations for this property
-                          }
-                      );
-                  });
-              });
-
-         * See the documentation for more:
-         * https://docs.abp.io/en/abp/latest/Module-Entity-Extensions
-         */
-
-        //ObjectExtensionManager.Instance.Modules()
-        //      .ConfigureIdentity(identity =>
-        //      {
-        //          identity.ConfigureUser(user =>
-        //          {
-        //              user.AddOrUpdateProperty<Guid>( //property type: Guid
-        //                  "LanguageId"
-        //              );
-        //              user.AddOrUpdateProperty<string>( //property type: string
-        //                  "Gender"
-        //              );
-        //          });
-        //      });
+        ObjectExtensionManager.Instance.Modules()
+           .ConfigureIdentity(identity =>
+           {
+               identity.ConfigureUser(user =>
+               {
+                   user.AddOrUpdateProperty<string>( //property type: string
+                       "Office", //property name
+                       property =>
+                       {
+                           //validation rules
+                           property.Attributes.Add(new StringLengthAttribute(512) { MinimumLength = 0 });
+                           property.DisplayName = new FixedLocalizableString("Office(Code-Name)");
+                           //...other configurations for this property
+                       }
+                   );
+                   user.AddOrUpdateProperty<string>( //property type: string
+                       "Department", //property name
+                       property =>
+                       {
+                           //validation rules
+                           property.Attributes.Add(new StringLengthAttribute(512) { MinimumLength = 0 });
+                           property.DisplayName = new FixedLocalizableString("Department(Office Code-Name)");
+                           //...other configurations for this property
+                       }
+                   );
+               });
+           });
+        /* See the documentation for more:
+        * https://docs.abp.io/en/abp/latest/Module-Entity-Extensions
+        */
     }
 }

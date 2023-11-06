@@ -15,9 +15,9 @@
 
 @section styles {
     <style>
-    .form-control + span {
-        margin-left: 5px;
-    }
+        .form-control + span {
+            margin-left: 5px;
+        }
     </style>
 }
 <abp-script src="/Pages/AirExports/AirExportHawb.js" />
@@ -133,8 +133,7 @@
         myWindow.focus()
     }
     function getHawbPrintAirExportHawb() {
-        var idNo = '@Model.AirExportHawbDto.Id';
-        myWindow = window.open("@Url.Action("HawbPrintAirExportHawb", "Docs")", 'width=1200,height=800');
+        myWindow = window.open("@Url.Action("HawbPrintAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })", 'Empty', 'width=1200,height=800');
         myWindow.focus()
     }
     isHawbLocked;
@@ -179,7 +178,7 @@
             @{
                 Model.Title = string.IsNullOrEmpty(Model.AirExportHawbDto.HawbNo) ? (_currentUser.Name + " " + _currentUser.SurName) : Model.AirExportHawbDto.HawbNo;
             }
-            HAWB Information - @Model.Title
+            HAWB @L["Information"] - @Model.Title
         </abp-card-title>
         <div class="btn-group dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
@@ -205,7 +204,7 @@
                                             <i class="fa fa-lock"></i> @L["Btn:Lock"]
                                         }
                                     </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="copyHawb('@Model.AirExportHawbDto.Id')">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="copyHawb('@Model.AirExportHawbDto.Id', 'AirExportHawbDto_Id')">
                     <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                 </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="deleteHawb()">
@@ -368,7 +367,7 @@
                 <abp-row>
                     <abp-column>
                         @L["WT/VAL"]
-                        <abp-radio asp-for="@Model.AirExportHawbDto.WTVAL" asp-items="@Model.WtValOtherList" inline="true" />
+                        <abp-radio asp-for="@Model.AirExportHawbDto.WTVAL" asp-items="@_dropdown.WtValOtherLookupList" inline="true" />
                     </abp-column>
                 </abp-row>
             </abp-column>
@@ -376,7 +375,7 @@
                 <abp-row>
                     <abp-column>
                         @L["Other"]
-                        <abp-radio asp-for="@Model.AirExportHawbDto.Other" asp-items="@Model.WtValOtherList" inline="true" />
+                        <abp-radio asp-for="@Model.AirExportHawbDto.Other" asp-items="@_dropdown.OtherLookupList" inline="true" />
                     </abp-column>
                 </abp-row>
             </abp-column>
@@ -450,19 +449,19 @@
                             <br />
                             <tbody>
                                 <tr>
-                                    <th class="packageTable">@L["GrossWeightSHPR"]</th>
+                                    <th class="packageTable">@L["GrossWeight(SHPR)"]</th>
                                     <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.GrossWeightShprKG" class="form-control form-control-sm mr-1" onkeyup="AirExportHawb.KgLbConversion(event, 'KG')" /><span>@L["KG"]</span></div></td>
                                     <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.GrossWeightShprLB" class="form-control form-control-sm mr-1" onkeyup="AirExportHawb.KgLbConversion(event, 'LB')" /><span>@L["LB"]</span></div></td>
                                     <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.GrossWeightShprAmount" class="form-control form-control-sm mr-1" /><span>@L["Amount"]</span></div></td>
                                 </tr>
                                 <tr>
-                                    <th class="packageTable">@L["GrossWeightCNEE"]</th>
+                                    <th class="packageTable">@L["GrossWeight(CNEE)"]</th>
                                     <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.GrossWeightCneeKG" class="form-control form-control-sm mr-1" onkeyup="AirExportHawb.KgLbConversion(event, 'KG')" /><span>@L["KG"]</span></div></td>
                                     <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.GrossWeightCneeLB" class="form-control form-control-sm mr-1" onkeyup="AirExportHawb.KgLbConversion(event, 'LB')" /><span>@L["LB"]</span></div></td>
                                     <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.GrossWeightCneeAmount" class="form-control form-control-sm mr-1" /><span>@L["Amount"]</span></div></td>
                                 </tr>
                                 <tr>
-                                    <th class="packageTable">@L["ChargeableWeightSHPR"]</th>
+                                    <th class="packageTable">@L["ChargeableWeight(SHPR)"]</th>
                                     <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprKG" class="form-control form-control-sm mr-1" onkeyup="AirExportHawb.KgLbConversion(event, 'KG')" /><span>@L["KG"]</span></div></td>
                                     <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprLB" class="form-control form-control-sm mr-1" onkeyup="AirExportHawb.KgLbConversion(event, 'LB')" /><span>@L["LB"]</span></div></td>
                                     <td><div class="d-flex align-items-center"><input asp-for="@Model.AirExportHawbDto.ChargeableWeightShprAmount" class="form-control form-control-sm mr-1" /><span>@L["Amount"]</span></div></td>

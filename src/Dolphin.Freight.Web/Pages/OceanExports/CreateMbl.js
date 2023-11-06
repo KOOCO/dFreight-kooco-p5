@@ -131,78 +131,79 @@
 
     //});
 
-    $("#saveEditBtn").click(function () {
-        debugger;
-        var OfficeId = $("#mOfficeId").val();
-        if (OfficeId == "" || OfficeId == "00000000-0000-0000-0000-000000000000") {
-            $("#err_OfficeId").show();
-        } else {
-            $("#mMblSalesTypeId").val($("#MblSalesTypeId").val());
-            $("#mPreCarriageVesselNameId").val($("#PreCarriageVesselNameId").val());
-            $("#mSvcTermFromId").val($("#SvcTermFromId").val());
-            $("#mSvcTermToId").val($("#SvcTermToId").val());
-            $("#mShipModeId").val($("#ShipModeId").val());
-            $("#mFreightTermId").val($("#FreightTermId").val());
-            $("#mBlTypeId").val($("#BlTypeId").val());
-            $("#mMblCarrierId").val($("#MblCarrierId").val());
-            $("#mBlAcctCarrierId").val($("#BlAcctCarrierId").val());
-            $("#mShippingAgentId").val($("#ShippingAgentId").val());
-            $("#mMblOverseaAgentId").val($("#MblOverseaAgentId").val());
-            $("#mMblNotifyId").val($("#MblNotifyId").val());
-            $("#mMblReferralById").val($("#MblReferralById").val());
-            $("#mEmptyPickupId").val($("#EmptyPickupId").val());
-            $("#mDeliveryToId").val($("#DeliveryToId").val());
-            $("#mCoLoaderId").val($("#CoLoaderId").val());
-            $("#mForwardingAgentId").val($("#ForwardingAgentId").val());
-            $("#mCareOfId").val($("#CareOfId").val());
-            $("#mPorId").val($("#PorId").val());
-            $("#mPolId").val($("#PolId").val());
-            $("#mPodId").val($("#PodId").val());
-            $("#mDelId").val($("#DelId").val());
-            $("#mFdestId").val($("#FdestId").val());
-            $("#mTransPort1Id").val($("#TransPort1Id").val());
-            $("#hCargoTypeId").val($("#CargoTypeId").val());
-            $("#hHSvcTermFromId").val($("#HSvcTermFromId").val());
-            $("#hHSvcTermToId").val($("#HSvcTermToId").val());
-            $("#hHShipModeId").val($("#HShipModeId").val());
-            $("#hFreightTermForBuyerId").val($("#FreightTermForBuyerId").val());
-            $("#hFreightTermForSalerId").val($("#FreightTermForSalerId").val());
-            $("#hHblCustomerId").val($("#HblCustomerId").val());
-            $("#hHblShipperId").val($("#HblShipperId").val());
-            $("#hHblBillToId").val($("#HblBillToId").val());
-            $("#hHblConsigneeId").val($("#HblConsigneeId").val());
-            $("#hHblNotifyId").val($("#HblNotifyId").val());
-            $("#hCustomsBrokerId").val($("#CustomsBrokerId").val());
-            $("#hTruckerId").val($("#TruckerId").val());
-            $("#hAgentId").val($("#AgentId").val());
-            $("#hHblForwardingAgentId").val($("#HblForwardingAgentId").val());
-            $("#hReceivingAgentId").val($("#ReceivingAgentId").val());
-            $("#hFbaFcId").val($("#FbaFcId").val());
-            $("#hHEmptyPickupId").val($("#HEmptyPickupId").val());
-            $("#hHDeliveryToId").val($("#HDeliveryToId").val());
-            $("#hHMblReferralById").val($("#HMblReferralById").val());
-            $("#hHPorId").val($("#HPorId").val());
-            $("#hHPodId").val($("#HPodId").val());
-            $("#hHDelId").val($("#HDelId").val());
-            $("#hHFdestId").val($("#HFdestId").val());
-            $("#mMblCarrierContent").val($("#MblCarrierContent").val());
-            $("#mBlAcctCarrierContent").val($("#BlAcctCarrierContent").val());
-            $("#mShippingAgentContent").val($("#ShippingAgentContent").val());
-            $("#mMblOverseaAgentContent").val($("#MblOverseaAgentContent").val());
-            $("#mMblNotifyContent").val($("#MblNotifyContent").val());
-            $("#mForwardingAgentContent").val($("#ForwardingAgentContent").val());
-            $("#mCoLoaderContent").val($("#CoLoaderContent").val());
-            $("#mCareOfContent").val($("#CareOfContent").val());
-            $("#mEmptyPickupContent").val($("#EmptyPickupContent").val());
-            $("#mDeliveryToContent").val($("#DeliveryToContent").val());
-            $("#mMblReferralByContent").val($("#MblReferralByContent").val());
-            $("#mCancelById").val($("#CancelById").val());
-            $("#mCancelReason").val($("#CancelReason").val());
-            $("#mOblTypeId").val($("#OblTypeId").val());
-            $("#editForm").submit();
-        }
+    //$("#saveEditBtn").click(function () {
+    //    debugger;
+    //    var OfficeId = $("#mOfficeId").val();
+    //    if (OfficeId == "" || OfficeId == "00000000-0000-0000-0000-000000000000") {
+    //        $("#err_OfficeId").show();
+    //    } else {
+    //        $("#mMblSalesTypeId").val($("#MblSalesTypeId").val());
+    //        $("#mPreCarriageVesselNameId").val($("#PreCarriageVesselNameId").val());
+    //        $("#mSvcTermFromId").val($("#SvcTermFromId").val());
+    //        $("#mSvcTermToId").val($("#SvcTermToId").val());
+    //        $("#mShipModeId").val($("#ShipModeId").val());
+    //        $("#mFreightTermId").val($("#FreightTermId").val());
+    //        $("#mBlTypeId").val($("#BlTypeId").val());
+    //        $("#mMblCarrierId").val($("#MblCarrierId").val());
+    //        $("#mBlAcctCarrierId").val($("#BlAcctCarrierId").val());
+    //        $("#mShippingAgentId").val($("#ShippingAgentId").val());
+    //        $("#mMblOverseaAgentId").val($("#MblOverseaAgentId").val());
+    //        $("#mMblNotifyId").val($("#MblNotifyId").val());
+    //        $("#mMblReferralById").val($("#MblReferralById").val());
+    //        $("#mEmptyPickupId").val($("#EmptyPickupId").val());
+    //        $("#mDeliveryToId").val($("#DeliveryToId").val());
+    //        $("#mCoLoaderId").val($("#CoLoaderId").val());
+    //        $("#mForwardingAgentId").val($("#ForwardingAgentId").val());
+    //        $("#mCareOfId").val($("#CareOfId").val());
+    //        debugger;
+    //        $("#mPorId").val($("#PorId").val());
+    //        $("#mPolId").val($("#PolId").val());
+    //        $("#mPodId").val($("#PodId").val());
+    //        $("#mDelId").val($("#DelId").val());
+    //        $("#mFdestId").val($("#FdestId").val());
+    //        $("#mTransPort1Id").val($("#TransPort1Id").val());
+    //        $("#hCargoTypeId").val($("#CargoTypeId").val());
+    //        $("#hHSvcTermFromId").val($("#HSvcTermFromId").val());
+    //        $("#hHSvcTermToId").val($("#HSvcTermToId").val());
+    //        $("#hHShipModeId").val($("#HShipModeId").val());
+    //        $("#hFreightTermForBuyerId").val($("#FreightTermForBuyerId").val());
+    //        $("#hFreightTermForSalerId").val($("#FreightTermForSalerId").val());
+    //        $("#hHblCustomerId").val($("#HblCustomerId").val());
+    //        $("#hHblShipperId").val($("#HblShipperId").val());
+    //        $("#hHblBillToId").val($("#HblBillToId").val());
+    //        $("#hHblConsigneeId").val($("#HblConsigneeId").val());
+    //        $("#hHblNotifyId").val($("#HblNotifyId").val());
+    //        $("#hCustomsBrokerId").val($("#CustomsBrokerId").val());
+    //        $("#hTruckerId").val($("#TruckerId").val());
+    //        $("#hAgentId").val($("#AgentId").val());
+    //        $("#hHblForwardingAgentId").val($("#HblForwardingAgentId").val());
+    //        $("#hReceivingAgentId").val($("#ReceivingAgentId").val());
+    //        $("#hFbaFcId").val($("#FbaFcId").val());
+    //        $("#hHEmptyPickupId").val($("#HEmptyPickupId").val());
+    //        $("#hHDeliveryToId").val($("#HDeliveryToId").val());
+    //        $("#hHMblReferralById").val($("#HMblReferralById").val());
+    //        $("#hHPorId").val($("#HPorId").val());
+    //        $("#hHPodId").val($("#HPodId").val());
+    //        $("#hHDelId").val($("#HDelId").val());
+    //        $("#hHFdestId").val($("#HFdestId").val());
+    //        $("#mMblCarrierContent").val($("#MblCarrierContent").val());
+    //        $("#mBlAcctCarrierContent").val($("#BlAcctCarrierContent").val());
+    //        $("#mShippingAgentContent").val($("#ShippingAgentContent").val());
+    //        $("#mMblOverseaAgentContent").val($("#MblOverseaAgentContent").val());
+    //        $("#mMblNotifyContent").val($("#MblNotifyContent").val());
+    //        $("#mForwardingAgentContent").val($("#ForwardingAgentContent").val());
+    //        $("#mCoLoaderContent").val($("#CoLoaderContent").val());
+    //        $("#mCareOfContent").val($("#CareOfContent").val());
+    //        $("#mEmptyPickupContent").val($("#EmptyPickupContent").val());
+    //        $("#mDeliveryToContent").val($("#DeliveryToContent").val());
+    //        $("#mMblReferralByContent").val($("#MblReferralByContent").val());
+    //        $("#mCancelById").val($("#CancelById").val());
+    //        $("#mCancelReason").val($("#CancelReason").val());
+    //        $("#mOblTypeId").val($("#OblTypeId").val());
+    //        $("#editForm").submit();
+    //    }
         
-    });
+    //});
     $("#OceanExportMbl_MblNo").change(function () {
         $("#title0").text($(this).val());
     });
@@ -215,6 +216,9 @@
     
     $("#OceanExportMbl_VesselName").change(function () {
         $("#title5").text('<i class="fa fa-anchor"></i>'+$(this).val());
+    });
+    $('#editForm').on('abp-ajax-success', function () {
+        location.reload();
     });
     $('#createForm').on('abp-ajax-success', function (result, rs) {
         debugger;

@@ -112,7 +112,7 @@
             });
 
             createMemoModal.onResult(function () {
-                memoDataTable.ajax.reload();
+                location.reload();
             });
             $(`#${memoTableId} thead th`).css({
                 
@@ -202,7 +202,7 @@ if (headerRow) {
                             dolphin.freight.common.memos.memo.delete(data.record.id)
                                 .then(function () {
                                     abp.notify.info(l('SuccessfullyDeleted'));
-                                    memoDataTable.ajax.reload();
+                                    location.reload();
                                 });
                         }
                     },
