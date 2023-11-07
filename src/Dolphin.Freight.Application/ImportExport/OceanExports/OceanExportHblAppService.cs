@@ -583,13 +583,16 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 await _repository.UpdateAsync(hbl);
             }
         }
-        public void SaveAssignContainerToHblAsync(OceanExportHblAppModel AppModel, bool IsSave = true)
+        public async void SaveAssignContainerToHblAsync(OceanExportHblAppModel AppModel, bool IsSave = true)
         {
             var Ids = AppModel.HblIds.ToList();
             var ContainerId = AppModel.Containersid;
             var MblId = AppModel.MblId;
 
-            var containers = _containerRepository.GetQueryableAsync().Result;
+            var containers = new List<Container>();
+
+            containers = await _containerRepository.GetListAsync();
+
             var containerList = containers.Where(w => w.MblId == MblId && w.Id == Guid.Parse(ContainerId)).ToList();
 
             foreach (var container in containers)
@@ -649,13 +652,17 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }
         }
 
-        public void SaveAssignSingleContainerNoToHblAsync(OceanExportHblAppModel AppModel, bool IsSave = true)
+        public async void SaveAssignSingleContainerNoToHblAsync(OceanExportHblAppModel AppModel, bool IsSave = true)
         {
             var MblId = AppModel.MblId;
             var HblIds = AppModel.HblIds.ToList();
             var UncheckedHblId = AppModel.UncheckedHblId;
             var ContainerId = AppModel.Containersid;
-            var containers = _containerRepository.GetQueryableAsync().Result;
+            
+            var containers = new List<Container>();
+
+            containers = await _containerRepository.GetListAsync();
+
             var containerList = containers.Where(w => w.MblId == MblId && w.Id == Guid.Parse(ContainerId)).ToList();
 
             foreach (var container in containerList)
