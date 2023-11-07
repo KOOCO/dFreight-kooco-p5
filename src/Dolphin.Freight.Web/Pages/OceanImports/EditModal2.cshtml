@@ -95,11 +95,19 @@
                 })
             })
             $("#deleteBtn").click(function () {
-                $("input[name='f0']:checked").each(function () {
+                $("input[name='f0']:checked").each(function (i, e) {
+                    if ($(e).attr('data-id') != '' && $(e).attr('data-id') != null && $(e).attr('data-id') != undefined) {
+                        dolphin.freight.importExport.containers.container.delete($(e).attr('data-id')).done(function () { });
+                    }
                     var tid = $(this).val();
                     $("#did_" + tid).val("1");
                     $("#tr_" + $(this).val()).hide();
                 });
+                $('#selectAllCheckboxes').prop('checked', false);
+                resetIndexes();
+                countPackageType('MBL');
+                countTotal('MBL', 'KG');
+                countTotalVolume('MBL', 'CBM');
             })
             
             $('#edit2Form').on('abp-ajax-success', function (result, rs) {
@@ -200,7 +208,31 @@
                 break;
             }
         }
-        
+
+        function resetIndexes() {
+            var newIndex = 0;
+            $("#trtbody tr:visible").each(function () {
+                if ($(this).attr("id").startsWith("tr_")) {
+                    $(this).attr("id", "tr_" + newIndex);
+
+                    $(this).find("input, div.input-group, select").each(function () {
+                        if (this.name) {
+                            this.name = this.name.replace(/\[.*?\]/, "[" + newIndex + "]");
+                        }
+                        if (this.id) {
+                            var parts = this.id.split("_");
+                            this.id = parts[0] + "_" + newIndex;
+                        }
+                    });
+
+                    $(this).find("td:eq(1)").text(newIndex + 1);
+                    newIndex++;
+                }
+            });
+
+            trindex = newIndex;
+        }
+
         function addPackageUnitNameddl(){
             dolphin.freight.settings.packageUnits.packageUnit.getPackageUnitsLookup({}).done(function (res) {
                 if (res.items != null && res.items.length > 0) {
@@ -225,10 +257,12 @@
         function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, mblId) {
             getHblCheckbox(mblId, value9, function (checkboxesHTML, headersHTML, currentIndex) {
                 if (!$('input[id^="hblHeaders_"]').length) {
-                    $('#trttable > tbody > tr:first > th:eq(10)').after(headersHTML);
+                    $('#trttable > tbody > tr:first > th:eq(11)').after(headersHTML);
                 }
 
+                var serialNo = trindex + 1;
                 var trhtml = "<tr class='tr' id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "' data-id='" + value9 + "'    /></td>"
+                trhtml = trhtml + "<td style='text-align: center;'>" + serialNo + "</td>"
                 trhtml = trhtml + `<td>${value7 === true ? '√' : ''}</td>`;
                 trhtml = trhtml + `<td>${value8 === true ? '√' : ''}</td>`;
                 trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' onkeyup='copyContainertoHBL(this, " + trindex + ")' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='importDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
@@ -913,7 +947,8 @@
                                         </abp-button>
                                     </div>
                                     <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;" id="trttable">
-                                        <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                        <tr style="border:1px;border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                            <th width="5%" style="text-align: center;"><input type="checkbox" id="selectAllCheckboxes" onclick="EditModel2.SelectAllCheckboxes(event)" /></th>
                                             <th width="5%"></th>
                                             <th width="5%">PP</th>
                                             <th width="5%">CTF</th>
@@ -953,13 +988,13 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colspan="7" align="right"><strong>Total:</strong></td>
+                                                <td colspan="8" align="right"><strong>Total:</strong></td>
                                                 <td id="totalPackageType"></td>
                                                 <td id="totalWeight"></td>
                                                 <td id="totalVolume"></td>
                                             </tr>
                                             <tr>
-                                                <td colspan="7" align="right"></td>
+                                                <td colspan="8" align="right"></td>
                                                 <td id="totalPackageTypeUnit"></td>
                                                 <td id="totalWeightUnit"></td>
                                                 <td id="totalVolumeUnit"></td>

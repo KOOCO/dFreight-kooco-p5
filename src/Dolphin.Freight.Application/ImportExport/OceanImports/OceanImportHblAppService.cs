@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Internal.Mappers;
+using Dolphin.Freight.EntityFrameworkCore;
 using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Permissions;
@@ -591,17 +592,17 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             }
         }
 
-        public async Task SaveAssignContainerToHblAsync(OceanImportHblAppModel AppModel, bool IsSave = true)
+        public void SaveAssignContainerToHblAsync(OceanImportHblAppModel AppModel, bool IsSave = true)
         {
             var Ids = AppModel.HblIds.ToList();
             var ContainerNo = AppModel.ContainerNo;
             var ContainerId = AppModel.Containersid;
             var MblId = AppModel.MblId;
             
-            var containers = await _containerAppService.GetContainerByMblId(MblId);
+            var containers = _containerRepository.GetListAsync().Result;
             var containerList = containers.Where(w => w.MblId == MblId && w.Id == Guid.Parse(ContainerId)).ToList();
 
-            foreach (var container in containers)
+            foreach (var container in containerList)
             {
                 if (IsSave)
                 {
@@ -613,7 +614,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     container.ExtraProperties.Remove("HblIds");
                 }
 
-                await _containerAppService.UpdateAsync(container.Id, container);
+                using (var dbContext = new FreightDbContextFactory().CreateDbContext(new string[] { }))
+                {
+                    dbContext.Update(container);
+                    dbContext.SaveChanges();
+                }
             }
         }
 
@@ -632,13 +637,13 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             }
         }
 
-        public async Task SaveAssignSingleContainerNoToHblAsync(OceanImportHblAppModel AppModel, bool IsSave = true)
+        public void SaveAssignSingleContainerNoToHblAsync(OceanImportHblAppModel AppModel, bool IsSave = true)
         {
             var MblId = AppModel.MblId;
             var HblIds = AppModel.HblIds.ToList();
             var UncheckedHblId = AppModel.UncheckedHblId;
             var ContainerId = AppModel.Containersid;
-            var containers = await _containerRepository.GetQueryableAsync();
+            var containers = _containerRepository.GetListAsync().Result;
             var containerList = containers.Where(w => w.MblId == MblId && w.Id == Guid.Parse(ContainerId)).ToList();
 
             foreach (var container in containerList)
@@ -651,8 +656,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     container.HblId = Guid.Empty;
                 }
 
-                var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
-                await _containerAppService.UpdateAsync(container.Id, dto);
+                using (var dbContext = new FreightDbContextFactory().CreateDbContext(new string[] { }))
+                {
+                    dbContext.Update(container);
+                    dbContext.SaveChanges();
+                }
             }
         }
 

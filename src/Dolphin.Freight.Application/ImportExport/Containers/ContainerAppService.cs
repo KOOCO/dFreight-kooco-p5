@@ -1,5 +1,7 @@
 ﻿using AutoMapper.Internal.Mappers;
+using Dolphin.Freight.EntityFrameworkCore;
 using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.ImportExport.OceanImports;
 using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
@@ -157,7 +159,7 @@ namespace Dolphin.Freight.ImportExport.Containers
             var container = list.Where(w => w.HblId == id).ToList();
             var containerDto = ObjectMapper.Map<List<Container>, List<CreateUpdateContainerDto>>(container);
 
-            return containerDto;
+            return containerDto.OrderByDescending(o => o.CreationTime).ToList();
         }
         public async Task<CreateUpdateContainerDto> GetContainerByBookingId(Guid id)
         {
@@ -195,7 +197,7 @@ namespace Dolphin.Freight.ImportExport.Containers
                 }
             }
 
-            return containerDtoList;
+            return containerDtoList.OrderByDescending(o => o.CreationTime).ToList();
         }
     }
 }

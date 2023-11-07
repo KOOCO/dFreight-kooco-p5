@@ -423,5 +423,17 @@ class EditModel2 {
 
         htrindex++;
     }
+
+    static SelectAllCheckboxes(e) {
+        if ($(e.currentTarget).prop('checked') || $(e.target).prop('checked') || $(e.srcElement).prop('checked')) {
+            $('input[id^="f0_"]').each(function (i, elem) {
+                $(elem).prop('checked', true);
+            });
+        } else {
+            $('input[id^="f0_"]:checked').each(function (i, elem) {
+                $(elem).prop('checked', false);
+            });
+        }
+    }
 }
 
