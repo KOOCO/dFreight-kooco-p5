@@ -210,7 +210,7 @@
                 case 'MBL':
                     var totalWgt = 0;
 
-                    for (var i = 0; i < $('#trtbody tr:not([style])').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f5_' + i).val());
                         if (!isNaN(cells)) {
                             totalWgt += cells;
@@ -240,7 +240,7 @@
                 default:
                     var totalWgt = 0;
 
-                    for (var i = 0; i < $('#trtbody tr:not([style])').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f5_' + i).val());
                         if (!isNaN(cells)) {
                             totalWgt += cells;
@@ -266,7 +266,7 @@
                 case 'MBL':
                     var totalVol = 0;
 
-                    for (var i = 0; i < $('#trtbody tr:not([style])').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f6_' + i).val());
                         if (!isNaN(cells)) {
                             totalVol += cells;
@@ -295,7 +295,7 @@
                 default:
                     var totalVol = 0;
 
-                    for (var i = 0; i < $('#trtbody tr:not([style])').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f6_' + i).val());
                         if (!isNaN(cells)) {
                             totalVol += cells;
@@ -320,7 +320,7 @@
                 case 'MBL':
                     var totalPKG = 0;
 
-                    for (var i = 0; i < $('#trtbody tr:not([style])').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f4_' + i).val());
                         if (!isNaN(cells)) {
                             totalPKG += cells;
@@ -341,7 +341,8 @@
                 default:
                     var totalPKG = 0;
 
-                    for (var i = 0; i < $('#trtbody tr:not([style])').length / 2; i++) {
+                    debugger;
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f4_' + i).val());
                         if (!isNaN(cells)) {
                             totalPKG += cells;

@@ -202,7 +202,7 @@ class EditModelOEContainer {
             let headersHTML = '';
             var tdindex = 0;
 
-            for (let hbl of res) {
+            for (let hbl of data) {
                 let dictHblContainers = JSON.stringify(hbl.hblContainerIdContains || {});
                 var checked = '';
 
