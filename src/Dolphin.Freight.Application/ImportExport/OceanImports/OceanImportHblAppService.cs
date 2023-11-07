@@ -637,7 +637,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             }
         }
 
-        public void SaveAssignSingleContainerNoToHblAsync(OceanImportHblAppModel AppModel, bool IsSave = true)
+        public async void SaveAssignSingleContainerNoToHblAsync(OceanImportHblAppModel AppModel, bool IsSave = true)
         {
             var MblId = AppModel.MblId;
             var HblIds = AppModel.HblIds.ToList();
@@ -656,10 +656,17 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     container.HblId = Guid.Empty;
                 }
 
-                using (var dbContext = new FreightDbContextFactory().CreateDbContext(new string[] { }))
+                try
                 {
-                    dbContext.Update(container);
-                    dbContext.SaveChanges();
+                    await _containerRepository.UpdateAsync(container);
+                }
+                catch (Exception)
+                {
+                    using (var dbContext = new FreightDbContextFactory().CreateDbContext(new string[] { }))
+                    {
+                        dbContext.Update(container);
+                        dbContext.SaveChanges();
+                    }
                 }
             }
         }

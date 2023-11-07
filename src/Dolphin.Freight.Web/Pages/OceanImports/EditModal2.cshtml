@@ -25,19 +25,39 @@
                 if (result != null && result.length > 0) {
                     containerSizes = result;
                     dolphin.freight.importExport.containers.container.queryList({ QueryId: '@Model.Id' }).done(function (result) {
-                        if (result != null && result.length > 0) {
-                            for (var i = 0; i < result.length; i++) {
-                                var value1 = result[i].containerNo;
-                                var value2 = result[i].containerSizeId;
-                                var value3 = result[i].sealNo;
-                                var value4 = result[i].packageNum;
-                                var value5 = result[i].packageWeight;
-                                var value6 = result[i].packageMeasure;
-                                var value7 = result[i].isPP;
-                                var value8 = result[i].isCTF;
-                                var value9 = result[i].id;
-                                addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, '@Model.OceanImportMbl.Id');
+                        console.log(result);
+                        var res = result;
+                        if (res != null && res.length > 0) {
+                            var containerJson = [];
+                            for (var i = 0; i < res.length; i++) {
+                                var value1 = res[i].containerNo;
+                                var value2 = res[i].containerSizeId;
+                                var value3 = res[i].sealNo;
+                                var value4 = res[i].packageNum;
+                                var value5 = res[i].packageWeight;
+                                var value6 = res[i].packageMeasure;
+                                var value7 = res[i].isPP;
+                                var value8 = res[i].isCTF;
+                                var value9 = res[i].id;
+                                addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, '@Model.OceanImportMbl.Id', containerJson);
+                                
                             }
+                            
+                            //containerJson.forEach(function(e, i) {
+                            //    debugger;
+                            //    newTrTag(e.value1, e.value2, e.value3, e.value4, e.value5, e.value6, e.value7, e.value8, e.value9, e.mblId, e.checkboxesHTML, e.headersHTML)
+                            //});
+                            //console.log(containerJson);
+                            Promise.allSettled(containerJson).then(function(res1){
+                                var result1 = res1[0].value;
+                                console.log(result1);
+                                result1.forEach(function(e, i){
+                                    debugger;
+                                    console.log(e);
+                                    newTrTag(e.value1, e.value2, e.value3, e.value4, e.value5, e.value6, e.value7, e.value8, e.value9, e.mblId, e.checkboxesHTML, e.headersHTML);
+                                });
+                            })
+
                             countTotal('HBL');
                             countTotalVolume('HBL');
                             countPackageType('HBL');
@@ -55,16 +75,6 @@
                             }
                         }
                     });
-                    //dolphin.freight.importExport.containers.container.getContainersByExtraPropertiesHblIds(hblId).done(function(result1){
-                    //    if (result1 != null && result1.length > 0) {
-                    //        for (var i = 0; i < result1.length; i++) {
-                    //            var containerNo = result1[i].containerNo;
-                    //            var containerId = result1[i].id;
-                    //            var hblid = result1[i].hblId;
-                    //            EditModel2.AddHblContainerTr(containerNo, containerId, hblid);
-                    //        }
-                    //    }
-                    //});
                 }
             });
             
@@ -254,58 +264,141 @@
             addTrTag("", "", "", "", "", "", "", "", "", '@Model.OceanImportMbl.Id');
         }
         var checkboxIndex = 0;
-        function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, mblId) {
-            getHblCheckbox(mblId, value9, function (checkboxesHTML, headersHTML, currentIndex) {
-                if (!$('input[id^="hblHeaders_"]').length) {
-                    $('#trttable > tbody > tr:first > th:eq(11)').after(headersHTML);
-                }
-
-                var serialNo = trindex + 1;
-                var trhtml = "<tr class='tr' id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "' data-id='" + value9 + "'    /></td>"
-                trhtml = trhtml + "<td style='text-align: center;'>" + serialNo + "</td>"
-                trhtml = trhtml + `<td>${value7 === true ? '√' : ''}</td>`;
-                trhtml = trhtml + `<td>${value8 === true ? '√' : ''}</td>`;
-                trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' onkeyup='copyContainertoHBL(this, " + trindex + ")' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='importDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
-                trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
-                trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
-                trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
-                trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Id' class='form-control' value='" + value9 + "' /><i class='fa fa-calculator' id='fCalc_" + trindex + "' data-containerid='" + value9 + "' onclick='EditModel2.openPopUp(" + trindex + ")' style='font-size: 24px; cursor: pointer;'></i></td>"
-                trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
-                trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
-                trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
-                trhtml = trhtml + "<td style='display: none;'><input type='checkbox' id='selectAllAssignContainerCheckbox_" + trindex + "' style='cursor: pointer;'></td>"
-                trhtml = trhtml + checkboxesHTML
-                trhtml = trhtml + "</tr>"
-                trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
-                trhtml = trhtml + "</tr>"
-                $("#trtbody").append(trhtml);
-                $('input[id^="assignContainerCheckbox_' + trindex + '_"]').attr('data-containerno', $('#f1_' + trindex).val());
-
-                var currentIndex = trindex;
-
-                var checkboxesToCheck = $('input[id^="assignContainerCheckbox_' + currentIndex + '_"]');
-                var allChecked = true;
-
-                checkboxesToCheck.each(function () {
-                    if (!$(this).prop('checked')) {
-                        allChecked = false;
-                        return false;
+        var containerJson1  = [];
+        var proimises = [];
+        function addTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, mblId, containerJson) {
+            console.log('Before callback container no: ' + value9);
+            containerJson1.push({value1: value1, value2: value2, value3: value3, value4: value4, value5: value5, value6: value6, value7: value7, value8: value8, mblId: mblId, containerId: value9});
+            var prom = new Promise(function (resolve, reject) {
+                getHblCheckbox(mblId, value9, function (checkboxesHTML, headersHTML, currentIndex) {
+                    var container = containerJson1.filter(f => f.containerId == value9);
+                    if (container && container.length) {
+                        container[0].checkboxesHTML = checkboxesHTML;
+                        container[0].headersHTML = headersHTML;
+                        container[0].currentIndex = currentIndex;
                     }
+                    debugger;
+                    resolve(container); // Resolve the promise when the operation is complete
                 });
-
-                $("#selectAllAssignContainerCheckbox_" + trindex).prop('checked', allChecked);
-
-                $("#selectAllAssignContainerCheckbox_" + currentIndex).click(function () {
-                    $('input[id^="assignContainerCheckbox_' + currentIndex + '_"]').prop('checked', $(this).prop('checked'));
-                    EditModel2.SaveHorizontalHBLContainer(this, currentIndex);
-                });
-                trindex++;
-                countPackageType('MBL');
-                countTotal('MBL', 'KG');
-                countTotalVolume('MBL', 'CBM');
-
-                updateHeaderCheckboxes();
             });
+            containerJson.push(containerJson1);
+            containerJson.push(prom);
+
+            //getHblCheckbox(mblId, value9, function (checkboxesHTML, headersHTML, currentIndex) {
+
+            //    var container = containerJson.filter(f => f.containerId == value9);
+            //    if(container && container.length){
+            //        container[0].checkboxesHTML = checkboxesHTML;
+            //        container[0].headersHTML = headersHTML;
+            //        container[0].currentIndex = currentIndex;
+            //    }
+            //    debugger;
+            //});
+        }
+                //if (!$('input[id^="hblHeaders_"]').length) {
+                //    $('#trttable > tbody > tr:first > th:eq(11)').after(headersHTML);
+                //}
+                
+                //console.log('After callback container no: ' + value9);
+                //var serialNo = trindex + 1;
+                //var trhtml = "<tr class='tr' id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "' data-id='" + value9 + "'    /></td>"
+                //trhtml = trhtml + "<td style='text-align: center;'>" + serialNo + "</td>"
+                //trhtml = trhtml + `<td>${value7 === true ? '√' : ''}</td>`;
+                //trhtml = trhtml + `<td>${value8 === true ? '√' : ''}</td>`;
+                //trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' onkeyup='copyContainertoHBL(this, " + trindex + ")' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='importDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
+                //trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
+                //trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
+                //trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
+                //trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Id' class='form-control' value='" + value9 + "' /><i class='fa fa-calculator' id='fCalc_" + trindex + "' data-containerid='" + value9 + "' onclick='EditModel2.openPopUp(" + trindex + ")' style='font-size: 24px; cursor: pointer;'></i></td>"
+                //trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
+                //trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
+                //trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
+                //trhtml = trhtml + "<td style='display: none;'><input type='checkbox' id='selectAllAssignContainerCheckbox_" + trindex + "' style='cursor: pointer;'></td>"
+                //trhtml = trhtml + checkboxesHTML
+                //trhtml = trhtml + "</tr>"
+                //trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
+                //trhtml = trhtml + "</tr>"
+                //debugger;
+                //$("#trtbody").append(trhtml);
+                //$('input[id^="assignContainerCheckbox_' + trindex + '_"]').attr('data-containerno', $('#f1_' + trindex).val());
+
+                //var currentIndex = trindex;
+
+                //var checkboxesToCheck = $('input[id^="assignContainerCheckbox_' + currentIndex + '_"]');
+                //var allChecked = true;
+
+                //checkboxesToCheck.each(function () {
+                //    if (!$(this).prop('checked')) {
+                //        allChecked = false;
+                //        return false;
+                //    }
+                //});
+
+                //$("#selectAllAssignContainerCheckbox_" + trindex).prop('checked', allChecked);
+
+                //$("#selectAllAssignContainerCheckbox_" + currentIndex).click(function () {
+                //    $('input[id^="assignContainerCheckbox_' + currentIndex + '_"]').prop('checked', $(this).prop('checked'));
+                //    EditModel2.SaveHorizontalHBLContainer(this, currentIndex);
+                //});
+                //trindex++;
+                //countPackageType('MBL');
+                //countTotal('MBL', 'KG');
+                //countTotalVolume('MBL', 'CBM');
+
+                //updateHeaderCheckboxes();
+
+        function newTrTag(value1, value2, value3, value4, value5, value6, value7, value8, value9, mblId, checkboxesHTML, headersHTML) {
+            if (!$('input[id^="hblHeaders_"]').length) {
+                $('#trttable > tbody > tr:first > th:eq(11)').after(headersHTML);
+            }
+
+            console.log(headersHTML);
+            var serialNo = trindex + 1;
+            var trhtml = "<tr class='tr' id='tr_" + trindex + "'><td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "' data-id='" + value9 + "'    /></td>"
+            trhtml = trhtml + "<td style='text-align: center;'>" + serialNo + "</td>"
+            trhtml = trhtml + `<td>${value7 === true ? '√' : ''}</td>`;
+            trhtml = trhtml + `<td>${value8 === true ? '√' : ''}</td>`;
+            trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' onkeyup='copyContainertoHBL(this, " + trindex + ")' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> <div class='input-group-append'><button type='button'  onclick='importDiv(\"" + trindex + "\");' >+</button> </div></div></td>"
+            trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblId' value='@Model.Id' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='1' />";
+            trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
+            trhtml = trhtml + "<td><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Id' class='form-control' value='" + value9 + "' /><i class='fa fa-calculator' id='fCalc_" + trindex + "' data-containerid='" + value9 + "' onclick='EditModel2.openPopUp(" + trindex + ")' style='font-size: 24px; cursor: pointer;'></i></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum' onkeyup='countPackageType()' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeight' onkeyup='countTotal()' id='f5_" + trindex + "' class='form-control packageWeight' value='" + value5 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasure' onkeyup='countTotalVolume()' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
+            trhtml = trhtml + "<td style='display: none;'><input type='checkbox' id='selectAllAssignContainerCheckbox_" + trindex + "' style='cursor: pointer;'></td>"
+            trhtml = trhtml + checkboxesHTML
+            trhtml = trhtml + "</tr>"
+            trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
+            trhtml = trhtml + "</tr>"
+           
+            $("#trtbody").append(trhtml);
+            $('input[id^="assignContainerCheckbox_' + trindex + '_"]').attr('data-containerno', $('#f1_' + trindex).val());
+
+            var currentIndex = trindex;
+
+            var checkboxesToCheck = $('input[id^="assignContainerCheckbox_' + currentIndex + '_"]');
+            var allChecked = true;
+
+            checkboxesToCheck.each(function () {
+                if (!$(this).prop('checked')) {
+                    allChecked = false;
+                    return false;
+                }
+            });
+
+            $("#selectAllAssignContainerCheckbox_" + trindex).prop('checked', allChecked);
+
+            $("#selectAllAssignContainerCheckbox_" + currentIndex).click(function () {
+                $('input[id^="assignContainerCheckbox_' + currentIndex + '_"]').prop('checked', $(this).prop('checked'));
+                EditModel2.SaveHorizontalHBLContainer(this, currentIndex);
+            });
+            trindex++;
+            countPackageType('MBL');
+            countTotal('MBL', 'KG');
+            countTotalVolume('MBL', 'CBM');
+
+            updateHeaderCheckboxes();
         }
 
         function updateHeaderCheckboxes() {
@@ -962,6 +1055,7 @@
                                             <th></th>
                                         </tr>
                                         <tr>
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                             <td></td>

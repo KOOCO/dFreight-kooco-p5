@@ -45,7 +45,7 @@ namespace Dolphin.Freight.ImportExport.Containers
             {
                 Containers = Containers.Where(x => x.MblId.Equals(query.QueryId)).ToList();
             }
-            var list = ObjectMapper.Map<List<Container>, List<ContainerDto>>(Containers.OrderByDescending(o => o.CreationTime).ToList());
+            var list = ObjectMapper.Map<List<Container>, List<ContainerDto>>(Containers.OrderBy(o => o.CreationTime).ToList());
             return list;
         }
 
@@ -178,7 +178,7 @@ namespace Dolphin.Freight.ImportExport.Containers
 
             var containerDto = ObjectMapper.Map<List<Container>, List<CreateUpdateContainerDto>>(container);
 
-            return containerDto.OrderByDescending(o => o.CreationTime).ToList();
+            return containerDto.OrderByDescending(o => o.LastModificationTime).ToList();
         }
         public async Task<CreateUpdateContainerDto> GetContainerByBookingId(Guid id)
         {
