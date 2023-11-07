@@ -55,16 +55,16 @@
                             }
                         }
                     });
-                    dolphin.freight.importExport.containers.container.getContainersByExtraPropertiesHblIds(hblId).done(function(result1){
-                        if (result1 != null && result1.length > 0) {
-                            for (var i = 0; i < result1.length; i++) {
-                                var containerNo = result1[i].containerNo;
-                                var containerId = result1[i].id;
-                                var hblid = result1[i].hblId;
-                                EditModel2.AddHblContainerTr(containerNo, containerId, hblid);
-                            }
-                        }
-                    });
+                    //dolphin.freight.importExport.containers.container.getContainersByExtraPropertiesHblIds(hblId).done(function(result1){
+                    //    if (result1 != null && result1.length > 0) {
+                    //        for (var i = 0; i < result1.length; i++) {
+                    //            var containerNo = result1[i].containerNo;
+                    //            var containerId = result1[i].id;
+                    //            var hblid = result1[i].hblId;
+                    //            EditModel2.AddHblContainerTr(containerNo, containerId, hblid);
+                    //        }
+                    //    }
+                    //});
                 }
             });
             

@@ -45,7 +45,7 @@ namespace Dolphin.Freight.ImportExport.Containers
             {
                 Containers = Containers.Where(x => x.MblId.Equals(query.QueryId)).ToList();
             }
-            var list = ObjectMapper.Map<List<Container>, List<ContainerDto>>(Containers.ToList());
+            var list = ObjectMapper.Map<List<Container>, List<ContainerDto>>(Containers.OrderByDescending(o => o.CreationTime).ToList());
             return list;
         }
 
@@ -157,6 +157,25 @@ namespace Dolphin.Freight.ImportExport.Containers
         {
             var list = await Repository.GetListAsync();
             var container = list.Where(w => w.HblId == id).ToList();
+
+            var containerWithExtraProp = list.Where(w => w.ExtraProperties != null && w.ExtraProperties.Count > 0).ToList();
+
+            if (containerWithExtraProp.Count > 0)
+            {
+                foreach (var item in containerWithExtraProp)
+                {
+                    object extraProp = item.ExtraProperties.GetValueOrDefault("HblIds");
+
+                    if (extraProp is not null)
+                    {
+                        if (extraProp.ToString().Contains(Convert.ToString(id)))
+                        {
+                            container.Add(item);
+                        }
+                    }
+                }
+            }
+
             var containerDto = ObjectMapper.Map<List<Container>, List<CreateUpdateContainerDto>>(container);
 
             return containerDto.OrderByDescending(o => o.CreationTime).ToList();
