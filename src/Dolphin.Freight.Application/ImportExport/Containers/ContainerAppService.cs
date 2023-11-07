@@ -178,7 +178,7 @@ namespace Dolphin.Freight.ImportExport.Containers
 
             var containerDto = ObjectMapper.Map<List<Container>, List<CreateUpdateContainerDto>>(container);
 
-            return containerDto.OrderByDescending(o => o.LastModificationTime).ToList();
+            return containerDto.ToList();
         }
         public async Task<CreateUpdateContainerDto> GetContainerByBookingId(Guid id)
         {

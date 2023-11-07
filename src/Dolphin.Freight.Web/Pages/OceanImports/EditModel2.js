@@ -58,49 +58,14 @@ async function getHblCheckbox(mblId, currentContainerId, callback) {
             tdindex++;
             headerTdIndex++;
         }
-        callback(checkboxesHTML, headersHTML, checkboxIndex);
         checkboxIndex++;
+
+        return [checkboxesHTML, headersHTML, checkboxIndex];
     } catch (error) {
-        // Handle any errors that may occur during the asynchronous operation.
         console.error(error);
     }
 }
 
-
-//function getHblCheckbox(mblId, currentContainerId, callback) {
-//    dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(mblId, true, 1, currentContainerId).done(function (data) {
-//        var checkboxesHTML = '';
-//        var headersHTML = '';
-//        var tdindex = 0;
-
-//        for (var hbl of data) {
-//            let dictHblContainers = JSON.stringify(hbl.hblContainerIdContains || {});
-//            var checked = '';
-
-//            if (dictHblContainers && dictHblContainers != '{}') {
-//                let dict = JSON.parse(dictHblContainers.replace('{', '[{').concat(']'));
-
-//                var filter = dict.filter(f => f[hbl.id]);
-
-//                if (filter && filter.length) {
-//                    checked = Object.values(filter[0])[0] == currentContainerId ? 'checked' : '';
-//                }
-//            }
-
-//            if (hbl.hblVerticalContainers != null) {
-//                var verticalChecked = hbl.hblVerticalContainers.includes(currentContainerId) ? 'checked' : '';
-//            }
-
-//            checkboxesHTML += `<td style='display: none;'><input type='checkbox' data-id='${hbl.id}' data-containerNo='' data-containerid='${hbl.hblContainers}' data-mblid='${mblId}' onclick='EditModel2.SaveHBLContainer(this)' id='assignContainerCheckbox_${checkboxIndex}_${tdindex}' ${checked} ${verticalChecked} style='cursor: pointer;'></td>`;
-//            headersHTML += `<th style="text-align: center; display: none;"><div style="background-color: ${hbl.cardColorValue}; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto;"></div><input type="checkbox" data-hblid='${hbl.id}' onclick="checkAllHeaderCheckbox(this, '${checkboxIndex}', '${tdindex}')" id="hblHeaders_${hbl.hblNo}" name="hblHeaders_${tdindex}" style="cursor: pointer; margin-top: 10px;"></th>`;
-//            tdindex++;
-//            headerTdIndex++;
-//        }
-        
-//        callback(checkboxesHTML, headersHTML, checkboxIndex);
-//        checkboxIndex++;
-//    });
-//}
 
 function checkContainerHasHblIdAsync(mblId, hblId) {
     return new Promise((resolve, reject) => {
@@ -345,9 +310,8 @@ class EditModel2 {
                                 location.reload();
                             });
                         }
-
-                        location.reload();
                     })
+                    
                 } else {
                     var url = new URL(window.location.href);
                     var hblIds = [];
@@ -357,7 +321,6 @@ class EditModel2 {
                         var hblId = $(e).attr('data-id');
                         hblIds.push(hblId);
                     });
-                    debugger;
                     var containerId = $('input[name="CreateUpdateContainerDtos[' + index + '].Id"]').attr('value');
                     var AppModel = { MblId: mblId, HblIds: hblIds, Containersid: containerId };
                     dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignSingleContainerNoToHbl(AppModel).done(function (res) { }).then(function () {
