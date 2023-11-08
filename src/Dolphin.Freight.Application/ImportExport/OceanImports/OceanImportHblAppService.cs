@@ -11,11 +11,13 @@ using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NPOI.HSSF.Record.Chart;
 using NPOI.POIFS.Crypt.Dsig.Facets;
 using NPOI.SS.Formula.Functions;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Crypto;
 using System;
 using System.Collections.Generic;
@@ -617,10 +619,19 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     container.ExtraProperties.Remove("HblIds");
                 }
 
-                using (var dbContext = new FreightDbContextFactory().CreateDbContext(new string[] { }))
+                IHttpContextAccessor Http = new HttpContextAccessor();
+
+                if (Http.HttpContext.Request.Host.Host == "localhost")
                 {
-                    dbContext.Update(container);
-                    dbContext.SaveChanges();
+                    using (var dbContext = new FreightDbContextFactory().CreateDbContext(new string[] { }))
+                    {
+                        dbContext.Update(container);
+                        dbContext.SaveChanges();
+                    }
+                }
+                else
+                {
+                  await _containerRepository.UpdateAsync(container);
                 }
             }
         }
@@ -663,10 +674,19 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     container.HblId = Guid.Empty;
                 }
 
-                using (var dbContext = new FreightDbContextFactory().CreateDbContext(new string[] { }))
+                IHttpContextAccessor Http = new HttpContextAccessor();
+
+                if (Http.HttpContext.Request.Host.Host == "localhost")
                 {
-                    dbContext.Update(container);
-                    dbContext.SaveChanges();
+                    using (var dbContext = new FreightDbContextFactory().CreateDbContext(new string[] { }))
+                    {
+                        dbContext.Update(container);
+                        dbContext.SaveChanges();
+                    }
+                }
+                else
+                {
+                  await _containerRepository.UpdateAsync(container);
                 }
             }
         }

@@ -26,6 +26,7 @@ using NPOI.SS.Formula.Functions;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Dolphin.Freight.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -607,10 +608,19 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     container.ExtraProperties.Remove("HblIds");
                 }
 
-                using (var dbContext = new FreightDbContextFactory().CreateDbContext(new string[] { }))
+                IHttpContextAccessor Http = new HttpContextAccessor();
+
+                if (Http.HttpContext.Request.Host.Host == "localhost")
                 {
-                    dbContext.Update(container);
-                    dbContext.SaveChanges();
+                    using (var dbContext = new FreightDbContextFactory().CreateDbContext(new string[] { }))
+                    {
+                        dbContext.Update(container);
+                        dbContext.SaveChanges();
+                    }
+                }
+                else
+                {
+                    await _containerRepository.UpdateAsync(container);
                 }
             }
         }
@@ -674,11 +684,20 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 {
                     container.HblId = Guid.Empty;
                 }
-                
-                using (var dbContext = new FreightDbContextFactory().CreateDbContext(new string[] { }))
+
+                IHttpContextAccessor Http = new HttpContextAccessor();
+
+                if (Http.HttpContext.Request.Host.Host == "localhost")
                 {
-                    dbContext.Update(container);
-                    dbContext.SaveChanges();
+                    using (var dbContext = new FreightDbContextFactory().CreateDbContext(new string[] { }))
+                    {
+                        dbContext.Update(container);
+                        dbContext.SaveChanges();
+                    }
+                } 
+                else
+                {
+                    await _containerRepository.UpdateAsync(container);
                 }
             }
         }

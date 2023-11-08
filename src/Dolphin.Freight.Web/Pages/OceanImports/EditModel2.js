@@ -265,7 +265,9 @@ class EditModel2 {
             var AppModel = { HblIds: ids, ContainerNo: container, Containersid: containerid, MblId: mblId };
 
             dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignContainerToHbl(AppModel, false).done(function (res) { }).then(function () {
-                location.reload();
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
             });
 
             location.reload();
@@ -282,7 +284,9 @@ class EditModel2 {
 
             var AppModel = { HblIds: ids, ContainerNo: container, Containersid: containerid, MblId: mblId };
             dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignContainerToHbl(AppModel).done(function (res) { }).then(function () {
-                location.reload();
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
             });
 
             location.reload();
@@ -307,7 +311,9 @@ class EditModel2 {
                         if (confirmed) {
                             var AppModel = { MblId: mblId, HblIds: hblIds, Containersid: containerId, UncheckedHblId: uncheckedHbl };
                             dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignSingleContainerNoToHbl(AppModel, false).done(function (res) { }).then(function () {
-                                location.reload();
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2000);
                             });
                         }
                     })
@@ -324,7 +330,9 @@ class EditModel2 {
                     var containerId = $('input[name="CreateUpdateContainerDtos[' + index + '].Id"]').attr('value');
                     var AppModel = { MblId: mblId, HblIds: hblIds, Containersid: containerId };
                     dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignSingleContainerNoToHbl(AppModel).done(function (res) { }).then(function () {
-                        location.reload();
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
                     });
 
                     location.reload();

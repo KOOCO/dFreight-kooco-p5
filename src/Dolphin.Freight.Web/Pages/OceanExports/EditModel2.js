@@ -236,41 +236,6 @@ async function getHblCheckbox(mblId, currentContainerId, callback) {
 }
 
 class EditModelOEContainer {
-
-    //static getHblCheckbox(mblId, currentContainerId, callback) {
-    //    dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(mblId, true, 1, currentContainerId).done(function (data) {
-    //        let checkboxesHTML = '';
-    //        let headersHTML = '';
-    //        var tdindex = 0;
-
-    //        for (let hbl of data) {
-    //            let dictHblContainers = JSON.stringify(hbl.hblContainerIdContains || {});
-    //            var checked = '';
-
-    //            if (dictHblContainers && dictHblContainers != '{}') {
-    //                let dict = JSON.parse(dictHblContainers.replace('{', '[{').concat(']'));
-
-    //                var filter = dict.filter(f => f[hbl.id]);
-
-    //                if (filter && filter.length) {
-    //                    checked = Object.values(filter[0])[0] == currentContainerId ? 'checked' : '';
-    //                }
-    //            }
-
-    //            if (hbl.hblVerticalContainers != null) {
-    //                var verticalChecked = hbl.hblVerticalContainers.includes(currentContainerId) ? 'checked' : '';
-    //            }
-
-    //            checkboxesHTML += `<td style='display: none;'><input type='checkbox' data-id='${hbl.id}' data-containerNo='' data-containerid='${hbl.containerIds}' data-mblid='${mblId}' onclick='EditModelOEContainer.SaveHBLContainer(this)' id='assignContainerCheckbox_${checkboxIndex}_${tdindex}' ${checked} ${verticalChecked} style='cursor: pointer;'></td>`;
-    //            headersHTML += `<th style="text-align: center; display: none;"><div style="background-color: ${hbl.cardColorValue}; width: 12px; height: 12px; border-radius: 50%; margin: 0 auto;"></div><input type="checkbox" data-hblid='${hbl.id}' onclick="checkAllHeaderCheckbox(this, '${checkboxIndex}', '${tdindex}')" id="hblHeaders_${hbl.hblNo}" name="hblHeaders_${tdindex}" style="cursor: pointer; margin-top: 10px;"></th>`;
-    //            tdindex++;
-    //            headerTdIndex++;
-    //        }
-    //        callback(checkboxesHTML, headersHTML, checkboxIndex);
-    //        checkboxIndex++;
-    //    });
-    //}
-
     static showHideHBLCheckboxes() {
         if (!$('input[id^="hblHeaders_"]').parent().is(":visible")) {
             $('input[id^="hblHeaders_"]').parent().show();
@@ -303,7 +268,9 @@ class EditModelOEContainer {
             var AppModel = { HblIds: ids, ContainerNo: container, Containersid: containerid, MblId: mblId };
 
             dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignContainerToHbl(AppModel, false).done(function (res) { }).then(function () {
-                location.reload();
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
             });
 
         } else {
@@ -319,7 +286,9 @@ class EditModelOEContainer {
 
             var AppModel = { HblIds: ids, ContainerNo: container, Containersid: containerid, MblId: mblId };
             dolphin.freight.importExport.oceanExports.oceanExportHbl.saveAssignContainerToHbl(AppModel).done(function (res) { }).then(function () {
-                location.reload();
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
             });
         }
     }
@@ -342,7 +311,9 @@ class EditModelOEContainer {
                         if (confirmed) {
                             var AppModel = { MblId: mblId, HblIds: hblIds, Containersid: containerId, UncheckedHblId: uncheckedHbl };
                             dolphin.freight.importExport.oceanExports.oceanExportHbl.saveAssignSingleContainerNoToHbl(AppModel, false).done(function (res) { }).then(function () {
-                                location.reload();
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2000);
                             });
                         }
                     })
@@ -359,7 +330,9 @@ class EditModelOEContainer {
 
                     var AppModel = { MblId: mblId, HblIds: hblIds, Containersid: containerId };
                     dolphin.freight.importExport.oceanExports.oceanExportHbl.saveAssignSingleContainerNoToHbl(AppModel).done(function (res) { }).then(function () {
-                        location.reload();
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
                     });
 
                     location.reload();
