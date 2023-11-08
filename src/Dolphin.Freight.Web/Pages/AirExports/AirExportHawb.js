@@ -1,5 +1,16 @@
 ﻿var HblextraProperties;
 let HblrowCount = 0;
+var isHawbLocked;
+
+$(document).ready(function () {
+    const ids = [
+        "AirExportHawbDto_BookingDate",
+        "AirExportHawbDto_FinalEta"
+    ];
+
+    var DateTimePicker = new CustomDateTimePicker();
+    DateTimePicker.dateTimePicker(ids);
+});
 
 $(document).on('input', 'input[id^="Hlength_"], input[id^="Hwidth_"], input[id^="Hheight_"], input[id^="Hpcs_"]', function () {
     const row = $(this).closest('tr');
@@ -111,6 +122,80 @@ class AirExportHawb {
         HupdateTotals();
 
         HupdateDeleteButtonState();
+    }
+
+    static OpenInTrackTrace() {
+        var url = new URL(window.location.href);
+        var mawbId = url.searchParams.get('Id');
+        dolphin.freight.importExport.airExports.airExportMawb.get(mawbId).done(function (res) {
+            myWindow = window.open('https://www.track-trace.com/bol#' + res.mawbNo, '_blank', 'width=1200,height=1000');
+            myWindow.focus();
+        });
+    }
+
+    static getPackingListAirExportHawb(url) {
+        myWindow = window.open(url, 'PackingListAirExportHawb', 'width=1200,height=800');
+        myWindow.focus()
+    }
+
+    static ProfitReport(url) {
+        myWindow = window.open(url, "PROFIT BY HAWB", 'width=1200,height=800')
+        myWindow.focus()
+    }
+
+    static getCertificateOfOrigin(url, mawbId) {
+        myWindow = window.open(url + "?id=" + mawbId, 'CertificateOfOrigin', 'width=1200,height=800');
+        myWindow.focus()
+    }
+
+    static getPackageLabelAirExportHawb(url) {
+        myWindow = window.open(url, 'Empty', 'width=1200,height=800');
+        myWindow.focus();
+    }
+
+    static getPackageLabelListAirExportHawb(url, mawbId) {
+        myWindow = window.open(url, 'width=1200,height=800');
+        myWindow.focus();
+    }
+
+    static getBookingConfirmationAirExportHawb(url) {
+        myWindow = window.open(url, 'Empty', 'width=1200,height=800');
+        myWindow.focus();
+    }
+
+    static getHawbPrintAirExportHawb(url) {
+        myWindow = window.open(url, 'Empty', 'width=1200,height=800');
+        myWindow.focus();
+    }
+
+    static getBankDraftAirExportHawb(url) {
+        myWindow = window.open(url, 'Empty', 'width=1200,height=800');
+        myWindow.focus()
+    }
+
+    static setHawbLockUnlock(isLockedCheck) {
+        var id = $('#AirExportHawbDto_Id').val();
+        isLockedCheck = isLockedCheck === "True";
+        if (isLockedCheck) {
+            abp.message.confirm(l('UnlockConfirmationMessage')).then(function (confirmed) {
+                if (confirmed) {
+                    dolphin.freight.importExport.airExports.airExportHawb.lockedOrUnLockedAirExportHawb(id).then(function () {
+                        abp.message.success(l('SuccessfullyUnlocked'));
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+        else {
+            abp.message.confirm(l('LockConfirmationMessage')).then(function (confirmed) {
+                if (confirmed) {
+                    dolphin.freight.importExport.airExports.airExportHawb.lockedOrUnLockedAirExportHawb(id).then(function () {
+                        abp.message.success(l('SuccessfullyLocked'));
+                        window.location.reload();
+                    });
+                }
+            });
+        }
     }
 }
 
@@ -231,6 +316,5 @@ function HupdateTotals() {
 }
 
 function checkforId() {
-    debugger;
     new URL(window.location.href).searchParams.get('Id') == null ? AirExportHawb.openPopUp() : AirExportHawb.openPopUp('withId');
 }

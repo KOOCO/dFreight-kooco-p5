@@ -22,7 +22,6 @@
 }
 <abp-script src="/Pages/AirExports/AirExportHawb.js" />
 <script>
-    var isHawbLocked;
     $(document).ready(function () {
         if ($('#HawbCancelledDate').val() == '0001-01-01T00:00') {
             $('#HawbCancelledDate').val('');
@@ -34,32 +33,6 @@
         } else if ($('#AirExportHawbDto\\.OtherRadioCOLL').val() == '@Model.AirExportHawbDto.Other') {
             $('#AirExportHawbDto\\.OtherRadioCOLL').prop('checked', true);
         }
-    });
-
-    $(document).ready(function () {
-        const ids = [
-            "AirExportHawbDto_BookingDate",
-            "AirExportHawbDto_FinalEta"
-        ];
-
-        ids.forEach(function (id) {
-            let dateElem = $('#' + id);
-
-            if (dateElem.length === 0) {
-                return;
-            }
-
-            dateElem.removeAttr('type').datetimepicker({
-                format: 'Y-m-d H:i',
-                step: 15,
-                allowInput: false
-            });
-
-            let currentVal = dateElem.val();
-            if (currentVal.includes('T')) {
-                dateElem.val(currentVal.replace('T', ' '));
-            }
-        });
     });
 
     // Hawb Cancel Area
@@ -87,86 +60,8 @@
             $("#AirExportHawbDto_ReasonForCancel").attr("disabled", "disabled");
         }
     });
-
-    function OpenInTrackTrace(){
-        var url = new URL(window.location.href);
-        var mawbId = url.searchParams.get('Id');
-        dolphin.freight.importExport.airExports.airExportMawb.get(mawbId).done(function (res) {
-            myWindow = window.open('https://www.track-trace.com/bol#' + res.mawbNo, '_blank', 'width=1200,height=1000');
-            myWindow.focus();
-        });
-    }
-
-    function getPackingListAirExportHawb() {
-        myWindow = window.open("@Url.Action("PackagingListAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })", 'PackingListAirExportHawb', 'width=1200,height=800');
-        myWindow.focus()
-    }
-
-    function ProfitReport(){
-        var url = '@Url.Action("HawbProfitReport", "Docs", new { hawbId = Model.AirExportHawbDto.Id })';
-        myWindow = window.open(url, "PROFIT BY HAWB", 'width=1200,height=800')
-        myWindow.focus()
-    }
-
-
-    function getCertificateOfOrigin() {
-        var idNo = '@Model.AirExportHawbDto.Id';
-        myWindow = window.open("@Url.Action("CertificateOfOriginAirExportHawb", "Docs")" + "?id=" + idNo, 'CertificateOfOrigin', 'width=1200,height=800');
-        myWindow.focus()
-    }
-    function getPackageLabelAirExportHawb() {
-        var idNo = '@Model.AirExportHawbDto.Id';
-        myWindow = window.open("@Url.Action("PackageLabelAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })", 'Empty', 'width=1200,height=800');
-        myWindow.focus()
-    }
-    function getPackageLabelListAirExportHawb() {
-        var idNo = '@Model.AirExportHawbDto.Id';
-        myWindow = window.open("@Url.Action("PackageLabelListAirExportHawb", "Docs")", 'width=1200,height=800');
-        myWindow.focus()
-    }
-    function getBankDraftAirExportHawb() {
-        myWindow = window.open("@Url.Action("BankDraftAirExportHawb", "Docs", new { hawbId = @Model.AirExportHawbDto.Id })", 'Empty', 'width=1200,height=800');
-        myWindow.focus()
-    }
-    function getBookingConfirmationAirExportHawb() {
-        myWindow = window.open("@Url.Action("BookingConfirmationAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })", 'Empty', 'width=1200,height=800');
-        myWindow.focus()
-    }
-    function getHawbPrintAirExportHawb() {
-        myWindow = window.open("@Url.Action("HawbPrintAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })", 'Empty', 'width=1200,height=800');
-        myWindow.focus()
-    }
+    
     isHawbLocked;
-    function setHawbLockUnlock(isLockedCheck) {
-        var id = $('#AirExportHawbDto_Id').val();
-        isLockedCheck = isLockedCheck === "True";
-        if(isLockedCheck){
-            
-        abp.message.confirm(l('UnlockConfirmationMessage'))
-            .then(function (confirmed) {
-                if (confirmed) {
-                    dolphin.freight.importExport.airExports.airExportHawb
-                        .lockedOrUnLockedAirExportHawb(id)
-                        .then(function () {
-                            abp.message.success(l('SuccessfullyUnlocked'));
-                            window.location.reload();
-                        });
-                }
-            });
-        } else{
-            abp.message.confirm(l('LockConfirmationMessage'))
-            .then(function (confirmed) {
-                if (confirmed) {
-                    dolphin.freight.importExport.airExports.airExportHawb
-                        .lockedOrUnLockedAirExportHawb(id)
-                        .then(function () {
-                            abp.message.success(l('SuccessfullyLocked'));
-                            window.location.reload();
-                        });
-                }
-            });
-        }
-    }
 </script>
 
 
@@ -194,16 +89,16 @@
             </button>
             <input asp-for="@Model.AirExportHawbDto.IsLocked" type="hidden" />
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                 <a class='dropdown-item' href='javascript:void(0)' onclick="setHawbLockUnlock('@Model.AirExportHawbDto.IsLocked')">
-                                        @if(@Model.AirExportHawbDto.IsLocked)
-                                        {
-                                            <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
-                                        }
-                                        else
-                                        {
-                                            <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                                        }
-                                    </a>
+                 <a class='dropdown-item' href='javascript:void(0)' onclick="AirExportHawb.setHawbLockUnlock('@Model.AirExportHawbDto.IsLocked')">
+                    @if(@Model.AirExportHawbDto.IsLocked)
+                    {
+                        <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
+                    }
+                    else
+                    {
+                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                    }
+                </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="copyHawb('@Model.AirExportHawbDto.Id', 'AirExportHawbDto_Id')">
                     <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                 </a>
@@ -214,28 +109,28 @@
                 <a class='dropdown-item' href='javascript:void(0)' onclick="DocumentPackage('@Url.Action("DocumentPackage", "Docs", new { id = Model.AirExportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEHBL })')">
                     <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="getHawbPrintAirExportHawb()">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirExportHawb.getHawbPrintAirExportHawb('@Url.Action("HawbPrintAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Print HAWB"]
                 </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="getCommercialInvoiceAirExportHawb('@Url.Action("CommercialInvoiceAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="getPackingListAirExportHawb()">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirExportHawb.getPackingListAirExportHawb('@Url.Action("PackagingListAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Package List"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="getCertificateOfOrigin()">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirExportHawb.getCertificateOfOrigin('@Url.Action("CertificateOfOriginAirExportHawb", "Docs")', '@Model.AirExportHawbDto.Id')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Certdificate Of Origin"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="getBookingConfirmationAirExportHawb()">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirExportHawb.getBookingConfirmationAirExportHawb('@Url.Action("BookingConfirmationAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="getBankDraftAirExportHawb('@Url.Action("BankDraftAirExportHawb", "Docs", new { hawbId = @Model.AirExportHawbDto.Id })')">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirExportHawb.getBankDraftAirExportHawb('@Url.Action("BankDraftAirExportHawb", "Docs", new { hawbId = @Model.AirExportHawbDto.Id })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="getPackageLabelAirExportHawb()">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirExportHawb.getPackageLabelAirExportHawb('@Url.Action("PackageLabelAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Package Label"]
                 </a>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="getPackageLabelListAirExportHawb()">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirExportHawb.getPackageLabelListAirExportHawb('@Url.Action("PackageLabelListAirExportHawb", "Docs")', '@Model.AirExportHawbDto.Id')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Package Label List"]
                 </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="getPreAlertAirExportHawb('@Url.Action("PreAlertAirExportHawb", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
@@ -248,11 +143,11 @@
                     <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="ProfitReport()">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirExportHawb.ProfitReport('@Url.Action("HawbProfitReport", "Docs", new { hawbId = Model.AirExportHawbDto.Id })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenInTrackTrace()">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirExportHawb.OpenInTrackTrace()">
                     <i class="fa fa-cube"></i> @L["Btn:Open in Track-Trace"]
                 </a>
             </div>

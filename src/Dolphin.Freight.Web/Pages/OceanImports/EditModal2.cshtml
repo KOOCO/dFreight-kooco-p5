@@ -187,25 +187,6 @@
             
         });
 
-
-        //function checkHeaderCheckboxes(){
-        //    $('th input[id^="hblHeaders_"]').each(function (i, e) {
-        //        var associatedCheckboxes = $('input[id^="assignContainerCheckbox_"]').filter(function () {
-        //            return this.id.match(new RegExp("assignContainerCheckbox_\\d+_" + i + "$"));
-        //        });
-
-        //        var allChecked = true;
-        //        associatedCheckboxes.each(function () {
-        //            if (!$(this).prop('checked')) {
-        //                allChecked = false;
-        //                return false;
-        //            }
-        //        });
-
-        //        $(e).prop('checked', allChecked);
-        //    });
-        //}
-
         function copyContainertoHBL(i, index) {
             $('input[id^="assignContainerCheckbox_'+index+'_"]').attr('data-containerno', $('#f1_' + index).val());
 
