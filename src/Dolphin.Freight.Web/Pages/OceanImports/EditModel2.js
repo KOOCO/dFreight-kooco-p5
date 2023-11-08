@@ -355,7 +355,9 @@ class EditModel2 {
 
             var AppModel = { MblId: id, HblId: hblid, Containersid: containerids, ContainerNos: containers };
             dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignContainerNoToHbl(AppModel).done(function (res) { }).then(function () {
-                location.reload();
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
             });
         } else {
             var url = new URL(window.location.href);
@@ -371,8 +373,10 @@ class EditModel2 {
             abp.message.confirm(l('Message:DeAssignHblFromContainers')).then(function (confirmed) {
                 if (confirmed) {
                     var AppModel = { MblId: mblId, HblId: hblId };
-                    dolphin.freight.importExport.oceanImports.oceanImportHbl.saveDeAssignContainerNoFromHbl(AppModel).done(function (res) { }).then(function () {
-                        location.reload();
+                    dolphin.freight.importExport.oceanImports.oceanImportHbl.saveAssignContainerNoToHbl(AppModel, false).done(function (res) { }).then(function () {
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
                     });
                 }
             })

@@ -647,7 +647,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             return CreateUpdateContainerDtos;
         }
 
-        public async Task SaveAssignContainerNoToHblAsync(OceanExportHblAppModel AppModel)
+        public async Task SaveAssignContainerNoToHblAsync(OceanExportHblAppModel AppModel, bool IsSave = true)
         {
             var MblId = AppModel.MblId;
             var HblId = AppModel.HblId;
@@ -656,9 +656,54 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 
             foreach (var container in containerList)
             {
-                container.HblId = HblId;
-                var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
-                await _containerAppService.UpdateAsync(container.Id, dto);
+                if (IsSave)
+                {
+                    var extraProps = container.ExtraProperties.GetValueOrDefault("HblIds");
+
+                    if (HblId != Guid.Empty)
+                    {
+                        if (extraProps != null && !extraProps.ToString().Contains(Convert.ToString(HblId)))
+                        {
+                            List<string> existingExtraProps = JsonConvert.DeserializeObject<List<string>>(extraProps.ToString());
+
+                            existingExtraProps.Add(Convert.ToString(HblId));
+
+                            string updatedExtraProps = JsonConvert.SerializeObject(existingExtraProps);
+
+                            container.ExtraProperties.Remove("HblIds");
+
+                            container.ExtraProperties.Add("HblIds", updatedExtraProps);
+
+                            var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
+
+                            await _containerAppService.UpdateAsync(container.Id, dto);
+                        }
+                    }
+                }
+                else
+                {
+                    var extraProps = container.ExtraProperties.GetValueOrDefault("HblIds");
+
+                    if (HblId != Guid.Empty)
+                    {
+                        if (extraProps != null && extraProps.ToString().Contains(Convert.ToString(HblId)))
+                        {
+                            List<string> existingList = JsonConvert.DeserializeObject<List<string>>(extraProps.ToString());
+
+                            existingList.Remove(HblId.ToString());
+
+                            string UpdatedExtraProps = JsonConvert.SerializeObject(existingList);
+
+                            container.ExtraProperties.Remove("HblIds");
+
+                            container.ExtraProperties.Add("HblIds", UpdatedExtraProps);
+
+                            var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
+
+                            await _containerAppService.UpdateAsync(container.Id, dto);
+                        }
+                    }
+                }
             }
         }
 
