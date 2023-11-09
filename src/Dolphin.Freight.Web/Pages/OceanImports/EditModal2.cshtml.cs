@@ -179,7 +179,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
                     {
                         var container = await _containerAppService.GetAsync(dto.Id);
 
-                        if (container.ExtraProperties != null && container.ExtraProperties.Count > 0)
+                        if (container.ExtraProperties.GetValueOrDefault("Dimensions") != null && container.ExtraProperties.Count > 0)
                         {
                             var dimensions = container.ExtraProperties.GetValueOrDefault("Dimensions").ToString();
 
