@@ -179,11 +179,11 @@ namespace Dolphin.Freight.ImportExport.Containers
 
             return ObjectMapper.Map<List<Container>, List<CreateUpdateContainerDto>>(containerList);
         }
-        public async Task<List<CreateUpdateContainerDto>> GetContainersByExtraPropertiesHblIds(Guid hblId)
+        public async Task<List<CreateUpdateContainerDto>> GetContainersByExtraPropertiesHblIds(Guid hblId, Guid MblId)
         {
             var containerList = await Repository.GetListAsync();
 
-            containerList = containerList.Where(w => w.ExtraProperties != null && w.ExtraProperties.Count > 0).ToList();
+            containerList = containerList.Where(w => w.MblId == MblId && w.ExtraProperties != null && w.ExtraProperties.Count > 0).ToList();
 
             List<CreateUpdateContainerDto> containerDtoList = new();
 

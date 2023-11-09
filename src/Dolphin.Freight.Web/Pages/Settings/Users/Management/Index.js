@@ -168,7 +168,6 @@
             );
         }
     );
-   
 
     $(function () {
         var _$wrapper = $('#IdentityUsersWrapper');
@@ -189,6 +188,7 @@
         );
 
         _createModal.onResult(function () {
+            debugger;
             _dataTable.ajax.reload();
         });
 
@@ -203,10 +203,10 @@
             });
         }
         else {
-            $('button[name="CreateUser"]').click(function (e) {
-                e.preventDefault();
-                _createModal.open()
-            });
+          $('button[name="CreateUser"]').click(function (e) {
+              e.preventDefault();
+              _createModal.open()
+          });
         }
     });
 })(jQuery);

@@ -150,7 +150,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                         sysCode.ShowName = OceanExportHbl.HblNo;
 
                         var newSysCode = await _sysCodeAppService.CreateAsync(ObjectMapper.Map<SysCode, CreateUpdateSysCodeDto>(sysCode));
-
+                        
                         OceanExportHbl.CardColorId = newSysCode.Id;
                     }
 

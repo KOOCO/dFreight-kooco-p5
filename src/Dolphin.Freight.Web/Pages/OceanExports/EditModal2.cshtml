@@ -82,8 +82,10 @@
                         }
                         addPackageUnitNameddl(packageUnitId);
                     });
+                    var url = new URL(window.location.href);
+                    var mblId = url.searchParams.get('Id');
                     var hblId = $('#OceanExportHbl_Id').val();
-                    dolphin.freight.importExport.containers.container.getContainersByExtraPropertiesHblIds(hblId).done(function (result) {
+                    dolphin.freight.importExport.containers.container.getContainersByExtraPropertiesHblIds(hblId, mblId).done(function (result) {
                         if (result != null && result.length > 0) {
                             for (var i = 0; i < result.length; i++) {
                                 var containerNo = result[i].containerNo;
@@ -493,7 +495,6 @@
             };
             
             try {
-                debugger;
                 const [checkboxesHTML, headersHTML, currentIndex] = await getHblCheckbox(mblId, value9);
                 containerData.checkboxesHTML = checkboxesHTML;
                 containerData.headersHTML = headersHTML;
