@@ -17,18 +17,18 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         PagedAndSortedResultRequestDto, 
         CreateUpdateOceanImportHblDto> 
     {
-        Task<bool> CheckContainerHasHblIdAsync(Guid MblId, Guid HblId);
+        Task<string> CheckContainerHasHblIdAsync(Guid MblId, Guid HblId);
         Task<PagedResultDto<OceanImportHblDto>> QueryListAsync(QueryHblDto query);
         Task<IList<OceanImportHblDto>> QueryListByMidAsync(QueryHblDto query);
         Task<CreateUpdateOceanImportHblDto> GetHblById(QueryHblDto query);
-        Task<List<OceanImportHblDto>> GetHblCardsById(Guid Id, bool isAsc = true, int sortType = 1);
+        Task<List<OceanImportHblDto>> GetHblCardsById(Guid Id, bool isAsc = true, int sortType = 1, string ContainerId = "");
         Task<OceanImportHblDto> GetHblCardById(Guid Id);
         Task<OceanImportDetails> GetOceanImportDetailsById(Guid Id);
         Task DeleteMultipleHblsAsync(Guid[] Ids);
         Task SetLockOrUnlockStatusOceanImportHblAsync(Guid[] Ids, bool IsLock);
-        Task SaveAssignContainerToHblAsync(OceanImportHblAppModel AppModel);
-        Task SaveAssignContainerNoToHblAsync(OceanImportHblAppModel AppModel);
+        void SaveAssignContainerToHblAsync(OceanImportHblAppModel AppModel, bool IsSave = true);
+        Task SaveAssignContainerNoToHblAsync(OceanImportHblAppModel AppModel, bool IsSave = true);
         Task SaveDeAssignContainerNoFromHblAsync(OceanImportHblAppModel AppModel);
-        Task SaveAssignSingleContainerNoToHblAsync(OceanImportHblAppModel AppModel, bool IsSave = true);
+        void SaveAssignSingleContainerNoToHblAsync(OceanImportHblAppModel AppModel, bool IsSave = true);
     }
 }

@@ -24,6 +24,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string FilingNo { get; set; }
         public string Voyage { get; set; }
         public string VesselName { get; set; }
+        public string ShippingCompany { get; set; }
         /// <summary>
         /// MBL的MBL 編號
         /// </summary>
@@ -152,6 +153,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 收貨地(POR) ETD
         /// </summary>
         public DateTime? PorEtd { get; set; }
+        public DateTime? ATA { get; set; }
+        public DateTime? ATD { get; set; }
         /// <summary>
         /// 裝貨港(POL)ID
         /// </summary>
@@ -468,5 +471,10 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         {
             return (SubBlNo == null && IsEcommerce) ? 1 : 1;
         }
+        public string HblContainers { get; set; }
+        public string HblVerticalContainers { get; set; }
+        public string MblContainers { get; set; }
+
+        public Dictionary<string, string> HblContainerIdContains { get; set; }
     }
 }

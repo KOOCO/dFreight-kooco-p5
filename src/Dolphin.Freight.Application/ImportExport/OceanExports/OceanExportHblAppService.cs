@@ -21,6 +21,12 @@ using Volo.Abp.Validation.Localization;
 using Volo.Abp.Auditing;
 using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanImports;
+using Volo.Abp.ObjectMapping;
+using NPOI.SS.Formula.Functions;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Ocsp;
+using Dolphin.Freight.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
 {
@@ -252,7 +258,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             return rs;
         }
 
-        public async Task<List<OceanExportHblDto>> GetHblCardsById(Guid Id,bool isAsc=true,int sortType=1) {
+        public async Task<List<OceanExportHblDto>> GetHblCardsById(Guid Id,bool isAsc=true,int sortType=1, string ContainerId = "") {
             var data = await _repository.GetListAsync(f => f.MblId == Id);
             var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
             var sysCodes = await _sysCodeRepository.GetListAsync();
@@ -288,6 +294,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }
 
             var retVal = ObjectMapper.Map<List<OceanExportHbl>, List<OceanExportHblDto>>(data);
+            Dictionary<string, string> dictHblContains = new();
             foreach (var item in retVal)
             {
                 if (item.HblShipperId != null)
@@ -305,8 +312,24 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var cardColor = sysCodes.Where(w => w.Id == item.CardColorId).FirstOrDefault();
                     item.CardColorValue = cardColor.CodeValue;
                 }
-                List<CreateUpdateContainerDto> containers = await _containerAppService.GetContainerListByHblId(item.Id);
-                item.ContainerIds = containers.Select(s => s.Id.ToString()).ToArray();
+
+                if (ContainerId is not null && ContainerId != "")
+                {
+                    List<CreateUpdateContainerDto> containersMbl = await _containerAppService.GetContainerByMblId(item.MblId);
+                    item.ContainerIds = containersMbl.Select(s => s.Id.ToString()).ToArray();
+
+                    List<CreateUpdateContainerDto> containers = await _containerAppService.GetContainerListByHblId(item.Id);
+                    item.HblVerticalContainers = string.Join(",", containers.Select(s => s.Id.ToString()));
+
+                    item.HblContainers = string.Join(",", containersMbl.Where(w => w.Id == Guid.Parse(ContainerId)).Select(s => Convert.ToString(s.ExtraProperties.GetValueOrDefault("HblIds"))));
+
+                    string currentContainerHbls = string.Join("", containersMbl.Where(w => w.Id == Guid.Parse(ContainerId)).Select(s => Convert.ToString(s.ExtraProperties.GetValueOrDefault("HblIds"))));
+                    if (currentContainerHbls.Contains(item.Id.ToString()))
+                    {
+                        dictHblContains.Add(item.Id.ToString(), ContainerId);
+                    }
+                    item.HblContainerIdContains = dictHblContains;
+                }
             }
             return retVal;
         }
@@ -561,48 +584,70 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 await _repository.UpdateAsync(hbl);
             }
         }
-        public async Task SaveAssignContainerToHblAsync(OceanExportHblAppModel AppModel)
+        public async void SaveAssignContainerToHblAsync(OceanExportHblAppModel AppModel, bool IsSave = true)
         {
-            var Ids = AppModel.Ids;
-            var ContainerNo = AppModel.ContainerNo;
+            var Ids = AppModel.HblIds.ToList();
             var ContainerId = AppModel.Containersid;
             var MblId = AppModel.MblId;
 
-            foreach (var Id in Ids)
+            var containers = new List<Container>();
+
+            containers = await _containerRepository.GetListAsync();
+
+            var containerList = containers.Where(w => w.MblId == MblId && w.Id == Guid.Parse(ContainerId)).ToList();
+
+            foreach (var container in containers)
             {
-                QueryHblDto queryHblDto = new QueryHblDto() { Id = Id };
-                var OceanExportHbl = await this.GetHblById(queryHblDto);
-
-                if (OceanExportHbl.Id != Guid.Empty)
+                if (IsSave)
                 {
-                    var containers = await _containerRepository.GetQueryableAsync();
-                    var containerList = containers.Where(w => w.MblId == MblId && w.Id == Guid.Parse(ContainerId)).ToList();
-                    if (containerList.Count > 0)
-                    {
-                        foreach (var container in containerList)
-                        {
-                            if (container.HblId == Guid.Empty)
-                            {
-                                container.HblId = Id;
-                                await _containerAppService.UpdateAsync(container.Id, ObjectMapper.Map<Container, CreateUpdateContainerDto>(container));
-                            }
-                            else
-                            {
-                                CreateUpdateContainerDto containerDto = new CreateUpdateContainerDto()
-                                {
-                                    HblId = Id,
-                                    ContainerNo = ContainerNo
-                                };
+                    container.ExtraProperties.Remove("HblIds");
+                    container.ExtraProperties.Add("HblIds", Ids);
+                }
+                else
+                {
+                    container.ExtraProperties.Remove("HblIds");
+                }
 
-                                await _containerAppService.CreateAsync(containerDto);
-                            }
-                        }
+                IHttpContextAccessor Http = new HttpContextAccessor();
+
+                if (Http.HttpContext.Request.Host.Host == "localhost")
+                {
+                    using (var dbContext = new FreightDbContextFactory().CreateDbContext(new string[] { }))
+                    {
+                        dbContext.Update(container);
+                        dbContext.SaveChanges();
                     }
+                }
+                else
+                {
+                    await _containerRepository.UpdateAsync(container);
                 }
             }
         }
 
-        public async Task SaveAssignContainerNoToHblAsync(OceanExportHblAppModel AppModel)
+        public async Task<List<CreateUpdateContainerDto>> GetContainerByHblExtraProperties(Guid Id)
+        {
+            List<CreateUpdateContainerDto> CreateUpdateContainerDtos = new List<CreateUpdateContainerDto>();
+
+            var Hbl = await _repository.GetAsync(Id);
+
+            string ContainerIds = Hbl.ExtraProperties.GetValueOrDefault("ContainerIdList").ToString();
+
+            List<string> ContainerIdsList = new List<string>();
+
+            ContainerIdsList = ContainerIds.Split(",").ToList();
+
+            foreach (var ContainerId in ContainerIdsList)
+            {
+                var container = await _containerRepository.GetAsync(Guid.Parse(ContainerId));
+
+                CreateUpdateContainerDtos.Add(ObjectMapper.Map<Container, CreateUpdateContainerDto>(container));
+            }
+
+            return CreateUpdateContainerDtos;
+        }
+
+        public async Task SaveAssignContainerNoToHblAsync(OceanExportHblAppModel AppModel, bool IsSave = true)
         {
             var MblId = AppModel.MblId;
             var HblId = AppModel.HblId;
@@ -611,32 +656,94 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 
             foreach (var container in containerList)
             {
-                container.HblId = HblId;
-                var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
-                await _containerAppService.UpdateAsync(container.Id, dto);
+                if (IsSave)
+                {
+                    var extraProps = container.ExtraProperties.GetValueOrDefault("HblIds");
+
+                    if (HblId != Guid.Empty)
+                    {
+                        if (extraProps != null && !extraProps.ToString().Contains(Convert.ToString(HblId)))
+                        {
+                            List<string> existingExtraProps = JsonConvert.DeserializeObject<List<string>>(extraProps.ToString());
+
+                            existingExtraProps.Add(Convert.ToString(HblId));
+
+                            string updatedExtraProps = JsonConvert.SerializeObject(existingExtraProps);
+
+                            container.ExtraProperties.Remove("HblIds");
+
+                            container.ExtraProperties.Add("HblIds", updatedExtraProps);
+
+                            var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
+
+                            await _containerAppService.UpdateAsync(container.Id, dto);
+                        }
+                    }
+                }
+                else
+                {
+                    var extraProps = container.ExtraProperties.GetValueOrDefault("HblIds");
+
+                    if (HblId != Guid.Empty)
+                    {
+                        if (extraProps != null && extraProps.ToString().Contains(Convert.ToString(HblId)))
+                        {
+                            List<string> existingList = JsonConvert.DeserializeObject<List<string>>(extraProps.ToString());
+
+                            existingList.Remove(HblId.ToString());
+
+                            string UpdatedExtraProps = JsonConvert.SerializeObject(existingList);
+
+                            container.ExtraProperties.Remove("HblIds");
+
+                            container.ExtraProperties.Add("HblIds", UpdatedExtraProps);
+
+                            var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
+
+                            await _containerAppService.UpdateAsync(container.Id, dto);
+                        }
+                    }
+                }
             }
         }
 
-        public async Task SaveAssignSingleContainerNoToHblAsync(OceanExportHblAppModel AppModel, bool IsSave = true)
+        public async void SaveAssignSingleContainerNoToHblAsync(OceanExportHblAppModel AppModel, bool IsSave = true)
         {
             var MblId = AppModel.MblId;
-            var HblId = AppModel.HblId;
+            var HblIds = AppModel.HblIds.ToList();
+            var UncheckedHblId = AppModel.UncheckedHblId;
             var ContainerId = AppModel.Containersid;
-            var containers = await _containerRepository.GetQueryableAsync();
+            
+            var containers = new List<Container>();
+
+            containers = await _containerRepository.GetListAsync();
+
             var containerList = containers.Where(w => w.MblId == MblId && w.Id == Guid.Parse(ContainerId)).ToList();
 
             foreach (var container in containerList)
             {
-                if (IsSave)
-                {
-                    container.HblId = HblId;
-                }
-                else
+                container.ExtraProperties.Remove("HblIds");
+                container.ExtraProperties.Add("HblIds", HblIds);
+                
+                if (!IsSave && !UncheckedHblId.Equals(Guid.Empty) && container.HblId.Equals(UncheckedHblId))
                 {
                     container.HblId = Guid.Empty;
                 }
-                var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
-                await _containerAppService.UpdateAsync(container.Id, dto);
+
+                IHttpContextAccessor Http = new HttpContextAccessor();
+
+                if (Http.HttpContext.Request.Host.Host == "localhost")
+                {
+                    using (var dbContext = new FreightDbContextFactory().CreateDbContext(new string[] { }))
+                    {
+                        dbContext.Update(container);
+                        dbContext.SaveChanges();
+                    }
+                } 
+                else
+                {
+                    await _containerRepository.UpdateAsync(container);
+                }
             }
         }
 

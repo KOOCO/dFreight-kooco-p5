@@ -13,24 +13,8 @@
             "MawbModel_RouteTrans3DepatureDate"
         ];
 
-        ids.forEach(function (id) {
-            let dateElem = $('#' + id);
-
-            if (dateElem.length === 0) {
-                return;
-            }
-
-            dateElem.removeAttr('type').datetimepicker({
-                format: 'Y-m-d H:i',
-                step: 15,
-                allowInput: false
-            });
-
-            let currentVal = dateElem.val();
-            if (currentVal.includes('T')) {
-                dateElem.val(currentVal.replace('T', ' '));
-            }
-        });
+        var DateTimePicker = new CustomDateTimePicker();
+        DateTimePicker.dateTimePicker(ids);
     });
 
     var url = new URL(window.location.href);

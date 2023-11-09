@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Dolphin.Freight.Domain\Dolphin.Freight.Domain.csproj" />
     <ProjectReference Include="..\Dolphin.Freight.Application.Contracts\Dolphin.Freight.Application.Contracts.csproj" />
+    <ProjectReference Include="..\Dolphin.Freight.EntityFrameworkCore\Dolphin.Freight.EntityFrameworkCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

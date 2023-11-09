@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.ImportExport.OceanImports;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -31,5 +32,6 @@ namespace Dolphin.Freight.ImportExport.Containers
         Task<int> DeleteByVesselIdAsync(QueryContainerDto query);
         Task<List<ContainerDto>> QueryListVesselAsync(Guid vesselId);
         Task<List<CreateUpdateContainerDto>> GetContainerListByHblId(Guid id);
+        Task<List<CreateUpdateContainerDto>> GetContainersByExtraPropertiesHblIds(Guid hblId);
     }
 }

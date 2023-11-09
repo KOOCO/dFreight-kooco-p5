@@ -4,6 +4,7 @@ using Volo.Abp;
 using Dolphin.Freight.Settings.SysCodes;
 using System.ComponentModel.DataAnnotations.Schema;
 using Dolphin.Freight.Settings.ContainerSizes;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.Containers
 {
