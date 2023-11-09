@@ -1,4 +1,5 @@
 ﻿(function ($) {
+    var url = new URL(window.location.href);
     var l = abp.localization.getResource('AbpIdentity');
     var loc = abp.localization.getResource('Freight');
     var _identityUserAppService = volo.abp.identity.identityUser;
@@ -195,9 +196,17 @@
             _dataTable.ajax.reload();
         });
 
-        $('#AbpContentToolbar button[name=CreateUser]').click(function (e) {
-            e.preventDefault();
-            _createModal.open();
-        });
+        if (url.origin.includes('localhost')) {
+            $('#AbpContentToolbar button[name=CreateUser]').click(function (e) {
+                e.preventDefault();
+                _createModal.open();
+            });
+        }
+        else {
+            $('button[name="CreateUser"]').click(function (e) {
+                e.preventDefault();
+                _createModal.open()
+            });
+        }
     });
 })(jQuery);
