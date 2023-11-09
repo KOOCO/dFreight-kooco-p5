@@ -17,7 +17,13 @@ public class FreightDbContextFactory : IDesignTimeDbContextFactory<FreightDbCont
         var configuration = BuildConfiguration();
 
         var builder = new DbContextOptionsBuilder<FreightDbContext>()
-            .UseSqlServer(configuration.GetConnectionString("Default"));
+            .UseSqlServer(configuration.GetConnectionString("Default"), sqlServerOptionsAction: sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                    errorNumbersToAdd: null);
+            });
 
         return new FreightDbContext(builder.Options);
     }
