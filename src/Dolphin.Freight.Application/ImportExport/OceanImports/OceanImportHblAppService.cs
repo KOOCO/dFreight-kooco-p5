@@ -652,17 +652,31 @@ namespace Dolphin.Freight.ImportExport.OceanImports
 
                     if (HblId != Guid.Empty)
                     {
-                        if (extraProps != null && !extraProps.ToString().Contains(Convert.ToString(HblId)))
+                        if (extraProps != null && !extraProps.ToString().Contains(Convert.ToString(HblId)) || extraProps is null)
                         {
-                            List<string> existingExtraProps = JsonConvert.DeserializeObject<List<string>>(extraProps.ToString());
+                            if (extraProps is null)
+                            {
+                                List<string> existingExtraProps = new List<string>();
 
-                            existingExtraProps.Add(Convert.ToString(HblId));
+                                existingExtraProps.Add(Convert.ToString(HblId));
 
-                            string updatedExtraProps = JsonConvert.SerializeObject(existingExtraProps);
+                                string updatedExtraProps = JsonConvert.SerializeObject(existingExtraProps);
 
-                            container.ExtraProperties.Remove("HblIds");
+                                container.ExtraProperties.Remove("HblIds");
 
-                            container.ExtraProperties.Add("HblIds", updatedExtraProps);
+                                container.ExtraProperties.Add("HblIds", updatedExtraProps);
+                            } else
+                            {
+                                List<string> existingExtraProps = JsonConvert.DeserializeObject<List<string>>(extraProps.ToString());
+
+                                existingExtraProps.Add(Convert.ToString(HblId));
+
+                                string updatedExtraProps = JsonConvert.SerializeObject(existingExtraProps);
+
+                                container.ExtraProperties.Remove("HblIds");
+
+                                container.ExtraProperties.Add("HblIds", updatedExtraProps);
+                            }
 
                             var dto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(container);
 
