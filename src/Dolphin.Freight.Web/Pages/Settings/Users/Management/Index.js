@@ -3,7 +3,7 @@
     var l = abp.localization.getResource('AbpIdentity');
     var loc = abp.localization.getResource('Freight');
     var _identityUserAppService = volo.abp.identity.identityUser;
-    debugger;
+    
     var togglePasswordVisibility = function () {
         $("#PasswordVisibilityButton").click(function (e) {
             var button = $(this);
@@ -61,6 +61,7 @@
 
     abp.ui.extensions.entityActions.get('identity.user').addContributor(
         function (actionList) {
+            debugger;
             return actionList.addManyTail(
                 [
                     {
@@ -168,7 +169,6 @@
             );
         }
     );
-   
 
     $(function () {
         var _$wrapper = $('#IdentityUsersWrapper');
@@ -196,17 +196,21 @@
             _dataTable.ajax.reload();
         });
 
-        if (url.origin.includes('localhost')) {
-            $('#AbpContentToolbar button[name=CreateUser]').click(function (e) {
-                e.preventDefault();
-                _createModal.open();
-            });
-        }
-        else {
-            $('button[name="CreateUser"]').click(function (e) {
-                e.preventDefault();
-                _createModal.open()
-            });
-        }
+        $('#newUserCreate').click(function () {
+            _createModal.open();
+        });
+
+        //if (url.origin.includes('localhost')) {
+        //    $('#AbpContentToolbar button[name=CreateUser]').click(function (e) {
+        //        e.preventDefault();
+        //        _createModal.open();
+        //    });
+        //}
+        //else {
+        //  $('button[name="CreateUser"]').click(function (e) {
+        //      e.preventDefault();
+        //      _createModal.open()
+        //  });
+        //}
     });
 })(jQuery);

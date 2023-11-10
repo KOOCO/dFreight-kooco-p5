@@ -82,8 +82,10 @@
                         }
                         addPackageUnitNameddl(packageUnitId);
                     });
+                    var url = new URL(window.location.href);
+                    var mblId = url.searchParams.get('Id');
                     var hblId = $('#OceanExportHbl_Id').val();
-                    dolphin.freight.importExport.containers.container.getContainersByExtraPropertiesHblIds(hblId).done(function (result) {
+                    dolphin.freight.importExport.containers.container.getContainersByExtraPropertiesHblIds(hblId, mblId).done(function (result) {
                         if (result != null && result.length > 0) {
                             for (var i = 0; i < result.length; i++) {
                                 var containerNo = result[i].containerNo;
@@ -117,8 +119,10 @@
                 });
             });
             $("#deleteBtn").click(function () {
+                var isDeleted = false;
                 $("input[name='f0']:checked").each(function (i, e) {
                     if ($(e).attr('data-id') != '' && $(e).attr('data-id') != null && $(e).attr('data-id') != undefined){
+                        isDeleted = true;
                         dolphin.freight.importExport.containers.container.delete($(e).attr('data-id')).done(function(){ });
                     }
                     var tid = $(this).val();
@@ -130,6 +134,11 @@
                 countPackageType('MBL');
                 countTotal('MBL', 'KG');
                 countTotalVolume('MBL', 'CBM');
+                if(isDeleted){
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
+                }
             });
             $('#edit2Form').on('abp-ajax-success', function (result, rs) {
                 event.preventDefault();
@@ -332,11 +341,14 @@
             }
         }
 
-        function countPackageType(module) {
+        function countPackageType(module, key) {
             switch (module) {
                 case 'MBL':
                     var totalPKG = 0;
 
+
+
+                    debugger;
                     for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f4_' + i).val());
                         if (!isNaN(cells)) {
@@ -493,7 +505,6 @@
             };
             
             try {
-                debugger;
                 const [checkboxesHTML, headersHTML, currentIndex] = await getHblCheckbox(mblId, value9);
                 containerData.checkboxesHTML = checkboxesHTML;
                 containerData.headersHTML = headersHTML;

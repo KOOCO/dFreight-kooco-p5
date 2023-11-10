@@ -200,6 +200,21 @@
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
+                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white');
+                        debugger;
+                        var backGroundColor = $('#hblCardHeader').css('background-color');
+                        var hexColor = CreateOE.RextoHexColorCode(backGroundColor);
+                        $('#OceanExportHbl_CardColorValue').val(hexColor);
+                        if (hblId != '00000000-0000-0000-0000-000000000000') {
+                            dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardById(hawbId).done(function (res) {
+                                var cardColorId = res.cardColorId;
+                                $('#OceanExportHbl_CardColorId').val(cardColorId);
+                            });
+                        } else if (hblId == '00000000-0000-0000-0000-000000000000') {
+                            $('#OceanExportHbl_CardColorId').val('');
+                        } else {
+                            $('#OceanExportHbl_CardColorId').val('');
+                        }
                         setFilteredDropdown();
                         setDateTimeforCards('OEHBL');
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white');

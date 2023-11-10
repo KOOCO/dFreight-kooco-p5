@@ -3,6 +3,7 @@ using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.OceanExports;
 //using Dolphin.Freight.Migrations;
 using Dolphin.Freight.Settings.PortsManagement;
+using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
@@ -80,6 +81,18 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             Id = mbl.Id;
             if (OceanExportHbl is not null && !string.IsNullOrEmpty(OceanExportHbl.HblNo))
             {
+                if (OceanExportHbl.CardColorId is null)
+                {
+                    SysCode sysCode = new SysCode();
+                    sysCode.CodeType = "CardColorId";
+                    sysCode.CodeValue = OceanExportHbl.CardColorValue;
+                    sysCode.ShowName = OceanExportHbl.HblNo;
+
+                    var newSysCode = await _sysCodeAppService.CreateAsync(ObjectMapper.Map<SysCode, CreateUpdateSysCodeDto>(sysCode));
+
+                    OceanExportHbl.CardColorId = newSysCode.Id;
+                }
+
                 if (OceanExportHbl.ExtraProperties == null)
                 {
                     OceanExportHbl.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();

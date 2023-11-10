@@ -61,8 +61,10 @@
                         }
                         addPackageUnitNameddl();
                     });
+                    var url = new URL(window.location.href);
+                    var mblId = url.searchParams.get('Id');
                     var hblId = $('#OceanImportHbl_Id').val();
-                    dolphin.freight.importExport.containers.container.getContainersByExtraPropertiesHblIds(hblId).done(function (result) {
+                    dolphin.freight.importExport.containers.container.getContainersByExtraPropertiesHblIds(hblId, mblId).done(function (result) {
                         if (result != null && result.length > 0){
                             for (var i = 0; i < result.length; i++){
                                 var containerNo = result[i].containerNo;
@@ -102,8 +104,10 @@
                 })
             })
             $("#deleteBtn").click(function () {
+                var isDeleted = false;
                 $("input[name='f0']:checked").each(function (i, e) {
                     if ($(e).attr('data-id') != '' && $(e).attr('data-id') != null && $(e).attr('data-id') != undefined) {
+                        isDeleted = true;
                         dolphin.freight.importExport.containers.container.delete($(e).attr('data-id')).done(function () { });
                     }
                     var tid = $(this).val();
@@ -115,6 +119,11 @@
                 countPackageType('MBL');
                 countTotal('MBL', 'KG');
                 countTotalVolume('MBL', 'CBM');
+                if (isDeleted) {
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
+                }
             })
             
             $('#edit2Form').on('abp-ajax-success', function (result, rs) {
@@ -315,6 +324,7 @@
                 }
             });
 
+            debugger;
             $("#selectAllAssignContainerCheckbox_" + trindex).prop('checked', allChecked);
 
             $("#selectAllAssignContainerCheckbox_" + currentIndex).click(function () {
@@ -427,12 +437,29 @@
             }
         }
 
+        //function checkHeaderCheckboxes() {
+        //    $('th input[id^="hblHeaders_"]').each(function (i, e) {
+        //        var associatedCheckboxes = $('input[id^="assignContainerCheckbox_"]').filter(function () {
+        //            return this.id.match(new RegExp("assignContainerCheckbox_\\d+_" + i + "$"));
+        //        });
+
+        //        var allChecked = true;
+        //        associatedCheckboxes.each(function () {
+        //            if (!$(this).prop('checked')) {
+        //                allChecked = false;
+        //                return false;
+        //            }
+        //        });
+        //        $(e).prop('checked', allChecked);
+        //    });
+        //}
+
         function countTotal(module, Unit){
             switch (module){
                 case 'MBL':
                     var totalWgt = 0;
 
-                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f5_'+i).val());
                         if (!isNaN(cells)) {
                             totalWgt += cells;
@@ -461,7 +488,7 @@
                 default:
                     var totalWgt = 0;
 
-                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f5_' + i).val());
                         if (!isNaN(cells)) {
                             totalWgt += cells;
@@ -488,7 +515,7 @@
                 case 'MBL':
                     var totalVol = 0;
 
-                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f6_' + i).val());
                         if (!isNaN(cells)) {
                             totalVol += cells;
@@ -517,7 +544,7 @@
                 default:
                     var totalVol = 0;
 
-                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f6_' + i).val());
                         if (!isNaN(cells)) {
                             totalVol += cells;
@@ -542,7 +569,7 @@
                 case 'MBL':
                     var totalPKG = 0;
 
-                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f4_' + i).val());
                         if (!isNaN(cells)) {
                             totalPKG += cells;
@@ -563,7 +590,7 @@
                 default:
                     var totalPKG = 0;
 
-                    for (var i = 0; i < $('#trtbody tr').length / 2; i++) {
+                    for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f4_' + i).val());
                         if (!isNaN(cells)) {
                             totalPKG += cells;
