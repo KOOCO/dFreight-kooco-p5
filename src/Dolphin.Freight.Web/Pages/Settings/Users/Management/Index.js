@@ -196,6 +196,10 @@
             _dataTable.ajax.reload();
         });
 
+        $('#newUserCreate').click(function () {
+            _createModal.open();
+        });
+
         //if (url.origin.includes('localhost')) {
         //    $('#AbpContentToolbar button[name=CreateUser]').click(function (e) {
         //        e.preventDefault();
