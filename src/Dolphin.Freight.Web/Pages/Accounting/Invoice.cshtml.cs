@@ -194,7 +194,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                 }
                 if (InvoiceMblDto.HblConsigneeId is not null && InvoiceMblDto.HblConsigneeId.Value != Guid.Empty)
                 {
-                    var tradePartner = await _tradePartnerAppService.GetAsync(InvoiceMblDto.MblConsigneeId.Value);
+                    var tradePartner = await _tradePartnerAppService.GetAsync(InvoiceMblDto.HblConsigneeId.Value);
                     InvoiceBasicDto.MblConsigneeName = tradePartner.TPName;
                 }
                 if (InvoiceMblDto.ShipperId is not null && InvoiceMblDto.ShipperId.Value != Guid.Empty)
