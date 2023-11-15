@@ -1,10 +1,12 @@
 ﻿@page
+@using Volo.Abp.Users
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Web.Pages.Components
 @using Microsoft.Extensions.Localization
 @using Dolphin.Freight.AirExports
 @model Dolphin.Freight.Web.Pages.Accounting.InvoiceModel
 @inject IStringLocalizer<FreightResource> L
+@inject ICurrentUser CurrentUser
 @section scripts
     {
     <abp-script src="/Pages/Accounting/Invoice.js" />
@@ -729,21 +731,13 @@
                                 <abp-row>
                                     <abp-column size-md="_8">
                                         <label class="form-label" for="Counts">@L["Counts"]</label>
-                                        <input type="number" id="Counts" name="Counts" value="" class="form-control " readonly="">
+                                        <input type="number" id="Counts" name="Counts" value="@Model.InvoiceMblDto.Package" class="form-control " readonly="">
                                     </abp-column>
                                     <abp-column size-md="_4">
                                         <label class="form-label" for=""></label>
-                                        <input type="text" id="Ctype" name="Ctype" placeholder="CARTON(S)" class="form-control " readonly="">
+                                        <input type="text" id="Ctype" name="Ctype" value="@Model.InvoiceBasicDto.PackageUnitName" class="form-control " readonly="">
                                     </abp-column>
                                 </abp-row>
-                            </abp-column>
-                        </abp-row>
-                        <abp-row>
-                            <abp-column size-md="_3">
-                                <abp-input asp-for="InvoiceMblDto.PorName" readonly="true" />
-                            </abp-column>
-                            <abp-column size-md="_3">
-                                <abp-input type="text" id="InvoiceMblDto_PorEtd" asp-for="InvoiceMblDto.PorEtd" class="form-control " readonly="true" />
                             </abp-column>
                         </abp-row>
                         <abp-row>
@@ -757,29 +751,22 @@
 
                             <abp-column size-md="_3">
                                 <label class="form-label" for="ShipperName">@L["KOS"]/Kg</label>
-                                <input type="text" id="Counts" name="KOS" value="" class="form-control " readonly="">
+                                <input type="text" id="Counts" name="KOS" value="@Model.InvoiceMblDto.GrossWeightKg" class="form-control " value="@Model.InvoiceMblDto.GrossWeightKg" readonly="">
                             </abp-column>                 
                             <abp-column size-md="_3">
                                 <label class="form-label" for="ShipperName">@L["KOS"]/Lb</label>
-                                    <input type="text" id="Ctype" name="Ctype" value="" class="form-control " readonly="">
+                                <input type="text" id="Ctype" name="Ctype" value="@Model.InvoiceMblDto.GrossWeightLb" class="form-control " value="@Model.InvoiceMblDto.GrossWeightLb" readonly="">
 
                             </abp-column>
                         </abp-row>
                         <abp-row>
-                 
-                            
-                                    <abp-column size-md="_3">
-                                        <abp-input asp-for="InvoiceMblDto.PolName" readonly="true" />
-                                    </abp-column>
-                                    <abp-column size-md="_3">
-                                        <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
-                                        <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PolEtd" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.PolEtd)" class="form-control " readonly="">
-                                    </abp-column>
-                                
-                   
-                        </abp-row>
-
-                        <abp-row>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceMblDto.PolName" readonly="true" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
+                                <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PolEtd" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.PolEtd)" class="form-control " readonly="">
+                            </abp-column>
                             <abp-column size-md="_3">
                                 <label class="form-label" for="Hblno">@L["IHblno"]</label>
                                 <input type="text" id="Hblno" name="Hblno" value="@Model.Hblno" class="form-control " readonly="">
@@ -788,50 +775,33 @@
                                 <label class="form-label" for="ShipperName">@L["MblConsigneeName"]</label>
                                 <input type="text" id="ShipperName" name="MblConsigneeName" value="@Model.InvoiceBasicDto.MblConsigneeName" class="form-control " readonly="">
                             </abp-column>
-                            <abp-column size-md="_3">
+                        </abp-row>
 
+                        <abp-row>
+                            <abp-column size-md="_3">
+                                <label class="form-label" for="">@L["VolumeWeight"] KG</label>
+                                <input type="text" id="Cbm" name="Cbm" value="@Model.InvoiceMblDto.VolumeWeightKg" class="form-control " readonly="">
+                            </abp-column>
+                            <abp-column size-md="_3">
                                 <label class="form-label" for="">CBM</label>
-                                    <input type="text" id="Cbm" name="Cbm" value="" class="form-control " readonly="">
- 
+                                <input type="text" id="Cft" name="Cft" value="@Model.InvoiceMblDto.VolumeWeightCbm" class="form-control " readonly="">
                             </abp-column>
                             <abp-column size-md="_3">
-                               
-                                    <label class="form-label" for="">CBM</label>
-                                    <input type="text" id="Cft" name="Cft" value="" class="form-control " readonly="">
-                            
-                           
+                                <abp-input asp-for="InvoiceMblDto.PodName" readonly="true" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
+                                <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.PodEta)" class="form-control " readonly="">
                             </abp-column>
                         </abp-row>
                         <abp-row>
-
-                                    <abp-column size-md="_3">
-                                        <abp-input asp-for="InvoiceMblDto.PodName" readonly="true" />
-                                    </abp-column>
-                                    <abp-column size-md="_3">
-                                        <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
-                                        <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.PodEta)" class="form-control " readonly="">
-                                    </abp-column>
-
-                        </abp-row>
-                        <abp-row>
-
-                            <abp-column size-md="_3">
-                                <abp-input asp-for="InvoiceMblDto.DelName" readonly="true" />
-                            </abp-column>
-                            <abp-column size-md="_3">
-                                <label class="form-label" for="InvoiceMblDto_PolEtd"> ETA</label>
-                                <input type="text" id="InvoiceMblDto_DelEta" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.DelEta)" class="form-control " readonly="">
-                            </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceMblDto.FdestName" readonly="true" />
                             </abp-column>
                             <abp-column size-md="_3">
-                                <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
+                                <label class="form-label" for="InvoiceMblDto_PolEtd">@L["ETA"]</label>
                                 <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.FdestEta)" class="form-control " readonly="">
                             </abp-column>
-                        </abp-row>
-
-                        <abp-row>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceMblDto.SoNo" readonly="true" />
                             </abp-column>
@@ -839,15 +809,16 @@
                                 <label class="form-label" for="ShipperName">@L["MblNotifyName"]</label>
                                 <input type="text" id="MblNotifyName" name="MblNotifyName" value="@Model.InvoiceBasicDto.MblNotifyName" class="form-control " readonly="">
                             </abp-column>
+                        </abp-row>
+                        <abp-row>
                             <abp-column size-md="_3">
                                 <label class="form-label" for="VesselNameVoyage"> @L["VesselNameVoyage"]</label>
-                                <input type="text" id="VesselNameVoyage" name="VesselNameVoyage" value="@Model.InvoiceBasicDto.VesselNameVoyage" class="form-control " readonly="">
+                                <input type="text" id="VesselNameVoyage" name="VesselNameVoyage" value="@Model.InvoiceMblDto.FlightNo" class="form-control " readonly="">
                             </abp-column>
                             <abp-column size-md="_3">
                                 <label class="form-label" for="VesselNameVoyage"> @L["MblOperatorId"]</label>
-                                <input type="text" id="MblOperatorId" name="MblOperatorId" value="@Model.InvoiceBasicDto.MblOperatorName" class="form-control " readonly="">
+                                <input type="text" id="MblOperatorId" name="MblOperatorId" value="@(CurrentUser.Name + " " + CurrentUser.SurName)" class="form-control " readonly="">
                             </abp-column>
-
                         </abp-row>
 
                         <abp-row>

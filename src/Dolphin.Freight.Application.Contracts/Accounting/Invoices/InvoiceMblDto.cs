@@ -11,6 +11,8 @@ namespace Dolphin.Freight.Accounting.Invoices
     public class InvoiceMblDto : AuditedEntityDto<Guid>
     {
         public Guid Mid { get; set; }
+        public string FlightNo { get; set; }
+        public double Package { get; set; }
         /// <summary>
         /// 運輸編號
         /// </summary>
@@ -19,6 +21,12 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// 文件編號
         /// </summary>
         public string FilingNo { get; set; }
+        public Guid? DepatureId { get; set; }
+        public Guid? DestinationId { get; set; }
+        /// <summary>
+        /// 出發日期
+        /// </summary>
+        public DateTime DepatureDate { get; set; }
         /// <summary>
         /// MB/L編號
         /// </summary>
@@ -31,6 +39,7 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// 提單類別ID
         /// </summary>
         public Guid? BlTypeId { get; set; }
+        public Guid? ShipperId { get; set; }
         /// <summary>
         /// 發布日期
         /// </summary>
@@ -147,6 +156,60 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// <summary>
         /// 收票人ID
         /// </summary>
+        /// 
+        public double VolumeWeightKg { get; set; }
+        /// <summary>
+        /// 體積重量CBM
+        /// </summary>
+        public double VolumeWeightCbm { get; set; }
+        /// <summary>
+        /// 毛重公斤
+        /// </summary>
+        public double GrossWeightKg { get; set; }
+        /// <summary>
+        /// 毛重磅
+        /// </summary>
+        public double GrossWeightLb { get; set; }
+        /// <summary>
+        /// 毛重金額
+        /// </summary>
+        public double GrossWeightAmount { get; set; }
+        /// <summary>
+        /// 提單毛重公斤
+        /// </summary>
+        public double AwbGrossWeightKg { get; set; }
+        /// <summary>
+        /// 提單毛重磅
+        /// </summary>
+        public double AwbGrossWeightLb { get; set; }
+        /// <summary>
+        /// 提單毛重金額
+        /// </summary>
+        public double AwbGrossWeightAmount { get; set; }
+        /// <summary>
+        /// 計費重量公斤
+        /// </summary>
+        public double ChargeableWeightKg { get; set; }
+        /// <summary>
+        /// 計費重量磅
+        /// </summary>
+        public double ChargeableWeightLb { get; set; }
+        /// <summary>
+        /// 計費重量金額
+        /// </summary>
+        public double ChargeableWeightAmount { get; set; }
+        /// <summary>
+        /// 提單計費重量公斤
+        /// </summary>
+        public double AwbChargeableWeightKg { get; set; }
+        /// <summary>
+        /// 提單計費重量磅
+        /// </summary>
+        public double AwbChargeableWeightLb { get; set; }
+        /// <summary>
+        /// 提單計費重量金額
+        /// </summary>
+        public double AwbChargeableWeightAmount { get; set; }
         public Guid? MblBillToId { get; set; }
         /// <summary>
         /// 收票人報表上顯示的資訊
@@ -156,6 +219,7 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// 收貨人ID
         /// </summary>
         public Guid? MblConsigneeId { get; set; }
+        public Guid? HblConsigneeId { get; set; }
         /// <summary>
         /// 收貨人報表上顯示的資訊
         /// </summary>

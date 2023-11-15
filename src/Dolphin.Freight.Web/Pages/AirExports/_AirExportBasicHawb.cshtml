@@ -294,7 +294,7 @@
                                     <th class="packageTable">@L["Package"]</th>
                                     <td><input asp-for="AirExportHawbDto.Package" class="form-control form-control-sm"/></td>
                                     <td colspan="3">
-                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.PackageUnitLookupList", AspItems = _dropdown.PackageUnitLookupList, FieldName = "PackageUnit", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.PackageUnit) })
+                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.PackageUnit", AspItems = _dropdown.PackageUnitLookupList, FieldName = "PackageUnit", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.PackageUnit) })
                                     </td>
                                 </tr>
                                 <tr>
