@@ -447,4 +447,9 @@ class EditModelOEContainer {
             });
         }
     }
+
+    static SetPackageUnitName(Elem) {
+        var selectedOptionValue = $(Elem)[0].selectedOptions[0].innerHTML;
+        $('#totalPackageTypeUnit').text(selectedOptionValue);
+    }
 }
