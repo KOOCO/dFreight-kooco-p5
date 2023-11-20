@@ -50,24 +50,8 @@
                     'ExportBooking_CargoReadyDate'
                 ];
 
-                ids.forEach(function (id) {
-                    let dateElem = $('#' + id);
-
-                    if (dateElem.length === 0) {
-                        return;
-                    }
-
-                    dateElem.removeAttr('type').datetimepicker({
-                        format: 'Y-m-d H:i',
-                        step: 15,
-                        allowInput: false
-                    });
-
-                    let currentVal = dateElem.val();
-                    if (currentVal.includes('T')) {
-                        dateElem.val(currentVal.replace('T', ' '));
-                    }
-                });
+                var dateTimePicker = new CustomDateTimePicker();
+                dateTimePicker.dateTimePicker(ids);
             });
 
             setPoValue();
@@ -610,15 +594,15 @@
                                             <abp-row>
                                                 <abp-column>
                                                      <div class="mb-3">
-                                                    <label for="ExportBooking_SoNo" class="form-label">@L["SoCode"] <input type="checkbox" name="ExportBooking.IsCreateBySystem" id="ExportBooking_IsCreateBySystem" value="true" /></label>
+                                                    <label for="ExportBooking_SoNo" class="form-label"><span class="text-danger">*</span>@L["SoCode"] <input type="checkbox" name="ExportBooking.IsCreateBySystem" id="ExportBooking_IsCreateBySystem" value="true" /></label>
                                                     <input type="text" name="ExportBooking.SoNo" class="form-control" id="ExportBooking_SoNo" />
                                                 </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row >
                                                 <abp-column>
-
-                                                    <abp-input asp-for="ExportBooking.SoNoDate" abp-data-datepicker="false" required-symbol="false" />
+                                                    <label for="ExportBooking_SoNoDate"><span class="text-danger">*</span>@L["SoNoDate"]</label>
+                                                    <input class="form-control" asp-for="ExportBooking.SoNoDate" abp-data-datepicker="false" required-symbol="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row >
@@ -1133,7 +1117,7 @@
                                             <abp-row>
                                                 <abp-column>
                                                      <div >
-                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.OfficeId", AspItems = _dropdown.SubstationLookupList, IsShowLabel = true, FieldName = @L["OfficeId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.OfficeId), IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.OfficeId", AspItems = _dropdown.SubstationLookupList, IsShowLabel = true, FieldName = @L["OfficeId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.OfficeId), IsRequired = true })
                                               </div>
                                                 </abp-column>
                                             </abp-row>
@@ -1178,7 +1162,7 @@
                                                 </abp-column>
                                             </abp-row>
                                      <abp-row>
-  <abp-column size-md="_2">
+                                                <abp-column size-md="_2">
                                                     @L["Container List"]
                                                 </abp-column>
                                 <abp-column size-md="_12">
@@ -1232,8 +1216,8 @@
                                 <abp-column size-md="_12" class="table-responsive">
                                     <div>
                                         商品 / 艙單商品
-                                        <abp-button class="btn btn-success me-md-2" type="button" id="addCommodityBtn" onclick="onAddCommodity()">+</abp-button>
-                                        <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteCommodityBtn" onclick="onRemoveCommodity()">delete</abp-button>
+                                        <abp-button class="btn btn-success btn-sm mx-1" type="button" id="addCommodityBtn" onclick="onAddCommodity()"><i class="fas fa-plus fa-lg mx-1"></i></abp-button>
+                                        <abp-button class="btn btn-outline-danger btn-sm" type="button" id="deleteCommodityBtn" onclick="onRemoveCommodity()"><i class="fas fa-minus fa-lg mx-1"></i></abp-button>
                                     </div>
                                     <abp-table width="100%" border="1">
                                         <tr>
@@ -1272,7 +1256,7 @@
                                                 </abp-column>
                                                 <abp-column size-md="_6">
                                                               <div>
-                                        <div class="pull-left"><h7 class="form-section">Description</h7></div>
+                                        <div class="pull-left"><h7 class="form-section">@L["Description"]</h7></div>
                                         <div class="pull-right">
                                             <div class="_font-12 inline-block">Copy: </div>
                                             <div class="btn-group">
@@ -1287,7 +1271,7 @@
                                             </abp-row>
                                             <abp-row class="mt-3">
                                                 <abp-column>
-                                                    <label class="">@L["Btn:BookingRemark"]</label>
+                                                    <label class=""><b style="font-size: large;">@L["Btn:BookingRemark"]</b></label>
                                                     <div class="btn-group">
                                                         <input type="radio" class="btn-check" name="RemarkBtn" id="BookingRemark" value="0" checked>
                                                         <label class="btn btn-outline-secondary checkLabel" for="BookingRemark" onclick="initRemark(0);">@L["Btn:Booking"]</label>

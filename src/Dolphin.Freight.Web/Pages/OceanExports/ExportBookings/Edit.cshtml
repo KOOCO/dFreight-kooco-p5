@@ -25,8 +25,6 @@
     <abp-script src="/Pages/OceanExports/ExportBookings/Edit.js" />
     <script type="text/javascript">
         $(document).ready(function () {
-            var PackageCodes = [];
-
             var l = abp.localization.getResource('Freight');
 
             var url = new URL(window.location.href);
@@ -53,24 +51,8 @@
                     'ExportBooking_CargoReadyDate'
                 ];
 
-                ids.forEach(function (id) {
-                    let dateElem = $('#' + id);
-
-                    if (dateElem.length === 0) {
-                        return;
-                    }
-
-                    dateElem.removeAttr('type').datetimepicker({
-                        format: 'Y-m-d H:i',
-                        step: 15,
-                        allowInput: false
-                    });
-
-                    let currentVal = dateElem.val();
-                    if (currentVal.includes('T')) {
-                        dateElem.val(currentVal.replace('T', ' '));
-                    }
-                });
+                var dateTimePicker = new CustomDateTimePicker();
+                dateTimePicker.dateTimePicker(ids);
             });
 
             var showCopyMsg = '@Model.ShowCopyMsg'
@@ -87,89 +69,6 @@
              onSetCommodity();            
                 setPoValue();
 
-            dolphin.freight.settings.sysCodes.sysCode.fillSysCodesAmsNo().done(function (res) {
-                debugger;
-                PackageCodes = res
-            });
-
-            //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'CancelReason' }).done(function (result) {
-            //    if (result != null && result.length > 0) {
-            //        initSysCodeI18nTag(result, "CancelReason", $("#mCancelReason").val())
-            //    }
-            //});
-            //dolphin.freight.common.ajaxDropdown.getReferenceItemsByType({}).done(function (result) {
-            //    console.log(result)
-            //    if (result != null && result.length > 0) {
-            //        initReferenceTag(result, "ReferenceId", $("#mReferenceId").val())
-            //    }
-            //});
-
-            //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'ShipModeId' }).done(function (result) {
-            //    if (result != null && result.length > 0) {
-            //        initSysCodeTag(result, "ShipModeId", $("#mShipModeId").val())
-            //    }
-            //});
-            //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'FreightTermId' }).done(function (result) {
-            //    if (result != null && result.length > 0) {
-            //        initSysCodeTag(result, "FreightTermForBuyerId", $("#mFreightTermForBuyerId").val())
-            //        initSysCodeTag(result, "FreightTermForSalerId", $("#mFreightTermForSalerId").val())
-
-            //    }
-            //});
-            //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'SvcTermFromId' }).done(function (result) {
-            //    if (result != null && result.length > 0) {
-            //        initSysCodeTag(result, "SvcTermFromId", $("#mSvcTermFromId").val())
-            //        initSysCodeTag(result, "SvcTermToId", $("#mSvcTermToId").val())
-
-            //    }
-            //});
-            //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'IncotermsId' }).done(function (result) {
-            //    if (result != null && result.length > 0) {
-            //        initSysCodeTag(result, "IncotermsId", $("#mIncotermsId").val())
-            //    }
-            //});
-            //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'CargoTypeId' }).done(function (result) {
-            //    if (result != null && result.length > 0) {
-            //        initSysCodeTag(result, "CargoTypeId", $("#mCargoTypeId").val())
-            //    }
-            //});
-            ////貿易夥伴
-            //dolphin.freight.tradePartners.tradePartner.getList({}).done(function (result) {
-            //    var selectItems = result.items;
-            //    initTradePartnerSelect(selectItems, "CarrierId", $("#mCarrierId").val());
-            //    initTradePartnerSelect(selectItems, "ShipperId", $("#mShipperId").val());
-            //    initTradePartnerSelect(selectItems, "CustomerId", $("#mCustomerId").val());
-            //    initTradePartnerSelect(selectItems, "BillToId", $("#mBillToId").val());
-            //    initTradePartnerSelect(selectItems, "ConsigneeId", $("#mConsigneeId").val());
-            //    initTradePartnerSelect(selectItems, "NotifyId", $("#mNotifyId").val());
-            //    initTradePartnerSelect(selectItems, "ShippingAgentId", $("#mShippingAgentId").val());
-            //    initTradePartnerSelect(selectItems, "CoLoaderId", $("#mCoLoaderId").val());
-            //    initTradePartnerSelect(selectItems, "FbaId", $("#mFbaId").val());
-            //    initTradePartnerSelect(selectItems, "CargoPickupId", $("#mCargoPickupId").val());
-            //    initTradePartnerSelect(selectItems, "TruckerId", $("#mTruckerId").val());
-            //    initTradePartnerSelect(selectItems, "DeliveryToId", $("#mDeliveryToId").val());
-
-
-            //});
-            ////港口
-            //dolphin.freight.settings.ports.port.getList({}).done(function (result) {
-            //    console.log(result.items);
-            //    if (result != null && result.items != null && result.items.length > 0) {
-            //        initPortsTag(result.items, "PorId", $("#mPorId").val())
-            //        initPortsTag(result.items, "PolId", $("#mPolId").val())
-            //        initPortsTag(result.items, "PodId", $("#mPodId").val())
-            //        initPortsTag(result.items, "DelId", $("#mDelId").val())
-            //        initPortsTag(result.items, "FdestId", $("#mFdestId").val())
-            //        initPortsTag(result.items, "TransPort1Id", $("#mTransPort1Id").val())
-
-            //    }
-            //});
-            ////分站
-            //dolphin.freight.settings.substations.substation.getSubstations({}).done(function (result) {
-            //    if (result != null && result.length > 0) {
-            //        initSubstationsTag(result, "OfficeId", $("#mOfficeId").val())
-            //    }
-            //});
             initReasonStatus();
             initHideBtn();
             initRemark(0);
@@ -686,9 +585,8 @@
                                         <abp-card-body style="background:#eeeeee;">
                                             <abp-row>
                                                 <abp-column>
-                                                      <div class="mb-3">
-                                                    @*<label for="ExportBooking_SoNo" class="form-label">@L["SoCode"] </label>*@
-                                                    <label for="ExportBooking_SoNo" class="form-label">@L["SoCode"] <input type="checkbox" name="ExportBooking.IsCreateBySystem" id="ExportBooking_IsCreateBySystem" /></label>
+                                                    <div class="mb-3">
+                                                    <label for="ExportBooking_SoNo" class="form-label"><span class="text-danger">*</span>@L["SoCode"] <input type="checkbox" name="ExportBooking.IsCreateBySystem" id="ExportBooking_IsCreateBySystem" /></label>
                                                     <input type="text" name="ExportBooking.SoNo" class="form-control" id="ExportBooking_SoNo" value="@Model.ExportBooking.SoNo" readonly />
                                                     <input type="hidden" name="ExportBooking.IsCreateBySystem" class="form-control" id="ExportBooking_SoNo" value="@Model.ExportBooking.IsCreateBySystem" />
                                                </div>
@@ -696,7 +594,8 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.SoNoDate" abp-data-datepicker="false" required-symbol="false" />
+                                                    <label for="ExportBooking_SoNo" class="form-label"><span class="text-danger">*</span>@L["SoNoDate"]</label>
+                                                    <input class="form-control" asp-for="ExportBooking.SoNoDate" abp-data-datepicker="false" required-symbol="false" />
                                                 </abp-column>
                                             </abp-row>
                                              <abp-row >
@@ -1199,8 +1098,8 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                      <div class="mb-3">
-                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.OfficeId", AspItems = _dropdown.SubstationLookupList, IsShowLabel = true, FieldName = @L["OfficeId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.OfficeId) })
+                                                    <div class="mb-3">
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.OfficeId", AspItems = _dropdown.SubstationLookupList, IsRequired = true, IsShowLabel = true, FieldName = @L["OfficeId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.ExportBooking.OfficeId) })
                                                </div>
                                                </abp-column>
                                             </abp-row>
@@ -1240,7 +1139,7 @@
                                                 </abp-column>
                                             </abp-row>
                                                            <abp-row>
-  <abp-column size-md="_2">
+                                <abp-column size-md="_2">
                                                     @L["Container List"]
                                                 </abp-column>
                                 <abp-column size-md="_12">
@@ -1294,8 +1193,8 @@
                                 <abp-column size-md="_12" class="table-responsive">
                                     <div>
                                         商品 / 艙單商品
-                                        <abp-button class="btn btn-success me-md-2" type="button" id="addCommodityBtn" onclick="onAddCommodity()">+</abp-button>
-                                        <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteCommodityBtn" onclick="onRemoveCommodity()">delete</abp-button>
+                                        <abp-button class="btn btn-success btn-sm mx-1" type="button" id="addCommodityBtn" onclick="onAddCommodity()"><i class="fas fa-plus fa-lg mx-1"></i></abp-button>
+                                        <abp-button class="btn btn-outline-danger btn-sm" type="button" id="deleteCommodityBtn" onclick="onRemoveCommodity()"><i class="fas fa-minus fa-lg mx-1"></i></abp-button>
                                     </div>
                                     <abp-table width="100%" border="1">
                                         <tr>
@@ -1346,7 +1245,7 @@
                                                 </abp-column>
                                                 <abp-column size-md="_6">
                                                      <div>
-                                        <div class="pull-left"><h7 class="form-section">Description</h7></div>
+                                        <div class="pull-left"><h7 class="form-section">@L["Description"]</h7></div>
                                         <div class="pull-right">
                                             <div class="_font-12 inline-block">Copy: </div>
                                             <div class="btn-group">

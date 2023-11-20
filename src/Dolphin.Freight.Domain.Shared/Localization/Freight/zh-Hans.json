@@ -388,7 +388,7 @@
     "MblBillToId": "收票人",
     "MblCargoTypeId": "货物类别",
     "MblSaleId": "业务员",
-
+    "Container List": "仓储收据清单",
     //包装
     "CompanyId": "航空公司",
     "PackageCode": "代码",
@@ -398,7 +398,7 @@
     "EManifestNo": "eManifest代码",
     "EManifestNoId": "eManifest代码",
     "EManifestId": "eManifest代码",
-    "Description": "描述",
+    "Description": "货描",
     //集装箱
     "ContainerCode": "代码",
     "SizeDescription": "货描",
@@ -500,7 +500,7 @@
     "CargoTypeId": "货物类别",
     "MblSalesTypeId": "业务类别",
     "HblWhCutOffTime": "仓储结关日",
-    "EarlyReturnDatetime": "最早收柜日",
+    "EarlyReturnDatetime": "最早还柜日",
     "LcNo": "信用编号",
     "LcIssueBank": "信用状开立银行",
     "LcIssueDate": "信用状开立日期",
