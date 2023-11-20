@@ -109,5 +109,11 @@ namespace Dolphin.Freight.Settings.SysCodes
             var sysCode = sysCodes.Where(x => x.CodeType.Equals("Prefix_" + queryType)).FirstOrDefault();
             return sysCode == null?"NO":sysCode.CodeValue;
         }
+        public async Task<List<SysCodeDto>> FillSysCodesAmsNo()
+        {
+            var lookup = await this.GetSysCodeDtosByTypeAsync(new QueryDto { QueryType = "AmsNoId" });
+
+            return lookup.OrderBy(o => o.CodeValue).ToList();
+        }
     }
 }

@@ -1,3 +1,4 @@
+using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
@@ -30,6 +31,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         public List<SelectListItem> UnitTypeLookupList { get; set; }
         [BindProperty]
         public List<ManifestCommodity> Commodities { get; set; }
+        [BindProperty]
+        public Units Units { get; set; }
         public CreateModel(ISysCodeAppService sysCodeAppService,IExportBookingAppService exportBookingAppService, IContainerAppService containerAppService)
         {
             _exportBookingAppService = exportBookingAppService;
@@ -70,8 +73,11 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
                 ExportBooking.ExtraProperties.Add("Commodities", Commodities);
             }
 
-
-            
+            if (Units is not null)
+            {
+                ExportBooking.ExtraProperties.Remove("Units");
+                ExportBooking.ExtraProperties.Add("Units", Units);
+            }
 
             var exportBooking = await _exportBookingAppService.CreateAsync(ExportBooking);
             QueryContainerDto query = new QueryContainerDto() { QueryId = exportBooking.Id };

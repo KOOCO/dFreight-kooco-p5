@@ -7,6 +7,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
     public class ManifestCommodity
     {
         public string Description { get; set; }
+        public Guid? PackageCode { get; set; }
         public string PackagingType { get; set; }
         public string HTSCode { get; set; }
         public int? NoOfPcs { get; set; }

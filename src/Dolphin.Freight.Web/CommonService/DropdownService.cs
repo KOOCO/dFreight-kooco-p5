@@ -129,6 +129,7 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> AccountGroupnameLookupList => FillAccountGroupName().Result;
         public List<SelectItems> OceanExportMblLookupList => FillOceanExportMblAsync().Result;
         public List<SelectItems> OperatorLookupList => FillOperatorAsync().Result;
+        public List<SelectItems> AmsNoLookupList => FillSysCodesAmsNo().Result;
         public IAbpLazyServiceProvider LazyServiceProvider { get; set; }
         protected IStringLocalizerFactory StringLocalizerFactory => LazyServiceProvider.LazyGetRequiredService<IStringLocalizerFactory>();
         private Type _localizationResource = typeof(FreightResource);
@@ -476,6 +477,15 @@ namespace Dolphin.Freight.Web.CommonService
             return lookup.Items.Select(s => new SelectItems(s.AccountGroupName, s.Id.ToString(), false)).ToList();
         }
 
+        #endregion
+
+        #region
+        private async Task<List<SelectItems>> FillSysCodesAmsNo()
+        {
+            var lookup = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new QueryDto { QueryType = "AmsNoId" });
+
+            return lookup.OrderBy(o => o.CodeValue).Select(s => new SelectItems(s.CodeValue, s.Id.ToString(), false)).ToList();
+        }
         #endregion
     }
 }
