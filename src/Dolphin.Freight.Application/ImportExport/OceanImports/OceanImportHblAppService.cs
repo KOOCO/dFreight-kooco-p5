@@ -148,7 +148,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                                    .WhereIf(query.TruckerId.HasValue, e => e.TruckerId == query.TruckerId)
                                    .WhereIf(query.SaleId.HasValue, e => e.HblSaleId == query.SaleId)
                                    .WhereIf(query.CustomerId.HasValue, e => e.HblCustomerId == query.CustomerId)
-
+                                    .WhereIf(query.Op.HasValue, e => e.CreatorId == query.Op)
+                                    .WhereIf(query.Block.HasValue, e => e.IsHold == query.Block)
+                                    .WhereIf(query.IsfByThirdParty.HasValue, e => e.IsfByThirdParty == query.IsfByThirdParty)
                                    .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
                                    .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
                                    .WhereIf(query.FinalDestId.HasValue, e => e.FdestId == query.FinalDestId)
@@ -159,6 +161,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                                    .WhereIf(query.FinalDestEta.HasValue, e => e.FdestEta.Value.Date == query.FinalDestEta.Value.Date.AddDays(1))
                                    .WhereIf(query.Eta.HasValue, e => e.PodEta.Value.Date == query.Eta.Value.Date.AddDays(1))
                                    .WhereIf(query.Etd.HasValue, e => e.PolEtd.Value.Date == query.Etd.Value.Date.AddDays(1))
+                                   .WhereIf(query.IsfDate.HasValue, e => e.IsfMatchDate.Value.Date == query.IsfDate.Value.Date.AddDays(1))
+                                   .WhereIf(query.ReleaseDate.HasValue, e => e.HblReleaseDate.Value.Date == query.ReleaseDate.Value.Date.AddDays(1))
                                    .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1));
             List<OceanImportHbl> rs = OceanImportHbls.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<OceanImportHblDto> list = new List<OceanImportHblDto>();

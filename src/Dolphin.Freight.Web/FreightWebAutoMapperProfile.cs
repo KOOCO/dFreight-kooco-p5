@@ -33,6 +33,7 @@ using Dolphin.Freight.ReportLog;
 using static Dolphin.Freight.Web.Pages.AirImports.CreateMawbModel;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.Common;
 
 namespace Dolphin.Freight.Web;
 
@@ -56,7 +57,7 @@ public class FreightWebAutoMapperProfile : Profile
         CreateMap<ExportBooking, ExportBookingDto>();
         CreateMap<ExportBooking, CreateUpdateExportBookingDto>();
         CreateMap<OceanExportHblDto, OceanExportHbl>();
-
+        CreateMap<AirExportMawbDto, InvoiceMblDto>();
         // TradePartner
         CreateMap<CreateEditCreditLimitGroupViewModel, CreateUpdateCreditLimitGroupDto>();
         CreateMap<CreditLimitGroupDto, CreateEditCreditLimitGroupViewModel>();

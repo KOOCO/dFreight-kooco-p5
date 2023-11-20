@@ -197,16 +197,69 @@
                 <abp-column size-md="_2">
                   @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.SaleId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "SaleId", })
            </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Cy/CfsLocation"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.CyCfsLocationId", AspItems = _dropdown.TradePartnerLookupList})
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Block"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <select id="block" class="form-select " />
+                <option value=""></option>
+                   <option value="true">Yes</option>
+                    <option value="false">No</option>
+               </select>
+               </abp-column>
             </abp-row>
-             
+             <abp-row class="mb-3">
+                 <abp-column size-md="_1">
+                    <label>@L["ISF Match Date"]</label>
+                </abp-column>
+                <abp-column size-md="_2">
+              <input type="date" id="isfDate" class="form-control" />
+                
+                </abp-column>
+                  <abp-column size-md="_1">
+                    <label>@L["Release Date"]</label>
+                </abp-column>
+                <abp-column size-md="_2">
+              <input type="date" id="releaseDate" class="form-control" />
+                
+                </abp-column>
+                 <abp-column size-md="_1">
+                    <label>@L["ISF Filling by 3rd Party"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <select id="isfFilling" class="form-select " />
+                <option value=""></option>
+                   <option value="true">Yes</option>
+                    <option value="false">No</option>
+               </select>
+               </abp-column>  <abp-column size-md="_1">
+                    <label>@L["Office"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OfficeId", AspItems = _dropdown.SubstationLookupList, IsShowLabel = false, FieldName = "OfficeId" })
+               </abp-column>
+
+                 <abp-column size-md="_1">
+                    <label>@L["OP"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.CreatorId", AspItems = _dropdown.OperatorLookupList,  IsShowLabel = false, FieldName = "OP", SelectType = 0, ShowFiledContentValue =null })
+                                </abp-column>
+            </abp-row>
             <abp-row>
-                <abp-abp-column class="text-center">
+                <abp-column class="text-center">
                
                     <abp-button type="button" id="CancelFilter" text="@L["Cancel"]" button-type="Danger" />
 
                     <abp-button type="button" id="Search" text="@L["Search"]" button-type="Primary" />
                
-                </abp-abp-column>
+                </abp-column>
             </abp-row>
             </abp-card-body>
         <abp-card-body>

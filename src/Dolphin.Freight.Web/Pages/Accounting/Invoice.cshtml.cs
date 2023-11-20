@@ -1,4 +1,5 @@
 using Dolphin.Freight.Accounting.InvoiceBills;
+using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.AccountingSettings.BillingCodes;
 using Dolphin.Freight.Common;
@@ -7,7 +8,9 @@ using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 using Dolphin.Freight.ImportExport.OceanImports;
 using Dolphin.Freight.Settings.CurrencySetting;
+using Dolphin.Freight.Settings.PackageUnits;
 using Dolphin.Freight.Settings.Substations;
+using Dolphin.Freight.Settinngs.PackageUnits;
 using Dolphin.Freight.Settinngs.Ports;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.TradePartners;
@@ -20,6 +23,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp.Domain.Repositories;
+using Volo.Abp.ObjectMapping;
 using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using QueryInvoiceDto = Dolphin.Freight.Accounting.Invoices.QueryInvoiceDto;
 
@@ -93,19 +98,25 @@ namespace Dolphin.Freight.Web.Pages.Accounting
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly ICurrencySettingAppService _currencySettingAppService;
         private readonly IExportBookingAppService _exportBookingAppService;
+        private readonly IAirExportMawbAppService _airExportMawbAppService;
+        private readonly IPortsManagementAppService _portsManagementAppService;
+        private readonly IRepository<PackageUnit, Guid> _packageUnitAppService;
         public InvoiceModel(ITradePartnerAppService tradePartnerAppService,
                             ISubstationAppService substationAppService,
-                            IInvoiceAppService invoiceAppService, 
-                            IOceanExportMblAppService oceanExportMblAppService, 
-                            IOceanExportHblAppService oceanExportHblAppService, 
-                            IInvoiceBillAppService invoiceBillAppService, 
-                            IPortAppService portAppService, 
+                            IInvoiceAppService invoiceAppService,
+                            IOceanExportMblAppService oceanExportMblAppService,
+                            IOceanExportHblAppService oceanExportHblAppService,
+                            IInvoiceBillAppService invoiceBillAppService,
+                            IPortAppService portAppService,
                             OceanImportHblAppService oceanImportHblAppService,
                             OceanImportMblAppService oceanImportMblAppService,
                             IAjaxDropdownAppService ajaxDropdownAppService,
                             ICurrencySettingAppService currencySettingAppService,
                             IAirExportHawbAppService airExportHawbAppService,
-                            IExportBookingAppService exportBookingAppService
+                            IExportBookingAppService exportBookingAppService,
+                            IAirExportMawbAppService airExportMawbAppService,
+                            IPortsManagementAppService portsManagementAppService,
+                            IRepository<PackageUnit, Guid> packageUnitAppService
                             )
         {
             _invoiceAppService = invoiceAppService;
@@ -121,6 +132,9 @@ namespace Dolphin.Freight.Web.Pages.Accounting
             _currencySettingAppService = currencySettingAppService;
             _airExportHawbAppService = airExportHawbAppService;
             _exportBookingAppService = exportBookingAppService;
+            _airExportMawbAppService = airExportMawbAppService;
+            _portsManagementAppService = portsManagementAppService;
+            _packageUnitAppService = packageUnitAppService;
         }
         public async Task OnGetAsync()
         {
@@ -170,17 +184,43 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                 if (InvoiceMblDto.OfficeId != Guid.Empty) 
                 {
                     var substation = await _substationAppService.GetAsync(InvoiceMblDto.OfficeId);
-                    InvoiceBasicDto.AbbreviationName = substation.AbbreviationName;
+                    InvoiceBasicDto.AbbreviationName = substation.SubstationName + " (" + substation.AbbreviationName + ")";
                 }
                 if (InvoiceMblDto.MblConsigneeId != null && InvoiceMblDto.MblConsigneeId.Value != Guid.Empty) 
                 {
                     var tradePartner = await _tradePartnerAppService.GetAsync(InvoiceMblDto.MblConsigneeId.Value);
                     InvoiceBasicDto.MblConsigneeName = tradePartner.TPName;
+                    InvoiceMblDto.MblOverseaAgentName = tradePartner.TPName;
+                }
+                if (InvoiceMblDto.HblConsigneeId is not null && InvoiceMblDto.HblConsigneeId.Value != Guid.Empty)
+                {
+                    var tradePartner = await _tradePartnerAppService.GetAsync(InvoiceMblDto.HblConsigneeId.Value);
+                    InvoiceBasicDto.MblConsigneeName = tradePartner.TPName;
+                }
+                if (InvoiceMblDto.ShipperId is not null && InvoiceMblDto.ShipperId.Value != Guid.Empty)
+                {
+                    var tradePartner = await _tradePartnerAppService.GetAsync(InvoiceMblDto.ShipperId.Value);
+                    InvoiceBasicDto.ShipperName = tradePartner.TPName;
                 }
                 if (InvoiceMblDto.MblNotifyId != null && InvoiceMblDto.MblNotifyId.Value != Guid.Empty)
                 {
                     var tradePartner = await _tradePartnerAppService.GetAsync(InvoiceMblDto.MblNotifyId.Value);
                     InvoiceBasicDto.MblNotifyName = tradePartner.TPName;
+                }
+                if (InvoiceMblDto.DepatureId is not null && InvoiceMblDto.DepatureId.Value != Guid.Empty)
+                {
+                    var portManagement = await _portsManagementAppService.QueryListAsync();
+                    InvoiceMblDto.PolName = portManagement.Where(w => w.Id == InvoiceMblDto.DepatureId.Value).Select(s => s.PortName).FirstOrDefault();
+                }
+                if (InvoiceMblDto.DestinationId is not null && InvoiceMblDto.DestinationId.Value != Guid.Empty)
+                {
+                    var portManagement = await _portsManagementAppService.QueryListAsync();
+                    InvoiceMblDto.PodName = portManagement.Where(w => w.Id == InvoiceMblDto.DestinationId.Value).Select(s => s.PortName).FirstOrDefault();
+                }
+                if (InvoiceMblDto.PackageCategoryId is not null && InvoiceMblDto.PackageCategoryId.Value != Guid.Empty)
+                {
+                    var packageUnit = await _packageUnitAppService.GetQueryableAsync();
+                    InvoiceBasicDto.PackageUnitName = packageUnit.Where(w => w.Id == InvoiceMblDto.PackageCategoryId).Select(s => s.PackageName).FirstOrDefault();
                 }
                 InvoiceBasicDto.VesselNameVoyage = "";
                 if (InvoiceMblDto.VesselName != null) InvoiceBasicDto.VesselNameVoyage = InvoiceMblDto.VesselName;
@@ -214,7 +254,6 @@ namespace Dolphin.Freight.Web.Pages.Accounting
             QueryInvoiceDto query = new QueryInvoiceDto() { QueryInvoiceType = InvoiceType };
             if (Mid == null)
             {
-                //如果沒有Mid，表示這是Hbl的
                 var oceanExportHbl = await _oceanExportHblAppService.GetAsync(Hid.Value);
                 if (oceanExportHbl != null)
                 {
@@ -224,7 +263,6 @@ namespace Dolphin.Freight.Web.Pages.Accounting
             }
             else
             {
-                //如果有Mid，表示這是Mbl的
                 query.ParentId = Mid;
                 query.QueryType = 0;
             }
@@ -295,14 +333,41 @@ namespace Dolphin.Freight.Web.Pages.Accounting
         private async Task InitAirExport()
         {
             QueryInvoiceDto query = new QueryInvoiceDto() { QueryInvoiceType = InvoiceType };
-            var oceanExportMbl = new OceanExportMblDto();
-            InvoiceMblDto = ObjectMapper.Map<OceanExportMblDto, InvoiceMblDto>(oceanExportMbl);
-            if (MawbId != null)
+            if (MawbId is not null)
             {
+                var airExportMbl = await _airExportMawbAppService.GetAsync(MawbId.Value);
+
+                InvoiceMblDto = ObjectMapper.Map<AirExportMawbDto, InvoiceMblDto>(airExportMbl);
+                InvoiceMblDto.MblConsigneeId = airExportMbl.ConsigneeId;
+                InvoiceMblDto.MblNotifyId = airExportMbl.NotifyId;
+                InvoiceMblDto.PolEtd = airExportMbl.DepatureDate;
+                InvoiceMblDto.PodEta = airExportMbl.ArrivalDate;
+                InvoiceMblDto.PackageCategoryId = airExportMbl.MawbPackageUnitId;
+                InvoiceMblDto.MblNo = airExportMbl.MawbNo;
+
                 backUrl = "/AirExports/EditModal3?Id=" + MawbId + "&Hid=" + HawbId;
-            } else 
+            }
+            else if (HawbId is not null)
             {
-                var airexportHawb = await _airExportHawbAppService.GetAsync((Guid)HawbId);
+                var airexportHawb = await _airExportHawbAppService.GetAsync(HawbId.Value);
+                var airExportMawb = await _airExportMawbAppService.GetAsync(airexportHawb.MawbId.Value);
+
+                InvoiceMblDto = ObjectMapper.Map<AirExportMawbDto, InvoiceMblDto>(airExportMawb);
+                InvoiceMblDto.Package = Convert.ToDouble(airexportHawb.Package);
+                InvoiceMblDto.MblNo = airExportMawb.MawbNo;
+                Hblno = airexportHawb.HawbNo;
+                InvoiceMblDto.MblConsigneeId = airExportMawb.ConsigneeId;
+                InvoiceMblDto.ShipperId = Guid.Parse(airexportHawb.ActualShippedr);
+                InvoiceMblDto.GrossWeightKg = Convert.ToDouble(airexportHawb.GrossWeightShprKG);
+                InvoiceMblDto.GrossWeightLb = Convert.ToDouble(airexportHawb.GrossWeightShprLB);
+                InvoiceMblDto.PolEtd = airExportMawb.DepatureDate;
+                InvoiceMblDto.PodEta = airExportMawb.ArrivalDate;
+                InvoiceMblDto.VolumeWeightKg = Convert.ToDouble(airexportHawb.VolumeWeightKG);
+                InvoiceMblDto.VolumeWeightCbm = Convert.ToDouble(airexportHawb.VolumeWeightCBM);
+                InvoiceMblDto.MblNotifyId = Guid.Parse(airexportHawb.Notify);
+                InvoiceMblDto.HblConsigneeId = Guid.Parse(airexportHawb.OverseaAgent);
+                InvoiceMblDto.PackageCategoryId = Guid.Parse(airexportHawb.PackageUnit);
+
                 backUrl = "/AirExports/EditModal3?Id=" + airexportHawb.MawbId + "&Hid=" + HawbId;
                 MawbId = airexportHawb.MawbId;
             }

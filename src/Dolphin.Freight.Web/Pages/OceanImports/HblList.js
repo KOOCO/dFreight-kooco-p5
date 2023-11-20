@@ -28,6 +28,13 @@ var queryListFilter = function () {
         delEta: $("#DelEta").val() == '' || $("#DelEta").val() == null ? null : new Date($("#DelEta").val()),
         finalDestEta: $("#FinalDestEta").val() == '' || $("#FinalDestEta").val() == null ? null : new Date($("#FinalDestEta").val()),
         creationDate: $("#CreationDate").val() == '' || $("#CreationDate").val() == null ? null : new Date($("#CreationDate").val()),
+        isfDate: $("#isfDate").val() == '' || $("#isfDate").val() == null ? null : new Date($("#isfDate").val()),
+        releaseDate: $("#releaseDate").val() == '' || $("#releaseDate").val() == null ? null : new Date($("#releaseDate").val()),
+        cysLocationId: $("#VesselSchedule_CyCfsLocationId").val() == '' ? null : $("#VesselSchedule_CyCfsLocationId").val(),
+        block: $("#block").val() == '' ? null : $("#block").val(),
+        isfByThirdParty: $("#isfFilling").val() == '' ? null : $("#isfFilling").val(),
+        officeId: $("#VesselSchedule_OfficeId").val() == '' ? null : $("#VesselSchedule_OfficeId").val(),
+        op: $("#VesselSchedule_CreatorId").val() == '' ? null : $("#VesselSchedule_CreatorId").val(),
 
     };
 };

@@ -66,5 +66,13 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public DateTime? DepatureDate { get; set; }
         public DateTime? ArrivalDate { get; set; }
         public DateTime? PostDate { get; set; }
+
+
+        public DateTime? IsfDate { get; set; }
+        public DateTime? ReleaseDate { get; set; }
+        public Guid? CysLocationId { get; set; }
+        public bool? Block { get; set; }
+        public bool? IsfByThirdParty { get; set; }
+        public Guid? Op { get; set; }
     }
 }
