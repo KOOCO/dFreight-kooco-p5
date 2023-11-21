@@ -1,6 +1,7 @@
 ﻿@page
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Web.Pages.Components
+@using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Dolphin.Freight.Web.CommonService
 @using Microsoft.Extensions.Localization
 @using Volo.Abp.Users;
@@ -1302,6 +1303,18 @@
                                     </abp-card>
                                 </abp-column>
 
+                            </abp-row>
+                            <abp-row>
+                                <abp-column>
+                                    <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                                        @L["Title:Memo"]
+                                    </abp-card-header>
+                                    <abp-card>
+                                        <abp-card-body>
+                                            <partial name="Memos/_Memo" model="new _MemoModel(Model.Id, Dolphin.Freight.Common.FreightPageType.SO)" />
+                                        </abp-card-body>
+                                    </abp-card>
+                                </abp-column>
                             </abp-row>
                             <!--
                             <abp-row>

@@ -94,10 +94,8 @@ namespace Dolphin.Freight.Common.Memos
             var list = data.Where(x => x.SourceId == Guid.Empty && x.FType == fpageType).ToList();
             foreach (var item in list)
             { 
-            item.SourceId= SourceId;
+                item.SourceId= SourceId;
                 await _repository.UpdateAsync(item);
-            
-            
             }
         }
 

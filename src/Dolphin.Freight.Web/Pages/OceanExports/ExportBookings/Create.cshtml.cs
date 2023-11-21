@@ -1,8 +1,10 @@
 using Dolphin.Freight.Common;
+using Dolphin.Freight.Common.Memos;
 using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 using Dolphin.Freight.Settinngs.SysCodes;
+using Dolphin.Freight.Web.Pages.Shared.Memos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -15,6 +17,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
 {
     public class CreateModel : FreightPageModel
     {
+        [HiddenInput]
+        [BindProperty(SupportsGet = true)]
+        public Guid Id { get; set; }
         [BindProperty]
         public CreateUpdateExportBookingDto ExportBooking { get; set; }
         public string CabinateSize { get; set; }
@@ -27,17 +32,19 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         private readonly ISysCodeAppService _sysCodeAppService;
         private readonly IExportBookingAppService _exportBookingAppService;
         private readonly IContainerAppService _containerAppService;
+        private readonly IMemoAppService _memoAppService;
         public List<SelectListItem> RateUnitTypeLookupList { get; set; }
         public List<SelectListItem> UnitTypeLookupList { get; set; }
         [BindProperty]
         public List<ManifestCommodity> Commodities { get; set; }
         [BindProperty]
         public Units Units { get; set; }
-        public CreateModel(ISysCodeAppService sysCodeAppService,IExportBookingAppService exportBookingAppService, IContainerAppService containerAppService)
+        public CreateModel(ISysCodeAppService sysCodeAppService,IExportBookingAppService exportBookingAppService, IContainerAppService containerAppService, IMemoAppService memoAppService)
         {
             _exportBookingAppService = exportBookingAppService;
             _sysCodeAppService = sysCodeAppService;
             _containerAppService = containerAppService;
+            _memoAppService = memoAppService;
         }
         public void OnGet()
         {
@@ -80,6 +87,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
             }
 
             var exportBooking = await _exportBookingAppService.CreateAsync(ExportBooking);
+
+            await _memoAppService.UpdateSourceIdAsync(exportBooking.Id, FreightPageType.SO);
+
             QueryContainerDto query = new QueryContainerDto() { QueryId = exportBooking.Id };
             if (CreateUpdateContainerBooking != null)
             {
