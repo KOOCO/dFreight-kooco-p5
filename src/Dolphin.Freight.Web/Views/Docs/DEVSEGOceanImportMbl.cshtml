@@ -20242,7 +20242,7 @@
         <input type="hidden" asp-for="@Model.ShippingAgentName" />
         <input type="hidden" asp-for="@Model.Mark" />
         <input type="hidden" asp-for="@Model.Description" />
-        <input type="hidden" asp-for="@Model.CreateUpdateContainerJson" />
+        @* <input type="hidden" asp-for="@Model.CreateUpdateContainerJson" /> *@
 
         <div id="main" class="edit">
 <div class="wrap landscape oi-devanning-guide large-font-style">
@@ -20467,9 +20467,14 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                             </tr>
                             <tr class="border-b">
                                 <td class="border-r bg-light">CNTR &amp; SEAL#</td>
-                                <td colspan="3">
-                                   @Model.CreateUpdateContainer?[0].ContainerNo/@Model.CreateUpdateContainer?[0].SealNo
-                                </td>
+                                @if (!Model.CreateUpdateContainer.Count.Equals(0)) {
+                                    <td colspan="3">
+                                         @Model.CreateUpdateContainer?[0].ContainerNo / @Model.CreateUpdateContainer?[0].SealNo
+                                    </td>
+                                }
+                                else {
+                                    <td colspan="3"></td>
+                                }
                             </tr>
                             <tr class="border-b">
                                 <td class="border-r bg-light">INSTRUCTION</td>
