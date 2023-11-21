@@ -26,8 +26,6 @@
                 $('#addHBtn').click();
             }
         });
-  
- 
 })
 
 var EditModelScript = {

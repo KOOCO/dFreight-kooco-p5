@@ -18,8 +18,7 @@
   
     <abp-script src="/Pages/OceanImports/EditModel.js" />
    
-    <script type="text/javascript">
-         
+<script type="text/javascript">
     function OpenInTrackTrace() {
         var url = new URL(window.location.href);
         var mblId = url.searchParams.get('Id');
@@ -223,7 +222,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.ShipModeId", AspItems = _dropdown.ShipModeLookupList, IsShowLabel = true, FieldName = "ShipModeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.ShipModeId) })
                                 </abp-column>
                                    <abp-column size-md="_3">
-                                  @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.Freight", AspItems = Html.GetEnumSelectList(typeof(FreightType)).ToList(), IsRequired = false, IsShowLabel = true, FieldName = "Freight", ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.Freight) })
+                                  @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.Freight", AspItems = Html.GetEnumSelectList(typeof(FreightType)).ToList(), IsRequired = false, IsShowLabel = true, FieldName = "Freight", ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.Freight.Value) })
                            </abp-column>
                            <abp-column size-md="_3">
                                     <abp-input asp-for="OceanImportHbl.Lfd" type="text" abp-data-datepicker="false" />
@@ -240,7 +239,7 @@
                                                               foreach (var item in enumSelectList)
                                                                  {
                                                                var localizedText = L["Enum:RailCode." + item.Text];
-                                                             <option value="@item.Value">@localizedText</option>
+                                                                 <option value="@item.Value">@localizedText</option>
                                                                                         }
                                                                             }
                                                             </select>
@@ -261,7 +260,7 @@
         foreach (var item in enumSelectList)
         {
             var localizedText = L["Enum:ItIssuedLocation." + item.Text];
-            <option value="@item.Value">@localizedText</option>
+                <option value="@item.Value">@localizedText</option>
         }
     }
                                                             </select>
@@ -418,7 +417,7 @@
                                                               foreach (var item in enumSelectList)
                                                                  {
                                                                var localizedText = L["Enum:ShipType." + item.Text];
-                                                             <option value="@item.Value">@localizedText</option>
+                                                                 <option value="@item.Value">@localizedText</option>
                                                                                         }
                                                                             }
                                                             </select>

@@ -457,8 +457,8 @@ table td {
                                 <textarea rows="1" id="commodity_@item.HblNo" name="commodity_@item.HblNo" style="height: 37px;">
                                     @if(item.ManifestCommodities != null && item.ManifestCommodities.Any())
                                     {
-                                         @foreach(var item1 in item.ManifestCommodities){
-                                            @item1.Description
+                                        @foreach(var item1 in item.ManifestCommodities){
+                                            @item1.Description @Environment.NewLine 
                                         }       
                                     }        
                                 </textarea>
