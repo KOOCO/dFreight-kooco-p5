@@ -1088,7 +1088,8 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.EarlyReturnDatetime" abp-data-datepicker="false" />
+                                                    <label>@L["EarlyReturnDateTime"].Value</label>
+                                                    <input class="form-control" asp-for="ExportBooking.EarlyReturnDatetime" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
@@ -1205,25 +1206,37 @@
                                             <th width="5%">件數</th>
                                             <th width="5%">淨重
                                                 <select id="selectNetWeight" class="form-select form-select-sm" onchange="EditExportBookings.convertUnit($(this).val(), 'NetWeight')" name="Units.NetWeight" style="width: 100%;">
-                                                    @if (Newtonsoft.Json.JsonConvert.DeserializeObject<Dolphin.Freight.Common.Units>(Model.ExportBooking.ExtraProperties.GetValueOrDefault("Units").ToString()).NetWeight == "KG")
-                                                    {
+                                                    @if (Model.ExportBooking.ExtraProperties.GetValueOrDefault("Units") is not null) {
+                                                        @if (Newtonsoft.Json.JsonConvert.DeserializeObject<Dolphin.Freight.Common.Units>(Model.ExportBooking.ExtraProperties.GetValueOrDefault("Units").ToString()).NetWeight == "KG")
+                                                        {
+                                                            <option value="KG" id="netwkg" selected>KG</option>
+                                                            <option value="LB" id="netwlb">LB</option>
+                                                        } else {
+                                                            <option value="KG" id="netwkg">KG</option>
+                                                            <option value="LB" id="netwlb" selected>LB</option>
+                                                        }
+                                                    }
+                                                    else {
                                                         <option value="KG" id="netwkg" selected>KG</option>
                                                         <option value="LB" id="netwlb">LB</option>
-                                                    } else {
-                                                        <option value="KG" id="netwkg">KG</option>
-                                                        <option value="LB" id="netwlb" selected>LB</option>
                                                     }
                                                 </select>
                                             </th>
                                             <th width="5%">毛重
                                                 <select id="selectGrossWeight" class="form-select form-select-sm" onchange="EditExportBookings.convertUnit($(this).val(), 'GrossWeight')" name="Units.GrossWeight" style="width: 100%;">
-                                                    @if (Newtonsoft.Json.JsonConvert.DeserializeObject<Dolphin.Freight.Common.Units>(Model.ExportBooking.ExtraProperties.GetValueOrDefault("Units").ToString()).GrossWeight == "KG")
-                                                    {
+                                                    @if (Model.ExportBooking.ExtraProperties.GetValueOrDefault("Units") is not null){
+                                                        @if (Newtonsoft.Json.JsonConvert.DeserializeObject<Dolphin.Freight.Common.Units>(Model.ExportBooking.ExtraProperties.GetValueOrDefault("Units").ToString()).GrossWeight == "KG")
+                                                        {
+                                                            <option value="KG" id="grosswkg" selected>KG</option>
+                                                            <option value="LB" id="grosswlb">LB</option>
+                                                        } else {
+                                                            <option value="KG" id="grosswkg">KG</option>
+                                                            <option value="LB" id="grosswlb" selected>LB</option>
+                                                        }
+                                                    }
+                                                    else {
                                                         <option value="KG" id="grosswkg" selected>KG</option>
                                                         <option value="LB" id="grosswlb">LB</option>
-                                                    } else {
-                                                        <option value="KG" id="grosswkg">KG</option>
-                                                        <option value="LB" id="grosswlb" selected>LB</option>
                                                     }
                                                 </select>
                                             </th>
