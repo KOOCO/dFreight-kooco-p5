@@ -11,11 +11,19 @@
 @inject ICurrentUser _currentUser;
 @section styles {
     <style type="text/css">
-  #ejo .btn-primary {
-    color: #fff;
-    background-color: rgb(25 28 32 / 52%);
-    border-color: #00000000;
-}
+        #ejo .btn-primary {
+          color: #fff;
+          background-color: rgb(25 28 32 / 52%);
+          border-color: #00000000;
+        }
+
+        #commodityBody .select2-container .select2-selection--single {
+            height: 24px !important;
+        }
+
+        #commodityBody .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 24px;
+        }
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
