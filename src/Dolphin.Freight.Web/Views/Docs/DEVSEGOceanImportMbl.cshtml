@@ -20263,7 +20263,7 @@ TRISTANCHESTER, NE 47478<br>
 TEL: 08417606080 FAX: 08417606080<br>
 EMAIL: hanjun.lin@dolphin-gp.com
                                 
-                                    <br><strong>Prepared by Hanjun Lin 08-14-2023 12:23 (CST)</strong>
+                                    <br><strong>Prepared by Hanjun Lin @(DateTime.UtcNow.Month + "-" + DateTime.UtcNow.Day + "-" + DateTime.UtcNow.Year + " " + DateTime.UtcNow.Hour + ":" + DateTime.UtcNow.Minute) (CST)</strong>
                                 
                             </span>
                         </div>
@@ -20469,7 +20469,7 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                                 <td class="border-r bg-light">CNTR &amp; SEAL#</td>
                                 @if (!Model.CreateUpdateContainer.Count.Equals(0)) {
                                     <td colspan="3">
-                                         @Model.CreateUpdateContainer?[0].ContainerNo / @Model.CreateUpdateContainer?[0].SealNo
+                                         @Model.CreateUpdateContainer?[0].ContainerNo / @Model.CreateUpdateContainer?[0].SealNo / @Model.CreateUpdateContainer?[0].PackageNum
                                     </td>
                                 }
                                 else {
@@ -20553,7 +20553,7 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                         <td class="td">@hbl.index</td>
                         <td class="td text-bold">
                             @hbl.HblNo<br><br><br>
-                            <span class="text-light">@hbl.HblSo_No</span>
+                            <span class="text-light">@hbl.AmsNo</span>
                         </td>
 
                         

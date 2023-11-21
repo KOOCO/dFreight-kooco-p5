@@ -577,6 +577,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
     {
         public int index { get; set; }
         public string HblNo { get; set; }
+        public string AmsNo { get; set; }
         public string HblSo_No { get; set; }
         public string FDest { get; set; }
         public string IT_No { get; set; }

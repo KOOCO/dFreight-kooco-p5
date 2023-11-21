@@ -4108,20 +4108,21 @@ namespace Dolphin.Freight.Web.Controllers
         public async Task<IActionResult> DEVSEGOceanImportMbl(Guid id)
         {
             var oceanImportDetails = await _oceanImportMblAppService.GetOceanImportDetailsById(id);
-            var oceanImportHbls=await _oceanImportHblAppService.GetHblCardsById(id);
+            var oceanImportHbls = await _oceanImportHblAppService.GetHblCardsById(id);
             var packageName = _dropdownService.PackageUnitLookupList;
             QueryContainerDto query = new QueryContainerDto { QueryId = id };
             var containers = await _containerAppService.QueryListAsync(query);
             var containerlists = new List<CreateUpdateContainerDto>();
             var HblsLists = new List<HblList>();
+
             foreach (var item in containers)
             {
                 var containerSizeName = string.Concat(packageName.Where(w => w.Value == string.Concat(item.PackageUnitId)).Select(s => s.Text));
 
                 var container = new CreateUpdateContainerDto()
                 {
-                    ContainerNo=item.ContainerNo,
-                    SealNo=item.SealNo,
+                    ContainerNo = item.ContainerNo,
+                    SealNo = item.SealNo,
                     PackageNum = item.PackageNum,
                     PackageUnitName = containerSizeName,
                     PackageWeightStr = string.Concat(item.PackageWeight) + " KGS",
@@ -4130,12 +4131,14 @@ namespace Dolphin.Freight.Web.Controllers
                     PackageMeasureStrLBS = string.Concat(Math.Round(item.PackageMeasure * 35.315, 2)) + " CFT"
 
                 };
+
                 oceanImportDetails.TotalWeight = oceanImportDetails.TotalWeight + item.PackageWeight;
                 oceanImportDetails.TotalMeasure = oceanImportDetails.TotalMeasure + item.PackageMeasure;
                 oceanImportDetails.TotalPackage = oceanImportDetails.TotalPackage + item.PackageNum;
                 oceanImportDetails.PackageUnitName = containerSizeName;
                 containerlists.Add(container);
             }
+
             oceanImportDetails.TotalWeightStr = string.Concat(oceanImportDetails.TotalWeight) + " KGS";
             oceanImportDetails.TotalWeightStrLBS = string.Concat(Math.Round(oceanImportDetails.TotalWeight * 2.204, 2)) + " LBS";
             oceanImportDetails.TotalMeasureStr = string.Concat(oceanImportDetails.TotalMeasure) + " CBM";
@@ -4145,12 +4148,14 @@ namespace Dolphin.Freight.Web.Controllers
             oceanImportDetails.TotalWeight = 0;
             oceanImportDetails.TotalMeasure = 0;
             oceanImportDetails.CreateUpdateContainer = containerlists;
+
             foreach (var hbl in oceanImportHbls)
             {
                 var Hbl = new HblList();
-                    var hblDetails=await _oceanImportHblAppService.GetOceanImportDetailsById(hbl.Id);
+                var hblDetails=await _oceanImportHblAppService.GetOceanImportDetailsById(hbl.Id);
                 var hblContainer = await _containerAppService.GetContainerByHblId(hbl.Id);
                 Hbl.index = +1;
+                Hbl.AmsNo = hblDetails.AmsNo;
                 Hbl.HblNo = hblDetails.HblNo;
                 Hbl.HblSo_No = hblDetails.SoNo;
                 Hbl.Mark = hblDetails.Mark;
@@ -4172,6 +4177,7 @@ namespace Dolphin.Freight.Web.Controllers
                 oceanImportDetails.TotalMeasureStrLBS = (oceanImportDetails.TotalMeasure * 35.315).ToString("N2");
                 oceanImportDetails.TotalWeightStrLBS = (oceanImportDetails.TotalWeight * 2.204).ToString("N2");
             }
+
             oceanImportDetails.HblLists = HblsLists;
             oceanImportDetails.MblOperatorName = oceanImportDetails.MblOperatorName != null ? oceanImportDetails.MblOperatorName : CurrentUser.Name;
             return View(oceanImportDetails);

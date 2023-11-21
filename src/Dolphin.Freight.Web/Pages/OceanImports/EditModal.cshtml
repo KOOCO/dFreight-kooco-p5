@@ -542,13 +542,11 @@
           function getOrderDelivery() {
             var idNo = $('#OceanImportMbl_Id').val();
             myWindow = window.open("@Url.Action("DeliveryOrderOceanImportMawb", "Docs")" + "?id=" + idNo, 'DeliveryOrderOceanImportMawb', 'width=1200,height=800');
-            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
            function getDEVSEG() {
             var idNo = $('#OceanImportMbl_Id').val();
             myWindow = window.open("@Url.Action("DEVSEGOceanImportMbl", "Docs")" + "?id=" + idNo, 'DEVSEGOceanImportMbl', 'width=1200,height=800');
-            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
         function OpenInTrackTrace() {
@@ -559,7 +557,6 @@
          function getPreliminaryClaim() {
             var idNo = $('#OceanImportHBL').val();
             myWindow = window.open("@Url.Action("PreliminaryClaimOceanImport", "Docs")" + "?id=" + idNo+"&pageType=2", 'PreliminaryClaimOceanExport', 'width=1200,height=800');
-            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
 

@@ -443,7 +443,7 @@ namespace Dolphin.Freight.Web.CommonService
         {
             var lookup = await _countryAppService.GetListAsync();
 
-            return lookup.Select(x => new SelectListItem(x.CountryName, x.Id.ToString(), false)).ToList();
+            return lookup.OrderBy(o => o.CountryName).Select(x => new SelectListItem(x.CountryName, x.Id.ToString(), false)).ToList();
         }
 
         #endregion
