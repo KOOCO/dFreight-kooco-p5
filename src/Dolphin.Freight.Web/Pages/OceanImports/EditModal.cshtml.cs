@@ -91,12 +91,16 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
 
             if (OceanImportHbl is not null && !string.IsNullOrEmpty(OceanImportHbl.HblNo))
             {
-                var extraProp = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ManifestCommodity>>(OceanImportHbl.ExtraPropJSON);
+                var extraProp = new List<ManifestCommodity>();
+
+                if (OceanImportHbl.ExtraPropJSON is not null) 
+                    extraProp = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ManifestCommodity>>(OceanImportHbl.ExtraPropJSON);
 
                 if (OceanImportHbl.ExtraProperties == null)
                 {
                     OceanImportHbl.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
                 }
+
                 OceanImportHbl.ExtraProperties.Remove("Commodities");
 
                 OceanImportHbl.ExtraProperties.Add("Commodities", extraProp);
