@@ -6,9 +6,12 @@
 @model Dolphin.Freight.ImportExport.OceanImports.OceanImportDetails
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
-    @{
-        Layout = null;
-    }
+@{
+    Layout = null;
+}
+@{
+    var currentDateTime = DateTime.Now.Month + "-" + DateTime.Now.Day + "-" + DateTime.Now.Year + " " + DateTime.Now.Hour + ":" + DateTime.Now.Minute;
+}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <style>
@@ -20248,7 +20251,7 @@ TRISTANCHESTER, NE 47478<br>
 TEL: 08417606080 FAX: 08417606080<br>
 EMAIL: hanjun.lin@dolphin-gp.com
                                 
-                                    <br><strong>Prepared by Hanjun Lin 08-11-2023 10:13 (CST)</strong>
+                                    <br><strong>Prepared by Hanjun Lin @currentDateTime (CST)</strong>
                                 
                             </span>
                         </div>
@@ -20279,7 +20282,7 @@ EMAIL: hanjun.lin@dolphin-gp.com
                     <td class="w-10 border-t border-b border-r">
                         <div class="item-pdf">&nbsp;</div>
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <input type="text" name="pod_date" value="" template-id="205eb3c1d5c0ba8eef9a4e2e2b16988d091aadcb3442b64f2fd9d4ff06deb9dc:Form.pod_date" id="id_pod_date" class="ng-isolate-scope">
+                            <input type="text" name="pod_date" value="@currentDateTime" template-id="205eb3c1d5c0ba8eef9a4e2e2b16988d091aadcb3442b64f2fd9d4ff06deb9dc:Form.pod_date" id="id_pod_date" class="ng-isolate-scope">
                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fcg-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fcg-c260="" class="icon-text-template" style="top: 1px; left: 43px;"></span><!---->
 
 </hc-input-template></div>
@@ -20421,13 +20424,13 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                                 <td>MASTER B/L NO. :</td>
                                 <td><div class="text-break auto-font-size __width-sm"><span>@Model.MblNo</span></div></td>
                                 <td>P.O.L. / ETD :</td>
-                                <td><div class="auto-font-size __width-lg"><span>@Model.PolName/ @Model.PolEtd?.ToShortDateString()</span></div></td>
+                                <td><div class="auto-font-size __width-lg"><span>@Model.MPolName/ @Model.PolEtd?.ToShortDateString()</span></div></td>
                             </tr>
                             <tr>
                                 <td>HOUSE B/L NO. :</td>
                                 <td><div class="auto-font-size __width-lg"><span>@Model.HblNo</span></div></td>
                                 <td>P.O.D. / ETA :</td>
-                                <td><div class="auto-font-size __width-lg"><span>@Model.PodName / @Model.PodEta?.ToShortDateString()</span></div></td>
+                                <td><div class="auto-font-size __width-lg"><span>@Model.MPodName / @Model.MPodEta?.ToShortDateString()</span></div></td>
                             </tr>
                             <tr>
                                
