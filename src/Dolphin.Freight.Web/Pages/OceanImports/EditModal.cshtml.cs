@@ -78,10 +78,10 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
                 }
             }
 
-            if (OceanImportHbl.ExtraProperties.GetValueOrDefault("Commodities") is not null)
-            {
-                OceanImportHbl.ExtraPropJSON = OceanImportHbl.ExtraProperties.GetValueOrDefault("Commodities").ToString();
+            if (OceanImportHbl.ExtraProperties is not null && OceanImportHbl.ExtraProperties.Count > 0) {
+                OceanImportHbl.ExtraPropJSON = string.Concat(OceanImportHbl.ExtraProperties.GetValueOrDefault("Commodities"));
             }
+
             IsShowHbl = true;
         }
 
