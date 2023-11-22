@@ -3739,7 +3739,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.carrier = OceanExportMbl.MblCarrierName;
             InfoViewModel.VESSEL_INFO = OceanExportMbl.VesselName;
             InfoViewModel.VOVAGE_INFO = OceanExportMbl.Voyage;
-
+            InfoViewModel.ItNo = OceanExportMbl.ItNo;
             InfoViewModel.POR_location = OceanExportMbl.PorName;
             InfoViewModel.POR_location_ETD = OceanExportMbl.PorEtd?.ToString("dd-MM-yyyy");
             InfoViewModel.POL_location = OceanExportMbl.PolName;

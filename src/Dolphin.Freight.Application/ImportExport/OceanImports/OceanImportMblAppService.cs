@@ -282,8 +282,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
                 if (data.CyLocationId != null)
                 {
-                    var CY = tradePartners.Where(w => w.Id == data.CyLocationId).FirstOrDefault();
-                    oceanImportDetails.CyLocation = string.Concat(CY?.TPName, "/", CY?.TPCode);
+                    var CY = countries.Where(w => w.Id == data.CyLocationId).FirstOrDefault();
+                    oceanImportDetails.CyLocation = string.Concat(CY?.CountryName);
                 }
                 if (data.DelId != null)
                 {

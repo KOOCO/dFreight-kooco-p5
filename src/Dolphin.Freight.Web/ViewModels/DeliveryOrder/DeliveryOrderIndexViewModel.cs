@@ -8,6 +8,7 @@ namespace Dolphin.Freight.Web.ViewModels.DeliveryOrder
         
         public string BaseUrl { get; set; }
         public string Office { get; set; }
+        public string ItNo { get; set; }
         public string Address { get; set; }
         public string Tel { get; set; }
         public string Fax { get; set; }
