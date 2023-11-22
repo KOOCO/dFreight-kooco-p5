@@ -243,7 +243,7 @@ table td {
                                TEL: 08417606080 FAX: 08417606080<br>
                                EMAIL: hanjun.lin@dolphin-gp.com
                                 
-                                    <br><strong>Prepared by Hanjun Lin 07-31-2023 13:59 (CST)</strong>
+                                    <br><strong>Prepared by Hanjun Lin @(DateTime.Now.Month + "-" + DateTime.Now.Day + "-" + DateTime.Now.Year + " " + DateTime.Now.Hour + ":" + DateTime.Now.Minute) (CST)</strong>
                                 
                             </span>
                         </div>
@@ -360,10 +360,10 @@ table td {
                                 </td>
                                 <td><strong>PORT OF DISCHARGE :</strong></td>
                                 <td>
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="PodName" value="@Model.PodName" id="id_POD_location" class="ng-isolate-scope"></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="PodName" value="@Model.MPodName" id="id_POD_location" class="ng-isolate-scope"></div>
                                 </td>
                                 <td><strong>ETA :</strong></td>
-                                <td>@(Model.PodEta?.ToString("MM/dd/yyyy") ?? "")</td>
+                                <td>@(Model.MPodEta?.ToString("MM/dd/yyyy") ?? "")</td>
                             </tr>
                             <tr>
                                 <td><strong>OUR FILE NO. :</strong></td>
@@ -398,7 +398,7 @@ table td {
                             <tr>
                                 <td><strong>AMS B/L NO. :</strong></td>
                                 <td>
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="AMS_NO" value="@Model.HblSoNo"  id="id_AMS_NO" class="ng-isolate-scope"></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="AMS_NO" value="@Model.AmsNo"  id="id_AMS_NO" class="ng-isolate-scope"></div>
                                 </td>
                                 <td><strong>COMMODITY :</strong></td>
                                 <td class="td" rowspan="3">
@@ -409,7 +409,7 @@ table td {
                             <tr>
                                 <td><strong>I.T. NO. :</strong></td>
                                 <td>
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ItnNo" value="@Model.LCNo" id="id_it_no" class="ng-isolate-scope"></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ItnNo" value="@Model.ItNo" id="id_it_no" class="ng-isolate-scope"></div>
                                 </td>
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
@@ -444,7 +444,7 @@ table td {
                 <tr class="border-t border-l border-r">
                     <td class="text-center padding-t-xs padding-b-xs text-md">
                         According to the steamship company, your shipment is on
-                        <span class="item-edit hover-toggle-icon-text-template"><input type="text" name="title_2"  class="w-auto ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" id="id_title_2"></span>
+                        <span class="item-edit hover-toggle-icon-text-template"><input type="text" name="title_2" value="EXAM HOLD NOTICE" class="w-auto ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" id="id_title_2"></span>
                         <br>The following documents are required for its release.
                     </td>
                 </tr>

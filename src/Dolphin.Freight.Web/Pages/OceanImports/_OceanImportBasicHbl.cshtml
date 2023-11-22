@@ -57,9 +57,9 @@
                     <i class="fa fa-share"></i> @L["Btn:Move"]
                 </a>
                 <p class="dropdown-divider"></p>
-                @* <a class='dropdown-item' href='#'> *@
-               @*      <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
-                </a> *@
+                <a class='dropdown-item' href='#'> 
+                     <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
+                </a>
              @*    <a class='dropdown-item' href='#'>
                     <i class="fa fa-file-text-o"></i> @L["Btn:Authority (ATME)"]
                 </a> *@
@@ -72,27 +72,26 @@
                     <i class="fa fa-file-text-o"></i> @L["I.T/T.E"]
                 </a> *@
               
-                <a class='dropdown-item' href='javascript:void(0)'onclick="getPreliminaryClaim()" >
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
-                </a>
-               
-                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ExamHoldNoticeOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
-                    <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ProofOfDeliveryOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Proof of Delivery"]
                 </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ReleaseOrderOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
                 </a>
+                <a class='dropdown-item' href='javascript:void(0)'onclick="getPreliminaryClaim()" >
+                    <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ExamHoldNoticeOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                    <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
+                </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("CarrierCertificateOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
-                 </a>
-                   <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PickupDeliveryInstrucationOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id })')">
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PickupDeliveryInstrucationOceanImportHbl", "Docs", new { id = Model.OceanImportHbl.Id })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Pickup Delivery Instruction"]
                 </a>
-                   <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ForwarderCargoReceiptOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ForwarderCargoReceiptOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
-                 </a>
-                   <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ProofOfDeliveryOceanImportHBL", "Docs", new { id = Model.OceanImportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIHBL })')">
-                    <i class="fa fa-file-text-o"></i> @L["Btn:Proof of Delivery"]
                  </a>
                 <p class="dropdown-divider"></p>
                 <a class='dropdown-item' href='#'>

@@ -550,15 +550,14 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 oceanImportDetails.SoNo = mbl.SoNo;
                 oceanImportDetails.HblSoNo = data.SoNo;
                 oceanImportDetails.MblFillingNo = mbl.FilingNo;
-                //oceanExportDetails.ItnNo = data.ItnNo;
+                oceanImportDetails.ItnNo = mbl.ItnNo;
                 oceanImportDetails.MblDel = mbl.Del?.PortName;
                 oceanImportDetails.LCNo = data.LcNo;
                 oceanImportDetails.LCIssueBankName = data.LcIssueBank;
                 oceanImportDetails.LCIssueDate = data.LcIssueDate;
                 oceanImportDetails.FdestEta = data.FdestEta;
                 oceanImportDetails.PolEtd = mbl.PolEtd;
-
-           
+                oceanImportDetails.DocNo = mbl.FilingNo;          
                 oceanImportDetails.PorEtd = data.PorEtd;
                 oceanImportDetails.MPorEtd = mbl.PorEtd;
                 oceanImportDetails.PodEta = data.PodEta;
@@ -574,7 +573,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 oceanImportDetails.AgentRefNo = mbl.AgentRefNo;
                 oceanImportDetails.Description = data.Description;
                 oceanImportDetails.ExtraProperties = data.ExtraProperties;
-             
+                oceanImportDetails.AmsNo = data.AmsNo;
             }
 
             return oceanImportDetails;
