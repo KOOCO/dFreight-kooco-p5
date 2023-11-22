@@ -3762,6 +3762,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.billing_to_area = OceanExportMbl.MblBillToName + "\r\n" + OceanExportMbl.MblBillToContent; /*"HARD CORE TECHNOLOGY\r\n198 PEARSON GATEWAY APT. 555\r\nNORTH JAMES, KY 98809-9933\r\nWALNUT, CA 91789, UNITED STATES\r\nATTN: JENNIFER JIMENEZ TEL: 585.592.4848 FAX: 649-277-5122"*/;
             InfoViewModel.marks = OceanExportMbl.Mark;
             InfoViewModel.description = OceanExportMbl.Description;
+            InfoViewModel.BillToName = OceanExportMbl.MblCarrierName;
             InfoViewModel.ContainerList = new List<DeliveryOrderContainerList>();
             var totalWeightKgs = 0.0;
             var totalWeightLbs = 0.0;

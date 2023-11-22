@@ -1,4 +1,5 @@
-﻿@using Dolphin.Freight.Localization
+﻿@using Volo.Abp.Users
+@using Dolphin.Freight.Localization
 @using Dolphin.Freight.Permissions
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
@@ -6,6 +7,7 @@
 @model Dolphin.Freight.Web.ViewModels.DeliveryOrder.DeliveryOrderIndexViewModel
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
+@inject ICurrentUser _currentUser
 @{
     Layout = null;
 }
@@ -506,7 +508,7 @@ table td {
                                     </div>
                                     <div class="data">
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <textarea name="billing_to_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_billing_to_area">@Model.billing_to_area</textarea>
+                                            <textarea name="billing_to_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_billing_to_area">@Model.BillToName</textarea>
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 3px; left: 315px;"></span><!---->
 
                                         </hc-input-template></div>
@@ -879,7 +881,7 @@ table td {
                                                     <tbody><tr>
                                                         <td class="w-22">PREPARED BY</td>
                                                         <td class="w-48">
-                                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="OPName" value="@Model.FirstName" id="id_current_user_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 151px;"></span><!---->
+                                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="OPName" value="@(_currentUser.Name + " " + _currentUser.SurName)" id="id_current_user_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 151px;"></span><!---->
 
                                                             </hc-input-template></div>
                                                         </td>
