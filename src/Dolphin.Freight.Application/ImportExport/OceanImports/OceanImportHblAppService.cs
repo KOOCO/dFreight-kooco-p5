@@ -383,6 +383,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 oceanImportDetails = ObjectMapper.Map<OceanImportHbl, OceanImportDetails>(data);
 
                 var mbl = await _mblRepository.GetAsync(data.MblId.GetValueOrDefault());
+                if (data.CyCfsLocationId is not null)
+                {
+                    var cyCfs = tradePartners.Where(w => w.Id == data.CyCfsLocationId).FirstOrDefault();
+                    oceanImportDetails.CyCfsLocationName = string.Concat(cyCfs?.TPName, "/", cyCfs?.TPCode);
+                }
                 if (data.HblBillToId != null)
                 {
                     var billto = tradePartners.Where(w => w.Id == data.HblBillToId).FirstOrDefault();
@@ -574,6 +579,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 oceanImportDetails.Description = data.Description;
                 oceanImportDetails.ExtraProperties = data.ExtraProperties;
                 oceanImportDetails.AmsNo = data.AmsNo;
+                oceanImportDetails.ItNo = mbl.ItNo;
+                oceanImportDetails.SubBlNo = mbl.SubBlNo;
             }
 
             return oceanImportDetails;
