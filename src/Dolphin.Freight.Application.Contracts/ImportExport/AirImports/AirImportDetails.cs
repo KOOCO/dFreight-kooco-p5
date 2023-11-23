@@ -106,12 +106,14 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? BillToId { get; set; }
         public string BillToName { get; set; }
+        public string BillToDetail { get; set; }
         // <summary>
         /// 操作員Id
         /// </summary>
         public Guid? SalesId { get; set; }
         public string SalesName { get; set; }
         public string SalesType { get; set; }
+        public string PONo { get; set; }
         /// <summary>
         ///  出發地Id
         /// </summary>

@@ -394,13 +394,14 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 if (mawb.CarrierId != null)
                 {
                     var carrier = tradePartners.Where(w => w.Id == mawb.CarrierId).FirstOrDefault();
-                    airImportDetails.CarrierTPName = string.Concat(carrier.TPName, "/", carrier.TPCode);
+                    airImportDetails.CarrierTPName = string.Concat(carrier.TPName);
                 }
 
                 if (data.BillToId != null)
                 {
                     var billTo = tradePartners.Where(w => w.Id == Guid.Parse(data.BillToId)).FirstOrDefault();
-                    airImportDetails.BillToName = string.Concat(billTo.TPName, "/", billTo.TPCode);
+                    airImportDetails.BillToName = string.Concat(billTo.TPName);
+                    airImportDetails.BillToDetail = billTo.TPName + Environment.NewLine + billTo.TPPrintAddress + " TEL:- " + billTo.Telephone;
                 }
 
                 if (data.SalesType != null)
@@ -468,7 +469,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
 
                 airImportDetails.GrossWeightStr = data.GrossWeightKG == null ? "" : data.GrossWeightKG + " KGS " + (double.Parse(data.GrossWeightKG) * 2.20462).ToString("0.00") + " LBS";
                 airImportDetails.ChargableWeightStr = data.ChargeableWeightKG == null ? "" : data.ChargeableWeightKG + " KGS " + (double.Parse(data.ChargeableWeightKG) * 2.20462).ToString("0.00") + " LBS";
-                airImportDetails.MeasurementStr = data.VolumeWeightCBM == null ? "" : data.VolumeWeightCBM + " CBM " + (double.Parse(data.VolumeWeightCBM) * 35.315).ToString("0.00") + " CFT";
+                airImportDetails.MeasurementStr = data.VolumeWeightCBM == null ? "" : data.VolumeWeightCBM + " CBM " + Environment.NewLine + (double.Parse(data.VolumeWeightCBM) * 35.315).ToString("0.00") + " CFT";
                 airImportDetails.CurrentDate = DateTime.Now.ToString("MM/dd/yyyy");
                 airImportDetails.LastFreeDay = data.LastFreeDay;
                 airImportDetails.FDestETA = string.Concat(data.FinalETA);
@@ -494,6 +495,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.CustomerName = airImportDetails.BillToName;
                 airImportDetails.SalesType = data.SalesType;
                 airImportDetails.SubHawbs = subHawbs;
+                airImportDetails.PONo = data.PONo;
             }
 
             return airImportDetails;
