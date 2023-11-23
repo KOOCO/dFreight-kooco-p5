@@ -72,6 +72,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string CurrentDate { get; set; }
         public string HItLocation { get; set; }
         public string HMark { get; set; }
+        public string HDescription { get; set; }
+        public string HRemark { get; set; }
         /// <summary>
         /// 是否直單
         /// </summary>
@@ -234,6 +236,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? FreightLocationId { get; set; }
         public string FreightLocationName { get; set; }
+        public string FreightLocationWithPhoneNo { get; set; }
+        public string FreightLocationAddress { get; set; }
         public string MFreightLocationName { get; set; }
         /// <summary>
         /// 

@@ -435,7 +435,9 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 if (data.FreightLocation != null)
                 {
                     var freightLocation = tradePartners.Where(w => w.Id == Guid.Parse(data.FreightLocation)).FirstOrDefault();
-                    airImportDetails.FreightLocationName = string.Concat(freightLocation.TPName, "/", freightLocation.TPCode);
+                    airImportDetails.FreightLocationName = string.Concat(freightLocation.TPName);
+                    airImportDetails.FreightLocationWithPhoneNo = string.Concat(freightLocation.TPName, " Tel:- ", freightLocation.Telephone);
+                    airImportDetails.FreightLocationAddress = string.Concat(freightLocation.TPPrintAddress);
                 }
 
                 if (data.Trucker != null)
@@ -447,7 +449,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 if (data.FinalDestination != null)
                 {
                     var finalDestination = tradePartners.Where(w => w.Id == Guid.Parse(data.FinalDestination)).FirstOrDefault();
-                    airImportDetails.FinalDestination = string.Concat(finalDestination.TPName, "/", finalDestination.TPCode);
+                    airImportDetails.FinalDestination = string.Concat(finalDestination.TPName);
                 }
 
                 if (data.DeliveryLocation != null)
@@ -476,6 +478,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.HItLocation = data.ITIssuedLocation;
                 airImportDetails.TotalPackage = string.Concat(data.Package) + " " + airImportDetails.HPackageUnitName;
                 airImportDetails.HMark = data.Mark;
+                airImportDetails.HDescription = data.Description;
+                airImportDetails.HRemark = data.Remark;
                 airImportDetails.AirWayBillNo = data.HawbNo;
                 airImportDetails.MawbNo = airImportDetails.MawbNo;
                 airImportDetails.DocNumber = mawb.FilingNo;

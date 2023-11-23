@@ -1,4 +1,5 @@
-﻿@using Dolphin.Freight.Localization
+﻿@using Volo.Abp.Users
+@using Dolphin.Freight.Localization
 @using Dolphin.Freight.Permissions
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
@@ -6,8 +7,11 @@
 @model Dolphin.Freight.ImportExport.AirImports.AirImportDetails
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
+@inject ICurrentUser _currentUser
 @{
     Layout = null;
+
+    var UTCDateTime = DateTime.UtcNow.AddHours(8).ToString("MM-dd-yyyy HH:mm");
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
@@ -143,6 +147,15 @@ table td {
                 $('.show_container').attr('rows', 28)
             }
         });
+
+        $('#id_show_freight_location_address').click(function(){
+            if ($('#id_show_freight_location_address').prop('checked')){
+                $('#id_freight_location_address').css('display', 'block');
+            }
+            else {
+                $('#id_freight_location_address').css('display', 'none');
+            } 
+        });
     });    
 </script>
 <abp-style src="/Pages/Reports/Reports.css" />
@@ -221,6 +234,11 @@ table td {
     <input type="hidden" asp-for="@Model.FinalDestination" />
     <input type="hidden" asp-for="@Model.FDestETA" />
     <input type="hidden" asp-for="@Model.LastFreeDay" />
+    <input type="hidden" asp-for="@Model.FreightLocationWithPhoneNo" />
+    <input type="hidden" asp-for="@Model.FreightLocationAddress" />
+    <input type="hidden" asp-for="@Model.HMark" />
+    <input type="hidden" asp-for="@Model.HDescription" />
+    <input type="hidden" asp-for="@Model.HRemark" />
     
     <div id="main" class="edit">
 
@@ -242,17 +260,14 @@ table td {
                                 TEL: 08417606080 FAX: 08417606080<br>
                                 EMAIL: hanjun.lin@dolphin-gp.com
                                 
-                                    <br><strong>Prepared by Hanjun Lin 07-24-2023 21:35 (CST)</strong>
+                                    <br><strong>Prepared by @(_currentUser.Name + " " + _currentUser.SurName) @UTCDateTime (CST)</strong>
                                 
                             </span>
                         </div>
                     </td>
                     <td class="w-2">&nbsp;</td>
                     <td class="w-35 title border-deep-blue">
-                        <div class="item-edit text-center">
-                            <div class="select2me select2-lg text-left ui-select-container select2 select2-container ng-pristine ng-untouched ng-valid ng-scope ng-not-empty" ng-class="{'select2-container-active select2-dropdown-open open': $select.open, 'select2-container-disabled': $select.disabled, 'select2-container-active': $select.focus, 'select2-allowclear': $select.allowClear &amp;&amp; !$select.isEmpty()}" ng-model="vm.formTitle" ng-change="vm.onFormTitleChange()"><a class="select2-choice ui-select-match ng-scope" ng-class="{'select2-default': $select.isEmpty()}" ng-click="$select.toggle($event)" aria-label="Select box select"><span ng-show="$select.isEmpty()" class="select2-chosen ng-binding ng-hide">Select...</span> <span ng-hide="$select.isEmpty()" class="select2-chosen" ng-transclude=""><span class="ng-binding ng-scope">ARRIVAL NOTICE / FREIGHT INVOICE
-                                </span></span> <!-- ngIf: $select.matchLink && !$select.isEmpty() --> <!-- ngIf: $select.allowClear && !$select.isEmpty() --> <span class="select2-arrow ui-select-toggle"><b></b></span></a><div class="ui-select-dropdown select2-drop select2-with-searchbox select2-drop-active select2-display-none" ng-class="{'select2-display-none': !$select.open}"><div class="search-container select2-search" ng-class="{'ui-select-search-hidden':!$select.searchEnabled, 'select2-search':$select.searchEnabled}"><input type="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" ng-class="{'select2-active': $select.refreshing}" role="combobox" aria-expanded="true" aria-owns="ui-select-choices-0" aria-label="Select box" class="ui-select-search select2-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="$select.search"><!-- ngIf: $select.functionalButtonGroup --></div><ul tabindex="-1" class="ui-select-choices ui-select-choices-content select2-results ng-scope" repeat="o in vm.formTitleList" refresh="vm.queryFormTitle($select.search)"><li class="ui-select-choices-group" ng-class="{'select2-result-with-children': $select.choiceGrouped($group) }"><div ng-show="$select.choiceGrouped($group)" class="ui-select-choices-group-label select2-result-label ng-binding ng-hide" ng-bind="$group.name"></div><ul id="ui-select-choices-0" ng-class="{'select2-result-sub': $select.choiceGrouped($group), 'select2-result-single': !$select.choiceGrouped($group) }" class="select2-result-single"><!-- ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --><!-- ngIf: $select.open --><!-- end ngRepeat: o in $select.items --></ul></li><!-- ngIf: $select.loadMoreAttr --><!-- ngIf: $select.footerTemplateUrl --></ul><div class="ui-select-no-choice"></div></div><ui-select-single></ui-select-single></div><input ng-disabled="$select.disabled" class="ui-select-focusser ui-select-offscreen ng-scope" type="text" id="{{ $select.focusserId }}" aria-label="{{ $select.focusserTitle }}" aria-haspopup="true" role="button">
-                        </div>
+                        
                     </td>
                 </tr>
             </tbody></table>
@@ -273,7 +288,7 @@ table td {
                                 77792 COBB CAPE TRISTANCHESTER, NE 47478<br>
                                 TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                                 
-                                    <br><strong>Prepared by Hanjun Lin 07-24-2023 21:35 (CST)</strong>
+                                    <br><strong>Prepared by @(_currentUser.Name + " " + _currentUser.SurName) @UTCDateTime (CST)</strong>
                                 
                             </span>
                         </div>
@@ -547,15 +562,11 @@ table td {
                                     </div>
                                     <div class="data">
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <input type="text" name="FreightLocationName" value="@Model.MFreightLocationName" id="id_freight_location" class="ng-isolate-scope">
-                                            <div ng-show="vm.showFreightLocationAddress" class="hover-toggle-icon-text-template ng-hide">
-                                                <textarea name="freight_location_address" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope" id="id_freight_location_address"></textarea>
-                                            <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: -19px;"></span><!---->
-
-                                            </hc-input-template></div>
-                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 313px;"></span><!---->
-
-                                        </hc-input-template></div>
+                                            <input type="text" name="FreightLocationName" value="@Model.FreightLocationWithPhoneNo" id="id_freight_location" class="ng-isolate-scope">
+                                            <div class="hover-toggle-icon-text-template ng-hide">
+                                                <textarea name="freight_location_address" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope" style="display: none;" id="id_freight_location_address">@Model.FreightLocationAddress</textarea>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -613,35 +624,25 @@ table td {
                 </tr>
                 <tr>
                     <td class="td td-item border-r" rowspan="4">
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="14" class="text-scroll ng-isolate-scope" id="id_mark"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 156px;"></span><!---->
-
-                        </hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="14" class="text-scroll ng-isolate-scope" id="id_mark">@Model.HMark</textarea></div>
                     </td>
                     <td class="td td-item border-r text-right" rowspan="4">
-                        <div class="auto-font-size __col-pkg">
-                            <span>
-                                @Model.TotalPackage
-                            </span>
-                        </div>
+                        <span>
+                            @Model.TotalPackage
+                        </span>
                     </td>
                     <td class="td td-item border-r" rowspan="4">
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="14" class="text-scroll ng-isolate-scope" id="id_good_items"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 192px;"></span><!---->
-
-                        </hc-input-template></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="14" class="text-scroll ng-isolate-scope" id="id_good_items">@Model.HDescription</textarea></div>
                     </td>
                     <td class="td td-item text-right border-r">
-                        <div class="auto-font-size __col-gw">
-                            <span>
-                                @Model.GrossWeightStr
-                            </span>
-                        </div>
+                        <span>
+                            @Model.GrossWeightStr
+                        </span>
                     </td>
                     <td class="td td-item text-right">
-                        <div class="auto-font-size __col-cw">
-                            <span>
-                                @Model.ChargableWeightStr
-                            </span>
-                        </div>
+                        <span>
+                            @Model.ChargableWeightStr
+                        </span>
                     </td>
                 </tr>
                 <tr class="bg-light border-t border-b text-8" height="20">
@@ -650,18 +651,14 @@ table td {
                 </tr>
                 <tr>
                     <td class="td td-item border-r text-right">
-                        <div class="auto-font-size __col-vw">
-                            <span>
-                                @Model.VolumeWeightStr
-                            </span>
-                        </div>
+                        <span>
+                            @Model.VolumeWeightStr
+                        </span>
                     </td>
                     <td class="td td-item text-right">
-                        <div class="auto-font-size __col-measurement">
-                            <span>
-                                @Model.MeasurementStr
-                            </span>
-                        </div>
+                        <span>
+                            @Model.MeasurementStr
+                        </span>
                     </td>
                 </tr>
                 <tr>
@@ -674,28 +671,23 @@ table td {
                     <td class="td-remark w-10 text-center border-r"><strong>REMARK</strong></td>
                     <td class="td-remark w-90">
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <input type="text" name="remark" cols="40" rows="3" class="text-scroll no-adjustment ng-isolate-scope" value="@Model.HawbString" id="id_remark" />
-                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-kwe-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-kwe-c260="" class="icon-text-template" style="top: 1px; left: 647px;"></span><!---->
-
-                        </hc-input-template></div>
+                            <input type="text" name="remark" cols="40" rows="3" class="text-scroll no-adjustment ng-isolate-scope" value="@Model.HRemark" id="id_remark" />
+                        </div>
                     </td>
                 </tr>
             </tbody></table>
             <table class="border-l border-r border-b">
                 <tbody><tr>
                     <td class="td w-45 border-r">
-                        <div class="remark_con">
-                            <div class="auto-font-size auto-link __col-company-remark">
-                                <span>TO ALL CUSTOMERS:<br>
+                        <span style="font-size: x-small;">TO ALL CUSTOMERS:<br>
                                 1. PLEASE MAKE A CHECK PAYABLE TO "HARD CORE TECHNOLOGY"<br>
                                 2. WE WILL RELEASE THE FREIGHT UPON RECEIVING YOUR FULL PAYMENT AS SHOWN ABOVE AND YOUR PROPERLY ENDORSED ORIGINAL BILL OF LADING.<br>
                                 3. ALL STORAGE CHARGE AND DEMURRAGE CHARGES ARE FOR THE ACCOUNT OF THE ULTIMATE CONSIGNEE TO WHOM THIS FREIGHT IS RELEASED.<br>
                                 4. WE DO NOT ACCEPT FAXED COPIES OF ORIGINAL B/L OR FAXED COPIES OF CHECK FOR RELEASE.<br>
                                 5. PLEASE ALLOW MINIMUM OF 24 HOURS IN ORDER TO RELEASE THE SHIPMENT AFTER RECEIVING YOUR CHECK AND ORIGINAL B/L.<br>
                                 6. PLEASE CALL WAREHOUSE/TERMINAL FOR CARGO AVAILABILITY PRIOR TO PICK UP.<br>
-                                - IF FREIGHT HAS BEEN DAMAGED, YOU MUST FILE CLAIMS WITHIN 10 DAYS FROM DELIVERED DATE WITH ORIGINAL DOCUMENTS. OTHERWISE, YOUR CLAIMS WILL NOT BE PROCESSED AND WILL BE DECLINED.</span>
-                            </div>
-                        </div>
+                                - IF FREIGHT HAS BEEN DAMAGED, YOU MUST FILE CLAIMS WITHIN 10 DAYS FROM DELIVERED DATE WITH ORIGINAL DOCUMENTS. OTHERWISE, YOUR CLAIMS WILL NOT BE PROCESSED AND WILL BE DECLINED.
+                        </span>
                     </td>
                     <td class="td w-55">
                         <table class="item-edit">
