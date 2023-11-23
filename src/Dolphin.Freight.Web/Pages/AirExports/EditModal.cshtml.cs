@@ -83,11 +83,12 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         [BindProperty]
         public List<AccountingInformation> AccountingInformation { get; set; }
         public List<SelectListItem> ChargeItemList { get; set; }
-
+        public Dictionary<Guid, string> DepartureDictionary { get; set; } = new Dictionary<Guid, string>();
         private static readonly Object lockObject = new object();
         public async Task OnGetAsync(Guid Id)
         {
             AirExportMawbDto = await _airExportMawbAppService.GetAsync(Id);
+            
             if (AirExportMawbDto.RouteTrans1ArrivalDate == DateTime.MinValue)
             {
                 AirExportMawbDto.RouteTrans1ArrivalDate = (DateTime?)null;
@@ -280,6 +281,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             AirportLookupList = airportLookup.Items
                                                 .Select(x => new SelectListItem(x.Code + " " + x.CountryName, x.Id.ToString(), false))
                                                 .ToList();
+            
+        
         }
         #endregion
 
