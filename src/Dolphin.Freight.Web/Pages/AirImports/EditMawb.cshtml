@@ -764,21 +764,22 @@
                                     <abp-input asp-for="MawbModel.PostDate" size="Small" readonly="true" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-select asp-for="MawbModel.OverseaAgentId" class="form-control form-control-sm pr-4" size="Small">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.OverseaAgentId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.OverseaAgentId, IsShowLabel = true, FieldName = @L["OverseaAgentId"], ShowFiledContentValue = Convert.ToString(Model.MawbModel.OverseaAgentId) })
+                                    @*<abp-select asp-for="MawbModel.OverseaAgentId" class="form-control form-control-sm pr-4" size="Small">
                                         <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                    </abp-select>
+                                    </abp-select>*@
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.CarrierId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.CarrierId, IsShowLabel = true, FieldName = @L["Carrier"] })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.CarrierId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.CarrierId, IsShowLabel = true, FieldName = @L["Carrier"], ShowFiledContentValue = Convert.ToString(Model.MawbModel.CarrierId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.AwbAcctCarrierId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.AwbAcctCarrierId, IsShowLabel = true, FieldName = @L["AwbAcctCarrierId"] })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.AwbAcctCarrierId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.AwbAcctCarrierId, IsShowLabel = true, FieldName = @L["AwbAcctCarrierId"], ShowFiledContentValue = Convert.ToString(Model.MawbModel.AwbAcctCarrierId) })
                                 </abp-column>
                             </abp-row>
                             <!--第3列-->
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.CoLoaderId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.CoLoaderId, IsShowLabel = true, FieldName = @L["CoLoaderId"] })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.CoLoaderId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.CoLoaderId, IsShowLabel = true, FieldName = @L["CoLoaderId"], ShowFiledContentValue = Convert.ToString(Model.MawbModel.CoLoaderId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-select asp-for="MawbModel.OPId" class="form-control form-control-sm" size="Small" disabled="true">
@@ -786,10 +787,10 @@
                                     </abp-select>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ShipperId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.ShipperId, IsShowLabel = true, FieldName = @L["CoShipper"] })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ShipperId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.ShipperId, IsShowLabel = true, FieldName = @L["CoShipper"], ShowFiledContentValue = Convert.ToString(Model.MawbModel.ShipperId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ConsigneeId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.ConsigneeId, IsShowLabel = true, FieldName = @L["ConsigneeId"] })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ConsigneeId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.ConsigneeId, IsShowLabel = true, FieldName = @L["ConsigneeId"], ShowFiledContentValue = Convert.ToString(Model.MawbModel.ConsigneeId) })
                                 </abp-column>
                             </abp-row>
                             <!--第4列-->

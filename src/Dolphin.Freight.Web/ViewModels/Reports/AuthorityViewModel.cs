@@ -6,7 +6,8 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
 {
     public class AuthorityViewModel
     {
-
+        public string FreightLocTel { get; set; }
+        public string FreightLocFax { get; set; }
         public string Shipper { get; set; }
         public string Consignee { get; set; }
         public string NotifyParty { get; set; }
@@ -19,7 +20,7 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public string SubAwbNO { get; set; }
         public string MawbNo { get; set; }
         public string DepAirport { get; set; }
-        public DateTime? ETD { get; set; }
+        public string ETD { get; set; }
         public string HawbNo { get; set; }
         public string EntryPort { get; set; }
         public string ETA1 { get; set; }

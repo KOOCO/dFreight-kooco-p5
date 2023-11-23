@@ -287,6 +287,12 @@ namespace Dolphin.Freight.ImportExport.AirExports
 
                 var mawb = await _mawbRepository.GetAsync(data.MawbId.GetValueOrDefault());
 
+                if (mawb.MawbCarrierId is not null)
+                {
+                    var carrier = tradePartners.Where(w => w.Id.Equals(mawb.MawbCarrierId)).FirstOrDefault();
+                    airExportDetails.CarrierName = carrier?.TPName;
+                }
+
                 if (data.SalesId != null)
                 {
                     var salesPerson = tradePartners.Where(w => w.Id == data.SalesId).FirstOrDefault();

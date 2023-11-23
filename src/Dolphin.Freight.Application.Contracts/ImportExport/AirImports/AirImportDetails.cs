@@ -239,6 +239,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public Guid? FreightLocationId { get; set; }
         public string FreightLocationName { get; set; }
         public string FreightLocationWithPhoneNo { get; set; }
+        public string FreightLocationFaxNo { get; set; }
+        public string FreightLocationPhoneNo { get; set; }
         public string FreightLocationAddress { get; set; }
         public string MFreightLocationName { get; set; }
         /// <summary>
@@ -332,6 +334,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string FinalDestination { get; set; }
         public string DeliveryLocationName { get; set; }
         public string FDestETA { get; set; }
+        public DateTime? FinalDestETA { get; set; }
         public DateTime LastFreeDay { get; set; }
         public string Remark { get; set; }
         public string SubHawbJson { get; set; }

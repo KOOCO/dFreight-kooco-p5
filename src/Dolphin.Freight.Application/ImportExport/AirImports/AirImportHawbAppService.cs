@@ -439,12 +439,14 @@ namespace Dolphin.Freight.ImportExport.AirImports
                     airImportDetails.FreightLocationName = string.Concat(freightLocation.TPName);
                     airImportDetails.FreightLocationWithPhoneNo = string.Concat(freightLocation.TPName, " Tel:- ", freightLocation.Telephone);
                     airImportDetails.FreightLocationAddress = string.Concat(freightLocation.TPPrintAddress);
+                    airImportDetails.FreightLocationPhoneNo = string.Concat(freightLocation.Telephone);
+                    airImportDetails.FreightLocationFaxNo = string.Concat(freightLocation.Fax);
                 }
 
                 if (data.Trucker != null)
                 {
                     var trucker = tradePartners.Where(w => w.Id == Guid.Parse(data.Trucker)).FirstOrDefault();
-                    airImportDetails.HTruckerName = string.Concat(trucker.TPName, "/", trucker.TPCode);
+                    airImportDetails.HTruckerName = string.Concat(trucker.TPName);
                 }
 
                 if (data.FinalDestination != null)
@@ -472,7 +474,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.MeasurementStr = data.VolumeWeightCBM == null ? "" : data.VolumeWeightCBM + " CBM " + Environment.NewLine + (double.Parse(data.VolumeWeightCBM) * 35.315).ToString("0.00") + " CFT";
                 airImportDetails.CurrentDate = DateTime.Now.ToString("MM/dd/yyyy");
                 airImportDetails.LastFreeDay = data.LastFreeDay;
-                airImportDetails.FDestETA = string.Concat(data.FinalETA);
+                airImportDetails.FinalDestETA = data.FinalETA;
                 airImportDetails.FilingNo = mawb.FilingNo;
                 airImportDetails.HItNo = data.ITNo;
                 airImportDetails.HItDate = string.Concat(data.ITDate);
