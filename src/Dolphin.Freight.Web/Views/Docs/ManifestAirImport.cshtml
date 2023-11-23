@@ -1,4 +1,5 @@
-﻿@using Dolphin.Freight.Localization
+﻿@using Volo.Abp.Users
+@using Dolphin.Freight.Localization
 @using Dolphin.Freight.Permissions
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
@@ -6,8 +7,11 @@
 @model Dolphin.Freight.ImportExport.AirImports.AirImportMawbDto
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
+@inject ICurrentUser _currentUser
 @{
     Layout = null;
+
+    var UTCDateTime = DateTime.UtcNow.AddHours(8).ToString("MM-dd-yyyy HH:mm");
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
@@ -193,7 +197,7 @@ table td {
         
         $('#totalHawbs').text(table.rows.length - 2 + ' Hawb(s)');
         $('#totalPackages').text(hawbPCTotal);
-        $('#totalChargeWeight').text(weightKGTotal);
+        $('#totalChargeWeight').text(weightKGTotal + " KG");
     }
 
 </script>
@@ -266,7 +270,7 @@ table td {
                                 TRISTANCHESTER, NE 47478<br>
                                 TEL: 08417606080 FAX: 08417606080
 
-                                <br><strong>Prepared by Hanjun Lin 07-24-2023 13:54 (CST)</strong>
+                                <br><strong>Prepared by @(_currentUser.Name + " " + _currentUser.SurName) @UTCDateTime (CST)</strong>
 
                             </span>
                         </div>
@@ -417,11 +421,15 @@ table td {
                             <td class="text-right">@item.Packages</td>
                         }
                         @if(item.Chargeable_Weight == null){
-                            <td class="text-right">0</td>
+                            <td class="text-right">0 KG</td>
                         } else{
-                            <td class="text-right">@item.Chargeable_Weight</td>
+                            <td class="text-right">@item.Chargeable_Weight KG</td>
                         }
-                        <td class="text-right">@item.Freight_Weight</td>
+                        @if (item.Freight_Weight is null){
+                            <td class="text-right">0 KG</td>
+                        } else {
+                            <td class="text-right">@item.Freight_Weight KG</td>
+                        }
                     </tr>
                 }
 
@@ -430,7 +438,7 @@ table td {
                     <td class="text-right" id="totalHawbs">0</td>
                     <td class="text-right" id="totalPackages">0</td>
                     <td class="text-right" id="totalChargeWeight">0</td>
-                    <td class="text-right">0.00</td>
+                    <td class="text-right">0 KG</td>
                 </tr>
             </tbody>
         </table>

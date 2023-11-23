@@ -364,7 +364,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
             if (data.CarrierId is not null)
             {
                 var carrier = tradePartner.Where(w => w.Id == data.CarrierId).FirstOrDefault();
-                airImportDetails.CarrierName = string.Concat(carrier.TPName, "/", carrier.TPCode);
+                airImportDetails.CarrierName = string.Concat(carrier.TPName);
             }
 
             airImportDetails.MawbNo = data.MawbNo;
