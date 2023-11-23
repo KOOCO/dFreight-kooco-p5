@@ -446,6 +446,22 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string ManifestNatureAndQuantityOfGoods { get; set; }
         public string HandlingInformation { get; set; }
 
+        public Guid? RouteDepartureId { get; set; }
+
+        [ForeignKey("RouteDepartureId")]
+        public virtual Dolphin.Freight.ImportExport.AirExports.Airport RouteDeparture { get; set; }
+        public DateTime? RouteDepartureArrivalDate { get; set; }
+        public DateTime? RouteDepatureDate { get; set; }
+        public string RouteDepartureFlightNo { get; set; }
+        public Guid? RouteDepartureCarrierId { get; set; }
+        [ForeignKey("RouteDepartureCarrierId")]
+        public virtual Dolphin.Freight.TradePartners.TradePartner RouteDepartureCarrier { get; set; }
+
+        public Guid? RouteDestinationId { get; set; }
+
+        [ForeignKey("RouteDestinationId")]
+        public virtual Dolphin.Freight.ImportExport.AirExports.Airport RouteDestination { get; set; }
+        public DateTime? RouteDestinationArrivalDate { get; set; }
         public AirExportMawb() { 
             AwbDate = DateTime.Now;
         }

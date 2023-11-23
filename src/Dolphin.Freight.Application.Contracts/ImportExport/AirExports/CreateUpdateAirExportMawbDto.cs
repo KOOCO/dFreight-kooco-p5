@@ -155,5 +155,13 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string NatureAndQuantityOfGoods { get; set; }
         public string ManifestNatureAndQuantityOfGoods { get; set; }
         public string HandlingInformation { get; set; }
+        public String RouteDepartureId { get; set; }
+        public DateTime? RouteDepartureArrivalDate { get; set; }
+        public DateTime? RouteDepatureDate { get; set; }
+        public string RouteDepartureFlightNo { get; set; }
+        public String RouteDepartureCarrierId { get; set; }
+
+        public String RouteDestinationId { get; set; }
+        public DateTime? RouteDestinationArrivalDate { get; set; }
     }
 }
