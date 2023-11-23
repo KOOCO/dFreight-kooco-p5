@@ -1299,6 +1299,24 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                   <tr>
+                                                    <th>Trans1</th>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteDepatureId", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteDepatureId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteDepartureId) })
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteDepartureArrivalDate" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteDepatureDate" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteDepartureFlightNo" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteDepatureCarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteDepartureCarrierId.ToString() })
+                                                    </td>
+                                                </tr>
                                                 <tr>
                                                     <th>Trans1</th>
                                                    <td>
@@ -1351,6 +1369,24 @@
                                                     </td>
                                                     <td>
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans3CarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteTrans3CarrierId.ToString() })
+                                                    </td>
+                                                </tr>
+                                                  <tr>
+                                                    <th>Final Destination</th>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteDestinationId", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteDestinationId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteDestinationId) })
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteDestinationArrivalDate" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                       
+                                                    </td>
+                                                    <td>
+                                                       
+                                                    </td>
+                                                    <td>
+                                                        
                                                     </td>
                                                 </tr>
                                             </tbody>
