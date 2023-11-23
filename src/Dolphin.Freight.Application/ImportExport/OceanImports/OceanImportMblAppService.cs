@@ -328,7 +328,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 if (data.MblCarrierId != null)
                 {
                     var MblCarrier = tradePartners.Where(w => w.Id == data.MblCarrierId).FirstOrDefault();
-                    oceanImportDetails.MblCarrierName = string.Concat(MblCarrier?.TPName, "/", MblCarrier?.TPCode);
+                    oceanImportDetails.MblCarrierName = string.Concat(MblCarrier?.TPName);
                 }
                 if (data.MblConsigneeId != null)
                 {
