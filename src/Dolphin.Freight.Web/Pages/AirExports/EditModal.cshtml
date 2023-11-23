@@ -1037,10 +1037,35 @@
                     <abp-card border="Dark" id="mblCard" style="margin-bottom: 1.2rem;">
                         <!-- 標題區域 -->
                         <abp-card-header style="background:#555555;color:#FFFFFF;">
-                            <abp-card-title>
+                            <abp-card-title class="col-9">
                              
-                                @L["MAWBInformation"] @Model.AirExportMawbDto.MawbNo  @*MAWB Information*@
-                            </abp-card-title>
+                                @L["MAWB"] @Model.AirExportMawbDto.MawbNo  @*MAWB Information*@ 
+                                &nbsp;&nbsp;
+                                @if(Model.AirExportMawbDto.DepatureId!=null)
+                                {
+                            @_dropdown.PortsManagementLookupList.Where(x=>x.Value==Model.AirExportMawbDto.DepatureId?.ToString()).Select(x=>x.Text).FirstOrDefault()
+                                }
+                               &nbsp;&nbsp;
+                             (@Model.AirExportMawbDto.DepatureDate.ToShortDateString())
+                              &nbsp;&nbsp;
+                               @if(Model.AirExportMawbDto.DestinationId!=null)
+                                {
+                          
+                               @_dropdown.PortsManagementLookupList.Where(x=>x.Value==Model.AirExportMawbDto.DestinationId?.ToString()).Select(x=>x.Text).FirstOrDefault()
+                                }
+                                 
+                                 @(Model.AirExportMawbDto.ArrivalDate != null?"("+Model.AirExportMawbDto.ArrivalDate?.ToShortDateString()+")":"")
+                              @*   @if (Model.AirExportMawbDto.ArrivalDate != null)
+                                {
+                                  @Model.AirExportMawbDto.ArrivalDate?.ToShortDateString()
+                                } *@
+                                &nbsp;&nbsp;
+                                    @if(Model.AirExportMawbDto.MawbCarrierId!=null)
+                                {
+
+                            @_dropdown.TradePartnerLookupList.Where(x=>x.Value==Model.AirExportMawbDto.MawbCarrierId?.ToString()).Select(x=>x.Text).FirstOrDefault()
+                                }                 
+                           </abp-card-title>
 
                             <div id="myModal" class="modal" tabindex="-1" role="dialog">
                                 <div class="modal-dialog" role="document">
