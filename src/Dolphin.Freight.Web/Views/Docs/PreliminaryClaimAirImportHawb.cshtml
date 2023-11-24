@@ -1,4 +1,5 @@
-﻿@using Dolphin.Freight.Localization
+﻿@using Volo.Abp.Users
+@using Dolphin.Freight.Localization
 @using Dolphin.Freight.Permissions
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
@@ -6,8 +7,11 @@
 @model Dolphin.Freight.ImportExport.AirImports.AirImportDetails
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
+@inject ICurrentUser CurrentUser
 @{
     Layout = null;
+
+    var UTCDateTime = DateTime.UtcNow.AddHours(8).ToString("MM-dd-yyyy HH:mm");
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
@@ -229,7 +233,7 @@ table td {
                                 TEL: 08417606080 FAX: 08417606080<br>
                                 EMAIL: hanjun.lin@dolphin-gp.com
                                 
-                                    <br><strong>Prepared by Hanjun Lin 07-26-2023 18:58 (CST)</strong>
+                                    <br><strong>Prepared by @(CurrentUser.Name + " " + CurrentUser.SurName) @UTCDateTime (CST)</strong>
                                 
                             </span>
                         </div>
@@ -242,38 +246,6 @@ table td {
                           <option value="Preliminary Claim" selected="">Preliminary Claim</option>
                         
                         </select></div>
-                    </td>
-                </tr>
-            </tbody></table>
-        </div>
-        <div class="header header-horizontal-logo margin-b-md">
-            <table>
-                <tbody><tr>
-                    <td class="w-75">
-                        <div>
-                            <div class="item-edit">
-                                <select name="title" class="select select2-lg select w-80" id="id_title">
-                                  <option value="Preliminary Claim Acknowledgement">Preliminary Claim Acknowledgement</option>
-                                
-                                  <option value="Preliminary Claim" selected="">Preliminary Claim</option>
-                                
-                                </select>
-                            </div>
-                        </div>
-                        <h2 class="auto-font-size office-name"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h2>
-                        <div class="auto-font-size office-des">
-                            <span>
-                                77792 COBB CAPE TRISTANCHESTER, NE 47478<br>
-                                TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
-                                
-                                    <br><strong>Prepared by Hanjun Lin 07-26-2023 18:58 (CST)</strong>
-                                
-                            </span>
-                        </div>
-                    </td>
-                    <td class="w-2">&nbsp;</td>
-                    <td class="w-22 logo">
-                        <img src="/img/hardcore-tech-logo.png">
                     </td>
                 </tr>
             </tbody></table>
@@ -294,7 +266,7 @@ table td {
                         <td><strong>&nbsp;</strong></td>
                         <td>
                             <div class="item-edit hover-toggle-icon-text-template">
-                                <textarea name="consignee_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_consignee_area">@Model.OverseaAgentTPName</textarea></div>
+                                <textarea name="consignee_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_consignee_area">@Model.CarrierTPName</textarea></div>
                         </td>
                         <td>&nbsp;</td>
                     </tr>
