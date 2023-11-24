@@ -21,6 +21,8 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
+using Volo.Abp.SettingManagement;
+using Volo.Abp.Settings;
 using Volo.Abp.Users;
 
 namespace Dolphin.Freight.ImportExport.OceanImports
@@ -34,6 +36,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             CreateUpdateOceanImportMblDto>, //新增修改IT號碼管理用
         IOceanImportMblAppService //實作IOceanImportMblAppService
     {
+        private readonly ISettingProvider _settingProvider;
+        private readonly ISettingManager _settingManager;
         private readonly IRepository<OceanImportMbl, Guid> _repository;
         private readonly IRepository<SysCode, Guid> _sysCodeRepository;
         private readonly IRepository<Substation, Guid> _substationRepository;
@@ -49,7 +53,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public OceanImportMblAppService(IRepository<OceanImportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository,
                                          PortsManagementAppService portRepository1, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
                                         IRepository<OceanImportHbl, Guid> oceanImportHblRepository, IIdentityUserAppService identityUserAppService, IContainerAppService containerAppService,
-                                        IRepository<Country, Guid> countryRepository, IIdentityUserRepository identityUserRepository, IRepository<PortsManagement, Guid> portRepository, IOceanImportHblAppService oceanImportHblAppService)
+                                        IRepository<Country, Guid> countryRepository, IIdentityUserRepository identityUserRepository, IRepository<PortsManagement, Guid> portRepository,
+                                        IOceanImportHblAppService oceanImportHblAppService, ISettingManager settingManager, ISettingProvider settingProvider)
             : base(repository)
         {
             _repository = repository;
@@ -64,6 +69,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             _oceanImportHblAppService = oceanImportHblAppService;
             _identityUserRepository = identityUserRepository;
             _containerAppService = containerAppService;
+            _settingManager = settingManager;
+            _settingProvider = settingProvider;
+
             /*
             GetPolicyName = OceanImportPermissions.OceanImportMbls.Default;
             GetListPolicyName = OceanImportPermissions.OceanImportMbls.Default;
@@ -519,6 +527,24 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             }
 
             await _containerAppService.UpdateAsync(ContainerId, ObjectMapper.Map<ContainerDto, CreateUpdateContainerDto>(container));
+        }
+
+        public async Task SetCardSetting(bool IsShowDetail)
+        {
+            try
+            {
+                await _settingManager.SetGlobalAsync("ShowHblDetails", IsShowDetail.ToString().ToPascalCase());
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+        public async Task<bool> GetCardSettings() {
+
+          var result=  await _settingProvider.GetAsync<bool>("ShowHblDetails");
+            return result;
         }
     }
 }

@@ -41,7 +41,8 @@
          });
 
         $(document).ready(function () {
-
+          
+           
             //HB/l dropdown
             $('#cardSettingArea').hide();
             var isPageLoad = true;
@@ -471,6 +472,8 @@
         function createHawbCard() {
              $('#cardSettingArea').show();
             var check='False';
+           
+            debugger;
             if ($('#cardCheck').prop('checked')) {
                 check = 'True';
             
@@ -493,10 +496,11 @@
                     ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
                     ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
             }
+            abpCard += '<div class="card-footer"><div class="row"><div class="col-6 hblCardTitle" style="border-bottom: solid;border-top: solid;border-right: solid;border-width: thin;">PKG: {{hblPackage}}</div><div class="col-6 hblCardTitle" style="border-bottom: solid;border-top: solid;border-width: thin;">Weight: {{hblWeight}}</div><div class="col - 12 hblCardTitle">Measurement: {{hblMeasurement}}</div></div></div>';
   return abpCard;
         }
 
-        function setHawbCardValues(abpcard, cardId, hblNo, index,hblCosigneeName,hblShipperName) {
+        function setHawbCardValues(abpcard, cardId, hblNo, index,hblCosigneeName,hblShipperName,weight,measurement,packagetype) {
             let apbCardClass = 'card board-item hbl-sm-' + index;
             let cardBodyId = 'hawbCard_' + index;
             cardId = "'" + cardId + "'";
@@ -506,6 +510,9 @@
             abpcard = abpcard.replaceAll("{{hblCardId}}", cardId);
             abpcard = abpcard.replaceAll("{{index}}", index);
             abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
+            abpcard = abpcard.replaceAll("{{hblPackage}}", packagetype);
+            abpcard = abpcard.replaceAll("{{hblWeight}}", weight);
+            abpcard = abpcard.replaceAll("{{hblMeasurement}}", measurement);
              if (hblCosigneeName !== null) {
     abpcard = abpcard.replaceAll("{{hblCosigneeName}}", hblCosigneeName);
   } else {
@@ -625,8 +632,18 @@
         });
         function changeSetting() { 
         $("#checkModal").modal("hide");
-            SortHblCard();
-        
+           
+            if ($('#cardCheck').prop('checked')) {
+                dolphin.freight.importExport.oceanImports.oceanImportMbl.setCardSetting(true).done(function (response) {
+                    SortHblCard();
+                });
+
+            }
+            else {
+                dolphin.freight.importExport.oceanImports.oceanImportMbl.setCardSetting(false).done(function (response) {
+                    SortHblCard();
+                })
+            }
         
         }
         function SortHblCard(){

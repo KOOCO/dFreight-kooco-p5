@@ -312,7 +312,10 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var cardColor = sysCodes.Where(w => w.Id == item.CardColorId).FirstOrDefault();
                     item.CardColorValue = cardColor.CodeValue;
                 }
-
+              var HblContainers = await _containerAppService.GetContainerListByHblId(item.Id);
+                item.Measurement = HblContainers.Sum(x => x.PackageMeasure.Value).ToString("N2") + " CBM";
+                item.Weight = HblContainers.Sum(x => x.PackageWeight.Value).ToString("N2") + " KG";
+                item.PackageType = HblContainers.Sum(x => x.PackageNum.Value).ToString() ;
                 if (ContainerId is not null && ContainerId != "")
                 {
                     List<CreateUpdateContainerDto> containersMbl = await _containerAppService.GetContainerByMblId(item.MblId);
