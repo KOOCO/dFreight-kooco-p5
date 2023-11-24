@@ -459,7 +459,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 if (data.DeliveryLocation != null)
                 {
                     var deliveryLocation = tradePartners.Where(w => w.Id == Guid.Parse(data.DeliveryLocation)).FirstOrDefault();
-                    airImportDetails.DeliveryLocationName = string.Concat(deliveryLocation.TPName, "/", deliveryLocation.TPCode);
+                    airImportDetails.DeliveryLocationName = string.Concat(deliveryLocation.TPName);
                 }
 
                 var subHawbs = new List<SubHawbs>();
@@ -471,8 +471,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 subHawbs = JsonConvert.DeserializeObject<List<SubHawbs>>(Convert.ToString(subHawbsStr));
 
                 airImportDetails.GrossWeightStr = data.GrossWeightKG == null ? "" : data.GrossWeightKG + " KGS " + (double.Parse(data.GrossWeightKG) * 2.20462).ToString("0.00") + " LBS";
-                airImportDetails.ChargableWeightStr = data.ChargeableWeightKG == null ? "" : data.ChargeableWeightKG + " KGS " + (double.Parse(data.ChargeableWeightKG) * 2.20462).ToString("0.00") + " LBS";
-                airImportDetails.MeasurementStr = data.VolumeWeightCBM == null ? "" : data.VolumeWeightCBM + " CBM " + Environment.NewLine + (double.Parse(data.VolumeWeightCBM) * 35.315).ToString("0.00") + " CFT";
+                airImportDetails.ChargableWeightStr = data.ChargeableWeightKG == null ? "" : string.Concat(data.ChargeableWeightKG, " KGS", Environment.NewLine, (double.Parse(data.ChargeableWeightKG) * 2.20462).ToString("0.00"), " LBS", Environment.NewLine);
+                airImportDetails.MeasurementStr = data.VolumeWeightCBM == null ? "" : string.Concat(data.VolumeWeightCBM, " CBM", Environment.NewLine, (double.Parse(data.VolumeWeightCBM) * 35.315).ToString("0.00"), " CFT", Environment.NewLine);
                 airImportDetails.CurrentDate = DateTime.Now.ToString("MM/dd/yyyy");
                 airImportDetails.LastFreeDay = data.LastFreeDay;
                 airImportDetails.FinalDestETA = data.FinalETA;
