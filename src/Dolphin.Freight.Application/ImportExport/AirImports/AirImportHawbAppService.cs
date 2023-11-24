@@ -1,4 +1,5 @@
-﻿using Dolphin.Freight.Accounting.Invoices;
+﻿using AutoMapper.QueryableExtensions.Impl;
+using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.OceanExports;
@@ -356,7 +357,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 if (data.ConsigneeId != null)
                 {
                     var consignee = tradePartners.Where(w => w.Id == data.ConsigneeId).FirstOrDefault();
-                    airImportDetails.ConsigneeName = string.Concat(consignee.TPName, "/", consignee.TPCode);
+                    airImportDetails.ConsigneeName = string.Concat(consignee.TPName);
                 }
 
                 if (mawb.DepatureId != null)
@@ -477,7 +478,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.FinalDestETA = data.FinalETA;
                 airImportDetails.FilingNo = mawb.FilingNo;
                 airImportDetails.HItNo = data.ITNo;
-                airImportDetails.HItDate = string.Concat(data.ITDate);
+                airImportDetails.HItDate = (!data.ITDate.Equals(DateTime.MinValue)) ? data.ITDate.ToShortDateString() ?? "" : "";
+                airImportDetails.ArrivalDate = mawb.ArrivalDate;
                 airImportDetails.HItLocation = data.ITIssuedLocation;
                 airImportDetails.TotalPackage = string.Concat(data.Package) + " " + airImportDetails.HPackageUnitName;
                 airImportDetails.HMark = data.Mark;
@@ -498,6 +500,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.SalesType = data.SalesType;
                 airImportDetails.SubHawbs = subHawbs;
                 airImportDetails.PONo = data.PONo;
+                airImportDetails.FlightNo = mawb.FlightNo;
             }
 
             return airImportDetails;

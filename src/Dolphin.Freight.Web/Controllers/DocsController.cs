@@ -4217,7 +4217,11 @@ namespace Dolphin.Freight.Web.Controllers
 
             var iTTEViewModel = new ITTEViewModel()
             {
-                Port = airImportDetails.ITIssuedLocation,
+                FlightNo = airImportDetails.FlightNo,
+                ArrivalDate = (airImportDetails.ArrivalDate is not null && !airImportDetails.ArrivalDate.Equals(DateTime.MinValue)) ? airImportDetails.ArrivalDate?.ToShortDateString() ?? "" : "",
+                DestinationName = airImportDetails.DestinationAirportName,
+                ITDate = airImportDetails.HItDate,
+                Port = airImportDetails.FinalDestination,
                 EntryNo = airImportDetails.ITNo,
                 ClassOfEntry = airImportDetails.ClassOfEntry,
                 PortOfLoading = airImportDetails.DestinationAirportName,
@@ -4233,10 +4237,13 @@ namespace Dolphin.Freight.Web.Controllers
                 Consignee = airImportDetails.ConsigneeName,
                 ForeignDestination = airImportDetails.FinalDestination,
                 Package = Convert.ToString(airImportDetails.Package),
-                WeightKG = (airImportDetails.GrossWeightKg + airImportDetails.ChargeableWeightKg),
-                WeightLG = (airImportDetails.GrossWeightLb + airImportDetails.ChargeableWeightLb),
+                PackageName = airImportDetails.HPackageUnitName,
+                WeightKG = airImportDetails.GrossWeightKg,
+                WeightLG = airImportDetails.GrossWeightLb,
                 MawbNo = airImportDetails.MawbNo,
                 HawbNo = airImportDetails?.HawbNo,
+                Mark = airImportDetails.HMark,
+                Description = airImportDetails.HDescription
             };
 
             return View(iTTEViewModel);

@@ -1,10 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using System;
 using System.Security.Principal;
 
 namespace Dolphin.Freight.Web.ViewModels.Reports
 {
     public class ITTEViewModel
     {
+        public string ITDate { get; set; }
+        public string FlightNo { get; set; }
+        public string ArrivalDate { get; set; }
         public string Port { get; set; }
         public string EntryNo { get; set; }
         public string ClassOfEntry { get; set; }
@@ -35,10 +39,14 @@ namespace Dolphin.Freight.Web.ViewModels.Reports
         public string LadenOn { get; set; }
         public string ClearedFor { get; set; }
         public string Package { get; set; }
+        public string PackageName { get; set; }
         public double WeightKG { get; set; }
         public double WeightLG { get; set; }
         public string MawbNo { get; set; }
         public string HawbNo { get; set; }
+        public string DestinationName { get; set; }
+        public string Mark { get; set; }
+        public string Description { get; set; }
         public bool IsPDF { get; set; }
     }
 }

@@ -95,6 +95,7 @@
     <input type="hidden" asp-for="@Model.WeightKG" />
     <input type="hidden" asp-for="@Model.WeightLG" />
     <input type="hidden" asp-for="@Model.AWBNo" />
+    <input type="hidden" asp-for="@Model.ITDate" />
     
     <div id="main" class="edit">
      
@@ -123,7 +124,7 @@
                             <tr>
                                 <td class="col-padding border-r">Date</td>
                                 <td class="col-padding">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="it_date" value="07-27-2023"  id="id_it_date" class="ng-isolate-scope"></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="it_date" value="@Model.ITDate"  id="id_it_date" class="ng-isolate-scope"></div>
                                     <div class="item-pdf">&nbsp;</div>
                                 </td>
                             </tr>
@@ -172,7 +173,7 @@
                     </td>
                     <td class="col-padding-double border-r">DATE</td>
                     <td class="col-padding-double">
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" value="@DateTime.Now.ToShortDateString()"  id="id_unlading_date" class="ng-isolate-scope"></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" value="@Model.ITDate"  id="id_unlading_date" class="ng-isolate-scope"></div>
                         <div class="item-pdf">&nbsp;</div>
                     </td>
                 </tr>
@@ -332,29 +333,19 @@
                         <table>
                             <tbody><tr>
                                 <td class="w-40 border-b">
-                                    
-                                        <!-- ngIf: vm.flightNoOrder==='F' --><div ng-if="vm.flightNoOrder==='F'" class="item-edit ng-scope hover-toggle-icon-text-template"><input type="text" asp-for="VesselOrCarrier"  id="id_import_carrier" class="ng-isolate-scope"></div><!-- end ngIf: vm.flightNoOrder==='F' -->
-                                        <!-- ngIf: vm.flightNoOrder==='F' --><div ng-if="vm.flightNoOrder==='F'" class="item-pdf auto-font-size __width-imported-on ng-scope"><span>&nbsp;</span></div><!-- end ngIf: vm.flightNoOrder==='F' -->
-                                    
-                                    
-                                        <!-- ngIf: vm.flightNoOrder==='L' -->
-                                        <!-- ngIf: vm.flightNoOrder==='L' -->
-                                    
+                                    <div class="item-edit ng-scope hover-toggle-icon-text-template"><input type="text" asp-for="VesselOrCarrier" value="@Model.FlightNo" id="id_import_carrier" class="ng-isolate-scope"></div>
                                 </td>
                                 <td class="w-5 text-bold text-center">Flag:</td>
                                 <td class="w-15 border-b">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="import_flag"  id="id_import_flag" class="ng-isolate-scope"></div>
-                                    <div class="item-pdf auto-font-size __width-flag"><span>&nbsp;</span></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="import_flag" value="" id="id_import_flag" class="ng-isolate-scope"></div>
                                 </td>
                                 <td class="w-5 text-bold text-center">on:</td>
                                 <td class="w-15 border-b">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" asp-for="DateOfSailing"  id="id_ETA_date" class="ng-isolate-scope"></div>
-                                    <div class="item-pdf">&nbsp;</div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" asp-for="DateOfSailing" value="@Model.ArrivalDate" id="id_ETA_date" class="ng-isolate-scope"></div>
                                 </td>
                                 <td class="w-5 text-bold text-center">via:</td>
                                 <td class="w-25 border-b">
-                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="import_via"  id="id_import_via" class="ng-isolate-scope"></div>
-                                    <div class="item-pdf auto-font-size __width-last-port"><span>&nbsp;</span></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="import_via" value="@Model.DestinationName" id="id_import_via" class="ng-isolate-scope"></div>
                                 </td>
                             </tr>
                             <tr>
@@ -424,43 +415,11 @@
                 </tr>
                 <tr>
                     <td class="w-15 td td-item border-r border-b" rowspan="2">
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="16" class="text-scroll ng-isolate-scope"  id="id_mark"></textarea></div>
-                        <div class="item-pdf"><br>
-                             &nbsp;<br>
-                             &nbsp;<br>
-                             &nbsp;<br>
-                             &nbsp;<br>
-                             &nbsp;<br>
-                             &nbsp;<br>
-                             &nbsp;<br>
-                             &nbsp;<br>
-                             &nbsp;<br>
-                             &nbsp;<br>
-                             &nbsp;<br>
-                             &nbsp;<br>
-                             &nbsp;<br>
-                             &nbsp;<br>
-                             &nbsp;</div>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="16" class="text-scroll ng-isolate-scope" id="id_mark">@Model.Mark</textarea></div>
                     </td>
                     <td class="w-30 td td-item border-r border-b" rowspan="2">
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="package_good_items" cols="40" rows="16" class="text-scroll text-10"  id="id_package_good_items">@Model.Package CARTON(S)
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="package_good_items" cols="40" rows="16" class="text-scroll text-10" id="id_package_good_items">@Model.Package @Model.PackageName @Environment.NewLine @Environment.NewLine @Model.Description
                         </textarea></div>
-                        <div class="item-pdf"><br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;</div>
                     </td>
                     <td class="w-20 td td-item border-r text-right">
                         @Model.WeightKG KGS<br>
@@ -469,58 +428,12 @@
                     </td>
                     <td class="w-15 td td-item border-r">
                         <div class="item-edit hover-toggle-icon-text-template"><textarea name="value_area" cols="40" rows="14" class="text-scroll ng-isolate-scope"  id="id_value_area"></textarea></div>
-                        <div class="item-pdf"><br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;</div>
                     </td>
                     <td class="w-10 td td-item border-r border-b" rowspan="2">
                         <div class="item-edit hover-toggle-icon-text-template"><textarea name="rate_area" cols="40" rows="16" class="text-scroll text-10"  id="id_rate_area">ESTIMATED</textarea></div>
-                        <div class="item-pdf"><br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;</div>
                     </td>
                     <td class="w-10 td td-item border-b" rowspan="2">
                         <div class="item-edit hover-toggle-icon-text-template"><textarea name="duty_area" cols="40" rows="16" class="text-scroll text-10"  id="id_duty_area">NOT VERIFIED</textarea></div>
-                        <div class="item-pdf"><br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;<br>
-                         &nbsp;</div>
                     </td>
                 </tr>
                 <tr class="border-b">
@@ -655,10 +568,10 @@
                             </tr>
                             <tr>
                                 <td class="w-100">
-                                    <div class="item-edit hover-toggle-icon-text-template"><textarea name="enter_or_withdrawn_by" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope text-10"  id="id_enter_or_withdrawn_by">HARD CORE TECHNOLOGY(GST/VAT)
-                                    77792 COBB CAPE
-                                    TRISTANCHESTER, NE 47478</textarea></div>
-                                    <div class="item-pdf padding-t-xs auto-font-size __col-enteredby"><span></span></div>
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <textarea name="enter_or_withdrawn_by" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope text-10"  id="id_enter_or_withdrawn_by">HARD CORE TECHNOLOGY(GST/VAT) @Environment.NewLine 77792 COBB CAPE @Environment.NewLine TRISTANCHESTER, NE 47478
+                                        </textarea>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody></table>
