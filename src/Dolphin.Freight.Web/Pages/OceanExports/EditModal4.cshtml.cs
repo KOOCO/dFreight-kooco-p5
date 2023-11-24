@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.Common;
 using System.Linq;
+using Dolphin.Freight.ImportExport.OceanImports;
+using QueryHblDto = Dolphin.Freight.ImportExport.OceanExports.QueryHblDto;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
 {
@@ -23,7 +25,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
     public Guid Id { get; set; }
     [BindProperty(SupportsGet = true)]
     public Guid Hid { get; set; }
-    [BindProperty]
+        [BindProperty(SupportsGet = true)]
+        public bool ISToolTipShow { get; set; }
+        [BindProperty]
     public CreateUpdateOceanExportMblDto OceanExportMbl { get; set; }
     [BindProperty]
     public CreateUpdateOceanExportHblDto OceanExportHbl { get; set; }
@@ -37,14 +41,21 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
     private readonly IWebHostEnvironment _webHostEnvironment;
     public readonly IAttachmentAppService _attachmentAppService;
     private readonly ISysCodeAppService _sysCodeAppService;
+        private readonly IOceanImportMblAppService _oceanImportMblAppService;
 
-    public EditModal4Model(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, IWebHostEnvironment webHostEnvironment, IAttachmentAppService attachmentAppService, ISysCodeAppService sysCodeAppService)
+        public EditModal4Model(IOceanExportMblAppService oceanExportMblAppService, 
+            IOceanExportHblAppService oceanExportHblAppService,
+            IWebHostEnvironment webHostEnvironment,
+            IAttachmentAppService attachmentAppService, 
+            ISysCodeAppService sysCodeAppService,
+            IOceanImportMblAppService oceanImportMblAppService)
     {
         _oceanExportMblAppService = oceanExportMblAppService;
         _oceanExportHblAppService = oceanExportHblAppService;
         _webHostEnvironment = webHostEnvironment;
         _attachmentAppService = attachmentAppService;
         _sysCodeAppService = sysCodeAppService;
+            _oceanImportMblAppService=oceanImportMblAppService;
     }
     public async Task OnGetAsync()
     {
@@ -52,6 +63,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             QueryHblDto query = new QueryHblDto() { MblId = Id };
             OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
             OceanExportHbls = OceanExportHbls.Reverse().ToList();
+            ISToolTipShow = await _oceanImportMblAppService.GetCardSettings();
+
             QueryHblDto queryHbl = new QueryHblDto();
             if (Hid == Guid.Empty)
             {
