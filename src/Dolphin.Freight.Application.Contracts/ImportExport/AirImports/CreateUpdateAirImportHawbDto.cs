@@ -9,8 +9,9 @@ using Volo.Abp.Users;
 
 namespace Dolphin.Freight.ImportExport.AirImports
 {
-    public class CreateUpdateAirImportHawbDto : AuditedEntityDto<Guid>
+    public class CreateUpdateAirImportHawbDto
     {
+        public Guid Id { get; set; }
         public Guid? MawbId { get; set; }
         public string HawbDimensionsJSON { get; set; }
 
