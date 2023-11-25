@@ -16,7 +16,8 @@
                     }
                 })
                 setTimeout(() => {
-                    $('.hblCardTitle')[0].click();
+                    /*   $('.hblCardTitle')[0].click();*/
+                    $('#btnHawbCardCollapse_' + selectedHblNo).click();
                 }, 500);
             }
         });

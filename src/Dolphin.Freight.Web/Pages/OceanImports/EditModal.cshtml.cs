@@ -61,6 +61,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
         public async Task OnGetAsync()
         {
             OceanImportMbl = await _oceanImportMblAppService.GetCreateUpdateOceanImportMblDtoById(Id);
+
             ImportExport.OceanImports.QueryHblDto query = new ImportExport.OceanImports.QueryHblDto() { MblId = Id };
             query.Id = Hid;
             if (Hid is not null && Hid != Guid.Empty)
@@ -83,6 +84,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             }
 
             IsShowHbl = true;
+            ISToolTipShow = await _oceanImportMblAppService.GetCardSettings();
         }
 
         public async Task<IActionResult> OnPostAsync()
