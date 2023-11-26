@@ -204,6 +204,9 @@ table td {
     <input type="hidden" asp-for="@Model.HItLocation" />
     <input type="hidden" asp-for="@Model.HItDate" />
     <input type="hidden" asp-for="@Model.FreightLocationName" />
+    <input type="hidden" asp-for="@Model.HMark" />
+    <input type="hidden" asp-for="@Model.HDescription" />
+    <input type="hidden" asp-for="@Model.ConsigneeAddress" />
 
     <div id="main" class="edit">
 
@@ -306,7 +309,7 @@ table td {
                     <tr>
                         <td>of (address)</td>
                         <td>
-                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="consignee_addr_carrier_certificate" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope" id="id_consignee_addr_carrier_certificate"></textarea></div>
+                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="consignee_addr_carrier_certificate" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope" id="id_consignee_addr_carrier_certificate">@Model.ConsigneeAddress</textarea></div>
                         </td>
                     </tr>
                 </tbody></table>
@@ -331,13 +334,13 @@ table td {
                 </tr>
                 <tr>
                     <td>
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_mark"></textarea></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_mark">@Model.HMark</textarea></div>
                     </td>
                     <td class="text-right">
                         <div class="item-edit hover-toggle-icon-text-template"><textarea name="package_area" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_package_area">@Model.TotalPackage</textarea></div>
                     </td>
                     <td>
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_good_items"></textarea></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_good_items">@Model.HDescription</textarea></div>
                     </td>
                     <td class="text-right">
                         <div class="item-edit hover-toggle-icon-text-template"><textarea name="chargeable_weight" cols="40" rows="20" class="text-scroll ng-isolate-scope" id="id_chargeable_weight">@Model.ChargableWeightStr</textarea>
@@ -482,7 +485,7 @@ table td {
             <div class="text-center _margin-auto w-50 border-b">
                 In Accordance with the provisions of section 484(j) Tariff Act of 1930, authority is hereby given to release the articles covered by the above carrier's certificate to :
                 <div class="item-edit hover-toggle-icon-text-template">
-                    <input type="text" name="ConsigneeName" value="@Model.ConsigneeName" id="id_consignee_release_order" class="ng-isolate-scope">
+                    <input type="text" name="DeliveryLocationName" value="@Model.DeliveryLocationName" id="id_consignee_release_order" class="ng-isolate-scope">
                 </div>
             </div>
             <table class="table-padding margin-t-sm">

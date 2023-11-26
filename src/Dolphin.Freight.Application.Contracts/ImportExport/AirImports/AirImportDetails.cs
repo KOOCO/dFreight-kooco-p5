@@ -88,6 +88,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? ConsigneeId { get; set; }
         public string ConsigneeName { get; set; }
+        public string ConsigneeAddress { get; set; }
         /// <summary>
         ///  通知方Id
         /// </summary>
