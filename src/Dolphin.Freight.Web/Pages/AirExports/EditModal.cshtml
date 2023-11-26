@@ -1050,8 +1050,10 @@
                               &nbsp;&nbsp;
                                @if(Model.AirExportMawbDto.DestinationId!=null)
                                 {
-                          
+                                    <span>
+                                    <i class="fa fa-caret-right"></i>
                                @_dropdown.PortsManagementLookupList.Where(x=>x.Value==Model.AirExportMawbDto.DestinationId?.ToString()).Select(x=>x.Text).FirstOrDefault()
+                                    </span>
                                 }
                                  
                                  @(Model.AirExportMawbDto.ArrivalDate != null?"("+Model.AirExportMawbDto.ArrivalDate?.ToShortDateString()+")":"")
@@ -1062,8 +1064,14 @@
                                 &nbsp;&nbsp;
                                     @if(Model.AirExportMawbDto.MawbCarrierId!=null)
                                 {
-
-                            @_dropdown.TradePartnerLookupList.Where(x=>x.Value==Model.AirExportMawbDto.MawbCarrierId?.ToString()).Select(x=>x.Text).FirstOrDefault()
+                                    <span>
+                                        <i class="fa fa-plane"></i>
+                                        @{
+                                            var carrier = _dropdown.TradePartnerLookupList.Where(x => x.Value == Model.AirExportMawbDto.MawbCarrierId?.ToString()).Select(x => x.Text).FirstOrDefault();
+                                            var partBeforeSlash = carrier?.Split('/').FirstOrDefault()?.Trim();
+                                            @partBeforeSlash;
+                        }
+                            </span>
                                 }                 
                            </abp-card-title>
 
