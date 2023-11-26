@@ -1325,9 +1325,9 @@
                                             </thead>
                                             <tbody>
                                                    <tr>
-                                                    <th>Trans1</th>
+                                                    <th>Departure</th>
                                                    <td>
-                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteDepatureId", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteDepatureId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteDepartureId) })
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteDepartureId", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteDepartureId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteDepartureId) })
                                                     </td>
                                                     <td>
                                                         <input asp-for="@Model.AirExportMawbDto.RouteDepartureArrivalDate" abp-data-datepicker="false" size="Small" />
@@ -1339,7 +1339,7 @@
                                                         <input asp-for="@Model.AirExportMawbDto.RouteDepartureFlightNo" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteDepatureCarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteDepartureCarrierId.ToString() })
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteDepartureCarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteDepartureCarrierId.ToString() })
                                                     </td>
                                                 </tr>
                                                 <tr>
