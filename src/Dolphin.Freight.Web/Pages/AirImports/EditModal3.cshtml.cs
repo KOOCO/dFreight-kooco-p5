@@ -21,7 +21,8 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         
         [BindProperty(SupportsGet = true)]
         public Guid Hid { get; set; }
-        
+        [BindProperty]
+        public bool ISToolTipShow { get; set; }
         [BindProperty]
         public AirImportMawbDto AirImportMawbDto { get; set; }
         [BindProperty]
@@ -65,7 +66,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         public async Task OnGetAsync()
         {
             AirImportMawbDto = await _airImportMawbAppService.GetAsync(Id);
-
+            ISToolTipShow = await _airImportMawbAppService.GetCardSettings();
             QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 0, ParentId = Id };
             var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
             m0invoiceDtos = new List<InvoiceDto>();

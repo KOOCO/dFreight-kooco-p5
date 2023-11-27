@@ -10,8 +10,10 @@ using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
+using Dolphin.Freight.TradePartners;
 using Newtonsoft.Json;
 using NPOI.POIFS.Crypt.Dsig;
+using Org.BouncyCastle.Crypto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,10 +78,64 @@ namespace Dolphin.Freight.ImportExport.AirImports
             _invoiceAppService = invoiceAppService;
         }
 
-        public async Task<List<AirImportHawbDto>> GetHawbCardsByMawbId(Guid Id)
+        public async Task<List<AirImportHawbDto>> GetHawbCardsByMawbId(Guid Id, bool isAsc = true, int sortType = 1)
         {
             var data = await _repository.GetListAsync(f => f.MawbId == Id);
+            var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
+            if (!isAsc)
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderByDescending(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderByDescending(x => x.CreationTime).ToList();
+
+                }
+            }
+            else if (isAsc)
+            {
+                if (sortType == 0)
+                {
+                    data = data.ToList();
+                }
+                else if (sortType == 1)
+                {
+                    data = data.OrderBy(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(x => x.CreationTime).ToList();
+
+                }
+            }
+            else
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderBy(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(x => x.CreationTime).ToList();
+
+                }
+            }
             var retVal = ObjectMapper.Map<List<AirImportHawb>, List<AirImportHawbDto>>(data);
+            foreach (var item in retVal)
+            {
+                if (item.ShipperId != null)
+                {
+                    var shipper = tradePartners.Where(w => w.Id == item.ShipperId).FirstOrDefault();
+                    item.ShipperName = shipper.TPName;
+                }
+                if (item.ConsigneeId != null)
+                {
+                    var consignee = tradePartners.Where(w => w.Id == item.ConsigneeId).FirstOrDefault();
+                    item.ConsigneeName = consignee.TPName;
+                }
+            }
 
             return retVal;
         }
@@ -96,10 +152,64 @@ namespace Dolphin.Freight.ImportExport.AirImports
             return new AirImportHawbDto();
         }
 
-        public async Task<List<AirImportHawbDto>> GetDocCenterCardsById(Guid Id)
+        public async Task<List<AirImportHawbDto>> GetDocCenterCardsById(Guid Id, bool isAsc = true, int sortType = 1)
         {
             var data = await _repository.GetListAsync(f => f.MawbId == Id);
+            var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
+            if (!isAsc)
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderByDescending(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderByDescending(x => x.CreationTime).ToList();
+
+                }
+            }
+            else if (isAsc)
+            {
+                if (sortType == 0)
+                {
+                    data = data.ToList();
+                }
+                else if (sortType == 1)
+                {
+                    data = data.OrderBy(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(x => x.CreationTime).ToList();
+
+                }
+            }
+            else
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderBy(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(x => x.CreationTime).ToList();
+
+                }
+            }
             var retVal = ObjectMapper.Map<List<AirImportHawb>, List<AirImportHawbDto>>(data);
+            foreach (var item in retVal)
+            {
+                if (item.ShipperId != null)
+                {
+                    var shipper = tradePartners.Where(w => w.Id == item.ShipperId).FirstOrDefault();
+                    item.ShipperName = shipper.TPName;
+                }
+                if (item.ConsigneeId != null)
+                {
+                    var consignee = tradePartners.Where(w => w.Id == item.ConsigneeId).FirstOrDefault();
+                    item.ConsigneeName = consignee.TPName;
+                }
+            }
 
             return retVal;
         }
