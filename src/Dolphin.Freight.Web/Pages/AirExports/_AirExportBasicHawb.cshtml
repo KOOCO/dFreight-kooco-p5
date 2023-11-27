@@ -96,7 +96,7 @@
                               @if(Model.AirExportHawbDto.CreatorId!=null){
                              <span class="title-span">
                                  <i class="fa fa-user"></i>
-                             @(Model.AirExportHawbDto.CreatorId!=null?"OP: "+_dropdown.OperatorLookupList.Where(x=>x.Value==Model.AirExportHawbDto?.CreatorId.ToString()).Select(x=>x.Text.Split('/')[0]).FirstOrDefault():"")
+                    @(Model.AirExportHawbDto.CreatorId != null ? "OP: " + _dropdown.OperatorLookupList.Where(x => x.Value == Model.AirExportHawbDto?.CreatorId.ToString()).Select(x => x.Text.Split('/')[0]).FirstOrDefault() : "")
                             </span>
                               }
                         
