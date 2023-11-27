@@ -358,6 +358,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 {
                     var consignee = tradePartners.Where(w => w.Id == data.ConsigneeId).FirstOrDefault();
                     airImportDetails.ConsigneeName = string.Concat(consignee.TPName);
+                    airImportDetails.ConsigneeAddress = consignee.TPPrintAddress;
                 }
 
                 if (mawb.DepatureId != null)

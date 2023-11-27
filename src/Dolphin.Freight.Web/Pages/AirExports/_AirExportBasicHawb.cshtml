@@ -73,14 +73,32 @@
             @{
                 Model.Title = string.IsNullOrEmpty(Model.AirExportHawbDto.HawbNo) ? (_currentUser.Name + " " + _currentUser.SurName) : Model.AirExportHawbDto.HawbNo;
             }
-            HAWB @L["Information"] - @Model.Title
+            HAWB @Model.Title
                      &nbsp;&nbsp;
-                             @(Model.AirExportHawbDto.Customer!=null?"Customer: "+_dropdown.TradePartnerLookupList.Where(x=>x.Value==Model.AirExportHawbDto?.Customer).Select(x=>x.Text).FirstOrDefault():"")
-                               &nbsp;&nbsp;
-                             @(Model.AirExportHawbDto.SalesId!=null?"Sales: "+_dropdown.TradePartnerLookupList.Where(x=>x.Value==Model.AirExportHawbDto?.SalesId.ToString()).Select(x=>x.Text).FirstOrDefault():"")
-                               &nbsp;&nbsp;
-                             @(Model.AirExportHawbDto.SalesId!=null?"OP: "+_dropdown.OperatorLookupList.Where(x=>x.Value==Model.AirExportHawbDto?.CreatorId.ToString()).Select(x=>x.Text).FirstOrDefault():"")
-                            
+            @if (Model.AirExportHawbDto.Customer != null)
+            {
+                     <span class="title-span">
+                        
+                     <i class="fa fa-users"></i>
+                             @(Model.AirExportHawbDto.Customer!=null?"Customer: "+_dropdown.TradePartnerLookupList.Where(x=>x.Value==Model.AirExportHawbDto?.Customer).Select(x=>x.Text.Split('/')[0]).FirstOrDefault():"")
+                             </span>
+                         }
+                             &nbsp;&nbsp;
+                @if (Model.AirExportHawbDto.SalesId != null)
+                {
+                             <span class="title-span">
+                                
+                                 <i class="fa fa-user"></i>
+                             @(Model.AirExportHawbDto.SalesId!=null?"Sales: "+_dropdown.TradePartnerLookupList.Where(x=>x.Value==Model.AirExportHawbDto?.SalesId.ToString()).Select(x=>x.Text.Split('/')[0]).FirstOrDefault():"")
+                             </span>
+                                  }
+                             &nbsp;&nbsp;
+                              @if(Model.AirExportHawbDto.CreatorId!=null){
+                             <span class="title-span">
+                                 <i class="fa fa-user"></i>
+                    @(Model.AirExportHawbDto.CreatorId != null ? "OP: " + _dropdown.OperatorLookupList.Where(x => x.Value == Model.AirExportHawbDto?.CreatorId.ToString()).Select(x => x.Text.Split('/')[0]).FirstOrDefault() : "")
+                            </span>
+                              }
                         
         </abp-card-title>
         <div class="btn-group dropdown">

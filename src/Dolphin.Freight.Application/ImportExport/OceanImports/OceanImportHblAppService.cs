@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Internal.Mappers;
+using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.EntityFrameworkCore;
 using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanExports;
@@ -56,8 +57,18 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         private readonly IRepository<Container, Guid> _containerRepository;
         private readonly IContainerAppService _containerAppService;
         private readonly IRepository<Country, Guid> _countryRepository;
+        private readonly IInvoiceAppService _invoiceAppService;
 
-        public OceanImportHblAppService(IRepository<OceanImportHbl, Guid> repository, IRepository<Container, Guid> containerRepository, IContainerAppService containerAppService, IRepository<SysCode, Guid> sysCodeRepository, IRepository<OceanImportMbl, Guid> mblRepository, IRepository<Substation, Guid> substationRepository, IRepository<Port, Guid> portRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<PortsManagement, Guid> portsManagementRepository, ICurrentUser currentUser, IRepository<Country, Guid> countryRepository)
+        public OceanImportHblAppService(IRepository<OceanImportHbl, Guid> repository,
+            IRepository<Container, Guid> containerRepository,
+            IContainerAppService containerAppService,
+            IRepository<SysCode, Guid> sysCodeRepository,
+            IRepository<OceanImportMbl, Guid> mblRepository,
+            IRepository<Substation, Guid> substationRepository,
+            IRepository<Port, Guid> portRepository, 
+            IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, 
+            IRepository<PortsManagement, Guid> portsManagementRepository, ICurrentUser currentUser,
+            IRepository<Country, Guid> countryRepository, IInvoiceAppService invoiceAppService)
             : base(repository)
         {
             _repository = repository;
@@ -71,6 +82,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             _containerRepository = containerRepository;
             _countryRepository = countryRepository;
             _containerAppService = containerAppService;
+            _invoiceAppService= invoiceAppService;
             /*
             GetPolicyName = OceanImportPermissions.OceanImportHbls.Default;
             GetListPolicyName = OceanImportPermissions.OceanImportHbls.Default;
@@ -309,6 +321,34 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             Dictionary<string, string> dictHblContains = new();
             foreach (var item in retVal)
             {
+                QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 1, ParentId = item.Id };
+                var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
+               var m0invoiceDtos = new List<InvoiceDto>();
+               var m1invoiceDtos = new List<InvoiceDto>();
+              var  m2invoiceDtos = new List<InvoiceDto>();
+                if (invoiceDtos != null && invoiceDtos.Count > 0)
+                {
+                    foreach (var dto in invoiceDtos)
+                    {
+                        switch (dto.InvoiceType)
+                        {
+                            default:
+                                m0invoiceDtos.Add(dto);
+                                break;
+                            case 1:
+                                m1invoiceDtos.Add(dto);
+                                break;
+                            case 2:
+                                m2invoiceDtos.Add(dto);
+                                break;
+
+
+                        }
+                    }
+
+                }
+                item.ARBalance = m0invoiceDtos.Sum(x => x.TotalAmount.Value).ToString("N2");
+                item.APBalance = m2invoiceDtos.Sum(x => x.TotalAmount.Value).ToString("N2");
                 if (item.HblShipperId != null)
                 {
                     var shipper = tradePartners.Where(w => w.Id == item.HblShipperId).FirstOrDefault();

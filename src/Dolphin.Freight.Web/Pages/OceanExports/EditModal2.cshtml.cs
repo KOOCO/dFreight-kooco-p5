@@ -26,6 +26,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public Guid Hid { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool ISToolTipShow { get; set; }
         [BindProperty]
         public CreateUpdateOceanExportMblDto OceanExportMbl { get; set; }
         [BindProperty]
@@ -54,12 +56,18 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         private readonly IOceanExportMblAppService _oceanExportMblAppService;
         private readonly IContainerAppService _containerAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
-        public EditModal2Model(IContainerAppService containerAppService,IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService)
+        private readonly IOceanImportMblAppService _oceanImportMblAppService;
+        public EditModal2Model(IContainerAppService containerAppService,
+            IOceanExportMblAppService oceanExportMblAppService, 
+            IOceanExportHblAppService oceanExportHblAppService, 
+            ISysCodeAppService sysCodeAppService,
+            IOceanImportMblAppService oceanImportMblAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
             _containerAppService = containerAppService;
             _sysCodeAppService = sysCodeAppService;
+            _oceanImportMblAppService=oceanImportMblAppService;
         }
         public async Task OnGetAsync()
         {
@@ -78,7 +86,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                 new SelectListItem() { Text = "CFT", Value = "CFT" }
             };
             Commodities = new List<ManifestCommodity>();
-
+            ISToolTipShow = await _oceanImportMblAppService.GetCardSettings();
             if (Hid == Guid.Empty)
             {
                 if (NewHbl == 1)
