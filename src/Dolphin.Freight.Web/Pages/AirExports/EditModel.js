@@ -12,8 +12,8 @@
                         hblCards.forEach(function (hblCard, index) {
 
                             let abpcard = createHawbCard();
-
-                            abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hawbNo, index);
+                            debugger;
+                            abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hawbNo, index, hblCard.consigneeName, hblCard.shippperName, hblCard.grossWeightCneeKG, hblCard.volumeWeightCBM, hblCard.package);
 
                             $('#hblCards').append(abpcard);
 
@@ -27,7 +27,7 @@
                     else {
                         let abpcard = createHawbCard();
 
-                        abpcard = setHawbCardValues(abpcard, hblCards[0].id, hblCards[0].hawbNo, 0);
+                        abpcard = setHawbCardValues(abpcard, hblCards[0].id, hblCards[0].hawbNo, 0, hblCards[0].consigneeName, hblCards[0].shippperName, hblCards[0].grossWeightCneeKG, hblCards[0].volumeWeightCBM, hblCards[0].package);
 
                         $('#hblCards').append(abpcard);
 

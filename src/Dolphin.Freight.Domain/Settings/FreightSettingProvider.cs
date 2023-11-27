@@ -12,7 +12,8 @@ namespace Dolphin.Freight.Settings
         public override void Define(ISettingDefinitionContext context)
         {
             context.Add(
-                new SettingDefinition("ShowHblDetails", "True")
+                new SettingDefinition("ShowHblDetails", "True"),
+                 new SettingDefinition("ShowHawbDetails", "True")
 
             );
         }

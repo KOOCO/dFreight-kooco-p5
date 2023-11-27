@@ -1,4 +1,5 @@
 using Dolphin.Freight.ImportExport.AirExports;
+using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.ImportExport.Attachments;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +15,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports.DocCenter
     public class IndexModel : AbpPageModel
     {
         public Guid Id { get; set; }
+        [BindProperty]
+        public bool ISToolTipShow { get; set; }
         public List<AttachmentDto> FileList { get; set; }
         public AirExportMawbDto AirExportMawbDto { get; set; }
         public AirExportHawbDto AirExportHawbDto { get; set; }
@@ -25,14 +28,18 @@ namespace Dolphin.Freight.Web.Pages.AirExports.DocCenter
         private readonly IAttachmentAppService _attachmentAppService;
         private readonly IAirExportHawbAppService _airExportHawbAppService;
         private readonly IAirExportMawbAppService _airExportMawbAppService;
+        private readonly IAirImportMawbAppService _airImportMawbAppService;
 
         public IndexModel(IWebHostEnvironment webHostEnvironment, IAttachmentAppService attachmentAppService, 
-                        IAirExportHawbAppService airExportHawbAppService, IAirExportMawbAppService airExportMawbAppService)
+                        IAirExportHawbAppService airExportHawbAppService, IAirExportMawbAppService airExportMawbAppService,
+                        IAirImportMawbAppService airImportMawbAppService)
         {
             _webHostEnvironment = webHostEnvironment;
             _attachmentAppService = attachmentAppService;
             _airExportHawbAppService = airExportHawbAppService;
             _airExportMawbAppService = airExportMawbAppService;
+            _airImportMawbAppService= airImportMawbAppService;
+
         }
 
         public virtual string GetFileSize(string filename)
@@ -52,6 +59,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports.DocCenter
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
+
+            ISToolTipShow = await _airImportMawbAppService.GetCardSettings();
             if (id == Guid.Empty)
             {
                 return NotFound();

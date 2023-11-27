@@ -27,6 +27,7 @@ using System.Threading;
 using Newtonsoft.Json;
 using Dolphin.Freight.Accounting;
 using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.ImportExport.AirImports;
 
 namespace Dolphin.Freight.Web.Pages.AirExports
 {
@@ -38,6 +39,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         private readonly IAirportAppService _airportAppService;
         private readonly IPackageUnitAppService _packageUnitAppService;
         private readonly IAirExportMawbAppService _airExportMawbAppService;
+        private readonly IAirImportMawbAppService _airImportMawbAppService;
         private readonly IAirExportHawbAppService _airExportHawbAppService;
         private readonly ICountryDisplayNameAppService _countryDisplayNameAppService;
         private readonly ICountryAppService _countryAppService;
@@ -51,7 +53,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             IAirExportMawbAppService airExportMawbAppService,
             IAirExportHawbAppService airExportHawbAppService,
             ICountryDisplayNameAppService countryDisplayNameAppService,
-            ICountryAppService countryAppService
+            ICountryAppService countryAppService,
+            IAirImportMawbAppService airImportMawbAppService
             )
         {
             Logger = NullLogger<CreateMawbModel>.Instance;
@@ -63,6 +66,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             _airExportHawbAppService = airExportHawbAppService;
             _countryDisplayNameAppService = countryDisplayNameAppService;
             _countryAppService = countryAppService;
+            _airImportMawbAppService= airImportMawbAppService;
         }
 
         [HiddenInput]
@@ -72,6 +76,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public bool ShowMsg { get; set; } = false;
         [BindProperty]
         public string DimensionsJSON { get; set; }
+        [BindProperty]
+        public bool ISToolTipShow { get; set; }
         [BindProperty]
         public List<Dimension> Dimensions { get; set; }
         [BindProperty]
@@ -135,6 +141,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             FillOther();
             await FillPackageUnitAsync();
             await FillCountryNameAsync();
+            ISToolTipShow = await _airImportMawbAppService.GetCardSettings();
         }
 
         public IActionResult OnPostAsync()
