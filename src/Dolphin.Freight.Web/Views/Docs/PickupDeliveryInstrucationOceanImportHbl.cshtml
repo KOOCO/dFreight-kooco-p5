@@ -445,7 +445,7 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                                             <span></span>
                                         </div>
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <textarea name="bill_to" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="a283663b30f75a69a24107f1e01c9b56b86444a547ba00002c04e8f5ef5033f3:Form.bill_to" id="id_bill_to">@Model.billing_to_area</textarea>
+                                            <textarea name="bill_to" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_bill_to">@Model.billing_to_area</textarea>
                                         <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-gqc-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-gqc-c260="" class="icon-text-template" style="top: 3px; left: 315px;"></span><!---->
 
 
@@ -464,13 +464,11 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                                             <span></span>
                                         </div>
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                                        <textarea name="container_no_list" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="a283663b30f75a69a24107f1e01c9b56b86444a547ba00002c04e8f5ef5033f3:Form.container_no_list" id="id_container_no_list">@Model.ContainerList[0].CONTAINER_NO /@Model.ContainerList[0].PICKUP_NO /@Model.ContainerList[0].SEAL_NO /@Model.ContainerList[0].PACKAGE 
-                                                            
-                                                        </textarea>
-                                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-gqc-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-gqc-c260="" class="icon-text-template" style="top: 3px; left: 315px;"></span><!---->
-
-
-</hc-input-template></div>
+                                           @if (Model.ContainerList.Count > 0){
+                                                <textarea name="container_no_list" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_container_no_list"> @Model.ContainerList[0].CONTAINER_NO /@Model.ContainerList[0].PICKUP_NO /@Model.ContainerList[0].SEAL_NO /@Model.ContainerList[0].PACKAGE </textarea>
+                                            } else {
+                                                <textarea name="container_no_list" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_container_no_list"></textarea>
+                                            }              
                                     </div>
                                 </td>
                             </tr>

@@ -9114,7 +9114,7 @@ namespace Dolphin.Freight.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserData");
+                    b.ToTable("UserData",(string)null);
                 });
 
             modelBuilder.Entity("Dolphin.Freight.Accounting.Inv.Inv", b =>
