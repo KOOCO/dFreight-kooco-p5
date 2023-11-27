@@ -3565,20 +3565,22 @@ namespace Dolphin.Freight.Web.Controllers
                 CustomsBroker = data.CustomerName,
                 Date = DateTime.Now.ToShortDateString(),
                 DepAirport = data.DepatureName,
-                DescriptionITNO = data.ITNo,
+                DescriptionITNO = string.Concat(data.HDescription, "/", data.HItNo),
                 DestAirport = data.DestinationAirportName,
                 DocumentPickedBy = data.ReleasedBy,
-                EntryPort = data.DestinationAirportName,
-                ETA1 = string.Concat(data.ArrivalDate),
-                ETA2 = string.Concat(data.ArrivalDate),
-                ETA3 = string.Concat(data.ArrivalDate),
-                ETD = data.DepatureDate,
+                EntryPort = "",
+                ETA1 = "",
+                ETA2 = (data.ArrivalDate is not null && !data.ArrivalDate.Equals(DateTime.MinValue)) ? data.ArrivalDate?.ToShortDateString() ?? "" : "",
+                ETA3 = (data.FinalDestETA is not null && !data.FinalDestETA.Equals(DateTime.MinValue)) ? data.FinalDestETA?.ToShortDateString() ?? "" : "",
+                ETD = (data.DepatureDate is not null && !data.DepatureDate.Equals(DateTime.MinValue)) ? data.DepatureDate?.ToShortDateString() ?? "" : "",
                 FileNo = data.FilingNo,
                 FinalDest = data.FinalDestination,
                 FlightNo = data.FlightNo,
                 HawbNo = data.HawbNo,
                 MawbNo = data.MawbNo,
                 FrightLoc = data.FreightLocationName,
+                FreightLocTel = data.FreightLocationPhoneNo,
+                FreightLocFax = data.FreightLocationFaxNo,
                 ITNO = data.ITNo,
                 ITDate = string.Concat(data.ITDate),
                 ITIssuePlace = data.ITIssuedLocation,
@@ -3592,7 +3594,7 @@ namespace Dolphin.Freight.Web.Controllers
                 //SubHawb = string.Join(",", data.SubHawbs?.Select(s => s.SubHAWB)),
                 Trucker = data.HTruckerName,
                 //Amount = data.SubHawbs?.Sum(s => Convert.ToDouble(s.Amount)),
-                VIA = data.DeliveryLocationName,
+                VIA = data.CarrierTPName,
                 PrepBy = data.OPName
             };
 
@@ -4215,7 +4217,11 @@ namespace Dolphin.Freight.Web.Controllers
 
             var iTTEViewModel = new ITTEViewModel()
             {
-                Port = airImportDetails.ITIssuedLocation,
+                FlightNo = airImportDetails.FlightNo,
+                ArrivalDate = (airImportDetails.ArrivalDate is not null && !airImportDetails.ArrivalDate.Equals(DateTime.MinValue)) ? airImportDetails.ArrivalDate?.ToShortDateString() ?? "" : "",
+                DestinationName = airImportDetails.DestinationAirportName,
+                ITDate = airImportDetails.HItDate,
+                Port = airImportDetails.FinalDestination,
                 EntryNo = airImportDetails.ITNo,
                 ClassOfEntry = airImportDetails.ClassOfEntry,
                 PortOfLoading = airImportDetails.DestinationAirportName,
@@ -4231,10 +4237,13 @@ namespace Dolphin.Freight.Web.Controllers
                 Consignee = airImportDetails.ConsigneeName,
                 ForeignDestination = airImportDetails.FinalDestination,
                 Package = Convert.ToString(airImportDetails.Package),
-                WeightKG = (airImportDetails.GrossWeightKg + airImportDetails.ChargeableWeightKg),
-                WeightLG = (airImportDetails.GrossWeightLb + airImportDetails.ChargeableWeightLb),
+                PackageName = airImportDetails.HPackageUnitName,
+                WeightKG = airImportDetails.GrossWeightKg,
+                WeightLG = airImportDetails.GrossWeightLb,
                 MawbNo = airImportDetails.MawbNo,
                 HawbNo = airImportDetails?.HawbNo,
+                Mark = airImportDetails.HMark,
+                Description = airImportDetails.HDescription
             };
 
             return View(iTTEViewModel);

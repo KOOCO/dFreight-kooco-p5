@@ -357,16 +357,16 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                 InvoiceMblDto.MblNo = airExportMawb.MawbNo;
                 Hblno = airexportHawb.HawbNo;
                 InvoiceMblDto.MblConsigneeId = airExportMawb.ConsigneeId;
-                InvoiceMblDto.ShipperId = Guid.Parse(airexportHawb.ActualShippedr);
                 InvoiceMblDto.GrossWeightKg = Convert.ToDouble(airexportHawb.GrossWeightShprKG);
                 InvoiceMblDto.GrossWeightLb = Convert.ToDouble(airexportHawb.GrossWeightShprLB);
                 InvoiceMblDto.PolEtd = airExportMawb.DepatureDate;
                 InvoiceMblDto.PodEta = airExportMawb.ArrivalDate;
                 InvoiceMblDto.VolumeWeightKg = Convert.ToDouble(airexportHawb.VolumeWeightKG);
                 InvoiceMblDto.VolumeWeightCbm = Convert.ToDouble(airexportHawb.VolumeWeightCBM);
-                InvoiceMblDto.MblNotifyId = Guid.Parse(airexportHawb.Notify);
-                InvoiceMblDto.HblConsigneeId = Guid.Parse(airexportHawb.OverseaAgent);
-                InvoiceMblDto.PackageCategoryId = Guid.Parse(airexportHawb.PackageUnit);
+                if (airexportHawb.ActualShippedr is not null) InvoiceMblDto.ShipperId = Guid.Parse(airexportHawb.ActualShippedr);
+                if (airexportHawb.Notify is not null) InvoiceMblDto.MblNotifyId = Guid.Parse(airexportHawb.Notify);
+                if (airexportHawb.OverseaAgent is not null) InvoiceMblDto.HblConsigneeId = Guid.Parse(airexportHawb.OverseaAgent);
+                if (airexportHawb.PackageUnit is not null) InvoiceMblDto.PackageCategoryId = Guid.Parse(airexportHawb.PackageUnit);
 
                 backUrl = "/AirExports/EditModal3?Id=" + airexportHawb.MawbId + "&Hid=" + HawbId;
                 MawbId = airexportHawb.MawbId;

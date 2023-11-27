@@ -11,7 +11,7 @@
 
                     let abpcard = createHawbCard();
 
-                    abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index, hblCard.hblConsigneeName, hblCard.hblShipperName);
+                    abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index, hblCard.hblConsigneeName, hblCard.hblShipperName, hblCard.weight, hblCard.measurement, hblCard.packageType);
 
                     $('#hblCards').append(abpcard);
 

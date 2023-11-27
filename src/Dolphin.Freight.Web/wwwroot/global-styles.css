@@ -919,3 +919,13 @@ ul.porlet-title-list {
 .datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-top {
     z-index: 1000 !important;
 }
+.title-span {
+    font-size: 17px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    color: #fff;
+
+
+}

@@ -1,7 +1,7 @@
-﻿$(function () {
+﻿$(document).ready(function () {
     debugger;
     var url = new URL(window.location.href);
-
+    var selectedindex = 0;
     dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(url.searchParams.get('Id'))
         .done(function (hblCards) {
             if (hblCards && hblCards.length) {
@@ -15,13 +15,14 @@
 
                     if (hblCard.id == url.searchParams.get('Hid')) {
                         selectedHblNo = hblCard.hblNo;
+                        selectedindex = index;
                     }
 
                 })
                 setTimeout(() => {
-                    $('.hblCardTitle')[0].click();
+                    /*    $('.hblCardTitle')[selectedindex].click();*/
+                    $('#btnHawbCardCollapse_' + selectedHblNo).click();
                 }, 500);
             }
         })
-
-})
+});

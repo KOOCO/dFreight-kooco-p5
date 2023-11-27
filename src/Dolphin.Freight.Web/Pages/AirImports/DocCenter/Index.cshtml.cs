@@ -19,7 +19,8 @@ namespace Dolphin.Freight.Web.Pages.AirImports.DocCenter
         public List<AttachmentDto> FileList { get; set; }
         public AirImportMawbDto AirImportMawbDto { get; set; }
         public AirImportHawbDto AirImportHawbDto { get; set; }
-
+        [BindProperty]
+        public bool ISToolTipShow { get; set; }
         private readonly int fileType = 10;
         private readonly string url = "/AirImports/DocCenter/";
 
@@ -59,7 +60,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports.DocCenter
             {
                 return NotFound();
             }
-            
+            ISToolTipShow = await _airImportMawbAppService.GetCardSettings();
             Id = id;
             QueryAttachmentDto dto = new()
             {

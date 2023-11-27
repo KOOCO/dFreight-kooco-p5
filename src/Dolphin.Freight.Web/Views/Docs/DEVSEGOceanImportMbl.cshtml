@@ -6,9 +6,11 @@
 @model Dolphin.Freight.ImportExport.OceanImports.OceanImportDetails
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
-    @{
-        Layout = null;
-    }
+@{
+    Layout = null;
+
+    var UTCDateTime = DateTime.UtcNow.AddHours(8).ToString("MM-dd-yyyy HH:mm");
+}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <style>
@@ -20263,7 +20265,7 @@ TRISTANCHESTER, NE 47478<br>
 TEL: 08417606080 FAX: 08417606080<br>
 EMAIL: hanjun.lin@dolphin-gp.com
                                 
-                                    <br><strong>Prepared by Hanjun Lin @(DateTime.UtcNow.Month + "-" + DateTime.UtcNow.Day + "-" + DateTime.UtcNow.Year + " " + DateTime.UtcNow.Hour + ":" + DateTime.UtcNow.Minute) (CST)</strong>
+                                    <br><strong>Prepared by Hanjun Lin @UTCDateTime (CST)</strong>
                                 
                             </span>
                         </div>

@@ -1,4 +1,5 @@
-﻿@using Dolphin.Freight.Localization
+﻿@using Volo.Abp.Users
+@using Dolphin.Freight.Localization
 @using Dolphin.Freight.Permissions
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
@@ -6,6 +7,7 @@
 @model Dolphin.Freight.ImportExport.AirImports.AirImportDetails
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
+@inject ICurrentUser CurrentUser
 @{
     Layout = null;
 }
@@ -205,6 +207,8 @@ table td {
     <input type="hidden" asp-for="@Model.TotalPackage" />
     <input type="hidden" asp-for="@Model.DepatureName" />
     <input type="hidden" asp-for="@Model.DepatureDate" />" />
+    <input type="hidden" asp-for="@Model.HMark" />" />
+    <input type="hidden" asp-for="@Model.HDescription" />" />
 
     <div id="main" class="edit">
 
@@ -218,7 +222,7 @@ table td {
                             <span>77792 COBB CAPE<br>
                             TRISTANCHESTER, NE 47478<br>
                             TEL: 08417606080 FAX: 08417606080<br>
-                            EMAIL: hanjun.lin@dolphin-gp.com</span>
+                            EMAIL: @CurrentUser.Email</span>
                         </div>
                     </td>
                     <td class="w-2">&nbsp;</td>
@@ -250,7 +254,7 @@ table td {
                     <td class="w-9 border-t border-b"><strong>PRINT BY :</strong></td>
                     <td class="w-17 border-t border-b border-r">
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <input type="text" name="OPName" value="@Model.OPName"  id="id_print_by" class="ng-isolate-scope">
+                            <input type="text" name="OPName" value="@(CurrentUser.Name + " " + CurrentUser.SurName)"  id="id_print_by" class="ng-isolate-scope">
                         </div>
                     </td>
                 </tr>
@@ -295,7 +299,7 @@ table td {
                         </div>
                         <div class="data">
                             <div class="item-edit hover-toggle-icon-text-template">
-                                <textarea name="release_to" cols="40" rows="6" class="w-100 text-scroll no-adjustment ng-isolate-scope"  id="id_release_to">@Model.ConsigneeName</textarea>
+                                <textarea name="release_to" cols="40" rows="6" class="w-100 text-scroll no-adjustment ng-isolate-scope"  id="id_release_to">@Model.DeliveryLocationName</textarea>
                             </div>
                         </div>
                     </td>
@@ -343,16 +347,14 @@ table td {
                                             <td colspan="2">
                                                 <select name="flight_no_choices" class="item-edit select w-30 normal-style _text-13 text-light ng-untouched ng-valid ng-dirty ng-not-empty" hc-user-preference="ai_flight_no_order" ng-model="vm.flightNoOrder" id="id_flight_no_choices">
                                                   <option value="F">First Flight</option>
-                                                
                                                   <option value="L">Last Flight</option>
-                                                
                                                 </select>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>FLIGHT NO. :</td>
                                             <td>
-                                                 <div class="item-edit ng-scope hover-toggle-icon-text-template"><input type="text" name="FlightNo" value="@Model.FlightNo"  id="id_flight_no" class="ng-isolate-scope"></div>                                                
+                                                 <div class="item-edit ng-scope hover-toggle-icon-text-template"><input type="text" name="FlightNo" value="@Model.FlightNo" id="id_flight_no" class="ng-isolate-scope"></div>                                                
                                             </td>
                                         </tr>
                                         <tr>
@@ -373,18 +375,20 @@ table td {
                     <th class="col-padding-double border-r text-left w-20">MARKS &amp; NOS.</th>
                     <th class="col-padding-double border-r text-right w-12">NO. OF PKGS.</th>
                     <th class="col-padding-double border-r text-left w-35">DESCRIPTION OF PACKAGES AND GOODS</th>
-                    <th class="col-padding-double border-r text-right w-13">WEIGHT<br>MEASUREMENT</th>
+                    <th class="col-padding-double border-r text-right w-13" style="word-wrap: break-word;">WEIGHT<br>MEASUREMENT</th>
                     <th class="col-padding-double text-left w-20">PORT OF LOADING &amp; ETD</th>
                 </tr>
                 <tr class="border-t border-b">
                     <td class="td col-padding td-item border-r">
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="28" class="text-scroll ng-isolate-scope"  id="id_mark"></textarea></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="28" class="text-scroll ng-isolate-scope" id="id_mark">@Model.HMark</textarea></div>
                     </td>
                     <td class="td col-padding td-item border-r text-right">@Model.TotalPackage</td>
                     <td class="td col-padding td-item border-r">
-                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="28" class="text-scroll ng-isolate-scope"  id="id_good_items"></textarea></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="28" class="text-scroll ng-isolate-scope" id="id_good_items">@Model.HDescription</textarea></div>
                     </td>
-                    <td class="td col-padding td-item border-r w-13 text-right">@Model.ChargableWeightStr@Environment.NewLine@Model.MeasurementStr</td>
+                    <td class="td col-padding td-item border-r w-13 text-right">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="28" class="text-scroll ng-isolate-scope" id="id_good_items">@Model.ChargableWeightStr @Environment.NewLine @Model.MeasurementStr</textarea></div>
+                    </td>
                     <td class="td col-padding td-item w-20">
                         <div class="item-edit hover-toggle-icon-text-template"><textarea name="APOL_ETD" cols="40" rows="28" class="text-scroll ng-isolate-scope"  id="id_APOL_ETD">@Model.DepatureName@Environment.NewLine@(Model.DepatureDate?.ToString("MM/dd/yyyy") ?? "")</textarea>
                         </div>

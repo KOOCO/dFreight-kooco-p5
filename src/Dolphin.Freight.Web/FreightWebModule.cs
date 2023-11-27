@@ -66,6 +66,8 @@ public class FreightWebModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
+
+    
         context.Services.PreConfigure<AbpMvcDataAnnotationsLocalizationOptions>(options =>
         {
             options.AddAssemblyResource(
@@ -98,6 +100,8 @@ public class FreightWebModule : AbpModule
         context.Services.AddSameSiteCookiePolicy(); // cookie policy to deal with temporary browser incompatibilities
 
         context.Services.AddSingleton<IDropdownService, DropdownService>();
+
+
         //頁面權限設定
         Configure<RazorPagesOptions>(options =>
         {

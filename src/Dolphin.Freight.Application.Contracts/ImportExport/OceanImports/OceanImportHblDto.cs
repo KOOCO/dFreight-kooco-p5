@@ -476,5 +476,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public string MblContainers { get; set; }
 
         public Dictionary<string, string> HblContainerIdContains { get; set; }
+        public string ARBalance { get; set; }
+        public string APBalance { get; set; }
     }
 }
