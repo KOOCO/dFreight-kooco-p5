@@ -18,8 +18,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         >
     {
         Task<AirImportHawbDto> GetDocCenterCardById(Guid Id);
-        Task<List<AirImportHawbDto>> GetDocCenterCardsById(Guid Id);
-        Task<List<AirImportHawbDto>> GetHawbCardsByMawbId(Guid Id);
+        Task<List<AirImportHawbDto>> GetDocCenterCardsById(Guid Id, bool isAsc = true, int sortType = 1);
+        Task<List<AirImportHawbDto>> GetHawbCardsByMawbId(Guid Id, bool isAsc = true, int sortType = 1);
         Task<AirImportHawbDto> GetHawbCardById(Guid Id);
         Task<AirImportDetails> GetAirImportDetailsById(Guid Id);
         Task LockedOrUnLockedAirImportHawbAsync(Guid id);

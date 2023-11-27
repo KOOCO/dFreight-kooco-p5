@@ -6,9 +6,10 @@
             hblCards.forEach(function (hblCard, index) {
                 let abpcard = createHawbCard();
 
-                abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hawbNo, index);
+                abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hawbNo, index, hblCard.consigneeName, hblCard.shippperName, hblCard.grossWeightCneeKG, hblCard.volumeWeightCBM, hblCard.package);
 
-                $('#hblCardDiv').append(abpcard);
+
+                $('#hblCards').append(abpcard);
             });
             setTimeout(() => {
                 $('.hblCardTitle')[0].click();

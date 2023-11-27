@@ -44,6 +44,8 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         public Guid ResultedMawbId { get; set; }
         [BindProperty]
         public CreateAIMMawbViewModel MawbModel { get; set; }
+        [BindProperty]
+        public bool ISToolTipShow { get; set; }
 
         [BindProperty]
         public CreateUpdateAirImportHawbDto HawbModel { get; set; }
@@ -82,6 +84,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             {
                 return NotFound();
             }
+            ISToolTipShow = await _airImportMawbAppService.GetCardSettings();
             AirImportMawbDto airImportDto = await _airImportMawbAppService.GetAsync(Id);
 
             //HawbModel = new AirImportHawbDto();

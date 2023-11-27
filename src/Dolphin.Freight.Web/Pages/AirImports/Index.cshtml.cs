@@ -22,6 +22,8 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
         public AWBType AwbType { get; set; }
+        [BindProperty]
+        public bool ISToolTipShow { get; set; }
         public IncotermsType IncotermsType { get; set; }
         public List<SelectListItem> ShipModeLookupList { get; set; }
         public List<SelectListItem> BlTypeList { get; set; }
@@ -39,6 +41,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
 
         public async Task OnGetAsync()
         {
+           
             await FillSubstationAsync();
             await FillTradePartnerAsync();
             await FillShipModeAsync();

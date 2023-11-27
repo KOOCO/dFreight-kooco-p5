@@ -19,6 +19,8 @@ using Volo.Abp.Identity;
 using Volo.Abp.Users;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settinngs.Substations;
+using Volo.Abp.SettingManagement;
+using Volo.Abp.Settings;
 
 namespace Dolphin.Freight.ImportExport.AirImports
 {
@@ -39,7 +41,9 @@ namespace Dolphin.Freight.ImportExport.AirImports
         private readonly IRepository<AirImportHawb, Guid> _airImportHawbAppService;
         private readonly IIdentityUserAppService _identityUserAppService;
         private readonly IRepository<Substation, Guid> _substationRepository;
-       
+        private readonly ISettingProvider _settingProvider;
+        private readonly ISettingManager _settingManager;
+
 
         public AirImportMawbAppService(
             IRepository<AirImportMawb, Guid> repository,
@@ -49,7 +53,9 @@ namespace Dolphin.Freight.ImportExport.AirImports
             IRepository<AirImportHawb, Guid> airImportHawbAppService,
             IInvoiceAppService invoiceAppService,
              IIdentityUserAppService identityUserAppService,
-             IRepository<Substation, Guid> substationRepository
+             IRepository<Substation, Guid> substationRepository,
+             ISettingProvider settingProvider,
+             ISettingManager settingManager
             ) : base(repository)
         {
             _repository = repository;
@@ -60,6 +66,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
             _invoiceAppService = invoiceAppService;
             _substationRepository = substationRepository;
             _identityUserAppService=identityUserAppService;
+            _settingManager = settingManager;
+            _settingProvider = settingProvider;
         }
 
         public override async Task<PagedResultDto<AirImportMawbDto>> GetListAsync(QueryDto input)
@@ -459,6 +467,24 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 throw new UserFriendlyException(ex.Message);
             }
 
+        }
+        public async Task SetCardSetting(bool IsShowDetail)
+        {
+            try
+            {
+                await _settingManager.SetGlobalAsync("ShowHawbDetails", IsShowDetail.ToString().ToPascalCase());
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+        public async Task<bool> GetCardSettings()
+        {
+
+            var result = await _settingProvider.GetAsync<bool>("ShowHawbDetails");
+            return result;
         }
     }
 }
