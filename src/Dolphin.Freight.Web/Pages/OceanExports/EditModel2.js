@@ -456,7 +456,7 @@ class EditModelOEContainer {
     static AddHblContainerTr(containerNo, containerIdValue, hblIdValue, extraDataValue) {
         var htrHtml = "<tr id='htr_" + htrindex + "'><input name='OceanExportHblContainer[" + htrindex + "].ContainerId' type='hidden' value='" + containerIdValue + "' /><input name='OceanExportHblContainer[" + htrindex + "].Id' type='hidden' value='" + hblIdValue + "' /><td style='align-items:center'><input type='radio' name='SurplusType' id='SurplusType_" + htrindex + "' /></td>";
         htrHtml += "<td><input name='OceanExportHblContainer[" + htrindex + "].ContainerNo' id='OceanExportHbl_PackageNo_" + htrindex + "' type='text' class='form-control' value='" + containerNo + "' readonly/></td>";
-        htrHtml += "<td><input name='OceanExportHblContainer[" + htrindex + "].PackageNo' type='text' class='form-control' id='oceanExportHbl_PackageType_" + htrindex + "' onkeyup='countPackageType('HBL')'";
+        htrHtml += "<td><input name='OceanExportHblContainer[" + htrindex + "].PackageNo' type='text' class='form-control' id='oceanExportHbl_PackageType_" + htrindex + "' onkeyup=\"countPackageType('HBL')\"";
         
         if (extraDataValue.PackageNum !== undefined) {
             htrHtml += " value='" + extraDataValue.PackageNum + "'";
@@ -464,7 +464,7 @@ class EditModelOEContainer {
 
         htrHtml += " /></td>";
 
-        htrHtml += "<td><input name='OceanExportHblContainer[" + htrindex + "].PackageWeight' type='text' class='form-control' onkeyup='countTotal('HBL')'";
+        htrHtml += "<td><input name='OceanExportHblContainer[" + htrindex + "].PackageWeight' type='text' class='form-control' onkeyup=\"countTotal('HBL')\"";
 
         if (extraDataValue.PackageWeight !== undefined) {
             htrHtml += " value='" + extraDataValue.PackageWeight + "'";
@@ -472,7 +472,7 @@ class EditModelOEContainer {
 
         htrHtml += " /></td>";
 
-        htrHtml += "<td><input name='OceanExportHblContainer[" + htrindex + "].PackageMeasurement' type='text' class='form-control' onkeyup='countTotalVolume('HBL')'";
+        htrHtml += "<td><input name='OceanExportHblContainer[" + htrindex + "].PackageMeasurement' type='text' class='form-control' onkeyup=\"countTotalVolume('HBL')\"";
 
         if (extraDataValue.PackageMeasure !== undefined) {
             htrHtml += " value='" + extraDataValue.PackageMeasure + "'";
