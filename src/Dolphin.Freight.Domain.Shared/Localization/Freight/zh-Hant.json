@@ -1,6 +1,10 @@
 {
   "culture": "zh-Hant",
   "texts": {
+    "InvoiceCompanyId": "收貨人",
+    "CostforAgent": "代理的成本",
+    "PayforAgent": "為代理付款",
+    "OurCost": "我們的成本",
     "Btn:Booking": "S/O",
     "PPD": "預付",
     "COLL": "到付",
@@ -451,7 +455,7 @@
     "IsAmountConfirmed": "金額已確認",
     "AttentionTo": "收件人",
     "InvoiceDate": "發票日期",
-    "CustomerRefNo": "客戶參考編號",
+    "CustomerRefNo": "代理參考編號",
     "ProfitShare": "利潤分成(%)",
     "PaidAmount": "已支付金額",
     "OutstandingAmount": "未結清金額",
