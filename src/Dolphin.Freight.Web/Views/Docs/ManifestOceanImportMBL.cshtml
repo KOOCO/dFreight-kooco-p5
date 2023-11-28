@@ -1,4 +1,5 @@
-﻿@using Dolphin.Freight.Localization
+﻿@using Volo.Abp.Users
+@using Dolphin.Freight.Localization
 @using Dolphin.Freight.Permissions
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
@@ -6,8 +7,11 @@
 @model Dolphin.Freight.ImportExport.OceanImports.OceanImportDetails
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
+@inject ICurrentUser CurrentUser
 @{
     Layout = null;
+
+    var UTCDateTime = DateTime.UtcNow.AddHours(8).ToString("MM-dd-yyyy HH:mm");
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
@@ -306,7 +310,7 @@ table td {
                                 TRISTANCHESTER, NE 47478<br>
                                 TEL: 08417606080 FAX: 08417606080
                                 
-                                    <br><strong>Prepared by Hanjun Lin 08-09-2023 18:20 (CST)</strong>
+                                    <br><strong>Prepared by @(CurrentUser.Name + " " + CurrentUser.SurName) @UTCDateTime (CST)</strong>
                                 
                             </span>
                         </div>
@@ -314,29 +318,6 @@ table td {
                     <td class="w-2">&nbsp;</td>
                     <td class="w-35 title text-center td">
                         <h2 class="blue-lg border-deep-blue col-padding-sm">CARGO MANIFEST</h2>
-                    </td>
-                </tr>
-            </tbody></table>
-        </div>
-        <div class="header header-horizontal-logo">
-            <table>
-                <tbody><tr>
-                    <td class="w-75">
-                        <h1 class="text-blue-deep">CARGO MANIFEST</h1>
-                        <h2 class="auto-font-size office-name">
-                            <span>HARD CORE TECHNOLOGY(GST/VAT)</span>
-                        </h2>
-                        <div class="auto-font-size office-des">
-                            <span>
-                                77792 COBB CAPE TRISTANCHESTER, NE 47478<br>
-                                TEL: 08417606080 FAX: 08417606080
-                                    <br><strong>Prepared by Hanjun Lin 08-09-2023 18:20 (CST)</strong>
-                            </span>
-                        </div>
-                    </td>
-                    <td class="w-2">&nbsp;</td>
-                    <td class="w-22 logo">
-                        <img src="/img/hardcore-tech-logo.png">
                     </td>
                 </tr>
             </tbody></table>
@@ -389,7 +370,7 @@ table td {
                                     <div class="item-edit hover-toggle-icon-text-template"><input type="text" asp-for="@Model.CyLocationName" value="@Model.CyLocationName" class="ng-isolate-scope"></div>
                                 </td>
                                 <td class="bg-light border-r border-l">ETA</td>
-                                <td></td>
+                                <td>@(Model.DelEta?.ToShortDateString())</td>
                             </tr>
                         </tbody></table>
                     </td>

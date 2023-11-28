@@ -460,19 +460,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             }
 
             oceanImportDetails.Commodity = data.GetProperty<List<ManifestCommodity>>("Commodities");
-            oceanImportDetails.MblNo = data.MblNo;
-            oceanImportDetails.SoNo = data.SoNo;
-            oceanImportDetails.PodEta = data.PodEta;
             oceanImportDetails.DocNo = data.FilingNo;
-            oceanImportDetails.Mark = data.Mark;
-            oceanImportDetails.Description = data.Description;
-            oceanImportDetails.DomesticInstructions = data.DomesticInstructions;
             oceanImportDetails.CurrentDate = DateTime.Now;
-            oceanImportDetails.VesselName = data.VesselName;
-            oceanImportDetails.Voyage = data.Voyage;
-            oceanImportDetails.AgentRefNo = data.AgentRefNo;
-            oceanImportDetails.ItNo = data.ItNo;
-            oceanImportDetails.ItDate = data.ItDate;
 
             return oceanImportDetails;
         }
