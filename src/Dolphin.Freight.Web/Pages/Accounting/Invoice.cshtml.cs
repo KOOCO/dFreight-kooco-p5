@@ -328,7 +328,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
             var oceanExportMbl = new OceanExportMblDto();
             InvoiceMblDto = ObjectMapper.Map<OceanExportMblDto, InvoiceMblDto>(oceanExportMbl);
 
-            backUrl =CopyInvoiceId==null? "/AirImports/EditModal3?Id=" + Mid:"/Accounting/Invoices/List";
+            backUrl =CopyInvoiceId==null? "/AirImports/EditModal3?Id=" + MawbId:"/Accounting/Invoices/List";
         }
         private async Task InitAirExport()
         {
