@@ -35,6 +35,11 @@ $(function () {
             "MawbModel_RouteDepatureDate",
             
             "MawbModel_RouteDestinationArrivalDate",
+            "AirExportMawbDto_RouteDepartureArrivalDate",
+
+            "AirExportMawbDto_RouteDepatureDate",
+
+            "AirExportMawbDto_RouteDestinationArrivalDate",
         ];
 
         const DefaultTimeIds = [
