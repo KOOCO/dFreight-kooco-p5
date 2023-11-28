@@ -600,7 +600,20 @@
         function CopyFromSpecification(){
             var id='@Model.Mid';
             var hid='@Model.Hid';
-            if(hid==null||hid=="")
+            var mawbId='@Model.MawbId';
+            var hawbId = '@Model.HawbId';
+            if (id == null || id == "") {
+                if (hawbId == null || hawbId == "") { }
+                else{
+                    dolphin.freight.importExport.airImports.airImportHawb.getHawbCardById(hawbId).done(function (result) {
+                        var data = result;
+                        $("#Memorandum").val(data.description);
+
+                    });
+                
+                }
+            }
+            else if(hid==null||hid=="")
             {
            
            dolphin.freight.importExport.oceanExports.oceanExportMbl.getCreateUpdateOceanExportMblDtoById(id).done(function (result) {
