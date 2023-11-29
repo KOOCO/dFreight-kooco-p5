@@ -15,7 +15,11 @@
 @inject ICurrentUser CurrentUser
 @inject IDropdownService _dropdown
 @inject IStringLocalizer<FreightResource> L
-
+@{
+    string onDeleteClickAction = !Model.IsHblHaveInvoice ? "deleteHbl()" : "return false;";
+    string deleteButtonCursorStyle = Model.IsHblHaveInvoice ? "cursor: not-allowed; color: #999" : "cursor: pointer;";
+    string deleteButtonTooltip = Model.IsHblHaveInvoice ? "You are not allowed to delete due to payment in progress" : "";
+}
     <abp-script src="/Pages/OceanExports/OceanExportBasicHbl.js" />
     <script type="text/javascript">
         var l = abp.localization.getResource('Freight');
@@ -99,7 +103,7 @@
                         <a class='dropdown-item' href='javascript:void(0)' onclick="copyHawb('@Model.OceanExportHbl.Id', 'OceanExportHbl_Id')">
                             <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                         </a>
-                        <a class='dropdown-item' id="deleteButtonHbl" href='javascript:void(0)' onclick="deleteHbl()" style="display:none">
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="@onDeleteClickAction" style="@deleteButtonCursorStyle" title="@deleteButtonTooltip">
                             <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
                         </a>
                         <a class='dropdown-item' href='javascript:void(0)' onclick="onCopyToHblClick()">

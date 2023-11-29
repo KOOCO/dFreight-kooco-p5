@@ -673,8 +673,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 
                                 existingExtraProps.Add(HblId);
 
-                                //string updatedExtraProps = JsonConvert.SerializeObject(existingExtraProps);
-
                                 container.ExtraProperties.Remove("HblIds");
 
                                 container.ExtraProperties.Add("HblIds", existingExtraProps);
@@ -684,8 +682,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                                 List<Guid> existingExtraProps = JsonConvert.DeserializeObject<List<Guid>>(extraProps.ToString());
 
                                 existingExtraProps.Add(HblId);
-
-                                //string updatedExtraProps = JsonConvert.SerializeObject(existingExtraProps);
 
                                 container.ExtraProperties.Remove("HblIds");
 
@@ -793,6 +789,35 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 
                 throw new UserFriendlyException(ex.Message);
             }
+        }
+
+        public async Task DeleteHblWithBasicAndContainerDataAsync(Guid HblId)
+        {
+            var hblBasicData = await GetAsync(HblId);
+
+            hblBasicData.IsDeleted = true;
+
+            var ContainerData = await _containerAppService.GetContainersByExtraPropertiesHblIds(hblBasicData.Id, hblBasicData.MblId);
+
+            if (ContainerData is not null && ContainerData.Count > 0)
+            {
+                foreach (var Container in ContainerData)
+                {
+                    var extraProp = Container.ExtraProperties.GetValueOrDefault("HblIds");
+
+                    var listOfExtraProp = JsonConvert.DeserializeObject<List<Guid>>(extraProp.ToString());
+
+                    listOfExtraProp.Remove(HblId);
+
+                    Container.ExtraProperties.Remove("HblIds");
+
+                    Container.ExtraProperties.Add("HblIds", listOfExtraProp);
+
+                    await _containerAppService.UpdateAsync(Container.Id, Container);
+                }
+            }
+
+            await UpdateAsync(HblId, ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hblBasicData));
         }
     }
 }

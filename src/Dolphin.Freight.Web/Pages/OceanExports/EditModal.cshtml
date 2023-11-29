@@ -132,16 +132,15 @@
         }
 
         function deleteHbl() {
-            abp.message.confirm(l('DeletionConfirmationMessage'))
-                .then(function (confirmed) {
-                    if (confirmed) {
-                        dolphin.freight.importExport.oceanExports.oceanExportHbl.delete($('#OceanExportHbl_Id').val()).then(function () {
-                            abp.message.success(l('SuccessfullyDeleted'));
-                            $('#hblCard').remove();
-                            $('#hblCards').find('.card-body.show').closest('.card.board-item').remove()
-                        });
-                    }
-                });
+            abp.message.confirm(l('DeletionConfirmationMessage')).then(function (confirmed) {
+                if (confirmed) {
+                    dolphin.freight.importExport.oceanExports.oceanExportHbl.deleteHblWithBasicAndContainerData($('#OceanExportHbl_Id').val()).then(function () {
+                        abp.message.success(l('SuccessfullyDeleted'));
+                        $('#hblCard').remove();
+                        $('#hblCards').find('.card-body.show').closest('.card.board-item').remove()
+                    });
+                }
+            });
         }
 
         function lockUnlockMbl(id) {

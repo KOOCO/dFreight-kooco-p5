@@ -366,6 +366,15 @@ namespace Dolphin.Freight.Web.Controllers
 
             model.OceanExportHbl = await _oceanExportHblAppService.GetHblCardById(Id);
 
+            QueryInvoiceDto QueryInvoiceDto = new() { QueryType = 1, ParentId = Id };
+
+            var InvoiceDtos = await _invoiceAppService.QueryInvoicesAsync(QueryInvoiceDto);
+
+            if (InvoiceDtos is not null && InvoiceDtos.Count > 0)
+            {
+                model.IsHblHaveInvoice = true;
+            }
+
             return PartialView("~/Pages/OceanExports/_OceanExportBasicHbl.cshtml", model);
         }
 

@@ -18,6 +18,7 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
 {
     public class HawbHblViewModel
     {
+        public bool IsHblHaveInvoice { get; set; } = false;
         private OceanImportHblDto _oceanImportHbl;
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
