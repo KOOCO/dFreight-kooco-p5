@@ -52,9 +52,9 @@ $(function () {
             var isCkecked = row.isLocked;
             var id = row.id;
             if (isCkecked) {
-                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + id + '"  checked="' + isCkecked + '" onclick="AirExports.lockCheckBox(this)" style=" cursor: pointer;">';
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="lock_' + id + '"  checked="' + isCkecked + '" onclick="AirExports.lockCheckBox(this)" style=" cursor: pointer;">';
             } else {
-                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + id + '" onclick="AirExports.lockCheckBox(this)" style=" cursor: pointer;">';
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="lock_' + id + '" onclick="AirExports.lockCheckBox(this)" style=" cursor: pointer;">';
             }
         }
     },
@@ -276,6 +276,15 @@ var AirExports = {
                     }
                     dataTable.ajax.reload();
                 });
+            }
+            else {
+                debugger
+                if (checkbox.checked) {
+                    $(checkbox).prop('checked', false);
+                }
+                else {
+                    $(checkbox).prop('checked', true);
+                }
             }
         });
     },
