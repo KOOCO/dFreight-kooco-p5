@@ -92,12 +92,13 @@ var columns = [
                         },
 
                         action: function (data) {
+                            debugger;
                             if (!data.record.isLocked) {
                                 abp.message.confirm(l('DeletionConfirmationMessage'))
                                     .then(function (confirmed) {
                                         if (confirmed) {
-                                            dolphin.freight.importExport.oceanImports.oceanImportMbl
-                                                .delete(data.record.id)
+                                            dolphin.freight.importExport.oceanImports.oceanImportHbl
+                                                .deleteHblWithBasicAndContainer(data.record.id)
                                                 .then(function () {
                                                     abp.message.success(l('SuccessfullyDeleted'));
                                                     dataTable.ajax.reload();

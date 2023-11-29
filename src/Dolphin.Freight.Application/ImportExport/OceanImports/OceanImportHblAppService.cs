@@ -815,5 +815,33 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 await _containerAppService.UpdateAsync(container.Id, dto);
             }
         }
+        public async Task DeleteHblWithBasicAndContainerAsync(Guid HblId)
+        {
+            var hblBasicData = await GetAsync(HblId);
+
+            hblBasicData.IsDeleted = true;
+
+            var ContainerData = await _containerAppService.GetContainersByExtraPropertiesHblIds(hblBasicData.Id, hblBasicData.MblId);
+
+            if (ContainerData is not null && ContainerData.Count > 0)
+            {
+                foreach (var Container in ContainerData)
+                {
+                    var extraProp = Container.ExtraProperties.GetValueOrDefault("HblIds");
+
+                    var listOfExtraProp = JsonConvert.DeserializeObject<List<Guid>>(extraProp.ToString());
+
+                    listOfExtraProp.Remove(HblId);
+
+                    Container.ExtraProperties.Remove("HblIds");
+
+                    Container.ExtraProperties.Add("HblIds", listOfExtraProp);
+
+                    await _containerAppService.UpdateAsync(Container.Id, Container);
+                }
+            }
+
+            await UpdateAsync(HblId, ObjectMapper.Map<OceanImportHblDto, CreateUpdateOceanImportHblDto>(hblBasicData));
+        }
     }
 }

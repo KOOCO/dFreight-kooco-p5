@@ -14,6 +14,7 @@ using Dolphin.Freight.TradePartners;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -82,7 +83,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public async Task<PagedResultDto<OceanImportMblDto>> QueryListAsync(QueryMblDto query)
         {
             var substations = await _substationRepository.GetListAsync();
+            
             Dictionary<Guid, string> substationsDictionary = new Dictionary<Guid, string>();
+            
             if (substations != null)
             {
                 foreach (var substation in substations)
@@ -91,7 +94,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
             }
             var tradePartners = await _tradePartnerRepository.GetListAsync();
+            
             Dictionary<Guid, string> tradePartnerDictionary = new Dictionary<Guid, string>();
+            
             if (tradePartners != null)
             {
                 foreach (var tradePartner in tradePartners)
@@ -100,7 +105,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
             }
             var portManagements = await _portRepository.GetListAsync();
+            
             Dictionary<Guid, string> portManagementsDictionary = new Dictionary<Guid, string>();
+            
             if (portManagements != null)
             {
                 foreach (var portManagement in portManagements)
@@ -109,7 +116,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
             }
             var SysCodes = await _sysCodeRepository.GetListAsync();
+            
             Dictionary<Guid, string> dictionary = new Dictionary<Guid, string>();
+            
             if (SysCodes != null)
             {
                 foreach (var syscode in SysCodes)
@@ -118,7 +127,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
             }
             var Users = await _identityUserRepository.GetListAsync();
+            
             Dictionary<Guid, string> userDictionary = new Dictionary<Guid, string>();
+            
             if (Users != null)
             {
                 foreach (var user in Users)
@@ -126,7 +137,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     dictionary.Add(user.Id, user.Name + " " + user.Surname);
                 }
             }
+
             var OceanImportMbls = await _repository.GetQueryableAsync();
+
+            query.Sorting = this.GetColumnName(query.Sorting);
+
             OceanImportMbls = OceanImportMbls.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.MblNo
                                             .Contains(query.Search) || x.Office.SubstationName
                                             .Contains(query.Search) || x.Office.AbbreviationName
@@ -139,7 +154,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                                             .WhereIf(query.Pol.HasValue, e => e.PolId == query.Pol)
                                             .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
                                             .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
-                                            .WhereIf(!string.IsNullOrWhiteSpace(query.Vessel),x=>x.VesselName==query.Vessel)
+                                            .WhereIf(!string.IsNullOrWhiteSpace(query.Vessel), x => x.VesselName == query.Vessel)
                                             .WhereIf(query.SaleId.HasValue, e => e.MblSaleId == query.SaleId)
                                             .WhereIf(query.OvearseaAgentId.HasValue, e => e.MblOverseaAgentId == query.OvearseaAgentId)
                                             .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
@@ -151,9 +166,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                                             .WhereIf(query.CoLoaderId.HasValue, e => e.CoLoaderId == query.CoLoaderId)
                                             .WhereIf(query.PostDate.HasValue, e => e.PostDate.Date == query.PostDate.Value.Date.AddDays(1))
                                             .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1))
-                                              .WhereIf(query.ReleaseDate.HasValue, e => e.MblReleaseDate == query.ReleaseDate.Value.Date.AddDays(1))
-                                            .OrderByDescending(x => x.CreationTime);
+                                            .WhereIf(query.ReleaseDate.HasValue, e => e.MblReleaseDate == query.ReleaseDate.Value.Date.AddDays(1))
+                                            .OrderBy($"{query.Sorting}");
+            
             List<OceanImportMbl> rs = OceanImportMbls.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
+            
             List<OceanImportMblDto> list = new List<OceanImportMblDto>();
 
             if (rs.Any())
@@ -170,9 +187,12 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     list.Add(item);
                 }
             }
+            
             PagedResultDto<OceanImportMblDto> listDto = new PagedResultDto<OceanImportMblDto>();
+            
             listDto.Items = list;
             listDto.TotalCount = OceanImportMbls.Count();
+            
             return listDto;
         }
         public async Task LockedOrUnLockedOceanImportMblAsync(QueryMblDto query)
@@ -535,5 +555,64 @@ namespace Dolphin.Freight.ImportExport.OceanImports
           var result=  await _settingProvider.GetAsync<bool>("ShowHblDetails");
             return result;
         }
+
+        #region Private Functions
+        private string GetColumnName(string colName)
+        {
+            if (string.IsNullOrEmpty(colName))
+            {
+                colName = "CreationTime desc";
+            }
+
+            string sortBy = colName.Split(" ")[1];
+
+            if (colName.Split(" ")[0].ToLower() == "officename")
+            {
+                colName = "OfficeId " + sortBy;
+            }
+            else if (colName.Split(" ")[0].ToLower() == "finaldestname")
+            {
+                colName = "FdestId " + sortBy;
+            }
+            else if (colName.Split(" ")[0].ToLower() == "porname")
+            {
+                colName = "PorId " + sortBy;
+            }
+            else if (colName.Split(" ")[0].ToLower() == "polname")
+            {
+                colName = "PolId " + sortBy;
+            }
+            else if (colName.Split(" ")[0].ToLower() == "podname")
+            {
+                colName = "PodId " + sortBy;
+            }
+            else if (colName.Split(" ")[0].ToLower() == "delname")
+            {
+                colName = "DelId " + sortBy;
+            }
+            else if (colName.Split(" ")[0].ToLower() == "mbloverseaagentname")
+            {
+                colName = "MblOverseaAgentId " + sortBy;
+            }
+            else if (colName.Split(" ")[0].ToLower() == "mblcarriername")
+            {
+                colName = "MblCarrierId " + sortBy;
+            }
+            else if (colName.Split(" ")[0].ToLower() == "mblsalename")
+            {
+                colName = "MblSaleId " + sortBy;
+            }
+            else if (colName.Split(" ")[0].ToLower() == "mbloperatorname")
+            {
+                colName = "MblOperatorId " + sortBy;
+            }
+            else if (colName.Split(" ")[0].ToLower() == "packages")
+            {
+                colName = "PackageCategoryId " + sortBy;
+            }
+
+            return colName;
+        }
+        #endregion
     }
 }

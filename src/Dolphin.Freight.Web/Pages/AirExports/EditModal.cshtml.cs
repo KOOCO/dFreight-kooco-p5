@@ -147,6 +147,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public IActionResult OnPostAsync()
         {
             var updateItem = ObjectMapper.Map<AirExportMawbDto, CreateUpdateAirExportMawbDto>(AirExportMawbDto);
+            
             if (updateItem.ExtraProperties == null)
             {
                 updateItem.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
