@@ -228,13 +228,10 @@
             }
         }
 
-    function cancelButton() {
+        function cancelButton() {
         window.location.href = window.location.href;
     }
-
-
-     
-
+    
         function showAlert(funName, buttonName) {
             Swal.fire({
                 icon: 'error',
@@ -260,6 +257,7 @@
         function alertConfirmation2() {
             $('#saveBtn').click();
         }
+
         function editMawbAirImport(prevMawbId, hawbId) {
             $.ajax({
                 url: abp.appPath + 'Docs/AirImportPartialView',
@@ -267,8 +265,8 @@
                 data: { prevMawbId: prevMawbId, hawbId: hawbId },
                 dataType: "html",
                 success: function (res) {
-                    $('.modal-content').html(res);
-                    $('.modal').modal('show');
+                    $('#myMoveModal').html(res);
+                    $('#myModal').modal('show');
                 }
             });
         }
@@ -791,13 +789,6 @@
                                 <input asp-for="@Model.MawbModel.Id" hidden />
                             </abp-card-title>
 
-                            <div id="myModal" class="modal" tabindex="-1" role="dialog">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="btn-group dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
                                          @if(@Model.MawbModel.IsLocked)
@@ -1228,6 +1219,9 @@
 
         </form>
 
+        <div id="myMoveModal">
+        </div>
+
         <div class="modal fade" id="CreateModal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -1287,7 +1281,8 @@
                 </div>
             </div>
         </div>
-          <div id="checkModal" class="modal" tabindex="-1" role="dialog">
+
+        <div id="checkModal" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">

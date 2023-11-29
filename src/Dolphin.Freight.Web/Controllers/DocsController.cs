@@ -3065,8 +3065,8 @@ namespace Dolphin.Freight.Web.Controllers
             {
                 await _oceanExportHblAppService.UpdateMblIdOfHblAsync(hawbId, mawbId);
 
-                var mbl = await _oceanExportMblAppService.GetAsync(mawbId);
-                var docNo = mbl.FilingNo;
+                var mawb = await _oceanExportMblAppService.GetAsync(mawbId);
+                var docNo = mawb.FilingNo;
 
                 return Json(new { id = mawbId, fileNo = docNo });
             }

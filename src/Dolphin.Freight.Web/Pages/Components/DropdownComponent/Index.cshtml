@@ -42,6 +42,10 @@
                 {
                     <option value="@item.Value" selected>@item.Text</option>
                 }
+                else if (item.Value == Model.NotShowFiledContentValue)
+                {
+                    continue;
+                }
                 else
                 {
                     <option value="@item.Value">@item.Text</option>

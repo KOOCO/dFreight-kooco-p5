@@ -42,7 +42,6 @@
     });
 
     function updateMawbParent() {
-
         var newMawb;
         var fileNo
 
@@ -67,14 +66,13 @@
                     type: 'GET',
                     data: { id: newMawb, fileNo: fileNo, isOceanExportHbl: '@Model.IsOceanExportHbl' },
                     success: function (result) {
-                        debugger;
                         if (@(Model.IsOceanExportHbl ? "true" : "false")) {
                             $('#myMoveModal').html('');
                             $('#myMoveModal').html(result);
                             $('#linkModal').modal('show');
                         } else {
-                            $('.modal-content').html(result);
-                            $('.modal').modal('show');
+                            $('#myMoveModal').html(result);
+                            $('#linkModal').modal('show');
                         }
                     }
                 });
@@ -109,7 +107,7 @@
             }
             else
             {
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbLookup.Id", AspItems = _dropdown.AirImportMawbLookupList, IsShowLabel = true, FieldName = "", SelectType = 0, ShowFiledContentValue = "" })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbLookup.Id", AspItems = _dropdown.AirImportMawbLookupList, IsShowLabel = true, FieldName = "", SelectType = 0, ShowFiledContentValue = "", NotShowFiledContentValue = Convert.ToString(Model.MawbId) })
             }
 
         </abp-modal-body>
