@@ -240,7 +240,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }
             return list;
         }
-
         public async Task<CreateUpdateOceanExportHblDto> GetHblById(QueryHblDto query)
         {
             var SysCodes = await _sysCodeRepository.GetListAsync();
@@ -257,8 +256,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             if (rs.CardColorId != null) rs.CardColorValue = dictionary[rs.CardColorId.Value];
             return rs;
         }
-
-        public async Task<List<OceanExportHblDto>> GetHblCardsById(Guid Id,bool isAsc=true,int sortType=1, string ContainerId = "") {
+        public async Task<List<OceanExportHblDto>> GetHblCardsById(Guid Id, bool isAsc = true, int sortType = 1, string ContainerId = "") {
             var data = await _repository.GetListAsync(f => f.MblId == Id);
             var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
             var sysCodes = await _sysCodeRepository.GetListAsync();
@@ -294,7 +292,9 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }
 
             var retVal = ObjectMapper.Map<List<OceanExportHbl>, List<OceanExportHblDto>>(data);
+            
             Dictionary<string, string> dictHblContains = new();
+            
             foreach (var item in retVal)
             {
                 if (item.HblShipperId != null)
@@ -312,17 +312,25 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var cardColor = sysCodes.Where(w => w.Id == item.CardColorId).FirstOrDefault();
                     item.CardColorValue = cardColor.CodeValue;
                 }
-              var HblContainers = await _containerAppService.GetContainersByExtraPropertiesHblIds(item.Id,item.MblId);
+
+                var HblContainers = await _containerAppService.GetContainersByExtraPropertiesHblIds(item.Id, item.MblId);
+
                 foreach (var items in HblContainers)
                 {
                     var hbl = items.ExtraProperties.GetValueOrDefault("ContainerDataForHbls");
 
-                    var HblContainer = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(hbl.ToString());
+                    var HblContainer = new List<CreateUpdateContainerDto>();
 
-                    item.Measurement = item.Measurement+ HblContainer.Sum(x => x.PackageMeasure.Value).ToString("N2") + " CBM";
-                    item.Weight = item.Weight+ HblContainer.Sum(x => x.PackageWeight.Value).ToString("N2") + " KG";
-                    item.PackageType = item.PackageType+HblContainer.Sum(x => x.PackageNum.Value).ToString();
+                    if (hbl is not null)
+                    {
+                        HblContainer = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(hbl.ToString());
+                    }
+
+                    item.Measurement = item.Measurement + HblContainer.Sum(x => x.PackageMeasure.Value).ToString("N2") + " CBM";
+                    item.Weight = item.Weight + HblContainer.Sum(x => x.PackageWeight.Value).ToString("N2") + " KG";
+                    item.PackageType = item.PackageType + HblContainer.Sum(x => x.PackageNum.Value).ToString();
                 }
+                
                 if (ContainerId is not null && ContainerId != "")
                 {
                     List<CreateUpdateContainerDto> containersMbl = await _containerAppService.GetContainerByMblId(item.MblId);
@@ -343,7 +351,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
             }
             return retVal;
         }
-
         public async Task<OceanExportHblDto> GetHblCardById(Guid Id)
         {
             if (await _repository.AnyAsync(f => f.Id == Id))
@@ -370,7 +377,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 await _repository.UpdateAsync(Hbl);
             }
         }
-
         public async Task<OceanExportHblDto> GetHawbCardById(Guid Id)
         {
             if (await _repository.AnyAsync(f => f.Id == Id))
@@ -382,7 +388,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 
             return new OceanExportHblDto();
         }
-
         public async Task<OceanExportDetails> GetOceanExportDetailsById(Guid Id)
         {
             var oceanExportDetails = new OceanExportDetails();
@@ -570,7 +575,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 
             return oceanExportDetails;
         }
-
         public async Task DeleteMultipleHblsAsync(Guid[] ids)
         {
             foreach (var id in ids)
@@ -582,7 +586,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 await _repository.UpdateAsync(hbl);
             }
         }
-
         public async Task SetLockStatusOnOceanExportHblAsync(Guid[] ids, bool isLocked)
         {
             foreach (var id in ids)
@@ -634,7 +637,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 }
             }
         }
-
         public async Task<List<CreateUpdateContainerDto>> GetContainerByHblExtraProperties(Guid Id)
         {
             List<CreateUpdateContainerDto> CreateUpdateContainerDtos = new List<CreateUpdateContainerDto>();
@@ -656,7 +658,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
 
             return CreateUpdateContainerDtos;
         }
-
         public async Task SaveAssignContainerNoToHblAsync(OceanExportHblAppModel AppModel, bool IsSave = true)
         {
             var MblId = AppModel.MblId;
@@ -727,7 +728,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 }
             }
         }
-
         public async void SaveAssignSingleContainerNoToHblAsync(OceanExportHblAppModel AppModel, bool IsSave = true)
         {
             var MblId = AppModel.MblId;
@@ -767,7 +767,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 }
             }
         }
-
         public async Task SaveDeAssignContainerNoFromHblAsync(OceanExportHblAppModel AppModel)
         {
             var MblId = AppModel.MblId;
@@ -782,7 +781,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 await _containerAppService.UpdateAsync(container.Id, dto);
             }
         }
-
         public async Task UpdateMblIdOfHblAsync(Guid hblId, Guid newMblId)
         {
             try
@@ -797,7 +795,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                 throw new UserFriendlyException(ex.Message);
             }
         }
-
         public async Task DeleteHblWithBasicAndContainerDataAsync(Guid HblId)
         {
             var hblBasicData = await GetAsync(HblId);
