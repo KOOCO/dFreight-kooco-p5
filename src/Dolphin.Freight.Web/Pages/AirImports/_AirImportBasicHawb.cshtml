@@ -84,17 +84,17 @@
             </button>
             <input asp-for="@Model.HawbModel.IsLocked" type="hidden"/>
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                  <a class='dropdown-item' href='javascript:void(0)' onclick="AirImportHawb.setHawbLockUnlock('@Model.HawbModel.IsLocked')">
-                                        @if(@Model.HawbModel.IsLocked)
-                                        {
-                                            <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
-                                        }
-                                        else
-                                        {
-                                            <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                                        }
-                                    </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirImportHawb.setHawbLockUnlock('@Model.HawbModel.IsLocked')">
+                    @if(@Model.HawbModel.IsLocked)
+                    {
+                        <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
+                    }
+                    else
+                    {
+                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                    }
+                </a>
+                    <a class='dropdown-item' href='javascript:void(0)' onclick="copyHawb('@Model.HawbModel.Id', 'HawbModel_Id', 'HawbModel_ShipperId', 'HawbModel_ConsigneeId', 'HawbModel_Package', 'HawbModel_GrossWeightKG', 'HawbModel_VolumeWeightCBM')">
                     <i class="fa fa-copy"></i> @L["Btn:Copy"]
                 </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="deleteHawbAirImport()">
