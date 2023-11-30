@@ -23,23 +23,25 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
+        public Guid PrevMawbId { get; set; }
+        [BindProperty(SupportsGet = true)]
         public bool isOceanExportHbl { get; set; }
         [BindProperty]
         public CopyModelInfo CopyModel { get; set; }
         public List<SelectListItem> HblOptions { get; set; }
+        [BindProperty]
+        public string MawbDocNo { get; set; }
+
         private readonly IAirImportHawbAppService _airImportHawbAppService;
         private readonly IAirImportMawbAppService _airImportMawbAppService;
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly IInvoiceBillAppService _invoiceBillAppService;
         private readonly IOceanExportMblAppService _oceanExportMblAppService;
         private readonly IOceanExportHblAppService _oceanExportHblAppService;
-
-        [BindProperty]
-        public string MawbDocNo { get; set; }
        
-        public CopyHawbModal(IAirImportHawbAppService airImportHawbAppService, IAirImportMawbAppService airImportMawbAppService,IInvoiceAppService invoiceAppService,IInvoiceBillAppService invoiceBillAppService,
-                            IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService
-                            )
+        public CopyHawbModal(IAirImportHawbAppService airImportHawbAppService, IAirImportMawbAppService airImportMawbAppService,
+                            IInvoiceAppService invoiceAppService,IInvoiceBillAppService invoiceBillAppService,
+                            IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService)
         {
             _airImportHawbAppService = airImportHawbAppService;
             _airImportMawbAppService= airImportMawbAppService;
@@ -196,15 +198,8 @@ namespace Dolphin.Freight.Web.Pages.AirImports
                                     newbill.InvoiceId = createInvoice.Id;
                                     newbill.Id = Guid.Empty;
                                     await _invoiceBillAppService.CreateAsync(newbill);
-
-
-
                                 }
-
-
                             }
-
-
                         }
                         if (CopyModel.DC)
                         {
@@ -225,21 +220,14 @@ namespace Dolphin.Freight.Web.Pages.AirImports
                                     newbill.InvoiceId = createInvoice.Id;
                                     newbill.Id = Guid.Empty;
                                     await _invoiceBillAppService.CreateAsync(newbill);
-
-
-
                                 }
-
                             }
-
-
                         }
                         if (CopyModel.AP)
                         {
                             var invoiceAr = invoiceDtos1.Where(x => x.InvoiceType == 2).ToList();
                             foreach (var invoice in invoiceAr)
                             {
-
                                 var newInvoiceAr = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
                                 newInvoiceAr.HawbId = newHawb.Id;
                                 newInvoiceAr.Id = Guid.Empty;
@@ -253,18 +241,10 @@ namespace Dolphin.Freight.Web.Pages.AirImports
                                     newbill.InvoiceId = createInvoice.Id;
                                     newbill.Id = Guid.Empty;
                                     await _invoiceBillAppService.CreateAsync(newbill);
-
-
-
                                 }
-
-
                             }
-
-
                         }
                     }
-
                 }
                 var rs = new Dictionary<string, object>
                 {

@@ -47,9 +47,11 @@ class AirImportHawb {
     }
 
     static onCopyToHawbClick() {
-        var id = '@Model.HawbModel.Id';
+        var id = $('#HawbModel_Id').val();
+        var prevMawbId = $('#MawbModel_Id').val();
         createHawbCopyModal.open({
             id,
+            prevMawbId
         });
     }
 

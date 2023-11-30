@@ -66,29 +66,11 @@
             updateAccountingCheckboxState();
         });
     });
-    // $("#copyForm").submit(function (event) {
-    //     // event.preventDefault(); // Prevent default form submission
-    //     var id = $('#Id').val();
-    //     var isFlightInfo = $('#IsCopyFlightInfo').val();
-    //     var copyHawb = $('#CopyHawb').val();
-    //     var isCopyCommodity = $('#CopyCommodity').val();
-    //     var isAccountingInformation = $('#accountingCheckbox').val();
-    //     var apCheckbox = $('#apCheckbox').val();
-    //     var arCheckbox = $('#arCheckbox').val();
-    //     var dcCheckbox = $('#dcCheckbox').val();
-    //     // Serialize form values as a query string
-    //     var formData = $(this).serialize();
-    //     debugger;
-        
-    //     // You can now use the formData for your custom actions or AJAX request
-    // });
+
     $('#copyForm').on('abp-ajax-success', function (result, rs) {
-
-
         var url = new URL(window.location.href);
         // Show the div with id "message"
         location.href = url + '&ResultedMawbId=' + rs.responseText.MawbId + '&copyHawbMessage=True';
-    
     });
   
 
@@ -115,10 +97,10 @@
             <abp-column size="_12">
                 @if (Model.isOceanExportHbl)
                 {
-                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CopyModel.MawbId", AspItems = _dropdown.OceanExportMblLookupList,Selected=Model.CopyModel.MawbId.ToString(),IsRequired=true, IsShowLabel = false, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.CopyModel.MawbId) })
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CopyModel.MawbId", AspItems = _dropdown.OceanExportMblLookupList, Selected = Model.CopyModel.MawbId.ToString(), IsRequired = true, IsShowLabel = false, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.CopyModel.MawbId) })
                 } else
                 {
-                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CopyModel.MawbId", AspItems = _dropdown.AirImportMawbLookupList,Selected=Model.CopyModel.MawbId.ToString(),IsRequired=true, IsShowLabel = false, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.CopyModel.MawbId) })
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CopyModel.MawbId", AspItems = _dropdown.AirImportMawbLookupList, Selected = Model.CopyModel.MawbId.ToString(), IsRequired = true, IsShowLabel = false, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.CopyModel.MawbId), NotShowFiledContentValue = Convert.ToString(Model.PrevMawbId) })
                 }
 
             </abp-column>
