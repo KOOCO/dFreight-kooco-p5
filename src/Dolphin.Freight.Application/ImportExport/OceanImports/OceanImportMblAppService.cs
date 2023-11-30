@@ -564,51 +564,24 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 colName = "CreationTime desc";
             }
 
-            string sortBy = colName.Split(" ")[1];
+            Dictionary<string, string> ColumnMappingName = new()
+            {
+                { "officename", "OfficeId" },
+                { "finaldestname", "FdestId" },
+                { "porname", "PorId" },
+                { "polname", "PolId" },
+                { "podname", "PodId" },
+                { "delname", "DelId" },
+                { "mbloverseaagentname", "MblOverseaAgentId" },
+                { "mblcarriername", "MblCarrierId" },
+                { "mblsalename", "MblSaleId" },
+                { "mbloperatorname", "MblOperatorId" },
+                { "packages", "PackageCategoryId" }
+            };
 
-            if (colName.Split(" ")[0].ToLower() == "officename")
+            if (ColumnMappingName.ContainsKey(colName.Split(" ")[0].ToLower()))
             {
-                colName = "OfficeId " + sortBy;
-            }
-            else if (colName.Split(" ")[0].ToLower() == "finaldestname")
-            {
-                colName = "FdestId " + sortBy;
-            }
-            else if (colName.Split(" ")[0].ToLower() == "porname")
-            {
-                colName = "PorId " + sortBy;
-            }
-            else if (colName.Split(" ")[0].ToLower() == "polname")
-            {
-                colName = "PolId " + sortBy;
-            }
-            else if (colName.Split(" ")[0].ToLower() == "podname")
-            {
-                colName = "PodId " + sortBy;
-            }
-            else if (colName.Split(" ")[0].ToLower() == "delname")
-            {
-                colName = "DelId " + sortBy;
-            }
-            else if (colName.Split(" ")[0].ToLower() == "mbloverseaagentname")
-            {
-                colName = "MblOverseaAgentId " + sortBy;
-            }
-            else if (colName.Split(" ")[0].ToLower() == "mblcarriername")
-            {
-                colName = "MblCarrierId " + sortBy;
-            }
-            else if (colName.Split(" ")[0].ToLower() == "mblsalename")
-            {
-                colName = "MblSaleId " + sortBy;
-            }
-            else if (colName.Split(" ")[0].ToLower() == "mbloperatorname")
-            {
-                colName = "MblOperatorId " + sortBy;
-            }
-            else if (colName.Split(" ")[0].ToLower() == "packages")
-            {
-                colName = "PackageCategoryId " + sortBy;
+                colName = ColumnMappingName[colName.Split(" ")[0].ToLower()];
             }
 
             return colName;

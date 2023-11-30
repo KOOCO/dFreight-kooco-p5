@@ -572,15 +572,13 @@
                 });
             }
         }
-             function onCopyMawbClick(){
+        function onCopyMawbClick(){
+            debugger;
             var id = '@Model.MawbModel.Id';
-                createMemoModal.open({
-                    id,
-                   
-                });
-          
-        
-        
+            createMemoModal.open({
+                id,
+               
+            });
         }
      function createHawbCard() {
              $('#cardSettingArea').show();
@@ -627,21 +625,22 @@
             abpcard = abpcard.replaceAll("{{hblPackage}}", packagetype);
             abpcard = abpcard.replaceAll("{{hblWeight}}", weight);
             abpcard = abpcard.replaceAll("{{hblMeasurement}}", measurement);
-             if (hblCosigneeName !== null) {
-    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", hblCosigneeName);
-  } else {
-    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", "");
-  }
+            if (hblCosigneeName !== null) {
+              abpcard = abpcard.replaceAll("{{hblCosigneeName}}", hblCosigneeName);
+            } else {
+              abpcard = abpcard.replaceAll("{{hblCosigneeName}}", "");
+            }
 
-  if (hblShipperName !== null) {
-    abpcard = abpcard.replaceAll("{{hblShipperName}}", hblShipperName);
-  } else {
-    abpcard = abpcard.replaceAll("{{hblShipperName}}", "");
-  }
+            if (hblShipperName !== null) {
+              abpcard = abpcard.replaceAll("{{hblShipperName}}", hblShipperName);
+            } else {
+              abpcard = abpcard.replaceAll("{{hblShipperName}}", "");
+            }
 
             return abpcard;
         }
-          function cardSettingClick() {
+
+        function cardSettingClick() {
            
             $("#checkModal").modal("show");  
         }
