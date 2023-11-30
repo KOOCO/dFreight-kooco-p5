@@ -45,7 +45,7 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// </summary>
         public double? PackageMeasure { get; set; }
         public string PackageMeasureStr { get; set; }
-        public string PackageMeasureStrLBS{ get; set; }
+        public string PackageMeasureStrLBS { get; set; }
         /// <summary>
         /// 封條號碼2
         /// </summary>
@@ -114,7 +114,7 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// <summary>
         /// 場內延滯免費期
         /// </summary>
-        public DateTime LastFreeDate { get; set; }
+        public DateTime? LastFreeDate { get; set; }
         /// <summary>
         /// 櫃場地點
         /// </summary>

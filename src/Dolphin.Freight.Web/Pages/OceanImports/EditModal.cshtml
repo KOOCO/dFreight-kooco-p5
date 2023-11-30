@@ -567,13 +567,12 @@
         }
 
         function ConslidateByConsignee() {
-
             var url = new URL(window.location.href);
             var mblId = url.searchParams.get('Id');
 
             if (mblId == null) {
-                var url = window.location.href;
-                var mblId = url.split('/')[url.split('/').length - 1];
+                url = window.location.href;
+                mblId = url.split('/')[url.split('/').length - 1];
             }
             
             dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(mblId).done(function (res) 

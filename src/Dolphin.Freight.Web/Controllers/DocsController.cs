@@ -5622,14 +5622,14 @@ namespace Dolphin.Freight.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ConsolidatedByConsignee(Guid mblId, string conId)
         {
-            OceanImportDetails oceanImportDetails = new OceanImportDetails();
+            OceanImportDetails oceanImportDetails = new();
             var tradePartners = _dropdownService.TradePartnerLookupList;
 
             var consigneeIds = conId.TrimEnd(',');
             var result = consigneeIds.Split(',');
             var consigneeList = new List<string>();
-
             var listsConsigneeName = new List<Hbl>();
+
             foreach (var items in result)
             {
                 var list = new Hbl
@@ -5651,7 +5651,7 @@ namespace Dolphin.Freight.Web.Controllers
 			var oceanImportDetails = await GetOceanImportDetailsByPageType(mblId, pageType);
 			var hblLists = await _oceanImportHblAppService.GetHblCardsById(mblId);
             var hblListsWithConsignee = hblLists.Where(w => Convert.ToString(w.HblConsigneeId) == consignee).ToList();
-            var containerFirst = await _containerAppService.GetContainerByHblId(hblListsWithConsignee[0].Id);
+            var containerFirst = await _containerAppService.GetSingleContainerByExtraPropertiesHblIds(hblListsWithConsignee[0].Id, mblId);
 
 			var tradePartner = _dropdownService.TradePartnerLookupList;
 			var packgeUnit = _dropdownService.PackageUnitLookupList;
@@ -5667,21 +5667,21 @@ namespace Dolphin.Freight.Web.Controllers
 
             foreach (var item in hblListsWithConsignee)
             {
-                var containers = await _containerAppService.GetContainerByHblId(item.Id);
-				var containerSizeName = string.Concat(containerName.Where(w => w.Value == string.Concat(containers.PackageUnitId)).Select(s => s.Text));
-                
-                var container = new CreateUpdateContainerDto
-                {
-                    ContainerNo = string.Concat(containers.PackageNum),
-                    SealNo = containers.SealNo,
-                    ContainerSizeName = containerSizeName,
-                    PackageUnitName = string.Concat(containerName.Where(w => w.Value == string.Concat(containers.PackageUnitId)).Select(s => s.Text)),
-                    PackageWeight = containers.PackageWeight,
-                    PackageMeasure = containers.PackageMeasure,
-                    PackageWeightStrLBS = string.Concat(Math.Round((double)(containers.PackageWeight * 2.204), 2)),
-                    PackageMeasureStrLBS = string.Concat(Math.Round((double)containers.PackageMeasure * 35.315, 2)),
-                    LastFreeDate = containers.LastFreeDate
-                };
+                var containers = await _containerAppService.GetSingleContainerByExtraPropertiesHblIds(item.Id, mblId);
+
+                var containerSizeName = string.Concat(containerName.Where(w => w.Value == string.Concat(containers.PackageUnitId)).Select(s => s.Text));
+
+                var container = new CreateUpdateContainerDto();
+                container.ContainerNo = string.Concat(containers.PackageNum);
+                container.SealNo = containers.SealNo;
+                container.ContainerSizeName = containerSizeName;
+                container.PackageUnitName = string.Concat(containerName.Where(w => w.Value == string.Concat(containers.PackageUnitId)).Select(s => s.Text));
+                container.PackageWeight = containers.PackageWeight;
+                container.PackageMeasure = containers.PackageMeasure;
+                container.PackageWeightStrLBS = string.Concat(containers.PackageWeight is not null ? Math.Round((double)(containers.PackageWeight * 2.204), 2) : "0");
+                container.PackageMeasureStrLBS = string.Concat(containers.PackageMeasure is not null ? Math.Round((double)containers.PackageMeasure * 35.315, 2) : "0");
+                container.LastFreeDate = containers.LastFreeDate;
+
                 listofContainers.Add(container);
 
                 var hbls = new Hbl
