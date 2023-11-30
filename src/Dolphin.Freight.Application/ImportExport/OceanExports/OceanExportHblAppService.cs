@@ -312,10 +312,17 @@ namespace Dolphin.Freight.ImportExport.OceanExports
                     var cardColor = sysCodes.Where(w => w.Id == item.CardColorId).FirstOrDefault();
                     item.CardColorValue = cardColor.CodeValue;
                 }
-              var HblContainers = await _containerAppService.GetContainerListByHblId(item.Id);
-                item.Measurement = HblContainers.Sum(x => x.PackageMeasure.Value).ToString("N2") + " CBM";
-                item.Weight = HblContainers.Sum(x => x.PackageWeight.Value).ToString("N2") + " KG";
-                item.PackageType = HblContainers.Sum(x => x.PackageNum.Value).ToString() ;
+              var HblContainers = await _containerAppService.GetContainersByExtraPropertiesHblIds(item.Id,item.MblId);
+                foreach (var items in HblContainers)
+                {
+                    var hbl = items.ExtraProperties.GetValueOrDefault("ContainerDataForHbls");
+
+                    var HblContainer = JsonConvert.DeserializeObject<List<CreateUpdateContainerDto>>(hbl.ToString());
+
+                    item.Measurement = item.Measurement+ HblContainer.Sum(x => x.PackageMeasure.Value).ToString("N2") + " CBM";
+                    item.Weight = item.Weight+ HblContainer.Sum(x => x.PackageWeight.Value).ToString("N2") + " KG";
+                    item.PackageType = item.PackageType+HblContainer.Sum(x => x.PackageNum.Value).ToString();
+                }
                 if (ContainerId is not null && ContainerId != "")
                 {
                     List<CreateUpdateContainerDto> containersMbl = await _containerAppService.GetContainerByMblId(item.MblId);
