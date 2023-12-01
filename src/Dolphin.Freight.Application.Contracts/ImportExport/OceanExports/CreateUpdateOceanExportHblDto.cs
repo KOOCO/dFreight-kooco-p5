@@ -20,6 +20,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// HB/L號碼
         /// </summary>
+        [Required]
         public string HblNo { get; set; }
 
         public string ItnNo { get; set; }

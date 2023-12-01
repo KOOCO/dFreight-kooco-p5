@@ -341,7 +341,7 @@
             else {
 
                 let hawbcard = createHawbCard();
-
+                debugger;
                 let index = $('.hbl_sm_area').find('.card').length;
                 hawbcard = setHawbCardValues(hawbcard, '00000000-0000-0000-0000-000000000000', '0', index);
 
@@ -495,7 +495,7 @@
                     ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
                     ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
             }
-            abpCard += '<div class="card-footer"><div class="row"><div class="col-6 hblCardTitle" style="border-bottom: solid;border-top: solid;border-right: solid;border-width: thin;">PKG: {{hblPackage}}</div><div class="col-6 hblCardTitle" style="border-bottom: solid;border-top: solid;border-width: thin;">Weight: {{hblWeight}}</div><div class="col-12 hblCardTitle">Measurement: {{hblMeasurement}}</div></div></div>';
+            abpCard += '<div class="card-footer"><div class="row"><div class="col-6 hblCardTitle1" style="border-bottom: solid;border-top: solid;border-right: solid;border-width: thin;">PKG: {{hblPackage}}</div><div class="col-6 hblCardTitle1" style="border-bottom: solid;border-top: solid;border-width: thin;">Weight: {{hblWeight}}</div><div class="col-12 hblCardTitle1">Measurement: {{hblMeasurement}}</div></div></div>';
   return abpCard;
         }
 
@@ -550,7 +550,8 @@
         }
 
         function alertConfirmation2() {
-            $('#saveBtn').click();
+            debugger;
+            $('#saveEditBtn').click();
         }
 
         function OpenInTrackTrace() {
