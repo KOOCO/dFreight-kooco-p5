@@ -249,6 +249,17 @@ function lockCheckBox(checkbox) {
                     dataTable.ajax.reload();
                 });
         }
+    
+            else {
+            debugger
+                if(checkbox.checked) {
+        $(checkbox).prop('checked', false);
+    }
+                else {
+        $(checkbox).prop('checked', true);
+    }
+}
+
     });
 }
 
