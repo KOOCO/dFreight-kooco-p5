@@ -244,8 +244,8 @@
             var quantity = $('#Quantity_'+index).val();
             var price = $('#Price_'+index).val();
 
-            $('#Amount_'+index).text(parseFloat(quantity * rate * price).toFixed(2));
-            var amount = quantity * rate * price;
+            $('#Amount_' + index).text(parseFloat(quantity * parseFloat(rate).toFixed(2) * price).toFixed(2));
+            var amount = quantity * parseFloat(rate).toFixed(2) * price;
             if(document.getElementById('Amount_'+index+'').innerHTML == 'NaN'){
                 document.getElementById('Amount_'+index+'').innerHTML = 0;
             }
@@ -275,7 +275,14 @@
 
             currencies.forEach(function (currency) {
                 let key = '' + val + '-' + currency + '';
-                let convertedRate = conversion[key] || 1;
+
+                let convertedRate;
+
+                if (val != undefined && val != 0){
+                    convertedRate = conversion[key] || 1;
+                } else {
+                    convertedRate = 0;
+                }
 
                 document.getElementById("converted" + currency).innerHTML = (convertedRate * quantity * price).toFixed(2);
             })
@@ -340,20 +347,27 @@
             for (var i = 0; i < table[0].rows.length; i++) {
                 var quantity = $('#Quantity_' + i + '').val();
                 var price = $('#Quantity_' + i + '').parent().next().next().children().val();
-              var amountCell = document.getElementById("Amount_" + i);
-              
-              if (amountCell != null) var amount = parseFloat(quantity * price);
-              
-              total += amount;
+                var amountCell = document.getElementById("Amount_" + i);
+                
+                if (amountCell != null) var amount = parseFloat(quantity * price);
+                
+                total += amount;
             }
             
             let conversion = JSON.parse(currencyConvertor);
 
             currencies.forEach(function (currency) {
                 let key = '' + val + '-' + currency + '';
+
                 let convertedRate = conversion[key] || 1;
 
-                document.getElementById("converted" + currency).innerHTML = (convertedRate * total).toFixed(2);
+                if (val != undefined && val != 0){
+                    convertedRate = conversion[key] || 1;
+                } else {
+                    convertedRate = 0;
+                }
+
+                document.getElementById("converted" + currency).innerHTML = (parseFloat(convertedRate).toFixed(2) * total).toFixed(2);
             })
         }
 
