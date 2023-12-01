@@ -206,7 +206,7 @@
                 var taxAmount = amount * 0;
             }
             setCurrencyRate1($('#Currency_'+index+'').val(), event);
-            getTotalSubAmount();
+            getTotalSubAmount($(target).parent().prev().children().val());
             getTotalAmount(parseFloat(taxAmount).toFixed());
         }
 
@@ -254,7 +254,8 @@
             } else {
                 var taxAmount = amount * 0;
             }
-            getTotalSubAmount();
+
+            getTotalSubAmount(val);
             getTotalAmount(parseFloat(taxAmount).toFixed(2));
         }
 
@@ -265,16 +266,18 @@
             let val = currencyCodeToName[value];
             let conversion = JSON.parse(currencyConvertor);
             let rate = conversion["" + val + "-TWD"];
-            
             let quantity = $('#Quantity_'+ index +'').val();
+            let price = $('#Quantity_' + index + '').parent().next().next().children().val();
+
             if($('#Currency_0').val() == 0){
                 amount = 0;
             }
+
             currencies.forEach(function (currency) {
                 let key = '' + val + '-' + currency + '';
                 let convertedRate = conversion[key] || 1;
 
-                document.getElementById("converted" + currency).innerHTML = (convertedRate * quantity).toFixed(2);
+                document.getElementById("converted" + currency).innerHTML = (convertedRate * quantity * price).toFixed(2);
             })
         }
 
@@ -330,21 +333,24 @@
             $('#InvoiceDto_TotalAmount').val(parseFloat(total).toFixed(2));
         }
 
-        function getTotalSubAmount(){
+        function getTotalSubAmount(val){
             var table = $('#trtbody');
             var total = 0;
+
             for (var i = 0; i < table[0].rows.length; i++) {
+                var quantity = $('#Quantity_' + i + '').val();
+                var price = $('#Quantity_' + i + '').parent().next().next().children().val();
               var amountCell = document.getElementById("Amount_" + i);
               
-              if (amountCell != null) var amount = parseFloat(amountCell.innerHTML);
+              if (amountCell != null) var amount = parseFloat(quantity * price);
               
               total += amount;
             }
-            var totalAmountElement = document.getElementById("convertedTWD");
-            totalAmountElement.innerHTML = total.toFixed(2);
+            
             let conversion = JSON.parse(currencyConvertor);
+
             currencies.forEach(function (currency) {
-                let key = 'TWD-' + currency + '';
+                let key = '' + val + '-' + currency + '';
                 let convertedRate = conversion[key] || 1;
 
                 document.getElementById("converted" + currency).innerHTML = (convertedRate * total).toFixed(2);
