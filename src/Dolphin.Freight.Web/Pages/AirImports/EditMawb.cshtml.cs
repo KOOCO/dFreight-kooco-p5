@@ -44,9 +44,11 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         public Guid ResultedMawbId { get; set; }
         [BindProperty]
         public CreateAIMMawbViewModel MawbModel { get; set; }
+        [BindProperty]
+        public bool ISToolTipShow { get; set; }
 
         [BindProperty]
-        public AirImportHawbDto HawbModel { get; set; }
+        public CreateUpdateAirImportHawbDto HawbModel { get; set; }
         [BindProperty]
         public string DimensionsJSON { get; set; }
         [BindProperty]
@@ -82,9 +84,10 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             {
                 return NotFound();
             }
+            ISToolTipShow = await _airImportMawbAppService.GetCardSettings();
             AirImportMawbDto airImportDto = await _airImportMawbAppService.GetAsync(Id);
 
-            HawbModel = new AirImportHawbDto();
+            //HawbModel = new AirImportHawbDto();
 
             //HawbModel = await _airImportHawbAppService.GetHblById(Id);
 
@@ -116,58 +119,56 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         #region OnPostAsync()
         public async Task<IActionResult> OnPostAsync()
         {
-            //if (ModelState.IsValid)
-            //{
-                var updateItem = ObjectMapper.Map<CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>(MawbModel);
-                if (DimensionsJSON is not null)
-                {
-                    Dimensions = JsonConvert.DeserializeObject<List<Dimension>>(DimensionsJSON);
+            var updateItem = ObjectMapper.Map<CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>(MawbModel);
 
-                    updateItem.ExtraProperties.Remove("Dimensions");
-                    updateItem.ExtraProperties.Add("Dimensions", Dimensions);
+            if (DimensionsJSON is not null)
+            {
+                Dimensions = JsonConvert.DeserializeObject<List<Dimension>>(DimensionsJSON);
+
+                updateItem.ExtraProperties.Remove("Dimensions");
+                updateItem.ExtraProperties.Add("Dimensions", Dimensions);
+            }
+
+            await _airImportMawbAppService.UpdateAsync(updateItem.Id, updateItem);
+
+            if (HawbModel is not null && HawbModel.Id != MawbModel.Id)
+            {
+                var updateHawb = HawbModel;
+                //var updateHawb1 = ObjectMapper.Map<AirImportHawbDto, CreateUpdateAirImportHawbDto>(HawbModel);
+                if (updateHawb.ExtraProperties == null)
+                {
+                    updateHawb.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
                 }
 
-                await _airImportMawbAppService.UpdateAsync(updateItem.Id, updateItem);
-
-                if (HawbModel is not null)
+                if (updateHawb.Commodities != null)
                 {
-                    var updateHawb = ObjectMapper.Map<AirImportHawbDto, CreateUpdateAirImportHawbDto>(HawbModel);
-                    if (updateHawb.ExtraProperties == null)
-                    {
-                        updateHawb.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
-                    }
+                    updateHawb.ExtraProperties.Add("Commodities", updateHawb.Commodities);
+                }
 
-                    if (updateHawb.Commodities != null)
-                    {
-                        updateHawb.ExtraProperties.Add("Commodities", updateHawb.Commodities);
-                    }
+                if (updateHawb.SubHawbs != null)
+                {
+                    updateHawb.ExtraProperties.Add("SubHawbs", updateHawb.SubHawbs);
+                }
 
-                    if (updateHawb.SubHawbs != null)
-                    {
-                        updateHawb.ExtraProperties.Add("SubHawbs", updateHawb.SubHawbs);
-                    }
+                if (updateHawb.HawbDimensionsJSON is not null)
+                {
+                    Dimensions = JsonConvert.DeserializeObject<List<Dimension>>(updateHawb.HawbDimensionsJSON);
 
-                    if (updateHawb.HawbDimensionsJSON is not null)
-                    {
-                        Dimensions = JsonConvert.DeserializeObject<List<Dimension>>(updateHawb.HawbDimensionsJSON);
+                    updateHawb.ExtraProperties.Remove("Dimensios");
+                    updateHawb.ExtraProperties.Add("Dimensions", Dimensions);
+                }
 
-                        updateHawb.ExtraProperties.Remove("Dimensios");
-                        updateHawb.ExtraProperties.Add("Dimensions", Dimensions);
-                    }
-
-                    updateHawb.MawbId = updateItem.Id;
-                    if (updateHawb.Id != Guid.Empty)
-                    {
-                        await _airImportHawbAppService.UpdateAsync(updateHawb.Id, updateHawb);
-                    }
-                    else
-                    {
-                        await _airImportHawbAppService.CreateAsync(updateHawb);
-                    }
-                //}
+                updateHawb.MawbId = updateItem.Id;
+                if (updateHawb.Id != Guid.Empty)
+                {
+                    await _airImportHawbAppService.UpdateAsync(updateHawb.Id, updateHawb);
+                }
+                else
+                {
+                    await _airImportHawbAppService.CreateAsync(updateHawb);
+                }
             }
             return new ObjectResult(new { id = MawbModel.Id });
-
         }
         #endregion
 

@@ -1,4 +1,5 @@
-﻿using Dolphin.Freight.Accounting.Invoices;
+﻿using AutoMapper.QueryableExtensions.Impl;
+using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.OceanExports;
@@ -9,8 +10,10 @@ using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
+using Dolphin.Freight.TradePartners;
 using Newtonsoft.Json;
 using NPOI.POIFS.Crypt.Dsig;
+using Org.BouncyCastle.Crypto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,10 +78,64 @@ namespace Dolphin.Freight.ImportExport.AirImports
             _invoiceAppService = invoiceAppService;
         }
 
-        public async Task<List<AirImportHawbDto>> GetHawbCardsByMawbId(Guid Id)
+        public async Task<List<AirImportHawbDto>> GetHawbCardsByMawbId(Guid Id, bool isAsc = true, int sortType = 1)
         {
             var data = await _repository.GetListAsync(f => f.MawbId == Id);
+            var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
+            if (!isAsc)
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderByDescending(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderByDescending(x => x.CreationTime).ToList();
+
+                }
+            }
+            else if (isAsc)
+            {
+                if (sortType == 0)
+                {
+                    data = data.ToList();
+                }
+                else if (sortType == 1)
+                {
+                    data = data.OrderBy(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(x => x.CreationTime).ToList();
+
+                }
+            }
+            else
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderBy(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(x => x.CreationTime).ToList();
+
+                }
+            }
             var retVal = ObjectMapper.Map<List<AirImportHawb>, List<AirImportHawbDto>>(data);
+            foreach (var item in retVal)
+            {
+                if (item.ShipperId != null)
+                {
+                    var shipper = tradePartners.Where(w => w.Id == item.ShipperId).FirstOrDefault();
+                    item.ShipperName = shipper.TPName;
+                }
+                if (item.ConsigneeId != null)
+                {
+                    var consignee = tradePartners.Where(w => w.Id == item.ConsigneeId).FirstOrDefault();
+                    item.ConsigneeName = consignee.TPName;
+                }
+            }
 
             return retVal;
         }
@@ -95,10 +152,64 @@ namespace Dolphin.Freight.ImportExport.AirImports
             return new AirImportHawbDto();
         }
 
-        public async Task<List<AirImportHawbDto>> GetDocCenterCardsById(Guid Id)
+        public async Task<List<AirImportHawbDto>> GetDocCenterCardsById(Guid Id, bool isAsc = true, int sortType = 1)
         {
             var data = await _repository.GetListAsync(f => f.MawbId == Id);
+            var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
+            if (!isAsc)
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderByDescending(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderByDescending(x => x.CreationTime).ToList();
+
+                }
+            }
+            else if (isAsc)
+            {
+                if (sortType == 0)
+                {
+                    data = data.ToList();
+                }
+                else if (sortType == 1)
+                {
+                    data = data.OrderBy(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(x => x.CreationTime).ToList();
+
+                }
+            }
+            else
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderBy(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(x => x.CreationTime).ToList();
+
+                }
+            }
             var retVal = ObjectMapper.Map<List<AirImportHawb>, List<AirImportHawbDto>>(data);
+            foreach (var item in retVal)
+            {
+                if (item.ShipperId != null)
+                {
+                    var shipper = tradePartners.Where(w => w.Id == item.ShipperId).FirstOrDefault();
+                    item.ShipperName = shipper.TPName;
+                }
+                if (item.ConsigneeId != null)
+                {
+                    var consignee = tradePartners.Where(w => w.Id == item.ConsigneeId).FirstOrDefault();
+                    item.ConsigneeName = consignee.TPName;
+                }
+            }
 
             return retVal;
         }
@@ -356,7 +467,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 if (data.ConsigneeId != null)
                 {
                     var consignee = tradePartners.Where(w => w.Id == data.ConsigneeId).FirstOrDefault();
-                    airImportDetails.ConsigneeName = string.Concat(consignee.TPName, "/", consignee.TPCode);
+                    airImportDetails.ConsigneeName = string.Concat(consignee.TPName);
+                    airImportDetails.ConsigneeAddress = consignee.TPPrintAddress;
                 }
 
                 if (mawb.DepatureId != null)
@@ -394,13 +506,14 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 if (mawb.CarrierId != null)
                 {
                     var carrier = tradePartners.Where(w => w.Id == mawb.CarrierId).FirstOrDefault();
-                    airImportDetails.CarrierTPName = string.Concat(carrier.TPName, "/", carrier.TPCode);
+                    airImportDetails.CarrierTPName = string.Concat(carrier.TPName);
                 }
 
                 if (data.BillToId != null)
                 {
                     var billTo = tradePartners.Where(w => w.Id == Guid.Parse(data.BillToId)).FirstOrDefault();
-                    airImportDetails.BillToName = string.Concat(billTo.TPName, "/", billTo.TPCode);
+                    airImportDetails.BillToName = string.Concat(billTo.TPName);
+                    airImportDetails.BillToDetail = billTo.TPName + Environment.NewLine + billTo.TPPrintAddress + " TEL:- " + billTo.Telephone;
                 }
 
                 if (data.SalesType != null)
@@ -435,25 +548,29 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 if (data.FreightLocation != null)
                 {
                     var freightLocation = tradePartners.Where(w => w.Id == Guid.Parse(data.FreightLocation)).FirstOrDefault();
-                    airImportDetails.FreightLocationName = string.Concat(freightLocation.TPName, "/", freightLocation.TPCode);
+                    airImportDetails.FreightLocationName = string.Concat(freightLocation.TPName);
+                    airImportDetails.FreightLocationWithPhoneNo = string.Concat(freightLocation.TPName, " Tel:- ", freightLocation.Telephone);
+                    airImportDetails.FreightLocationAddress = string.Concat(freightLocation.TPPrintAddress);
+                    airImportDetails.FreightLocationPhoneNo = string.Concat(freightLocation.Telephone);
+                    airImportDetails.FreightLocationFaxNo = string.Concat(freightLocation.Fax);
                 }
 
                 if (data.Trucker != null)
                 {
                     var trucker = tradePartners.Where(w => w.Id == Guid.Parse(data.Trucker)).FirstOrDefault();
-                    airImportDetails.HTruckerName = string.Concat(trucker.TPName, "/", trucker.TPCode);
+                    airImportDetails.HTruckerName = string.Concat(trucker.TPName);
                 }
 
                 if (data.FinalDestination != null)
                 {
                     var finalDestination = tradePartners.Where(w => w.Id == Guid.Parse(data.FinalDestination)).FirstOrDefault();
-                    airImportDetails.FinalDestination = string.Concat(finalDestination.TPName, "/", finalDestination.TPCode);
+                    airImportDetails.FinalDestination = string.Concat(finalDestination.TPName);
                 }
 
                 if (data.DeliveryLocation != null)
                 {
                     var deliveryLocation = tradePartners.Where(w => w.Id == Guid.Parse(data.DeliveryLocation)).FirstOrDefault();
-                    airImportDetails.DeliveryLocationName = string.Concat(deliveryLocation.TPName, "/", deliveryLocation.TPCode);
+                    airImportDetails.DeliveryLocationName = string.Concat(deliveryLocation.TPName);
                 }
 
                 var subHawbs = new List<SubHawbs>();
@@ -465,17 +582,20 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 subHawbs = JsonConvert.DeserializeObject<List<SubHawbs>>(Convert.ToString(subHawbsStr));
 
                 airImportDetails.GrossWeightStr = data.GrossWeightKG == null ? "" : data.GrossWeightKG + " KGS " + (double.Parse(data.GrossWeightKG) * 2.20462).ToString("0.00") + " LBS";
-                airImportDetails.ChargableWeightStr = data.ChargeableWeightKG == null ? "" : data.ChargeableWeightKG + " KGS " + (double.Parse(data.ChargeableWeightKG) * 2.20462).ToString("0.00") + " LBS";
-                airImportDetails.MeasurementStr = data.VolumeWeightCBM == null ? "" : data.VolumeWeightCBM + " CBM " + (double.Parse(data.VolumeWeightCBM) * 35.315).ToString("0.00") + " CFT";
+                airImportDetails.ChargableWeightStr = data.ChargeableWeightKG == null ? "" : string.Concat(data.ChargeableWeightKG, " KGS ", Environment.NewLine, (double.Parse(data.ChargeableWeightKG) * 2.20462).ToString("0.00"), " LBS", Environment.NewLine);
+                airImportDetails.MeasurementStr = data.VolumeWeightCBM == null ? "" : string.Concat(data.VolumeWeightCBM, " CBM ", Environment.NewLine, (double.Parse(data.VolumeWeightCBM) * 35.315).ToString("0.00"), " CFT", Environment.NewLine);
                 airImportDetails.CurrentDate = DateTime.Now.ToString("MM/dd/yyyy");
                 airImportDetails.LastFreeDay = data.LastFreeDay;
-                airImportDetails.FDestETA = string.Concat(data.FinalETA);
+                airImportDetails.FinalDestETA = data.FinalETA;
                 airImportDetails.FilingNo = mawb.FilingNo;
                 airImportDetails.HItNo = data.ITNo;
-                airImportDetails.HItDate = string.Concat(data.ITDate);
+                airImportDetails.HItDate = (!data.ITDate.Equals(DateTime.MinValue)) ? data.ITDate.ToShortDateString() ?? "" : "";
+                airImportDetails.ArrivalDate = mawb.ArrivalDate;
                 airImportDetails.HItLocation = data.ITIssuedLocation;
                 airImportDetails.TotalPackage = string.Concat(data.Package) + " " + airImportDetails.HPackageUnitName;
                 airImportDetails.HMark = data.Mark;
+                airImportDetails.HDescription = data.Description;
+                airImportDetails.HRemark = data.Remark;
                 airImportDetails.AirWayBillNo = data.HawbNo;
                 airImportDetails.MawbNo = airImportDetails.MawbNo;
                 airImportDetails.DocNumber = mawb.FilingNo;
@@ -490,6 +610,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.CustomerName = airImportDetails.BillToName;
                 airImportDetails.SalesType = data.SalesType;
                 airImportDetails.SubHawbs = subHawbs;
+                airImportDetails.PONo = data.PONo;
+                airImportDetails.FlightNo = mawb.FlightNo;
             }
 
             return airImportDetails;

@@ -6,6 +6,7 @@ using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
+using Dolphin.Freight.TradePartners;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -147,17 +148,72 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public async Task<List<AirExportHawbDto>> GetDocCenterCardsById(Guid Id)
         {
             var data = await _repository.GetListAsync(f => f.MawbId == Id);
+
             var retVal = ObjectMapper.Map<List<AirExportHawb>, List<AirExportHawbDto>>(data);
 
             return retVal;
         }
 
-        public async Task<List<AirExportHawbDto>> GetHblCardsById(Guid Id)
+        public async Task<List<AirExportHawbDto>> GetHblCardsById(Guid Id, bool isAsc = true, int sortType = 1)
         {
             var data = await _repository.GetListAsync(f => f.MawbId == Id);
-            var retVal = ObjectMapper.Map<List<AirExportHawb>, List<AirExportHawbDto>>(data);
+            var tradePartners = ObjectMapper.Map<List<TradePartners.TradePartner>, List<TradePartnerDto>>(await _tradePartnerRepository.GetListAsync());
+            if (!isAsc)
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderByDescending(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderByDescending(x => x.CreationTime).ToList();
 
-            return retVal;
+                }
+            }
+            else if (isAsc)
+            {
+                if (sortType == 0)
+                {
+                    data = data.ToList();
+                }
+               else if (sortType == 1)
+                {
+                    data = data.OrderBy(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(x => x.CreationTime).ToList();
+
+                }
+            }
+            else
+            {
+                if (sortType == 1)
+                {
+                    data = data.OrderBy(x => x.HawbNo).ToList();
+                }
+                else
+                {
+                    data = data.OrderBy(x => x.CreationTime).ToList();
+
+                }
+            }
+            var retVal = ObjectMapper.Map<List<AirExportHawb>, List<AirExportHawbDto>>(data);
+            foreach (var item in retVal)
+            {
+                if (item.ActualShippedr != null)
+                {
+                    var shipper = tradePartners.Where(w => w.Id.ToString() == item.ActualShippedr).FirstOrDefault();
+                    item.ShippperName = shipper.TPName;
+                }
+                if (item.ConsigneeId != null)
+                {
+                    var consignee = tradePartners.Where(w => w.Id == item.ConsigneeId).FirstOrDefault();
+                    item.ConsigneeName = consignee.TPName;
+                }
+            }
+
+                return retVal;
         }
 
         public async Task<AirExportHawbDto> GetHawbCardById(Guid Id)
@@ -286,6 +342,12 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 airExportDetails = ObjectMapper.Map<AirExportHawbDto, AirExportDetails>(data);
 
                 var mawb = await _mawbRepository.GetAsync(data.MawbId.GetValueOrDefault());
+
+                if (mawb.MawbCarrierId is not null)
+                {
+                    var carrier = tradePartners.Where(w => w.Id.Equals(mawb.MawbCarrierId)).FirstOrDefault();
+                    airExportDetails.CarrierName = carrier?.TPName;
+                }
 
                 if (data.SalesId != null)
                 {

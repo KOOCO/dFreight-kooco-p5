@@ -150,7 +150,11 @@
             }
 
         $(document).ready(function () {
+            
 
+            //HB/l dropdown
+            $('#cardSettingArea').hide();
+       
             // Awb Cancel Area
             $("#checkboxAwbCancelled").change(function () {
                 if (this.checked) {
@@ -833,26 +837,64 @@
             }
         }
 
-        function createHawbCard() {
-            let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title hblCardTitle" id="title_{{hawbNo}}"' +
-                ' onclick="onHawbCardClick(event,{{hblCardId}}, \'{{hawbNo}}\')">{{hawbNo}}</h5>' +
-                ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hawbNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
-                ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse customForm" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
-            return abpCard;
+       
+
+          function createHawbCard() {
+             $('#cardSettingArea').show();
+            var check='False';
+           
+            debugger;
+            if ($('#cardCheck').prop('checked')) {
+                check = 'True';
+            
+            }
+           let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h6 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
+    ' onclick="onHawbCardClick(event,{{hblCardId}}, \'{{hblNo}}\')">';
+
+  // Check the condition and add the <i> tag if check is true
+            if (check=="False") {
+                abpCard += '<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="{{hblCosigneeName}} {{hblShipperName}}"></i>';
+                abpCard += '{{hblNo}}</h6>' +
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+
+            }
+            else {
+                // Add the rest of the card content
+                abpCard += '{{hblNo}}<br>{{hblCosigneeName}}<br>{{hblShipperName}}</h6>' +
+                
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+            }
+            abpCard += '<div class="card-footer"><div class="row"><div class="col-6 hblCardTitle" style="border-bottom: solid;border-top: solid;border-right: solid;border-width: thin;">PKG: {{hblPackage}}</div><div class="col-6 hblCardTitle" style="border-bottom: solid;border-top: solid;border-width: thin;">Weight: {{hblWeight}}</div><div class="col-12 hblCardTitle">Measurement: {{hblMeasurement}}</div></div></div>';
+  return abpCard;
         }
 
-        function setHawbCardValues(abpcard, cardId, hawbNo, index) {
+        function setHawbCardValues(abpcard, cardId, hblNo, index,hblCosigneeName,hblShipperName,weight,measurement,packagetype) {
+            debugger
             let apbCardClass = 'card board-item hbl-sm-' + index;
             let cardBodyId = 'hawbCard_' + index;
             cardId = "'" + cardId + "'";
 
-            hawbNo = hawbNo || index;
-
             abpcard = abpcard.replaceAll("{{divClass}}", apbCardClass);
-            abpcard = abpcard.replaceAll("{{hawbNo}}", hawbNo);
+            abpcard = abpcard.replaceAll("{{hblNo}}", hblNo);
             abpcard = abpcard.replaceAll("{{hblCardId}}", cardId);
             abpcard = abpcard.replaceAll("{{index}}", index);
             abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
+            abpcard = abpcard.replaceAll("{{hblPackage}}", packagetype);
+            abpcard = abpcard.replaceAll("{{hblWeight}}", weight);
+            abpcard = abpcard.replaceAll("{{hblMeasurement}}", measurement);
+             if (hblCosigneeName !== null) {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", hblCosigneeName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", "");
+  }
+
+  if (hblShipperName !== null) {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", hblShipperName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", "");
+  }
 
             return abpcard;
         }
@@ -930,7 +972,7 @@
 
         function OpenInTrackTrace() {
             var MawbNo = $('#AirExportMawbDto_MawbNo').val();
-            myWindow = window.open('https://www.track-trace.com/bol#' + MawbNo, '_blank', 'width=1200,height=1000');
+            myWindow = window.open('https://www.track-trace.com/aircargo#' + MawbNo, '_blank', 'width=1200,height=1000');
             myWindow.focus();
         }
 
@@ -1002,6 +1044,89 @@
         
         
         }
+
+         function cardSettingClick() {
+           
+            $("#checkModal").modal("show");  
+        }
+        const toggleLink = document.getElementById("toggleLink");
+
+        // Set an initial state
+        let isAsc = true;
+        let selectedValue = 1;
+        
+        // Add a click event listener to the anchor
+        toggleLink.addEventListener("click", function (e) {
+            e.preventDefault(); // Prevent the default link behavior
+
+            // Toggle between "Asc" and "Desc"
+            if (isAsc) {
+                toggleLink.innerHTML = '<i class="fa fa-sort-down"></i> Desc';
+            } else {
+                toggleLink.innerHTML = '<i class="fa fa-sort-up"></i> Asc';
+            }
+
+            // Invert the state
+            isAsc = !isAsc;
+            SortHblCard();
+        });
+        function changeSetting() { 
+        $("#checkModal").modal("hide");
+           
+            if ($('#cardCheck').prop('checked')) {
+                dolphin.freight.importExport.airImports.airImportMawb.setCardSetting(true).done(function (response) {
+                    SortHblCard();
+                });
+
+            }
+            else {
+                dolphin.freight.importExport.airImports.airImportMawb.setCardSetting(false).done(function (response) {
+                    SortHblCard();
+                })
+            }
+        
+        }
+        function SortHblCard(){
+        selectedValue = $('#sortType').val();
+
+            var url = new URL(window.location.href);
+            var selectedHblNo;
+
+            dolphin.freight.importExport.airExports.airExportHawb.getHblCardsById(url.searchParams.get('Id'), isAsc,selectedValue)
+                .done(function (hblCards) {
+                    if (hblCards && hblCards.length) {
+                        $('#hblCards').empty();
+                        hblCards.forEach(function (hblCard, index) {
+
+                            let abpcard = createHawbCard();
+                            
+                            abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hawbNo, index,hblCard.consigneeName,hblCard.shippperName,hblCard.grossWeightCneeKG, hblCard.volumeWeightCBM, hblCard.package);
+
+                            $('#hblCards').append(abpcard);
+                            debugger
+                            if (hblCard.id == url.searchParams.get('Hid')) {
+                                selectedHblNo = hblCard.hblNo;
+                            }
+
+                        })
+                        setTimeout(() => {
+                            if (selectedHblNo) {
+                                $('#title_' + selectedHblNo).click();
+                            }
+                            else { $('.hblCardTitle')[0].click(); }
+
+                        }, 500);
+                    }
+                })
+        
+        
+        
+        
+        
+        
+        
+        
+        }
     </script>
 
 }
@@ -1037,10 +1162,43 @@
                     <abp-card border="Dark" id="mblCard" style="margin-bottom: 1.2rem;">
                         <!-- 標題區域 -->
                         <abp-card-header style="background:#555555;color:#FFFFFF;">
-                            <abp-card-title>
+                            <abp-card-title class="col-9">
                              
-                                @L["MAWBInformation"] @Model.AirExportMawbDto.MawbNo  @*MAWB Information*@
-                            </abp-card-title>
+                                @L["MAWB"] @Model.AirExportMawbDto.MawbNo  @*MAWB Information*@ 
+                                &nbsp;&nbsp;
+                                @if(Model.AirExportMawbDto.DepatureId!=null)
+                                {
+                            @_dropdown.PortsManagementLookupList.Where(x=>x.Value==Model.AirExportMawbDto.DepatureId?.ToString()).Select(x=>x.Text).FirstOrDefault()
+                                }
+                               &nbsp;&nbsp;
+                             (@Model.AirExportMawbDto.DepatureDate.ToShortDateString())
+                              &nbsp;&nbsp;
+                               @if(Model.AirExportMawbDto.DestinationId!=null)
+                                {
+                                    <span>
+                                    <i class="fa fa-caret-right"></i>
+                               @_dropdown.PortsManagementLookupList.Where(x=>x.Value==Model.AirExportMawbDto.DestinationId?.ToString()).Select(x=>x.Text).FirstOrDefault()
+                                    </span>
+                                }
+                                 
+                                 @(Model.AirExportMawbDto.ArrivalDate != null?"("+Model.AirExportMawbDto.ArrivalDate?.ToShortDateString()+")":"")
+                              @*   @if (Model.AirExportMawbDto.ArrivalDate != null)
+                                {
+                                  @Model.AirExportMawbDto.ArrivalDate?.ToShortDateString()
+                                } *@
+                                &nbsp;&nbsp;
+                                    @if(Model.AirExportMawbDto.MawbCarrierId!=null)
+                                {
+                                    <span>
+                                        <i class="fa fa-plane"></i>
+                                        @{
+                                            var carrier = _dropdown.TradePartnerLookupList.Where(x => x.Value == Model.AirExportMawbDto.MawbCarrierId?.ToString()).Select(x => x.Text).FirstOrDefault();
+                                            var partBeforeSlash = carrier?.Split('/').FirstOrDefault()?.Trim();
+                                            @partBeforeSlash;
+                        }
+                            </span>
+                                }                 
+                           </abp-card-title>
 
                             <div id="myModal" class="modal" tabindex="-1" role="dialog">
                                 <div class="modal-dialog" role="document">
@@ -1299,6 +1457,24 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                   <tr>
+                                                    <th>Departure</th>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteDepartureId", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteDepartureId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteDepartureId) })
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteDepartureArrivalDate" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteDepatureDate" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteDepartureFlightNo" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteDepartureCarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteDepartureCarrierId.ToString() })
+                                                    </td>
+                                                </tr>
                                                 <tr>
                                                     <th>Trans1</th>
                                                    <td>
@@ -1351,6 +1527,24 @@
                                                     </td>
                                                     <td>
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans3CarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteTrans3CarrierId.ToString() })
+                                                    </td>
+                                                </tr>
+                                                  <tr>
+                                                    <th>Final Destination</th>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteDestinationId", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteDestinationId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteDestinationId) })
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteDestinationArrivalDate" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                       
+                                                    </td>
+                                                    <td>
+                                                       
+                                                    </td>
+                                                    <td>
+                                                        
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -1739,6 +1933,26 @@
                         <button class="btn btn-block btn-add" type="button" id="addHBtn">
                             <i class="fa-solid fa-plus"></i>Add HAWB
                         </button>
+                       <div id="cardSettingArea">     
+                            <div class="d-flex flex-row">
+                        <div class="p-2"><label>Sort By</label>
+                        <select id="sortType">
+                            <option selected value="1">HB/L No</option>
+                             <option value="2">Created Date</option>
+                        </select>    
+                        </div>
+                        <div class="p-2">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+                        <div class="p-2">
+                            <a href="#" id="toggleLink"><i class="fa fa-sort-up"></i> Asc</a>
+                        </div>
+                            </div>
+                            <div class="d-flex flex-row">
+                        <div class="p-2" ><a href='javascript:void(0)' class="text-muted" onclick="cardSettingClick()"><i class="fa fa-cogs"></i> Card Setting</a>
+                            </div>
+                            </div>
+                            </div>
                         <div id="hblCards" class="hbl_sm_area">
                         </div>
                     </div>
@@ -1763,6 +1977,36 @@
                     &nbsp;
                 </abp-column>
             </abp-row>
+              <div id="checkModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Card Setting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+        <div class="pull-left w-80per _pd-sm">
+            <div class="_text-blue-steel _font-15 bold _mg-bottom-10">Collapsed Card View</div>
+            <div class="_font-13 _mg-bottom-xs">Show Shipper and Consignee</div>
+            <div class="_font-11 text-muted">Show Shipper and Consignee name without hovering on the <i class="fa fa-info-circle _font-11"></i> icon when the cards are collapsed</div>
+        </div>
+        <div class="pull-left w-20per _mg-top-50">
+    <abp-input asp-for="@Model.ISToolTipShow" id="cardCheck" suppress-label />
+        </div><!---->
+    </div>
+                    
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="changeSetting()">@L["Btn:Ok"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
         </form>
 
         <div class="modal fade" id="CreateModal" tabindex="-1" role="dialog">

@@ -35,5 +35,6 @@ namespace Dolphin.Freight.Web.CommonService
         List<SelectItems> OperatorLookupList { get; }
         List<SelectItems> OceanExportMblLookupList { get; }
         List<SelectItems> OtherLookupList { get; }
+        List<SelectItems> AmsNoLookupList { get; }
     }
 }

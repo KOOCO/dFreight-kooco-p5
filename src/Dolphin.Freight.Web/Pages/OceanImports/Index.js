@@ -4,7 +4,6 @@ var _changeInterval = null;
 var queryListFilter = function () {
     return {
         search: $("#Keyword").val(),
-
         ovearseaAgentId: $("#VesselSchedule_OverseaAgentId").val() == '' ? null : $("#VesselSchedule_OverseaAgentId").val(),
         carrierId: $("#VesselSchedule_CarrierId").val() == '' ? null : $("#VesselSchedule_CarrierId").val(),
         shippingAgentId: $("#VesselSchedule_ShipperId").val() == '' ? null : $("#VesselSchedule_ShipperId").val(),
@@ -101,7 +100,6 @@ var columns = [{
 }]
 
 $(function () {
-
     dolphin.freight.web.controllers.configuration.getJsonConfig('OceanImports').done(function (data) {
         data.forEach(function (item) {
             if (!item.lock && item.checkable) {
@@ -120,6 +118,16 @@ $(function () {
                         }
                     }
                 }
+                else if (item.text.toLowerCase().includes('arbalance') || item.text.toLowerCase().includes('apbalance') || item.text.toLowerCase().includes('dcbalance')) {
+                    column = {
+                        title: l(item.text),
+                        data: item.name,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            return data === null ? " " : data;
+                        }
+                    }
+                }
                 else {
                     column = {
                         title: l(item.text),
@@ -132,7 +140,7 @@ $(function () {
                 columns.push(column);
             }
         });
-
+        
         var col = (columns.length > 2) ? [[2, 'asc']] : [[0, 'asc']];
 
         dataTable = $('#MblListTable').DataTable(

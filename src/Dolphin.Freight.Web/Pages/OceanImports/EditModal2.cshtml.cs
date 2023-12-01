@@ -25,6 +25,8 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public Guid Hid { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool ISToolTipShow { get; set; }
         [BindProperty]
         public CreateUpdateOceanImportMblDto OceanImportMbl { get; set; }
         [BindProperty]
@@ -60,6 +62,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
             OceanImportMbl = await _oceanImportMblAppService.GetCreateUpdateOceanImportMblDtoById(Id);
             QueryHblDto query = new QueryHblDto() { MblId = Id };
             OceanImportHbls = await _oceanImportHblAppService.QueryListByMidAsync(query);
+            ISToolTipShow = await _oceanImportMblAppService.GetCardSettings();
             QueryHblDto queryHbl = new QueryHblDto();
             if (Hid == Guid.Empty)
             {

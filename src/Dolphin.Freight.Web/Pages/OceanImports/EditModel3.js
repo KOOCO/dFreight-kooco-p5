@@ -8,9 +8,12 @@
 
                     let abpcard = createHawbCard();
 
-                    abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index);
+                    abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index, hblCard.hblConsigneeName, hblCard.hblShipperName, hblCard.arBalance, hblCard.apBalance);
 
-                    $('#hblCardDiv').append(abpcard);
+                    $('#hblCards').append(abpcard);
+                    if (hblCard.id == url.searchParams.get('Hid')) {
+                        selectedHblNo = hblCard.hblNo;
+                    }
                 })
                 setTimeout(() => {
                     $('.hblCardTitle')[0].click();

@@ -61,6 +61,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
         public async Task OnGetAsync()
         {
             OceanImportMbl = await _oceanImportMblAppService.GetCreateUpdateOceanImportMblDtoById(Id);
+
             ImportExport.OceanImports.QueryHblDto query = new ImportExport.OceanImports.QueryHblDto() { MblId = Id };
             query.Id = Hid;
             if (Hid is not null && Hid != Guid.Empty)
@@ -77,15 +78,44 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
                     OceanImportHbl = new();
                 }
             }
+
+            if (OceanImportHbl.ExtraProperties is not null && OceanImportHbl.ExtraProperties.Count > 0) {
+                OceanImportHbl.ExtraPropJSON = string.Concat(OceanImportHbl.ExtraProperties.GetValueOrDefault("Commodities"));
+            }
+
             IsShowHbl = true;
+            ISToolTipShow = await _oceanImportMblAppService.GetCardSettings();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            await _oceanImportMblAppService.UpdateAsync(OceanImportMbl.Id, OceanImportMbl);
+            try
+            {
+                await _oceanImportMblAppService.UpdateAsync(OceanImportMbl.Id, OceanImportMbl);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+            
 
             if (OceanImportHbl is not null && !string.IsNullOrEmpty(OceanImportHbl.HblNo))
             {
+                var extraProp = new List<ManifestCommodity>();
+
+                if (OceanImportHbl.ExtraPropJSON is not null) 
+                    extraProp = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ManifestCommodity>>(OceanImportHbl.ExtraPropJSON);
+
+                if (OceanImportHbl.ExtraProperties == null)
+                {
+                    OceanImportHbl.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                }
+
+                OceanImportHbl.ExtraProperties.Remove("Commodities");
+
+                OceanImportHbl.ExtraProperties.Add("Commodities", extraProp);
+                
                 OceanImportHbl.MblId = OceanImportMbl.Id;
 
                 if (OceanImportHbl.Id != Guid.Empty)

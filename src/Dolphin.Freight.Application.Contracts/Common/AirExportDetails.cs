@@ -21,6 +21,10 @@ namespace Dolphin.Freight.Common
         public string RouteTrans3Carrier { get; set; }
         public string IssuingCarrierName { get; set; }
         public string NotifyName { get; set; }
+        public string LastFlight { get; set; }
+        public string DepartureFlight { get; set; }
+        public string DepartureFlightDate { get; set; }
+        public string LastFlightDate { get; set; }
         public string AirWayBillNo { get; set; }
         public string WtVal { get; set; }
         public string Other { get; set; }

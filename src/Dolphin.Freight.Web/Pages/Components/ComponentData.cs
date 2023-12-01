@@ -23,6 +23,7 @@ namespace Dolphin.Freight.Web.Pages.Components
         /// 貿易夥伴用FiledContent輸入的參數
         /// </summary>
         public string ShowFiledContentValue { get; set; }
+        public string NotShowFiledContentValue { get; set; }
         public string GetShowFiledContent() { return string.IsNullOrEmpty(ShowFiledContentValue) ? " " : ShowFiledContentValue; }
         /// <summary>
         /// 欄位名稱

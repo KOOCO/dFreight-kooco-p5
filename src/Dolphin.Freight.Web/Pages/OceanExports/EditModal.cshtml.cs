@@ -76,12 +76,17 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
         private readonly IOceanExportHblAppService _oceanExportHblAppService;
         private readonly IOceanExportMblAppService _oceanExportMblAppService;
+        private readonly IOceanImportMblAppService _oceanImportMblAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
-        public EditModalModel(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService)
+        public EditModalModel(IOceanExportMblAppService oceanExportMblAppService, 
+            IOceanExportHblAppService oceanExportHblAppService, 
+            ISysCodeAppService sysCodeAppService,
+            IOceanImportMblAppService oceanImportMblAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
             _sysCodeAppService = sysCodeAppService;
+            _oceanImportMblAppService=oceanImportMblAppService;
         }
 
         public async Task OnGetAsync()
@@ -108,6 +113,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                 }
             }
             IsShowHbl = true;
+            ISToolTipShow = await _oceanImportMblAppService.GetCardSettings();
         }
         public async Task<IActionResult> OnPostAsync()
         {

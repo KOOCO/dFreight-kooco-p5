@@ -33,5 +33,6 @@ namespace Dolphin.Freight.ImportExport.Containers
         Task<List<ContainerDto>> QueryListVesselAsync(Guid vesselId);
         Task<List<CreateUpdateContainerDto>> GetContainerListByHblId(Guid id);
         Task<List<CreateUpdateContainerDto>> GetContainersByExtraPropertiesHblIds(Guid hblId, Guid MblId);
+        Task<CreateUpdateContainerDto> GetSingleContainerByExtraPropertiesHblIds(Guid HblId, Guid MblId);
     }
 }

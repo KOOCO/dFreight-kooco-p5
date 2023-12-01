@@ -79,6 +79,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
         public CreateUpdateContainerDto CreateUpdateContainerBooking { get; set; }
         [BindProperty]
         public List<ManifestCommodity> Commodities { get; set; }
+        [BindProperty]
+        public Units Units { get; set; }
         public EditModel(IExportBookingAppService exportBookingAppService,  
                         ISysCodeAppService sysCodeAppService, 
                         IInvoiceAppService invoiceAppService, 
@@ -166,6 +168,13 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.ExportBookings
                 ExportBooking.ExtraProperties.Remove("Commodities");
                 ExportBooking.ExtraProperties.Add("Commodities", Commodities);
             }
+
+            if (Units is not null)
+            {
+                ExportBooking.ExtraProperties.Remove("Units");
+                ExportBooking.ExtraProperties.Add("Units", Units);
+            }
+
             await _exportBookingAppService.UpdateAsync(Id, ExportBooking);
             if (CreateUpdateContainerBooking is not null)
             {

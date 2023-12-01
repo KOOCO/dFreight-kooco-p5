@@ -8,6 +8,7 @@ namespace Dolphin.Freight.Web.ViewModels.DeliveryOrder
         
         public string BaseUrl { get; set; }
         public string Office { get; set; }
+        public string ItNo { get; set; }
         public string Address { get; set; }
         public string Tel { get; set; }
         public string Fax { get; set; }
@@ -71,6 +72,7 @@ namespace Dolphin.Freight.Web.ViewModels.DeliveryOrder
         public string CyLocation { get; set; }
         public string PodEta { get; set; }
         public string description { get; set; }
+        public string BillToName { get; set; }
         public string marks { get; set; }
         public List<DeliveryOrderContainerList> ContainerList { get; set; }
         //ReportLog

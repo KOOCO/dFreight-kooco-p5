@@ -3065,8 +3065,8 @@ namespace Dolphin.Freight.Web.Controllers
             {
                 await _oceanExportHblAppService.UpdateMblIdOfHblAsync(hawbId, mawbId);
 
-                var mbl = await _oceanExportMblAppService.GetAsync(mawbId);
-                var docNo = mbl.FilingNo;
+                var mawb = await _oceanExportMblAppService.GetAsync(mawbId);
+                var docNo = mawb.FilingNo;
 
                 return Json(new { id = mawbId, fileNo = docNo });
             }
@@ -3565,20 +3565,22 @@ namespace Dolphin.Freight.Web.Controllers
                 CustomsBroker = data.CustomerName,
                 Date = DateTime.Now.ToShortDateString(),
                 DepAirport = data.DepatureName,
-                DescriptionITNO = data.ITNo,
+                DescriptionITNO = string.Concat(data.HDescription, "/", data.HItNo),
                 DestAirport = data.DestinationAirportName,
                 DocumentPickedBy = data.ReleasedBy,
-                EntryPort = data.DestinationAirportName,
-                ETA1 = string.Concat(data.ArrivalDate),
-                ETA2 = string.Concat(data.ArrivalDate),
-                ETA3 = string.Concat(data.ArrivalDate),
-                ETD = data.DepatureDate,
+                EntryPort = "",
+                ETA1 = "",
+                ETA2 = (data.ArrivalDate is not null && !data.ArrivalDate.Equals(DateTime.MinValue)) ? data.ArrivalDate?.ToShortDateString() ?? "" : "",
+                ETA3 = (data.FinalDestETA is not null && !data.FinalDestETA.Equals(DateTime.MinValue)) ? data.FinalDestETA?.ToShortDateString() ?? "" : "",
+                ETD = (data.DepatureDate is not null && !data.DepatureDate.Equals(DateTime.MinValue)) ? data.DepatureDate?.ToShortDateString() ?? "" : "",
                 FileNo = data.FilingNo,
                 FinalDest = data.FinalDestination,
                 FlightNo = data.FlightNo,
                 HawbNo = data.HawbNo,
                 MawbNo = data.MawbNo,
                 FrightLoc = data.FreightLocationName,
+                FreightLocTel = data.FreightLocationPhoneNo,
+                FreightLocFax = data.FreightLocationFaxNo,
                 ITNO = data.ITNo,
                 ITDate = string.Concat(data.ITDate),
                 ITIssuePlace = data.ITIssuedLocation,
@@ -3592,7 +3594,7 @@ namespace Dolphin.Freight.Web.Controllers
                 //SubHawb = string.Join(",", data.SubHawbs?.Select(s => s.SubHAWB)),
                 Trucker = data.HTruckerName,
                 //Amount = data.SubHawbs?.Sum(s => Convert.ToDouble(s.Amount)),
-                VIA = data.DeliveryLocationName,
+                VIA = data.CarrierTPName,
                 PrepBy = data.OPName
             };
 
@@ -3739,7 +3741,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.carrier = OceanExportMbl.MblCarrierName;
             InfoViewModel.VESSEL_INFO = OceanExportMbl.VesselName;
             InfoViewModel.VOVAGE_INFO = OceanExportMbl.Voyage;
-
+            InfoViewModel.ItNo = OceanExportMbl.ItNo;
             InfoViewModel.POR_location = OceanExportMbl.PorName;
             InfoViewModel.POR_location_ETD = OceanExportMbl.PorEtd?.ToString("dd-MM-yyyy");
             InfoViewModel.POL_location = OceanExportMbl.PolName;
@@ -3762,6 +3764,7 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.billing_to_area = OceanExportMbl.MblBillToName + "\r\n" + OceanExportMbl.MblBillToContent; /*"HARD CORE TECHNOLOGY\r\n198 PEARSON GATEWAY APT. 555\r\nNORTH JAMES, KY 98809-9933\r\nWALNUT, CA 91789, UNITED STATES\r\nATTN: JENNIFER JIMENEZ TEL: 585.592.4848 FAX: 649-277-5122"*/;
             InfoViewModel.marks = OceanExportMbl.Mark;
             InfoViewModel.description = OceanExportMbl.Description;
+            InfoViewModel.BillToName = OceanExportMbl.MblCarrierName;
             InfoViewModel.ContainerList = new List<DeliveryOrderContainerList>();
             var totalWeightKgs = 0.0;
             var totalWeightLbs = 0.0;
@@ -4108,20 +4111,21 @@ namespace Dolphin.Freight.Web.Controllers
         public async Task<IActionResult> DEVSEGOceanImportMbl(Guid id)
         {
             var oceanImportDetails = await _oceanImportMblAppService.GetOceanImportDetailsById(id);
-            var oceanImportHbls=await _oceanImportHblAppService.GetHblCardsById(id);
+            var oceanImportHbls = await _oceanImportHblAppService.GetHblCardsById(id);
             var packageName = _dropdownService.PackageUnitLookupList;
             QueryContainerDto query = new QueryContainerDto { QueryId = id };
             var containers = await _containerAppService.QueryListAsync(query);
             var containerlists = new List<CreateUpdateContainerDto>();
             var HblsLists = new List<HblList>();
+
             foreach (var item in containers)
             {
                 var containerSizeName = string.Concat(packageName.Where(w => w.Value == string.Concat(item.PackageUnitId)).Select(s => s.Text));
 
                 var container = new CreateUpdateContainerDto()
                 {
-                    ContainerNo=item.ContainerNo,
-                    SealNo=item.SealNo,
+                    ContainerNo = item.ContainerNo,
+                    SealNo = item.SealNo,
                     PackageNum = item.PackageNum,
                     PackageUnitName = containerSizeName,
                     PackageWeightStr = string.Concat(item.PackageWeight) + " KGS",
@@ -4130,12 +4134,14 @@ namespace Dolphin.Freight.Web.Controllers
                     PackageMeasureStrLBS = string.Concat(Math.Round(item.PackageMeasure * 35.315, 2)) + " CFT"
 
                 };
+
                 oceanImportDetails.TotalWeight = oceanImportDetails.TotalWeight + item.PackageWeight;
                 oceanImportDetails.TotalMeasure = oceanImportDetails.TotalMeasure + item.PackageMeasure;
                 oceanImportDetails.TotalPackage = oceanImportDetails.TotalPackage + item.PackageNum;
                 oceanImportDetails.PackageUnitName = containerSizeName;
                 containerlists.Add(container);
             }
+
             oceanImportDetails.TotalWeightStr = string.Concat(oceanImportDetails.TotalWeight) + " KGS";
             oceanImportDetails.TotalWeightStrLBS = string.Concat(Math.Round(oceanImportDetails.TotalWeight * 2.204, 2)) + " LBS";
             oceanImportDetails.TotalMeasureStr = string.Concat(oceanImportDetails.TotalMeasure) + " CBM";
@@ -4145,12 +4151,14 @@ namespace Dolphin.Freight.Web.Controllers
             oceanImportDetails.TotalWeight = 0;
             oceanImportDetails.TotalMeasure = 0;
             oceanImportDetails.CreateUpdateContainer = containerlists;
+
             foreach (var hbl in oceanImportHbls)
             {
                 var Hbl = new HblList();
-                    var hblDetails=await _oceanImportHblAppService.GetOceanImportDetailsById(hbl.Id);
+                var hblDetails=await _oceanImportHblAppService.GetOceanImportDetailsById(hbl.Id);
                 var hblContainer = await _containerAppService.GetContainerByHblId(hbl.Id);
                 Hbl.index = +1;
+                Hbl.AmsNo = hblDetails.AmsNo;
                 Hbl.HblNo = hblDetails.HblNo;
                 Hbl.HblSo_No = hblDetails.SoNo;
                 Hbl.Mark = hblDetails.Mark;
@@ -4172,6 +4180,7 @@ namespace Dolphin.Freight.Web.Controllers
                 oceanImportDetails.TotalMeasureStrLBS = (oceanImportDetails.TotalMeasure * 35.315).ToString("N2");
                 oceanImportDetails.TotalWeightStrLBS = (oceanImportDetails.TotalWeight * 2.204).ToString("N2");
             }
+
             oceanImportDetails.HblLists = HblsLists;
             oceanImportDetails.MblOperatorName = oceanImportDetails.MblOperatorName != null ? oceanImportDetails.MblOperatorName : CurrentUser.Name;
             return View(oceanImportDetails);
@@ -4208,7 +4217,11 @@ namespace Dolphin.Freight.Web.Controllers
 
             var iTTEViewModel = new ITTEViewModel()
             {
-                Port = airImportDetails.ITIssuedLocation,
+                FlightNo = airImportDetails.FlightNo,
+                ArrivalDate = (airImportDetails.ArrivalDate is not null && !airImportDetails.ArrivalDate.Equals(DateTime.MinValue)) ? airImportDetails.ArrivalDate?.ToShortDateString() ?? "" : "",
+                DestinationName = airImportDetails.DestinationAirportName,
+                ITDate = airImportDetails.HItDate,
+                Port = airImportDetails.FinalDestination,
                 EntryNo = airImportDetails.ITNo,
                 ClassOfEntry = airImportDetails.ClassOfEntry,
                 PortOfLoading = airImportDetails.DestinationAirportName,
@@ -4224,10 +4237,13 @@ namespace Dolphin.Freight.Web.Controllers
                 Consignee = airImportDetails.ConsigneeName,
                 ForeignDestination = airImportDetails.FinalDestination,
                 Package = Convert.ToString(airImportDetails.Package),
-                WeightKG = (airImportDetails.GrossWeightKg + airImportDetails.ChargeableWeightKg),
-                WeightLG = (airImportDetails.GrossWeightLb + airImportDetails.ChargeableWeightLb),
+                PackageName = airImportDetails.HPackageUnitName,
+                WeightKG = airImportDetails.GrossWeightKg,
+                WeightLG = airImportDetails.GrossWeightLb,
                 MawbNo = airImportDetails.MawbNo,
                 HawbNo = airImportDetails?.HawbNo,
+                Mark = airImportDetails.HMark,
+                Description = airImportDetails.HDescription
             };
 
             return View(iTTEViewModel);
@@ -4356,7 +4372,7 @@ namespace Dolphin.Freight.Web.Controllers
             QueryContainerDto query = new QueryContainerDto();
             query.QueryId = oceanExportDetails.MblId;
             var mblContainer = await _containerAppService.QueryListAsync(query);
-            oceanExportDetails.Mark =string.Concat(mblContainer.FirstOrDefault().ContainerNo)+'/'+ mblContainer.FirstOrDefault().SealNo;
+            oceanExportDetails.Mark = !mblContainer.Count.Equals(0) ? string.Concat(mblContainer.FirstOrDefault().ContainerNo) +'/'+ mblContainer.FirstOrDefault().SealNo : "";
             var containerlists = new List<CreateUpdateContainerDto>();
 
             foreach (var item in containers)
@@ -4371,10 +4387,9 @@ namespace Dolphin.Freight.Web.Controllers
                     PackageWeightStrLBS = string.Concat(Math.Round(item.PackageWeight * 2.204, 2)) + " LBS",
                     PackageMeasureStr = string.Concat(item.PackageMeasure) + " CBM",
                     PackageMeasureStrLBS = string.Concat(Math.Round(item.PackageMeasure * 35.315, 2)) + " CFT"
-                    
                 };
                 oceanExportDetails.TotalWeight = oceanExportDetails.TotalWeight + item.PackageWeight;
-                oceanExportDetails.TotalMeasure=oceanExportDetails.TotalMeasure + item.PackageMeasure;
+                oceanExportDetails.TotalMeasure = oceanExportDetails.TotalMeasure + item.PackageMeasure;
                 oceanExportDetails.TotalPackage = oceanExportDetails.TotalPackage + item.PackageNum;
                 oceanExportDetails.PackageUnitName = containerSizeName;
                 containerlists.Add(container);
@@ -5607,14 +5622,14 @@ namespace Dolphin.Freight.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ConsolidatedByConsignee(Guid mblId, string conId)
         {
-            OceanImportDetails oceanImportDetails = new OceanImportDetails();
+            OceanImportDetails oceanImportDetails = new();
             var tradePartners = _dropdownService.TradePartnerLookupList;
 
             var consigneeIds = conId.TrimEnd(',');
             var result = consigneeIds.Split(',');
             var consigneeList = new List<string>();
-
             var listsConsigneeName = new List<Hbl>();
+
             foreach (var items in result)
             {
                 var list = new Hbl
@@ -5636,7 +5651,7 @@ namespace Dolphin.Freight.Web.Controllers
 			var oceanImportDetails = await GetOceanImportDetailsByPageType(mblId, pageType);
 			var hblLists = await _oceanImportHblAppService.GetHblCardsById(mblId);
             var hblListsWithConsignee = hblLists.Where(w => Convert.ToString(w.HblConsigneeId) == consignee).ToList();
-            var containerFirst = await _containerAppService.GetContainerByHblId(hblListsWithConsignee[0].Id);
+            var containerFirst = await _containerAppService.GetSingleContainerByExtraPropertiesHblIds(hblListsWithConsignee[0].Id, mblId);
 
 			var tradePartner = _dropdownService.TradePartnerLookupList;
 			var packgeUnit = _dropdownService.PackageUnitLookupList;
@@ -5652,21 +5667,21 @@ namespace Dolphin.Freight.Web.Controllers
 
             foreach (var item in hblListsWithConsignee)
             {
-                var containers = await _containerAppService.GetContainerByHblId(item.Id);
-				var containerSizeName = string.Concat(containerName.Where(w => w.Value == string.Concat(containers.PackageUnitId)).Select(s => s.Text));
-                
-                var container = new CreateUpdateContainerDto
-                {
-                    ContainerNo = string.Concat(containers.PackageNum),
-                    SealNo = containers.SealNo,
-                    ContainerSizeName = containerSizeName,
-                    PackageUnitName = string.Concat(containerName.Where(w => w.Value == string.Concat(containers.PackageUnitId)).Select(s => s.Text)),
-                    PackageWeight = containers.PackageWeight,
-                    PackageMeasure = containers.PackageMeasure,
-                    PackageWeightStrLBS = string.Concat(Math.Round((double)(containers.PackageWeight * 2.204), 2)),
-                    PackageMeasureStrLBS = string.Concat(Math.Round((double)containers.PackageMeasure * 35.315, 2)),
-                    LastFreeDate = containers.LastFreeDate
-                };
+                var containers = await _containerAppService.GetSingleContainerByExtraPropertiesHblIds(item.Id, mblId);
+
+                var containerSizeName = string.Concat(containerName.Where(w => w.Value == string.Concat(containers.PackageUnitId)).Select(s => s.Text));
+
+                var container = new CreateUpdateContainerDto();
+                container.ContainerNo = string.Concat(containers.PackageNum);
+                container.SealNo = containers.SealNo;
+                container.ContainerSizeName = containerSizeName;
+                container.PackageUnitName = string.Concat(containerName.Where(w => w.Value == string.Concat(containers.PackageUnitId)).Select(s => s.Text));
+                container.PackageWeight = containers.PackageWeight;
+                container.PackageMeasure = containers.PackageMeasure;
+                container.PackageWeightStrLBS = string.Concat(containers.PackageWeight is not null ? Math.Round((double)(containers.PackageWeight * 2.204), 2) : "0");
+                container.PackageMeasureStrLBS = string.Concat(containers.PackageMeasure is not null ? Math.Round((double)containers.PackageMeasure * 35.315, 2) : "0");
+                container.LastFreeDate = containers.LastFreeDate;
+
                 listofContainers.Add(container);
 
                 var hbls = new Hbl

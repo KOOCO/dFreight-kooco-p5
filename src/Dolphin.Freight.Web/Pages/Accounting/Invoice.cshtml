@@ -4,9 +4,11 @@
 @using Dolphin.Freight.Web.Pages.Components
 @using Microsoft.Extensions.Localization
 @using Dolphin.Freight.AirExports
+@using Dolphin.Freight.Web.CommonService
 @model Dolphin.Freight.Web.Pages.Accounting.InvoiceModel
 @inject IStringLocalizer<FreightResource> L
 @inject ICurrentUser CurrentUser
+@inject IDropdownService _dropdownService
 @section scripts
     {
     <abp-script src="/Pages/Accounting/Invoice.js" />
@@ -153,19 +155,7 @@
                         if (@Model.MethodType == 2) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/AirImports/EditModal3?Id=@Model.MawbId'; });
                         if (@Model.MethodType == 3) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/AirExports/EditModal3?Id=@Model.MawbId'; });
                         if (@Model.MethodType == 4) abp.message.success('儲存成功', '系統訊息').then(function () { location.href = '/OceanExports/ExportBookings/Edit2?Id=@Model.Bid'; });
-                          if (@Model.MethodType == 5) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/OceanExports/VesselSchedules/Edit2?Id=@Model.VesselId'; });
-                        // if (@Model.MethodType == 5) $.ajax({
-                        //                                 url: '/api/ImportExport/OceanExportAccountingHbl',
-                        //                                 type: 'GET',
-                        //                                 data: { Id: '@Model.Hid' },
-                        //                                 success: function(response) {
-                        //                                     abp.message.success('儲存成功', '系統訊息').then(function(){
-                        //                                         dolphin.freight.importExport.oceanExports.oceanExportHbl.get('@Model.Hid').done(function (res) { 
-                        //                                             location.href = '/OceanExports/EditModal3?Id='+res.mblId+'';
-                        //                                         });
-                        //                                     });
-                        //                                 }
-                        //                             });
+                        if (@Model.MethodType == 5) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/OceanExports/VesselSchedules/Edit2?Id=@Model.VesselId'; });
                         if (@Model.MethodType == 6) $.ajax({
                                                         url: '/api/ImportExport/AirImportAccountHawb',
                                                         type: 'GET',
@@ -182,8 +172,8 @@
                         break;
                     case 1:
                         if (@Model.MethodType==7) {
-                 abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/Accounting/Invoices/List'; });
-                }
+                            abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/Accounting/Invoices/List'; });
+                        }
                         abp.message.success('以草稿儲存成功', '系統訊息');
                         if (@Model.MethodType == 0) location.href = '/OceanImports/EditModal3?Id=@Model.Mid';
                         if (@Model.MethodType == 1) location.href = '/OceanExports/EditModal3?Id=@Model.Mid';
@@ -396,7 +386,11 @@
             var trhtml = "<tr id='_" + index + "'><th style='text-align:center'><input class='checkItem' value='" + (bill.id || '') + "' type = 'checkbox' name = 'InvoiceBillDtos[" + index + "].BillId' id = 'InvoiceBillDtosId_" + index + "' data-val= 'new_" + index + "' /> </th>";
             trhtml = trhtml + "<th>" + getBillCodeSelect(index, '', (bill.code || '')) + "</th>";
             trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Description' value='" + (bill.description || '') + "' id='Description_" + index + "' /></th>";
-            trhtml = trhtml + "<th>" + getPPOrCCSelect(index, '', (bill.ppOrCC || '')) + "</th>";
+
+            if (@Model.InvoiceType != 2) {
+                trhtml = trhtml + "<th>" + getPPOrCCSelect(index, '', (bill.ppOrCC || '')) + "</th>";
+            }
+
             trhtml = trhtml + "<th>" + getBillTypeSelect(index, '', (bill.billType || '')) + "</th>";
             trhtml = trhtml + "<th>" + getUnitSelect(index, '', (bill.unit || '')) + "</th>";
             trhtml = trhtml + "<th>" + getCurrencySelect(index, '', (bill.currency || '')) + "</th>";
@@ -406,7 +400,7 @@
             trhtml = trhtml + "<th>" + invoice.getTax(index, bill.taxId) + "</th>";
             trhtml = trhtml + "<th id='td_Amount_" + index + "' value='" + (bill.amount || '') + "'><label name='InvoiceBillDtos[" + index + "].AmountLabel' id='Amount_" + index + "'>" + amount + "</label></th>";
             trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].AmountToAgent' id='AmountToAgent_" + index + "' value='" + (bill.amountToAgent || '') + "' /></th>";
-            trhtml = trhtml + "<th  style='text-align:center'><input type='checkbox' name='InvoiceBillDtos[" + index + "].IsNonProfit' id='IsNonProfit_" + index + "'" + (bill.isNonProfit ? "checked" : "") + " disabled /></th>";
+            trhtml = trhtml + "<th style='text-align:center'><input type='checkbox' name='InvoiceBillDtos[" + index + "].IsNonProfit' id='IsNonProfit_" + index + "'" + (bill.isNonProfit ? "checked" : "") + " disabled /></th>";
             trhtml = trhtml + "<th><input type='hidden' name='InvoiceBillDtos[" + index + "].Id' value='" + (bill.id || '') + "'></th>";
             trhtml = trhtml + "<th></th></tr>";
             $("#trtbody").append(trhtml);
@@ -447,7 +441,11 @@
             var trhtml = "<tr id='_" + index + "'><th style='text-align:center'><input class='checkItem' type='checkbox' name='InvoiceBillDtos[" + index + "].BillId' id='InvoiceBillDtosId_" + index + "' data-val='new_" + index + "'/></th>";
             trhtml = trhtml + "<th>" + getBillCodeSelect(index, '', ($('#Code_0').val() || '')) + "</th>";
             trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Description' id='Description_" + index + "' value='" + ($("#Description_" + id).val() || '') + "' /></th>";
-            trhtml = trhtml + "<th>" + getPPOrCCSelect(index, '', ($('#PPOrCC_' + id).val() || '')) + "</th>";
+            
+            if (@Model.InvoiceType != 2) {
+                trhtml = trhtml + "<th>" + getPPOrCCSelect(index, '', ($('#PPOrCC_' + id).val() || '')) + "</th>";
+            }
+            
             trhtml = trhtml + "<th>" + getBillTypeSelect(index, '', ($('#BillType_' + id).val() || '')) + "</th>";
             trhtml = trhtml + "<th>" + getUnitSelect(index, '', ($('#Unit_' + id).val() || '')) + "</th>";
             trhtml = trhtml + "<th>" + getCurrencySelect(index, '', ($('#Currency_' + id).val() || '')) + "</th>";
@@ -527,7 +525,6 @@
                     selectHtml = selectHtml + " > " + l(BillTypeItemsDC[i].showName) + "</option>"
                 }
             } else {
-                debugger;
                 for (var i = 0; i < BillTypeItems.length; i++)
                 {
                     debugger;
@@ -600,7 +597,20 @@
         function CopyFromSpecification(){
             var id='@Model.Mid';
             var hid='@Model.Hid';
-            if(hid==null||hid=="")
+            var mawbId='@Model.MawbId';
+            var hawbId = '@Model.HawbId';
+            if (id == null || id == "") {
+                if (hawbId == null || hawbId == "") { }
+                else{
+                    dolphin.freight.importExport.airImports.airImportHawb.getHawbCardById(hawbId).done(function (result) {
+                        var data = result;
+                        $("#Memorandum").val(data.description);
+
+                    });
+                
+                }
+            }
+            else if(hid==null||hid=="")
             {
            
            dolphin.freight.importExport.oceanExports.oceanExportMbl.getCreateUpdateOceanExportMblDtoById(id).done(function (result) {
@@ -925,10 +935,8 @@
                         </abp-row>
                         <abp-row>
                             <abp-column size-md="_3">
-                                @*<label for="InvoiceNo" class="form-label">
-                            @L["Display:InvoiceCompanyIdDC"]
-                            </label>*@
-                                <abp-select asp-for="InvoiceDto.InvoiceCompanyId" asp-items="@Model.TradePartnerLookupList" />
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "InvoiceDto.InvoiceCompanyId", AspItems = _dropdownService.TradePartnerLookupList, IsShowLabel = true, FieldName = L["InvoiceCompanyId"] })
+                                @* <abp-select asp-for="InvoiceDto.InvoiceCompanyId" asp-items="@Model.TradePartnerLookupList" /> *@
                             </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceDto.InvoiceDate" abp-data-datepicker="false" />
@@ -978,7 +986,7 @@
                     {
                         <abp-row>
                             <abp-column size-md="_3">
-                                <abp-select asp-for="InvoiceDto.ShipToId" asp-items="@Model.TradePartnerLookupList" />
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "InvoiceDto.ShipToId", AspItems = _dropdownService.TradePartnerLookupList, ShowFiledContentValue = Convert.ToString(Model.InvoiceDto.ShipToId), FieldName = @L["ShipToId"], IsShowLabel = true })
                                 <abp-input type="hidden" asp-for="InvoiceDto.InvoiceCompanyId" id="mInvoiceCompanyId" value="@Model.InvoiceDto.InvoiceCompanyId" />
                             </abp-column>
                             <abp-column size-md="_3">
@@ -1181,7 +1189,7 @@
                                     <th width="6%" style="text-align:center"><input type="checkbox" id="checkAll" /></th>
                                     <th width="11%">@L["Display:BillCode"]</th>
                                     <th width="9%">@L["Display:BillDescription"]</th>
-                                    <th width="8%">@L["Display:PPOrCC"]</th>
+                                    @if (Model.InvoiceType != 2) { <th width="8%">@L["Display:PPOrCC"]</th> }
                                     <th width="6%">@L["Display:BillType"]</th>
                                     <th width="6%">@L["Display:BillUnit"]</th>
                                     <th width="8%">@L["Display:BillCurrency"]</th>
@@ -1198,7 +1206,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr border="1">
-                                        <th colspan="7" style="text-align:right;border-block-color:#333333;" border="1">小計</th>
+                                        <th colspan="@(Model.InvoiceType != 2 ? 7 : 6)" style="text-align:right;border-block-color:#333333;" border="1">小計</th>
                                         <th>TWD</th>
                                         <th id="convertedTWD" class="text-danger">0</th>
                                         <th>USD</th>
@@ -1209,15 +1217,15 @@
                                         <th id="convertedHKD" class="text-danger">0</th>
                                     </tr>
                                     <tr border="1">
-                                        <th colspan="14" style="text-align:right;border-block-color:#333333;" border="1">@L["TotalBeforeTax"]</th>
+                                        <th colspan="@(Model.InvoiceType != 2 ? 14 : 13)" style="text-align:right;border-block-color:#333333;" border="1">@L["TotalBeforeTax"]</th>
                                         <th style="border-block-color:#333333;" name="InvoiceDto.TotalBeforeTax" id="totalBeforeTax" class="text-danger">0</th>
                                     </tr>
                                     <tr border="1">
-                                        <th colspan="14" style="text-align:right;border-block-color:#333333;" border="1">@L["TotalTax"]</th>
+                                        <th colspan="@(Model.InvoiceType != 2 ? 14 : 13)" style="text-align:right;border-block-color:#333333;" border="1">@L["TotalTax"]</th>
                                         <th style="border-block-color:#333333;" name="InvoiceDto.TotalTax" id="totalTax" class="text-danger">0</th>
                                     </tr>
                                     <tr border="1">
-                                        <th colspan="14" style="text-align:right;border-block-color:#333333;" border="1">@L["Display:TotalAmount"]</th>
+                                        <th colspan="@(Model.InvoiceType != 2 ? 14 : 13)" style="text-align:right;border-block-color:#333333;" border="1">@L["Display:TotalAmount"]</th>
                                         <th style="border-block-color:#333333;" name="InvoiceDto.TotalAmount" id="totalAmount" class="text-danger">0</th>
                                         @*<th id="totalAmount">0 <input type="hidden" name="" /></th>*@
                                     </tr>

@@ -22,6 +22,8 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
         [BindProperty]
         public CreateUpdateOceanImportHblDto OceanImportHbl { get; set; }
         [BindProperty(SupportsGet = true)]
+        public bool ISToolTipShow { get; set; }
+        [BindProperty(SupportsGet = true)]
         public IList<InvoiceDto> m0invoiceDtos { get; set; }
         [BindProperty(SupportsGet = true)]
         public IList<InvoiceDto> m1invoiceDtos { get; set; }
@@ -53,6 +55,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
         {
             OceanImportMbl = await _oceanImportMblAppService.GetCreateUpdateOceanImportMblDtoById(Id);
             OceanImportMbl.Mid = Id;
+            ISToolTipShow = await _oceanImportMblAppService.GetCardSettings();
             QueryHblDto query = new QueryHblDto() { MblId = OceanImportMbl.Id };
             OceanImportHbls = await _oceanImportHblAppService.QueryListByMidAsync(query);
             QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 3, ParentId = Id };

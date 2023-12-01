@@ -9,6 +9,7 @@ using Dolphin.Freight.Common;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.ImportExport.AirExports;
 using static Dolphin.Freight.Permissions.OceanImportPermissions;
+using Dolphin.Freight.ImportExport.AirImports;
 
 namespace Dolphin.Freight.Web.Pages.AirExports
 {
@@ -23,6 +24,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
 
         [BindProperty]
         public AirExportHawbDto AirExportHawbDto { get; set; }
+        [BindProperty]
+        public bool ISToolTipShow { get; set; }
 
         [BindProperty]
         public AirExportMawbDto AirExportMawbDto { get; set; }
@@ -55,22 +58,25 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
         private readonly IAirExportHawbAppService _airExportHawbAppService;
+        private readonly IAirImportMawbAppService _airImportMawbAppService;
 
         public EditModal3(IAirExportMawbAppService airExportMawbAppService, 
                           IInvoiceAppService invoiceAppService, 
                           ISysCodeAppService sysCodeAppService,
-                          IAirExportHawbAppService airExportHawbAppService)
+                          IAirExportHawbAppService airExportHawbAppService,
+                          IAirImportMawbAppService airImportMawbAppService)
         {
             _airExportMawbAppService = airExportMawbAppService;
             _invoiceAppService = invoiceAppService;
             _sysCodeAppService = sysCodeAppService;
             _airExportHawbAppService = airExportHawbAppService;
+            _airImportMawbAppService= airImportMawbAppService;
         }
 
         public async Task OnGetAsync()
         {
             AirExportMawbDto = await _airExportMawbAppService.GetAsync(Id);
-
+            ISToolTipShow = await _airImportMawbAppService.GetCardSettings();
             QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 0, ParentId = Id };
             var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
             m0invoiceDtos = new List<InvoiceDto>();

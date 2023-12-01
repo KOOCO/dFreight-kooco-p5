@@ -1,6 +1,7 @@
 ﻿@page
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Web.Pages.Components
+@using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Dolphin.Freight.Web.CommonService
 @using Microsoft.Extensions.Localization
 @using Volo.Abp.Users;
@@ -10,17 +11,26 @@
 @inject ICurrentUser _currentUser;
 @section styles {
     <style type="text/css">
- #ejo .btn-primary {
+         #ejo .btn-primary {
     color: #fff;
     background-color: rgb(25 28 32 / 52%);
     border-color: #00000000;
-}
+        }
+
+        #commodityBody .select2-container .select2-selection--single {
+            height: 24px !important;
+        }
+
+        #commodityBody .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 24px;
+        }
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
 }
 @section scripts
     {
+    <abp-script src="/Pages/OceanExports/ExportBookings/Edit.js" />
     <script type="text/javascript">
         $(document).ready(function () {
             var l = abp.localization.getResource('Freight');
@@ -49,24 +59,8 @@
                     'ExportBooking_CargoReadyDate'
                 ];
 
-                ids.forEach(function (id) {
-                    let dateElem = $('#' + id);
-
-                    if (dateElem.length === 0) {
-                        return;
-                    }
-
-                    dateElem.removeAttr('type').datetimepicker({
-                        format: 'Y-m-d H:i',
-                        step: 15,
-                        allowInput: false
-                    });
-
-                    let currentVal = dateElem.val();
-                    if (currentVal.includes('T')) {
-                        dateElem.val(currentVal.replace('T', ' '));
-                    }
-                });
+                var dateTimePicker = new CustomDateTimePicker();
+                dateTimePicker.dateTimePicker(ids);
             });
 
             setPoValue();
@@ -376,12 +370,15 @@
                 }
             });
         });
-            var chkIndex = 0;
+
+        var chkIndex = 0;
         function onAddCommodity() {
-            debugger;
             var newRowData = {
                 chkIndex: chkIndex
             };
+
+            newRowData.packageCodes = @Json.Serialize(_dropdown.AmsNoLookupList);
+            newRowData.PackageCode = "00000000-0000-0000-0000-000000000000";
 
             var newRow = $('#commodityTemplate').tmpl(newRowData);
 
@@ -393,6 +390,8 @@
 
             $('#btnCommodity').removeAttr('disabled');
             $('#btnCommodityHTS').removeAttr('disabled');
+
+            setFilteredDropdown();
         }
         function onRemoveCommodity() {
             $('[name="chk_commodity"]:checked').each(function (i, elem) {
@@ -514,17 +513,35 @@
             $('#ExportBooking_Description').attr('style', 'height: ' + document.getElementById('ExportBooking_Description').scrollHeight + 'px !important');
         }
     </script>
-        <script id="commodityTemplate" type="text/x-jQuery-tmpl">
+    <script id="commodityTemplate" type="text/x-jQuery-tmpl">
         <tr>
           <td>
               <input type="checkbox" name="chk_commodity" id="Id" />
           </td>
           <td><input type="text" name="Commodities[${chkIndex}].Description" value="${Description}" /></td>
-          <td><input type="text" name="Commodities[${chkIndex}].PackagingType" value="${PackagingType}" /></td>
+          <td>
+              <div class="d-flex">
+                    <div>
+                        <input type="text" name="Commodities[${chkIndex}].PackagingType" style="max-width: 80px;" value="${PackagingType}" />  
+                    </div>
+                    <div class="d-flex">
+                         <select name="Commodities[${chkIndex}].PackageCode" class="filteredDropdown form-select cursor-pointer">
+                             <option></option>
+                                {{each packageCodes}}
+                                    {{if $value.value == PackageCode}}
+                                        <option value="${$value.value}" selected>${$value.text}</option>
+                                    {{else}}
+                                        <option value="${$value.value}">${$value.text}</option>
+                                    {{/if}}
+                                {{/each}}
+                         </select>
+                    </div>
+              </div>
+          </td>
           <td><input type="text" name="Commodities[${chkIndex}].HTSCode" value="${HTSCode}" /></td>
           <td><input type="text" name="Commodities[${chkIndex}].NoOfPcs" value="${NoOfPcs}" /></td>
-          <td><input type="text" name="Commodities[${chkIndex}].NetWeight" value="${NetWeight}"  /></td>
-          <td><input type="text" name="Commodities[${chkIndex}].GrossWeight" value="${GrossWeight}" /></td>
+          <td><input type="text" class="netWeight" name="Commodities[${chkIndex}].NetWeight" value="${NetWeight}"  /></td>
+          <td><input type="text" class="grossWeight" name="Commodities[${chkIndex}].GrossWeight" value="${GrossWeight}" /></td>
           <td><input type="text" name="Commodities[${chkIndex}].UnitPrice" value="${UnitPrice}" /></td>
           <td><input type="text" name="Commodities[${chkIndex}].Amount" value="${Amount}"   /></td>
           <td><input type="text" name="Commodities[${chkIndex}].Details" value="${Details}"  /></td>
@@ -586,15 +603,15 @@
                                             <abp-row>
                                                 <abp-column>
                                                      <div class="mb-3">
-                                                    <label for="ExportBooking_SoNo" class="form-label">@L["SoCode"] <input type="checkbox" name="ExportBooking.IsCreateBySystem" id="ExportBooking_IsCreateBySystem" value="true" /></label>
+                                                    <label for="ExportBooking_SoNo" class="form-label"><span class="text-danger">*</span>@L["SoCode"] <input type="checkbox" name="ExportBooking.IsCreateBySystem" id="ExportBooking_IsCreateBySystem" value="true" /></label>
                                                     <input type="text" name="ExportBooking.SoNo" class="form-control" id="ExportBooking_SoNo" />
                                                 </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row >
                                                 <abp-column>
-
-                                                    <abp-input asp-for="ExportBooking.SoNoDate" abp-data-datepicker="false" required-symbol="false" />
+                                                    <label for="ExportBooking_SoNoDate"><span class="text-danger">*</span>@L["SoNoDate"]</label>
+                                                    <input class="form-control" asp-for="ExportBooking.SoNoDate" abp-data-datepicker="false" required-symbol="false" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row >
@@ -1096,7 +1113,8 @@
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column>
-                                                    <abp-input asp-for="ExportBooking.EarlyReturnDatetime" abp-data-datepicker="false" />
+                                                    <label>@L["EarlyReturnDateTime"].Value</label>
+                                                    <input class="form-control" asp-for="ExportBooking.EarlyReturnDatetime" abp-data-datepicker="false" />
                                                 </abp-column>
                                             </abp-row>
                                            @*  <abp-row>
@@ -1109,7 +1127,7 @@
                                             <abp-row>
                                                 <abp-column>
                                                      <div >
-                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.OfficeId", AspItems = _dropdown.SubstationLookupList, IsShowLabel = true, FieldName = @L["OfficeId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.OfficeId), IsRequired = false })
+                                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.OfficeId", AspItems = _dropdown.SubstationLookupList, IsShowLabel = true, FieldName = @L["OfficeId"], ShowFiledContentValue = Convert.ToString(Model.ExportBooking.OfficeId), IsRequired = true })
                                               </div>
                                                 </abp-column>
                                             </abp-row>
@@ -1154,7 +1172,7 @@
                                                 </abp-column>
                                             </abp-row>
                                      <abp-row>
-  <abp-column size-md="_2">
+                                                <abp-column size-md="_2">
                                                     @L["Container List"]
                                                 </abp-column>
                                 <abp-column size-md="_12">
@@ -1208,8 +1226,8 @@
                                 <abp-column size-md="_12" class="table-responsive">
                                     <div>
                                         商品 / 艙單商品
-                                        <abp-button class="btn btn-success me-md-2" type="button" id="addCommodityBtn" onclick="onAddCommodity()">+</abp-button>
-                                        <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteCommodityBtn" onclick="onRemoveCommodity()">delete</abp-button>
+                                        <abp-button class="btn btn-success btn-sm mx-1" type="button" id="addCommodityBtn" onclick="onAddCommodity()"><i class="fas fa-plus fa-lg mx-1"></i></abp-button>
+                                        <abp-button class="btn btn-outline-danger btn-sm" type="button" id="deleteCommodityBtn" onclick="onRemoveCommodity()"><i class="fas fa-minus fa-lg mx-1"></i></abp-button>
                                     </div>
                                     <abp-table width="100%" border="1">
                                         <tr>
@@ -1218,8 +1236,18 @@
                                             <th width="15%">包裝種類</th>
                                             <th width="10%">HTS代碼</th>
                                             <th width="5%">件數</th>
-                                            <th width="5%">淨重</th>
-                                            <th width="5%">毛重</th>
+                                            <th width="5%">淨重
+                                                <select id="selectNetWeight" class="form-select form-select-sm" onchange="EditExportBookings.convertUnit($(this).val(), 'NetWeight')" name="Units.NetWeight" style="width: 100%;">
+                                                    <option value="KG" id="netwkg" selected>KG</option>
+                                                    <option value="LB" id="netwlb">LB</option>
+                                                </select>
+                                            </th>
+                                            <th width="5%">毛重
+                                                <select id="selectGrossWeight" class="form-select form-select-sm" onchange="EditExportBookings.convertUnit($(this).val(), 'GrossWeight')" name="Units.GrossWeight" style="width: 100%;">
+                                                    <option value="KG" id="grosswkg" selected>KG</option>
+                                                    <option value="LB" id="grosswlb">LB</option>
+                                                </select>
+                                            </th>
                                             <th width="10%">單價</th>
                                             <th width="5%">金額</th>
                                             <th width="10%">商品詳情</th>
@@ -1238,7 +1266,7 @@
                                                 </abp-column>
                                                 <abp-column size-md="_6">
                                                               <div>
-                                        <div class="pull-left"><h7 class="form-section">Description</h7></div>
+                                        <div class="pull-left"><h7 class="form-section">@L["Description"]</h7></div>
                                         <div class="pull-right">
                                             <div class="_font-12 inline-block">Copy: </div>
                                             <div class="btn-group">
@@ -1253,25 +1281,40 @@
                                             </abp-row>
                                             <abp-row class="mt-3">
                                                 <abp-column>
-                                                    <input type="radio" class="btn-check" name="RemarkBtn" id="BookingRemark" value="0" checked>
-                                                    <label class="btn btn-outline-secondary checkLabel" for="BookingRemark" onclick="initRemark(0);">@L["Btn:BookingRemark"]</label>
-                                                    <input type="radio" class="btn-check" name="RemarkBtn" id="ShippingRemark" value="1">
-                                                    <label class="btn btn-outline-secondary checkLabel" for="ShippingRemark" onclick="initRemark(1);">@L["Btn:ShippingRemark"]</label>
-                                                    <input type="radio" class="btn-check" name="RemarkBtn" id="CargoRemark" value="2">
-                                                    <label class="btn btn-outline-secondary checkLabel" for="CargoRemark" onclick="initRemark(2);">@L["Btn:CargoRemark"]</label>
+                                                    <label class=""><b style="font-size: large;">@L["Btn:BookingRemark"]</b></label>
+                                                    <div class="btn-group">
+                                                        <input type="radio" class="btn-check" name="RemarkBtn" id="BookingRemark" value="0" checked>
+                                                        <label class="btn btn-outline-secondary checkLabel" for="BookingRemark" onclick="initRemark(0);">@L["Btn:Booking"]</label>
+                                                        <input type="radio" class="btn-check" name="RemarkBtn" id="ShippingRemark" value="1">
+                                                        <label class="btn btn-outline-secondary checkLabel" for="ShippingRemark" onclick="initRemark(1);">@L["Btn:ShippingRemark"]</label>
+                                                        <input type="radio" class="btn-check" name="RemarkBtn" id="CargoRemark" value="2">
+                                                        <label class="btn btn-outline-secondary checkLabel" for="CargoRemark" onclick="initRemark(2);">@L["Btn:CargoRemark"]</label>
+                                                    </div>
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row class="mt-3">
                                                 <abp-column>
-                                                    <textarea id="ExportBooking_BookingRemark" name="ExportBooking.BookingRemark" class="form-control remarkArea">@Model.ExportBooking.BookingRemark a</textarea>
-                                                    <textarea id="ExportBooking_ShippingRemark" name="ExportBooking.ShippingRemark" class="form-control remarkArea">@Model.ExportBooking.ShippingRemark b</textarea>
-                                                    <textarea id="ExportBooking_CargoRemark" name="ExportBooking.CargoRemark" class="form-control remarkArea">@Model.ExportBooking.CargoRemark c</textarea>
+                                                    <textarea id="ExportBooking_BookingRemark" name="ExportBooking.BookingRemark" class="form-control remarkArea">@Model.ExportBooking.BookingRemark</textarea>
+                                                    <textarea id="ExportBooking_ShippingRemark" name="ExportBooking.ShippingRemark" class="form-control remarkArea">@Model.ExportBooking.ShippingRemark</textarea>
+                                                    <textarea id="ExportBooking_CargoRemark" name="ExportBooking.CargoRemark" class="form-control remarkArea">@Model.ExportBooking.CargoRemark</textarea>
                                                 </abp-column>
                                             </abp-row>
                                         </abp-card-body>
                                     </abp-card>
                                 </abp-column>
 
+                            </abp-row>
+                            <abp-row>
+                                <abp-column>
+                                    <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                                        @L["Title:Memo"]
+                                    </abp-card-header>
+                                    <abp-card>
+                                        <abp-card-body>
+                                            <partial name="Memos/_Memo" model="new _MemoModel(Model.Id, Dolphin.Freight.Common.FreightPageType.SO)" />
+                                        </abp-card-body>
+                                    </abp-card>
+                                </abp-column>
                             </abp-row>
                             <!--
                             <abp-row>

@@ -34,5 +34,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public bool? Block { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? ReleaseDate { get; set; }
+        public override string Sorting { get; set; } = "CreationTime desc";
     }
 }

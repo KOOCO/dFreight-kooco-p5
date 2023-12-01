@@ -69,11 +69,37 @@
 <abp-card class="card board-item" id="hblCard">
     <!-- 標題區域 -->
     <abp-card-header style="background:#555555;color:#FFFFFF;">
-        <abp-card-title>
+        <abp-card-title class="col-9">
             @{
                 Model.Title = string.IsNullOrEmpty(Model.AirExportHawbDto.HawbNo) ? (_currentUser.Name + " " + _currentUser.SurName) : Model.AirExportHawbDto.HawbNo;
             }
-            HAWB @L["Information"] - @Model.Title
+            HAWB @Model.Title
+                     &nbsp;&nbsp;
+            @if (Model.AirExportHawbDto.Customer != null)
+            {
+                     <span class="title-span">
+                        
+                     <i class="fa fa-users"></i>
+                             @(Model.AirExportHawbDto.Customer!=null?"Customer: "+_dropdown.TradePartnerLookupList.Where(x=>x.Value==Model.AirExportHawbDto?.Customer).Select(x=>x.Text.Split('/')[0]).FirstOrDefault():"")
+                             </span>
+                         }
+                             &nbsp;&nbsp;
+                @if (Model.AirExportHawbDto.SalesId != null)
+                {
+                             <span class="title-span">
+                                
+                                 <i class="fa fa-user"></i>
+                             @(Model.AirExportHawbDto.SalesId!=null?"Sales: "+_dropdown.TradePartnerLookupList.Where(x=>x.Value==Model.AirExportHawbDto?.SalesId.ToString()).Select(x=>x.Text.Split('/')[0]).FirstOrDefault():"")
+                             </span>
+                                  }
+                             &nbsp;&nbsp;
+                              @if(Model.AirExportHawbDto.CreatorId!=null){
+                             <span class="title-span">
+                                 <i class="fa fa-user"></i>
+                    @(Model.AirExportHawbDto.CreatorId != null ? "OP: " + _dropdown.OperatorLookupList.Where(x => x.Value == Model.AirExportHawbDto?.CreatorId.ToString()).Select(x => x.Text.Split('/')[0]).FirstOrDefault() : "")
+                            </span>
+                              }
+                        
         </abp-card-title>
         <div class="btn-group dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
@@ -210,7 +236,7 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Trucker", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Trucker"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Trucker) })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.Sales", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Sales"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.Sales) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportHawbDto.SalesId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["Sales"], ShowFiledContentValue = Convert.ToString(Model.AirExportHawbDto.SalesId) })
             </abp-column>
             <abp-column size-md="_3">
                 <label asp-for="AirExportHawbDto.OPId" class="form-label"></label>

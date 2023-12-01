@@ -189,11 +189,11 @@ namespace Dolphin.Freight.ImportExport.Containers
 
             foreach (var item in containerList)
             {
-                object a = item.ExtraProperties.GetValueOrDefault("HblIds");
+                object extraProp = item.ExtraProperties.GetValueOrDefault("HblIds");
 
-                if (a is not null)
+                if (extraProp is not null)
                 {
-                    if (a.ToString().Contains(Convert.ToString(hblId)))
+                    if (extraProp.ToString().Contains(Convert.ToString(hblId)))
                     {
                         containerDtoList.Add(ObjectMapper.Map<Container, CreateUpdateContainerDto>(item));
                     }
@@ -201,6 +201,30 @@ namespace Dolphin.Freight.ImportExport.Containers
             }
 
             return containerDtoList.ToList();
+        }
+        public async Task<CreateUpdateContainerDto> GetSingleContainerByExtraPropertiesHblIds(Guid HblId, Guid MblId) {
+            var containerList = await Repository.GetListAsync();
+
+            containerList = containerList.Where(w => w.MblId == MblId && w.ExtraProperties != null && w.ExtraProperties.Count > 0).ToList();
+
+            CreateUpdateContainerDto ContainerDto = new();
+
+            foreach (var item in containerList)
+            {
+                object extraProp = item.ExtraProperties.GetValueOrDefault("HblIds");
+
+                if (extraProp is not null)
+                {
+                    if (extraProp.ToString().Contains(Convert.ToString(HblId)))
+                    {
+                        ContainerDto = ObjectMapper.Map<Container, CreateUpdateContainerDto>(item);
+
+                        return ContainerDto;
+                    }
+                }
+            }
+
+            return ContainerDto;
         }
     }
 }

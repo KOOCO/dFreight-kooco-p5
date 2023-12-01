@@ -6,9 +6,11 @@
 @model Dolphin.Freight.ImportExport.OceanImports.OceanImportDetails
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
-    @{
-        Layout = null;
-    }
+@{
+    Layout = null;
+
+    var UTCDateTime = DateTime.UtcNow.AddHours(8).ToString("MM-dd-yyyy HH:mm");
+}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <style>
@@ -20242,7 +20244,7 @@
         <input type="hidden" asp-for="@Model.ShippingAgentName" />
         <input type="hidden" asp-for="@Model.Mark" />
         <input type="hidden" asp-for="@Model.Description" />
-        <input type="hidden" asp-for="@Model.CreateUpdateContainerJson" />
+        @* <input type="hidden" asp-for="@Model.CreateUpdateContainerJson" /> *@
 
         <div id="main" class="edit">
 <div class="wrap landscape oi-devanning-guide large-font-style">
@@ -20263,7 +20265,7 @@ TRISTANCHESTER, NE 47478<br>
 TEL: 08417606080 FAX: 08417606080<br>
 EMAIL: hanjun.lin@dolphin-gp.com
                                 
-                                    <br><strong>Prepared by Hanjun Lin 08-14-2023 12:23 (CST)</strong>
+                                    <br><strong>Prepared by Hanjun Lin @UTCDateTime (CST)</strong>
                                 
                             </span>
                         </div>
@@ -20467,9 +20469,14 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                             </tr>
                             <tr class="border-b">
                                 <td class="border-r bg-light">CNTR &amp; SEAL#</td>
-                                <td colspan="3">
-                                   @Model.CreateUpdateContainer?[0].ContainerNo/@Model.CreateUpdateContainer?[0].SealNo
-                                </td>
+                                @if (!Model.CreateUpdateContainer.Count.Equals(0)) {
+                                    <td colspan="3">
+                                         @Model.CreateUpdateContainer?[0].ContainerNo / @Model.CreateUpdateContainer?[0].SealNo / @Model.CreateUpdateContainer?[0].PackageNum
+                                    </td>
+                                }
+                                else {
+                                    <td colspan="3"></td>
+                                }
                             </tr>
                             <tr class="border-b">
                                 <td class="border-r bg-light">INSTRUCTION</td>
@@ -20548,7 +20555,7 @@ TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
                         <td class="td">@hbl.index</td>
                         <td class="td text-bold">
                             @hbl.HblNo<br><br><br>
-                            <span class="text-light">@hbl.HblSo_No</span>
+                            <span class="text-light">@hbl.AmsNo</span>
                         </td>
 
                         

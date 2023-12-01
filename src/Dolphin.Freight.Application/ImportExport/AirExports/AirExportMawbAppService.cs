@@ -456,7 +456,19 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 var routeTrans3Carrier = tradePartners.Where(w => w.Id == data.RouteTrans3CarrierId).FirstOrDefault();
                 airExportDetails.RouteTrans3Carrier = string.Concat(routeTrans3Carrier.TPName, "/", routeTrans3Carrier.TPCode);
             }
-            
+
+            airExportDetails.LastFlight = data.RouteTrans3FlightNo is not null ? data.RouteTrans3FlightNo :
+                                          data.RouteTrans2FlightNo is not null ? data.RouteTrans2FlightNo :
+                                          data.RouteTrans1FlightNo is not null ? data.RouteTrans1FlightNo : "";
+
+            airExportDetails.LastFlightDate = data.RouteTrans3FlightNo is not null ? data.RouteTrans3ArrivalDate.ToShortDateString() :
+                                              data.RouteTrans2FlightNo is not null ? data.RouteTrans2ArrivalDate.ToShortDateString() :
+                                              data.RouteTrans1ArrivalDate.ToShortDateString();
+
+            airExportDetails.DepartureFlight = data.RouteDepartureFlightNo;
+
+            airExportDetails.DepartureFlightDate = data.RouteDepatureDate?.ToShortDateString();
+
             airExportDetails.AirWayBillNo = data.MawbNo;
             airExportDetails.MawbNo = data.MawbNo;
             airExportDetails.DocNumber = data.FilingNo;
@@ -473,12 +485,13 @@ namespace Dolphin.Freight.ImportExport.AirExports
             airExportDetails.ChargeableWeightLB = data.ChargeableWeightLb;
             airExportDetails.Operator = string.Concat(CurrentUser.Name, " ", CurrentUser.SurName);
             if (data.ExtraProperties.Count > 0)
-            {if (data.ExtraProperties.ContainsKey("OtherCharges"))
+            {
+                if (data.ExtraProperties.ContainsKey("OtherCharges"))
                 {
                     airExportDetails.OtherCharges = JsonConvert.DeserializeObject<List<OtherCharges>>(data.ExtraProperties?.GetValueOrDefault("OtherCharges").ToString());
                     airExportDetails.OtherChargesJSON = data.ExtraProperties.GetValueOrDefault("OtherCharges").ToString();
                 }
-                }
+            }
 
             return airExportDetails;
         }

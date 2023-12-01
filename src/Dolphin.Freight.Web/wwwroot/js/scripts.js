@@ -628,17 +628,33 @@ function OpenWindow(url) {
 function checkGuid(id) {
     return id && id.length == 36;
 }
-function copyHawb(hawbId, IdElem) {
+function copyHawb(hawbId, IdElem, ShipperElem, ConsigneeElem, PackageElem, WeightElem, MeasurementElem) {
+    var shipperName; var consigneeName; var weight; var measurement; var packages;
+
+    if (ShipperElem != null && ShipperElem != undefined) shipperName = $($('#' + ShipperElem).find('option:selected')).text().split(' /')[0];
+    if (ConsigneeElem != null && ConsigneeElem != undefined) consigneeName = $($('#' + ConsigneeElem).find('option:selected')).text().split(' /')[0];
+    if (PackageElem != null && PackageElem != undefined) packages = $('#' + PackageElem).val();
+    if (WeightElem != null && WeightElem != undefined) weight = $('#' + WeightElem).val();
+    if (MeasurementElem != null && MeasurementElem != undefined) measurement = $('#' + MeasurementElem).val();
+
     let hawbcard = createHawbCard();
     let index = $('.hbl_sm_area').find('.card').length;
-    hawbcard = setHawbCardValues(hawbcard, hawbId, '0', index);
+
+    hawbcard = setHawbCardValues(hawbcard, hawbId, '0', index, consigneeName, shipperName, weight, measurement, packages);
+
     $('#hblCards').append(hawbcard);
+    
     setTimeout(() => {
-        $('.hblCardTitle')[index].click();
-    }, 500);
+        $('.hbl-sm-' + index + '').find('.hblCardTitle')[0].click();
+    }, 1000);
 
     setTimeout(() => {
         $('#' + IdElem).val('00000000-0000-0000-0000-000000000000');
+        if ($('#HawbModel_HawbNo').length == 1) {
+            $('#HawbModel_HawbNo').val('');
+            $('#Id').val('00000000-0000-0000-0000-000000000000');
+            $($('#HawbModel_HawbNo').prev().prev().parent().parent().parent().parent().parent().children()[0]).find('.card-title').text($($('#HawbModel_HawbNo').prev().prev().parent().parent().parent().parent().parent().children()[0]).find('.card-title')[0].innerText.split('- ')[0]);
+        }
     }, 5000);
 }
 

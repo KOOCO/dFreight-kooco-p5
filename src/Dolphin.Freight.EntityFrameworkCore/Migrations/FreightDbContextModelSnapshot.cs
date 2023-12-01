@@ -1727,6 +1727,27 @@ namespace Dolphin.Freight.Migrations
                     b.Property<int>("ReasonForCancel")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("RouteDepartureArrivalDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("RouteDepartureCarrierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RouteDepartureFlightNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("RouteDepartureId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("RouteDepatureDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RouteDestinationArrivalDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("RouteDestinationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("RouteTrans1ArrivalDate")
                         .HasColumnType("datetime2");
 
@@ -1840,6 +1861,12 @@ namespace Dolphin.Freight.Migrations
                     b.HasIndex("OfficeId");
 
                     b.HasIndex("PackageId");
+
+                    b.HasIndex("RouteDepartureCarrierId");
+
+                    b.HasIndex("RouteDepartureId");
+
+                    b.HasIndex("RouteDestinationId");
 
                     b.HasIndex("RouteTrans1CarrierId");
 
@@ -9471,6 +9498,18 @@ namespace Dolphin.Freight.Migrations
                         .WithMany()
                         .HasForeignKey("PackageId");
 
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "RouteDepartureCarrier")
+                        .WithMany()
+                        .HasForeignKey("RouteDepartureCarrierId");
+
+                    b.HasOne("Dolphin.Freight.ImportExport.AirExports.Airport", "RouteDeparture")
+                        .WithMany()
+                        .HasForeignKey("RouteDepartureId");
+
+                    b.HasOne("Dolphin.Freight.ImportExport.AirExports.Airport", "RouteDestination")
+                        .WithMany()
+                        .HasForeignKey("RouteDestinationId");
+
                     b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "RouteTrans1Carrier")
                         .WithMany()
                         .HasForeignKey("RouteTrans1CarrierId");
@@ -9526,6 +9565,12 @@ namespace Dolphin.Freight.Migrations
                     b.Navigation("Notify");
 
                     b.Navigation("Office");
+
+                    b.Navigation("RouteDeparture");
+
+                    b.Navigation("RouteDepartureCarrier");
+
+                    b.Navigation("RouteDestination");
 
                     b.Navigation("RouteTrans1");
 
@@ -10950,7 +10995,7 @@ namespace Dolphin.Freight.Migrations
                         .WithMany()
                         .HasForeignKey("ReleaseById");
 
-                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "ReturnLocation")
+                    b.HasOne("Dolphin.Freight.Settings.PortsManagement.PortsManagement", "ReturnLocation")
                         .WithMany()
                         .HasForeignKey("ReturnLocationId");
 

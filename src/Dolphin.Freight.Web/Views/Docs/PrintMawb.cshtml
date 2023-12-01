@@ -549,11 +549,11 @@
                                             <table class="table-padding">
                                                 <tbody><tr>
                                                     <td class="w-50 text-center border-r">
-                                                        <div class="item-edit"><input type="text" id="ArrivalDate" name="DepartureName" value="@Model.DepartureName / @Model.DepatureDate" /></div>
+                                                        <div class="item-edit"><input type="text" id="ArrivalDate" name="DepartureName" value="@Model.DepartureFlight / @Model.DepartureFlightDate" /></div>
                                                         <input type="hidden" name="DepatureDate" value="@Model.DepatureDate" />
                                                     </td>
                                                     <td class="w-50 text-center">
-                                                        <div class="item-edit"><input type="text" name="DestinationName" value="@Model.DestinationName / @Model.ArrivalDate"></div>
+                                                        <div class="item-edit"><input type="text" name="DestinationName" value="@Model.LastFlight / @Model.LastFlightDate"></div>
                                                         <input type="hidden" name="ArrivalDate" value="@Model.ArrivalDate" />
                                                     </td>
                                                 </tr>
@@ -594,7 +594,7 @@
                                                     <span class="margin-r-xs">
                                                         <input type="checkbox" name="show_dg_declaration" class="pull-left" id="id_show_dg_declaration">
                                                     </span>
-                                                    <textarea name="dg_declaration" cols="40" rows="5" class="w-96 text-scroll no-adjustment ng-isolate-scope" template-id="b30f136eac6668ca1dd12864409ec2ae288dcf8be3d6a03ca0b77f206bb4e7f2:Form.dg_declaration" id="id_dg_declaration">THIS PACKAGE (333.0 CARTON(S)) CONTAINS LITHIUM ION BATTERIES.THIS PACKAGE MUST BE HANDLED WITH CARE. A FLAMMABILITY HAZARD EXISTS IF THE PACKAGE IS DAMAGED. IF THIS PACKAGE IS DAMAGED IN TRANSPORTATION, IT MUST NOT BE LOADED UNTIL THE CONDITION OF THE CONTENTS CAN BE VERIFIED.THE BATTERIES CONTAINED IN THIS PACKAGE MUST BE INSPECTED FOR DAMAGE AND MAY ONLY BE REPACKED IF THEY ARE INTACT AND PROTECTED AGAINST SHORT CIRCUITS. FOR MORE INFORMATION ABOUT THE BATTERIES CONTAINED IN THIS PACKAGE, CALL THE FOLLOWING TELEPHONE #: 08417606080</textarea>
+                                                    <textarea name="dg_declaration" cols="40" rows="5" class="w-96 text-scroll no-adjustment ng-isolate-scope" template-id="b30f136eac6668ca1dd12864409ec2ae288dcf8be3d6a03ca0b77f206bb4e7f2:Form.dg_declaration" id="id_dg_declaration">THIS PACKAGE (@Model.Package @Model.MawbPackageUnit) CONTAINS LITHIUM ION BATTERIES.THIS PACKAGE MUST BE HANDLED WITH CARE. A FLAMMABILITY HAZARD EXISTS IF THE PACKAGE IS DAMAGED. IF THIS PACKAGE IS DAMAGED IN TRANSPORTATION, IT MUST NOT BE LOADED UNTIL THE CONDITION OF THE CONTENTS CAN BE VERIFIED.THE BATTERIES CONTAINED IN THIS PACKAGE MUST BE INSPECTED FOR DAMAGE AND MAY ONLY BE REPACKED IF THEY ARE INTACT AND PROTECTED AGAINST SHORT CIRCUITS. FOR MORE INFORMATION ABOUT THE BATTERIES CONTAINED IN THIS PACKAGE, CALL THE FOLLOWING TELEPHONE #: 08417606080</textarea>
                                                </div>
                                                 </div>
                                             </div>

@@ -1,4 +1,4 @@
-﻿
+﻿@using Volo.Abp.Users
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Permissions
 @using Dolphin.Freight.Web.Pages.Reports
@@ -7,8 +7,11 @@
 @model Dolphin.Freight.Web.ViewModels.Reports.AuthorityViewModel
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
+@inject ICurrentUser CurrentUser
 @{
     Layout = null;
+
+    var UTCDateTime = DateTime.UtcNow.AddHours(8).ToString("MM-dd-yyyy HH:mm");
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
@@ -280,7 +283,7 @@ table tr {
             <table>
                 <tbody><tr>
                     <td class="w-15 logo">
-                       
+                       <img src="/img/hardcore-tech-logo.png">
                     </td>
                     <td class="w-48">
                         <h1 class="auto-font-size office-name"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h1>
@@ -289,9 +292,9 @@ table tr {
                                 77792 COBB CAPE<br>
                                 TRISTANCHESTER, NE 47478<br>
                                 TEL: 08417606080 FAX: 08417606080<br>
-                                EMAIL: hanjun.lin@dolphin-gp.com
+                                EMAIL: @CurrentUser.Email
                                 
-                                    <br><strong>Prepared by Hanjun Lin 07-25-2023 14:56 (CST)</strong>
+                                    <br><strong>Prepared by @(CurrentUser.Name + " " + CurrentUser.SurName) @UTCDateTime (CST)</strong>
                                 
                             </span>
                         </div>
@@ -305,29 +308,6 @@ table tr {
                 </tr>
             </tbody></table>
         </div>
-        <div class="header header-horizontal-logo margin-b-md">
-            <table>
-                <tbody><tr>
-                    <td class="w-75">
-                        <h1 class="text-blue-deep">AUTHORITY TO MAKE ENTRY</h1>
-                        <h2 class="auto-font-size office-name"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h2>
-                        <div class="auto-font-size office-des">
-                            <span>
-                                77792 COBB CAPE TRISTANCHESTER, NE 47478<br>
-                                TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
-                                
-                                    <br><strong>Prepared by Hanjun Lin 07-25-2023 14:56 (CST)</strong>
-                                
-                            </span>
-                        </div>
-                    </td>
-                    <td class="w-2">&nbsp;</td>
-                    <td class="w-22 logo">
-                        <img src="/api/office/logo/1/">
-                    </td>
-                </tr>
-            </tbody></table>
-        </div>
         <div class="con">
             <table class="data-height-md">
                 <tbody><tr>
@@ -335,7 +315,7 @@ table tr {
                         <div class="title">SHIPPER :</div>
                         <div class="data">
                             <div class="item-edit hover-toggle-icon-text-template">
-                                <textarea name="shipper_area" cols="40" rows="5" class="w-100 text-scroll no-adjustment">@Model.Shipper</textarea><</div>
+                                <textarea name="shipper_area" cols="40" rows="5" class="w-100 text-scroll no-adjustment">@Model.Shipper</textarea></div>
                         </div>
                     </td>
                     <td class="w-2"></td>
@@ -366,7 +346,7 @@ table tr {
                     <td class="w-5">ON : </td>
                     <td class="w-15 text-bold">
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <input type="text" name="ETA_date" value="@Model.On" id="id_ETA_date" ></div>
+                            <input type="text" name="ETA_date" value="@Model.ETA2" id="id_ETA_date" ></div>
                     </td>
                     <td class="w-5">VIA : </td>
                     <td class="w-20 text-bold">
@@ -508,7 +488,6 @@ table tr {
                                 <td class="text-bold">
                                     <div class="item-edit hover-toggle-icon-text-template">
                                         <input type="text" name="ETD_date" value="@Model.ETD"></div>
-                                    <div class="item-pdf">07-24-2023</div>
                                 </td>
                             </tr>
                             <tr>
@@ -555,13 +534,13 @@ table tr {
                                             <td class="w-10">Tel: </td>
                                             <td class="w-37">
                                                 <div class="item-edit hover-toggle-icon-text-template">
-                                                    <input type="text" value="@Model.Tel"></div>
+                                                    <input type="text" value="@Model.FreightLocTel"></div>
                                             </td>
                                             <td class="w-6">&nbsp;</td>
                                             <td class="w-10">Fax: </td>
                                             <td class="w-37">
                                                 <div class="item-edit hover-toggle-icon-text-template">
-                                                    <input type="text" name="freight_location_fax" value="@Model.Fax" /></div>
+                                                    <input type="text" name="freight_location_fax" value="@Model.FreightLocFax" /></div>
                                             </td>
                                         </tr>
                                     </tbody></table>
@@ -675,7 +654,7 @@ table tr {
                     <td class="w-3 text-bold title">WE, </td>
                     <td class="w-60 border-b text-12 col-padding-t">
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <input type="text" name="company_name" value="@Model.AgentName" ></div>
+                            <input type="text" name="company_name" value="HARD CORE TECHNOLOGY(GST/VAT)" ></div>
                     </td>
                     <td class="w-35 text-bold title">,</td>
                 </tr>
@@ -691,8 +670,7 @@ table tr {
                             <tbody><tr>
                                 <td class="w-50 border-b text-12 col-padding-t">
                                     <div class="item-edit hover-toggle-icon-text-template">
-                                        <input type="text" name="customs_broker" value="123"></div>
-                                    <div class="item-pdf auto-font-size __width-agent"><span>123</span></div>
+                                        <input type="text" name="customs_broker" value=""></div>
                                 </td>
                                 <td class="w-50 text-bold title">TO MAKE CUSTOMS</td>
                             </tr>
@@ -706,7 +684,6 @@ table tr {
                                 <td class="w-15 title text-bold">ENTRY AND</td>
                                 <td class="w-60 border-b text-12">
                                     <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="trucker" value="@Model.Trucker" id="id_trucker"></div>
-                                    <div class="item-pdf auto-font-size __width-truck"><span>ABBOTT PLC</span></div>
                                 </td>
                                 <td class="w-25 title text-bold">TO TAKE DELIVERY</td>
                             </tr>
@@ -721,8 +698,7 @@ table tr {
                 <tr>
                     <td class="w-3">&nbsp;</td>
                     <td class="w-60 border-b text-12 text-center padding-t-xs">
-                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="company_name_2" value="@Model.AgentName" id="id_company_name_2"></div>
-                        <div class="item-pdf auto-font-size __width-company"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></div>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="company_name_2" value="HARD CORE TECHNOLOGY(GST/VAT)" id="id_company_name_2"></div>
                     </td>
                     <td class="w-35">&nbsp;</td>
                 </tr>

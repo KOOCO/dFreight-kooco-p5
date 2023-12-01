@@ -21,6 +21,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         Task SelectedLockedAirImportMawbAsync(Guid[] ids);
         Task<List<AirImportMawbDto>> GetMawbListAsync();
         Task DeleteMultipalAsync(List<Guid> Ids);
+        Task SetCardSetting(bool IsShowDetail);
+        Task<bool> GetCardSettings();
 
     }
 }

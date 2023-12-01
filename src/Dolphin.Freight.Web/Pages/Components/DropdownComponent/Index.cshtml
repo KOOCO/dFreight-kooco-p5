@@ -6,7 +6,6 @@
 
 @if (Model.IsShowLabel) 
 {
-
   <label class="form-label" for="@Model.FieldName">
         @if (Model.IsRequired)
         {
@@ -42,6 +41,10 @@
                 @if (item.Value == Model.ShowFiledContentValue)
                 {
                     <option value="@item.Value" selected>@item.Text</option>
+                }
+                else if (item.Value == Model.NotShowFiledContentValue)
+                {
+                    continue;
                 }
                 else
                 {

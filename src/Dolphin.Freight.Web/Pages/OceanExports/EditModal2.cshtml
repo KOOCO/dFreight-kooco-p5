@@ -19,6 +19,7 @@
         var containerSizes = [];
         var l = abp.localization.getResource('Freight');
         $(document).ready(function () {
+             $('#cardSettingArea').hide();
             var isLocked = '@Model.OceanExportMbl.IsLocked';
             if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
             if (isLocked != 'True') {
@@ -75,10 +76,6 @@
                                     }, 3000);
                                 });
                             });
-
-                            countTotal('HBL');
-                            countTotalVolume('HBL');
-                            countPackageType('HBL');
                         }
                         addPackageUnitNameddl(packageUnitId);
                     });
@@ -91,9 +88,18 @@
                                 var containerNo = result[i].containerNo;
                                 var containerId = result[i].id;
                                 var hblid = result[i].hblId;
-                                EditModelOEContainer.AddHblContainerTr(containerNo, containerId, hblid);
+                                if (result[i].extraProperties.ContainerDataForHbls != undefined) {
+                                    var extraData = result[i].extraProperties.ContainerDataForHbls[i];
+                                } else {
+                                    var extraData = '';
+                                }
+                                EditModelOEContainer.AddHblContainerTr(containerNo, containerId, hblid, extraData);
                             }
                         }
+
+                        countTotal('HBL');
+                        countTotalVolume('HBL');
+                        countPackageType('HBL');
                     });
                 }
             });
@@ -147,14 +153,38 @@
                     location.href = '/OceanExports/EditModal2?Id=@Model.Id';
                 });
             });
-            $("#addHBtn").click(function () {
-                //var url = "/OceanExports/EditModal?Id=@Model.Id&NewHbl=1";
-                //location.href = url;
-                $('#hblCard').show();
-                $('[name="OceanExportMbl.Mark"]:eq(1)').val($('[name="OceanExportMbl.Mark"]:eq(0)').val());
-                $('[name="OceanExportMbl.Description"]:eq(1)').val($('[name="OceanExportMbl.Description"]:eq(0)').val());
-                $('[name="OceanExportMbl.DomesticInstructions"]:eq(1)').val($('[name="OceanExportMbl.DomesticInstructions"]:eq(0)').val());
-            })
+            // $("#addHBtn").click(function () {
+            //     //var url = "/OceanExports/EditModal?Id=@Model.Id&NewHbl=1";
+            //     //location.href = url;
+            //     $('#hblCard').show();
+            //     $('[name="OceanExportMbl.Mark"]:eq(1)').val($('[name="OceanExportMbl.Mark"]:eq(0)').val());
+            //     $('[name="OceanExportMbl.Description"]:eq(1)').val($('[name="OceanExportMbl.Description"]:eq(0)').val());
+            //     $('[name="OceanExportMbl.DomesticInstructions"]:eq(1)').val($('[name="OceanExportMbl.DomesticInstructions"]:eq(0)').val());
+            // })
+            var cardIndex = 0;
+
+        $('#addHBtn').on('click', function () {
+            if ($('#mawbDiv')[0].classList.contains('show')) {
+                $('#btnMawbCollapse').click();
+            }
+
+            if ($('#btnHawbCardCollapse_0').length) {
+                showAlert(alertConfirmation2, 'Store');
+            }
+            else {
+
+                let hawbcard = createHawbCard();
+
+                let index = $('.hbl_sm_area').find('.card').length;
+                hawbcard = setHawbCardValues(hawbcard, '00000000-0000-0000-0000-000000000000', '0', index);
+
+                $('#hblCards').append(hawbcard);
+
+                setTimeout(() => {
+                    $('.hblCardTitle')[index].click();
+                }, 500);
+            }
+        })
             Swal.clickCancel();
         });
 
@@ -254,13 +284,16 @@
                 break;
 
                 case 'HBL':
-                    var value = parseFloat($('#OceanImportHbl_PackageWeight').val()).toFixed(2);
+                    var value = 0;
 
-                    if (!isNaN(value)) {
-                        $('#htotalWeight').text(value);
-                    } else {
-                        $('#htotalWeight').text('0.00');
+                    for (var i = 0; i < $('#htrtbody tr:not([style])').length; i++) {
+                        var cells = parseFloat($('input[name="OceanExportHblContainer[' + i + '].PackageWeight"]').val());
+                        if (!isNaN(cells)) {
+                            value += cells;
+                        }
                     }
+
+                    $('#htotalWeight').text(parseFloat(value).toFixed(2));
                 break;
 
                 default:
@@ -309,13 +342,16 @@
                 break;
 
                 case 'HBL':
-                    var value = parseFloat($('#OceanImportHbl_PackageMeasurement').val()).toFixed(2);
-
-                    if (!isNaN(value)) {
-                        $('#htotalVolume').text(value);
-                    } else {
-                        $('#htotalVolume').text('0.00');
+                    var value = 0;
+                    
+                    for (var i = 0; i < $('#htrtbody tr:not([style])').length; i++) {
+                        var cells = parseFloat($('input[name="OceanExportHblContainer[' + i + '].PackageMeasurement"]').val());
+                        if (!isNaN(cells)) {
+                            value += cells;
+                        }
                     }
+
+                    $('#htotalVolume').text(parseFloat(value).toFixed(2));
                 break;
 
                 default:
@@ -342,13 +378,11 @@
         }
 
         function countPackageType(module, key) {
+            debugger;
             switch (module) {
                 case 'MBL':
                     var totalPKG = 0;
 
-
-
-                    debugger;
                     for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f4_' + i).val());
                         if (!isNaN(cells)) {
@@ -360,17 +394,22 @@
                     break;
 
                 case 'HBL':
-                    var value = parseFloat($('#oceanImportHbl_PackageType').val()).toFixed(2);
+                    var value = 0;
 
-                    if (!isNaN(value)) {
-                        $('#htotalPackageType').text(value);
-                    } else { $('#htotalPackageType').text('0.00'); }
+                    for (var i = 0; i < $('#htrtbody tr:not([style])').length; i++) {
+                        var cells = parseFloat($('input[name="OceanExportHblContainer[' + i + '].PackageNo"]').val());
+                        if (!isNaN(cells)) {
+                            value += cells;
+                        }
+                    }
+
+                    $('#htotalPackageType').text(parseFloat(value).toFixed(2));
+
                     break;
 
                 default:
                     var totalPKG = 0;
 
-                    debugger;
                     for (var i = 0; i < $('#trtbody tr:not([style])').length; i++) {
                         var cells = parseFloat($('#f4_' + i).val());
                         if (!isNaN(cells)) {
@@ -605,7 +644,64 @@
         function exportDiv(trindex) {
             $("#tr2_" + trindex).show();
         }
-        function changeHid(id, hid) {
+        function expandCard(e) {
+            var element = e.currentTarget || e.target || e.srcElement;
+            var hblNo = element.id.split('_')[1];
+            var color = getComputedStyle(element.parentElement.parentElement).backgroundColor;
+
+            if (!$('#btnHawbCardCollapse_' + hblNo).attr('class').includes('collapsed')) {
+                $('.hblCardHawbNo').addClass('d-none');
+                $('#hblCard_' + hblNo).removeClass('d-none');
+            }
+            else {
+                $('.btnHawbCardCollapse').each(function (i, e) {
+                    let tempHawbNo = e.id.split('_')[1];
+                    if (tempHawbNo == hblNo) {
+                        $('#btnHawbCardCollapse_' + hblNo).click();
+                    }
+                    else {
+                        $('#btnHawbCardCollapse_' + tempHawbNo).addClass('collapsed');
+                        $('#btnHawbCardCollapse_' + tempHawbNo).attr('aria-expanded', 'false');
+                        $('#hawbCard_' + i).removeClass('show');
+                    }
+                })
+
+            }
+
+        }
+        function onHawbCardClick(e, hid) {
+            debugger
+            var element = e.currentTarget || e.target || e.srcElement;
+            var hblNo = element.id.split('_')[1];
+             var color = getComputedStyle(element.parentElement.parentElement).backgroundColor;
+
+            if (!$('#btnHawbCardCollapse_' + hblNo).attr('class').includes('collapsed')) {
+                $('.hblCardHawbNo').addClass('d-none');
+                $('#hblCard_' + hblNo).removeClass('d-none');
+            }
+            else {
+             $('.btnHawbCardCollapse').each(function (i, e) {
+                        let tempHawbNo = e.id.split('_')[1];
+                        if (tempHawbNo == hblNo) {
+                            $('#btnHawbCardCollapse_' + hblNo).click();
+                        }
+                        else {
+                            $('#btnHawbCardCollapse_' + tempHawbNo).addClass('collapsed');
+                            $('#btnHawbCardCollapse_' + tempHawbNo).attr('aria-expanded', 'false');
+                            $('#hawbCard_' + i).removeClass('show');
+                        }
+                    })
+            
+            }
+             var url = new URL(window.location.href);
+          var chekid=  url.searchParams.get('Hid')
+            if (chekid == hid) { 
+                return;
+            
+            }
+            debugger;
+            var id='@Model.Id'
+            
             location.href = '/OceanExports/EditModal2?Id=' + id + "&Hid=" + hid
         }
         function gotoReport(rindex) {
@@ -860,6 +956,151 @@
                 }
             });
         }
+
+         function createHawbCard() {
+           $('#cardSettingArea').show();
+            var check='False';
+           
+            debugger;
+            if ($('#cardCheck').prop('checked')) {
+                check = 'True';
+            
+            }
+           let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h6 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
+    'onclick="onHawbCardClick(event,{{hblCardId}})">';
+
+  // Check the condition and add the <i> tag if check is true
+            if (check=="False") {
+                abpCard += '<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="{{hblCosigneeName}} {{hblShipperName}}"></i>';
+                abpCard += '{{hblNo}}</h6>' +
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+
+            }
+            else {
+                // Add the rest of the card content
+                abpCard += '{{hblNo}}<br>{{hblCosigneeName}}<br>{{hblShipperName}}</h6>' +
+                
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+            }
+            abpCard += '<div class="card-footer"><div class="row"><div class="col-6 hblCardTitle" style="border-bottom: solid;border-top: solid;border-right: solid;border-width: thin;">PKG: {{hblPackage}}</div><div class="col-6 hblCardTitle" style="border-bottom: solid;border-top: solid;border-width: thin;">Weight: {{hblWeight}}</div><div class="col-12 hblCardTitle">Measurement: {{hblMeasurement}}</div></div></div>';
+  return abpCard;
+        }
+
+        function setHawbCardValues(abpcard, cardId, hblNo, index,hblCosigneeName,hblShipperName,weight,measurement,packagetype) {
+            let apbCardClass = 'card board-item hbl-sm-' + index;
+            let cardBodyId = 'hawbCard_' + index;
+            cardId = "'" + cardId + "'";
+
+            abpcard = abpcard.replaceAll("{{divClass}}", apbCardClass);
+            abpcard = abpcard.replaceAll("{{hblNo}}", hblNo);
+            abpcard = abpcard.replaceAll("{{hblCardId}}", cardId);
+            abpcard = abpcard.replaceAll("{{index}}", index);
+            abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
+            abpcard = abpcard.replaceAll("{{hblPackage}}", packagetype);
+            abpcard = abpcard.replaceAll("{{hblWeight}}", weight);
+            abpcard = abpcard.replaceAll("{{hblMeasurement}}", measurement);
+             if (hblCosigneeName !== null) {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", hblCosigneeName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", "");
+  }
+
+  if (hblShipperName !== null) {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", hblShipperName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", "");
+  }
+
+            return abpcard;
+        }
+         function closeModal() {
+            $("#checkModal").modal("hide");
+        }
+        function cardSettingClick() {
+           
+            $("#checkModal").modal("show");  
+        }
+        const toggleLink = document.getElementById("toggleLink");
+
+        // Set an initial state
+        let isAsc = true;
+        let selectedValue = 1;
+        
+        // Add a click event listener to the anchor
+        toggleLink.addEventListener("click", function (e) {
+            e.preventDefault(); // Prevent the default link behavior
+
+            // Toggle between "Asc" and "Desc"
+            if (isAsc) {
+                toggleLink.innerHTML = '<i class="fa fa-sort-down"></i> Desc';
+            } else {
+                toggleLink.innerHTML = '<i class="fa fa-sort-up"></i> Asc';
+            }
+
+            // Invert the state
+            isAsc = !isAsc;
+            SortHblCard();
+        });
+        function changeSetting() { 
+        $("#checkModal").modal("hide");
+           
+            if ($('#cardCheck').prop('checked')) {
+                dolphin.freight.importExport.oceanImports.oceanImportMbl.setCardSetting(true).done(function (response) {
+                    SortHblCard();
+                });
+
+            }
+            else {
+                dolphin.freight.importExport.oceanImports.oceanImportMbl.setCardSetting(false).done(function (response) {
+                    SortHblCard();
+                })
+            }
+        
+        }
+        function SortHblCard(){
+        selectedValue = $('#sortType').val();
+
+            var url = new URL(window.location.href);
+            var selectedHblNo;
+
+            dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(url.searchParams.get('Id'), isAsc,selectedValue)
+                .done(function (hblCards) {
+                    if (hblCards && hblCards.length) {
+                        $('#hblCards').empty();
+                        hblCards.forEach(function (hblCard, index) {
+
+                            let abpcard = createHawbCard();
+
+                            abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index,hblCard.hblConsigneeName,hblCard.hblShipperName,hblCard.weight, hblCard.measurement, hblCard.packageType);
+
+                            $('#hblCards').append(abpcard);
+
+                            if (hblCard.id == url.searchParams.get('Hid')) {
+                                selectedHblNo = hblCard.hblNo;
+                            }
+
+                        })
+                        setTimeout(() => {
+                            if (selectedHblNo) {
+                                $('#title_' + selectedHblNo).click();
+                            }
+                            else { $('.hblCardTitle')[0].click(); }
+
+                        }, 500);
+                    }
+                })
+        
+        
+        
+        
+        
+        
+        
+        
+        }
+
     </script>
 
     <script id="commodityTemplate" type="text/x-jQuery-tmpl">
@@ -1242,14 +1483,6 @@
                     <td></td>
                 </tr>
                 <tbody id="htrtbody">
-                    @*<tr>
-                        <td style="align-items:center"><input type="radio" name="SurplusType" /></td>
-                        <td><input asp-for="@Model.OceanExportHbl.PackageNo" type="text" class="form-control" value="@Model.OceanExportHbl.PackageNo" readonly /></td>
-                        <td><input type="text" class="form-control" id="oceanImportHbl_PackageType" onkeyup="countPackageType('HBL')" value="" /></td>
-                        <td><input asp-for="@Model.OceanExportHbl.PackageWeight" type="text" class="form-control" onkeyup="countTotal('HBL')" value="@Model.OceanExportHbl.PackageWeight" /></td>
-                        <td><input asp-for="@Model.OceanExportHbl.PackageMeasurement" type="text" class="form-control" onkeyup="countTotalVolume('HBL')" value="@Model.OceanExportHbl.PackageMeasurement" /></td>
-                        <td></td>
-                    </tr>*@
                 </tbody>
                 <tfoot>
                     <tr>
@@ -1374,94 +1607,68 @@
 </abp-row>
                 </div>
             </abp-column>
-<abp-column size-md="_3">
-    <div class="card-wrap">
-
-        <button class="btn btn-block btn-add" type="button" id="addHBtn">
-            <i class="fa-solid fa-plus"></i>@L["Btn:AddHbl"].Value
-        </button>
-
-        <div class="function-wrap">
-
-            <div class="form">
-                <div class="form-group">
-                    <label for="cardOrderSet">卡片排序</label>
-                    <select class="form-control  " id="cardOrderSet">
-                        <option selected>請選擇</option>
-                        <option value="建立日期">建立日期</option>
-                        <option value="HB/L 號碼">HB/L 號碼</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="sr-only" for="cardOrder">Preference</label>
-                    <select class="form-control " id="cardOrder">
-                        <option selected>請選擇</option>
-                        <option value="遞增">遞增</option>
-                        <option value="遞減">遞減</option>
-                    </select>
-                </div>
-                <fieldset class="form-group">
-                    <legend class="col-form-label">卡片顯示</legend>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox"
-                               id="inlineCheckbox1" value="option1">
-                        <label class="form-check-label"
-                               for="inlineCheckbox1">託運人與收貨人</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox"
-                               id="inlineCheckbox2" value="option2">
-                        <label class="form-check-label"
-                               for="inlineCheckbox2">名稱標籤</label>
-                    </div>
-                </fieldset>
-
-                <button type="button" class="btn btn-dark btn-block btn-update">
-                    <i class="fa-solid fa-arrows-rotate"></i>更新
-                </button>
-            </div>
-
-        </div>
-
-        <!--  <div class="anchor-wrap">-->
-
-        <div id="hblCardDiv" class="cardAnchor">
-                        @if (Model.OceanExportHbls != null)
-                        { var count = -1 ;
-                            foreach (var hbl in Model.OceanExportHbls)
-                            {
-                               count=count+1;
-                                var focusString = "";
-                                if (Model.Hid == hbl.Id)
-                                {
-                                    focusString = " focus ";
-                                }
-                    <div class="borad-anchor hbl-sm-@count @focusString">
-                        <div class="borad-cont" onclick="changeHid('@Model.Id','@hbl.Id')">
-                            <a class="link" href="#cardA"></a>
-                            <span class="label label-HBL">HB/L</span>
-                            <span class="MBLnumber">@hbl.HblNo</span>
-                                        @hbl.SoNo
-                            <a class="outlink" href="#" target="_blank">
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                            </a>
+   <abp-column class="col-xl-3 col-lg-12 col-md-12 col-sm-12">
+                    <div class="card-wrap">
+                        <button class="btn btn-block btn-add" type="button" id="addHBtn">
+                            <i class="fa-solid fa-plus"></i>@L["Btn:AddHbl"]
+                        </button>
+                        <div id="cardSettingArea">     
+                            <div class="d-flex flex-row">
+                        <div class="p-2"><label>Sort By</label>
+                        <select id="sortType">
+                            <option selected value="1">HB/L No</option>
+                             <option value="2">Created Date</option>
+                        </select>    
+                        </div>
+                        <div class="p-2">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+                        <div class="p-2">
+                            <a href="#" id="toggleLink"><i class="fa fa-sort-up"></i> Asc</a>
+                        </div>
+                            </div>
+                            <div class="d-flex flex-row">
+                        <div class="p-2" ><a href='javascript:void(0)' class="text-muted" onclick="cardSettingClick()"><i class="fa fa-cogs"></i> Card Setting</a>
+                            </div>
+                            </div>
+                            </div>
+                        <div id="hblCards" class="hbl_sm_area">
                         </div>
                     </div>
-                            }
-
-                        }
-
-
-
-
-        </div>
-    </div>
-    <div>
-    </div>
-</abp-column>
+                </abp-column>
         </abp-row>
 <input type="hidden" name="OceanExportHbl.Id" value="@Model.OceanExportHbl.Id" />
 <input type="hidden" name="CreateUpdateContainerHawb.Id" value="@Model.CreateUpdateContainerHawb?.Id" />
+ <div id="checkModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Card Setting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+        <div class="pull-left w-80per _pd-sm">
+            <div class="_text-blue-steel _font-15 bold _mg-bottom-10">Collapsed Card View</div>
+            <div class="_font-13 _mg-bottom-xs">Show Shipper and Consignee</div>
+            <div class="_font-11 text-muted">Show Shipper and Consignee name without hovering on the <i class="fa fa-info-circle _font-11"></i> icon when the cards are collapsed</div>
+        </div>
+        <div class="pull-left w-20per _mg-top-50">
+    <abp-input asp-for="@Model.ISToolTipShow" id="cardCheck" suppress-label />
+        </div><!---->
+    </div>
+                    
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="changeSetting()">@L["Btn:Ok"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
     </form>
 
 <div class="modal mymodal" id="ManifestModal" tabindex="-1" role="dialog">

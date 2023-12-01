@@ -9,9 +9,13 @@
 
                     let abpcard = createHawbCard();
                     debugger;
-                    abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index);
+                    abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index, hblCard.hblConsigneeName, hblCard.hblShipperName, hblCard.weight, hblCard.measurement, hblCard.packageType);
 
                     $('#hblCards').append(abpcard);
+
+                    if (hblCard.id == url.searchParams.get('Hid')) {
+                        selectedHblNo = hblCard.hblNo;
+                    }
 
                 })
                 setTimeout(() => {

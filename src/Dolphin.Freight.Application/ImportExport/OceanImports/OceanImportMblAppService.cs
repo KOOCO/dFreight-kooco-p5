@@ -14,6 +14,7 @@ using Dolphin.Freight.TradePartners;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -21,6 +22,8 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
+using Volo.Abp.SettingManagement;
+using Volo.Abp.Settings;
 using Volo.Abp.Users;
 
 namespace Dolphin.Freight.ImportExport.OceanImports
@@ -34,6 +37,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             CreateUpdateOceanImportMblDto>, //新增修改IT號碼管理用
         IOceanImportMblAppService //實作IOceanImportMblAppService
     {
+        private readonly ISettingProvider _settingProvider;
+        private readonly ISettingManager _settingManager;
         private readonly IRepository<OceanImportMbl, Guid> _repository;
         private readonly IRepository<SysCode, Guid> _sysCodeRepository;
         private readonly IRepository<Substation, Guid> _substationRepository;
@@ -49,7 +54,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public OceanImportMblAppService(IRepository<OceanImportMbl, Guid> repository, IRepository<SysCode, Guid> sysCodeRepository, IRepository<Substation, Guid> substationRepository,
                                          PortsManagementAppService portRepository1, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository,
                                         IRepository<OceanImportHbl, Guid> oceanImportHblRepository, IIdentityUserAppService identityUserAppService, IContainerAppService containerAppService,
-                                        IRepository<Country, Guid> countryRepository, IIdentityUserRepository identityUserRepository, IRepository<PortsManagement, Guid> portRepository, IOceanImportHblAppService oceanImportHblAppService)
+                                        IRepository<Country, Guid> countryRepository, IIdentityUserRepository identityUserRepository, IRepository<PortsManagement, Guid> portRepository,
+                                        IOceanImportHblAppService oceanImportHblAppService, ISettingManager settingManager, ISettingProvider settingProvider)
             : base(repository)
         {
             _repository = repository;
@@ -64,6 +70,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             _oceanImportHblAppService = oceanImportHblAppService;
             _identityUserRepository = identityUserRepository;
             _containerAppService = containerAppService;
+            _settingManager = settingManager;
+            _settingProvider = settingProvider;
+
             /*
             GetPolicyName = OceanImportPermissions.OceanImportMbls.Default;
             GetListPolicyName = OceanImportPermissions.OceanImportMbls.Default;
@@ -74,7 +83,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public async Task<PagedResultDto<OceanImportMblDto>> QueryListAsync(QueryMblDto query)
         {
             var substations = await _substationRepository.GetListAsync();
+            
             Dictionary<Guid, string> substationsDictionary = new Dictionary<Guid, string>();
+            
             if (substations != null)
             {
                 foreach (var substation in substations)
@@ -83,7 +94,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
             }
             var tradePartners = await _tradePartnerRepository.GetListAsync();
+            
             Dictionary<Guid, string> tradePartnerDictionary = new Dictionary<Guid, string>();
+            
             if (tradePartners != null)
             {
                 foreach (var tradePartner in tradePartners)
@@ -92,7 +105,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
             }
             var portManagements = await _portRepository.GetListAsync();
+            
             Dictionary<Guid, string> portManagementsDictionary = new Dictionary<Guid, string>();
+            
             if (portManagements != null)
             {
                 foreach (var portManagement in portManagements)
@@ -101,7 +116,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
             }
             var SysCodes = await _sysCodeRepository.GetListAsync();
+            
             Dictionary<Guid, string> dictionary = new Dictionary<Guid, string>();
+            
             if (SysCodes != null)
             {
                 foreach (var syscode in SysCodes)
@@ -110,7 +127,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
             }
             var Users = await _identityUserRepository.GetListAsync();
+            
             Dictionary<Guid, string> userDictionary = new Dictionary<Guid, string>();
+            
             if (Users != null)
             {
                 foreach (var user in Users)
@@ -118,7 +137,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     dictionary.Add(user.Id, user.Name + " " + user.Surname);
                 }
             }
+
             var OceanImportMbls = await _repository.GetQueryableAsync();
+
+            query.Sorting = this.GetColumnName(query.Sorting);
+
             OceanImportMbls = OceanImportMbls.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.MblNo
                                             .Contains(query.Search) || x.Office.SubstationName
                                             .Contains(query.Search) || x.Office.AbbreviationName
@@ -131,7 +154,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                                             .WhereIf(query.Pol.HasValue, e => e.PolId == query.Pol)
                                             .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
                                             .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
-                                            .WhereIf(!string.IsNullOrWhiteSpace(query.Vessel),x=>x.VesselName==query.Vessel)
+                                            .WhereIf(!string.IsNullOrWhiteSpace(query.Vessel), x => x.VesselName == query.Vessel)
                                             .WhereIf(query.SaleId.HasValue, e => e.MblSaleId == query.SaleId)
                                             .WhereIf(query.OvearseaAgentId.HasValue, e => e.MblOverseaAgentId == query.OvearseaAgentId)
                                             .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
@@ -143,9 +166,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                                             .WhereIf(query.CoLoaderId.HasValue, e => e.CoLoaderId == query.CoLoaderId)
                                             .WhereIf(query.PostDate.HasValue, e => e.PostDate.Date == query.PostDate.Value.Date.AddDays(1))
                                             .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1))
-                                              .WhereIf(query.ReleaseDate.HasValue, e => e.MblReleaseDate == query.ReleaseDate.Value.Date.AddDays(1))
-                                            .OrderByDescending(x => x.CreationTime);
+                                            .WhereIf(query.ReleaseDate.HasValue, e => e.MblReleaseDate == query.ReleaseDate.Value.Date.AddDays(1))
+                                            .OrderBy($"{query.Sorting}");
+            
             List<OceanImportMbl> rs = OceanImportMbls.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
+            
             List<OceanImportMblDto> list = new List<OceanImportMblDto>();
 
             if (rs.Any())
@@ -162,9 +187,12 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     list.Add(item);
                 }
             }
+            
             PagedResultDto<OceanImportMblDto> listDto = new PagedResultDto<OceanImportMblDto>();
+            
             listDto.Items = list;
             listDto.TotalCount = OceanImportMbls.Count();
+            
             return listDto;
         }
         public async Task LockedOrUnLockedOceanImportMblAsync(QueryMblDto query)
@@ -282,8 +310,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
                 if (data.CyLocationId != null)
                 {
-                    var CY = tradePartners.Where(w => w.Id == data.CyLocationId).FirstOrDefault();
-                    oceanImportDetails.CyLocation = string.Concat(CY?.TPName, "/", CY?.TPCode);
+                    var CY = countries.Where(w => w.Id == data.CyLocationId).FirstOrDefault();
+                    oceanImportDetails.CyLocation = string.Concat(CY?.CountryName);
                 }
                 if (data.DelId != null)
                 {
@@ -328,7 +356,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 if (data.MblCarrierId != null)
                 {
                     var MblCarrier = tradePartners.Where(w => w.Id == data.MblCarrierId).FirstOrDefault();
-                    oceanImportDetails.MblCarrierName = string.Concat(MblCarrier?.TPName, "/", MblCarrier?.TPCode);
+                    oceanImportDetails.MblCarrierName = string.Concat(MblCarrier?.TPName);
                 }
                 if (data.MblConsigneeId != null)
                 {
@@ -452,19 +480,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
             }
 
             oceanImportDetails.Commodity = data.GetProperty<List<ManifestCommodity>>("Commodities");
-            oceanImportDetails.MblNo = data.MblNo;
-            oceanImportDetails.SoNo = data.SoNo;
-            oceanImportDetails.PodEta = data.PodEta;
             oceanImportDetails.DocNo = data.FilingNo;
-            oceanImportDetails.Mark = data.Mark;
-            oceanImportDetails.Description = data.Description;
-            oceanImportDetails.DomesticInstructions = data.DomesticInstructions;
             oceanImportDetails.CurrentDate = DateTime.Now;
-            oceanImportDetails.VesselName = data.VesselName;
-            oceanImportDetails.Voyage = data.Voyage;
-            oceanImportDetails.AgentRefNo = data.AgentRefNo;
-            oceanImportDetails.ItNo = data.ItNo;
-            oceanImportDetails.ItDate = data.ItDate;
 
             return oceanImportDetails;
         }
@@ -520,5 +537,55 @@ namespace Dolphin.Freight.ImportExport.OceanImports
 
             await _containerAppService.UpdateAsync(ContainerId, ObjectMapper.Map<ContainerDto, CreateUpdateContainerDto>(container));
         }
+
+        public async Task SetCardSetting(bool IsShowDetail)
+        {
+            try
+            {
+                await _settingManager.SetGlobalAsync("ShowHblDetails", IsShowDetail.ToString().ToPascalCase());
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+        public async Task<bool> GetCardSettings() {
+
+          var result=  await _settingProvider.GetAsync<bool>("ShowHblDetails");
+            return result;
+        }
+
+        #region Private Functions
+        private string GetColumnName(string colName)
+        {
+            if (string.IsNullOrEmpty(colName))
+            {
+                colName = "CreationTime desc";
+            }
+
+            Dictionary<string, string> ColumnMappingName = new()
+            {
+                { "officename", "OfficeId" },
+                { "finaldestname", "FdestId" },
+                { "porname", "PorId" },
+                { "polname", "PolId" },
+                { "podname", "PodId" },
+                { "delname", "DelId" },
+                { "mbloverseaagentname", "MblOverseaAgentId" },
+                { "mblcarriername", "MblCarrierId" },
+                { "mblsalename", "MblSaleId" },
+                { "mbloperatorname", "MblOperatorId" },
+                { "packages", "PackageCategoryId" }
+            };
+
+            if (ColumnMappingName.ContainsKey(colName.Split(" ")[0].ToLower()))
+            {
+                colName = ColumnMappingName[colName.Split(" ")[0].ToLower()];
+            }
+
+            return colName;
+        }
+        #endregion
     }
 }

@@ -84,17 +84,17 @@
             </button>
             <input asp-for="@Model.HawbModel.IsLocked" type="hidden"/>
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                  <a class='dropdown-item' href='javascript:void(0)' onclick="AirImportHawb.setHawbLockUnlock('@Model.HawbModel.IsLocked')">
-                                        @if(@Model.HawbModel.IsLocked)
-                                        {
-                                            <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
-                                        }
-                                        else
-                                        {
-                                            <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                                        }
-                                    </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirImportHawb.setHawbLockUnlock('@Model.HawbModel.IsLocked')">
+                    @if(@Model.HawbModel.IsLocked)
+                    {
+                        <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
+                    }
+                    else
+                    {
+                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                    }
+                </a>
+                    <a class='dropdown-item' href='javascript:void(0)' onclick="copyHawb('@Model.HawbModel.Id', 'HawbModel_Id', 'HawbModel_ShipperId', 'HawbModel_ConsigneeId', 'HawbModel_Package', 'HawbModel_GrossWeightKG', 'HawbModel_VolumeWeightCBM')">
                     <i class="fa fa-copy"></i> @L["Btn:Copy"]
                 </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="deleteHawbAirImport()">
@@ -454,7 +454,7 @@
         </abp-row>
         <abp-row>
             <abp-column size-md="_12">
-                 <label class="form-label">@L["Description"]</label>
+                 <label class="form-label">@L["Remark"]</label>
                  <textarea  asp-for="HawbModel.Remark" id="HawbModel_Remark" name="HawbModel.Remark" class="form-control">@Model.HawbModel.Remark</textarea>
                @*  <abp-input asp-for="@Model.HawbModel.Remark" size="Small" /> *@
             </abp-column>
@@ -474,7 +474,7 @@
                 </abp-card-header>
                 <abp-card>
                     <abp-card-body>
-                        <partial name="Memos/_Memo" model="new _MemoModel(Model.HawbModel.Id, Dolphin.Freight.Common.FreightPageType.AIMBL)" />
+                        <partial name="Memos/_Memo" model="new _MemoModel(Model.HawbModel.Id, Dolphin.Freight.Common.FreightPageType.AIHBL)" />
                     </abp-card-body>
                 </abp-card>
             </abp-column>

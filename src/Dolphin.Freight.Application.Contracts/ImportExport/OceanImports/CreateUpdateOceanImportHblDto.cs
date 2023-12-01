@@ -17,7 +17,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// HB/L號碼
         /// </summary>
-
+        public string ExtraPropJSON { get; set; }
         public Guid? MblId { get; set; }
         public Guid? ContainerId { get; set; }
         /// <summary>

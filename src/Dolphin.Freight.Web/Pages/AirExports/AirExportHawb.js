@@ -128,7 +128,7 @@ class AirExportHawb {
         var url = new URL(window.location.href);
         var mawbId = url.searchParams.get('Id');
         dolphin.freight.importExport.airExports.airExportMawb.get(mawbId).done(function (res) {
-            myWindow = window.open('https://www.track-trace.com/bol#' + res.mawbNo, '_blank', 'width=1200,height=1000');
+            myWindow = window.open('https://www.track-trace.com/aircargo#' + res.mawbNo, '_blank', 'width=1200,height=1000');
             myWindow.focus();
         });
     }

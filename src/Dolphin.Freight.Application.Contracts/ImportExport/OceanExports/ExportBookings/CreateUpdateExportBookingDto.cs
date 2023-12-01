@@ -295,6 +295,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 分站ID
         /// </summary>
+        [Required(ErrorMessage = "This Field is Required.")]
         public Guid? OfficeId { get; set; }
         /// <summary>
         /// 是否可堆積

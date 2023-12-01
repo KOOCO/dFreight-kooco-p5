@@ -1,4 +1,5 @@
-﻿@using Dolphin.Freight.Localization
+﻿@using Volo.Abp.Users
+@using Dolphin.Freight.Localization
 @using Dolphin.Freight.Permissions
 @using Dolphin.Freight.Web.Pages.Reports
 @using Microsoft.AspNetCore.Authorization
@@ -6,8 +7,11 @@
 @model Dolphin.Freight.ImportExport.AirImports.AirImportDetails
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
+@inject ICurrentUser CurrentUser
 @{
     Layout = null;
+
+    var UTCDateTime = DateTime.UtcNow.AddHours(8).ToString("MM-dd-yyyy HH:mm");
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
@@ -213,6 +217,9 @@ table td {
     <input type="hidden" asp-for="@Model.HPackageUnitName" />
     <input type="hidden" asp-for="@Model.HTruckerName" />
     <input type="hidden" asp-for="@Model.BillToName" />
+    <input type="hidden" asp-for="@Model.HRemark" />
+    <input type="hidden" asp-for="@Model.HMark" />
+    <input type="hidden" asp-for="@Model.HDescription" />
     
     <div id="main" class="edit">
 
@@ -301,9 +308,9 @@ table td {
                                 77792 COBB CAPE<br>
                                 TRISTANCHESTER, NE 47478<br>
                                 TEL: 08417606080 FAX: 08417606080<br>
-                                EMAIL: hanjun.lin@dolphin-gp.com
+                                EMAIL: @CurrentUser.Email
                                 
-                                    <br><strong>Prepared by Hanjun Lin 07-26-2023 16:18 (CST)</strong>
+                                    <br><strong>Prepared by @(CurrentUser.Name + " " + CurrentUser.SurName) @UTCDateTime (CST)</strong>
                                 
                             </span>
                         </div>
@@ -313,31 +320,6 @@ table td {
                         <div class="text-center">
                             <h2 class="blue-lg">DELIVERY ORDER</h2>
                         </div>
-                    </td>
-                </tr>
-            </tbody></table>
-        </div>
-        <div class="header header-horizontal-logo">
-            <table>
-                <tbody><tr>
-                    <td class="w-75">
-                        <h1 class="text-blue-deep">DELIVERY ORDER</h1>
-                        <h2 class="auto-font-size office-name"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></h2>
-                        <div class="auto-font-size office-des">
-                            <span>
-                                77792 COBB CAPE<br>
-                                TRISTANCHESTER, NE 47478<br>
-                                TEL: 08417606080 FAX: 08417606080<br>
-                                EMAIL: hanjun.lin@dolphin-gp.com
-                                
-                                    <br><strong>Prepared by Hanjun Lin 07-26-2023 16:18 (CST)</strong>
-                                
-                            </span>
-                        </div>
-                    </td>
-                    <td class="w-2">&nbsp;</td>
-                    <td class="w-22 logo">
-                        <img src="/img/hardcore-tech-logo.png">
                     </td>
                 </tr>
             </tbody></table>
@@ -514,10 +496,8 @@ table td {
                                     </div>
                                     <div class="data">
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <textarea name="billing_to_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_billing_to_area">@Model.BillToName</textarea>
-                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 3px; left: 315px;"></span><!---->
-
-                                        </hc-input-template></div>
+                                            <textarea name="billing_to_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" id="id_billing_to_area">@Model.BillToDetail</textarea>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -565,10 +545,8 @@ table td {
                                     <div class="title">PO NO.</div>
                                     <div class="data">
                                         <div class="item-edit hover-toggle-icon-text-template">
-                                            <input type="text" name="po_num_list" id="id_po_num_list" class="ng-isolate-scope">
-                                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 138px;"></span><!---->
-
-                                        </hc-input-template></div>
+                                            <input type="text" name="po_num_list" id="id_po_num_list" class="ng-isolate-scope" value="@Model.PONo">
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -610,11 +588,11 @@ table td {
                                     <div class="data">
                                         <div class="item-edit">
                                             <select name="carrier" class="select ng-untouched ng-valid ng-dirty ng-not-empty" id="id_carrier">
-                                              <option value="carrier_name">ABBOTT-NGUYEN</option>
+                                              <option value="carrier_name">@Model.CarrierTPName</option>
                                             
-                                              <option value="flight_no">ZARA</option>
+                                              <option value="flight_no">@Model.FlightNo</option>
                                             
-                                              <option value="carrier_and_flight_no">ABBOTT-NGUYEN (ZARA)</option>
+                                              <option value="carrier_and_flight_no">@Model.CarrierTPName (@Model.FlightNo)</option>
                                             
                                             </select>
                                         </div>
@@ -647,10 +625,8 @@ table td {
                             <div class="title">REMARK</div>
                             <div class="data">
                                 <div class="item-edit hover-toggle-icon-text-template">
-                                    <textarea name="remark" cols="40" rows="11" class="text-scroll no-adjustment ng-isolate-scope" id="id_remark"></textarea>
-                                <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 3px; left: 316px;"></span><!---->
-
-                                </hc-input-template></div>
+                                    <textarea name="remark" cols="40" rows="11" class="text-scroll no-adjustment ng-isolate-scope" id="id_remark">@Model.HRemark</textarea>
+                                </div>
                             </div>
                         </div>
                     </td>
@@ -677,61 +653,47 @@ table td {
                 <tr>
                     <td class="td td-item border-r">
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="mark" cols="40" rows="15" class="text-scroll ng-isolate-scope" id="id_mark"></textarea>
-                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 142px;"></span><!---->
-
-                        </hc-input-template></div>
+                            <textarea name="mark" cols="40" rows="15" class="text-scroll ng-isolate-scope" id="id_mark">@Model.HMark</textarea>
+                        </div>
                     </td>
                     <td class="td td-item border-r">
                         <div class="item-edit hover-toggle-icon-text-template">
-                            <textarea name="good_items" cols="40" rows="15" class="text-scroll ng-isolate-scope" id="id_good_items"></textarea>
-                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 228px;"></span><!---->
-
-                        </hc-input-template></div>
+                            <textarea name="good_items" cols="40" rows="15" class="text-scroll ng-isolate-scope" id="id_good_items">@Model.HDescription</textarea>
+                        </div>
                     </td>
                     <td class="td td-item border-r text-right">
                         <div class="item-edit hover-toggle-icon-text-template">
                             <textarea name="package_area" cols="40" rows="15" class="text-scroll text-right ng-isolate-scope" id="id_package_area">@Model.Package @Model.HPackageUnitName</textarea>
-                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 59px;"></span><!---->
-
-                        </hc-input-template></div>
+                        </div>
                     </td>
                     <td class="td td-item text-right border-r">
                         <div class="item-edit hover-toggle-icon-text-template">
                             <textarea name="gross_weight" cols="40" rows="15" class="text-scroll text-right ng-isolate-scope" id="id_gross_weight">@Model.GrossWeightStr</textarea>
-                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 81px;"></span><!---->
-
-                        </hc-input-template></div>
+                        </div>
                     </td>
                     <td class="td td-item text-right">
                         <div class="item-edit hover-toggle-icon-text-template">
                             <textarea name="chargeable_weight" cols="40" rows="15" class="text-scroll text-right ng-isolate-scope" id="id_chargeable_weight">@Model.ChargableWeightStr</textarea>
                             <label class="text-12">
-                                <input type="checkbox" name="show_volume_measure" ng-model="show_volume_measure" hc-user-preference="ai_delivery_order_show_volume_measure" id="id_show_volume_measure" class="ng-untouched ng-valid ng-empty ng-dirty"> Show Measurement
+                                <input type="checkbox" name="show_volume_measure" id="id_show_volume_measure" class="ng-untouched ng-valid ng-empty ng-dirty"> Show Measurement
                             </label>
                             <textarea name="volume_measure" cols="40" rows="4" class="text-scroll text-right ng-isolate-scope" id="id_volume_measure">@Model.MeasurementStr</textarea>
-                        <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 104px;"></span><!---->
-
-                        </hc-input-template><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 225px; left: 104px;"></span><!---->
-
-                    </hc-input-template></div>
+                        </div>
                     </td>
                 </tr>
             </tbody></table>
             <table class="margin-t-sm">
                 <tbody><tr>
                     <td class="w-50 td-remark border td">
-                        <div class="auto-font-size auto-link __col-remark-lg">
-                            <span>
-                                P.O.D REQUIRED WITH BILLING INVOICE<br>
-                                PLEASE FAX PROOF OF DELIVERY TO 999-000-5555<br>
-                                <br>
-                                PLEASE FAX PROOF OF DELIVERY TO 999-000-5555<br>
-                                15631563
-                            </span>
+                        <span>
+                            P.O.D REQUIRED WITH BILLING INVOICE<br>
+                            PLEASE FAX PROOF OF DELIVERY TO 999-000-5555<br>
+                            <br>
+                            PLEASE FAX PROOF OF DELIVERY TO 999-000-5555<br>
+                            15631563
+                        </span>
                             
-                            <div class="text-bold text-16 item-edit"><input type="checkbox" name="do_not_break_pallet" hc-user-preference="pdo_do_not_break_pallet" ng-model="vm.pdo_do_not_break_pallet" id="id_do_not_break_pallet" class="ng-untouched ng-valid ng-dirty ng-not-empty"> DO NOT BREAK DOWN PALLET</div>
-                        </div>
+                        <div class="text-bold text-16 item-edit"><input type="checkbox" name="do_not_break_pallet" hc-user-preference="pdo_do_not_break_pallet" ng-model="vm.pdo_do_not_break_pallet" id="id_do_not_break_pallet" class="ng-untouched ng-valid ng-dirty ng-not-empty"> DO NOT BREAK DOWN PALLET</div>
                     </td>
                     <td class="w-2">&nbsp;</td>
                     <td class="w-48 td">
@@ -766,14 +728,10 @@ table td {
                                                     <tbody><tr>
                                                         <td class="w-22">PREPARED BY</td>
                                                         <td class="w-48">
-                                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="OPName" value="@Model.OPName" id="id_current_user_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 151px;"></span><!---->
-
-                                                            </hc-input-template></div>
+                                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="OPName" value="@(string.Concat(CurrentUser.Name, " ", CurrentUser.SurName))" id="id_current_user_name" class="ng-isolate-scope"></div>
                                                         </td>
                                                         <td class="w-25">
-                                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="CurrentDate" value="@Model.CurrentDate" id="id_current_datetime" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-fib-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-fib-c260="" class="icon-text-template" style="top: 1px; left: 69px;"></span><!---->
-
-                                                            </hc-input-template></div>
+                                                            <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="CurrentDate" value="@Model.CurrentDate" id="id_current_datetime" class="ng-isolate-scope"></div>
                                                         </td>
                                                     </tr>
                                                 </tbody></table>

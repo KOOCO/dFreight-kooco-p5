@@ -618,8 +618,16 @@ namespace Dolphin.Freight.Web.Pages.AirExports
                     NewMawab.ExtraProperties.Add("Dimensions", Dimensions);
                 }
 
-                var inputDto = await _airExportMawbAppService.CreateAsync(NewMawab);
-                MawbId = inputDto.Id;
+                try
+                {
+                    var inputDto = await _airExportMawbAppService.CreateAsync(NewMawab);
+                    MawbId = inputDto.Id;
+                }
+                catch (Exception e)
+                {
+
+                    throw;
+                }
 
                 if (AirExportHawbDto is not null && !string.IsNullOrEmpty(AirExportHawbDto.HawbNo))
                 {
@@ -765,6 +773,16 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             public string ShippingInfo { get; set; }
             public string ShipperLoad { get; set; }
             public string Sci { get; set; }
+
+
+            public String RouteDepartureId { get; set; }
+            public DateTime? RouteDepartureArrivalDate { get; set; }
+            public DateTime? RouteDepatureDate { get; set; }
+            public string RouteDepartureFlightNo { get; set; }
+            public String RouteDepartureCarrierId { get; set; }
+
+            public String RouteDestinationId { get; set; }
+            public DateTime? RouteDestinationArrivalDate { get; set; }
 
             public String RouteTrans1Id { get; set; }
             public DateTime? RouteTrans1ArrivalDate { get; set; }

@@ -441,7 +441,7 @@
                             </abp-row>
                             <abp-row class="mb-3" >
                                 <abp-column size-md="_3">
-                                    <abp-input label="Vessel  Name" asp-for="OceanExportMbl.VesselName" />
+                                    <abp-input label="@L["Vessel  Name"]" asp-for="OceanExportMbl.VesselName" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="OceanExportMbl.Voyage" />
@@ -532,7 +532,7 @@
                             </abp-row>
                             <abp-row class="mb-10">
                                 <abp-column size-md="_3">
-                                    <abp-input label="Container Size Qty Info" asp-for="OceanExportMbl.DisplayMblContainerSizeQtyInfo" disabled="true"/>
+                                    <abp-input label="@L["Container Size Qty Info"]" asp-for="OceanExportMbl.DisplayMblContainerSizeQtyInfo" disabled="true"/>
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.OblTypeId", AspItems = _dropdown.OblTypeLookupList, IsShowLabel = true, FieldName = "OblTypeId", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.OblTypeId) })
@@ -645,10 +645,10 @@
                                     <abp-input asp-for="OceanExportMbl.SubBlNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input label="Service Contact No" asp-for="OceanExportMbl.ServiceContactNo" />
+                                    <abp-input label="@L["Service Contact No"]" asp-for="OceanExportMbl.ServiceContactNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input label="Forward Ref No" asp-for="OceanExportMbl.ForwardRefNo" />
+                                    <abp-input label="@L["Forward Ref No"]" asp-for="OceanExportMbl.ForwardRefNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportMbl.TransPort1Id", AspItems = _dropdown.TransPortLookupList, IsShowLabel = true, FieldName = "TransPort1Id", ShowFiledContentValue = Convert.ToString(Model.OceanExportMbl.TransPort1Id) })

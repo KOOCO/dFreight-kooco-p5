@@ -429,5 +429,9 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         public CreateUpdateContainerDto CreateUpdateHBLContainerDto { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
         public Dictionary<string, string> HblContainerIdContains { get; set; }
+
+        public string Weight { get; set; }
+        public string Measurement { get; set; }
+        public string PackageType { get; set; }
     }
 }

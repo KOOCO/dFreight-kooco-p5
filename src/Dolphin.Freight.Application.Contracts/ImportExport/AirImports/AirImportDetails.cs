@@ -72,6 +72,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string CurrentDate { get; set; }
         public string HItLocation { get; set; }
         public string HMark { get; set; }
+        public string HDescription { get; set; }
+        public string HRemark { get; set; }
         /// <summary>
         /// 是否直單
         /// </summary>
@@ -86,6 +88,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? ConsigneeId { get; set; }
         public string ConsigneeName { get; set; }
+        public string ConsigneeAddress { get; set; }
         /// <summary>
         ///  通知方Id
         /// </summary>
@@ -104,12 +107,14 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? BillToId { get; set; }
         public string BillToName { get; set; }
+        public string BillToDetail { get; set; }
         // <summary>
         /// 操作員Id
         /// </summary>
         public Guid? SalesId { get; set; }
         public string SalesName { get; set; }
         public string SalesType { get; set; }
+        public string PONo { get; set; }
         /// <summary>
         ///  出發地Id
         /// </summary>
@@ -234,6 +239,10 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// </summary>
         public Guid? FreightLocationId { get; set; }
         public string FreightLocationName { get; set; }
+        public string FreightLocationWithPhoneNo { get; set; }
+        public string FreightLocationFaxNo { get; set; }
+        public string FreightLocationPhoneNo { get; set; }
+        public string FreightLocationAddress { get; set; }
         public string MFreightLocationName { get; set; }
         /// <summary>
         /// 
@@ -326,6 +335,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string FinalDestination { get; set; }
         public string DeliveryLocationName { get; set; }
         public string FDestETA { get; set; }
+        public DateTime? FinalDestETA { get; set; }
         public DateTime LastFreeDay { get; set; }
         public string Remark { get; set; }
         public string SubHawbJson { get; set; }

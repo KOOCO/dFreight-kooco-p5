@@ -26,6 +26,7 @@
 }
 @section scripts
     {
+       @*  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> *@
     <script src="https://cdn.jsdelivr.net/npm/jquery-templates@1.0.0/jquery.tmpl.min.js"></script>
     <abp-script src="/Pages/OceanImports/CreateMbl.js" />
     <abp-script src="/Pages/OceanImports/EditModel.js" />
@@ -273,8 +274,32 @@
                         $('#partialContainer').html(partial);
                         setFilteredDropdown();
                         setDateTimeforCards('OIHBL');
-                       
-                          updateRequiredAttribute();
+                        const ids = ["OceanImportHbl_PorEtd",
+                            "OceanImportHbl_PodEta",
+                            "OceanImportHbl_DelEta",
+                            "OceanImportHbl_FdestEta",
+                            "OceanImportHbl_CargoArrivalDate",
+                            "OceanImportHbl_HblWhCutOffTime",
+                            "OceanImportHbl_EarlyReturnDateTime",
+                            "OceanImportHbl_LcIssueDate",
+                            "OceanImportHbl_OnBoardDate",
+                            "OceanImportHbl_HblReleaseDate",
+                            "OceanImportHbl_CanceledDate",
+                            "OceanImportMbl_OblReceivedDate",
+                            "OceanImportMbl_MblReleaseDate",
+                            "OceanImportHbl_Available",
+                            "OceanImportHbl_IsfMatchDate",
+                            "OceanImportHbl_Lfd",
+                            "OceanImportHbl_ItDate",
+                            "OceanImportHbl_GoDate",
+                            "OceanImportHbl_ExpiryDate",
+                            "OceanImportHbl_CReleasedDate",
+                            "OceanImportHbl_EntryDocSent",
+                            "OceanImportHbl_DoorDeliveryATA"];
+
+                        var dateTimePickerHbl = new CustomDateTimePicker();
+                        dateTimePickerHbl.dateTimePicker(ids);
+                        updateRequiredAttribute();
                         $('#OceanImportHbl_AmsNo').change(function () {
                          if ($('#OceanImportHbl_AmsNo').val() == '') {
             $("#OceanImportHbl_AmsNo-error").text("AMS No. is mandatory for creating ISF");
@@ -429,10 +454,11 @@
                     ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
                     ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
             }
+             abpCard += '<div class="card-footer"><div class="row"><div class="col-12 hblCardTitle">{{invoiceInfo}}</div></div></div>';
   return abpCard;
         }
 
-        function setHawbCardValues(abpcard, cardId, hblNo, index,hblCosigneeName,hblShipperName) {
+        function setHawbCardValues(abpcard, cardId, hblNo, index,hblCosigneeName,hblShipperName,arBalance,apBalance) {
             let apbCardClass = 'card board-item hbl-sm-' + index;
             let cardBodyId = 'hawbCard_' + index;
             cardId = "'" + cardId + "'";
@@ -442,6 +468,10 @@
             abpcard = abpcard.replaceAll("{{hblCardId}}", cardId);
             abpcard = abpcard.replaceAll("{{index}}", index);
             abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
+           
+            abpcard = abpcard.replaceAll("{{invoiceInfo}}", "AP/AR Balance "+apBalance+" / "+arBalance);
+            
+
              if (hblCosigneeName !== null) {
     abpcard = abpcard.replaceAll("{{hblCosigneeName}}", hblCosigneeName);
   } else {
@@ -518,13 +548,11 @@
           function getOrderDelivery() {
             var idNo = $('#OceanImportMbl_Id').val();
             myWindow = window.open("@Url.Action("DeliveryOrderOceanImportMawb", "Docs")" + "?id=" + idNo, 'DeliveryOrderOceanImportMawb', 'width=1200,height=800');
-            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
            function getDEVSEG() {
             var idNo = $('#OceanImportMbl_Id').val();
             myWindow = window.open("@Url.Action("DEVSEGOceanImportMbl", "Docs")" + "?id=" + idNo, 'DEVSEGOceanImportMbl', 'width=1200,height=800');
-            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
         function OpenInTrackTrace() {
@@ -535,18 +563,16 @@
          function getPreliminaryClaim() {
             var idNo = $('#OceanImportHBL').val();
             myWindow = window.open("@Url.Action("PreliminaryClaimOceanImport", "Docs")" + "?id=" + idNo+"&pageType=2", 'PreliminaryClaimOceanExport', 'width=1200,height=800');
-            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
 
         function ConslidateByConsignee() {
-
             var url = new URL(window.location.href);
             var mblId = url.searchParams.get('Id');
 
             if (mblId == null) {
-                var url = window.location.href;
-                var mblId = url.split('/')[url.split('/').length - 1];
+                url = window.location.href;
+                mblId = url.split('/')[url.split('/').length - 1];
             }
             
             dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(mblId).done(function (res) 
@@ -642,11 +668,22 @@
         });
         function changeSetting() { 
         $("#checkModal").modal("hide");
-            SortHblCard();
+            if ($('#cardCheck').prop('checked')) {
+                dolphin.freight.importExport.oceanImports.oceanImportMbl.setCardSetting(true).done(function (response) {
+                    SortHblCard();
+                });
+
+            }
+            else {
+                dolphin.freight.importExport.oceanImports.oceanImportMbl.setCardSetting(false).done(function (response) {
+                    SortHblCard();
+                })
+            }
         
         
         }
         function SortHblCard(){
+            debugger;
         selectedValue = $('#sortType').val();
 
             var url = new URL(window.location.href);
@@ -660,7 +697,7 @@
 
                             let abpcard = createHawbCard();
 
-                            abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index,hblCard.hblConsigneeName,hblCard.hblShipperName);
+                            abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index,hblCard.hblConsigneeName,hblCard.hblShipperName,hblCard.arBalance, hblCard.apBalance);
 
                             $('#hblCards').append(abpcard);
 
@@ -784,7 +821,7 @@
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Arrival Notice"]
                                     </a>
                                      <li class="dropdown-divider"></li>
-                            <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanImportProfitReportDetailOrSummry", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL, reportType = "Summary" })')">
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanImportProfitReportDetailOrSummry", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL, reportType = "Summary" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanImportProfitReportDetailOrSummry", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL, reportType = "Detail" })')">
@@ -978,7 +1015,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.FdestId) })
         </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.FdestEta" abp-data-datepicker="false" />
+                            <abp-input asp-for="OceanImportMbl.FdestEta" abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -1217,6 +1254,9 @@
         <input type="hidden" name="OceanImportHbl.PodId" id="hHPodId" value="@Model.OceanImportHbl.PodId" />
         <input type="hidden" name="OceanImportHbl.HDelId" id="hHDelId" value="@Model.OceanImportHbl.DelId" />
         <input type="hidden" name="OceanImportHbl.FdestId" id="hHFdestId" value="@Model.OceanImportHbl.FdestId" />
+        <input type="hidden" name="OceanImportHbl.ExtraPropJSON" id="hHExtraPropId" value="@Model.OceanImportHbl.ExtraPropJSON" />
+        <input type="hidden" name="OceanImportHbl.Mark" id="hHMark" value="@Model.OceanImportHbl.Mark" />
+        <input type="hidden" name="OceanImportHbl.Description" id="hHDescription" value="@Model.OceanImportHbl.Description" />
         <input type="hidden" name="OceanImportHbl.CardColorId" id="hCardColorId" value="@Model.OceanImportHbl.CardColorId" />
         <input type="hidden" name="OceanImportHbl.CardColorValue" id="hCardColorValue" />
         <div  id="ejo" style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">

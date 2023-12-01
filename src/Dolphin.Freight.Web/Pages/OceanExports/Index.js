@@ -119,6 +119,9 @@ function lockCheckBox(checkbox) {
                     dataTable.ajax.reload();
                 });
         }
+        else {
+            $($('#lock_' + id).parent().prev().prev().children()[0]).prop('checked', false);
+        }
     });
 }
 
