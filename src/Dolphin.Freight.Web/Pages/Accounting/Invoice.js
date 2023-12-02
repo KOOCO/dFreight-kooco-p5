@@ -47,7 +47,7 @@ class Invoice {
         let price = parseFloat($(target).val() || 0);
         let quantity = parseFloat($(target).parent().parent().children()[7].children[0].value || 0);
         let rate = parseFloat($(target).parent().parent().children()[8].children[0].value || 0);
-        $(target).parent().next().next().children().text(parseFloat(quantity * rate * price).toFixed());
+        $(target).parent().next().next().children().text(parseFloat(quantity * rate * price).toFixed(2));
         var amount = quantity * price * rate;
         if ($('#Tax_0').find(':selected').text().split('%')[0] == '0') {
             var taxAmount = amount * 0;

@@ -112,6 +112,7 @@
                         let id = parent.attr('id');
                         let index = id.substr(id.lastIndexOf('_') + 1);
                         let invoiceBillId = parent.find('[name="InvoiceBillDtos[' + index + '].Id"]').attr('value')
+                        var currencyValue;
 
                         if ($('#Tax_' + (index-1)).find(':selected').text().split('%')[0] == '7') {
                             var taxAmount = $('#Amount_' + (index-1)).text() * 0.07;
@@ -121,16 +122,30 @@
 
                         if (invoiceBillId) {
                             dolphin.freight.accounting.invoiceBills.invoiceBill.delete(invoiceBillId).done(function (result) {
+                                if (parent.prev().length > 0){
+                                    currencyValue = $(parent.prev().children()[6]).children().val();
+                                }
+                                else if (parent.next().length > 0 && !$(parent.next().children()[0].children).prop('checked')) {
+                                    currencyValue = $(parent.next().children()[6]).children().val();
+                                }
+
                                 parent.remove();
                                 resetIndexes();
-                                getTotalSubAmount();
+                                getTotalSubAmount(currencyValue);
                                 getTotalAmount(parseFloat(taxAmount).toFixed(2));
                             });
                         }
                         else {
+                            if (parent.prev().length > 0){
+                                currencyValue = $(parent.prev().children()[6]).children().val();
+                            }
+                            else if (parent.next().length > 0 && !$(parent.next().children()[0].children).prop('checked')) {
+                                currencyValue = $(parent.next().children()[6]).children().val();
+                            }
+
                             parent.remove();
                             resetIndexes();
-                            getTotalSubAmount();
+                            getTotalSubAmount(currencyValue);
                             getTotalAmount(parseFloat(taxAmount).toFixed(2));
                         }
                     }
@@ -479,7 +494,7 @@
             trhtml = trhtml + "<th><input type='hidden' name='InvoiceBillDtos[" + index + "].Id'></th>";
             trhtml = trhtml + "<th></th></tr>";
             $("#trtbody").append(trhtml);
-            debugger;
+           
             let val = currencyCodeToName[$('#Currency_' + index).val() || ''];
             let conversion = JSON.parse(currencyConvertor);
             let rate = conversion["" + val + "-TWD"];
@@ -547,7 +562,6 @@
             } else {
                 for (var i = 0; i < BillTypeItems.length; i++)
                 {
-                    debugger;
                     selectHtml = selectHtml + "<option value='" + BillTypeItems[i].codeValue + "'";
                     if (BillTypeItems[i].codeValue == billType) selectHtml = selectHtml + " selected ";
                     selectHtml = selectHtml + " > " + l(BillTypeItems[i].showName) + "</option>"
@@ -581,7 +595,7 @@
             return selectHtml;
         }
         function getRate(id, rate){
-            var selectHtml = "<input type='text' style='background-color: #d3d3d394;' name='InvoiceBillDtos[" + id + "].Rate' onchange='onRateChange(event)' value='" + rate + "' id='Rate_" + index + "' readonly/><input type='hidden' name='InvoiceBillDtos[" + id + "].Amount' id='Amount_[" + id + "]' /></td>"
+            var selectHtml = "<input type='text' style='background-color: #d3d3d394;' name='InvoiceBillDtos[" + id + "].Rate' onchange='onRateChange(event)' value='" + rate + "' id='Rate_" + index + "' readonly/></td>"
             return selectHtml;
         }
         function goBlank() {
