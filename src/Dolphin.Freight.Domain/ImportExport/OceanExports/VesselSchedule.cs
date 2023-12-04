@@ -167,7 +167,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 收貨地(POR) ETD
         /// </summary>
-        public DateTime PorEtd { get; set; }
+        public DateTime? PorEtd { get; set; }
         /// <summary>
         /// 卸貨港(POD)ID
         /// </summary>
@@ -193,7 +193,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 交貨地(DEL) ETA
         /// </summary>
-        public DateTime DelEta { get; set; }
+        public DateTime? DelEta { get; set; }
         /// <summary>
         /// 最終目的地ID
         /// </summary>
@@ -206,7 +206,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 最終目的地ETA
         /// </summary>
-        public DateTime FdestEta { get; set; }
+        public DateTime? FdestEta { get; set; }
         /// <summary>
         /// 運費ID
         /// </summary>
@@ -255,23 +255,23 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 文件結關日
         /// </summary>
-        public DateTime DocCutOffTime { get; set; }
+        public DateTime? DocCutOffTime { get; set; }
         /// <summary>
         /// 港口結關日
         /// </summary>
-        public DateTime PortCutOffTime { get; set; }
+        public DateTime? PortCutOffTime { get; set; }
         /// <summary>
         /// VGM結關日期
         /// </summary>
-        public DateTime VgmCutOffTime { get; set; }
+        public DateTime? VgmCutOffTime { get; set; }
         /// <summary>
         /// 鐵路結關日
         /// </summary>
-        public DateTime RailCutOffTime { get; set; }
+        public DateTime? RailCutOffTime { get; set; }
         /// <summary>
         /// 裝船日期
         /// </summary>
-        public DateTime OnBoardDate { get; set; }
+        public DateTime? OnBoardDate { get; set; }
         /// <summary>
         /// 子提單號碼
         /// </summary>
@@ -296,7 +296,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 中轉港ETA
         /// </summary>
-        public DateTime Trans1Eta { get; set; }
+        public DateTime? Trans1Eta { get; set; }
         /// <summary>
         /// 是否刪除
         /// </summary>
