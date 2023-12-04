@@ -5,23 +5,14 @@ var _changeInterval = null;
 var queryListFilter = function () {
     return {
         search: $("#Keyword").val(),
-
-
         freightLocationId: $("#VesselSchedule_FreightLocationId").val() == '' ? null : $("#VesselSchedule_FreightLocationId").val(),
         shipperId: $("#VesselSchedule_ShipperId").val() == '' ? null : $("#VesselSchedule_ShipperId").val(),
         notifyId: $("#VesselSchedule_NotifyId").val() == '' ? null : $("#VesselSchedule_NotifyId").val(),
         saleId: $("#VesselSchedule_SaleId").val() == '' ? null : $("#VesselSchedule_SaleId").val(),
         customerId: $("#VesselSchedule_CustomerId").val() == '' ? null : $("#VesselSchedule_CustomerId").val(),
         consigneeId: $("#VesselSchedule_ConsigneeId").val() == '' ? null : $("#VesselSchedule_ConsigneeId").val(),
-    
-
-      
-
-
-    
         postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
         creationDate: $("#CreationDate").val() == '' || $("#CreationDate").val() == null ? null : new Date($("#CreationDate").val()),
-
     };
 };
 var columns = [
@@ -175,11 +166,11 @@ $(function () {
             abp.libs.datatables.normalizeConfiguration({
                 serverSide: true,
                 paging: true,
+                pagingType: 'full_numbers',
                 order: [[2, "asc"]],
                 searching: false,
                 processing: true,
                 scrollX: true,
-               
                 responsive: {
                     details: {
                         type: 'column'

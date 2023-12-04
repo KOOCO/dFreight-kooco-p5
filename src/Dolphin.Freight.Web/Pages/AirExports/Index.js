@@ -154,6 +154,7 @@ $(function () {
             abp.libs.datatables.normalizeConfiguration({
                 serverSide: true,
                 paging: true,
+                pagingType: 'full_numbers',
                 order: col,
                 searching: false,
                 scrollX: true,

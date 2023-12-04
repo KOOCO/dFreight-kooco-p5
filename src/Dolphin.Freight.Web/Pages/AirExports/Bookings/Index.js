@@ -140,7 +140,6 @@ $(function () {
 
     dolphin.freight.web.controllers.configuration.getJsonConfig('AirExportBookingList').done(function (data) {
         data.forEach(function (item) {
-            debugger;
             if (!item.lock && item.checkable) {
                 var itemData = item.name;
                 if (item.name.toLowerCase().includes('date')) {
@@ -167,6 +166,7 @@ $(function () {
             abp.libs.datatables.normalizeConfiguration({
                 serverSide: true,
                 paging: true,
+                pagingType: 'full_numbers',
                 order: col,
                 searching: false,
                 scrollX: true,
