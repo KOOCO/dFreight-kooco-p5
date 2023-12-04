@@ -181,7 +181,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// 收貨地(POR) ETD
         /// </summary>
         [DataType(DataType.Date)]
-        public DateTime PorEtd { get; set; }
+        public DateTime? PorEtd { get; set; }
         /// <summary>
         /// 裝貨港(POL)ID
         /// </summary>
@@ -236,7 +236,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 中轉港ETA
         /// </summary>
-        public DateTime Trans1Eta { get; set; }
+        public DateTime? Trans1Eta { get; set; }
         /// <summary>
         /// ECTN號碼 
         /// </summary>

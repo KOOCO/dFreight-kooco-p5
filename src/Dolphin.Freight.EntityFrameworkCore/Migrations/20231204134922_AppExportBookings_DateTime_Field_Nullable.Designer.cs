@@ -4,6 +4,7 @@ using Dolphin.Freight.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,10 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Dolphin.Freight.Migrations
 {
     [DbContext(typeof(FreightDbContext))]
-    partial class FreightDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231204134922_AppExportBookings_DateTime_Field_Nullable")]
+    partial class AppExportBookings_DateTime_Field_Nullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3035,7 +3037,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("PoNo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("PodEta")
+                    b.Property<DateTime>("PodEta")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("PodId")

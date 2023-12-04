@@ -1,7 +1,6 @@
 ﻿$(function () {
     var url = new URL(window.location.href);
     var selectedHblNo;
-    debugger;
 
     if (url.searchParams.get('Id') != null) {
         dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(url.searchParams.get('Id'), true, 0)
