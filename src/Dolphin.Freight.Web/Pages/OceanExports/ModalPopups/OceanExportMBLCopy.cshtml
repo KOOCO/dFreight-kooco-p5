@@ -1,0 +1,42 @@
+﻿@page
+@using Dolphin.Freight.Localization
+@using Microsoft.Extensions.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@model Dolphin.Freight.Web.Pages.OceanExports.ModalPopups.OceanExportMBLCopyModel
+@inject IStringLocalizer<FreightResource> L
+@{
+    Layout = null;
+}
+<abp-script src="/Pages/OceanExports/ModalPopups/OceanExportMBLCopy.js" />
+<form abp-model="CopyModel" id="copyForm" method="post" action="@Url.Page("/OceanExports/ModalPopups/OceanExportMBLCopy")">
+    <abp-modal size="Large">
+        <abp-modal-header title="@L["CopyMawb"]"></abp-modal-header>
+        <abp-modal-body>
+            <abp-input type="hidden" asp-for="@Model.Id" />
+            <abp-column size="_12">
+                <p>@L["Title:OceanExportCopyModel"]</p>
+            </abp-column>
+            <abp-column size="_12">
+                <input suppress-label type="checkbox" asp-for="@Model.CopyModel.IsCopyVesselInfoAndShippingSchedule" />
+                <label class="form-label">@L["Display:CopyVesselInfoAndShipments"]</label>
+            </abp-column>
+            <abp-column size="_12">
+                <input type="checkbox" suppress-label asp-for="@Model.CopyModel.CopyAccountingInformation" id="accountingCheckbox" />
+                <label class="form-label">@L["Display:CopyAccountingInformation"]</label>
+            </abp-column>
+            <abp-column size="_12">
+                <input type="checkbox" suppress-label asp-for="@Model.CopyModel.AP" id="apCheckbox" />
+                <label class="form-label">@L["Display:A/P"]</label>
+                <input type="checkbox" suppress-label asp-for="@Model.CopyModel.AR" id="arCheckbox" />
+                <label class="form-label">@L["Display:A/R"]</label>
+                <input type="checkbox" suppress-label asp-for="@Model.CopyModel.DC" id="dcCheckbox" />
+                <label class="form-label">@L["Display:D/C"]</label>
+            </abp-column>
+            <abp-column size="_12">
+                <input type="checkbox" suppress-label asp-for="@Model.CopyModel.IsCopyContainerInfo" id="containerCheckbox" />
+                <label class="form-label">@L["Display:CopyContainerInformation"]</label>
+            </abp-column>
+        </abp-modal-body>
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)"></abp-modal-footer>
+    </abp-modal>
+</form>

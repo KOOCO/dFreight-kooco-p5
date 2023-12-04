@@ -1,4 +1,35 @@
 ﻿$(function () {
+    var url = new URL(window.location.href);
+    var selectedHblNo;
+
+    dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(url.searchParams.get('Id'), true, 0)
+        .done(function (hblCards) {
+            if (hblCards && hblCards.length) {
+                $('#cardSettingArea').show();
+                hblCards.forEach(function (hblCard, index) {
+
+                    let abpcard = createHblCard();
+
+                    abpcard = setHblCardValues(abpcard, hblCard.id, hblCard.hblNo, index);
+
+                    $('#hblCardDiv').append(abpcard);
+
+                    if (hblCard.id == url.searchParams.get('Hid')) {
+                        selectedHblNo = hblCard.hblNo;
+                    }
+                })
+                setTimeout(() => {
+                    if (selectedHblNo) {
+                        $('#title_' + selectedHblNo).click();
+                    }
+                    else { $('.hblCardTitle')[0].click(); }
+
+                }, 500);
+            }
+        })
+});
+
+$(function () {
     var l = abp.localization.getResource('Freight');
     $(document).ready(function () {
         const ids = [
