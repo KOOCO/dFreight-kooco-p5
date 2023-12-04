@@ -368,7 +368,7 @@
                 
                 total += amount;
             }
-            
+
             let conversion = JSON.parse(currencyConvertor);
 
             currencies.forEach(function (currency) {
@@ -382,7 +382,7 @@
                     convertedRate = 0;
                 }
 
-                document.getElementById("converted" + currency).innerHTML = (parseFloat(convertedRate).toFixed(2) * total).toFixed(2);
+                document.getElementById("converted" + currency).innerHTML = (convertedRate * total).toFixed(2);
             })
         }
 
