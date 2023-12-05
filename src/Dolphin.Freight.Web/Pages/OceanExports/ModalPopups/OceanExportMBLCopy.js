@@ -45,5 +45,5 @@
 });
 
 $('#copyForm').on('abp-ajax-success', function (result, rs) {
-    location.href = 'CreateMbl?Id=' + rs.responseText.Id + '&IsCopyVesselInfoAndShippingSchedule=' + rs.responseText.IsCopyVesselInfoAndShippingSchedule + '&CopyAccountingInformation=' + rs.responseText.CopyAccountingInformation + '&IsCopyContainerInfo=' + rs.responseText.IsCopyContainerInfo + '&IsAP=' + rs.responseText.AP + '&IsAR=' + rs.responseText.AR + '&IsDC=' + rs.responseText.DC;
+        location.href = 'CreateMbl?Id=' + rs.responseText.Id + '&IsCopyVesselInfoAndShippingSchedule=' + rs.responseText.IsCopyVesselInfoAndShippingSchedule + '&CopyAccountingInformation=' + rs.responseText.CopyAccountingInformation + '&IsCopyContainerInfo=' + rs.responseText.IsCopyContainerInfo + '&IsAP=' + rs.responseText.AP + '&IsAR=' + rs.responseText.AR + '&IsDC=' + rs.responseText.DC;
 });

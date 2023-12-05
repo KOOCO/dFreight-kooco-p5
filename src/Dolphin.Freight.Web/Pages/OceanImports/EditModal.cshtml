@@ -797,7 +797,7 @@
                                 </button>
                                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDropMbl">
                                     <a class='dropdown-item' id="lockButtonMbl" href='javascript:void(0)' onclick="EditModelScript.lockUnlockMblOrHbl('@Model.OceanImportMbl.Id', 'Mbl')"></a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="EditModelScript.OceanImportCopy('@Model.OceanImportMbl.Id')">
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="deleteMbl()">

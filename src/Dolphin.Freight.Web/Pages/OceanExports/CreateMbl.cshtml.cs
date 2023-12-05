@@ -124,7 +124,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         {
             if (Id != Guid.Empty)
             {
-                Dictionary<Guid, Guid> hblIds = new Dictionary<Guid, Guid>();
+                Dictionary<Guid, Guid> hblIds = new();
 
                 var oldMblId = Id;
 
@@ -149,125 +149,17 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
 
                 if (CopyAccountingInformation)
                 {
-                    QueryInvoiceDto QueryInvoiceDto = new() { QueryType = 3, ParentId = oldMblId };
-
-                    var InvoiceDtos = await _invoiceAppService.QueryInvoicesAsync(QueryInvoiceDto);
-
-                    if (InvoiceDtos != null && InvoiceDtos.Count > 0)
-                    {
-                        if (IsAP)
-                        {
-                            var APInvoice = InvoiceDtos.Where(w => w.InvoiceType == 0).ToList();
-
-                            foreach (var item in APInvoice)
-                            {
-                                var newAPInvoice = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(item);
-
-                                newAPInvoice.MblId = inputDto.Id;
-                                newAPInvoice.Id = Guid.Empty;
-
-                                var CreateInvoice = await _invoiceAppService.CreateAsync(newAPInvoice);
-
-                                QueryInvoiceBillDto InvoiceBillDto = new();
-                                InvoiceBillDto.InvoiceNo = item.Id.ToString();
-
-                                var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(InvoiceBillDto);
-                                foreach (var bill in invoiceBills)
-                                {
-                                    var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
-                                    newbill.InvoiceId = CreateInvoice.Id;
-                                    newbill.Id = Guid.Empty;
-                                    await _invoiceBillAppService.CreateAsync(newbill);
-                                }
-                            }
-                        }
-                        if (IsDC)
-                        {
-                            var invoiceDc = InvoiceDtos.Where(x => x.InvoiceType == 1).ToList();
-                            foreach (var invoice in invoiceDc)
-                            {
-
-                                var newInvoiceDc = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
-                                newInvoiceDc.MblId = inputDto.Id;
-                                newInvoiceDc.Id = Guid.Empty;
-                                var createInvoice = await _invoiceAppService.CreateAsync(newInvoiceDc);
-                                QueryInvoiceBillDto query = new QueryInvoiceBillDto();
-                                query.InvoiceNo = invoice.Id.ToString();
-                                var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(query);
-                                foreach (var bill in invoiceBills)
-                                {
-                                    var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
-                                    newbill.InvoiceId = createInvoice.Id;
-                                    newbill.Id = Guid.Empty;
-                                    await _invoiceBillAppService.CreateAsync(newbill);
-                                }
-                            }
-                        }
-                        if (IsAR)
-                        {
-                            var invoiceAr = InvoiceDtos.Where(x => x.InvoiceType == 2).ToList();
-                            foreach (var invoice in invoiceAr)
-                            {
-                                var newInvoiceAr = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
-                                newInvoiceAr.MblId = inputDto.Id;
-                                newInvoiceAr.Id = Guid.Empty;
-                                var createInvoice = await _invoiceAppService.CreateAsync(newInvoiceAr);
-                                QueryInvoiceBillDto query = new QueryInvoiceBillDto();
-                                query.InvoiceNo = invoice.Id.ToString();
-                                var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(query);
-                                foreach (var bill in invoiceBills)
-                                {
-                                    var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
-                                    newbill.InvoiceId = createInvoice.Id;
-                                    newbill.Id = Guid.Empty;
-                                    await _invoiceBillAppService.CreateAsync(newbill);
-                                }
-                            }
-                        }
-                    }
+                    await _invoiceAppService.CreateMblHblAccountingForCopiedOE_OI(oldMblId, inputDto.Id, IsAP, IsAR, IsDC);
                 }
 
                 if (IsCopyContainerInfo)
                 {
-                    var containers = await _containerAppService.GetContainerByMblId(oldMblId);
-
-                    containers = containers.Where(w => w.ExtraProperties is not null && w.ExtraProperties.Count > 0).ToList();
-
-                    foreach (var item in containers)
-                    {
-                        List<Guid> newExtraPropList = new();
-
-                        object extraProp = item.ExtraProperties.GetValueOrDefault("HblIds");
-
-                        if (extraProp is not null)
-                        {
-                            List<Guid> extraPropList = JsonConvert.DeserializeObject<List<Guid>>(extraProp.ToString());
-
-                            foreach (var item1 in extraPropList)
-                            {
-                                var newItem1 = hblIds[item1];
-
-                                newExtraPropList.Add(newItem1);
-                            }
-
-                            item.ExtraProperties.Remove("HblIds");
-
-                            item.ExtraProperties.Add("HblIds", newExtraPropList);
-                        }
-
-                        item.Id = Guid.Empty;
-
-                        item.MblId = inputDto.Id;
-
-                        await _containerAppService.CreateAsync(item);
-                    }
+                    await _containerAppService.CreateMblHblContainerForCopiedOE_OI(oldMblId, inputDto.Id, hblIds);
                 }
 
                 Dictionary<string, object> rs = new()
                 {
-                    { "id", inputDto.Id
-
-                    }
+                    { "id", inputDto.Id }
                 };
                 rs.Add("HId", Hid);
 

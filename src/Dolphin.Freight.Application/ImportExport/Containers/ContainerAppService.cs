@@ -5,6 +5,8 @@ using Dolphin.Freight.ImportExport.OceanImports;
 using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
+using Microsoft.AspNetCore.Components.Forms;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -48,7 +50,6 @@ namespace Dolphin.Freight.ImportExport.Containers
             var list = ObjectMapper.Map<List<Container>, List<ContainerDto>>(Containers.OrderBy(o => o.CreationTime).ToList());
             return list;
         }
-
         public async Task<List<ContainerDto>> QueryListHblAsync(Guid hblId)
         {
             var Containers = await _repository.GetListAsync();
@@ -112,7 +113,6 @@ namespace Dolphin.Freight.ImportExport.Containers
             }
             return list.Count;
         }
-
         public async Task SwitchPP(Guid id)
         {
             Container entity = await _repository.GetAsync(id);
@@ -120,7 +120,6 @@ namespace Dolphin.Freight.ImportExport.Containers
 
             await _repository.UpdateAsync(entity);
         }
-
         public async Task SwitchCTF(Guid id)
         {
             Container entity = await _repository.GetAsync(id);
@@ -128,7 +127,6 @@ namespace Dolphin.Freight.ImportExport.Containers
 
             await _repository.UpdateAsync(entity);
         }
-
         public async Task<List<CreateUpdateContainerDto>> GetContainerByMblId(Guid id)
         {
             var list = await Repository.GetListAsync();
@@ -163,7 +161,6 @@ namespace Dolphin.Freight.ImportExport.Containers
 
             return containerDto.ToList();
         }
-
         public async Task<CreateUpdateContainerDto> GetContainerByBookingId(Guid id)
         {
             var list = await Repository.GetListAsync();
@@ -225,6 +222,44 @@ namespace Dolphin.Freight.ImportExport.Containers
             }
 
             return ContainerDto;
+        }
+        public async Task CreateMblHblContainerForCopiedOE_OI(Guid OldMblId, Guid NewMblId, Dictionary<Guid, Guid> hblIds)
+        {
+            var containers = await GetContainerByMblId(OldMblId);
+
+            containers = containers.Where(w => w.ExtraProperties is not null && w.ExtraProperties.Count > 0).ToList();
+
+            foreach (var item in containers)
+            {
+                List<Guid> newExtraPropList = new();
+
+                object extraProp = item.ExtraProperties.GetValueOrDefault("HblIds");
+
+                if (extraProp is not null)
+                {
+                    List<Guid> extraPropList = JsonConvert.DeserializeObject<List<Guid>>(extraProp.ToString());
+
+                    foreach (var item1 in extraPropList)
+                    {
+                        if (hblIds.ContainsKey(item1))
+                        {
+                            var newItem1 = hblIds[item1];
+
+                            newExtraPropList.Add(newItem1);
+                        }
+                    }
+
+                    item.ExtraProperties.Remove("HblIds");
+
+                    item.ExtraProperties.Add("HblIds", newExtraPropList);
+                }
+
+                item.Id = Guid.Empty;
+
+                item.MblId = NewMblId;
+
+                await CreateAsync(item);
+            }
         }
     }
 }

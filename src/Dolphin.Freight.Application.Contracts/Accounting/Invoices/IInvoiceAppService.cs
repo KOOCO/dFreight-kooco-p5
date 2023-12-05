@@ -23,5 +23,6 @@ namespace Dolphin.Freight.Accounting.Invoices
         Task<bool> QueryInvoicesCheckAsync(QueryInvoiceDto query);
         Task DeleteGAInvoicesByIdAsync(Guid[] Ids);
         Task<JsonResult> CopyGAInvoiceAsync(Guid Id);
+        Task CreateMblHblAccountingForCopiedOE_OI(Guid OldMblId, Guid NewMblId, bool IsAP = false, bool IsAR = false, bool IsDC = false);
     }
 }

@@ -1,4 +1,22 @@
 ﻿$(function () {
+    var url = new URL(window.location.href);
+    var selectedHblNo;
+
+    if (url.searchParams.get('Id') != null) {
+        dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(url.searchParams.get('Id'), true, 0).done(function (hblCards) {
+            if (hblCards && hblCards.length) {
+                hblCards.forEach(function (hblCard, index) {
+                    var divHtml = existingCardRight(hblCard.id, hblCard.hblNo, '', '#f3c200');
+                    $("#hblCard").show();
+                    $("#hblCardDiv").append(divHtml);
+                    $("#AddHbl").val(1);
+                });
+            }
+        });
+    }
+});
+
+$(function () {
     var l = abp.localization.getResource('Freight');
 
     $(document).ready(function () {
@@ -265,7 +283,13 @@
         initHReasonStatus()
     });
 });
-
+function existingCardRight(hblId, hblNo, soNo, bgColor) {
+    var cardHtml = "<div class='borad-anchor focus' ><div class='borad-cont'>"
+    cardHtml = cardHtml + "<a class='link' href='#javascript:void(0)'></a>"
+    cardHtml = cardHtml + "<span class='label label-HBL'><b>" + hblNo + "</b></span><span class='MBLnumber'></span>"
+    cardHtml = cardHtml + "</div></div>"
+    return cardHtml;
+}
 function initHeader() {
     var polname = $("#drop_PolId").html();
     if (polname != '請選擇') $("#f1").html(polname);
