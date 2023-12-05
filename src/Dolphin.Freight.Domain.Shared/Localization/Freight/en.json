@@ -2,6 +2,13 @@
 {
   "culture": "en",
   "texts": {
+    "flightNo": "Flight No",
+    "Post Date": "Post Date",
+    "D/C Balance": "D/C Balance",
+    "A/P Balance": "A/P Balance",
+    "A/R Balance": "A/R Balance",
+    "Bill To": "Bill To",
+    "Hawb Number": "Hawb Number",
     "CancelledBy": "Cancelled By",
     "Display:CopyContainerInformation": "Copy container info as well",
     "Display:CopyVesselInfoAndShipments": "Copy vessel info and all shipping schedule",
@@ -1338,13 +1345,14 @@
     "PaymentMadeList:Memo": "Remark",
 
     "PaymentMadeList:Status": "Status",
-
+    "carrierTPName": "Carrier",
     "MAWBInformation": "MAWB Information",
     "MawbCarrierId": "Carrier",
     "IssuingCarrierId": "Issuing Carrier/Agent",
     "IssuingCarrier": "Issuing Carrier Agent",
     "AwbType": "AWB Type",
     "Shipper": "Shipper (Shipping Agent)",
+    "shipper": "Actual Shipper",
     "Consignee": "Consignee",
     "GrossWeight": "Gross Weight",
     "ChargableWeight": "Chargable Weight",
