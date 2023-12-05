@@ -136,8 +136,8 @@
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.HblShipperId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblShipperId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.HblShipperId) })
                                 </abp-column>
-                                     <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.HblConsigneeId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblConsigneeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.HblConsigneeId) })
+                                <abp-column size-md="_3">
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.HblConsigneeId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblConsigneeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.HblConsigneeId), ChangeEvent = "UpdateDropdown(this, ['OceanImportHbl.HblNotifyId', 'OceanImportHbl.HblCustomerId', 'OceanImportHbl.HblBillToId'])" })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportHbl.HblNotifyId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblNotifyId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportHbl.HblNotifyId) })

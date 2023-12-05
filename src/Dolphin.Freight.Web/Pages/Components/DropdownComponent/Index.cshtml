@@ -90,10 +90,8 @@
         initializeDropdownSearch('@Model.Id', @Model.SelectType)
     })
 
-    function UpdateDropdown(Elem){
+    function UpdateDropdown(Elem, targetDropdownNames) {
         var selectedValue = Elem.value;
-
-        var targetDropdownNames = ['HawbModel.Notify', 'HawbModel.Customer', 'HawbModel.BillToId', 'HawbModel.DeliveryLocation'];
 
         targetDropdownNames.forEach(function (targetDropdownName) {
             var targetDropdown = document.querySelector('[name="' + targetDropdownName + '"]');
