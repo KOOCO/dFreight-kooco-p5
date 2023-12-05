@@ -14,9 +14,9 @@ namespace Dolphin.Freight.Web.Pages.Components
     [ViewComponent(Name = "DropdownComponent")]
     public class DropdownComponent : AbpViewComponent
     {
-        public IViewComponentResult Invoke(string Name, List<SelectListItem> AspItems, string Selected = "", bool IsShowLabel = true, string fieldName = "", bool IsRequired = false, string Disabled= "", int SelectType = 0, string ShowFiledContentValue = "", string NotShowFiledContentValue = "", string cssClass = "form-control", bool isMultipleSelection = false)
+        public IViewComponentResult Invoke(string Name, List<SelectListItem> AspItems, string Selected = "", bool IsShowLabel = true, string fieldName = "", bool IsRequired = false, string Disabled= "", int SelectType = 0, string ShowFiledContentValue = "", string NotShowFiledContentValue = "", string cssClass = "form-control", bool isMultipleSelection = false, string ChangeEvent = "")
         {
-            ComponentData componentData = new ComponentData() { IsRequired = IsRequired, IsShowLabel = IsShowLabel, Disabled = Disabled, Name = Name, AspItems = AspItems, Selected = Selected, FieldName = fieldName, SelectType = SelectType, ShowFiledContentValue = ShowFiledContentValue == null ? "" : ShowFiledContentValue, NotShowFiledContentValue = NotShowFiledContentValue == null ? "" : NotShowFiledContentValue, CssClass = cssClass, IsMultipleSelection = isMultipleSelection };
+            ComponentData componentData = new ComponentData() { IsRequired = IsRequired, IsShowLabel = IsShowLabel, Disabled = Disabled, Name = Name, AspItems = AspItems, Selected = Selected, FieldName = fieldName, SelectType = SelectType, ShowFiledContentValue = ShowFiledContentValue == null ? "" : ShowFiledContentValue, NotShowFiledContentValue = NotShowFiledContentValue == null ? "" : NotShowFiledContentValue, CssClass = cssClass, IsMultipleSelection = isMultipleSelection, ChangeEvent = ChangeEvent == null ? "" : ChangeEvent };
 
             return View("~/Pages/Components/DropdownComponent/Index.cshtml", componentData);
         }

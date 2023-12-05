@@ -34,7 +34,7 @@
     }
     else
     {
-        <select name="@Model.Name" id="@Model.Id" class="filteredDropdown form-select form-control cursor-pointer" @Model.Disabled @(Model.IsRequired ? "required" : "")>
+        <select name="@Model.Name" id="@Model.Id" class="filteredDropdown form-select form-control cursor-pointer" onchange="@Model.ChangeEvent" @Model.Disabled @(Model.IsRequired ? "required" : "")>
             <option></option>
             @foreach (SelectListItem item in Model.AspItems)
             {
@@ -89,4 +89,18 @@
     document.addEventListener('DOMContentLoaded', function(){
         initializeDropdownSearch('@Model.Id', @Model.SelectType)
     })
+
+    function UpdateDropdown(Elem){
+        var selectedValue = Elem.value;
+
+        var targetDropdownNames = ['HawbModel.Notify', 'HawbModel.Customer', 'HawbModel.BillToId', 'HawbModel.DeliveryLocation'];
+
+        targetDropdownNames.forEach(function (targetDropdownName) {
+            var targetDropdown = document.querySelector('[name="' + targetDropdownName + '"]');
+            if (targetDropdown) {
+                targetDropdown.value = selectedValue;
+                $(targetDropdown).trigger('change');
+            }
+        });
+    }
 </script>
