@@ -95,7 +95,46 @@
             // Calculate Weight Kg to Lb
             $("#GrossWeightKg").on('keyup', function () {
                 $("#GrossWeightLb").val(Math.round($("#GrossWeightKg").val() * 2.2046226218 * 100) / 100);
+
+                var GrossWeightKG = $("#GrossWeightKg").val();
+                var VolumeWeightKG = $('#MawbModel_VolumeWeightKg').val();
+
+                if (Number(GrossWeightKG) > Number(VolumeWeightKG)) {
+                    $('#ChargeableWeightKg').val(GrossWeightKG).trigger('keyup');
+                }
+                else if (Number(GrossWeightKG) <= Number(VolumeWeightKG)) {
+                    $('#ChargeableWeightKg').val(VolumeWeightKG).trigger('keyup');
+                }
             });
+
+            $('#MawbModel_VolumeWeightKg').on('keyup', function () {
+                $('#MawbModel_VolumeWeightCbm').val(Math.round($('#MawbModel_VolumeWeightKg').val() * 0.00599988 * 100) / 100);
+
+                var GrossWeightKG = $("#GrossWeightKg").val();
+                var VolumeWeightKG = $('#MawbModel_VolumeWeightKg').val();
+
+                if (Number(VolumeWeightKG) >= Number(GrossWeightKG)) {
+                    $('#ChargeableWeightKg').val(VolumeWeightKG).trigger('keyup');
+                }
+                else {
+                    $('#ChargeableWeightKg').val(GrossWeightKG).trigger('keyup');
+                }
+            });
+
+            $('#MawbModel_VolumeWeightCbm').on('keyup', function () {
+                $('#MawbModel_VolumeWeightKg').val(Math.round($('#MawbModel_VolumeWeightCbm').val() * 166.67 * 100) / 100);
+
+                var GrossWeightKG = $("#GrossWeightKg").val();
+                var VolumeWeightKG = $('#MawbModel_VolumeWeightKg').val();
+
+                if (Number(VolumeWeightKG) >= Number(GrossWeightKG)) {
+                    $('#ChargeableWeightKg').val(VolumeWeightKG).trigger('keyup');
+                }
+                else {
+                    $('#ChargeableWeightKg').val(GrossWeightKG).trigger('keyup');
+                }
+            });
+
             $("#ChargeableWeightKg").on('keyup', function () {
                 $("#ChargeableWeightLb").val(Math.round($("#ChargeableWeightKg").val() * 2.2046226218 * 100) / 100);
             });
@@ -103,7 +142,20 @@
             // Calculate Weight Lb to Kg
             $("#GrossWeightLb").on('keyup', function () {
                 $("#GrossWeightKg").val(Math.round($("#GrossWeightLb").val() * 0.45359237 * 100) / 100);
+
+                var GrossWeightKG = $('#GrossWeightKg').val();
+                var GrossWeightLB = $('#GrossWeightLb').val();
+                var VolumeWeigthKG = $('#MawbModel_VolumeWeightKg').val();
+                var VolumeWeightLB = Math.round($('#MawbModel_VolumeWeightKg').val() * 2.2046226218 * 100) / 100;
+
+                if (Number(GrossWeightKG) > Number(VolumeWeigthKG)) {
+                    $('#ChargeableWeightLb').val(GrossWeightLB).trigger('keyup');
+                }
+                else if (Number(GrossWeightKG) <= Number(VolumeWeigthKG)) {
+                    $('#ChargeableWeightLb').val(VolumeWeightLB).trigger('keyup');
+                }
             });
+
             $("#ChargeableWeightLb").on('keyup', function () {
                 $("#ChargeableWeightKg").val(Math.round($("#ChargeableWeightLb").val() * 0.45359237 * 100) / 100);
             });
@@ -732,7 +784,7 @@
           </td>
           <td><input type="text" name="HawbModel.Commodities[${chkIndex}].Description" value="${Description}" /></td>
           <td><input type="text" name="HawbModel.Commodities[${chkIndex}].HTSCode" value="${HTSCode}" /></td>
-          <td><input type="text" name="HawbModel.Commodities[${chkIndex}].PONumber" value="${PoNumber}" disabled /></td>
+          <td><input type="text" name="HawbModel.Commodities[${chkIndex}].PONumber" value="${PONumber}" /></td>
         </tr>
     </script>
 
@@ -1095,7 +1147,7 @@
                                                     <tr>
                                                         <td></td>
                                                         <td>@L["KG"]</td>
-                                                        <td>@L["LB"]</td>sa
+                                                        <td>@L["LB"]</td>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

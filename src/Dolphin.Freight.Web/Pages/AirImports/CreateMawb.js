@@ -30,7 +30,7 @@ class AirImportMawb {
                 const mblId = url.searchParams.get('Id');
 
                 $('#popuptrtbody').empty();
-                debugger;
+                
                 if (extraProperties != undefined && extraProperties.dimensions != null && extraProperties.dimensions.length > 0) {
                     for (let dimension of extraProperties.dimensions) {
                         addDimensionRow(dimension);
@@ -61,6 +61,7 @@ class AirImportMawb {
 
             default:
                 $('#popuptrtbody').empty();
+
                 if (extraProperties != undefined && extraProperties.dimensions != null && extraProperties.dimensions.length > 0) {
                     for (let dimension of extraProperties.dimensions) {
                         addDimensionRow(dimension);
@@ -139,10 +140,15 @@ function applyPopupValues() {
     
     $('#dimensionsJSON').val(JSON.stringify(extraProperties.dimensions));
 
-    $('#MawbModel_VolumeWeightKg').val(parseFloat(totalKG).toFixed(2));
-    $('#MawbModel_VolumeWeightCbm').val(parseFloat(totalCBM).toFixed(2));
-    $('#ChargeableWeightKg').val(parseFloat(totalKG).toFixed(2));
-    $('#ChargeableWeightLb').val(parseFloat(totalKG * 2.20462).toFixed(2));
+    if (totalKG != 0) {
+        $('#MawbModel_VolumeWeightKg').val(parseFloat(totalKG).toFixed(2));
+        $('#ChargeableWeightKg').val(parseFloat(totalKG).toFixed(2));
+        $('#ChargeableWeightLb').val(parseFloat(totalKG * 2.20462).toFixed(2));
+    }
+
+    if (totalCBM != 0) {
+        $('#MawbModel_VolumeWeightCbm').val(parseFloat(totalCBM).toFixed(2));
+    }
 
     $('#CreateModal').modal('hide');
 }

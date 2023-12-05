@@ -4,6 +4,7 @@ using Dolphin.Freight.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,10 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Dolphin.Freight.Migrations
 {
     [DbContext(typeof(FreightDbContext))]
-    partial class FreightDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231205152753_Add_AirPort_AppSysCode_CodeType_SvcTermFromId")]
+    partial class Add_AirPort_AppSysCode_CodeType_SvcTermFromId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1917,7 +1919,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("BillToId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CReleasedDate")
+                    b.Property<DateTime>("CReleasedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CargoReleasedto")
@@ -1961,7 +1963,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DoorDelivered")
+                    b.Property<DateTime>("DoorDelivered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ExtraProperties")
@@ -1971,7 +1973,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("FinalDestination")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("FinalETA")
+                    b.Property<DateTime>("FinalETA")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Freight")
@@ -1980,7 +1982,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("FreightLocation")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("FrtRelease")
+                    b.Property<DateTime>("FrtRelease")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("GrossWeightKG")
@@ -1995,7 +1997,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("Hsn")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ITDate")
+                    b.Property<DateTime>("ITDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ITIssuedLocation")
@@ -2016,7 +2018,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<bool>("IsLocked")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("LastFreeDay")
+                    b.Property<DateTime>("LastFreeDay")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("LastModificationTime")
@@ -2075,7 +2077,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("ShipperId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("StorageStartDate")
+                    b.Property<DateTime>("StorageStartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Trucker")
