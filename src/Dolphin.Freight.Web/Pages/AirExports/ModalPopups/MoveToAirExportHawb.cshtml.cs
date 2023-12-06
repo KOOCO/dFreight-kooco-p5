@@ -27,7 +27,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports.ModalPopups
             _airExportMawbAppService = airExportMawbAppService;
         }
 
-        public async Task OnGet()
+        public async Task OnGetAsync()
         {
             AirExportDetails = new();
         }

@@ -20,7 +20,10 @@
                 <p>@L["Title:HawbToMawb"]</p>
             </abp-column>
             <abp-column size="_12">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CopyModel.MawbId", AspItems = _dropdownService.AirExportMawbList, Selected = Model.CopyModel.MawbId.ToString(), IsRequired = true, IsShowLabel = false, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.CopyModel.MawbId), NotShowFiledContentValue = Convert.ToString(Model.PrevMawbId) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { 
+                    Name = "CopyModel.MawbId", AspItems = _dropdownService.AirExportMawbList, Selected = Model.CopyModel.MawbId.ToString(), IsRequired = true, 
+                    IsShowLabel = false, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.CopyModel.MawbId), NotShowFiledContentValue = Convert.ToString(Model.PrevMawbId) 
+                })
             </abp-column>
             <abp-column size="_12">
                 <input type="checkbox" suppress-label asp-for="@Model.CopyModel.CopyAccountingInformation" id="accountingCheckbox" />

@@ -24,31 +24,31 @@ namespace Dolphin.Freight.Accounting.InvoiceBills
         IInvoiceBillAppService
     {
         private IRepository<InvoiceBill, Guid> _repository;
-        public InvoiceBillAppService(IRepository<InvoiceBill, Guid> repository)
-            : base(repository)
+        public InvoiceBillAppService(IRepository<InvoiceBill, Guid> repository) : base(repository)
         {
             _repository = repository;
-
         }
+
         public async Task<PagedResultDto<InvoiceBillDto>> QueryListAsync(QueryInvoiceBillDto query)
         {
-
             var rs = await Repository.GetListAsync();
-            //List<InvoiceBillDto> list = new List<InvoiceBillDto>();
+            
             rs = rs.Where(x => x.InvoiceId.ToString().Equals(query.InvoiceNo)).ToList();
+            
             var list = ObjectMapper.Map<List<InvoiceBill>, List<InvoiceBillDto>>(rs);
 
             PagedResultDto<InvoiceBillDto> listDto = new PagedResultDto<InvoiceBillDto>();
             listDto.Items = list;
             listDto.TotalCount = list.Count;
+            
             return listDto;
         }
         public async Task<IList<InvoiceBillDto>> QueryInvoiceBillsAsync(QueryInvoiceBillDto query)
         {
             var res = await Repository.GetListAsync();
-            //List<InvoiceBillDto> list = new List<InvoiceBillDto>();
             res = res.Where(x => x.InvoiceId.ToString().Equals(query.InvoiceNo)).ToList();
             var list = ObjectMapper.Map<List<InvoiceBill>, List<InvoiceBillDto>>(res);
+            
             return list;
         }
         public async void CopyByInvoiceIds(List<CopyIdDto> list) { 
@@ -63,7 +63,6 @@ namespace Dolphin.Freight.Accounting.InvoiceBills
                         bill.InvoiceId = ids.Nid;
                         await this.CreateAsync(ObjectMapper.Map<InvoiceBill, CreateUpdateInvoiceBillDto>(bill));
                     }
-
                 }
             }
         }

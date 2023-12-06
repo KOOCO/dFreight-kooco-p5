@@ -20,7 +20,10 @@
                 <p>@L["Title:MoveHawbToMawb"]</p>
             </abp-column>
             <abp-column size="_12">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportDetails.MawbId", AspItems = _dropdownService.AirExportMawbList, Selected = Model.AirExportDetails.MawbId.ToString(), IsRequired = true, IsShowLabel = false, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportDetails.MawbId), NotShowFiledContentValue = Convert.ToString(Model.PrevMawbId) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { 
+                    Name = "AirExportDetails.MawbId", AspItems = _dropdownService.AirExportMawbList, Selected = Model.AirExportDetails.MawbId.ToString(), IsRequired = true, 
+                    IsShowLabel = false, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportDetails.MawbId), NotShowFiledContentValue = Convert.ToString(Model.PrevMawbId)
+                })
             </abp-column>
         </abp-modal-body>
         <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)"></abp-modal-footer>

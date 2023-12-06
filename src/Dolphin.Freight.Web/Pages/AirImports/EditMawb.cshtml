@@ -1177,10 +1177,10 @@
                             <hr />
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.FreightType", AspItems = Html.GetEnumSelectList(typeof(FreightType)).ToList(), IsShowLabel = true, FieldName ="Freight", ShowFiledContentValue = Convert.ToString(Model.MawbModel.FreightType) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.FreightType", AspItems = Html.GetEnumSelectList(typeof(FreightType)).ToList(), IsShowLabel = true, FieldName ="Freight", ShowFiledContentValue = Convert.ToString(((int)Model.MawbModel.FreightType)) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.IncotermsType", AspItems = Html.GetEnumSelectList(typeof(IncotermsType)).ToList(), IsShowLabel = true, FieldName = "Incoterms", ShowFiledContentValue = Convert.ToString(Model.MawbModel.IncotermsType) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.IncotermsType", AspItems = Html.GetEnumSelectList(typeof(IncotermsType)).ToList(), IsShowLabel = true, FieldName = "Incoterms", ShowFiledContentValue = Convert.ToString(((int)Model.MawbModel.IncotermsType)) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeFrom", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, FieldName = "ServiceTermFrom", ShowFiledContentValue = Convert.ToString(((int)Model.MawbModel.ServiceTermTypeFrom)) })
