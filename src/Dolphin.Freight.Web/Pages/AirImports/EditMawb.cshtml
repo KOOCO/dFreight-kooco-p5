@@ -51,17 +51,19 @@
             } else {
                 abp.message.success('Successfully saved.');
             }
-              var url = new URL(window.location.href);
-    var result = url.searchParams.get('copyHawbMessage');
-    if (result == 'True') {
-        var id = '@Model.ResultedMawbId';
-        createModal.open({
-            id,
+            
+            var url = new URL(window.location.href);
+            var result = url.searchParams.get('copyHawbMessage');
+            if (result == 'True') {
+                var id = '@Model.ResultedMawbId';
+                createModal.open({
+                    id,
 
-        });
+                });
 
-    }
-             isLocked = '@Model.MawbModel.IsLocked';
+            }
+            
+            isLocked = '@Model.MawbModel.IsLocked';
          
             const isDirectMasterChecked = document.querySelector('#isDirectMaster');
             if (isDirectMasterChecked.checked == true) {

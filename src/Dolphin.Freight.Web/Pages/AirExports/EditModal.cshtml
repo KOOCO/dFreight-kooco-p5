@@ -30,16 +30,15 @@
     <abp-script src="/Pages/AirExports/CreateMawb.js" />
     <abp-script src="/Pages/AirExports/EditModel.js" />
      
-</script>
     <script>
         var Code = "";
         var CarrierAgent="";
         var CollectPaid="";
         var ChargeItem = "";
 
-  var enumValues = @Html.Raw(Json.Serialize(Model.EnumList));
-  var chargeItems=@Html.Raw(Json.Serialize(Model.ChargeItemList));
-</script>
+        var enumValues = @Html.Raw(Json.Serialize(Model.EnumList));
+        var chargeItems=@Html.Raw(Json.Serialize(Model.ChargeItemList));
+    </script>
     <script id="accountingTemplate" type="text/x-jQuery-tmpl">
       
       
@@ -123,9 +122,40 @@
     </script>
     <script type="text/javascript">
         var l = abp.localization.getResource('Freight');
-          var createMemoModal = new abp.ModalManager({
-                viewUrl: '/AirExports/CopyMawbModal',
+        var createMemoModal = new abp.ModalManager({
+            viewUrl: '/AirExports/CopyMawbModal',
+        });
+
+        var createHawbResultModal = new abp.ModalManager({
+            viewUrl: '/AirExports/ModalPopups/CopyToAirExportHawbResult',
+        });
+
+        var movedHawbResultModal = new abp.ModalManager({
+            viewUrl: '/AirExports/ModalPopups/MoveToAirExportHawbResult',
+        })
+
+        var url = new URL(window.location.href);
+
+        var movedHawbResult = url.searchParams.get('MovedHawbMessage');
+
+        if (movedHawbResult == 'True') {
+            var id = '@Model.ResultedMawbId';
+
+            movedHawbResultModal.open({
+                id,
             });
+        }
+
+        var result = url.searchParams.get('copyHawbMessage');
+
+        if (result == 'True') {
+            var id = '@Model.ResultedMawbId';
+            
+            createHawbResultModal.open({
+                id,
+            });
+        }
+
           var isLocked;
           var showMsg = '@Model.ShowMsg';
             if (showMsg == 'True') {

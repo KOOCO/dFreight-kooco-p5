@@ -22,6 +22,14 @@
 }
 <abp-script src="/Pages/AirExports/AirExportHawb.js" />
 <script>
+    const createHawbCopyModalAE = new abp.ModalManager({
+        viewUrl: '/AirExports/ModalPopups/CopyToAirExportHawb'
+    });
+
+    const moveHawbModalAE = new abp.ModalManager({
+        viewUrl: '/AirExports/ModalPopups/MoveToAirExportHawb'
+    });
+
     $(document).ready(function () {
         if ($('#HawbCancelledDate').val() == '0001-01-01T00:00') {
             $('#HawbCancelledDate').val('');
@@ -130,6 +138,13 @@
                 </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="deleteHawb()">
                     <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirExportHawb.onCopyToHawbClick()">
+                    <i class="fa fa-copy"></i> @L["Btn:CopyTo"]
+                </a>
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirExportHawb.editMawbAirImport('@Model.AirExportHawbDto.MawbId' ,'@Model.AirExportHawbDto.Id')">
+                    <i class="fa fa-share"></i> @L["Btn:Move"]
                 </a>
                 <p class="dropdown-divider"></p>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="DocumentPackage('@Url.Action("DocumentPackage", "Docs", new { id = Model.AirExportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEHBL })')">

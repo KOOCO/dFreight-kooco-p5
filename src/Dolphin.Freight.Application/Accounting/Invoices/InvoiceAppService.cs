@@ -432,5 +432,155 @@ namespace Dolphin.Freight.Accounting.Invoices
                 }
             }
         }
+        public async Task CreateHawbAccountingForCopiedAE(Guid OldHblId, Guid NewHblId, bool IsAP = false, bool IsAR = false, bool IsDC = false)
+        {
+            QueryInvoiceDto q1idto = new QueryInvoiceDto() { QueryType = 4, ParentId = OldHblId };
+            var invoiceDtos1 = await QueryInvoicesAsync(q1idto);
+
+            if (invoiceDtos1 != null && invoiceDtos1.Count > 0)
+            {
+                if (IsAR)
+                {
+                    await CreateAP(invoiceDtos1, NewHblId, false, IsAR, false, false);
+                }
+                if (IsDC)
+                {
+                    await CreateDC(invoiceDtos1, NewHblId, false, IsDC, false, false);
+                }
+                if (IsAP)
+                {
+                    await CreateAR(invoiceDtos1, NewHblId, false, IsAP, false, false);
+                }
+            }
+        }
+        public async Task CreateAP(IList<InvoiceDto> InvoiceDto, Guid Id, bool IsMawb = false, bool IsHawb = false, bool IsMbl = false, bool IsHbl = false)
+        {
+            var invoiceAp = InvoiceDto.Where(x => x.InvoiceType == 0).ToList();
+
+            foreach (var invoice in invoiceAp)
+            {
+                var newInvoiceAp = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+
+                if (IsMawb)
+                {
+                    newInvoiceAp.MawbId = Id;
+                }
+                if (IsHawb)
+                {
+                    newInvoiceAp.HawbId = Id;
+                }
+                if (IsMbl)
+                {
+                    newInvoiceAp.MblId = Id;
+                }
+                if (IsHbl)
+                {
+                    newInvoiceAp.HblId = Id;
+                }
+                
+                newInvoiceAp.Id = Guid.Empty;
+
+                var createInvoice = await CreateAsync(newInvoiceAp);
+
+                QueryInvoiceBillDto query = new QueryInvoiceBillDto();
+                query.InvoiceNo = invoice.Id.ToString();
+                
+                var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(query);
+
+                foreach (var bill in invoiceBills)
+                {
+                    var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
+                    newbill.InvoiceId = createInvoice.Id;
+                    newbill.Id = Guid.Empty;
+                    await _invoiceBillAppService.CreateAsync(newbill);
+                }
+            }
+        }
+        public async Task CreateDC(IList<InvoiceDto> InvoiceDto, Guid Id, bool IsMawb = false, bool IsHawb = false, bool IsMbl = false, bool IsHbl = false)
+        {
+            var invoiceAp = InvoiceDto.Where(x => x.InvoiceType == 1).ToList();
+
+            foreach (var invoice in invoiceAp)
+            {
+                var newInvoiceAp = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+
+                if (IsMawb)
+                {
+                    newInvoiceAp.MawbId = Id;
+                }
+                if (IsHawb)
+                {
+                    newInvoiceAp.HawbId = Id;
+                }
+                if (IsMbl)
+                {
+                    newInvoiceAp.MblId = Id;
+                }
+                if (IsHbl)
+                {
+                    newInvoiceAp.HblId = Id;
+                }
+
+                newInvoiceAp.Id = Guid.Empty;
+
+                var createInvoice = await CreateAsync(newInvoiceAp);
+
+                QueryInvoiceBillDto query = new QueryInvoiceBillDto();
+                query.InvoiceNo = invoice.Id.ToString();
+
+                var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(query);
+
+                foreach (var bill in invoiceBills)
+                {
+                    var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
+                    newbill.InvoiceId = createInvoice.Id;
+                    newbill.Id = Guid.Empty;
+                    await _invoiceBillAppService.CreateAsync(newbill);
+                }
+            }
+        }
+        public async Task CreateAR(IList<InvoiceDto> InvoiceDto, Guid Id, bool IsMawb = false, bool IsHawb = false, bool IsMbl = false, bool IsHbl = false)
+        {
+            var invoiceAp = InvoiceDto.Where(x => x.InvoiceType == 2).ToList();
+
+            foreach (var invoice in invoiceAp)
+            {
+                var newInvoiceAp = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+
+                if (IsMawb)
+                {
+                    newInvoiceAp.MawbId = Id;
+                }
+                if (IsHawb)
+                {
+                    newInvoiceAp.HawbId = Id;
+                }
+                if (IsMbl)
+                {
+                    newInvoiceAp.MblId = Id;
+                }
+                if (IsHbl)
+                {
+                    newInvoiceAp.HblId = Id;
+                }
+
+                newInvoiceAp.Id = Guid.Empty;
+
+                var createInvoice = await CreateAsync(newInvoiceAp);
+
+                QueryInvoiceBillDto query = new QueryInvoiceBillDto();
+                query.InvoiceNo = invoice.Id.ToString();
+
+                var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(query);
+
+                foreach (var bill in invoiceBills)
+                {
+                    var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
+                    newbill.InvoiceId = createInvoice.Id;
+                    newbill.Id = Guid.Empty;
+                    await _invoiceBillAppService.CreateAsync(newbill);
+                }
+            }
+        }
     }
 }
