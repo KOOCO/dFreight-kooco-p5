@@ -18,6 +18,9 @@ namespace Dolphin.Freight.Common
         VS, // 船期
         TP, // 貿易夥伴
         GA,
-        RP // Receive Payment
+        RP, // Receive Payment
+        AR, // Invoice AR
+        AP, // Invoice AP
+        DC // Invoice DC
     }
 }

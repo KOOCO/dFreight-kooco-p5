@@ -1,4 +1,5 @@
 ﻿@page
+@using Dolphin.Freight.Web.Pages.Shared.Memos
 @using Volo.Abp.Users
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Web.Pages.Components
@@ -698,47 +699,24 @@
                                 @if (Model.InvoiceType == 0 && Model.InvoiceId == null)
                                     @L["Title:AccountingAR_Add"]
 
-
-
-
                                     @if (Model.InvoiceType == 0 && Model.InvoiceId != null)
                                     @L["Title:AccountingAR_Edit"]
-
-
-
 
                                     @if (Model.InvoiceType == 1 && Model.InvoiceId == null)
                                     @L["Title:AccountingDC_Add"]
 
-
-
-
                                     @if (Model.InvoiceType == 1 && Model.InvoiceId != null)
                                     @L["Title:AccountingDC_Edit"]
 
-
-
-
                                     @if (Model.InvoiceType == 2 && Model.InvoiceId == null)
                                     @L["Title:AccountingAP_Add"]
-
-
-
-
+                                    
                                     @if (Model.InvoiceType == 2 && Model.InvoiceId != null)
                                     @L["Title:AccountingAP_Edit"]
-
-
-
-
-
                                 </abp-card-title>
-
                             </abp-column>
                             <abp-column size-md="_3" class="text-end">
-
                             </abp-column>
-
                         </abp-row>
                     </abp-card-header>
                     <abp-card-body class="collapse show customForm" id="mblDiv">
@@ -746,10 +724,8 @@
                             <abp-column size-md="_12">
                                 <h4>@L["Title:Basic"]</h4>
                             </abp-column>
-
                         </abp-row>
                         <abp-row>
-
                             <abp-column size-md="_4">
                                 <abp-row>
                                     <abp-column size-md="_7">
@@ -766,7 +742,6 @@
                                         </abp-button>
                                     </abp-column>
                                 </abp-row>
-
                             </abp-column>
                             <abp-column size-md="_4">
                                 <abp-input asp-for="InvoiceMblDto.MblOverseaAgentName" readonly="true" />
@@ -794,16 +769,23 @@
                             </abp-column>
 
                             <abp-column size-md="_3">
-                                <label class="form-label" for="ShipperName">@L["KOS"]/Kg</label>
+                                <label class="form-label" for="ShipperName">@L["KOS"]</label>
                                 <input type="text" id="Counts" name="KOS" value="@Model.InvoiceMblDto.GrossWeightKg" class="form-control " value="@Model.InvoiceMblDto.GrossWeightKg" readonly="">
                             </abp-column>                 
                             <abp-column size-md="_3">
-                                <label class="form-label" for="ShipperName">@L["KOS"]/Lb</label>
+                                <label class="form-label" for="ShipperName">@L["KOS"]</label>
                                 <input type="text" id="Ctype" name="Ctype" value="@Model.InvoiceMblDto.GrossWeightLb" class="form-control " value="@Model.InvoiceMblDto.GrossWeightLb" readonly="">
-
                             </abp-column>
                         </abp-row>
                         <abp-row>
+                            <abp-column size-md="_3">
+                            <label class="form-label" for="ChargeableWeightKg">@L["chargeableWeightKg"]/Kg</label>
+                                <input type="text" id="Counts" name="KOS" value="@Model.InvoiceMblDto.ChargeableWeightKg" class="form-control " value="@Model.InvoiceMblDto.ChargeableWeightKg" readonly="">
+                            </abp-column>                 
+                            <abp-column size-md="_3">
+                            <label class="form-label" for="ChargeableWeightLb">@L["chargeableWeightLb"]/Lb</label>
+                                <input type="text" id="Ctype" name="Ctype" value="@Model.InvoiceMblDto.ChargeableWeightLb" class="form-control " value="@Model.InvoiceMblDto.ChargeableWeightLb" readonly="">
+                            </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceMblDto.PolName" readonly="true" />
                             </abp-column>
@@ -811,6 +793,8 @@
                                 <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
                                 <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PolEtd" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.PolEtd)" class="form-control " readonly="">
                             </abp-column>
+                        </abp-row>
+                        <abp-row>
                             <abp-column size-md="_3">
                                 <label class="form-label" for="Hblno">@L["IHblno"]</label>
                                 <input type="text" id="Hblno" name="Hblno" value="@Model.Hblno" class="form-control " readonly="">
@@ -819,9 +803,6 @@
                                 <label class="form-label" for="ShipperName">@L["MblConsigneeName"]</label>
                                 <input type="text" id="ShipperName" name="MblConsigneeName" value="@Model.InvoiceBasicDto.MblConsigneeName" class="form-control " readonly="">
                             </abp-column>
-                        </abp-row>
-
-                        <abp-row>
                             <abp-column size-md="_3">
                                 <label class="form-label" for="">@L["VolumeWeight"] KG</label>
                                 <input type="text" id="Cbm" name="Cbm" value="@Model.InvoiceMblDto.VolumeWeightKg" class="form-control " readonly="">
@@ -830,6 +811,8 @@
                                 <label class="form-label" for="">CBM</label>
                                 <input type="text" id="Cft" name="Cft" value="@Model.InvoiceMblDto.VolumeWeightCbm" class="form-control " readonly="">
                             </abp-column>
+                        </abp-row>
+                        <abp-row>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceMblDto.PodName" readonly="true" />
                             </abp-column>
@@ -837,8 +820,6 @@
                                 <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
                                 <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.PodEta)" class="form-control " readonly="">
                             </abp-column>
-                        </abp-row>
-                        <abp-row>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceMblDto.FdestName" readonly="true" />
                             </abp-column>
@@ -846,6 +827,8 @@
                                 <label class="form-label" for="InvoiceMblDto_PolEtd">@L["ETA"]</label>
                                 <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.FdestEta)" class="form-control " readonly="">
                             </abp-column>
+                        </abp-row>
+                        <abp-row>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceMblDto.SoNo" readonly="true" />
                             </abp-column>
@@ -853,8 +836,6 @@
                                 <label class="form-label" for="ShipperName">@L["MblNotifyName"]</label>
                                 <input type="text" id="MblNotifyName" name="MblNotifyName" value="@Model.InvoiceBasicDto.MblNotifyName" class="form-control " readonly="">
                             </abp-column>
-                        </abp-row>
-                        <abp-row>
                             <abp-column size-md="_3">
                                 <label class="form-label" for="VesselNameVoyage"> @L["VesselNameVoyage"]</label>
                                 <input type="text" id="VesselNameVoyage" name="VesselNameVoyage" value="@Model.InvoiceMblDto.FlightNo" class="form-control " readonly="">
@@ -872,7 +853,7 @@
                         </abp-row>
                         <abp-row>
                             <abp-column size-md="_12">
-                                <h4>@L["Title:Invoice"]</h4>
+                                <h4>@L["Title:Invoice"]</h4> <h6 style="margin-top: -37px; text-align: end;">Status: </h6>
                                 <abp-input type="hidden" asp-for="InvoiceDto.InvoiceStatus" id="InvoiceDto_InvoiceStatus" value="0" />
                                 <abp-input type="hidden" asp-for="InvoiceDto.InvoiceType" id="InvoiceDto_InvoiceType" value="@Model.InvoiceType" />
                                 <abp-input type="hidden" asp-for="InvoiceDto.Id" />
@@ -882,7 +863,7 @@
                             </abp-column>
                         </abp-row>
 
-                        @if (Model.InvoiceType == 0)
+                    @if (Model.InvoiceType == 0)
                     {
                         <abp-row>
                             <abp-column size-md="_3">
@@ -1075,7 +1056,6 @@
                             </abp-column>
                         </abp-row>
                     }
-
                     @if (Model.InvoiceType == 3)
                     {
                         <abp-row>
@@ -1206,6 +1186,7 @@
                             </abp-column>
                         </abp-row>
                     }
+
                     <abp-row><abp-column>&nbsp;</abp-column></abp-row>
                     <abp-row>
                         <abp-column>
@@ -1267,8 +1248,29 @@
                             </abp-table>
                         </abp-column>
                     </abp-row>
+
+                    <abp-row>
+                        <br />
+                    </abp-row>
+
+                    @if (Model.InvoiceType == 0)
+                    {
+                        <partial name="Memos/_Memo" model="new _MemoModel(Model.InvoiceDto.Id, Dolphin.Freight.Common.FreightPageType.AR)" />
+                    }
+                    @if (Model.InvoiceType == 1)
+                    {
+                        <partial name="Memos/_Memo" model="new _MemoModel(Model.InvoiceDto.Id, Dolphin.Freight.Common.FreightPageType.DC)" />
+                    }
+                    @if (Model.InvoiceType == 2)
+                    {
+                        <partial name="Memos/_Memo" model="new _MemoModel(Model.InvoiceDto.Id, Dolphin.Freight.Common.FreightPageType.AP)" />
+                    }
+
                 </abp-card-body>
             </abp-card>
+
+            <br />
+
             <abp-row>
                 <abp-column>
                     <abp-button class="btn btn-primary me-md-2" type="button" id="saveDraftBtn">@L["Btn:SaveDraft"].Value</abp-button>
