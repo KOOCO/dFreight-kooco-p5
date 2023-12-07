@@ -165,7 +165,9 @@ namespace Dolphin.Freight.Accounting.Invoices
         public async Task<IList<InvoiceDto>> QueryInvoicesAsync(QueryInvoiceDto query) 
         {
             var tradePartners = await _tradePartnerRepository.GetListAsync();
+            
             Dictionary<Guid, string> tDictionary = new Dictionary<Guid, string>();
+            
             if (tradePartners != null)
             {
                 foreach (var tradePartner in tradePartners)
@@ -173,8 +175,11 @@ namespace Dolphin.Freight.Accounting.Invoices
                     tDictionary.Add(tradePartner.Id, tradePartner.TPName);
                 }
             }
+            
             var rs = await _repository.GetListAsync(true);
+            
             List<InvoiceDto> list = new List<InvoiceDto>();
+            
             if (query != null && query.ParentId != null)
             {
                 switch (query.QueryType) 
@@ -200,7 +205,6 @@ namespace Dolphin.Freight.Accounting.Invoices
                 }
             }
 
-
             if (rs != null && rs.Count > 0)
             {
                 var invoiceBillQueryable = await _billRepository.GetQueryableAsync();
@@ -224,6 +228,7 @@ namespace Dolphin.Freight.Accounting.Invoices
                     list.Add(bill);
                 }
             }
+            
             return list;
         }
         public async Task<bool> QueryInvoicesCheckAsync(QueryInvoiceDto query)
@@ -375,7 +380,7 @@ namespace Dolphin.Freight.Accounting.Invoices
         }
         public async Task CreateAP(IList<InvoiceDto> InvoiceDto, Guid Id, bool IsMawb = false, bool IsHawb = false, bool IsMbl = false, bool IsHbl = false)
         {
-            var InvoiceAP = InvoiceDto.Where(x => x.InvoiceType == 0).ToList();
+            var InvoiceAP = InvoiceDto.Where(x => x.InvoiceType == 2).ToList();
 
             foreach (var Invoice in InvoiceAP)
             {
@@ -415,7 +420,7 @@ namespace Dolphin.Freight.Accounting.Invoices
         }
         public async Task CreateAR(IList<InvoiceDto> InvoiceDto, Guid Id, bool IsMawb = false, bool IsHawb = false, bool IsMbl = false, bool IsHbl = false)
         {
-            var InvoiceAR = InvoiceDto.Where(x => x.InvoiceType == 2).ToList();
+            var InvoiceAR = InvoiceDto.Where(x => x.InvoiceType == 0).ToList();
 
             foreach (var Invoice in InvoiceAR)
             {
