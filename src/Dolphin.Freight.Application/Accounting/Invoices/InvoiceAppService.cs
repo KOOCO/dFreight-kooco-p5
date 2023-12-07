@@ -366,11 +366,11 @@ namespace Dolphin.Freight.Accounting.Invoices
 
             if (invoiceDtos1 != null && invoiceDtos1.Count > 0)
             {
-                if (IsAP) await CreateAP(invoiceDtos1, NewHblId, false, IsAR, false, false);
+                if (IsAP) await CreateAP(invoiceDtos1, NewHblId, false, IsAP, false, false);
 
                 if (IsDC) await CreateDC(invoiceDtos1, NewHblId, false, IsDC, false, false);
 
-                if (IsAR) await CreateAR(invoiceDtos1, NewHblId, false, IsAP, false, false);
+                if (IsAR) await CreateAR(invoiceDtos1, NewHblId, false, IsAR, false, false);
             }
         }
         public async Task CreateAP(IList<InvoiceDto> InvoiceDto, Guid Id, bool IsMawb = false, bool IsHawb = false, bool IsMbl = false, bool IsHbl = false)
