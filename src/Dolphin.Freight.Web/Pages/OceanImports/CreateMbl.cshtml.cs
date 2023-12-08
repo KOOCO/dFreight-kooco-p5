@@ -83,7 +83,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
         }
         public async Task OnGetAsync()
         {
-            if (Id != Guid.Empty)
+            if (Id is not null && Id != Guid.Empty)
             {
                 OceanImportMbl = ObjectMapper.Map<OceanImportMblDto, CreateUpdateOceanImportMblDto>(await _oceanImportMblAppService.GetAsync((Guid)Id));
 
