@@ -290,6 +290,7 @@
             }
 
             currencies.forEach(function (currency) {
+                debugger;
                 let key = '' + val + '-' + currency + '';
 
                 let convertedRate;
@@ -335,6 +336,7 @@
         function getTotalAmount(taxAmount){
             var table = $('#trtbody');
             var total = 0;
+            var tax = isNaN(taxAmount) || taxAmount == undefined || taxAmount == null ? 0 : taxAmount;
 
             for (var i = 0; i < table[0].rows.length; i++) {
               var amountCell = document.getElementById("Amount_" + i);
@@ -343,16 +345,16 @@
               
               total += amount;
             }
-            total = parseFloat(total) + parseFloat(taxAmount);
+            total = parseFloat(total) + parseFloat(tax);
             var totalTaxElement = document.getElementById("totalTax");
-            totalTaxElement.innerHTML = taxAmount;
+            totalTaxElement.innerHTML = tax;
             var totalBeforeElement = document.getElementById("totalBeforeTax");
-            totalBeforeElement.innerHTML = parseFloat(parseFloat(total) - parseFloat(taxAmount)).toFixed(2);
+            totalBeforeElement.innerHTML = parseFloat(parseFloat(total) - parseFloat(tax)).toFixed(2);
             var totalAmountElement = document.getElementById("totalAmount");
             totalAmountElement.innerHTML = parseFloat(total).toFixed(2);
 
-            $('#InvoiceDto_TotalBeforeTax').val(parseFloat(parseFloat(total) - parseFloat(taxAmount)).toFixed(2));
-            $('#InvoiceDto_TotalTax').val(taxAmount);
+            $('#InvoiceDto_TotalBeforeTax').val(parseFloat(parseFloat(total) - parseFloat(tax)).toFixed(2));
+            $('#InvoiceDto_TotalTax').val(tax);
             $('#InvoiceDto_TotalAmount').val(parseFloat(total).toFixed(2));
         }
 
@@ -464,7 +466,7 @@
                 var taxAmount = amount * 0;
             }
             setCurrencyRate($('#Currency_0').val());
-            getTotalSubAmount();
+            getTotalSubAmount($('#Currency_' + index).val() == 0 || $('#Currency_' + index).val() == undefined ? $('#Currency_0').val() : $('#Currency_' + index).val());
             getTotalAmount(parseFloat(taxAmount).toFixed(2));
             index++;
             
