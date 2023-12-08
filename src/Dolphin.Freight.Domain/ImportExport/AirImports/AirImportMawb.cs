@@ -380,6 +380,21 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public bool IsDeleted { get; set; }
         public bool IsLocked { get; set; }
 
+        [ForeignKey("RouteDepartureId")]
+        public virtual Dolphin.Freight.ImportExport.AirExports.Airport RouteDeparture { get; set; }
+        public DateTime? RouteDepartureArrivalDate { get; set; }
+        public DateTime? RouteDepatureDate { get; set; }
+        public string RouteDepartureFlightNo { get; set; }
+        public Guid? RouteDepartureCarrierId { get; set; }
+        [ForeignKey("RouteDepartureCarrierId")]
+        public virtual Dolphin.Freight.TradePartners.TradePartner RouteDepartureCarrier { get; set; }
+
+        public Guid? RouteDestinationId { get; set; }
+
+        [ForeignKey("RouteDestinationId")]
+        public virtual Dolphin.Freight.ImportExport.AirExports.Airport RouteDestination { get; set; }
+        public DateTime? RouteDestinationArrivalDate { get; set; }
+
 
     }
 }

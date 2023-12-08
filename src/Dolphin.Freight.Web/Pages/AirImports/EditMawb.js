@@ -10,7 +10,15 @@
             "MawbModel_RouteTrans3ArrivalDate",
             "MawbModel_RouteTrans1DepatureDate",
             "MawbModel_RouteTrans2DepatureDate",
-            "MawbModel_RouteTrans3DepatureDate"
+            "MawbModel_RouteTrans3DepatureDate",
+            "MawbModel_RouteDepatureDate",
+
+            "MawbModel_RouteDestinationArrivalDate",
+            "AirExportMawbDto_RouteDepartureArrivalDate",
+
+            "AirExportMawbDto_RouteDepatureDate",
+
+            "AirExportMawbDto_RouteDestinationArrivalDate",
         ];
 
         var DateTimePicker = new CustomDateTimePicker();
