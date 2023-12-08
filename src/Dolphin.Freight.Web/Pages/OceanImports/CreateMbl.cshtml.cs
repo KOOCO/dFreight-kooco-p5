@@ -130,7 +130,7 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
         }
         public async Task<JsonResult> OnPostAsync()
         {
-            if (Id != Guid.Empty)
+            if (Id is not null && Id != Guid.Empty)
             {
                 Dictionary<Guid, Guid> hblIds = new();
 
