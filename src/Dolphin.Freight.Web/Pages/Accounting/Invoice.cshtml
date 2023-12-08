@@ -826,8 +826,8 @@
                                 <abp-input asp-for="InvoiceMblDto.FdestName" readonly="true" />
                             </abp-column>
                             <abp-column size-md="_3">
-                                <label class="form-label" for="InvoiceMblDto_PolEtd">@L["ETA"]</label>
-                                <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.FdestEta)" class="form-control " readonly="">
+                                <label class="form-label" for="InvoiceMblDto_FdestEta">@L["ETA"]</label>
+                                <input type="text" id="InvoiceMblDto_FdestEta" name="InvoiceMblDto.FdestEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.FdestEta)" class="form-control " readonly="">
                             </abp-column>
                         </abp-row>
                         <abp-row>
@@ -840,7 +840,7 @@
                             </abp-column>
                             <abp-column size-md="_3">
                                 <label class="form-label" for="VesselNameVoyage"> @L["VesselNameVoyage"]</label>
-                                <input type="text" id="VesselNameVoyage" name="VesselNameVoyage" value="@Model.InvoiceMblDto.FlightNo" class="form-control " readonly="">
+                                <input type="text" id="VesselNameVoyage" name="VesselNameVoyage" value="@Model.InvoiceBasicDto.VesselNameVoyage" class="form-control " readonly="">
                             </abp-column>
                             <abp-column size-md="_3">
                                 <label class="form-label" for="VesselNameVoyage"> @L["MblOperatorId"]</label>

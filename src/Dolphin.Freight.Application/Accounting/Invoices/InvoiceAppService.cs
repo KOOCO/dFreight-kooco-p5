@@ -14,6 +14,8 @@ using Volo.Abp.Identity;
 using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Components.Forms;
+using Dolphin.Freight.ImportExport.AirImports;
+using Volo.Abp.ObjectMapping;
 
 namespace Dolphin.Freight.Accounting.Invoices
 {
@@ -35,11 +37,13 @@ namespace Dolphin.Freight.Accounting.Invoices
         private readonly IIdentityUserRepository _identityUserRepository;
         private readonly IInvoiceBillAppService _invoiceBillAppService;
         private readonly IRepository<SysCode, Guid> _sysCideRepository;
+        private readonly IRepository<AirImportMawb, Guid> _airImportMawbRepository;
         public InvoiceAppService(IRepository<Invoice, Guid> repository, IInvoiceBillAppService invoiceBillAppService,
                                  IRepository<SysCode, Guid> sysCideRepository, IRepository<Substation, Guid> substationRepository, 
                                  IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, 
                                  IRepository<InvoiceBill, Guid> billRepository, IInvoiceRepository invoiceRepository, 
-                                 IIdentityUserRepository identityUserRepository, IRepository<IdentityUser, Guid> userRepository) : base(repository)
+                                 IIdentityUserRepository identityUserRepository, IRepository<IdentityUser, Guid> userRepository,
+                                 IRepository<AirImportMawb, Guid> airImportMawbRepository) : base(repository)
         {
             _repository = repository;
             _sysCideRepository = sysCideRepository;
@@ -50,6 +54,7 @@ namespace Dolphin.Freight.Accounting.Invoices
             _userRepository = userRepository;
             _identityUserRepository = identityUserRepository;
             _invoiceBillAppService = invoiceBillAppService;
+            _airImportMawbRepository = airImportMawbRepository;
         }
         public async Task<PagedResultDto<InvoiceDto>> QueryListAsync(QueryInvoiceDto query)
         {
@@ -438,6 +443,8 @@ namespace Dolphin.Freight.Accounting.Invoices
                 await CreateInvoiceBillsAsync(Invoice.Id.ToString(), CreateInvoiceAR.Id);
             }
         }
+
+        #region Private Functions
         private async Task CreateInvoiceBillsAsync(string InvoiceNo, Guid InvoiceId)
         {
             QueryInvoiceBillDto Query = new() { InvoiceNo = InvoiceNo };
@@ -453,5 +460,6 @@ namespace Dolphin.Freight.Accounting.Invoices
                 await _invoiceBillAppService.CreateAsync(NewInvoiceBill);
             }
         }
+        #endregion
     }
 }

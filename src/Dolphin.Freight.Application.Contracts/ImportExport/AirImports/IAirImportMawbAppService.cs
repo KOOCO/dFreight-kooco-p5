@@ -23,6 +23,5 @@ namespace Dolphin.Freight.ImportExport.AirImports
         Task DeleteMultipalAsync(List<Guid> Ids);
         Task SetCardSetting(bool IsShowDetail);
         Task<bool> GetCardSettings();
-
     }
 }
