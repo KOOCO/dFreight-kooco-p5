@@ -29,6 +29,7 @@ using static Dolphin.Freight.Permissions.OceanExportPermissions;
 using QueryInvoiceDto = Dolphin.Freight.Accounting.Invoices.QueryInvoiceDto;
 using Dolphin.Freight.ImportExport.AirImports;
 using Dolphin.Freight.Common.Memos;
+using Org.BouncyCastle.Asn1.Ntt;
 
 namespace Dolphin.Freight.Web.Pages.Accounting
 {
@@ -373,6 +374,8 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                 InvoiceMblDto.PodEta = AirImportMbl.ArrivalDate;
                 InvoiceMblDto.PackageCategoryId = AirImportMbl.MawbPackageUnitId;
                 InvoiceMblDto.MblNo = AirImportMbl.MawbNo;
+                InvoiceMblDto.RouteDestinationId = AirImportMbl.RouteDestinationId;
+                InvoiceMblDto.FdestEta = AirImportMbl.RouteDepartureArrivalDate;
 
                 backUrl = "/AirImports/EditModal3?Id=" + MawbId;
             }
@@ -387,7 +390,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                 InvoiceMblDto.Package = Convert.ToDouble(AirImportHawb.Package);
                 Hblno = AirImportHawb.HawbNo;
                 InvoiceMblDto.MblNo = AirImportMawb.MawbNo;
-                InvoiceMblDto.FinalDestinationId = Guid.Parse(AirImportHawb.FinalDestination);
+                InvoiceMblDto.FinalDestinationId = AirImportHawb.FinalDestination is not null ? Guid.Parse(AirImportHawb.FinalDestination) : Guid.Empty;
                 InvoiceMblDto.FdestEta = AirImportHawb.FinalETA;
                 InvoiceMblDto.GrossWeightKg = Convert.ToDouble(AirImportHawb.GrossWeightKG);
                 InvoiceMblDto.GrossWeightLb = Convert.ToDouble(AirImportHawb.GrossWeightLB);
@@ -395,7 +398,7 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                 InvoiceMblDto.PodEta = AirImportMawb.ArrivalDate;
                 InvoiceMblDto.VolumeWeightKg = Convert.ToDouble(AirImportHawb.VolumeWeightKG);
                 InvoiceMblDto.VolumeWeightCbm = Convert.ToDouble(AirImportHawb.VolumeWeightCBM);
-                if (AirImportHawb.ShipperId is not null) InvoiceMblDto.ShipperId = AirImportHawb.ShipperId;
+                if (AirImportHawb.ShipperId is not null && AirImportHawb.ShipperId != Guid.Empty) InvoiceMblDto.ShipperId = AirImportHawb.ShipperId;
                 if (AirImportHawb.Notify is not null) InvoiceMblDto.MblNotifyId = Guid.Parse(AirImportHawb.Notify);
                 if (AirImportHawb.PackageUnit is not null) InvoiceMblDto.PackageCategoryId = Guid.Parse(AirImportHawb.PackageUnit);
 
@@ -429,9 +432,9 @@ namespace Dolphin.Freight.Web.Pages.Accounting
                 InvoiceMblDto.Package = Convert.ToDouble(airexportHawb.Package);
                 InvoiceMblDto.MblNo = airExportMawb.MawbNo;
                 Hblno = airexportHawb.HawbNo;
-                InvoiceMblDto.ShipperId = Guid.Parse(airexportHawb.ActualShippedr);
-                InvoiceMblDto.MblConsigneeId = Guid.Parse(airexportHawb.OverseaAgent);
-                InvoiceMblDto.MblNotifyId = Guid.Parse(airexportHawb.Notify);
+                InvoiceMblDto.ShipperId = airexportHawb.ActualShippedr is not null ? Guid.Parse(airexportHawb.ActualShippedr) : Guid.Empty;
+                InvoiceMblDto.MblConsigneeId = airexportHawb.OverseaAgent is not null ? Guid.Parse(airexportHawb.OverseaAgent) : Guid.Empty;
+                InvoiceMblDto.MblNotifyId = airexportHawb.Notify is not null ? Guid.Parse(airexportHawb.Notify) : Guid.Empty;
                 InvoiceMblDto.RouteDestinationId = airExportMawb.RouteDestinationId;
                 InvoiceMblDto.FdestEta = airexportHawb.FinalEta;
                 InvoiceMblDto.GrossWeightKg = Convert.ToDouble(airexportHawb.GrossWeightShprKG);
