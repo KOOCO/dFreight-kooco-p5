@@ -354,97 +354,78 @@ namespace Dolphin.Freight.Accounting.Invoices
 
             return new JsonResult(new { invoiceId = NewInvoice.Id, invoiceType = NewInvoice.InvoiceType });
         }
-        public async Task CreateMblHblAccountingForCopiedOE_OI(Guid OldMblId, Guid NewMblId, bool IsAP = false, bool IsAR = false, bool IsDC = false)
+
+        /// <summary>
+        /// Creates replica accounting entries by querying existing invoices, filtering them based on specified parameters,
+        /// and generating new invoices with common ID assignment logic.
+        /// </summary>
+        /// <param name="OldId">The old identifier used for querying existing invoices.</param>
+        /// <param name="NewId">The common identifier to assign to new invoices.</param>
+        /// <param name="QueryType">The type of query to determine filtering criteria.</param>
+        /// <param name="IsAP">Flag indicating whether to create Accounts Payable (AP) invoices.</param>
+        /// <param name="IsAR">Flag indicating whether to create Accounts Receivable (AR) invoices.</param>
+        /// <param name="IsDC">Flag indicating whether to create Debit/Credit (DC) invoices.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task CreateReplicaAccounting(Guid OldId, Guid NewId, int QueryType, bool IsAP = false, bool IsAR = false, bool IsDC = false)
         {
-            QueryInvoiceDto QueryInvoiceDto = new() { QueryType = 3, ParentId = OldMblId };
-
-            var InvoiceDtos = await QueryInvoicesAsync(QueryInvoiceDto);
-
-            if (InvoiceDtos != null && InvoiceDtos.Count > 0)
-            {
-                if (IsAP) await CreateAP(InvoiceDtos, NewMblId, false, false, IsAP, false);
-
-                if (IsDC) await CreateDC(InvoiceDtos, NewMblId, false, false, IsDC, false);
-                
-                if (IsAR) await CreateAR(InvoiceDtos, NewMblId, false, false, IsAR, false);
-            }
-        }
-        public async Task CreateHawbAccountingForCopiedAE(Guid OldHblId, Guid NewHblId, bool IsAP = false, bool IsAR = false, bool IsDC = false)
-        {
-            QueryInvoiceDto q1idto = new QueryInvoiceDto() { QueryType = 4, ParentId = OldHblId };
-            var invoiceDtos1 = await QueryInvoicesAsync(q1idto);
+            QueryInvoiceDto Query = new() { QueryType = QueryType, ParentId = OldId };
+            
+            var invoiceDtos1 = await QueryInvoicesAsync(Query);
 
             if (invoiceDtos1 != null && invoiceDtos1.Count > 0)
             {
-                if (IsAP) await CreateAP(invoiceDtos1, NewHblId, false, IsAP, false, false);
+                if (IsAP) await CreateInvoice<InvoiceDto>(invoiceDtos1, NewId, 2, QueryType == 0 ? IsAP : false, QueryType == 4 ? IsAP : false, QueryType == 3 ? IsAP : false, QueryType == 1 ? IsAP : false);
 
-                if (IsDC) await CreateDC(invoiceDtos1, NewHblId, false, IsDC, false, false);
-
-                if (IsAR) await CreateAR(invoiceDtos1, NewHblId, false, IsAR, false, false);
+                if (IsDC) await CreateInvoice<InvoiceDto>(invoiceDtos1, NewId, 1, QueryType == 0 ? IsDC : false, QueryType == 4 ? IsDC : false, QueryType == 3 ? IsDC : false, QueryType == 1 ? IsDC : false);
+                
+                if (IsAR) await CreateInvoice<InvoiceDto>(invoiceDtos1, NewId, 0, QueryType == 0 ? IsAR : false, QueryType == 4 ? IsAR : false, QueryType == 3 ? IsAR : false, QueryType == 1 ? IsAR : false);
             }
         }
-        public async Task CreateAP(IList<InvoiceDto> InvoiceDto, Guid Id, bool IsMawb = false, bool IsHawb = false, bool IsMbl = false, bool IsHbl = false)
+
+        /// <summary>
+        /// Creates invoices based on a specified type (T) and common parameters. 
+        /// Filters the provided list of invoice data based on the specified invoice type, applies common ID assignment logic, 
+        /// creates new invoices, and associates them with bills.
+        /// </summary>
+        /// <typeparam name="T">The type of invoice to create.</typeparam>
+        /// <param name="InvoiceDtoList">The list of invoice data.</param>
+        /// <param name="Id">The common ID to assign to invoices.</param>
+        /// <param name="InvoiceType">The type of invoices to filter in the list.</param>
+        /// <param name="IsMawb">Flag to assign Mawb ID.</param>
+        /// <param name="IsHawb">Flag to assign Hawb ID.</param>
+        /// <param name="IsMbl">Flag to assign Mbl ID.</param>
+        /// <param name="IsHbl">Flag to assign Hbl ID.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task CreateInvoice<T>(IList<InvoiceDto> InvoiceDtoList, Guid Id, int InvoiceType, bool IsMawb = false, bool IsHawb = false, bool IsMbl = false, bool IsHbl = false)
         {
-            var InvoiceAP = InvoiceDto.Where(x => x.InvoiceType == 2).ToList();
+            InvoiceDtoList = InvoiceDtoList.Where(w => w.InvoiceType == InvoiceType).ToList();
 
-            foreach (var Invoice in InvoiceAP)
+            foreach (var Invoice in InvoiceDtoList)
             {
-                var NewInvoiceAP = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(Invoice);
+                var NewInvoice = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(Invoice);
 
-                if (IsMawb) NewInvoiceAP.MawbId = Id;
-                if (IsHawb) NewInvoiceAP.HawbId = Id;
-                if (IsMbl) NewInvoiceAP.MblId = Id;
-                if (IsHbl) NewInvoiceAP.HblId = Id;
+                SetIdProperties(NewInvoice, Id, IsMawb, IsHawb, IsMbl, IsHbl);
 
-                NewInvoiceAP.Id = Guid.Empty;
+                NewInvoice.Id = Guid.Empty;
 
-                var CreateInvoiceAP = await CreateAsync(NewInvoiceAP);
+                var CreateInvoice = await CreateAsync(NewInvoice);
 
-                await CreateInvoiceBillsAsync(Invoice.Id.ToString(), CreateInvoiceAP.Id);
-            }
-        }
-        public async Task CreateDC(IList<InvoiceDto> InvoiceDto, Guid Id, bool IsMawb = false, bool IsHawb = false, bool IsMbl = false, bool IsHbl = false)
-        {
-            var InvoiceDC = InvoiceDto.Where(x => x.InvoiceType == 1).ToList();
-
-            foreach (var Invoice in InvoiceDC)
-            {
-                var NewInvoiceDC = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(Invoice);
-
-                if (IsMawb) NewInvoiceDC.MawbId = Id;
-                if (IsHawb) NewInvoiceDC.HawbId = Id;
-                if (IsMbl) NewInvoiceDC.MblId = Id;
-                if (IsHbl) NewInvoiceDC.HblId = Id;
-
-                NewInvoiceDC.Id = Guid.Empty;
-
-                var CreateInvoiceDC = await CreateAsync(NewInvoiceDC);
-
-                await CreateInvoiceBillsAsync(Invoice.Id.ToString(), CreateInvoiceDC.Id);
-            }
-        }
-        public async Task CreateAR(IList<InvoiceDto> InvoiceDto, Guid Id, bool IsMawb = false, bool IsHawb = false, bool IsMbl = false, bool IsHbl = false)
-        {
-            var InvoiceAR = InvoiceDto.Where(x => x.InvoiceType == 0).ToList();
-
-            foreach (var Invoice in InvoiceAR)
-            {
-                var NewInvoiceAR = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(Invoice);
-
-                if (IsMawb) NewInvoiceAR.MawbId = Id;
-                if (IsHawb) NewInvoiceAR.HawbId = Id;
-                if (IsMbl) NewInvoiceAR.MblId = Id;
-                if (IsHbl) NewInvoiceAR.HblId = Id;
-
-                NewInvoiceAR.Id = Guid.Empty;
-
-                var CreateInvoiceAR = await CreateAsync(NewInvoiceAR);
-
-                await CreateInvoiceBillsAsync(Invoice.Id.ToString(), CreateInvoiceAR.Id);
+                await CreateInvoiceBillsAsync(Invoice.Id.ToString(), CreateInvoice.Id);
             }
         }
 
         #region Private Functions
+        /// <summary>
+        /// This helper method responsible for setting ID properties on the CreateUpdateInvoiceDto object based on specified conditions. 
+        /// This method encapsulates the common logic for ID assignment.
+        /// </summary>
+        protected virtual void SetIdProperties(CreateUpdateInvoiceDto Invoice, Guid Id, bool IsMawb = false, bool IsHawb = false, bool IsMbl = false, bool IsHbl = false)
+        {
+            if (IsMawb) Invoice.MawbId = Id;
+            if (IsHawb) Invoice.HawbId = Id;
+            if (IsMbl) Invoice.MblId = Id;
+            if (IsHbl) Invoice.HblId = Id;
+        }
         private async Task CreateInvoiceBillsAsync(string InvoiceNo, Guid InvoiceId)
         {
             QueryInvoiceBillDto Query = new() { InvoiceNo = InvoiceNo };

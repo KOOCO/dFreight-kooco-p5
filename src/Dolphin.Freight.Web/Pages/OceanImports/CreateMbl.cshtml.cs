@@ -152,12 +152,14 @@ namespace Dolphin.Freight.Web.Pages.OceanImports
 
                     var inputHblDto = await _oceanImportHblAppService.CreateAsync(ObjectMapper.Map<OceanImportHblDto, CreateUpdateOceanImportHblDto>(item));
 
+                    await _invoiceAppService.CreateReplicaAccounting(oldHblId, inputHblDto.Id, 1, IsAP, IsAR, IsDC);
+
                     hblIds.Add(oldHblId, inputHblDto.Id);
                 }
 
                 if (CopyAccountingInformation)
                 {
-                    await _invoiceAppService.CreateMblHblAccountingForCopiedOE_OI((Guid)oldMblId, inputDto.Id, IsAP, IsAR, IsDC);
+                    await _invoiceAppService.CreateReplicaAccounting((Guid)oldMblId, inputDto.Id, 3, IsAP, IsAR, IsDC);
                 }
 
                 if (IsCopyContainerInfo)

@@ -58,7 +58,7 @@ namespace Dolphin.Freight.Web.Pages.AirExports.ModalPopups
 
             if (CopyModel.CopyAccountingInformation)
             {
-                await _invoiceAppService.CreateHawbAccountingForCopiedAE(Id, newHawb.Id, CopyModel.AP, CopyModel.AR, CopyModel.DC);
+                await _invoiceAppService.CreateReplicaAccounting(Id, newHawb.Id, 4, CopyModel.AP, CopyModel.AR, CopyModel.DC);
             }
 
             var rs = new Dictionary<string, object>
