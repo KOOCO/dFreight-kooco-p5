@@ -117,6 +117,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            
             await _oceanExportMblAppService.UpdateAsync(OceanExportMbl.Id, OceanExportMbl);
 
             if (OceanExportHbl is not null && !string.IsNullOrEmpty(OceanExportHbl.HblNo))

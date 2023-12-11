@@ -10,10 +10,7 @@ $(function () {
     var queryListFilter = function () {
         return {
             search: $("#Keyword").val(),
-
-
             shipperId: $("#VesselSchedule_ShipperId").val() == '' ? null : $("#VesselSchedule_ShipperId").val(),
-
             consigneeId: $("#VesselSchedule_ConsigneeId").val() == '' ? null : $("#VesselSchedule_ConsigneeId").val(),
             carrierId: $("#VesselSchedule_CarrierId").val() == '' ? null : $("#VesselSchedule_CarrierId").val(),
             depatureId: $("#VesselSchedule_DepatureId").val() == '' ? null : $("#VesselSchedule_DepatureId").val(),
@@ -25,14 +22,13 @@ $(function () {
             incotermsType: $("#IncotermsType").val() == '' ? null : $("#IncotermsType").val(),
             awbType: $("#awbType").val() == '' ? null : $("#awbType").val(),
             block: $("#block").val() == '' ? null : $("#block").val(),
-
             depatureDate: $("#DepatureDate").val() == '' || $("#DepatureDate").val() == null ? null : new Date($("#DepatureDate").val()),
             arrivalDate: $("#ArrivalDate").val() == '' || $("#ArrivalDate").val() == null ? null : new Date($("#ArrivalDate").val()),
             postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
             creationDate: $("#CreationDate").val() == '' || $("#CreationDate").val() == null ? null : new Date($("#CreationDate").val()),
-
         };
     };
+
     var columns = [{
         title: '<input type="checkbox" id="selectAllCheckbox" onclick="AirExports.selectAllCheckbox(this)" style=" cursor: pointer;">',
         data: null,
@@ -127,7 +123,6 @@ $(function () {
 
     dolphin.freight.web.controllers.configuration.getJsonConfig('AirExport').done(function (data) {
         data.forEach(function (item) {
-
             if (!item.lock && item.checkable) {
                 var itemData = item.name;
                 if (item.name.toLowerCase().includes('date')) {
@@ -139,7 +134,7 @@ $(function () {
                         return depatureDate.toLocaleDateString() + ' ' + depatureDate.toLocaleTimeString();
                     }
                 }
-
+                
                 var column = {  
                     title: l(item.text),
                     data: itemData
@@ -147,6 +142,7 @@ $(function () {
                 columns.push(column);
             }
         });
+
         columns = columns.concat(otherFixedColumns);
         var col = (columns.length > 1) ? [[1, 'asc']] : [[0, 'asc']];
 
@@ -154,6 +150,7 @@ $(function () {
             abp.libs.datatables.normalizeConfiguration({
                 serverSide: true,
                 paging: true,
+                pagingType: 'full_numbers',
                 order: col,
                 searching: false,
                 scrollX: true,

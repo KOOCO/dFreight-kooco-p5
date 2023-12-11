@@ -34,5 +34,6 @@ namespace Dolphin.Freight.ImportExport.Containers
         Task<List<CreateUpdateContainerDto>> GetContainerListByHblId(Guid id);
         Task<List<CreateUpdateContainerDto>> GetContainersByExtraPropertiesHblIds(Guid hblId, Guid MblId);
         Task<CreateUpdateContainerDto> GetSingleContainerByExtraPropertiesHblIds(Guid HblId, Guid MblId);
+        Task CreateMblHblContainerForCopiedOE_OI(Guid OldMblId, Guid NewMblId, Dictionary<Guid, Guid> hblIds);
     }
 }

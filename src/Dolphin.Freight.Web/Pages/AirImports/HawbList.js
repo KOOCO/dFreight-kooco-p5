@@ -5,38 +5,43 @@ var _changeInterval = null;
 var queryListFilter = function () {
     return {
         search: $("#Keyword").val(),
-
-
         freightLocationId: $("#VesselSchedule_FreightLocationId").val() == '' ? null : $("#VesselSchedule_FreightLocationId").val(),
         shipperId: $("#VesselSchedule_ShipperId").val() == '' ? null : $("#VesselSchedule_ShipperId").val(),
         notifyId: $("#VesselSchedule_NotifyId").val() == '' ? null : $("#VesselSchedule_NotifyId").val(),
         saleId: $("#VesselSchedule_SaleId").val() == '' ? null : $("#VesselSchedule_SaleId").val(),
         customerId: $("#VesselSchedule_CustomerId").val() == '' ? null : $("#VesselSchedule_CustomerId").val(),
         consigneeId: $("#VesselSchedule_ConsigneeId").val() == '' ? null : $("#VesselSchedule_ConsigneeId").val(),
-    
-
-      
-
-
-    
         postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
         creationDate: $("#CreationDate").val() == '' || $("#CreationDate").val() == null ? null : new Date($("#CreationDate").val()),
-
     };
 };
 var columns = [
     {
-    title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
-    data: null,
-    orderable: false,
-    render: function (data, type, row) {
+        title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
+        data: null,
+        orderable: false,
+        render: function (data, type, row) {
 
-        var id = row.id;
-        var filingNo = row.docNo;
-        $('#btnAirExportHawbListProfit').prop('disabled', true);
-        $('#selectAllCheckbox').prop('checked', false);
-        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" data-filingNo="' + filingNo + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
-    }
+            var id = row.id;
+            var filingNo = row.docNo;
+            $('#btnAirExportHawbListProfit').prop('disabled', true);
+            $('#selectAllCheckbox').prop('checked', false);
+            return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" data-filingNo="' + filingNo + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
+        }
+    },
+    {
+        title: '<div  style=" cursor: pointer;"><span><i class="fa fa-lock"></i></span></div>',
+        orderable: false,
+        "render": function (data, type, row) {
+            var isCkecked = row.isLocked;
+            var id = row.id;
+            if (isCkecked) {
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + id + '"  checked="' + isCkecked + '" onclick="AirImportsHawbList.lockCheckBox(this)"  style=" cursor: pointer;">';
+            } else {
+                return '<input type="checkbox" class="lockUnlockCheckbox" data-id="' + id + '" onclick="AirImportsHawbList.lockCheckBox(this)"   style=" cursor: pointer;">';
+            }
+        }
+    
 },
     {
         title: l('Actions'),
@@ -161,11 +166,11 @@ $(function () {
             abp.libs.datatables.normalizeConfiguration({
                 serverSide: true,
                 paging: true,
+                pagingType: 'full_numbers',
                 order: [[2, "asc"]],
                 searching: false,
                 processing: true,
                 scrollX: true,
-               
                 responsive: {
                     details: {
                         type: 'column'
@@ -204,6 +209,36 @@ $(function () {
 
 
 });
+var AirImportsHawbList = {
+   
+    lockCheckBox: function (checkbox) {
+        var selectedCheckboxes = $('#HawbListTable tbody input.lockUnlockCheckbox[type="checkbox"]:checked');
+        var id = checkbox.attributes[2].value;
+        var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
+        abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+            if (confirmed) {
+                dolphin.freight.importExport.airImports.airImportHawb.lockedOrUnLockedAirImportHawb(id).done(function () {
+                    if (isLock) {
+                        abp.message.success(l('Message:SuccessUnlock'));
+                    } else {
+                        abp.message.success(l('Message:SuccessLock'));
+                    }
+                    dataTable.ajax.reload();
+                });
+            }
+            else {
+                debugger
+                if (checkbox.checked) {
+                    $(checkbox).prop('checked', false);
+                }
+                else {
+                    $(checkbox).prop('checked', true);
+                }
+            }
+        });
+    },
+   
+}
 var lock = function (id) {
     var isLock = $('#lock_' + id).find('i').hasClass('fa-lock');
     abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {

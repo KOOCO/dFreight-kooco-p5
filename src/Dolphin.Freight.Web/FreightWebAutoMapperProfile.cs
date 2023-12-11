@@ -42,7 +42,11 @@ public class FreightWebAutoMapperProfile : Profile
     public FreightWebAutoMapperProfile()
     {
         //Define your AutoMapper configuration here for the Web project.
-
+        CreateMap<AirExportHawbDto, InvoiceMblDto>();
+        CreateMap<AirImportHawbDto, InvoiceMblDto>();
+        CreateMap<OceanExportHblDto, InvoiceMblDto>();
+        CreateMap<OceanImportHblDto, InvoiceMblDto>();
+        CreateMap<AirImportMawbDto, InvoiceMblDto>();
         CreateMap<ItNoRangeDto, CreateUpdateItNoRangeDto>();
         CreateMap<AirOtherChargeDTO, CreateUpdateAirOtherChargeDTO>();
         CreateMap<PortsManagementDTO, CreateUpdatePortsManagementDto>();

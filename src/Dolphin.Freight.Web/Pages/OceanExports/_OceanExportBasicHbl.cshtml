@@ -78,8 +78,6 @@
          });
     </script>
 
-
-
 <abp-card class="card board-item" id="hblCard">
 
     <abp-card-header id="hblCardHeader" class="card-header active @Model.OceanExportHbl.CardColorValue ">
@@ -204,7 +202,7 @@
             <abp-column size-md="_3">
                 
                 <label class="form-label">@L["HblNo"] *</label>
-                <input class="form-control"  asp-for="OceanExportHbl.HblNo"  />
+                <abp-input  suppress-label  class="form-control"  asp-for="OceanExportHbl.HblNo"  />
             </abp-column>
             <abp-column size-md="_3">
                 <abp-input asp-for="OceanExportHbl.SoNo" />
@@ -239,7 +237,7 @@
                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblBillToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblBillToId", SelectType = 0, ShowFiledContentValue = Model.OceanExportHbl.HblBillToId.ToString() })
             </abp-column>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblConsigneeId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblConsigneeId", SelectType = 0, ShowFiledContentValue = Model.OceanExportHbl.HblConsigneeId.ToString() })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanExportHbl.HblConsigneeId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "HblConsigneeId", SelectType = 0, ShowFiledContentValue = Model.OceanExportHbl.HblConsigneeId.ToString(), ChangeEvent = "UpdateDropdown(this, ['OceanExportHbl.HblCustomerId', 'OceanExportHbl.HblNotifyId', 'OceanExportHbl.HblBillToId', 'OceanExportHbl.DeliveryToId'])" })
 
             </abp-column>
             <abp-column size-md="_3">

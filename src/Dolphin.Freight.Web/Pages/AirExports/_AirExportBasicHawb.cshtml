@@ -22,6 +22,14 @@
 }
 <abp-script src="/Pages/AirExports/AirExportHawb.js" />
 <script>
+    const createHawbCopyModalAE = new abp.ModalManager({
+        viewUrl: '/AirExports/ModalPopups/CopyToAirExportHawb'
+    });
+
+    const moveHawbModalAE = new abp.ModalManager({
+        viewUrl: '/AirExports/ModalPopups/MoveToAirExportHawb'
+    });
+
     $(document).ready(function () {
         if ($('#HawbCancelledDate').val() == '0001-01-01T00:00') {
             $('#HawbCancelledDate').val('');
@@ -130,6 +138,13 @@
                 </a>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="deleteHawb()">
                     <i class="fa fa-trash-o"></i> @L["Btn:Delete"]
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirExportHawb.onCopyToHawbClick()">
+                    <i class="fa fa-copy"></i> @L["Btn:CopyTo"]
+                </a>
+                </a>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="AirExportHawb.editMawbAirImport('@Model.AirExportHawbDto.MawbId' ,'@Model.AirExportHawbDto.Id')">
+                    <i class="fa fa-share"></i> @L["Btn:Move"]
                 </a>
                 <p class="dropdown-divider"></p>
                 <a class='dropdown-item' href='javascript:void(0)' onclick="DocumentPackage('@Url.Action("DocumentPackage", "Docs", new { id = Model.AirExportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEHBL })')">
@@ -243,7 +258,7 @@
                 <input class="form-control form-control-sm" id="operator" type="text" value="@(_currentUser.Name + " " + _currentUser.SurName)" disabled />
             </abp-column>
             <abp-column size-md="_3" class="align-self-center">
-                <abp-input asp-for="@Model.AirExportHawbDto.SubAgentAwb" label="@L["subAgentawb"].Value" />
+                <abp-input asp-for="@Model.AirExportHawbDto.SubAgentAwb" label="@L["SubAgentAwb"].Value" />
             </abp-column>
         </abp-row>
         <!--第五列-->
@@ -424,7 +439,7 @@
                     <abp-input asp-for="@Model.AirExportHawbDto.AWBCancelledDate" class="form-select-sm form-control" id="HawbCancelledDate" abp-data-datepicker="false" />
                 </abp-column>
                 <abp-column size-md="_3">
-                    <label class="">CancelledBy</label>
+                    <label class="">@L["CancelledBy"]</label>
                     <input asp-for="@Model.AirExportHawbDto.CanceledBy" class="form-control form-control-sm" id="HawbCanceledBy" value="@(_currentUser.Name + " " + _currentUser.SurName)" type="text" disabled />
                 </abp-column>
                 <abp-column size-md="_3">
@@ -437,7 +452,7 @@
                     <abp-input asp-for="@Model.AirExportHawbDto.AWBCancelledDate" class="form-select-sm form-control" value="" id="HawbCancelledDate" abp-data-datepicker="false" disabled />
                 </abp-column>
                 <abp-column size-md="_3">
-                    <label class="">CancelledBy</label>
+                    <label class="">@L["CancelledBy"]</label>
                     <input asp-for="@Model.AirExportHawbDto.CanceledBy" class="form-control form-control-sm" id="HawbCanceledBy" type="text" disabled />
                 </abp-column>
                 <abp-column size-md="_3">

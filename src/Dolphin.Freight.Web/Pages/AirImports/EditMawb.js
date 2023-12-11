@@ -10,7 +10,15 @@
             "MawbModel_RouteTrans3ArrivalDate",
             "MawbModel_RouteTrans1DepatureDate",
             "MawbModel_RouteTrans2DepatureDate",
-            "MawbModel_RouteTrans3DepatureDate"
+            "MawbModel_RouteTrans3DepatureDate",
+            "MawbModel_RouteDepatureDate",
+
+            "MawbModel_RouteDestinationArrivalDate",
+            "AirExportMawbDto_RouteDepartureArrivalDate",
+
+            "AirExportMawbDto_RouteDepatureDate",
+
+            "AirExportMawbDto_RouteDestinationArrivalDate",
         ];
 
         var DateTimePicker = new CustomDateTimePicker();
@@ -20,7 +28,6 @@
     var url = new URL(window.location.href);
     var selectedHblNo;
    
-
     dolphin.freight.importExport.airImports.airImportHawb.getHawbCardsByMawbId(url.searchParams.get('Id'))
         .done(function (hblCards) {
             if (hblCards && hblCards.length) {
@@ -53,6 +60,5 @@
                 }, 500);
             }
         })
-
 })
 

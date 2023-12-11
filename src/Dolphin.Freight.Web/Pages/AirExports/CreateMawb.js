@@ -204,13 +204,13 @@ class AirExportMawb {
                 SellingRate = 0;
             }
         } else {
-            SellingRate = $('#MawbModel_SellingRateUnit').val();
+            SellingRate = $('#MawbModel_SellingRate').val();
         }
         switch (Unit) {
             case 'KG':
                 if (Number(Elem.currentTarget.value) > Number(VolumeWeightKg)) {
                     $('#ChargeableWeightKg').val(Elem.currentTarget.value);
-                    $('#ChargeableWeightLb').val(parseFloat(Elem.currentTarget.value * 2.2).toFixed(2));
+                    $('#ChargeableWeightLb').val(parseFloat(Elem.currentTarget.value * 2.20462).toFixed(2));
                     if ($('#MawbModel_ChargeableWeightAmount').length == 0) {
                         $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat(Elem.currentTarget.value * SellingRate).toFixed(2));
                     } else {
@@ -226,7 +226,7 @@ class AirExportMawb {
                 }
                 break;
             case 'LB':
-                var KG = parseFloat(Elem.currentTarget.value / 2.2).toFixed(2);
+                var KG = parseFloat(Elem.currentTarget.value / 2.20462).toFixed(2);
                 if (Number(KG) > Number(VolumeWeightKg)) {
                     $('#ChargeableWeightKg').val(KG);
                     if ($('#MawbModel_ChargeableWeightAmount').length == 0) {

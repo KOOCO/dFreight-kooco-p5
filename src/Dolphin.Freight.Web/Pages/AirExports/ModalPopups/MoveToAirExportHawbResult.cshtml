@@ -1,0 +1,21 @@
+﻿@page
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Web.CommonService;
+@using Dolphin.Freight.Web.Pages.Components;
+@using Microsoft.Extensions.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@model Dolphin.Freight.Web.Pages.AirExports.ModalPopups.MoveToAirExportHawbResultModel
+@inject IStringLocalizer<FreightResource> L
+@{
+    Layout = null;
+}
+<abp-script src="/Pages/AirExports/ModalPopups/MoveToAirExportHawbResult.js" />
+<abp-modal size="Large">
+    <abp-modal-header title="@L["MoveHawb"]"></abp-modal-header>
+    <abp-modal-body>
+        <div>
+            <p>@L["Title:MovedHawbSentence"]</p><a href='javascript:void(0)' onclick="MoveToAirExportHawbResult.RedirectToMawbPage('@Model.Id')">@Model.MawbDocs</a>
+        </div>
+    </abp-modal-body>
+    <abp-modal-footer buttons="@(AbpModalButtons.Cancel)"></abp-modal-footer>
+</abp-modal>

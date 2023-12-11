@@ -51,17 +51,19 @@
             } else {
                 abp.message.success('Successfully saved.');
             }
-              var url = new URL(window.location.href);
-    var result = url.searchParams.get('copyHawbMessage');
-    if (result == 'True') {
-        var id = '@Model.ResultedMawbId';
-        createModal.open({
-            id,
+            
+            var url = new URL(window.location.href);
+            var result = url.searchParams.get('copyHawbMessage');
+            if (result == 'True') {
+                var id = '@Model.ResultedMawbId';
+                createModal.open({
+                    id,
 
-        });
+                });
 
-    }
-             isLocked = '@Model.MawbModel.IsLocked';
+            }
+            
+            isLocked = '@Model.MawbModel.IsLocked';
          
             const isDirectMasterChecked = document.querySelector('#isDirectMaster');
             if (isDirectMasterChecked.checked == true) {
@@ -95,7 +97,46 @@
             // Calculate Weight Kg to Lb
             $("#GrossWeightKg").on('keyup', function () {
                 $("#GrossWeightLb").val(Math.round($("#GrossWeightKg").val() * 2.2046226218 * 100) / 100);
+
+                var GrossWeightKG = $("#GrossWeightKg").val();
+                var VolumeWeightKG = $('#MawbModel_VolumeWeightKg').val();
+
+                if (Number(GrossWeightKG) > Number(VolumeWeightKG)) {
+                    $('#ChargeableWeightKg').val(GrossWeightKG).trigger('keyup');
+                }
+                else if (Number(GrossWeightKG) <= Number(VolumeWeightKG)) {
+                    $('#ChargeableWeightKg').val(VolumeWeightKG).trigger('keyup');
+                }
             });
+
+            $('#MawbModel_VolumeWeightKg').on('keyup', function () {
+                $('#MawbModel_VolumeWeightCbm').val(Math.round($('#MawbModel_VolumeWeightKg').val() * 0.00599988 * 100) / 100);
+
+                var GrossWeightKG = $("#GrossWeightKg").val();
+                var VolumeWeightKG = $('#MawbModel_VolumeWeightKg').val();
+
+                if (Number(VolumeWeightKG) >= Number(GrossWeightKG)) {
+                    $('#ChargeableWeightKg').val(VolumeWeightKG).trigger('keyup');
+                }
+                else {
+                    $('#ChargeableWeightKg').val(GrossWeightKG).trigger('keyup');
+                }
+            });
+
+            $('#MawbModel_VolumeWeightCbm').on('keyup', function () {
+                $('#MawbModel_VolumeWeightKg').val(Math.round($('#MawbModel_VolumeWeightCbm').val() * 166.67 * 100) / 100);
+
+                var GrossWeightKG = $("#GrossWeightKg").val();
+                var VolumeWeightKG = $('#MawbModel_VolumeWeightKg').val();
+
+                if (Number(VolumeWeightKG) >= Number(GrossWeightKG)) {
+                    $('#ChargeableWeightKg').val(VolumeWeightKG).trigger('keyup');
+                }
+                else {
+                    $('#ChargeableWeightKg').val(GrossWeightKG).trigger('keyup');
+                }
+            });
+
             $("#ChargeableWeightKg").on('keyup', function () {
                 $("#ChargeableWeightLb").val(Math.round($("#ChargeableWeightKg").val() * 2.2046226218 * 100) / 100);
             });
@@ -103,7 +144,20 @@
             // Calculate Weight Lb to Kg
             $("#GrossWeightLb").on('keyup', function () {
                 $("#GrossWeightKg").val(Math.round($("#GrossWeightLb").val() * 0.45359237 * 100) / 100);
+
+                var GrossWeightKG = $('#GrossWeightKg').val();
+                var GrossWeightLB = $('#GrossWeightLb').val();
+                var VolumeWeigthKG = $('#MawbModel_VolumeWeightKg').val();
+                var VolumeWeightLB = Math.round($('#MawbModel_VolumeWeightKg').val() * 2.2046226218 * 100) / 100;
+
+                if (Number(GrossWeightKG) > Number(VolumeWeigthKG)) {
+                    $('#ChargeableWeightLb').val(GrossWeightLB).trigger('keyup');
+                }
+                else if (Number(GrossWeightKG) <= Number(VolumeWeigthKG)) {
+                    $('#ChargeableWeightLb').val(VolumeWeightLB).trigger('keyup');
+                }
             });
+
             $("#ChargeableWeightLb").on('keyup', function () {
                 $("#ChargeableWeightKg").val(Math.round($("#ChargeableWeightLb").val() * 0.45359237 * 100) / 100);
             });
@@ -732,7 +786,7 @@
           </td>
           <td><input type="text" name="HawbModel.Commodities[${chkIndex}].Description" value="${Description}" /></td>
           <td><input type="text" name="HawbModel.Commodities[${chkIndex}].HTSCode" value="${HTSCode}" /></td>
-          <td><input type="text" name="HawbModel.Commodities[${chkIndex}].PONumber" value="${PoNumber}" disabled /></td>
+          <td><input type="text" name="HawbModel.Commodities[${chkIndex}].PONumber" value="${PONumber}" /></td>
         </tr>
     </script>
 
@@ -969,6 +1023,24 @@
                                             </thead>
 
                                             <tbody>
+                                                    <tr>
+                                                    <th>Departure</th>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteDepartureId", AspItems = _dropdownService.AirportLookupList, IsShowLabel = false, FieldName = "RouteDepartureId", SelectType = 0,Selected = Model.MawbModel.RouteDepartureId.ToString(), ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteDepartureId) })
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.MawbModel.RouteDepartureArrivalDate" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.MawbModel.RouteDepatureDate" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.MawbModel.RouteDepartureFlightNo" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteDepartureCarrierId", AspItems = Model.TradePartnerLookupList,Selected = Model.MawbModel.RouteDepartureCarrierId.ToString(),SelectType = 0, ShowFiledContentValue = Model.MawbModel.RouteDepartureCarrierId.ToString() })
+                                                    </td>
+                                                </tr>
                                            <tr>
                                                     <th>Trans1</th>
                                                     <td>
@@ -1024,6 +1096,24 @@
                                                     </td>
                                                     <td>
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteTrans3CarrierId", AspItems = Model.TradePartnerLookupList, Selected = Model.MawbModel.RouteTrans3CarrierId })
+                                                    </td>
+                                                </tr>
+                                                   <tr>
+                                                    <th>Final Destination</th>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.RouteDestinationId", AspItems = _dropdownService.AirportLookupList, IsShowLabel = false,Selected = Model.MawbModel.RouteDestinationId.ToString(), FieldName = "RouteDestinationId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.MawbModel.RouteDestinationId) })
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.MawbModel.RouteDestinationArrivalDate" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                       
+                                                    </td>
+                                                    <td>
+                                                       
+                                                    </td>
+                                                    <td>
+                                                        
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -1095,7 +1185,7 @@
                                                     <tr>
                                                         <td></td>
                                                         <td>@L["KG"]</td>
-                                                        <td>@L["LB"]</td>sa
+                                                        <td>@L["LB"]</td>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -1123,10 +1213,10 @@
                             <hr />
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.FreightType", AspItems = Html.GetEnumSelectList(typeof(FreightType)).ToList(), IsShowLabel = true, FieldName ="Freight", ShowFiledContentValue = Convert.ToString(Model.MawbModel.FreightType) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.FreightType", AspItems = Html.GetEnumSelectList(typeof(FreightType)).ToList(), IsShowLabel = true, FieldName ="Freight", ShowFiledContentValue = Convert.ToString(((int)Model.MawbModel.FreightType)) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.IncotermsType", AspItems = Html.GetEnumSelectList(typeof(IncotermsType)).ToList(), IsShowLabel = true, FieldName = "Incoterms", ShowFiledContentValue = Convert.ToString(Model.MawbModel.IncotermsType) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.IncotermsType", AspItems = Html.GetEnumSelectList(typeof(IncotermsType)).ToList(), IsShowLabel = true, FieldName = "Incoterms", ShowFiledContentValue = Convert.ToString(((int)Model.MawbModel.IncotermsType)) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "MawbModel.ServiceTermTypeFrom", AspItems = Html.GetEnumSelectList(typeof(ServiceTermType)).ToList(), IsShowLabel = true, FieldName = "ServiceTermFrom", ShowFiledContentValue = Convert.ToString(((int)Model.MawbModel.ServiceTermTypeFrom)) })

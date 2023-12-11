@@ -25,12 +25,16 @@
                         $('#title_' + selectedHblNo).click();
                     }
                     else { $('.hblCardTitle')[0].click(); }
-                    
+
                 }, 500);
             }
         })
 
-})
+});
+
+var OceanExportCopyModal = new abp.ModalManager({
+    viewUrl: '/OceanExports/ModalPopups/OceanExportMBLCopy'
+});
 
 var EditModelOEScript = {
     RextoHexColorCode: function (rgb) {
@@ -49,5 +53,10 @@ var EditModelOEScript = {
         } else {
             return undefined;
         }
+    },
+    OceanExportCopy: function (id) {
+        OceanExportCopyModal.open({
+            id
+        });
     }
 }

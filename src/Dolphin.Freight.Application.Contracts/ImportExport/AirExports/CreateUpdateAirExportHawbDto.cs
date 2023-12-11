@@ -9,6 +9,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
 {
     public class CreateUpdateAirExportHawbDto
     {
+        public Guid Id { get; set; }
         public Guid? MawbId { get; set; }
         public string HawbNo { get; set; }
         public string BookingNo { get; set; }

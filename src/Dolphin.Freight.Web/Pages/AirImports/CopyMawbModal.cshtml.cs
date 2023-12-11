@@ -66,7 +66,6 @@ namespace Dolphin.Freight.Web.Pages.AirImports
     }
     public class CopyModelInfo
     {
-
         public bool IsCopyFlightInfo { get; set; }
         public string CopyHawb { get; set; }
      
@@ -80,7 +79,5 @@ namespace Dolphin.Freight.Web.Pages.AirImports
        
         public bool DC { get; set; }
         public Guid MawbId { get; set; }
-
-
     }
 }

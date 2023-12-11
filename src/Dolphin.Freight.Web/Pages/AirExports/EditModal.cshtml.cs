@@ -74,6 +74,8 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public bool ShowMsg { get; set; } = false;
+        [BindProperty(SupportsGet = true)]
+        public Guid ResultedMawbId { get; set; }
         [BindProperty]
         public string DimensionsJSON { get; set; }
         [BindProperty]

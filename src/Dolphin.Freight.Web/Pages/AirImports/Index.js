@@ -99,13 +99,13 @@
             }
         });
 
-                var col = (columns.length > 1) ? [[1, 'asc']] : [[0, 'asc']];
-
+        var col = (columns.length > 1) ? [[1, 'asc']] : [[0, 'asc']];
 
         dataTable = $('#MblListTable').DataTable(
             abp.libs.datatables.normalizeConfiguration({
                 serverSide: true,
                 paging: true,
+                pagingType: 'full_numbers',
                 order: col,
                 searching: false,
                 scrollX: true,

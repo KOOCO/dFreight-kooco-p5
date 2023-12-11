@@ -1,0 +1,21 @@
+﻿@page
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Web.CommonService;
+@using Dolphin.Freight.Web.Pages.Components;
+@using Microsoft.Extensions.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@model Dolphin.Freight.Web.Pages.AirExports.ModalPopups.CopyToAirExportHawbResultModel
+@inject IStringLocalizer<FreightResource> L
+@{
+    Layout = null;
+}
+<abp-script src="/Pages/AirExports/ModalPopups/CopyToAirExportHawbResult.js" />
+<abp-modal size="Large">
+    <abp-modal-header title="@L["CopyHawb"]"></abp-modal-header>
+    <abp-modal-body>
+        <div>
+            <p>@L["Title:HblCopiedTitle"]</p><a href='javascript:void(0)' onclick="CopyToAirExportHawbResult.RedirectToMawbPage('@Model.Id')">@Model.MawbDocNo</a>
+        </div>
+    </abp-modal-body>
+    <abp-modal-footer buttons="@(AbpModalButtons.Cancel)"></abp-modal-footer>
+</abp-modal>

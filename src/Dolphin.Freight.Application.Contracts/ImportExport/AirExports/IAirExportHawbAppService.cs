@@ -25,5 +25,6 @@ namespace Dolphin.Freight.ImportExport.AirExports
         Task LockedOrUnLockedAirExportHawbAsync(Guid id);
         Task SelectedLockedAirExportHawbAsync(Guid[] ids);
         Task SelectedUnLockedAirExportHawbAsync(Guid[] ids);
+        Task UpdateMawbIdOfHawbAsync(Guid HawbId, Guid NewMawbId);
     }
 }

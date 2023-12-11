@@ -165,7 +165,7 @@
         <!--第二列-->
         <abp-row>
             <abp-column size-md="_3">
-                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.ConsigneeId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ConsigneeId"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.ConsigneeId) })
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "HawbModel.ConsigneeId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = @L["ConsigneeId"], ShowFiledContentValue = Convert.ToString(Model.HawbModel.ConsigneeId), ChangeEvent = "UpdateDropdown(this, ['HawbModel.Notify', 'HawbModel.Customer', 'HawbModel.BillToId', 'HawbModel.DeliveryLocation'])" })
             </abp-column>
 
             <abp-column size-md="_3">

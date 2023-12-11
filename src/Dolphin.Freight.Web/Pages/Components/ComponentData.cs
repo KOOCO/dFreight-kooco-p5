@@ -12,6 +12,7 @@ namespace Dolphin.Freight.Web.Pages.Components
         /// <summary>
         /// 元件名稱
         /// </summary>
+        public string ChangeEvent { get; set; }
         public string TagName { get; set; }
         /// <summary>
         /// 輸入的參數

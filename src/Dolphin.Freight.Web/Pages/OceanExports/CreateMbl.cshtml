@@ -167,7 +167,6 @@
         }
 
         function onHblCardClick(e, hblId) {
-            debugger;
             var element = e.currentTarget || e.target || e.srcElement;
             var hblNo = element.id.split('_')[1];
 
@@ -206,7 +205,7 @@
                         var hexColor = CreateOE.RextoHexColorCode(backGroundColor);
                         $('#OceanExportHbl_CardColorValue').val(hexColor);
                         if (hblId != '00000000-0000-0000-0000-000000000000') {
-                            dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardById(hawbId).done(function (res) {
+                            dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardById(hblId).done(function (res) {
                                 var cardColorId = res.cardColorId;
                                 $('#OceanExportHbl_CardColorId').val(cardColorId);
                             });

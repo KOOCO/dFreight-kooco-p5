@@ -284,6 +284,14 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string HandlingInformation { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
         public string OpName { get; set; }
+        public Guid? RouteDepartureId { get; set; }
+        public DateTime? RouteDepartureArrivalDate { get; set; }
+        public DateTime? RouteDepatureDate { get; set; }
+        public string RouteDepartureFlightNo { get; set; }
+        public Guid? RouteDepartureCarrierId { get; set; }
+
+        public Guid? RouteDestinationId { get; set; }
+        public DateTime? RouteDestinationArrivalDate { get; set; }
     }
     public class AllHawbListAirImport
     {

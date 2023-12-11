@@ -454,7 +454,7 @@
                     ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
                     ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
             }
-             abpCard += '<div class="card-footer"><div class="row"><div class="col-12 hblCardTitle">{{invoiceInfo}}</div></div></div>';
+             abpCard += '<div class="card-footer"><div class="row"><div class="col-12 hblCardTitle1">{{invoiceInfo}}</div></div></div>';
   return abpCard;
         }
 
@@ -511,7 +511,7 @@
         }
 
         function alertConfirmation2() {
-            $('#saveBtn').click();
+            $('#editForm').submit();
         }
 
         function deleteHbl() {
@@ -797,7 +797,7 @@
                                 </button>
                                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDropMbl">
                                     <a class='dropdown-item' id="lockButtonMbl" href='javascript:void(0)' onclick="EditModelScript.lockUnlockMblOrHbl('@Model.OceanImportMbl.Id', 'Mbl')"></a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="EditModelScript.OceanImportCopy('@Model.OceanImportMbl.Id')">
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="deleteMbl()">

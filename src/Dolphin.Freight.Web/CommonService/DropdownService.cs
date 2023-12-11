@@ -48,23 +48,17 @@ namespace Dolphin.Freight.Web.CommonService
         private readonly IAirImportMawbAppService _airImportMawbAppService;
         private readonly IIdentityUserAppService _identityUserAppService;
         private readonly IOceanExportMblAppService _oceanExportMblAppService;
+        private readonly IAirExportMawbAppService _airExportMawbAppService;
 
-        public DropdownService(ITradePartnerAppService tradePartnerAppService,
-                               ISubstationAppService substationAppService,
-                               IAirportAppService airportAppService,
-                               IPackageUnitAppService packageUnitAppService,
-                               ISysCodeAppService sysCodeAppService,
-                               IAjaxDropdownAppService ajaxDropdownAppService,
-                               IPortsManagementAppService portsManagementAppService,
-                               IContainerSizeAppService containerAppService,
-                               ICountryAppService countryAppService,
-                               IGlCodeAppService glCodeAppService,
-                               ICreditLimitGroupAppService creditLimitGroupAppService,
-                               IAccountGroupAppService accountGroupAppService,
-                               IAirImportMawbAppService airImportMawbAppService,
-                               IIdentityUserAppService identityUserAppService,
-                               IOceanExportMblAppService oceanExportMblAppService
-                               )
+        public DropdownService(ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService,
+                               IAirportAppService airportAppService, IPackageUnitAppService packageUnitAppService,
+                               ISysCodeAppService sysCodeAppService, IAjaxDropdownAppService ajaxDropdownAppService,
+                               IPortsManagementAppService portsManagementAppService, IContainerSizeAppService containerAppService,
+                               ICountryAppService countryAppService, IGlCodeAppService glCodeAppService,
+                               ICreditLimitGroupAppService creditLimitGroupAppService, IAccountGroupAppService accountGroupAppService,
+                               IAirImportMawbAppService airImportMawbAppService, IIdentityUserAppService identityUserAppService,
+                               IOceanExportMblAppService oceanExportMblAppService, IAirExportMawbAppService airExportMawbAppService
+                              )
         {
             _tradePartnerAppService = tradePartnerAppService;
             _substationAppService = substationAppService;
@@ -81,7 +75,9 @@ namespace Dolphin.Freight.Web.CommonService
             _airImportMawbAppService = airImportMawbAppService;
             _identityUserAppService = identityUserAppService;
             _oceanExportMblAppService = oceanExportMblAppService;
+            _airExportMawbAppService = airExportMawbAppService;
         }
+
         public List<SelectItems> TradePartnerLookupList => FillTradePartnerAsync().Result;
 
         public List<SelectItems> SubstationLookupList => FillSubstationAsync().Result;
@@ -130,6 +126,8 @@ namespace Dolphin.Freight.Web.CommonService
         public List<SelectItems> OceanExportMblLookupList => FillOceanExportMblAsync().Result;
         public List<SelectItems> OperatorLookupList => FillOperatorAsync().Result;
         public List<SelectItems> AmsNoLookupList => FillSysCodesAmsNo().Result;
+        public List<SelectItems> AirExportMawbList => FillAirExportMawbAsync().Result;
+
         public IAbpLazyServiceProvider LazyServiceProvider { get; set; }
         protected IStringLocalizerFactory StringLocalizerFactory => LazyServiceProvider.LazyGetRequiredService<IStringLocalizerFactory>();
         private Type _localizationResource = typeof(FreightResource);
@@ -172,7 +170,6 @@ namespace Dolphin.Freight.Web.CommonService
                 return _localizer;
             }
         }
-
 
         #region
         private async Task<List<SelectItems>> FillOceanExportMblAsync()
@@ -386,14 +383,25 @@ namespace Dolphin.Freight.Web.CommonService
             return lookUp.Select(x => new SelectListItem(x.CodeValue, x.Id.ToString(), false)).ToList();
         }
         #endregion
+
+        #region
+        private async Task<List<SelectItems>> FillAirExportMawbAsync()
+        {
+            var lookUp = await _airExportMawbAppService.GetMawbListAsync();
+
+            return lookUp.Select(s => new SelectListItem(s.FilingNo + '/' + s.MawbNo, s.Id.ToString(), false)).ToList();
+        }
+        #endregion
+
         #region AirImportMawbList()
         private async Task<List<SelectItems>> FillAirImportMawbAsync()
         {
             var lookUp = await _airImportMawbAppService.GetMawbListAsync();
 
-            return lookUp.Select(x => new SelectListItem(x.FilingNo+'/'+x.MawbNo, x.Id.ToString(), false)).ToList();
+            return lookUp.Select(x => new SelectListItem(x.FilingNo + '/' + x.MawbNo, x.Id.ToString(), false)).ToList();
         }
         #endregion
+
         #region FillIncotermsIdAsync()
         private async Task<List<SelectItems>> FillIncotermsIdAsync()
         {

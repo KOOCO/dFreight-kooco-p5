@@ -16,6 +16,7 @@ $(document).on('input', 'input[id^="Hlength_"], input[id^="Hwidth_"], input[id^=
     const row = $(this).closest('tr');
     HcalculateWeights(row);
 });
+
 $(document).on('input', 'input', function () {
     HupdateTotals();
 });
@@ -23,6 +24,7 @@ $(document).on('input', 'input', function () {
 $(document).on('click', '#HapplyDimensions', function () {
     HapplyPopupValues();
 });
+
 class AirExportHawb {
     static KgLbConversion(Elem, Unit) {
         switch (Unit) {
@@ -196,6 +198,23 @@ class AirExportHawb {
                 }
             });
         }
+    }
+
+    static onCopyToHawbClick() {
+        var id = $('#AirExportHawbDto_Id').val();
+        var prevMawbId = $('#AirExportMawbDto_Id').val();
+
+        createHawbCopyModalAE.open({
+            id,
+            prevMawbId
+        });
+    }
+
+    static editMawbAirImport(prevMawbId, HawbId) {
+        moveHawbModalAE.open({
+            prevMawbId,
+            HawbId
+        });
     }
 }
 

@@ -3338,14 +3338,13 @@ namespace Dolphin.Freight.Web.Controllers
 
             if (pageType == FreightPageType.AIHBL)
             {
-
                 // Hawb invoices
                 queryDto = new QueryInvoiceDto() { QueryType = 4, ParentId = id };
 
                 profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
 
                 // Mawb invoices
-                queryDto = new QueryInvoiceDto() { QueryType = 5, ParentId = airImportDetails.MawbId };
+                queryDto = new QueryInvoiceDto() { QueryType = 0, ParentId = airImportDetails.MawbId };
 
                 var mawbInvoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
 
@@ -3358,11 +3357,10 @@ namespace Dolphin.Freight.Web.Controllers
                         profitReport.Invoices.Add(mawbInvoice);
                     }
                 }
-
             }
             else
             {
-                queryDto = new QueryInvoiceDto() { QueryType = 5, ParentId = id };
+                queryDto = new QueryInvoiceDto() { QueryType = 0, ParentId = id };
 
                 profitReport.Invoices = await _invoiceAppService.QueryInvoicesAsync(queryDto);
             }
@@ -3396,7 +3394,7 @@ namespace Dolphin.Freight.Web.Controllers
                 double arTotal = 0;
                 foreach (var ar in profitReport.AR)
                 {
-                    arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                    arTotal += ar.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity * s.Price));
                 }
                 profitReport.ARTotal = arTotal;
             }
@@ -3405,7 +3403,7 @@ namespace Dolphin.Freight.Web.Controllers
                 double apTotal = 0;
                 foreach (var ap in profitReport.AP)
                 {
-                    apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                    apTotal += ap.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity * s.Price));
                 }
 
                 profitReport.APTotal = apTotal;
@@ -3415,7 +3413,7 @@ namespace Dolphin.Freight.Web.Controllers
                 double dcTotal = 0;
                 foreach (var dc in profitReport.DC)
                 {
-                    dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity));
+                    dcTotal += dc.InvoiceBillDtos.Sum(s => (s.Rate * s.Quantity * s.Price));
                 }
                 profitReport.DCTotal = dcTotal;
             }

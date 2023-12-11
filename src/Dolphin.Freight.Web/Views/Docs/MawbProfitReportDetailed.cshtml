@@ -218,23 +218,23 @@ table tr {
     </div>
     }
 
-    <form id="myForm" method="post">
-        <input type="hidden" autocomplete="off">
+<form id="myForm" method="post">
+    <input type="hidden" autocomplete="off">
     <input type="hidden" asp-for="@Model.PageType" />
     <input type="hidden" asp-for="@Model.IsPartialView" />
     <input type="hidden" asp-for="@Model.ReportType" />
     <input type="hidden" asp-for="@Model.InvoicesJson" />
     <input type="hidden" asp-for="@Model.AgentName" />
-     <input type="hidden" asp-for="@Model.PodEtd" />
-     <input type="hidden" asp-for="@Model.PolEtd" />
-     <input type="hidden" asp-for="@Model.PostDate" />
-     <input type="hidden" asp-for="@Model.Operator" />
-      <input type="hidden" asp-for="@Model.FileNo" />
-         <input type="hidden" asp-for="@Model.MawbNo" />
-     <input type="hidden" asp-for="@Model.HawbNo" />
-     <input type="hidden" asp-for="@Model.Measurement" />
-      <input type="hidden" asp-for="@Model.ChargableWeight" />
-       <input type="hidden" asp-for="@Model.Shipper" />
+    <input type="hidden" asp-for="@Model.PodEtd" />
+    <input type="hidden" asp-for="@Model.PolEtd" />
+    <input type="hidden" asp-for="@Model.PostDate" />
+    <input type="hidden" asp-for="@Model.Operator" />
+    <input type="hidden" asp-for="@Model.FileNo" />
+    <input type="hidden" asp-for="@Model.MawbNo" />
+    <input type="hidden" asp-for="@Model.HawbNo" />
+    <input type="hidden" asp-for="@Model.Measurement" />
+    <input type="hidden" asp-for="@Model.ChargableWeight" />
+    <input type="hidden" asp-for="@Model.Shipper" />
        
 
 <div id="main" class="edit">              
@@ -410,11 +410,11 @@ table tr {
                                     <td class="td text-right"><div class="auto-font-size __width-count-md"><span>@invoiceBill.Quantity</span></div></td>
                                     <td class="td text-right"><div class="auto-font-size __width-count-sm"><span>@invoiceBill.Rate</span></div></td>
                                     <td class="td text-right"><div class="auto-font-size __width-count-md">
-                                        <span>@(invoice.InvoiceType == 0? Convert.ToDecimal(invoiceBill.Quantity * invoiceBill.Rate).ToString("0.00") : 0)</span></div></td>
+                                        <span>@(invoice.InvoiceType == 0? Convert.ToDecimal(invoiceBill.Quantity * invoiceBill.Rate * invoiceBill.Price).ToString("0.00") : 0)</span></div></td>
                                     <td class="td text-right"><div class="auto-font-size __width-count-md">
-                                        <span>@(invoice.InvoiceType == 2? Convert.ToDecimal(invoiceBill.Quantity * invoiceBill.Rate).ToString("0.00") : 0)</span></div></td>
+                                        <span>@(invoice.InvoiceType == 2? Convert.ToDecimal(invoiceBill.Quantity * invoiceBill.Rate * invoiceBill.Price).ToString("0.00") : 0)</span></div></td>
                                     <td class="td text-right"><div class="auto-font-size __width-count-md">
-                                        <span>@(invoice.InvoiceType == 1? Convert.ToDecimal(invoiceBill.Quantity * invoiceBill.Rate).ToString("0.00") : 0)</span></div></td>
+                                        <span>@(invoice.InvoiceType == 1? Convert.ToDecimal(invoiceBill.Quantity * invoiceBill.Rate * invoiceBill.Price).ToString("0.00") : 0)</span></div></td>
                                     <td class="td text-right"><div class="auto-font-size __width-count-md"><span>0.00</span></div></td>
                                     <td class="td" colspan="5"></td>
                                 </tr>
@@ -428,23 +428,23 @@ table tr {
                                 <td class="td">
                                     <div class="auto-font-size __width-invoice">
                                         <span class="item-edit">   
-                                            <a href="/Accounting/Invoice?MethodType=3&MawbId=@invoice.MawbId&Hid=&InvoiceType=@invoice.InvoiceType&InvoiceId=@invoice.Id" target="_blank">@invoice.InvoiceNo</a>
+                                            <a href="/Accounting/Invoice?MethodType=2&MawbId=@invoice.MawbId&HawbId=&InvoiceType=@invoice.InvoiceType&InvoiceId=@invoice.Id" target="_blank">@invoice.InvoiceNo</a>
                                         </span>
                                     </div>
                                 </td>
                                 <td colspan="6" class="td">@invoice.InvoiceCompanyName</td>
                                 <td class="td text-center">@invoice.PostDate?.ToShortDateString()</td>
                                 <td class="td text-right"><div class="auto-font-size __width-count-md"><span>
-                                    @(invoice.InvoiceType == 0 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)
+                                    @(invoice.InvoiceType == 0 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity * c.Price)).ToString("0.00") : 0)
                                     </span></div></td>
                                 <td class="td text-right"><div class="auto-font-size __width-count-md"><span>
-                                    @(invoice.InvoiceType == 2 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)
+                                    @(invoice.InvoiceType == 2 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity * c.Price)).ToString("0.00") : 0)
                                     </span></div></td>
                                 <td class="td text-right"><div class="auto-font-size __width-count-md"><span>
-                                    @(invoice.InvoiceType == 1 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)
+                                    @(invoice.InvoiceType == 1 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity * c.Price)).ToString("0.00") : 0)
                                     </span></div></td>
                                 <td class="td text-right"><div class="auto-font-size __width-balance inline-block">
-                                    <span>@invoice.InvoiceBillDtos.Sum(c => c.Rate * c.Quantity).ToString("0.00")</span></div> N</td>
+                                    <span>@invoice.InvoiceBillDtos.Sum(c => c.Rate * c.Quantity * c.Price).ToString("0.00")</span></div> N</td>
                             </tr>
                             <tr class="border-b-grey">
                                 <td colspan="3"></td>
@@ -457,8 +457,6 @@ table tr {
                         @if(Model.PageType == Dolphin.Freight.Common.FreightPageType.AEMBL || Model.PageType == Dolphin.Freight.Common.FreightPageType.AEHBL)
                         {
                             <tr class="">
-                                
-
                                 <td colspan="3">  </td>
                                 <td colspan="7"> Shipper: @Model.Shipper <input type="hidden" asp-asp-for="@Model.Shipper" /> </td>
                                 <td class="text-right" colspan="4"> </td>
@@ -466,60 +464,55 @@ table tr {
                         }
                         
             </tbody></table>
-
-            
                 <table class="text-bold bg-grey border table-padding-double single-currency">
-                    <tbody><tr>
-                        <td class="w-62">&nbsp;</td>
-                        <td class="w-12 text-right">TOTAL</td>
-                        <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>@Model.ARTotal.ToString("0.00")</span></div></td>
-                        <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>@Model.APTotal.ToString("0.00")</span></div></td>
-                        <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>@Model.DCTotal.ToString("0.00")</span></div></td>
-                        <td class="w-8">&nbsp;</td>
-                    </tr>
-                    <tr class="border-t">
-                        <td>&nbsp;</td>
-                        <td class="text-right">PROFIT</td>
-                        <td class="text-right">USD</td>
-                        <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>@Model.Total.ToString("0.00")</span></div></td>
-                        <td>&nbsp;</td>
-                    </tr>
-                    <tr class="border-t">
-                        <td>&nbsp;</td>
-                        <td class="text-right">BALANCE</td>
-                        <td class="text-right"></td>
-                        <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>@Model.Total.ToString("0.00")</span></div></td>
-                        <td>&nbsp;</td>
-                    </tr>
-
-                    <tr class="border-t">
-                        <td></td>
-                        <td class="text-right">
-                            <span class="item-edit">
-                                <input type="checkbox" name="is_show_profit_percentage" hc-user-preference="acct_profit_mbl_is_show_profit_percentage" ng-model="vm.isShowProfitPercentage" id="id_is_show_profit_percentage" checked="" class="ng-untouched ng-valid ng-dirty ng-not-empty">
-                            </span> PROFIT PERCENTAGE
-                        </td>
-                        <td class="text-right">@Convert.ToDouble((Model.Total * 100) / Model.APTotal).ToString("0.00") %</td>
-                        <td colspan="3"></td>
-                    </tr>
+                    <tbody>
+                        <tr>
+                            <td class="w-62">&nbsp;</td>
+                            <td class="w-12 text-right">TOTAL</td>
+                            <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>@Model.ARTotal.ToString("0.00")</span></div></td>
+                            <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>@Model.APTotal.ToString("0.00")</span></div></td>
+                            <td class="w-6 text-right"><div class="auto-font-size __width-total"><span>@Model.DCTotal.ToString("0.00")</span></div></td>
+                            <td class="w-8">&nbsp;</td>
+                        </tr>
+                        <tr class="border-t">
+                            <td>&nbsp;</td>
+                            <td class="text-right">PROFIT</td>
+                            <td class="text-right">USD</td>
+                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>@Model.Total.ToString("0.00")</span></div></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr class="border-t">
+                            <td>&nbsp;</td>
+                            <td class="text-right">BALANCE</td>
+                            <td class="text-right"></td>
+                            <td class="text-right" colspan="2"><div class="auto-font-size __width-total-lg"><span>@Model.Total.ToString("0.00")</span></div></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr class="border-t">
+                            <td></td>
+                            <td class="text-right">
+                                <span class="item-edit">
+                                    <input type="checkbox" name="is_show_profit_percentage" id="id_is_show_profit_percentage" checked="" class="ng-untouched ng-valid ng-dirty ng-not-empty">
+                                </span> PROFIT PERCENTAGE
+                            </td>
+                            <td class="text-right">@Convert.ToDouble((Model.Total * 100) / Model.APTotal).ToString("0.00") %</td>
+                            <td colspan="3"></td>
+                        </tr>
+                        <tr class="border-t">
+                            <td>&nbsp;</td>
+                            <td class="text-right">
+                                <span class="item-edit">
+                                    <input type="checkbox" name="is_show_profit_margin" id="id_is_show_profit_margin" checked="" class="ng-untouched ng-valid ng-dirty ng-not-empty">
+                                </span>
+                                PROFIT MARGIN
+                            </td>
+                            <td class="text-right"></td>
+                            <td colspan="3"></td>
+                        </tr>
                     
 
-                    
-                    <tr class="border-t">
-                        <td>&nbsp;</td>
-                        <td class="text-right">
-                            <span class="item-edit">
-                                <input type="checkbox" name="is_show_profit_margin" hc-user-preference="acct_profit_mbl_is_show_profit_margin" ng-model="vm.isShowProfitMargin" id="id_is_show_profit_margin" checked="" class="ng-untouched ng-valid ng-dirty ng-not-empty">
-                            </span>
-                            PROFIT MARGIN
-                        </td>
-                        <td class="text-right"></td>
-                        <td colspan="3"></td>
-                    </tr>
-                    
-
-                </tbody></table>
-            
+                    </tbody>
+                </table>
         </div>
     </div>
 </div>

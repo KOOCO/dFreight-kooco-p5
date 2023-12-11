@@ -13,6 +13,9 @@ using Dolphin.Freight.Settings.Substations;
 using Volo.Abp.Identity;
 using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Components.Forms;
+using Dolphin.Freight.ImportExport.AirImports;
+using Volo.Abp.ObjectMapping;
 
 namespace Dolphin.Freight.Accounting.Invoices
 {
@@ -34,8 +37,13 @@ namespace Dolphin.Freight.Accounting.Invoices
         private readonly IIdentityUserRepository _identityUserRepository;
         private readonly IInvoiceBillAppService _invoiceBillAppService;
         private readonly IRepository<SysCode, Guid> _sysCideRepository;
-        public InvoiceAppService(IRepository<Invoice, Guid> repository, IInvoiceBillAppService invoiceBillAppService, IRepository<SysCode, Guid> sysCideRepository, IRepository<Substation, Guid> substationRepository, IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<InvoiceBill, Guid> billRepository, IInvoiceRepository invoiceRepository, IIdentityUserRepository identityUserRepository, IRepository<IdentityUser, Guid> userRepository)
-            : base(repository)
+        private readonly IRepository<AirImportMawb, Guid> _airImportMawbRepository;
+        public InvoiceAppService(IRepository<Invoice, Guid> repository, IInvoiceBillAppService invoiceBillAppService,
+                                 IRepository<SysCode, Guid> sysCideRepository, IRepository<Substation, Guid> substationRepository, 
+                                 IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, 
+                                 IRepository<InvoiceBill, Guid> billRepository, IInvoiceRepository invoiceRepository, 
+                                 IIdentityUserRepository identityUserRepository, IRepository<IdentityUser, Guid> userRepository,
+                                 IRepository<AirImportMawb, Guid> airImportMawbRepository) : base(repository)
         {
             _repository = repository;
             _sysCideRepository = sysCideRepository;
@@ -46,6 +54,7 @@ namespace Dolphin.Freight.Accounting.Invoices
             _userRepository = userRepository;
             _identityUserRepository = identityUserRepository;
             _invoiceBillAppService = invoiceBillAppService;
+            _airImportMawbRepository = airImportMawbRepository;
         }
         public async Task<PagedResultDto<InvoiceDto>> QueryListAsync(QueryInvoiceDto query)
         {
@@ -161,7 +170,9 @@ namespace Dolphin.Freight.Accounting.Invoices
         public async Task<IList<InvoiceDto>> QueryInvoicesAsync(QueryInvoiceDto query) 
         {
             var tradePartners = await _tradePartnerRepository.GetListAsync();
+            
             Dictionary<Guid, string> tDictionary = new Dictionary<Guid, string>();
+            
             if (tradePartners != null)
             {
                 foreach (var tradePartner in tradePartners)
@@ -169,8 +180,11 @@ namespace Dolphin.Freight.Accounting.Invoices
                     tDictionary.Add(tradePartner.Id, tradePartner.TPName);
                 }
             }
+            
             var rs = await _repository.GetListAsync(true);
+            
             List<InvoiceDto> list = new List<InvoiceDto>();
+            
             if (query != null && query.ParentId != null)
             {
                 switch (query.QueryType) 
@@ -196,7 +210,6 @@ namespace Dolphin.Freight.Accounting.Invoices
                 }
             }
 
-
             if (rs != null && rs.Count > 0)
             {
                 var invoiceBillQueryable = await _billRepository.GetQueryableAsync();
@@ -220,9 +233,9 @@ namespace Dolphin.Freight.Accounting.Invoices
                     list.Add(bill);
                 }
             }
+            
             return list;
         }
-
         public async Task<bool> QueryInvoicesCheckAsync(QueryInvoiceDto query)
         {
             
@@ -298,12 +311,8 @@ namespace Dolphin.Freight.Accounting.Invoices
             foreach (var id in ids)
             {
                  await _repository.DeleteAsync(id);
-
-               
-
             }
         }
-
         public async Task DeleteGAInvoicesByIdAsync(Guid[] Ids)
         {
             foreach (var Id in Ids)
@@ -324,7 +333,6 @@ namespace Dolphin.Freight.Accounting.Invoices
                 await _invoiceRepository.UpdateAsync(Invoice);
             }
         }
-
         public async Task<JsonResult> CopyGAInvoiceAsync(Guid Id)
         {
             var Invoice = ObjectMapper.Map<Invoice, InvoiceDto>(await _invoiceRepository.GetAsync(Id));
@@ -346,5 +354,93 @@ namespace Dolphin.Freight.Accounting.Invoices
 
             return new JsonResult(new { invoiceId = NewInvoice.Id, invoiceType = NewInvoice.InvoiceType });
         }
+
+        /// <summary>
+        /// Creates replica accounting entries by querying existing invoices, filtering them based on specified parameters,
+        /// and generating new invoices with common ID assignment logic.
+        /// </summary>
+        /// <param name="OldId">The old identifier used for querying existing invoices.</param>
+        /// <param name="NewId">The common identifier to assign to new invoices.</param>
+        /// <param name="QueryType">The type of query to determine filtering criteria.</param>
+        /// <param name="IsAP">Flag indicating whether to create Accounts Payable (AP) invoices.</param>
+        /// <param name="IsAR">Flag indicating whether to create Accounts Receivable (AR) invoices.</param>
+        /// <param name="IsDC">Flag indicating whether to create Debit/Credit (DC) invoices.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task CreateReplicaAccounting(Guid OldId, Guid NewId, int QueryType, bool IsAP = false, bool IsAR = false, bool IsDC = false)
+        {
+            QueryInvoiceDto Query = new() { QueryType = QueryType, ParentId = OldId };
+            
+            var invoiceDtos1 = await QueryInvoicesAsync(Query);
+
+            if (invoiceDtos1 != null && invoiceDtos1.Count > 0)
+            {
+                if (IsAP) await CreateInvoice<InvoiceDto>(invoiceDtos1, NewId, 2, QueryType == 0 ? IsAP : false, QueryType == 4 ? IsAP : false, QueryType == 3 ? IsAP : false, QueryType == 1 ? IsAP : false);
+
+                if (IsDC) await CreateInvoice<InvoiceDto>(invoiceDtos1, NewId, 1, QueryType == 0 ? IsDC : false, QueryType == 4 ? IsDC : false, QueryType == 3 ? IsDC : false, QueryType == 1 ? IsDC : false);
+                
+                if (IsAR) await CreateInvoice<InvoiceDto>(invoiceDtos1, NewId, 0, QueryType == 0 ? IsAR : false, QueryType == 4 ? IsAR : false, QueryType == 3 ? IsAR : false, QueryType == 1 ? IsAR : false);
+            }
+        }
+
+        /// <summary>
+        /// Creates invoices based on a specified type (T) and common parameters. 
+        /// Filters the provided list of invoice data based on the specified invoice type, applies common ID assignment logic, 
+        /// creates new invoices, and associates them with bills.
+        /// </summary>
+        /// <typeparam name="T">The type of invoice to create.</typeparam>
+        /// <param name="InvoiceDtoList">The list of invoice data.</param>
+        /// <param name="Id">The common ID to assign to invoices.</param>
+        /// <param name="InvoiceType">The type of invoices to filter in the list.</param>
+        /// <param name="IsMawb">Flag to assign Mawb ID.</param>
+        /// <param name="IsHawb">Flag to assign Hawb ID.</param>
+        /// <param name="IsMbl">Flag to assign Mbl ID.</param>
+        /// <param name="IsHbl">Flag to assign Hbl ID.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task CreateInvoice<T>(IList<InvoiceDto> InvoiceDtoList, Guid Id, int InvoiceType, bool IsMawb = false, bool IsHawb = false, bool IsMbl = false, bool IsHbl = false)
+        {
+            InvoiceDtoList = InvoiceDtoList.Where(w => w.InvoiceType == InvoiceType).ToList();
+
+            foreach (var Invoice in InvoiceDtoList)
+            {
+                var NewInvoice = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(Invoice);
+
+                SetIdProperties(NewInvoice, Id, IsMawb, IsHawb, IsMbl, IsHbl);
+
+                NewInvoice.Id = Guid.Empty;
+
+                var CreateInvoice = await CreateAsync(NewInvoice);
+
+                await CreateInvoiceBillsAsync(Invoice.Id.ToString(), CreateInvoice.Id);
+            }
+        }
+
+        #region Private Functions
+        /// <summary>
+        /// This helper method responsible for setting ID properties on the CreateUpdateInvoiceDto object based on specified conditions. 
+        /// This method encapsulates the common logic for ID assignment.
+        /// </summary>
+        protected virtual void SetIdProperties(CreateUpdateInvoiceDto Invoice, Guid Id, bool IsMawb = false, bool IsHawb = false, bool IsMbl = false, bool IsHbl = false)
+        {
+            if (IsMawb) Invoice.MawbId = Id;
+            if (IsHawb) Invoice.HawbId = Id;
+            if (IsMbl) Invoice.MblId = Id;
+            if (IsHbl) Invoice.HblId = Id;
+        }
+        private async Task CreateInvoiceBillsAsync(string InvoiceNo, Guid InvoiceId)
+        {
+            QueryInvoiceBillDto Query = new() { InvoiceNo = InvoiceNo };
+
+            var InvoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(Query);
+
+            foreach (var InvoiceBill in InvoiceBills)
+            {
+                var NewInvoiceBill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(InvoiceBill);
+                NewInvoiceBill.InvoiceId = InvoiceId;
+                NewInvoiceBill.Id = Guid.Empty;
+
+                await _invoiceBillAppService.CreateAsync(NewInvoiceBill);
+            }
+        }
+        #endregion
     }
 }

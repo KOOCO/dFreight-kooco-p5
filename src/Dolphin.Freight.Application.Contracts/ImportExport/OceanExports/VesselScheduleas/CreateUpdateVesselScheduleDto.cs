@@ -120,7 +120,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         /// <summary>
         /// 最終目的地ETA
         /// </summary>
-        public DateTime FdestEta { get; set; }
+        public DateTime? FdestEta { get; set; }
         /// <summary>
         /// 運費ID
         /// </summary>

@@ -31,6 +31,10 @@
         });
 })
 
+var OceanImportCopyModal = new abp.ModalManager({
+    viewUrl: '/OceanExports/ModalPopups/OceanExportMBLCopy'
+});
+
 var EditModelScript = {
     lockUnlockMblOrHbl: function (id, oceanImport) {
 
@@ -94,7 +98,6 @@ var EditModelScript = {
                 break;
         }
     },
-
     RextoHexColorCode: function (rgb) {
         var result = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/.exec(rgb);
         if (result) {
@@ -103,7 +106,8 @@ var EditModelScript = {
         } else {
             return undefined;
         }
+    },
+    OceanImportCopy: function (id) {
+        OceanImportCopyModal.open({ id });
     }
-
-
 }

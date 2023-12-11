@@ -47,9 +47,8 @@ class Invoice {
         let price = parseFloat($(target).val() || 0);
         let quantity = parseFloat($(target).parent().parent().children()[7].children[0].value || 0);
         let rate = parseFloat($(target).parent().parent().children()[8].children[0].value || 0);
-        $(target).parent().next().next().children().text(parseFloat(quantity * rate * price).toFixed());
+        $(target).parent().next().next().children().text(parseFloat(quantity * rate * price).toFixed(2));
         var amount = quantity * price * rate;
-        debugger;
         if ($('#Tax_0').find(':selected').text().split('%')[0] == '0') {
             var taxAmount = amount * 0;
         } else if ($('#Tax_0').find(':selected').text().split('%')[0] == '7') {
@@ -58,7 +57,8 @@ class Invoice {
             var taxAmount = amount * 0;
         }
         setCurrencyRate1($('#Currency_' + index + '').val(), event);
-        getTotalSubAmount();
+        
+        getTotalSubAmount($(target).parent().prev().prev().prev().children().val());
         getTotalAmount(parseFloat(taxAmount).toFixed(2));
     }
 
@@ -76,7 +76,7 @@ class Invoice {
         }
         $(target).parent().next().children().text(parseFloat(quantity * rate * price).toFixed(2));
         setCurrencyRate1($('#Currency_' + index + '').val(), event);
-        getTotalSubAmount();
+        getTotalSubAmount($(target).parent().prev().prev().prev().prev().children().val());
         getTotalAmount(parseFloat(taxAmount).toFixed(2));
     }
 }

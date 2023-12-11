@@ -8,6 +8,7 @@ using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -579,6 +580,21 @@ namespace Dolphin.Freight.ImportExport.AirExports
                 throw new UserFriendlyException(ex.Message);
             }
 
+        }
+
+        public async Task UpdateMawbIdOfHawbAsync(Guid HawbId, Guid NewMawbId)
+        {
+            try
+            {
+                var hawb = await _repository.GetAsync(HawbId);
+                hawb.MawbId = NewMawbId;
+                await _repository.UpdateAsync(hawb);
+            }
+            catch (Exception ex)
+            {
+
+                throw new UserFriendlyException(ex.Message);
+            }
         }
     }
 }

@@ -93,7 +93,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         public async Task<PagedResultDto<OceanImportHblDto>> QueryListAsync(QueryHblDto query)
         {
             var SysCodes = await _sysCodeRepository.GetListAsync();
+            
             Dictionary<Guid, string> dictionary = new();
+            
             if (SysCodes != null)
             {
                 foreach (var syscode in SysCodes)
@@ -101,8 +103,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     dictionary.Add(syscode.Id, syscode.CodeValue);
                 }
             }
+            
             var Substations = await _substationRepository.GetListAsync();
+            
             Dictionary<Guid, string> sdictionary = new();
+            
             if (Substations != null)
             {
                 foreach (var sub in Substations)
@@ -110,9 +115,13 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     sdictionary.Add(sub.Id, sub.SubstationName);
                 }
             }
+            
             //貿易夥伴
+            
             var tradePartners = await _tradePartnerRepository.GetListAsync();
+            
             Dictionary<Guid, string> tdictionary = new();
+            
             if (tradePartners != null && tradePartners.Count > 0)
             {
                 foreach (var tradePartner in tradePartners)
@@ -121,8 +130,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
             }
             //Mbls
+            
             var mbls = await _mblRepository.GetListAsync();
+            
             Dictionary<Guid, OceanImportMbl> mdictionary = new();
+            
             if (mbls != null)
             {
                 foreach (var mbl in mbls)
@@ -131,8 +143,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                 }
             }
             //港口
+            
             var ports = await _portsManagementRepository.GetListAsync();
+            
             Dictionary<Guid, string> pdictionary = new();
+            
             if (ports != null && ports.Count > 0)
             {
                 foreach (var port in ports)
@@ -140,42 +155,42 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     pdictionary.Add(port.Id, port.SubDiv + " " + port.PortName + " ( " + port.Locode + " ) ");
                 }
             }
+            
             var OceanImportHbls = await _repository.GetQueryableAsync();
+            
             OceanImportHbls = OceanImportHbls.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.HblNo
-                                    .Contains(query.Search) || x.Mbl.SoNo
-                                    .Contains(query.Search) || x.Mbl.Office.SubstationName
-                                    .Contains(query.Search) || x.HblShipper.TPName
-                                    .Contains(query.Search) || x.HblConsignee.TPName
-                                    .Contains(query.Search))
-                                    .WhereIf(query.MblId != null && query.MblId == Guid.Empty, x => x.MblId.Value
-                                    .Equals(query.MblId))
-
-                                    .WhereIf(query.ShipperId.HasValue, e => e.HblShipperId == query.ShipperId)
-                                    
-                                    
-                                   .WhereIf(query.NotifyId.HasValue, e => e.HblNotifyId == query.NotifyId)
-                                   .WhereIf(query.ConsigneeId.HasValue, e => e.HblConsigneeId == query.ConsigneeId)
-                                   .WhereIf(query.Pol.HasValue, e => e.PolId == query.Pol)
-                                   .WhereIf(query.PorId.HasValue, e => e.PorId == query.PorId)
-                                   .WhereIf(query.TruckerId.HasValue, e => e.TruckerId == query.TruckerId)
-                                   .WhereIf(query.SaleId.HasValue, e => e.HblSaleId == query.SaleId)
-                                   .WhereIf(query.CustomerId.HasValue, e => e.HblCustomerId == query.CustomerId)
-                                    .WhereIf(query.Op.HasValue, e => e.CreatorId == query.Op)
-                                    .WhereIf(query.Block.HasValue, e => e.IsHold == query.Block)
-                                    .WhereIf(query.IsfByThirdParty.HasValue, e => e.IsfByThirdParty == query.IsfByThirdParty)
-                                   .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
-                                   .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
-                                   .WhereIf(query.FinalDestId.HasValue, e => e.FdestId == query.FinalDestId)
-                                   .WhereIf(query.ShipModeId.HasValue, e => e.ShipModeId == query.ShipModeId)
-                                   .WhereIf(query.OvearseaAgentId.HasValue, e => e.AgentId == query.OvearseaAgentId)
-                                   .WhereIf(query.SvcTermId.HasValue, e => e.SvcTermToId == query.SvcTermId)
-                                 .WhereIf(query.DelEta.HasValue, e => e.DelEta.Value.Date == query.DelEta.Value.Date.AddDays(1))
-                                   .WhereIf(query.FinalDestEta.HasValue, e => e.FdestEta.Value.Date == query.FinalDestEta.Value.Date.AddDays(1))
-                                   .WhereIf(query.Eta.HasValue, e => e.PodEta.Value.Date == query.Eta.Value.Date.AddDays(1))
-                                   .WhereIf(query.Etd.HasValue, e => e.PolEtd.Value.Date == query.Etd.Value.Date.AddDays(1))
-                                   .WhereIf(query.IsfDate.HasValue, e => e.IsfMatchDate.Value.Date == query.IsfDate.Value.Date.AddDays(1))
-                                   .WhereIf(query.ReleaseDate.HasValue, e => e.HblReleaseDate.Value.Date == query.ReleaseDate.Value.Date.AddDays(1))
-                                   .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1));
+                                             .Contains(query.Search) || x.Mbl.SoNo
+                                             .Contains(query.Search) || x.Mbl.Office.SubstationName
+                                             .Contains(query.Search) || x.HblShipper.TPName
+                                             .Contains(query.Search) || x.HblConsignee.TPName
+                                             .Contains(query.Search))
+                                             .WhereIf(query.MblId != null && query.MblId == Guid.Empty, x => x.MblId.Value
+                                             .Equals(query.MblId))
+                                             .WhereIf(query.ShipperId.HasValue, e => e.HblShipperId == query.ShipperId)
+                                             .WhereIf(query.NotifyId.HasValue, e => e.HblNotifyId == query.NotifyId)
+                                             .WhereIf(query.ConsigneeId.HasValue, e => e.HblConsigneeId == query.ConsigneeId)
+                                             .WhereIf(query.Pol.HasValue, e => e.PolId == query.Pol)
+                                             .WhereIf(query.PorId.HasValue, e => e.PorId == query.PorId)
+                                             .WhereIf(query.TruckerId.HasValue, e => e.TruckerId == query.TruckerId)
+                                             .WhereIf(query.SaleId.HasValue, e => e.HblSaleId == query.SaleId)
+                                             .WhereIf(query.CustomerId.HasValue, e => e.HblCustomerId == query.CustomerId)
+                                             .WhereIf(query.Op.HasValue, e => e.CreatorId == query.Op)
+                                             .WhereIf(query.Block.HasValue, e => e.IsHold == query.Block)
+                                             .WhereIf(query.IsfByThirdParty.HasValue, e => e.IsfByThirdParty == query.IsfByThirdParty)
+                                             .WhereIf(query.Pod.HasValue, e => e.PodId == query.Pod)
+                                             .WhereIf(query.Del.HasValue, e => e.DelId == query.Del)
+                                             .WhereIf(query.FinalDestId.HasValue, e => e.FdestId == query.FinalDestId)
+                                             .WhereIf(query.ShipModeId.HasValue, e => e.ShipModeId == query.ShipModeId)
+                                             .WhereIf(query.OvearseaAgentId.HasValue, e => e.AgentId == query.OvearseaAgentId)
+                                             .WhereIf(query.SvcTermId.HasValue, e => e.SvcTermToId == query.SvcTermId)
+                                             .WhereIf(query.DelEta.HasValue, e => e.DelEta.Value.Date == query.DelEta.Value.Date.AddDays(1))
+                                             .WhereIf(query.FinalDestEta.HasValue, e => e.FdestEta.Value.Date == query.FinalDestEta.Value.Date.AddDays(1))
+                                             .WhereIf(query.Eta.HasValue, e => e.PodEta.Value.Date == query.Eta.Value.Date.AddDays(1))
+                                             .WhereIf(query.Etd.HasValue, e => e.PolEtd.Value.Date == query.Etd.Value.Date.AddDays(1))
+                                             .WhereIf(query.IsfDate.HasValue, e => e.IsfMatchDate.Value.Date == query.IsfDate.Value.Date.AddDays(1))
+                                             .WhereIf(query.ReleaseDate.HasValue, e => e.HblReleaseDate.Value.Date == query.ReleaseDate.Value.Date.AddDays(1))
+                                             .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1));
+            
             List<OceanImportHbl> rs = OceanImportHbls.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
             List<OceanImportHblDto> list = new List<OceanImportHblDto>();
             
@@ -207,7 +222,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
                     if (mdictionary[dto.MblId].MblCarrierId != null) dto.MblCarrierName = tdictionary[mdictionary[dto.MblId].MblCarrierId.Value];
                     if (mdictionary[dto.MblId].ShipModeId != null) dto.shipModeName = dictionary[mdictionary[dto.MblId].ShipModeId.Value];
                     //港口
-                    if (dto.DeliveryToId is not null) dto.DeliveryLocation = pdictionary[dto.DeliveryToId.Value];
+                    if (dto.DeliveryToId is not null) dto.DeliveryLocation = tdictionary[dto.DeliveryToId.Value];
                     if (dto.PodId != null) dto.PodName = pdictionary[dto.PodId.Value];
                     if (dto.PolId != null) dto.PolName = pdictionary[dto.PolId.Value];
                     if (dto.PorId != null) dto.PorName = pdictionary[dto.PorId.Value];

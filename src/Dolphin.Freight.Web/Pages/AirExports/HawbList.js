@@ -110,6 +110,15 @@ function lockCheckBox(checkbox) {
                     dataTable.ajax.reload();
                 });
         }
+        else {
+            debugger
+            if (checkbox.checked) {
+                $(checkbox).prop('checked', false);
+            }
+            else {
+                $(checkbox).prop('checked', true);
+            }
+        }
     });
 }
 function selectCheckbox(checkbox) {
@@ -167,19 +176,18 @@ function selectCheckbox(checkbox) {
 function getHwabProfitReport(reportType) {
     var params = "";
     var selectedCheckboxes = $('#HawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+
     for (var i = 0; i < selectedCheckboxes.length; i++) {
         var id = selectedCheckboxes[i].attributes['data-id'].value;
         var filingNo = selectedCheckboxes[i].attributes['data-filingNo'].value;
 
-
         params += id + ' / ' + filingNo + ',';
     }
-    console.log(params);
+
     params = params.replace(/^,|,$/g, '');
 
     OpenWindow('/Docs/ProfitReportHawbListAirExport?pageType=@Dolphin.Freight.Common.FreightPageType.AEHBL&param=' + params);
 }
-
 function getDateTimeForAWB(data) {
     return luxon
         .DateTime
@@ -187,10 +195,10 @@ function getDateTimeForAWB(data) {
             locale: abp.localization.currentCulture.name
         }).toFormat('yyyy-MM-dd HH:mm');
 }
-
 function selectedLock() {
     var ids = [];
     var selectedCheckboxes = $('#HawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+
     for (var i = 0; i < selectedCheckboxes.length; i++) {
         var id = selectedCheckboxes[i].attributes[2].value;
         var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
@@ -207,12 +215,11 @@ function selectedLock() {
             }
         });
     }
-
 }
-
 function selectedUnLock() {
     var ids = [];
     var selectedCheckboxes = $('#HawbListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+
     for (var i = 0; i < selectedCheckboxes.length; i++) {
         var id = selectedCheckboxes[i].attributes[2].value;
         var isLock = $('#lock_' + id).find('i').hasClass('fa-lock')
@@ -229,7 +236,6 @@ function selectedUnLock() {
             }
         });
     }
-
 }
 function onChangeSelection(e) {
     if ($("#HawbListTable input[type=checkbox]:checked").length > 0) {
@@ -248,6 +254,7 @@ $(function () {
             abp.libs.datatables.normalizeConfiguration({
                 serverSide: true,
                 paging: true,
+                pagingType: 'full_numbers',
                 order: [[2, "asc"]],
                 searching: false,
                 scrollX: true,

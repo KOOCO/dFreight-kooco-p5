@@ -264,42 +264,40 @@
                         <td class="text-right">Balance</td>
                     </tr>
                     <input type="hidden" asp-for="@Model.InvoicesJson" />
-                        @foreach (var invoice in Model.Invoices)
-                        {
-                         <tr>
+                    @foreach (var invoice in Model.Invoices)
+                    {
+                        <tr>
                             <td class="td text-center">@((Model.PageType == Dolphin.Freight.Common.FreightPageType.AIMBL || Model.PageType == Dolphin.Freight.Common.FreightPageType.AEMBL)? "M" : "H")</td>
                             <td class="td">
                                 <div class="auto-font-size __width-bl-no"> <span> @Model.MawbNo</span></div>
                                 <div class="auto-font-size __width-invoice">
                                     <span class="item-edit">
-                                        <a href="/Accounting/Invoice?MethodType=3&MawbId=@invoice.MawbId&Hid=&InvoiceType=@invoice.InvoiceType&InvoiceId=@invoice.Id" target="_blank">@invoice.InvoiceNo</a>
+                                        <a href="/Accounting/Invoice?MethodType=2&MawbId=@invoice.MawbId&Hawb=&InvoiceType=@invoice.InvoiceType&InvoiceId=@invoice.Id" target="_blank">@invoice.InvoiceNo</a>
                                     </span>
                                 </div>
                             </td>
                             <td class="td" rowspan="1">@invoice.InvoiceCompanyName</td>
                             <td class="td text-center">@invoice.InvoiceDate?.ToShortDateString()</td>
-                            
                             <td class="td text-center"><div class="auto-font-size __width-count">
-                                <span>@(invoice.InvoiceType == 0 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)</span></div></td>
+                                <span>@(invoice.InvoiceType == 0 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity * c.Price)).ToString("0.00") : 0)</span></div></td>
                             <td class="td text-center"><div class="auto-font-size __width-count">
-                                <span>@(invoice.InvoiceType == 2 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)</span></div></td>
-                            <td class="td text-center"><div class="auto-font-size __width-count"><span>
-                                @(invoice.InvoiceType == 1 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00") : 0)</span></div></td>
+                                <span>@(invoice.InvoiceType == 2 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity * c.Price)).ToString("0.00") : 0)</span></div></td>
+                            <td class="td text-center"><div class="auto-font-size __width-count">
+                                <span>@(invoice.InvoiceType == 1 ? invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity * c.Price)).ToString("0.00") : 0)</span></div></td>
                             <td class="td text-right">
-                                N
-                                <div class="auto-font-size __width-balance"><span>@invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity)).ToString("0.00")</span></div>
+                                <div class="auto-font-size __width-balance"><span>@invoice.InvoiceBillDtos.Sum(c => (c.Rate * c.Quantity * c.Price)).ToString("0.00")</span></div>
                             </td>
                         </tr>
-                       }
+                    }
 
-                       @if(Model.PageType == Dolphin.Freight.Common.FreightPageType.AEMBL || Model.PageType == Dolphin.Freight.Common.FreightPageType.AEHBL)
-                        {
-                            <tr>
-                                <td colspan="2"></td>
-                                <td colspan="4">Shipper: @Model.Shipper <input type="hidden" asp-asp-for="@Model.Shipper" /></td>
-                                <td colspan="2" class="text-right"></td>
-                            </tr>
-                        }
+                    @if(Model.PageType == Dolphin.Freight.Common.FreightPageType.AEMBL || Model.PageType == Dolphin.Freight.Common.FreightPageType.AEHBL)
+                    {
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="4">Shipper: @Model.Shipper <input type="hidden" asp-asp-for="@Model.Shipper" /></td>
+                            <td colspan="2" class="text-right"></td>
+                        </tr>
+                    }
                     </tbody>
                 </table>
 

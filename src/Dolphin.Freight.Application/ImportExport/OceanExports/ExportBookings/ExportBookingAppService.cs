@@ -118,7 +118,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
                                            .WhereIf(query.CustomerId.HasValue, e => e.CustomerId == query.CustomerId)
                                            .WhereIf(query.BlCancelled.HasValue, e => e.IsCanceled == query.BlCancelled)
                                            .WhereIf(query.CargoReadyDate.HasValue, e => e.CargoArrivalDate.Value.Date == query.CargoReadyDate.Value.Date.AddDays(1))
-                                           .WhereIf(query.Eta.HasValue, e => e.PodEta.Date == query.Eta.Value.Date.AddDays(1))
+                                           .WhereIf(query.Eta.HasValue, e => Convert.ToDateTime(e.PodEta).Date == query.Eta.Value.Date.AddDays(1))
                                            .WhereIf(query.Etd.HasValue, e => e.PolEtd.Date == query.Etd.Value.Date.AddDays(1))
                                            .WhereIf(query.CreationDate.HasValue, e => e.CreationTime.Date == query.CreationDate.Value.Date.AddDays(1));
             List<ExportBooking> rs = ExportBookings.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();

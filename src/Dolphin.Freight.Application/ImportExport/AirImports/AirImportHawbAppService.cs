@@ -589,7 +589,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
                 airImportDetails.FinalDestETA = data.FinalETA;
                 airImportDetails.FilingNo = mawb.FilingNo;
                 airImportDetails.HItNo = data.ITNo;
-                airImportDetails.HItDate = (!data.ITDate.Equals(DateTime.MinValue)) ? data.ITDate.ToShortDateString() ?? "" : "";
+                airImportDetails.HItDate = (!data.ITDate.Equals(DateTime.MinValue)) ? data.ITDate?.ToShortDateString() ?? "" : "";
                 airImportDetails.ArrivalDate = mawb.ArrivalDate;
                 airImportDetails.HItLocation = data.ITIssuedLocation;
                 airImportDetails.TotalPackage = string.Concat(data.Package) + " " + airImportDetails.HPackageUnitName;

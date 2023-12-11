@@ -11,6 +11,8 @@ namespace Dolphin.Freight.Accounting.Invoices
     public class InvoiceMblDto : AuditedEntityDto<Guid>
     {
         public Guid Mid { get; set; }
+        public Guid? FinalDestinationId { get; set; }
+        public Guid? RouteDestinationId { get; set; }
         public string FlightNo { get; set; }
         public double Package { get; set; }
         /// <summary>
