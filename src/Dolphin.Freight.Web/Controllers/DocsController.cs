@@ -238,9 +238,7 @@ namespace Dolphin.Freight.Web.Controllers
         {
             TelexreleaseIndexViewModel InfoViewModel = new TelexreleaseIndexViewModel();
 
-            OceanExportDetails oceanExportMbl = TempData["PrintData"] is not null
-                                                                                ? JsonConvert.DeserializeObject<OceanExportDetails>(TempData["PrintData"].ToString())
-                                                                                : await _oceanExportMblAppService.GetOceanExportDetailsById(oceanExportMblId);
+            OceanExportDetails oceanExportMbl = new();
 
             if (oceanExportMblId != Guid.Empty)
             {
@@ -272,8 +270,6 @@ namespace Dolphin.Freight.Web.Controllers
             InfoViewModel.TextArea = InfoViewModel.FirstName;
 
             InfoViewModel.ReportId = oceanExportMblId;
-
-            TempData["PrintData"] = JsonConvert.SerializeObject(oceanExportMbl);
 
             return View(InfoViewModel);
         }
@@ -345,10 +341,9 @@ namespace Dolphin.Freight.Web.Controllers
         {
             PackageLabelIndexViewModel InfoViewModel = new PackageLabelIndexViewModel();
 
-            OceanExportMblDto oceanExportMbl = TempData["PrintData"] is not null ? JsonConvert.DeserializeObject<OceanExportMblDto>(TempData["PrintData"].ToString())
-                                                                                 : await _oceanExportMblAppService.GetAsync(oceanExportMblId);
+            OceanExportMblDto oceanExportMbl = new();
 
-            if (oceanExportMbl.Mid != oceanExportMblId)
+            if (oceanExportMblId != Guid.Empty)
             {
                 oceanExportMbl = await _oceanExportMblAppService.GetAsync(oceanExportMblId);
             }
@@ -426,8 +421,6 @@ namespace Dolphin.Freight.Web.Controllers
 
             InfoViewModel.ReportId = oceanExportMbl.Id;
             InfoViewModel.DataSource = datasource;
-
-            TempData["PrintData"] = JsonConvert.SerializeObject(oceanExportMbl);
 
             return View(InfoViewModel);
         }
