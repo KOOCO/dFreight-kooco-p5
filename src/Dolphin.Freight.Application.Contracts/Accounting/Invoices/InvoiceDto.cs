@@ -259,7 +259,7 @@ namespace Dolphin.Freight.Accounting.Invoices
         public decimal? TaxAmountAc { get; set; }
         public decimal? Amount { get; set; }
         public decimal? AmountAc { get; set; }
-      
+        public int? MethodType { get; set; }
         public decimal? PaidAmountAc { get; set; }
         public decimal? BalanceAc { get; set; }
         public DateTime LastPaidDate { get; set; }

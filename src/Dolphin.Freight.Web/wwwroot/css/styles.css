@@ -11922,12 +11922,6 @@ body {
     border:0px!important;
     background-color:transparent!important;
 }
-
-.ports-custom-disabled {
-    color: #a0a0a0;
-    pointer-events: none;
-    cursor: not-allowed;
-}
 /*
 .Mawb .select2-container--default .select2-selection--single {
     display: block;

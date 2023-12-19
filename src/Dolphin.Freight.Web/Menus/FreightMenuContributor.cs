@@ -218,8 +218,7 @@ public class FreightMenuContributor : IMenuContributor
             settingsMenu.AddItem(new ApplicationMenuItem(
                     "Settings.PortsManagement",
                     l["Menu:PortsManagement"],
-                    url: "/Settings/PortsManagement",
-                    cssClass: "ports-custom-disabled"
+                    url: "/Settings/PortsManagement"
             ));
         }
         #endregion

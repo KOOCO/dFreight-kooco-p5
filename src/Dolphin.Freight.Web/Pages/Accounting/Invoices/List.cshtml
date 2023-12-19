@@ -17,8 +17,6 @@
          var l = abp.localization.getResource('Freight');
 
         $(document).ready(function () {
-
-           
             var queryAction = function (){
                 var parm;
                 var typeId=$("#TypeId").val();
@@ -27,96 +25,104 @@
                 if (typeId == "2") { parm = 2; }
 
                 return {
-                     
-                        QueryInvoiceType: 1,
-                         search: $("#Keyword").val(),
-       typeId:parm,
-        officeId: $("#VesselSchedule_OfficeId").val() == '' ? null : $("#VesselSchedule_OfficeId").val(),
-       
-        postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
-         invoiceDate: $("#InvoiceDate").val() == '' || $("#InvoiceDate").val() == null? null : new Date($("#InvoiceDate").val()),
-        dueDate: $("#DueDate").val() == '' || $("#DueDate").val() == null ? null : new Date($("#DueDate").val()),
-        eta: $("#ETA").val() == '' || $("#ETA").val() == null? null : new Date($("#ETA").val()),
-        etd: $("#ETD").val() == '' || $("#ETD").val() == null ? null : new Date($("#ETD").val()),
-         lastDate: $("#LastDate").val() == '' || $("#LastDate").val() == null ? null : new Date($("#LastDate").val()),
-       
-        invoiceNo: $("#InvoiceNo").val(),
+                    QueryInvoiceType: 1,
+                    search: $("#Keyword").val(),
+                    typeId:parm,
+                    officeId: $("#VesselSchedule_OfficeId").val() == '' ? null : $("#VesselSchedule_OfficeId").val(),
+                    postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
+                    invoiceDate: $("#InvoiceDate").val() == '' || $("#InvoiceDate").val() == null? null : new Date($("#InvoiceDate").val()),
+                    dueDate: $("#DueDate").val() == '' || $("#DueDate").val() == null ? null : new Date($("#DueDate").val()),
+                    eta: $("#ETA").val() == '' || $("#ETA").val() == null? null : new Date($("#ETA").val()),
+                    etd: $("#ETD").val() == '' || $("#ETD").val() == null ? null : new Date($("#ETD").val()),
+                    lastDate: $("#LastDate").val() == '' || $("#LastDate").val() == null ? null : new Date($("#LastDate").val()),
+                    invoiceNo: $("#InvoiceNo").val(),
                 };
             };
-            var columns=[{
-        title: '<input type="checkbox" id="selectAllCheckbox" onclick="Invoice.selectAllCheckbox(this)" style=" cursor: pointer;">',
-        data: null,
-        orderable: false,
-        "render": function (data, type, row) {
 
-            var id = row.id;
-            // var filingNo = row.filingNo;
+            var columns=[
+                {
+                    title: '<input type="checkbox" id="selectAllCheckbox" onclick="Invoice.selectAllCheckbox(this)" style=" cursor: pointer;">',
+                    data: null,
+                    orderable: false,
+                    "render": function (data, type, row) {
+                        var id = row.id;
+                        return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" " onclick="Invoice.selectCheckbox(this)" style=" cursor: pointer;">';
+                    }
+                },
+                {
+                    title: l('Actions'),
+                    rowAction: {
+                        items:
+                        [
+                            {
+                                text: l('Edit'),
+                                visible: abp.auth.isGranted('Settings.ItNoRanges.Edit'), //CHECK for the PERMISSION
+                                action: function (data) {
+                                    if (data.record.isLocked) {
 
-            return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" " onclick="Invoice.selectCheckbox(this)" style=" cursor: pointer;">';
-        }
-    },
-                        {
-                            title: l('Actions'),
-                            rowAction: {
-                                items:
-                                    [
-                                        {
-                                            text: l('Edit'),
-                                            visible: abp.auth.isGranted('Settings.ItNoRanges.Edit'), //CHECK for the PERMISSION
-                                            action: function (data) {
-                                                if (data.record.isLocked) {
+                                    }
 
-                                                }
-                                                 var hid = data.record.hblId;
-                                        if (hid == null || hid == "null") hid = "";
-                                                location.href = '/Accounting/Invoice?MethodType=7&InvoiceType=' + data.record.invoiceType + '&Mid=' + data.record.mblId + '&Hid=' + hid + '&InvoiceId=' + data.record.id;
+                                    switch (data.record.methodType) {
+                                        case 3:
+                                            location.href = '/Accounting/Invoice?MethodType=3&InvoiceType=' + data.record.invoiceType + '&MawbId=' + data.record.mawbId + '&Hid=' + data.record.hawbId + '&InvoiceId=' + data.record.id;
+                                            break;
+                                        case 2:
+                                            location.href = '/Accounting/Invoice?MethodType=2&InvoiceType=' + data.record.invoiceType + '&MawbId=' + data.record.mawbId + '&HawbId=' + data.record.hawbId + '&InvoiceId=' + data.record.id;
+                                            break;
+                                        case 1:
+                                            location.href = '/Accounting/Invoice?MethodType=1&InvoiceType=' + data.record.invoiceType + '&Mid=' + data.record.mblId + '&Hid=' + data.record.hblId + '&InvoiceId=' + data.record.id;
+                                            break;
+                                        case 0:
+                                            location.href = '/Accounting/Invoice?MethodType=0&InvoiceType=' + data.record.invoiceType + '&Mid=' + data.record.mblId + '&Hid=' + data.record.hblId + '&InvoiceId=' + data.record.id;
+                                            break;
+                                    }
+                                    
+                                }
+                            },
+                            {
+                                text: l('Delete'),
+                                visible: function (data) {
 
-                                            }
-                                        },
+                                    return !data.isLocked && abp.auth.isGranted('Settings.ItNoRanges.Delete')
+                                },
 
-                                        {
-                                            text: l('Delete'),
-                                            visible: function (data) {
-
-                                                return !data.isLocked && abp.auth.isGranted('Settings.ItNoRanges.Delete')
-                                            },
-
-                                            action: function (data) {
-                                                if (!data.record.isLocked) {
-                                                    abp.message.confirm(l('DeletionConfirmationMessage'))
-                                                        .then(function (confirmed) {
-                                                            if (confirmed) {
-                                                                dolphin.freight.importExport.oceanExports.oceanExportMbl
-                                                                    .delete(data.record.id)
-                                                                    .then(function () {
-                                                                        abp.message.success(l('SuccessfullyDeleted'));
-                                                                        dataTable.ajax.reload();
-                                                                    });
-                                                            }
-                                                        });
-
-                                                } else {
-                                                    abp.message.warn("鎖定不能刪除")
-                                                }
-
-                                                /*
-                                                if (!data.record.isLocked) {
+                                action: function (data) {
+                                    if (!data.record.isLocked) {
+                                        abp.message.confirm(l('DeletionConfirmationMessage'))
+                                            .then(function (confirmed) {
+                                                if (confirmed) {
                                                     dolphin.freight.importExport.oceanExports.oceanExportMbl
                                                         .delete(data.record.id)
                                                         .then(function () {
                                                             abp.message.success(l('SuccessfullyDeleted'));
                                                             dataTable.ajax.reload();
                                                         });
-                                                } else {
-                                                    abp.message.warn("鎖定不能刪除")
-                                                }*/
+                                                }
+                                            });
 
-                                            }
-                                        }
-                                    ]
+                                    } else {
+                                        abp.message.warn("鎖定不能刪除")
+                                    }
+
+                                    /*
+                                    if (!data.record.isLocked) {
+                                        dolphin.freight.importExport.oceanExports.oceanExportMbl
+                                            .delete(data.record.id)
+                                            .then(function () {
+                                                abp.message.success(l('SuccessfullyDeleted'));
+                                                dataTable.ajax.reload();
+                                            });
+                                    } else {
+                                        abp.message.warn("鎖定不能刪除")
+                                    }*/
+
+                                }
                             }
-                        }
-                        ];
+                        ]
+                    }
+                }
+            ];
+
             $(function () {
                 dolphin.freight.web.controllers.configuration.getJsonConfig('InvoiceList').done(function (data) {
                     data.forEach(function (item) {
@@ -129,9 +135,22 @@
                                     //是否鎖定
                                     data: null, title: l('InvoiceNo'),
                                     render: function (data, type, row) {
-                                        var hid = row.hblId;
-                                        if (hid == null || hid == "null") hid = "";
-                                        return '<a href="/Accounting/Invoice?MethodType=7&InvoiceType=' + row.invoiceType + '&Mid=' + row.mblId + '&Hid=' + hid + '&InvoiceId=' + row.id + '" >' + row.invoiceNo + '</a> ';
+                                        switch (row.methodType) {
+                                            case 3:
+                                                var link = '<a href="/Accounting/Invoice?MethodType=3&InvoiceType=' + row.invoiceType + '&MawbId=' + row.mawbId + '&Hid=' + row.hawbId + '&InvoiceId=' + row.id + '">' + row.invoiceNo + '</a>';
+                                                break;
+                                            case 2:
+                                                var link = '<a href="/Accounting/Invoice?MethodType=2&InvoiceType=' + row.invoiceType + '&MawbId=' + row.mawbId + '&HawbId=' + row.hawbId + '&InvoiceId=' + row.id + '">' + row.invoiceNo + '</a>';
+                                                break;
+                                            case 1:
+                                                var link = '<a href="/Accounting/Invoice?MethodType=1&InvoiceType=' + row.invoiceType + '&Mid=' + row.mblId + '&Hid=' + row.hblId + '&InvoiceId=' + row.id + '">' + row.invoiceNo + '</a>';
+                                                break;
+                                            case 0:
+                                                var link = '<a href="/Accounting/Invoice?MethodType=0&InvoiceType=' + row.invoiceType + '&Mid=' + row.mblId + '&Hid=' + row.hblId + '&InvoiceId=' + row.id + '">' + row.invoiceNo + '</a>';
+                                                break;
+                                        }
+                                        
+                                        return link;
                                     }
                                 }
                             }
@@ -184,106 +203,111 @@
                     );
 
                 });
-                 $('#btnConfiguration').click(function (e) {
-        var _configurationModal = new abp.ModalManager({
-            viewUrl: abp.appPath + 'Configuration',
-            modalClass: 'ConfigurationViewModel'
+
+                $('#btnConfiguration').click(function (e) {
+
+                    var _configurationModal = new abp.ModalManager({
+                        viewUrl: abp.appPath + 'Configuration',
+                        modalClass: 'ConfigurationViewModel'
+                    });
+
+                    _configurationModal.open({
+                        src: 'InvoiceList'
+                    });
+                });
+        
+                $('#Search').click(function (e) {
+                    dataTable.ajax.reload();
+                });
+    
+                $('#CancelFilter').click(function (e) {
+                    $("#Keyword").val(null);
+                   
+                    // $("#VesselSchedule_OfficeId").val(null);
+                    $("select[name='VesselSchedule_OfficeId']").val(null);
+                    
+                    $("#TypeId").val(null).trigger("change");
+                    $("#PostDate").val(null);
+                    $("#ETA").val(null);
+                    $("#ETD").val(null);
+                    $("#InvoiceDate").val(null);
+                    $("#DueDate").val(null);
+                    $("#LastDate").val(null);
+                    $("#InvoiceNo").val(null);
+                    dataTable.ajax.reload();
+                });
+            });
         });
 
-        _configurationModal.open({
-            src: 'InvoiceList'
-        });
-    })
-        $('#Search').click(function (e) {
-        dataTable.ajax.reload();
-    });
-    $('#CancelFilter').click(function (e) {
-        $("#Keyword").val(null);
-       
-        // $("#VesselSchedule_OfficeId").val(null);
-        $("select[name='VesselSchedule_OfficeId']").val(null);
-        
-        $("#TypeId").val(null).trigger("change");
-        $("#PostDate").val(null);
-        $("#ETA").val(null);
-        $("#ETD").val(null);
-        $("#InvoiceDate").val(null);
-        $("#DueDate").val(null);
-        $("#LastDate").val(null);
-        $("#InvoiceNo").val(null);
-        dataTable.ajax.reload();
-    });
-            });
-        });
         var Invoice = {
-    selectAllCheckbox: function(element){
-        var isChecked = $(element).prop('checked');
-        $('#ListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
-        
-        if (isChecked) {
-            $('#btnDelete').prop('disabled', false);
-            $('#detailedId').prop('disabled', false);
-        
-        
-        } else {
-            $('#btnDelete').prop('disabled', true);
-            $('#detailedId').prop('disabled', true);
-        }
-    },
-    selectCheckbox: function (checkbox) {
-        var checkedCheckboxes = $('.selectCheckbox:checked');
-        if (checkbox.checked) {
-            $('#summaryId').prop('disabled', false);
-              if (checkedCheckboxes.length > 0) {
-        $('#btnDelete').prop('disabled', false);
-    } else {
-        $('#btnDelete').prop('disabled', true);
-    }
-        
-            if (checkedCheckboxes.length == 1) {
-                $('#copyId').prop('disabled', false);
-            }
-            else {
-                $('#copyId').prop('disabled', true);
-            }
-           
-           
-        } else {
-            $('#summaryId').prop('disabled', true);
-             if (checkedCheckboxes.length > 0) {
-        $('#btnDelete').prop('disabled', false);
-    } else {
-        $('#btnDelete').prop('disabled', true);
-    }
-            var checkedCheckboxes = $('.selectCheckbox:checked');
-            if (checkedCheckboxes.length == 1) {
-                $('#copyId').prop('disabled', false);
-            }
-            else {
-                $('#copyId').prop('disabled', true);
-            }
-         
-        }
-        if (!$(checkbox).prop('checked')) {
-            $('#selectAllCheckbox').prop('checked', false);
-        } else {
-            var allChecked = true;
-            $('#ListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
-                if (!$(this).prop('checked')) {
-                    allChecked = false;
-                    return false;
+            selectAllCheckbox: function(element){
+                var isChecked = $(element).prop('checked');
+                $('#ListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+                
+                if (isChecked) {
+                    $('#btnDelete').prop('disabled', false);
+                    $('#detailedId').prop('disabled', false);
+                
+                
+                } else {
+                    $('#btnDelete').prop('disabled', true);
+                    $('#detailedId').prop('disabled', true);
                 }
-            });
-            $('#selectAllCheckbox').prop('checked', allChecked);
+            },
+            selectCheckbox: function (checkbox) {
+                var checkedCheckboxes = $('.selectCheckbox:checked');
+                if (checkbox.checked) {
+                    $('#summaryId').prop('disabled', false);
+                      if (checkedCheckboxes.length > 0) {
+                $('#btnDelete').prop('disabled', false);
+            } else {
+                $('#btnDelete').prop('disabled', true);
+            }
+                
+                    if (checkedCheckboxes.length == 1) {
+                        $('#copyId').prop('disabled', false);
+                    }
+                    else {
+                        $('#copyId').prop('disabled', true);
+                    }
+                   
+                   
+                } else {
+                    $('#summaryId').prop('disabled', true);
+                     if (checkedCheckboxes.length > 0) {
+                $('#btnDelete').prop('disabled', false);
+            } else {
+                $('#btnDelete').prop('disabled', true);
+            }
+                    var checkedCheckboxes = $('.selectCheckbox:checked');
+                    if (checkedCheckboxes.length == 1) {
+                        $('#copyId').prop('disabled', false);
+                    }
+                    else {
+                        $('#copyId').prop('disabled', true);
+                    }
+                 
+                }
+                if (!$(checkbox).prop('checked')) {
+                    $('#selectAllCheckbox').prop('checked', false);
+                } else {
+                    var allChecked = true;
+                    $('#ListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
+                        if (!$(this).prop('checked')) {
+                            allChecked = false;
+                            return false;
+                        }
+                    });
+                    $('#selectAllCheckbox').prop('checked', allChecked);
+                }
+            },
+    
+            createNew: function () {
+                window.location.href = '/AirExports/CreateMawb';
+            }
         }
-    },
-    
-    
-    createNew: function () {
-        window.location.href = '/AirExports/CreateMawb';
-    }
-}
- function deleteInvoices() {
+
+        function deleteInvoices() {
             var ids = [];
             var selectedCheckboxes = $('#ListTable tbody input.selectCheckbox[type="checkbox"]:checked');
             for (var i = 0; i < selectedCheckboxes.length; i++) {
@@ -305,15 +329,15 @@
         function doCopy() {
             var checkedCheckboxes =$('#ListTable tbody input.selectCheckbox[type="checkbox"]:checked');
 
-    // Find the first checked checkbox
-    var firstCheckedCheckbox = checkedCheckboxes.first();
-     var id = checkedCheckboxes[0].attributes[2].value;
-            dolphin.freight.accounting.invoices.invoice.get(id).done(function (data) {
-            debugger
-            var href="/Accounting/Invoice?MethodType=7&InvoiceType=" + data.invoiceType + "&Mid=" + data.mblId + "&Hid=" + data.hblId + "&CopyInvoiceId=" + data.id;
-                location.href = href;
-            })
-            
+            // Find the first checked checkbox
+            var firstCheckedCheckbox = checkedCheckboxes.first();
+             var id = checkedCheckboxes[0].attributes[2].value;
+                    dolphin.freight.accounting.invoices.invoice.get(id).done(function (data) {
+                    debugger
+                    var href="/Accounting/Invoice?MethodType=7&InvoiceType=" + data.invoiceType + "&Mid=" + data.mblId + "&Hid=" + data.hblId + "&CopyInvoiceId=" + data.id;
+                        location.href = href;
+                    })
+                    
         }
     </script>
 }
@@ -383,7 +407,7 @@
                     <label>@L["Type"].Value</label>
                 </abp-column>
                 <abp-column size-md="_2">
-               <select id="TypeId" class="form-select" />
+               <select id="TypeId" class="form-select">
                 <option value=""></option>
                    <option value="0">@L["A/R"]</option>
                     <option value="1">@L["A/P"]</option>
@@ -462,3 +486,4 @@
             <abp-table striped-rows="true" id="ListTable" style="width:2000px;" class="nowrap"></abp-table>
     </abp-card-body>
 </abp-card>
+</div>
