@@ -7,6 +7,7 @@ using System.Text;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Users;
 using Volo.Abp.Data;
+using Dolphin.Freight.Accounting.Invoices;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -15,7 +16,9 @@ namespace Dolphin.Freight.ImportExport.AirExports
         /// <summary>
         /// Mawb Id
         /// </summary>
+        public string HawbDimensionsJSON { get; set; }
         public Guid? MawbId { get; set; }
+        public Guid? HawbId { get; set; }
         /// <summary>
         /// Hawb 號碼
         /// </summary>
@@ -89,6 +92,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string GrossWeightShprLB { get; set; }
         public string GrossWeightShprAmount { get; set; }
         public string GrossWeightCneeKG { get; set; }
+        public string GrossWeightCneeLB { get; set; }
+        public string GrossWeightCneeAmount { get; set; }
         public string ChargeableWeightShprKG { get; set; }
         public string ChargeableWeightShprLB { get; set; }
         public string ChargeableWeightShprAmount { get; set; }
@@ -113,11 +118,38 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string PickupInstruction { get; set; }
         public List<Commodity> Commodities { get; set; }
         public List<OtherCharges> OtherCharges { get; set; }
+        public string DepartureName { get; set; }
+        public string DestinationName { get; set; }
+        public string CargoPickupName { get; set; }
+        public string IssuingCarrierName { get; set; }
+        public string NotifyName { get; set; }
+        public string IATA { get; set; }
+        public string ActualShipperName { get; set; }
+        public string BillToName { get; set; }
+
+        public bool IsLocked { get; set; }
 
         /// <summary>
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
         public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public string CurrentHawbNo { get; set; }
+
+        public string DocNumber { get; set; }
+        public string ArrivalDate { get; set; }
+        public DateTime? DepatureDate { get; set; }
+        public string ShippperName { get; set; }
+        public string ConsigneeName { get; set; }
+        public string OverSeaAgentName { get; set; }
+        public double Total { get; set; }
+        public string InvoicesJson { get; set; }
+        public double ARTotal { get; set; }
+        public double DCTotal { get; set; }
+        public double APTotal { get; set; }
+        public List<InvoiceDto> AR { get; set; }
+        public List<InvoiceDto> DC { get; set; }
+        public List<InvoiceDto> AP { get; set; }
+        public List<InvoiceDto> Invoices { get; set; }
     }
 }

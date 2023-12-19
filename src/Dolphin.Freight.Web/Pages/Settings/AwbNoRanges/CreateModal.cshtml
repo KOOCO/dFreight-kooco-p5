@@ -1,23 +1,23 @@
 ﻿@page
 @using Dolphin.Freight.Localization
+@using Dolphin.Freight.Web.CommonService;
 @using Dolphin.Freight.Web.Pages.AwbNoRanges
 @using Microsoft.Extensions.Localization
 @using Dolphin.Freight.Web.Pages.Components
 @using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
 @model CreateModalModel
+@inject IDropdownService _dropdown
 @inject IStringLocalizer<FreightResource> L
 @{
     Layout = null;
     <abp-script src="/Pages/Settings/AwbNoRanges/init.js" />
 }
-
     <abp-modal>
         <abp-modal-header title="@L["Create"].Value"></abp-modal-header>
         <abp-modal-body>
         <abp-row>
             <abp-column>
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "CompanyId", FieldName = "CompanyId",DefaultValue="", IsShowLabel = true , IsRequired = true  })
-
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CarrierId", AspItems = _dropdown.TradePartnerLookupList, ShowFiledContentValue = @Model.CarrierId.ToString(), IsShowLabel = true, FieldName = @L["CarrierId"]+".*" })
             </abp-column>
         </abp-row>
         <abp-row>
@@ -35,17 +35,19 @@
                 <abp-input asp-for="AwbNoRange.Note" />
             </abp-column>
         </abp-row>
+
         </abp-modal-body>
         <abp-modal-footer >
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
             <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
         </div>
         <form id="createForm" method="post" action="/Settings/AwbNoRanges/CreateModal">
-            <input type="hidden" name="CompanyId" id="formCompanyId" />
+            <input type="hidden" name="CarrierId" id="formCarrierId" />
             <input type="hidden" name="StartNo" id="formStartNo" />
             <input type="hidden" name="EndNo" id="formEndNo" />
             <input type="hidden" name="Note" id="formNote" />
         </form>
+
         </abp-modal-footer>
     </abp-modal>
 

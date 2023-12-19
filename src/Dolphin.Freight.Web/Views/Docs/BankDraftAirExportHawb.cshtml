@@ -1,0 +1,881 @@
+﻿
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.BankDraft.BankDraftAirExportHawbModel
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+</style>
+<script>
+    $(document).ready(function () {
+      $('#id_show_container_info').change(function () {
+
+     if($("#id_show_container_info").prop("checked"))
+     {         
+         $('#container-table').show();
+         $('.show_container').attr('rows', 19)
+     }
+     else
+     {
+         $('#container-table').hide();
+         $('.show_container').attr('rows', 28)
+     }
+ });
+    });
+    
+</script>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+    });
+</script>
+<form id="myForm" name="myForm" method="POST">
+   <div style="background-color:black;display: flex;justify-content:center;">
+      <div style="width:900px;background-color:white;" id="form" name = "form" class="edit">
+         <div class="container" style="background-color:black">
+            <div style="display:flex;justify-content: center;" class="item-left">
+               @*<button class="btn"><i class="fa fa-file-pdf-o"></i></button>
+               <button class="btn"><i class="fa fa-print"></i></button>*@
+               @*<a class="btn" href="../OceanExports/print?handler=Download"><i class="fa fa-print">儲存PDF或列印</i></a>*@
+               <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+            </div>
+            @*
+            <div style="float:right;" class="item-right">
+               <button class="btn zoom" id="zout" name="zout"><i class="fa fa-search-minus"></i></button>
+               <button class="btn zoom-out" id="zin" name="zin"><i class="fa fa-search-plus"></i></button>
+            </div>
+            *@
+         </div>
+
+         @*Start of template*@
+         <div class="wrap ">
+        <div class="item-edit topbar">
+            
+
+    
+
+    <div class="topbar-block">
+        Data Source :
+        <select class="select w-160px" onchange="loadDataSource(this)">
+            <option selected="selected" value="loadInitial">Shipment</option>
+            <option value="loadDraft">Last Modified</option>
+            <option value="loadEmptyFromDraft">Load empty fields from last modified</option>
+            
+        </select>
+
+        <script>
+            function loadDataSource(sel) {
+                function genUrl(url, params) {
+                  const pString = Array.from(Object.entries(params)).map(([k, v]) => `${k}=${v}`).join('&');
+                  return `${url}?${pString}`;
+                }
+
+                const basicParam = {};
+
+                Array.from(new URL(window.location.href).searchParams.entries()).forEach(params => {
+                  if (params[0] !== 'action' && params[0] !== 'form_source') {
+                    basicParam[params[0]] = params[1]
+                  }
+                });
+
+                const last_modified_form_layout = '';
+
+                if (sel.value === 'loadInitial') {
+                    window.location.href = genUrl('/reports/air/hbl/bank-draft/47123/', basicParam);
+                }
+                else if (sel.value === 'loadDraft') {
+
+                  const params = {
+                    ...basicParam,
+                    action: 'edit',
+                    form_source: 'draft',
+                  };
+
+                  if (last_modified_form_layout) {
+                    params['form_layout'] = last_modified_form_layout
+                  }
+
+                  window.location.href = genUrl('/reports/air/hbl/bank-draft/47123/', params);
+                }
+                else if (sel.value === 'loadEmptyFromDraft') {
+
+                  const params = {
+                    ...basicParam,
+                    action: 'edit',
+                    form_source: 'empty-from-draft',
+                  };
+
+                  if (last_modified_form_layout) {
+                    params['form_layout'] = last_modified_form_layout
+                  }
+
+                  window.location.href = genUrl('/reports/air/hbl/bank-draft/47123/', params);
+                }
+                
+                else {
+                  throw Error('unknown dataSource value')
+                }
+            }
+        </script>
+    </div>
+
+
+        </div>
+
+        <div class="con bank-draft">
+            <table>
+                <tbody><tr class="border">
+                    <td class="w-4 border-r">&nbsp;</td>
+                    <td class="w-1">&nbsp;</td>
+                    <td class="w-95 border-l">
+                        <div class="text-md padding-l-xs padding-r-xs">
+                            <table class="table-padding-double">
+                                <tbody><tr>
+                                    <td class="w-45">
+                                        <table>
+                                            <tbody><tr>
+                                                <td class="w-20 border-b text-bold">U.S.$</td>
+                                                <td class="w-80 border-b">
+                                                    <div class="item-edit hover-toggle-icon-text-template"><input type="number" name="amount" value=".00" min="0" step="0.01" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.amount" id="id_amount" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 4px; left: 207px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a15f74e825b7" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                                    <div class="item-pdf auto-font-size __width-dollar"><span>.00</span></div>
+                                                </td>
+                                            </tr>
+                                        </tbody></table>
+                                    </td>
+                                    <td class="w-26">&nbsp;</td>
+                                    <td class="w-29">
+                                        <table>
+                                            <tbody><tr>
+                                                <td class="w-20 text-bold">Date</td>
+                                                <td class="w-80 border-b">
+                                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="current_date" value="07-14-2023" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.current_date" id="id_current_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 4px; left: 122px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ab5781004f3e" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                                    <div class="item-pdf">07-14-2023</div>
+                                                </td>
+                                            </tr>
+                                        </tbody></table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="w-45 border-b">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="at_sight" value="AT SIGHT" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.at_sight" id="id_at_sight" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 4px; left: 274px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a12325704c8c" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-exchange"><span>AT SIGHT</span></div>
+                                    </td>
+                                    <td class="w-26 text-center text-bold">of this
+                                        <span class="high-light-text">
+                                            
+                                                &nbsp;&nbsp;F&nbsp;&nbsp;I&nbsp;&nbsp;R&nbsp;&nbsp;S&nbsp;&nbsp;T&nbsp;&nbsp;
+                                            
+                                        </span>
+                                        of
+                                    </td>
+                                    <td class="w-29 text-bold">
+                                        
+                                            Exchange(Second unpaid)
+                                        
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                            <table class="table-padding-double">
+                                <tbody><tr>
+                                    <td class="w-71">
+                                        <table>
+                                            <tbody><tr>
+                                                <td class="w-30 text-bold">Pay to the Order of</td>
+                                                <td class="w-70">
+                                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="shipper_name" value="ABBOTT-CRAIG" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.shipper_name" id="id_shipper_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 4px; left: 300px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="aa0979056ffb" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                                    <div class="item-pdf auto-font-size __width-payto"><span>ABBOTT-CRAIG</span></div>
+                                                </td>
+                                            </tr>
+                                        </tbody></table>
+                                    </td>
+                                    <td class="w-29">&nbsp;</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="w-71 text-md"><div class="auto-font-size __width-lg"><span></span></div></td>
+                                    <td class="w-29 text-right text-bold">United States Dollars</td>
+                                </tr>
+                                <tr class="text-12">
+                                    <td class="w-71">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="drawn_doc_credit" value="&quot;DRAWN UNDER DOCUMENTARY CREDIT NO. : RRR" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.drawn_doc_credit" id="id_drawn_doc_credit" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 448px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a9274c97c0e3" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>"DRAWN UNDER DOCUMENTARY CREDIT NO. : RRR</span></div>
+                                    </td>
+                                    <td class="w-29 text-right">
+                                        <table>
+                                            <tbody><tr>
+                                                <td class="w-60">DATE OF ISSUE</td>
+                                                <td class="w-40 text-right">
+                                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="issue_date" value="07-29-2023" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.issue_date" id="id_issue_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 51px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a3826ec718eb" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                                    <div class="item-pdf">07-29-2023</div>
+                                                </td>
+                                            </tr>
+                                        </tbody></table>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="w-71">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="LC_issue_bank" value="YYY" placeholder="L/C Issue Bank" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.LC_issue_bank" id="id_LC_issue_bank" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 4px; left: 448px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="abe44164b5c9" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>YYY</span></div>
+                                    </td>
+                                    <td class="w-29 text-right">&nbsp;</td>
+                                </tr>
+                            </tbody></table>
+                            <table class="table-padding-double">
+                                <tbody><tr>
+                                    <td class="w-52">
+                                        <div class="text-bold">for Value received and charge the same to account of</div>
+                                        <table>
+                                            <tbody><tr>
+                                                <td class="w-5 text-bold td">TO</td>
+                                                <td class="w-4">&nbsp;</td>
+                                                <td class="w-75 border-b text-md">
+                                                    <div class="item-pdf auto-font-size __textarea-xs">
+                                                        <span>YYY</span>
+                                                    </div>
+                                                    <div class="item-edit hover-toggle-icon-text-template">
+                                                        <textarea name="to_LC_issue_bank" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.to_LC_issue_bank" id="id_to_LC_issue_bank">YYY</textarea>
+                                                    <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 231px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a1a8ed5a6244" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                                </td>
+                                                <td class="w-16"></td>
+                                            </tr>
+                                        </tbody></table>
+                                    </td>
+                                    <td class="w-48">
+                                        <table>
+                                            <tbody><tr class="item-edit">
+                                                <td>
+                                                    <label class="radio-inline text-bold _margin-r-md">Load from</label>
+                                                    
+                                                        <label class="radio-inline _margin-r-md" for="id_to_trade_partner_load_from_0">
+                                                            <input type="radio" id="id_to_trade_partner_load_from_0" name="to_trade_partner_load_from" value="CONSIGNEE" ng-model="vm.toTradePartnerNameLoadFrom" ng-change="vm.onToTradePartnerNameLoadFromChange()" class="ng-pristine ng-untouched ng-valid ng-not-empty"> Consignee
+                                                        </label>
+                                                    
+                                                        <label class="radio-inline _margin-r-md" for="id_to_trade_partner_load_from_1">
+                                                            <input type="radio" id="id_to_trade_partner_load_from_1" name="to_trade_partner_load_from" value="NOTIFY" ng-model="vm.toTradePartnerNameLoadFrom" ng-change="vm.onToTradePartnerNameLoadFromChange()" class="ng-pristine ng-untouched ng-valid ng-not-empty"> Notify Party
+                                                        </label>
+                                                    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-md col-padding">
+                                                    <div class="item-edit hover-toggle-icon-text-template"><textarea name="to_trade_partner_name" cols="40" rows="6" class="text-scroll no-adjustment ng-pristine ng-untouched ng-valid ng-isolate-scope ng-not-empty" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.to_trade_partner_name" ng-model="vm.toTradePartnerName" id="id_to_trade_partner_name">123</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 290px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a6d0cdb4f1f5" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                                    <div class="item-pdf auto-font-size __textarea-sm"><span>123</span></div>
+                                                </td>
+                                            </tr>
+                                            <tr valign="bottom">
+                                                <td class="border-b text-md"></td>
+                                            </tr>
+                                        </tbody></table>
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                            <table class="table-padding-double">
+                                <tbody><tr>
+                                    <td class="w-45">
+                                        <table>
+                                            <tbody><tr>
+                                                <td class="w-5 text-bold">No.</td>
+                                                <td class="w-5">&nbsp;</td>
+                                                <td class="w-90 border-b">
+                                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="draft_no" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.draft_no" id="id_draft_no" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 4px; left: 237px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="af8df4bfbccd" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                                    <div class="item-pdf auto-font-size __width-no"><span>&nbsp;</span></div>
+                                                </td>
+                                            </tr>
+                                        </tbody></table>
+                                    </td>
+                                    <td class="w-26">&nbsp;</td>
+                                    <td class="w-29 text-12 text-right">
+                                        Authorized Signature
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                            <table class="table-padding-double">
+                                <tbody><tr>
+                                    <td class="w-45">
+                                        <div class="item-pdf auto-font-size __textarea-bank-pre"><span></span></div>
+                                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="bank_preference" cols="40" rows="2" class="text-10 text-scroll no-adjustment ng-isolate-scope" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.bank_preference" placeholder="Bank Preference" id="id_bank_preference"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 277px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a9934d63bce7" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                    </td>
+                                    <td class="w-55 text-center text-bold">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="shipper_name2" value="ABBOTT-CRAIG" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.shipper_name2" class="text-center ng-isolate-scope" id="id_shipper_name2"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 4px; left: 353px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="afefdbdee1c8" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-company"><span>ABBOTT-CRAIG</span></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="w-45" colspan="2">&nbsp;</td>
+                                </tr>
+                            </tbody></table>
+                        </div>
+                    </td>
+                </tr>
+            </tbody></table>
+            <div class="gap">&nbsp;</div>
+            <table class="margin-t">
+                <tbody><tr>
+                    <td class="w-100"><img src="/static/freight/img/form/dotted-line.png" width="762" height="12" alt=""></td>
+                </tr>
+            </tbody></table>
+            <div class="gap">&nbsp;</div>
+            <table class="table-padding text-bigger">
+                <tbody><tr>
+                    <td class="w-58">
+                        <table>
+                            <tbody><tr>
+                                <td class="w-15 td">Gentlemen:</td>
+                                <td class="w-85">
+                                    <div class="item-edit hover-toggle-icon-text-template">
+                                        <hc-form-trade-partner-info-picker field-preset="name_address" on-changed="vm.updateTpInfo(info, 'gentlemen_name_address')" class="ng-isolate-scope"><hc-tp-select ng-model="vm.model" (change)="vm.onModelChange()" [type]="vm.type" fmt="report" [hc-class]="vm.selectClass" [allow-clear]="false" [enable-functional-button-group]="false" [only-office-tp]="true" class="ng-pristine ng-untouched ng-valid ng-empty" _nghost-pat-c242="" ng-version="12.2.17" tabindex="0"><ng-select _ngcontent-pat-c242="" role="listbox" container="body" popoverclass="popover" hcpopoverhover="" showwarnings="" warningsmyposition="bottom center" warningsatposition="top center" class="ng-select select2-xl select2-oneabbr ng-select-single ng-select-typeahead ng-untouched ng-pristine ng-valid" data-bob-id="_autocompleteselect" data-hasqtip="1"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="af4e7122f6eb" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select><!---->
+
+<!---->
+</hc-tp-select>
+</hc-form-trade-partner-info-picker>
+                                        <textarea name="gentlemen_name_address" cols="40" rows="4" class="text-scroll no-adjustment ng-isolate-scope" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.gentlemen_name_address" id="id_gentlemen_name_address"></textarea>
+                                    <hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 27px; left: 330px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ade5668c7aae" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                    <div class="item-pdf auto-font-size __textarea-md"><span></span></div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td class="w-2">&nbsp;</td>
+                    <td class="w-40 td">
+                        <table>
+                            <tbody><tr class="text-center border-b">
+                                <td>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="enclose_date" value="07-14-2023" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.enclose_date" id="id_enclose_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 268px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ac9bf46ace3f" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                    <div class="item-pdf">07-14-2023</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">Date</td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="w-58 td">
+                        <table>
+                            <tbody><tr>
+                                <td class="w-32 text-center">We enclose Draft Number</td>
+                                <td class="border-b w-32">
+                                    <div class="item-pdf auto-font-size __width-draftno"><span>&nbsp;</span></div>
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="enclose_draft_no" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.enclose_draft_no" id="id_enclose_draft_no" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 108px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a085d97f5448" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                </td>
+                                <td class="w-36">and documents listed below</td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td class="w-2">&nbsp;</td>
+                    <td class="w-40">
+                        <table>
+                            <tbody><tr>
+                                <td class="w-7">
+                                    <div class="item-edit"><input type="checkbox" name="enclose_for_collection" id="id_enclose_for_collection"></div>
+                                    <div class="item-pdf">[&nbsp;&nbsp;]</div>
+                                </td>
+                                <td class="w-93">for collection</td>
+                            </tr>
+                            <tr>
+                                <td class="w-7">
+                                    <div class="item-edit"><input type="checkbox" name="enclose_for_other" id="id_enclose_for_other"></div>
+                                    <div class="item-pdf">[&nbsp;&nbsp;]</div>
+                                </td>
+                                <td class="w-93">for <span class="item-pdf auto-font-size __width-for inline-block"><span>&nbsp;</span></span><span class="item-edit hover-toggle-icon-text-template"><input type="text" name="enclose_for_other_input" class="w-auto ng-isolate-scope" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.enclose_for_other_input" id="id_enclose_for_other_input"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 1px; left: 146px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="abe4534756ca" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></span></td>
+                            </tr>
+                            <tr>
+                                <td class="w-7">
+                                    <div class="item-edit"><input type="checkbox" name="enclose_for_payment" id="id_enclose_for_payment" checked=""></div>
+                                    <div class="item-pdf">[X]</div>
+                                </td>
+                                <td class="w-93">for payment/negotiation under L/C</td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+            </tbody></table>
+            <table class="border table-padding margin-t-md">
+                <tbody><tr class="text-center border-b">
+                    <td class="w-10 border-r">BILLS<br>OF LADING</td>
+                    <td class="w-10 border-r">AWB<br>COPY</td>
+                    <td class="w-10 border-r">COMM.<br>INV.</td>
+                    <td class="w-10 border-r">INS.<br>CTF.</td>
+                    <td class="w-10 border-r">CTF.<br>ORIG.</td>
+                    <td class="w-10 border-r">CONS.<br>INV.</td>
+                    <td class="w-10 border-r">PKNG.<br>LIST</td>
+                    <td class="w-10 border-r">WGT.<br>CTF.</td>
+                    <td class="w-20">OTHER DOCUMENTS</td>
+                </tr>
+                <tr class="text-center">
+                    <td class="w-10 border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="extra_bl" class="tune-l ng-isolate-scope" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.extra_bl" id="id_extra_bl"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 47px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a9bb64f851f7" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                        <div class="item-pdf auto-font-size __width-xs"><span>&nbsp;</span></div>
+                    </td>
+                    <td class="w-10 border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="extra_bl_copy" class="tune-l ng-isolate-scope" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.extra_bl_copy" id="id_extra_bl_copy"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 47px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a29a7b368d63" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                        <div class="item-pdf auto-font-size __width-xs"><span>&nbsp;</span></div>
+                    </td>
+                    <td class="w-10 border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="extra_comm_inv" class="tune-l ng-isolate-scope" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.extra_comm_inv" id="id_extra_comm_inv"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 47px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="aae3e165bd87" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                        <div class="item-pdf auto-font-size __width-xs"><span>&nbsp;</span></div>
+                    </td>
+                    <td class="w-10 border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="extra_ins_ctf" class="tune-l ng-isolate-scope" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.extra_ins_ctf" id="id_extra_ins_ctf"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 47px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a1f1cbfd0df2" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                        <div class="item-pdf auto-font-size __width-xs"><span>&nbsp;</span></div>
+                    </td>
+                    <td class="w-10 border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="extra_ctf_orig" class="tune-l ng-isolate-scope" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.extra_ctf_orig" id="id_extra_ctf_orig"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 47px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="adc9dcb250f0" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                        <div class="item-pdf auto-font-size __width-xs"><span>&nbsp;</span></div>
+                    </td>
+                    <td class="w-10 border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="extra_cons_inv" class="tune-l ng-isolate-scope" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.extra_cons_inv" id="id_extra_cons_inv"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 47px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ab8b2859584d" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                        <div class="item-pdf auto-font-size __width-xs"><span>&nbsp;</span></div>
+                    </td>
+                    <td class="w-10 border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="extra_pkng_list" class="tune-l ng-isolate-scope" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.extra_pkng_list" id="id_extra_pkng_list"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 47px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a31418adc8fd" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                        <div class="item-pdf auto-font-size __width-xs"><span>&nbsp;</span></div>
+                    </td>
+                    <td class="w-10 border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="extra_wgt_ctf" class="tune-l ng-isolate-scope" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.extra_wgt_ctf" id="id_extra_wgt_ctf"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 47px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ac2b9d6b7b20" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                        <div class="item-pdf auto-font-size __width-xs"><span>&nbsp;</span></div>
+                    </td>
+                    <td class="w-20 text-left">EXTRA SET OF COPIES FOR BANK FILE</td>
+                </tr>
+            </tbody></table>
+            <table class="table-padding-double margin-t">
+                <tbody><tr class="border-l border-r">
+                    <td class="w-50 text-center text-md col-padding-double" colspan="2">Please handle in accordance with instructions marked "X"</td>
+                </tr>
+            </tbody></table>
+            <table class="table-padding border-l border-r border-b">
+                <tbody><tr>
+                    <td class="w-50 border-r">
+                        <table>
+                            <tbody><tr>
+                                <td class="w-5 text-center">
+                                    <div class="item-edit"><input type="checkbox" name="deliver_in_one_mailing" id="id_deliver_in_one_mailing"></div>
+                                    <div class="item-pdf">[&nbsp;&nbsp;]</div>
+                                </td>
+                                <td class="w-95">Deliver all documents in one mailing.</td>
+                            </tr>
+                            <tr>
+                                <td class="w-5 text-center">
+                                    <div class="item-edit"><input type="checkbox" name="deliver_in_two_mailing" id="id_deliver_in_two_mailing"></div>
+                                    <div class="item-pdf">[&nbsp;&nbsp;]</div>
+                                </td>
+                                <td class="w-95">Deliver documents in two mailing.</td>
+                            </tr>
+                            <tr>
+                                <td class="w-5 text-center">
+                                    <div class="item-edit"><input type="checkbox" name="deliver_if_draft" id="id_deliver_if_draft"></div>
+                                    <div class="item-pdf">[&nbsp;&nbsp;]</div>
+                                </td>
+                                <td class="w-95">Deliver documents against payment if sight draft, or acceptance if time draft.</td>
+                            </tr>
+                            <tr>
+                                <td class="w-5 text-center">
+                                    <div class="item-edit"><input type="checkbox" name="all_charges_for_account" id="id_all_charges_for_account"></div>
+                                    <div class="item-pdf">[&nbsp;&nbsp;]</div>
+                                </td>
+                                <td class="w-95">All charges for account of drawee.</td>
+                            </tr>
+                            <tr>
+                                <td class="w-5 text-center">
+                                    <div class="item-edit"><input type="checkbox" name="do_not_waive_charges" id="id_do_not_waive_charges"></div>
+                                    <div class="item-pdf">[&nbsp;&nbsp;]</div>
+                                </td>
+                                <td class="w-95">Do not waive charges.</td>
+                            </tr>
+                            <tr>
+                                <td class="w-5 text-center">
+                                    <div class="item-edit"><input type="checkbox" name="protest_for_non_payment" id="id_protest_for_non_payment"></div>
+                                    <div class="item-pdf">[&nbsp;&nbsp;]</div>
+                                </td>
+                                <td class="w-95">
+                                    <table>
+                                        <tbody><tr>
+                                            <td class="w-15" rowspan="2">Protest for</td>
+                                            <td class="w-5" rowspan="2">&nbsp;</td>
+                                            <td class="w-80 text-underline">non-payment</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td">non-acceptance</td>
+                                        </tr>
+                                    </tbody></table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="w-5 text-center">
+                                    <div class="item-edit"><input type="checkbox" name="do_not_protest" id="id_do_not_protest"></div>
+                                    <div class="item-pdf">[&nbsp;&nbsp;]</div>
+                                </td>
+                                <td class="w-95">Do not protest.</td>
+                            </tr>
+                            <tr>
+                                <td class="w-5 text-center">
+                                    <div class="item-edit"><input type="checkbox" name="present_on_arrival" id="id_present_on_arrival"></div>
+                                    <div class="item-pdf">[&nbsp;&nbsp;]</div>
+                                </td>
+                                <td class="w-95">Present on arrival of goods.</td>
+                            </tr>
+                            <tr>
+                                <td class="w-5 text-center">
+                                    <div class="item-edit"><input type="checkbox" name="advise_non_payment_by" id="id_advise_non_payment_by"></div>
+                                    <div class="item-pdf">[&nbsp;&nbsp;]</div>
+                                </td>
+                                <td class="w-95">
+                                    <table>
+                                        <tbody><tr>
+                                            <td class="w-15" rowspan="2">Advise</td>
+                                            <td class="w-25 text-underline">non-payment</td>
+                                            <td class="w-10" rowspan="2">By</td>
+                                            <td class="w-15 text-underline">air mail</td>
+                                            <td class="w-40" rowspan="2">giving reasons</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td">non-acceptance</td>
+                                            <td class="td">cable</td>
+                                        </tr>
+                                    </tbody></table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="w-5 text-center">
+                                    <div class="item-edit"><input type="checkbox" name="advise_payment_by" id="id_advise_payment_by"></div>
+                                    <div class="item-pdf">[&nbsp;&nbsp;]</div>
+                                </td>
+                                <td class="w-95">
+                                    <table>
+                                        <tbody><tr>
+                                            <td class="w-15" rowspan="2">Advise</td>
+                                            <td class="w-20 text-underline">payment</td>
+                                            <td class="w-10" rowspan="2">By</td>
+                                            <td class="w-60 text-underline">air mail</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-25 td">acceptance</td>
+                                            <td class="w-50 td">cable</td>
+                                        </tr>
+                                    </tbody></table>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td class="w-50">
+                        <table class="table-padding-double">
+                            <tbody><tr>
+                                <td>IN CASE OF NEED refer to:</td>
+                            </tr>
+                        </tbody></table>
+                        <table class="table-padding-double">
+                            <tbody><tr>
+                                <td class="w-15">Name</td>
+                                <td class="w-85 border-b">
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="refer_to_name" value="HARD CORE TECHNOLOGY(GST/VAT)" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.refer_to_name" id="id_refer_to_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 273px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a32e6a8f68c2" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                    <div class="item-pdf auto-font-size __width-name"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="w-15">Address</td>
+                                <td class="w-85 border-b">
+                                    <div class="item-edit hover-toggle-icon-text-template"><textarea name="refer_to_address" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.refer_to_address" id="id_refer_to_address"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 276px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="af27ebed93e8" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                    <div class="item-pdf auto-font-size __textarea-address"><span></span></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">who is empower by us:</td>
+                            </tr>
+                            <tr>
+                                <td class="w-15 text-right td">a <span class="item-pdf">[&nbsp;&nbsp;]</span><span class="item-edit"><input type="checkbox" name="to_act_fully_on_our_behalf" id="id_to_act_fully_on_our_behalf"></span></td>
+                                <td class="w-85">To act fully on our behalf, i.e., authorize reductions, extensions, free delivery waiving of protest, etc.</td>
+                            </tr>
+                            <tr>
+                                <td class="w-15 text-right td">b <span class="item-pdf">[&nbsp;&nbsp;]</span><span class="item-edit"><input type="checkbox" name="to_assist_not_to_alter" id="id_to_assist_not_to_alter"></span></td>
+                                <td class="w-85">To assist in obtaining acceptance or payment of draft, as drawn, but not to alter its terms in any way.</td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td border-t" colspan="2">
+                        <div>OTHER INSTRUCTIONS :</div>
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="other_instructions" cols="40" rows="2" class="text-scroll no-adjustment ng-isolate-scope" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.other_instructions" id="id_other_instructions"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 699px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="abbb6638c60d" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                        <div class="item-pdf auto-font-size __textarea-lg"><span></span></div>
+                    </td>
+                </tr>
+            </tbody></table>
+            <table>
+                <tbody><tr>
+                    <td class="padding-t-xs">Please refer all questions conceming this collection to:</td>
+                </tr>
+            </tbody></table>
+            <table class="table-padding text-bigger">
+                <tbody><tr>
+                    <td class="w-48">
+                        <table>
+                            <tbody><tr>
+                                <td class="w-7">
+                                    <div class="item-edit">
+                                        <input type="radio" name="refer_question_to" value="SHIPPER" ng-model="vm.referQuestionTo" ng-change="vm.onReferQuestionChange()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                                    </div>
+                                    <div class="item-pdf">[&nbsp;&nbsp;]</div>
+                                </td>
+                                <td class="w-93">Shipper</td>
+                            </tr>
+                            <tr>
+                                <td class="w-7">
+                                    <div class="item-edit">
+                                        <input type="radio" name="refer_question_to" value="FORWARDER" ng-model="vm.referQuestionTo" ng-change="vm.onReferQuestionChange()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                                    </div>
+                                    <div class="item-pdf">[X]</div>
+                                </td>
+                                <td class="w-93">Freight Forwarder.</td>
+                            </tr>
+                            <tr>
+                                <td class="w-7">&nbsp;</td>
+                                <td class="w-93 border-b">
+                                    <div class="item-edit"><input type="text" name="refer_question_name" ng-model="vm.referInfo.name" class="ng-pristine ng-untouched ng-valid ng-not-empty"></div>
+                                    <div class="item-pdf auto-font-size __width-forwarder"><span>HARD CORE TECHNOLOGY(GST/VAT)</span></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="w-7">&nbsp;</td>
+                                <td class="w-93 border-b">
+                                    <div class="item-edit"><input type="text" name="refer_question_phone" ng-model="vm.referInfo.phone" class="ng-pristine ng-untouched ng-valid ng-not-empty"></div>
+                                    <div class="item-pdf auto-font-size __width-forwarder"><span>TEL: 08417606080</span></div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td class="w-4">&nbsp;</td>
+                    <td class="w-48">
+                        <table>
+                            <tbody><tr>
+                                <td class="w-50" colspan="2">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="w-50 border-b" colspan="2">
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="shipper_name3" value="ABBOTT-CRAIG" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.shipper_name3" id="id_shipper_name3" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 316px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a18d987fc885" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                    <div class="item-pdf auto-font-size __width-md"><span>ABBOTT-CRAIG</span></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="w-50" colspan="2">&nbsp;</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="w-50">
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="authorized_signature_input" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.authorized_signature_input" id="id_authorized_signature_input" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 146px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a7dac2268d8e" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                    <div class="item-pdf auto-font-size __width-sm"><span>&nbsp;</span></div>
+                                </td>
+                                <td class="w-50 text-center">Authorized Signature</td>
+                            </tr>
+                            <tr>
+                                <td class="w-50 td" colspan="2">
+                                    <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="user_company" value="HANJUN LIN / HARD CORE TECHNOLOGY(GST/VAT)" template-id="208e1a16b9d231f11b177962fa7e461e72b95831ad9813e7f2e58158dab72e74:BankDraftForm.user_company" id="id_user_company" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-pat-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-pat-c260="" class="icon-text-template" style="top: 3px; left: 316px;"></span><!---->
+
+<ng-select _ngcontent-pat-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">Select...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ac23a6b37b0c" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></div>
+                                    <div class="item-pdf auto-font-size __width-md"><span>HANJUN LIN / HARD CORE TECHNOLOGY(GST/VAT)</span></div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+            </tbody></table>
+            <table class="col-padding-double text-12">
+                <tbody><tr>
+                    <td>FORM B-2 - C</td>
+                </tr>
+            </tbody></table>
+            <input type="hidden" name="reportid" value="@Model.ReportId" id="id_current_reportid">
+            <input type="hidden" name="amount" value="@Model.Amount" id="id_current_amount">
+            <input type="hidden" name="date" value="@Model.Date" id="id_current_date">
+            <input type="hidden" name="atsight" value="@Model.AtSight" id="id_current_atsight">
+            <input type="hidden" name="shippername" value="@Model.ShipperName" id="id_current_shippername">
+            <input type="hidden" name="drawndocredit" value="@Model.DrawnDocCredit" id="id_current_drawndocredit">
+            <input type="hidden" name="issuedate" value="@Model.IssueDate" id="id_current_issuedate">
+            <input type="hidden" name="tolcissuebank" value="@Model.ToLCIssueBank" id="id_current_tolcissuebank">
+            <input type="hidden" name="ToTradePartnerLoadFrom" value="@Model.ToTradePartnerLoadFrom" id="id_current_ToTradePartnerLoadFrom">
+            <input type="hidden" name="Consignee" value="@Model.Consignee" id="id_current_Consignee">
+            <input type="hidden" name="NotifyParty" value="@Model.NotifyParty" id="id_current_NotifyParty">
+            <input type="hidden" name="ToTradePartnerName" value="@Model.ToTradePartnerName" id="id_current_ToTradePartnerName">
+            <input type="hidden" name="DraftNo" value="@Model.DraftNo" id="id_current_DraftNo">
+            <input type="hidden" name="BankPreference" value="@Model.BankPreference" id="id_current_BankPreference">
+            <input type="hidden" name="ShipperName2" value="@Model.ShipperName2" id="id_current_ShipperName2">
+            <input type="hidden" name="Gentlemen" value="@Model.Gentlemen" id="id_current_Gentlemen">
+            <input type="hidden" name="GentlemenNameAddress" value="@Model.GentlemenNameAddress" id="id_current_GentlemenNameAddress">
+            <input type="hidden" name="EncloseDate" value="@Model.EncloseDate" id="id_current_EncloseDate">
+            <input type="hidden" name="EncloseDraftNo" value="@Model.EncloseDraftNo" id="id_current_EncloseDraftNo">
+            <input type="hidden" name="EncloseForCollection" value="@Model.EncloseForCollection" id="id_current_EncloseForCollection">
+            <input type="hidden" name="EncloseForOther" value="@Model.EncloseForOther" id="id_current_EncloseForOther">
+            <input type="hidden" name="EncloseForOtherInput" value="@Model.EncloseForOtherInput" id="id_current_EncloseForOtherInput">
+            <input type="hidden" name="EncloseForPayment" value="@Model.EncloseForPayment" id="id_current_EncloseForPayment">
+            <input type="hidden" name="ExtraBl" value="@Model.ExtraBl" id="id_current_ExtraBl">
+            <input type="hidden" name="ExtraBlCopy" value="@Model.ExtraBlCopy" id="id_current_ExtraBlCopy">
+            <input type="hidden" name="ExtraCommInv" value="@Model.ExtraCommInv" id="id_current_ExtraCommInv">
+            <input type="hidden" name="ExtraInsCtf" value="@Model.ExtraInsCtf" id="id_current_ExtraInsCtf">
+            <input type="hidden" name="ExtraCtfOrig" value="@Model.ExtraCtfOrig" id="id_current_ExtraCtfOrig">
+            <input type="hidden" name="ExtraConsInv" value="@Model.ExtraConsInv" id="id_current_ExtraConsInv">
+            <input type="hidden" name="ExtraPkngList" value="@Model.ExtraPkngList" id="id_current_ExtraPkngList">
+            <input type="hidden" name="ExtraWgtCtf" value="@Model.ExtraWgtCtf" id="id_current_ExtraWgtCtf">
+            <input type="hidden" name="DeliverInOneMailing" value="@Model.DeliverInOneMailing" id="id_current_DeliverInOneMailing">
+            <input type="hidden" name="DeliverIfDraft" value="@Model.DeliverIfDraft" id="id_current_DeliverIfDraft">
+            <input type="hidden" name="AllChargesForAccount" value="@Model.AllChargesForAccount" id="id_current_AllChargesForAccount">
+            <input type="hidden" name="DoNotWaiveCharges" value="@Model.DoNotWaiveCharges" id="id_current_DoNotWaiveCharges">
+            <input type="hidden" name="ProtestForNonPayment" value="@Model.ProtestForNonPayment" id="id_current_ProtestForNonPayment">
+            <input type="hidden" name="DoNotProtest" value="@Model.DoNotProtest" id="id_current_DoNotProtest">
+            <input type="hidden" name="PresentOnArrival" value="@Model.PresentOnArrival" id="id_current_PresentOnArrival">
+            <input type="hidden" name="AdviseNonPaymentBy" value="@Model.AdviseNonPaymentBy" id="id_current_AdviseNonPaymentBy">
+            <input type="hidden" name="AdvisePaymentBy" value="@Model.AdvisePaymentBy" id="id_current_AdvisePaymentBy">
+            <input type="hidden" name="ReferToName" value="@Model.ReferToName" id="id_current_ReferToName">
+            <input type="hidden" name="ReferToAddress" value="@Model.ReferToAddress" id="id_current_ReferToAddress">
+            <input type="hidden" name="ToActFullyOnOurBehalf" value="@Model.ToActFullyOnOurBehalf" id="id_current_ToActFullyOnOurBehalf">
+            <input type="hidden" name="ToAssistNotToAlter" value="@Model.ToAssistNotToAlter" id="id_current_ToAssistNotToAlter">
+            <input type="hidden" name="OtherInstructions" value="@Model.OtherInstructions" id="id_current_OtherInstructions">
+            <input type="hidden" name="ReferQuestionTo" value="@Model.ReferQuestionTo" id="id_current_ReferQuestionTo">
+            <input type="hidden" name="ReferQuestionName" value="@Model.ReferQuestionName" id="id_current_ReferQuestionName">
+            <input type="hidden" name="ReferQuestionPhone" value="@Model.ReferQuestionPhone" id="id_current_ReferQuestionPhone">
+            <input type="hidden" name="ReferQuestionShipperName" value="@Model.ReferQuestionShipperName" id="id_current_ReferQuestionShipperName">
+            <input type="hidden" name="ReferQuestionShipperPhone" value="@Model.ReferQuestionShipperPhone" id="id_current_ReferQuestionShipperPhone">
+            <input type="hidden" name="ReferQuestionFreightForwarderName" value="@Model.ReferQuestionFreightForwarderName" id="id_current_ReferQuestionFreightForwarderName">
+            <input type="hidden" name="ReferQuestionFreightForwarderPhone" value="@Model.ReferQuestionFreightForwarderPhone" id="id_current_ReferQuestionFreightForwarderPhone">
+            <input type="hidden" name="ShipperName3" value="@Model.ShipperName3" id="id_current_ShipperName3">
+            <input type="hidden" name="AuthorizedSignatureInput" value="@Model.AuthorizedSignatureInput" id="id_current_AuthorizedSignatureInput">
+            <input type="hidden" name="UserCompany" value="@Model.UserCompany" id="id_current_UserCompany">
+            <input type="hidden" name="AmountToString" value="@Model.AmountToString" id="id_current_AmountToString">
+        </div>
+    </div>
+
+      </div>
+   </div>
+</form>

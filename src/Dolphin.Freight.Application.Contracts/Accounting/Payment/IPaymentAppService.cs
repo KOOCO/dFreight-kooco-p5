@@ -17,7 +17,7 @@ namespace Dolphin.Freight.Accounting.Payment
         IApplicationService
     {
         Task<PaymentDto> GetDataAsync(Guid id);
-        Task<PagedResultDto<PaymentDto>> GetDataList();
+        Task<PagedResultDto<PaymentDto>> GetDataList(QueryPaymentDto query);
         Task<PaymentDto> CheckByPaymentIdAsync(Guid PaymentId);
     }
 }

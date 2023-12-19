@@ -3,16 +3,16 @@ $(document).ready(function () {
     var l = abp.localization.getResource('Freight');
     var a = $("#formAmsNoId").val()
     console.log("a="+a);
-    dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'AmsNoId' }).done(function (result) {
-        console.log(result)
-        console.log($("#formAmsNoId").val())
-        initSysCodeTag(result, "AmsNoId", $("#formAmsNoId").val());
-    });
-    dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'EManifestId' }).done(function (result) {
-        console.log(result)
-        console.log($("#formEManifestId").val())
-        initSysCodeTag(result, "EManifestId", $("#formEManifestId").val());
-    });
+    //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'AmsNoId' }).done(function (result) {
+    //    console.log(result)
+    //    console.log($("#formAmsNoId").val())
+    //    initSysCodeTag(result, "AmsNoId", $("#formAmsNoId").val());
+    //});
+    //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'EManifestId' }).done(function (result) {
+    //    console.log(result)
+    //    console.log($("#formEManifestId").val())
+    //    initSysCodeTag(result, "EManifestId", $("#formEManifestId").val());
+    //});
     $("#saveBtn").click(function () { doSubmit() });
 });
 function initSysCodeTag(selectItems, tagName, tagValue) {
@@ -35,8 +35,8 @@ function doSubmit()
 {
     $("#formPackageCode").val($("#PackageUnit_PackageCode").val());
     $("#formPackageName").val($("#PackageUnit_PackageName").val());
-    $("#formAmsNoId").val($("#AmsNoId").val());
-    $("#formEManifestId").val($("#EManifestId").val());
+    $("#formAmsNoId").val($("#PackageUnit_AmsNoId").val());
+    $("#formEManifestId").val($("#PackageUnit_EManifestId").val());
     $("#formDescription").val($("#PackageUnit_Description").val());
     $("#createForm").submit();
 }

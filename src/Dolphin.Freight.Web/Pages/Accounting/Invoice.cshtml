@@ -1,16 +1,24 @@
 ﻿@page
+@using Dolphin.Freight.Web.Pages.Shared.Memos
+@using Volo.Abp.Users
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Web.Pages.Components
 @using Microsoft.Extensions.Localization
 @using Dolphin.Freight.AirExports
+@using Dolphin.Freight.Web.CommonService
 @model Dolphin.Freight.Web.Pages.Accounting.InvoiceModel
 @inject IStringLocalizer<FreightResource> L
+@inject ICurrentUser CurrentUser
+@inject IDropdownService _dropdownService
 @section scripts
     {
+    <abp-script src="/Pages/Accounting/Invoice.js" />
     <script type="text/javascript">
+        var l = abp.localization.getResource('Freight');
         var BillCodeItems = [];
         var PPOrCCItems = [];
         var BillTypeItems = [];
+        var BillTypeItemsDC = [];
         var UnitItems = [];
         var CurrencyItems = [];
         var InvoiceBills = [];
@@ -26,7 +34,6 @@
         const currencies = ['TWD', 'USD', 'RMB', 'HKD'];
 
         $(document).ready(function () {
-            debugger;
             //initializeDropdownSearch('InvoiceDto_IncotermsId');
 
             dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'PPOrCC' }).done(function (result) {
@@ -39,6 +46,11 @@
                     BillTypeItems = result;
                 }
             });
+            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'BillTypeDC' }).done(function (result) {
+                if (result != null && result.length > 0) {
+                    BillTypeItemsDC = result;
+                }
+            });
             dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'Unit' }).done(function (result) {
                 if (result != null && result.length > 0) {
                     UnitItems = result;
@@ -47,17 +59,17 @@
             dolphin.freight.settings.currencySetting.currencySetting.getList({}).done(function(result){
                 CurrencyItems = result.items.map(m => m.startingCurrency);
             });
-            dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'IncotermsId' }).done(function (result) {
-                if (result != null && result.length > 0) {
-                    initSysCodeTag(result, "IncotermsId", $("#mIncotermsId").val())
-                }
-            });
+            //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'IncotermsId' }).done(function (result) {
+            //    if (result != null && result.length > 0) {
+            //        initSysCodeTag(result, "IncotermsId", $("#mIncotermsId").val())
+            //    }
+            //});
 
-            dolphin.freight.common.ajaxDropdown.getAllTradePartners({}).done(function (result) {
-                var selectItems = result;
-                initTradePartnerSelect(selectItems, "InvoiceCompanyId", $("#mInvoiceCompanyId").val());
-                initTradePartnerSelect(selectItems, "ShipToId", $("#mShipToId").val());
-            });
+            //dolphin.freight.common.ajaxDropdown.getAllTradePartners({}).done(function (result) {
+            //    var selectItems = result;
+            //    initTradePartnerSelect(selectItems, "InvoiceCompanyId", $("#mInvoiceCompanyId").val());
+            //    initTradePartnerSelect(selectItems, "ShipToId", $("#mShipToId").val());
+            //});
 
             dolphin.freight.accountingSettings.billingCodes.billingCode.queryListForTag({
                 IsUsed: true, BillType: @Model.InvoiceType, MethodType: @Model.MethodType
@@ -67,7 +79,6 @@
                 });
 
             $("#addBtn").click(function () {
-                debugger;
                 addItems();
             });
             $("#add5Btn").click(function () {
@@ -77,7 +88,6 @@
             });
             var formControl = 0;
             $("#saveBtn").click(function () {
-                debugger;
                 formControl = 0;
                 $("#createForm").submit();
             });
@@ -103,18 +113,44 @@
                         let id = parent.attr('id');
                         let index = id.substr(id.lastIndexOf('_') + 1);
                         let invoiceBillId = parent.find('[name="InvoiceBillDtos[' + index + '].Id"]').attr('value')
+                        var currencyValue;
+
+                        if ($('#Tax_' + (index-1)).find(':selected').text().split('%')[0] == '7') {
+                            var taxAmount = $('#Amount_' + (index-1)).text() * 0.07;
+                        } else {
+                            var taxAmount = $('#Amount_' + (index - 1)).text() * 0;
+                        }
 
                         if (invoiceBillId) {
                             dolphin.freight.accounting.invoiceBills.invoiceBill.delete(invoiceBillId).done(function (result) {
+                                if (parent.prev().length > 0){
+                                    currencyValue = $(parent.prev().children()[6]).children().val();
+                                }
+                                else if (parent.next().length > 0 && !$(parent.next().children()[0].children).prop('checked')) {
+                                    currencyValue = $(parent.next().children()[6]).children().val();
+                                }
+
                                 parent.remove();
+                                resetIndexes();
+                                getTotalSubAmount(currencyValue);
+                                getTotalAmount(parseFloat(taxAmount).toFixed(2));
                             });
                         }
                         else {
-                            parent.remove();
-                        }
+                            if (parent.prev().length > 0){
+                                currencyValue = $(parent.prev().children()[6]).children().val();
+                            }
+                            else if (parent.next().length > 0 && !$(parent.next().children()[0].children).prop('checked')) {
+                                currencyValue = $(parent.next().children()[6]).children().val();
+                            }
 
+                            parent.remove();
+                            resetIndexes();
+                            getTotalSubAmount(currencyValue);
+                            getTotalAmount(parseFloat(taxAmount).toFixed(2));
+                        }
                     }
-                })
+                });
             })
             $("#copyBtn").click(function () {
                 $(".checkItem").each(function () {
@@ -125,29 +161,17 @@
                 })
             })
             $('#createForm').on('abp-ajax-success', function (result) {
-                debugger;
                 event.preventDefault();
-
+                var check = '@Model.CopyInvoiceId';
                 switch (formControl) {
                     case 0:
-                    debugger;
-                        if (@Model.MethodType == 0) abp.message.success('儲存成功', '系統訊息').then(function(){ location.href = '/OceanImports/EditModal3?Id=@Model.Mid'; });
-                        if (@Model.MethodType == 1) abp.message.success('儲存成功', '系統訊息').then(function(){ location.href = '/OceanExports/EditModal3?Id=@Model.Mid'; });
-                        if (@Model.MethodType == 2) abp.message.success('儲存成功', '系統訊息').then(function(){ location.href = '/AirImports/EditModal3?Id=@Model.Mid'; });
-                        if (@Model.MethodType == 3) abp.message.success('儲存成功', '系統訊息').then(function(){ location.href = '/AirExports/EditModal3?Id=@Model.MawbId'; });
-                        if (@Model.MethodType == 4) abp.message.success('儲存成功', '系統訊息').then(function(){ location.href = '/OceanExports/ExportBookings/Edit2?Id=@Model.Bid'; });
-                        if (@Model.MethodType == 5) $.ajax({
-                                                        url: '/api/ImportExport/OceanExportAccountingHbl',
-                                                        type: 'GET',
-                                                        data: { Id: '@Model.Hid' },
-                                                        success: function(response) {
-                                                            abp.message.success('儲存成功', '系統訊息').then(function(){
-                                                                dolphin.freight.importExport.oceanExports.oceanExportHbl.get('@Model.Hid').done(function (res) { 
-                                                                    location.href = '/OceanExports/EditModal3?Id='+res.mblId+'';
-                                                                });
-                                                            });
-                                                        }
-                                                    });
+                        if (@Model.MethodType==7) abp.message.success('儲存成功', '系統訊息').then(function () { location.href = '/Accounting/Invoices/List'; });
+                        if (@Model.MethodType == 0) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/OceanImports/EditModal3?Id=@Model.Mid'; });
+                        if (@Model.MethodType == 1) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/OceanExports/EditModal3?Id=@Model.Mid'; });
+                        if (@Model.MethodType == 2) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/AirImports/EditModal3?Id=@Model.MawbId'; });
+                        if (@Model.MethodType == 3) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/AirExports/EditModal3?Id=@Model.MawbId'; });
+                        if (@Model.MethodType == 4) abp.message.success('儲存成功', '系統訊息').then(function () { location.href = '/OceanExports/ExportBookings/Edit2?Id=@Model.Bid'; });
+                        if (@Model.MethodType == 5) abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/OceanExports/VesselSchedules/Edit2?Id=@Model.VesselId'; });
                         if (@Model.MethodType == 6) $.ajax({
                                                         url: '/api/ImportExport/AirImportAccountHawb',
                                                         type: 'GET',
@@ -163,12 +187,16 @@
                                                     });
                         break;
                     case 1:
+                        if (@Model.MethodType==7) {
+                            abp.message.success('儲存成功', '系統訊息').then(function() { location.href = '/Accounting/Invoices/List'; });
+                        }
                         abp.message.success('以草稿儲存成功', '系統訊息');
                         if (@Model.MethodType == 0) location.href = '/OceanImports/EditModal3?Id=@Model.Mid';
                         if (@Model.MethodType == 1) location.href = '/OceanExports/EditModal3?Id=@Model.Mid';
-                        if (@Model.MethodType == 2) location.href = '/AirImports/EditModal3?Id=@Model.Mid';
+                        if (@Model.MethodType == 2) location.href = '/AirImports/EditModal3?Id=@Model.MawbId';
                         if (@Model.MethodType == 3) location.href = '/AirExports/EditModal3?Id=@Model.MawbId';
                         if (@Model.MethodType == 4) location.href = '/OceanExports/ExportBookings/Edit2?Id=@Model.Bid';
+                          if (@Model.MethodType == 5) location.href = '/OceanExports/VesselSchedules/Edit2?Id=@Model.VesselId';
                         break;
                     case 2:
                         abp.message.success('儲存成功', '系統訊息');
@@ -185,16 +213,20 @@
             var index = target.id.split('_')[1];
             let quantity = parseFloat($(target).val() || 0);
             let rate = parseFloat($(target).parent().next().children().val() || 0);
-            $(target).parent().next().next().children().text(parseFloat(quantity * rate).toFixed(2));
+            let price = parseFloat($(target).parent().next().next().children().val() || 0);
+            var amount = quantity * rate * price;
+            $(target).parent().next().next().next().next().children().text(parseFloat(quantity * rate * price).toFixed(2));
+            if ($('#Tax_0').find(':selected').text().split('%')[0] == '7') {
+                var taxAmount = amount * 0.07;
+            } else {
+                var taxAmount = amount * 0;
+            }
             setCurrencyRate1($('#Currency_'+index+'').val(), event);
-            getTotalSubAmount();
-            getTotalAmount();
+            getTotalSubAmount($(target).parent().prev().children().val());
+            getTotalAmount(parseFloat(taxAmount).toFixed());
         }
 
-
-
         function onRateChange(e) {
-            
             let target = e.currentTarget || e.srcElement || e.target;
             let rate = parseInt($(target).val() || 0);
             let quantity = parseInt($(target).parent().prev().children().val() || 0);
@@ -217,6 +249,7 @@
             {
                 $('#Rate_'+ index).val(0);
                 $('#Quantity_'+ index).val(0);
+                $('#Price_'+ index).val(0);
             }
             else{
                 $('#Rate_'+ index).val(parseFloat(rate).toFixed(2));
@@ -225,13 +258,21 @@
             setCurrencyRate1($(target).val(), event);
 
             var quantity = $('#Quantity_'+index).val();
+            var price = $('#Price_'+index).val();
 
-            $('#Amount_'+index).text(parseFloat(quantity * rate).toFixed(2));
+            $('#Amount_' + index).text(parseFloat(quantity * parseFloat(rate).toFixed(2) * price).toFixed(2));
+            var amount = quantity * parseFloat(rate).toFixed(2) * price;
             if(document.getElementById('Amount_'+index+'').innerHTML == 'NaN'){
                 document.getElementById('Amount_'+index+'').innerHTML = 0;
             }
-            getTotalSubAmount();
-            getTotalAmount();
+            if ($('#Tax_0').find(':selected').text().split('%')[0] == '7') {
+                var taxAmount = amount * 0.07;
+            } else {
+                var taxAmount = amount * 0;
+            }
+
+            getTotalSubAmount(val);
+            getTotalAmount(parseFloat(taxAmount).toFixed(2));
         }
 
 
@@ -241,16 +282,26 @@
             let val = currencyCodeToName[value];
             let conversion = JSON.parse(currencyConvertor);
             let rate = conversion["" + val + "-TWD"];
-            
             let quantity = $('#Quantity_'+ index +'').val();
+            let price = $('#Quantity_' + index + '').parent().next().next().children().val();
+
             if($('#Currency_0').val() == 0){
                 amount = 0;
             }
-            currencies.forEach(function (currency) {
-                let key = '' + val + '-' + currency + '';
-                let convertedRate = conversion[key] || 1;
 
-                document.getElementById("converted" + currency).innerHTML = (convertedRate * quantity).toFixed(2);
+            currencies.forEach(function (currency) {
+                debugger;
+                let key = '' + val + '-' + currency + '';
+
+                let convertedRate;
+
+                if (val != undefined && val != 0){
+                    convertedRate = conversion[key] || 1;
+                } else {
+                    convertedRate = 0;
+                }
+
+                document.getElementById("converted" + currency).innerHTML = (convertedRate * quantity * price).toFixed(2);
             })
         }
 
@@ -282,67 +333,114 @@
             });
         }
 
-        function getTotalAmount(){
+        function getTotalAmount(taxAmount){
             var table = $('#trtbody');
             var total = 0;
+            var tax = isNaN(taxAmount) || taxAmount == undefined || taxAmount == null ? 0 : taxAmount;
 
             for (var i = 0; i < table[0].rows.length; i++) {
               var amountCell = document.getElementById("Amount_" + i);
               
-              var amount = parseFloat(amountCell.innerHTML);
+              if (amountCell != null) var amount = parseFloat(amountCell.innerHTML);
               
               total += amount;
             }
+            total = parseFloat(total) + parseFloat(tax);
+            var totalTaxElement = document.getElementById("totalTax");
+            totalTaxElement.innerHTML = tax;
+            var totalBeforeElement = document.getElementById("totalBeforeTax");
+            totalBeforeElement.innerHTML = parseFloat(parseFloat(total) - parseFloat(tax)).toFixed(2);
             var totalAmountElement = document.getElementById("totalAmount");
-            totalAmountElement.innerHTML = total.toFixed(2);
+            totalAmountElement.innerHTML = parseFloat(total).toFixed(2);
+
+            $('#InvoiceDto_TotalBeforeTax').val(parseFloat(parseFloat(total) - parseFloat(tax)).toFixed(2));
+            $('#InvoiceDto_TotalTax').val(tax);
+            $('#InvoiceDto_TotalAmount').val(parseFloat(total).toFixed(2));
         }
 
-
-        function getTotalSubAmount(){
+        function getTotalSubAmount(val){
             var table = $('#trtbody');
             var total = 0;
 
             for (var i = 0; i < table[0].rows.length; i++) {
-              var amountCell = document.getElementById("Amount_" + i);
-              
-              var amount = parseFloat(amountCell.innerHTML);
-              
-              total += amount;
+                var quantity = $('#Quantity_' + i + '').val();
+                var price = $('#Quantity_' + i + '').parent().next().next().children().val();
+                var amountCell = document.getElementById("Amount_" + i);
+                
+                if (amountCell != null) var amount = parseFloat(quantity * price);
+                
+                total += amount;
             }
-            var totalAmountElement = document.getElementById("convertedTWD");
-            totalAmountElement.innerHTML = total.toFixed(2);
+
             let conversion = JSON.parse(currencyConvertor);
+
             currencies.forEach(function (currency) {
-                let key = 'TWD-' + currency + '';
+                let key = '' + val + '-' + currency + '';
+
                 let convertedRate = conversion[key] || 1;
+
+                if (val != undefined && val != 0){
+                    convertedRate = conversion[key] || 1;
+                } else {
+                    convertedRate = 0;
+                }
 
                 document.getElementById("converted" + currency).innerHTML = (convertedRate * total).toFixed(2);
             })
         }
 
+        function resetIndexes() {
+            var newIndex = 0;
+            $("#trtbody tr:visible").each(function () {
+                if ($(this).attr("id").startsWith("_")) {
+                    $(this).attr("id", "_" + newIndex);
+
+                    $(this).find("input, label, div.input-group, select").each(function () {
+                        if (this.name) {
+                            this.name = this.name.replace(/\[.*?\]/, "[" + newIndex + "]");
+                        }
+                        if (this.id) {
+                            var parts = this.id.split("_");
+                            this.id = parts[0] + "_" + newIndex;
+                        }
+                    });
+
+                    $(this).find("td:eq(1)").text(newIndex + 1);
+                    newIndex++;
+                }
+            });
+
+            index = newIndex;
+        }
+
         var index = 0;
         function addItems(bill) {
-            debugger;
             bill = bill || {};
-            
+            var invoice = new Invoice();
             var url = window.location.href;
             var urlParams = new URLSearchParams(new URL(url).search);
             var id = urlParams.get("Mid");
             var amount = '';
-            var trhtml = "<tr id='_" + index + "'><td style='text-align:center'><input class='checkItem' value='" + (bill.id || '') + "' type = 'checkbox' name = 'InvoiceBillDtos[" + index + "].BillId' id = 'InvoiceBillDtosId_" + index + "' data-val= 'new_" + index + "' /> </td>";
-            trhtml = trhtml + "<td>" + getBillCodeSelect(index, '', (bill.code || '')) + "</td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Description' value='" + (bill.description || '') + "' id='Description_" + index + "' /></td>";
-            trhtml = trhtml + "<td>" + getPPOrCCSelect(index, '', (bill.ppOrCC || '')) + "</td>";
-            trhtml = trhtml + "<td>" + getBillTypeSelect(index, '', (bill.billType || '')) + "</td>";
-            trhtml = trhtml + "<td>" + getUnitSelect(index, '', (bill.unit || '')) + "</td>";
-            trhtml = trhtml + "<td>" + getCurrencySelect(index, '', (bill.currency || '')) + "</td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' onchange='onQuantityChange(event)' value='" + (bill.quantity || '') + "' id='Quantity_" + index + "' /></td>";
-            trhtml = trhtml + "<td>" + getRate(index, $("#Rate_" + index + "").val()) + "</td>";
-            trhtml = trhtml + "<td id='td_Amount_" + index + "' value='" + (bill.amount || '') + "'><label name='InvoiceBillDtos[" + index + "].AmountLabel' id='Amount_" + index + "'>" + amount + "</label></td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].AmountToAgent' id='AmountToAgent_" + index + "' value='" + (bill.amountToAgent || '') + "' /></td>";
-            trhtml = trhtml + "<td  style='text-align:center'><input type='checkbox' name='InvoiceBillDtos[" + index + "].IsNonProfit' id='IsNonProfit_" + index + "'" + (bill.isNonProfit ? "checked" : "") + " disabled /></td>";
-            trhtml = trhtml + "<td><input type='hidden' name='InvoiceBillDtos[" + index + "].Id' value='" + (bill.id || '') + "'></td>";
-            trhtml = trhtml + "<td></td></tr>";
+            var trhtml = "<tr id='_" + index + "'><th style='text-align:center'><input class='checkItem' value='" + (bill.id || '') + "' type = 'checkbox' name = 'InvoiceBillDtos[" + index + "].BillId' id = 'InvoiceBillDtosId_" + index + "' data-val= 'new_" + index + "' /> </th>";
+            trhtml = trhtml + "<th>" + getBillCodeSelect(index, '', (bill.code || '')) + "</th>";
+            trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Description' value='" + (bill.description || '') + "' id='Description_" + index + "' /></th>";
+
+            if (@Model.InvoiceType != 2) {
+                trhtml = trhtml + "<th>" + getPPOrCCSelect(index, '', (bill.ppOrCC || '')) + "</th>";
+            }
+
+            trhtml = trhtml + "<th>" + getBillTypeSelect(index, '', (bill.billType || '')) + "</th>";
+            trhtml = trhtml + "<th>" + getUnitSelect(index, '', (bill.unit || '')) + "</th>";
+            trhtml = trhtml + "<th>" + getCurrencySelect(index, '', (bill.currency || '')) + "</th>";
+            trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' onchange='onQuantityChange(event)' value='" + (bill.quantity || '') + "' id='Quantity_" + index + "' /></th>";
+            trhtml = trhtml + "<th>" + getRate(index, bill.rate) + "</th>";
+            trhtml = trhtml + "<th>" + invoice.getPrice(index, bill.price) + "</th>";
+            trhtml = trhtml + "<th>" + invoice.getTax(index, bill.taxId) + "</th>";
+            trhtml = trhtml + "<th id='td_Amount_" + index + "' value='" + (bill.amount || '') + "'><label name='InvoiceBillDtos[" + index + "].AmountLabel' id='Amount_" + index + "'>" + amount + "</label></th>";
+            trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].AmountToAgent' id='AmountToAgent_" + index + "' value='" + (bill.amountToAgent || '') + "' /></th>";
+            trhtml = trhtml + "<th style='text-align:center'><input type='checkbox' name='InvoiceBillDtos[" + index + "].IsNonProfit' id='IsNonProfit_" + index + "'" + (bill.isNonProfit ? "checked" : "") + " disabled /></th>";
+            trhtml = trhtml + "<th><input type='hidden' name='InvoiceBillDtos[" + index + "].Id' value='" + (bill.id || '') + "'></th>";
+            trhtml = trhtml + "<th></th></tr>";
             $("#trtbody").append(trhtml);
             let val = currencyCodeToName[bill.currency || $('#Currency_'+index).val()];
             let conversion = JSON.parse(currencyConvertor);
@@ -351,46 +449,84 @@
             {
                 $('#Quantity_'+ index).val(0);
                 $('#Rate_'+ index).val(0);
+                $('#Price_'+ index).val(0);
             }
             else{
-                getRate(urlParams.get("Mid"), $("#Rate_" + index + "").val(parseFloat(rate).toFixed(2)));
+                getRate(urlParams.get("Mid"), parseFloat(bill.rate).toFixed(2));
             }
-            var amount = bill.quantity * $("#Rate_" + index + "").val();
+            var amount = bill.quantity * $("#Rate_" + index + "").val() * bill.price;
             if(val == undefined || amount == NaN){
                 $('#Amount_'+index+'').text(0);
             }else {
                 $('#Amount_'+index+'').text(parseFloat(amount).toFixed(2));
             }
+            if ($('#Tax_0').find(':selected').text().split('%')[0] == '7'){
+                var taxAmount = amount * 0.07;
+            } else {
+                var taxAmount = amount * 0;
+            }
             setCurrencyRate($('#Currency_0').val());
-            getTotalSubAmount();
-            getTotalAmount();
+            getTotalSubAmount($('#Currency_' + index).val() == 0 || $('#Currency_' + index).val() == undefined ? $('#Currency_0').val() : $('#Currency_' + index).val());
+            getTotalAmount(parseFloat(taxAmount).toFixed(2));
             index++;
             
         }
 
         function copyItems(id) {
+            var invoice = new Invoice();
             id = id.replace("new_", "");
-            let amount = parseInt($("#Quantity_" + id).val() || 0) * ($("#Rate_" + id).val() || 0);
-            var trhtml = "<tr id='_" + index + "'><td style='text-align:center'><input class='checkItem' type='checkbox' name='InvoiceBillDtos[" + index + "].BillId' id='InvoiceBillDtosId_" + index + "' data-val='new_" + index + "'/></td>";
-            trhtml = trhtml + "<td>" + getBillCodeSelect(index, '', ($('#Code_0').val() || '')) + "</td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Description' id='Description_" + index + "' value='" + ($("#Description_" + id).val() || '') + "' /></td>";
-            trhtml = trhtml + "<td>" + getPPOrCCSelect(index, '', ($('#PPOrCC_0').val() || '')) + "</td>";
-            trhtml = trhtml + "<td>" + getBillTypeSelect(index, '', ($('#BillType_0').val() || '')) + "</td>";
-            trhtml = trhtml + "<td>" + getUnitSelect(index, '', ($('#Unit_0').val() || '')) + "</td>";
-            trhtml = trhtml + "<td>" + getCurrencySelect(index, '', ($('#Currency_0').val() || '')) + "</td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' id='Quantity_" + index + "' value='" + ($("#Quantity_" + id).val() || '') + "' /></td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].Rate' id='Rate_" + index + "' value='" + ($("#Rate_" + id).val() || '') + "' /><input type='hidden' name='InvoiceBillDtos[" + index + "].Amount' id='Amount_" + index + "' value='" + $("#Amount_" + id).val() + "'  /></td>";
-            trhtml = trhtml + "<td id='td_Amount_" + index + "'><label name='InvoiceBillDtos[" + index + "].AmountLabel'>" + amount + "</label></td>";
-            trhtml = trhtml + "<td><input type='text' name='InvoiceBillDtos[" + index + "].AmountToAgent' id='AmountToAgent_" + index + "' value='" + ($("#AmountToAgent_" + id).val() || '') + "'  /></td>";
-            trhtml = trhtml + "<td  style='text-align:center'><input type='checkbox' name='InvoiceBillDtos[" + index + "].IsNonProfit' id='IsNonProfit_" + index + "' disabled /></td>";
-            trhtml = trhtml + "<td><input type='hidden' name='InvoiceBillDtos[" + index + "].Id'></td>";
-            trhtml = trhtml + "<td></td></tr>";
+            let amount = parseFloat(($("#Quantity_" + id).val() || 0) * ($("#Rate_" + id).val() || 0) * ($('#Price_' + id).val() || 0)).toFixed(2);
+            var trhtml = "<tr id='_" + index + "'><th style='text-align:center'><input class='checkItem' type='checkbox' name='InvoiceBillDtos[" + index + "].BillId' id='InvoiceBillDtosId_" + index + "' data-val='new_" + index + "'/></th>";
+            trhtml = trhtml + "<th>" + getBillCodeSelect(index, '', ($('#Code_0').val() || '')) + "</th>";
+            trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Description' id='Description_" + index + "' value='" + ($("#Description_" + id).val() || '') + "' /></th>";
+            
+            if (@Model.InvoiceType != 2) {
+                trhtml = trhtml + "<th>" + getPPOrCCSelect(index, '', ($('#PPOrCC_' + id).val() || '')) + "</th>";
+            }
+            
+            trhtml = trhtml + "<th>" + getBillTypeSelect(index, '', ($('#BillType_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th>" + getUnitSelect(index, '', ($('#Unit_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th>" + getCurrencySelect(index, '', ($('#Currency_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].Quantity' id='Quantity_" + index + "' onchange='onQuantityChange(event)' value='" + ($("#Quantity_" + id).val() || '') + "' /></th>";
+            trhtml = trhtml + "<th><input style='background-color: #d3d3d394;' type='text' name='InvoiceBillDtos[" + index + "].Rate' id='Rate_" + index + "' onchange='onRateChange(event)' value='" + ($("#Rate_" + id).val() || '') + "' /></th>";
+            trhtml = trhtml + "<th>" + invoice.getPrice(index, ($('#Price_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th>" + invoice.getTax(index, ($('#Tax_' + id).val() || '')) + "</th>";
+            trhtml = trhtml + "<th id='td_Amount_" + index + "' value='"+ amount +"'><label name='InvoiceBillDtos[" + index + "].AmountLabel' id='Amount_" + index + "'>" + amount + "</label></th>";
+            trhtml = trhtml + "<th><input type='text' name='InvoiceBillDtos[" + index + "].AmountToAgent' id='AmountToAgent_" + index + "' value='" + ($("#AmountToAgent_" + id).val() || '') + "'  /></th>";
+            trhtml = trhtml + "<th  style='text-align:center'><input type='checkbox' name='InvoiceBillDtos[" + index + "].IsNonProfit' id='IsNonProfit_" + index + "' disabled /></th>";
+            trhtml = trhtml + "<th><input type='hidden' name='InvoiceBillDtos[" + index + "].Id'></th>";
+            trhtml = trhtml + "<th></th></tr>";
             $("#trtbody").append(trhtml);
+           
+            let val = currencyCodeToName[$('#Currency_' + index).val() || ''];
+            let conversion = JSON.parse(currencyConvertor);
+            let rate = conversion["" + val + "-TWD"];
+            if (val == undefined) {
+                $('#Quantity_' + index).val(0);
+                $('#Rate_' + index).val(0);
+                $('#Price_' + index).val(0);
+            } else {
+                getRate(index, parseFloat($('#Rate_' + index).val()).toFixed(2));
+            }
+            var amount1 = $('#Quantity_' + index).val() * $("#Rate_" + index + "").val() * $('#Price_' + index).val();
+            if (val == undefined || amount1 == NaN) {
+                $('#Amount_' + index + '').text(0);
+            } else {
+                $('#Amount_' + index + '').text(parseFloat(amount1).toFixed(2));
+            }
+            if ($('#Tax_' + index).find(':selected').text().split('%')[0] == '7') {
+                var taxAmount = amount1 * 0.07;
+            } else {
+                var taxAmount = amount1 * 0;
+            }
+            setCurrencyRate($('#Currency_0').val());
+            getTotalSubAmount();
+            getTotalAmount(parseFloat(taxAmount).toFixed(2));
             index++;
         }
 
         function getBillCodeSelect(id, billCode, value) {
-            var selectHtml = "<select name='InvoiceBillDtos[" + index + "].Code' id='Code_" + id + "' style=width:240px;margin-left:-40px>";
+            var selectHtml = "<select name='InvoiceBillDtos[" + index + "].Code' id='Code_" + id + "' style=width:100%>";
             billCode = billCode || value;
             for (var i = 0; i < BillCodeItems.length; i++) {
                 var ovalue = BillCodeItems[i].code + ":" + BillCodeItems[i].billingName;
@@ -414,12 +550,25 @@
             return selectHtml;
         }
         function getBillTypeSelect(id, billType, value) {
+            var url = new URL(window.location.href)
+            var invoiceType = url.searchParams.get('InvoiceType');
             var selectHtml = "<select name='InvoiceBillDtos[" + index + "].BillType' id='BillType_" + id + "'>";
             billType = billType || value;
-            for (var i = 0; i < BillTypeItems.length; i++) {
-                selectHtml = selectHtml + "<option value='" + BillTypeItems[i].codeValue + "'";
-                if (BillTypeItems[i].codeValue == billType) selectHtml = selectHtml + " selected ";
-                selectHtml = selectHtml + " > " + BillTypeItems[i].showName + "</option>"
+            if (invoiceType == '1') 
+            {
+                for (var i = 0; i < BillTypeItemsDC.length; i++)
+                {
+                    selectHtml = selectHtml + "<option value='" + BillTypeItemsDC[i].codeValue + "'";
+                    if (BillTypeItemsDC[i].codeValue == billType) selectHtml = selectHtml + " selected ";
+                    selectHtml = selectHtml + " > " + l(BillTypeItemsDC[i].showName) + "</option>"
+                }
+            } else {
+                for (var i = 0; i < BillTypeItems.length; i++)
+                {
+                    selectHtml = selectHtml + "<option value='" + BillTypeItems[i].codeValue + "'";
+                    if (BillTypeItems[i].codeValue == billType) selectHtml = selectHtml + " selected ";
+                    selectHtml = selectHtml + " > " + l(BillTypeItems[i].showName) + "</option>"
+                }
             }
             selectHtml = selectHtml + "</select>";
             return selectHtml;
@@ -437,7 +586,6 @@
         }
         function getCurrencySelect(id, currency, value) {
             var selectHtml = "<select name='InvoiceBillDtos[" + index + "].Currency' onchange='onCurrencyChange(event)' id='Currency_" + id + "'><option value='0'>Select Currency</option>";
-            debugger;
             currency = currency || value;
             const set = new Set(CurrencyItems.map(item => JSON.stringify(item)));
             const test = [...set].map(item => JSON.parse(item));
@@ -450,7 +598,7 @@
             return selectHtml;
         }
         function getRate(id, rate){
-            var selectHtml = "<input type='text' name='InvoiceBillDtos[" + id + "].Rate' onchange='onRateChange(event)' value='" + rate + "' id='Rate_" + index + "' readonly/><input type='hidden' name='InvoiceBillDtos[" + id + "].Amount' id='Amount_[" + id + "]' /></td>"
+            var selectHtml = "<input type='text' style='background-color: #d3d3d394;' name='InvoiceBillDtos[" + id + "].Rate' onchange='onRateChange(event)' value='" + rate + "' id='Rate_" + index + "' readonly/></td>"
             return selectHtml;
         }
         function goBlank() {
@@ -483,7 +631,44 @@
             }
             window.open(url);
         }
+        function CopyFromSpecification(){
+            var id='@Model.Mid';
+            var hid='@Model.Hid';
+            var mawbId='@Model.MawbId';
+            var hawbId = '@Model.HawbId';
+            if (id == null || id == "") {
+                if (hawbId == null || hawbId == "") { }
+                else{
+                    dolphin.freight.importExport.airImports.airImportHawb.getHawbCardById(hawbId).done(function (result) {
+                        var data = result;
+                        $("#Memorandum").val(data.description);
 
+                    });
+                
+                }
+            }
+            else if(hid==null||hid=="")
+            {
+           
+           dolphin.freight.importExport.oceanExports.oceanExportMbl.getCreateUpdateOceanExportMblDtoById(id).done(function (result) {
+          var data=result;
+          $("#Memorandum").val(data.description);
+          
+           });
+            }
+            else{
+            
+               dolphin.freight.importExport.oceanExports.oceanExportHbl.get(hid).done(function (result) {
+          var data=result;
+          $("#Memorandum").val(data.description);
+              
+          
+           });
+            
+            
+            }
+       
+        }
     </script>
 }
 <div class="page-header">
@@ -516,47 +701,24 @@
                                 @if (Model.InvoiceType == 0 && Model.InvoiceId == null)
                                     @L["Title:AccountingAR_Add"]
 
-
-
-
                                     @if (Model.InvoiceType == 0 && Model.InvoiceId != null)
                                     @L["Title:AccountingAR_Edit"]
-
-
-
 
                                     @if (Model.InvoiceType == 1 && Model.InvoiceId == null)
                                     @L["Title:AccountingDC_Add"]
 
-
-
-
                                     @if (Model.InvoiceType == 1 && Model.InvoiceId != null)
                                     @L["Title:AccountingDC_Edit"]
 
-
-
-
                                     @if (Model.InvoiceType == 2 && Model.InvoiceId == null)
                                     @L["Title:AccountingAP_Add"]
-
-
-
-
+                                    
                                     @if (Model.InvoiceType == 2 && Model.InvoiceId != null)
                                     @L["Title:AccountingAP_Edit"]
-
-
-
-
-
                                 </abp-card-title>
-
                             </abp-column>
                             <abp-column size-md="_3" class="text-end">
-
                             </abp-column>
-
                         </abp-row>
                     </abp-card-header>
                     <abp-card-body class="collapse show customForm" id="mblDiv">
@@ -564,26 +726,24 @@
                             <abp-column size-md="_12">
                                 <h4>@L["Title:Basic"]</h4>
                             </abp-column>
-
                         </abp-row>
                         <abp-row>
-
                             <abp-column size-md="_4">
                                 <abp-row>
                                     <abp-column size-md="_7">
                                         <abp-input asp-for="InvoiceMblDto.FilingNo" readonly="true" />
                                     </abp-column>
                                     <abp-column size-md="_3">
-
+                                        <label class="form-label" for=""></label>
                                         <abp-input suppress-label="true" type="text" id="AbbreviationName" asp-for="@Model.InvoiceBasicDto.AbbreviationName" class="form-control" readonly="true" />
                                     </abp-column>
                                     <abp-column size-md="_2">
+                                        <label class="form-label" for=""></label>
                                         <abp-button title="" class="btn btn-outline-info" type="button" id="exportBtn" data-busy-text="Processing..." data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top" onclick="goBlank()">
                                             <i class="fa fa-file-export"></i>
                                         </abp-button>
                                     </abp-column>
                                 </abp-row>
-
                             </abp-column>
                             <abp-column size-md="_4">
                                 <abp-input asp-for="InvoiceMblDto.MblOverseaAgentName" readonly="true" />
@@ -592,26 +752,14 @@
                                 <abp-row>
                                     <abp-column size-md="_8">
                                         <label class="form-label" for="Counts">@L["Counts"]</label>
-                                        <input type="number" id="Counts" name="Counts" value="" class="form-control " readonly="">
+                                        <input type="number" id="Counts" name="Counts" value="@Model.InvoiceMblDto.Package" class="form-control " readonly="">
                                     </abp-column>
                                     <abp-column size-md="_4">
-
-                                        <input type="text" id="Ctype" name="Ctype" placeholder="CARTON(S)" class="form-control " readonly="">
+                                        <label class="form-label" for=""></label>
+                                        <input type="text" id="Ctype" name="Ctype" value="@Model.InvoiceBasicDto.PackageUnitName" class="form-control " readonly="">
                                     </abp-column>
                                 </abp-row>
                             </abp-column>
-                            <abp-column size-md="_7">
-                                <abp-row>
-                                    <abp-column size-md="_7">
-                                        <abp-input asp-for="InvoiceMblDto.PorName" readonly="true" />
-                                    </abp-column>
-                                    <abp-column size-md="_5">
-                                        <abp-input type="text" id="InvoiceMblDto_PorEtd" asp-for="InvoiceMblDto.PorEtd" class="form-control " readonly="true" />
-                                    </abp-column>
-                                </abp-row>
-
-                            </abp-column>
-
                         </abp-row>
                         <abp-row>
                             <abp-column size-md="_3">
@@ -624,35 +772,30 @@
 
                             <abp-column size-md="_3">
                                 <label class="form-label" for="ShipperName">@L["KOS"]</label>
-                                <input type="text" id="Counts" name="KOS" value="" class="form-control " readonly="">
-                            </abp-column>
-                            <abp-column size-md="_1">
-                                K
-                            </abp-column>
-                            <abp-column size-md="_2">
-                                <div class="input-group">
-                                    <input type="text" id="Ctype" name="Ctype" value="" class="form-control " readonly="">
-                                    <div class="input-group-append">
-                                        &nbsp;&nbsp;L
-                                    </div>
-                                </div>
-
+                                <input type="text" id="Counts" name="KOS" value="@Model.InvoiceMblDto.GrossWeightKg" class="form-control " value="@Model.InvoiceMblDto.GrossWeightKg" readonly="">
+                            </abp-column>                 
+                            <abp-column size-md="_3">
+                                <label class="form-label" for="ShipperName">@L["KOS"]</label>
+                                <input type="text" id="Ctype" name="Ctype" value="@Model.InvoiceMblDto.GrossWeightLb" class="form-control " value="@Model.InvoiceMblDto.GrossWeightLb" readonly="">
                             </abp-column>
                         </abp-row>
                         <abp-row>
-                            <abp-column size-md="_7">
-                                <abp-row>
-                                    <abp-column size-md="_7">
-                                        <abp-input asp-for="InvoiceMblDto.PolName" readonly="true" />
-                                    </abp-column>
-                                    <abp-column size-md="_5">
-                                        <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
-                                        <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PolEtd" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.PolEtd)" class="form-control " readonly="">
-                                    </abp-column>
-                                </abp-row>
+                            <abp-column size-md="_3">
+                            <label class="form-label" for="ChargeableWeightKg">@L["chargeableWeightKg"]/Kg</label>
+                                <input type="text" id="Counts" name="KOS" value="@Model.InvoiceMblDto.ChargeableWeightKg" class="form-control " value="@Model.InvoiceMblDto.ChargeableWeightKg" readonly="">
+                            </abp-column>                 
+                            <abp-column size-md="_3">
+                            <label class="form-label" for="ChargeableWeightLb">@L["chargeableWeightLb"]/Lb</label>
+                                <input type="text" id="Ctype" name="Ctype" value="@Model.InvoiceMblDto.ChargeableWeightLb" class="form-control " value="@Model.InvoiceMblDto.ChargeableWeightLb" readonly="">
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceMblDto.PolName" readonly="true" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
+                                <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PolEtd" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.PolEtd)" class="form-control " readonly="">
                             </abp-column>
                         </abp-row>
-
                         <abp-row>
                             <abp-column size-md="_3">
                                 <label class="form-label" for="Hblno">@L["IHblno"]</label>
@@ -663,61 +806,28 @@
                                 <input type="text" id="ShipperName" name="MblConsigneeName" value="@Model.InvoiceBasicDto.MblConsigneeName" class="form-control " readonly="">
                             </abp-column>
                             <abp-column size-md="_3">
-
-                                <div class="input-group">
-                                    <input type="text" id="Cbm" name="Cbm" value="" class="form-control " readonly="">
-                                    <div class="input-group-append">
-                                        &nbsp;&nbsp; CBM
-                                    </div>
-                                </div>
+                                <label class="form-label" for="">@L["VolumeWeight"] KG</label>
+                                <input type="text" id="Cbm" name="Cbm" value="@Model.InvoiceMblDto.VolumeWeightKg" class="form-control " readonly="">
                             </abp-column>
                             <abp-column size-md="_3">
-                                <div class="input-group">
-
-                                    <input type="text" id="Cft" name="Cft" value="" class="form-control " readonly="">
-                                    <div class="input-group-append">
-                                        &nbsp;&nbsp; CFT
-                                    </div>
-                                </div>
+                                <label class="form-label" for="">CBM</label>
+                                <input type="text" id="Cft" name="Cft" value="@Model.InvoiceMblDto.VolumeWeightCbm" class="form-control " readonly="">
                             </abp-column>
                         </abp-row>
                         <abp-row>
-                            <abp-column size-md="_7">
-                                <abp-row>
-                                    <abp-column size-md="_8">
-                                        <abp-input asp-for="InvoiceMblDto.PodName" readonly="true" />
-                                    </abp-column>
-                                    <abp-column size-md="_4">
-                                        <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
-                                        <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.PodEta)" class="form-control " readonly="">
-                                    </abp-column>
-                                </abp-row>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceMblDto.PodName" readonly="true" />
                             </abp-column>
-                        </abp-row>
-                        <abp-row>
-                            <abp-column size-md="_7">
-                                <abp-row>
-                                    <abp-column size-md="_8">
-                                        <abp-input asp-for="InvoiceMblDto.DelName" readonly="true" />
-                                    </abp-column>
-                                    <abp-column size-md="_4">
-                                        <label class="form-label" for="InvoiceMblDto_PolEtd"> ETA</label>
-                                        <input type="text" id="InvoiceMblDto_DelEta" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.DelEta)" class="form-control " readonly="">
-                                    </abp-column>
-                                </abp-row>
+                            <abp-column size-md="_3">
+                                <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
+                                <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.PodEta)" class="form-control " readonly="">
                             </abp-column>
-                        </abp-row>
-                        <abp-row>
-                            <abp-column size-md="_7">
-                                <abp-row>
-                                    <abp-column size-md="_8">
-                                        <abp-input asp-for="InvoiceMblDto.FdestName" readonly="true" />
-                                    </abp-column>
-                                    <abp-column size-md="_4">
-                                        <label class="form-label" for="InvoiceMblDto_PolEtd"> ETD</label>
-                                        <input type="text" id="InvoiceMblDto_PolEtd" name="InvoiceMblDto.PodEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.FdestEta)" class="form-control " readonly="">
-                                    </abp-column>
-                                </abp-row>
+                            <abp-column size-md="_3">
+                                <abp-input asp-for="InvoiceMblDto.FdestName" readonly="true" />
+                            </abp-column>
+                            <abp-column size-md="_3">
+                                <label class="form-label" for="InvoiceMblDto_FdestEta">@L["ETA"]</label>
+                                <input type="text" id="InvoiceMblDto_FdestEta" name="InvoiceMblDto.FdestEta" value="@Html.DisplayFor(item=>Model.InvoiceMblDto.FdestEta)" class="form-control " readonly="">
                             </abp-column>
                         </abp-row>
                         <abp-row>
@@ -734,9 +844,8 @@
                             </abp-column>
                             <abp-column size-md="_3">
                                 <label class="form-label" for="VesselNameVoyage"> @L["MblOperatorId"]</label>
-                                <input type="text" id="MblOperatorId" name="MblOperatorId" value="@Model.InvoiceBasicDto.MblOperatorName" class="form-control " readonly="">
+                                <input type="text" id="MblOperatorId" name="MblOperatorId" value="@(CurrentUser.Name + " " + CurrentUser.SurName)" class="form-control " readonly="">
                             </abp-column>
-
                         </abp-row>
 
                         <abp-row>
@@ -746,21 +855,25 @@
                         </abp-row>
                         <abp-row>
                             <abp-column size-md="_12">
-                                <h4>@L["Title:Invoice"]</h4>
+                                <h4>@L["Title:Invoice"]</h4> <h6 style="margin-top: -37px; text-align: end;">Status: </h6>
                                 <abp-input type="hidden" asp-for="InvoiceDto.InvoiceStatus" id="InvoiceDto_InvoiceStatus" value="0" />
                                 <abp-input type="hidden" asp-for="InvoiceDto.InvoiceType" id="InvoiceDto_InvoiceType" value="@Model.InvoiceType" />
                                 <abp-input type="hidden" asp-for="InvoiceDto.Id" />
+                                <abp-input type="hidden" asp-for="InvoiceDto.TotalBeforeTax" />
+                                <abp-input type="hidden" asp-for="InvoiceDto.TotalTax" />
+                                <abp-input type="hidden" asp-for="InvoiceDto.TotalAmount" />
                             </abp-column>
                         </abp-row>
 
-                        @if (Model.InvoiceType == 0)
+                    @if (Model.InvoiceType == 0)
                     {
                         <abp-row>
                             <abp-column size-md="_3">
                                 <abp-input type="text" asp-for="InvoiceDto.InvoiceNo" id="InvoiceNo" />
                             </abp-column>
                             <abp-column size-md="_3">
-                                <abp-select asp-for="InvoiceDto.ShipToId" asp-items="@Model.TradePartnerLookupList" />
+                                @*<abp-select asp-for="InvoiceDto.ShipToId" asp-items="@Model.TradePartnerLookupList" />*@
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "InvoiceDto.ShipToId", AspItems = Model.TradePartnerLookupList, Selected = Convert.ToString(Model.InvoiceDto.ShipToId), IsShowLabel = true, FieldName = @L["ShipToId"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.InvoiceDto.ShipToId) })
                                 <abp-input type="hidden" name="ShipToId" id="mShipToId" asp-for="@Model.InvoiceDto.ShipToId" />
                             </abp-column>
                             <abp-column size-md="_3">
@@ -772,7 +885,8 @@
                         </abp-row>
                         <abp-row>
                             <abp-column size-md="_3">
-                                <abp-select asp-for="InvoiceDto.InvoiceCompanyId" asp-items="@Model.TradePartnerLookupList" />
+                                @*<abp-select asp-for="InvoiceDto.InvoiceCompanyId" asp-items="@Model.TradePartnerLookupList" />*@
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "InvoiceDto.InvoiceCompanyId", AspItems = Model.TradePartnerLookupList, Selected = Convert.ToString(Model.InvoiceDto.InvoiceCompanyId), IsShowLabel = true, FieldName = @L["BillTo"], SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.InvoiceDto.ShipToId) })
                             </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceDto.PostDate" />
@@ -800,7 +914,7 @@
                                 <abp-input asp-for="InvoiceDto.LastNo" />
                             </abp-column>
                             <abp-column size-md="_3">
-                                <abp-input asp-for="InvoiceDto.DueDate" type="text" abp-data-datepicker="false" readonly="true" />
+                                <abp-input asp-for="InvoiceDto.DueDate" abp-data-datepicker="false" />
                             </abp-column>
                             <abp-column size-md="_6">
                             </abp-column>
@@ -808,14 +922,11 @@
                         <abp-row>
                             <abp-column size-md="_6">
                                 <label for="Memorandum" class="form-label">@L["Memorandum"]</label>
-                                <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="Btn:CopyFromSpecification()">@L["Btn:CopyFromSpecification"]</abp-button>
-                                <textarea name="InvoiceDto.Memorandum" id="Memorandum" class="form-control"></textarea>
+                                <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="CopyFromSpecification()">@L["Btn:CopyFromSpecification"]</abp-button>
+                                <textarea asp-for="InvoiceDto.Memorandum" name="InvoiceDto.Memorandum" id="Memorandum" class="form-control"></textarea>
                             </abp-column>
-                            <abp-column size-md="_3">
+                            <abp-column size-md="_3" class="expandCheck">
                                 <label for="InvoiceDto_IsAmountConfirmed" class="form-label">@L["IsAmountConfirmed"]<input type="checkbox" name="InvoiceDto.IsAmountConfirmed" id="InvoiceDto_IsAmountConfirmed" value="true" checked="@Model.InvoiceDto.IsAmountConfirmed" /></label>
-                            </abp-column>
-                            <abp-column size-md="_3">
-                                <abp-select asp-for="InvoiceDto.CcyRateSourceId" asp-items="@Model.SysCodeLookupList" style="width:230px" />
                             </abp-column>
                         </abp-row>
                     }
@@ -830,7 +941,7 @@
                                 <abp-input asp-for="InvoiceDto.InvoiceNo" />
                             </abp-column>
                             <abp-column size-md="_3">
-                                <abp-input asp-for="InvoiceDto.PostDate" />
+                                <abp-input asp-for="InvoiceDto.PostDate" abp-data-datepicker="false" />
                             </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceDto.OutstandingAmount" readonly="true" />
@@ -841,13 +952,11 @@
                         </abp-row>
                         <abp-row>
                             <abp-column size-md="_3">
-                                @*<label for="InvoiceNo" class="form-label">
-                            @L["Display:InvoiceCompanyIdDC"]
-                            </label>*@
-                                <abp-select asp-for="InvoiceDto.InvoiceCompanyId" asp-items="@Model.TradePartnerLookupList" />
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "InvoiceDto.InvoiceCompanyId", AspItems = _dropdownService.TradePartnerLookupList, IsShowLabel = true, FieldName = L["InvoiceCompanyId"] })
+                                @* <abp-select asp-for="InvoiceDto.InvoiceCompanyId" asp-items="@Model.TradePartnerLookupList" /> *@
                             </abp-column>
                             <abp-column size-md="_3">
-                                <abp-input asp-for="InvoiceDto.InvoiceDate" />
+                                <abp-input asp-for="InvoiceDto.InvoiceDate" abp-data-datepicker="false" />
                             </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceDto.PaidAmount" readonly="true" />
@@ -865,7 +974,7 @@
                                 <abp-input asp-for="InvoiceDto.CustomerRefNo" />
                             </abp-column>
                             <abp-column size-md="_3">
-                                <abp-input asp-for="InvoiceDto.DueDate" />
+                                <abp-input asp-for="InvoiceDto.DueDate" abp-data-datepicker="false" />
                             </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceDto.ProfitShare" />
@@ -879,7 +988,7 @@
                             <abp-column size-md="_6">
                                 <label for="Memorandum" class="form-label">@L["Memorandum"]</label>
                                 <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="Btn:CopyFromSpecification()">@L["Btn:CopyFromSpecification"]</abp-button>
-                                <textarea name="InvoiceDto.Memorandum" id="Memorandum" class="form-control"></textarea>
+                                <textarea asp-for="InvoiceDto.Memorandum" name="InvoiceDto.Memorandum" id="Memorandum" class="form-control"></textarea>
                             </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceDto.IsAmountConfirmed" />
@@ -894,7 +1003,7 @@
                     {
                         <abp-row>
                             <abp-column size-md="_3">
-                                <abp-select asp-for="InvoiceDto.ShipToId" asp-items="@Model.TradePartnerLookupList" />
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "InvoiceDto.ShipToId", AspItems = _dropdownService.TradePartnerLookupList, ShowFiledContentValue = Convert.ToString(Model.InvoiceDto.ShipToId), FieldName = @L["ShipToId"], IsShowLabel = true })
                                 <abp-input type="hidden" asp-for="InvoiceDto.InvoiceCompanyId" id="mInvoiceCompanyId" value="@Model.InvoiceDto.InvoiceCompanyId" />
                             </abp-column>
                             <abp-column size-md="_3">
@@ -939,7 +1048,7 @@
                             <abp-column size-md="_6">
                                 <label for="Memorandum" class="form-label">@L["Memorandum"]</label>
                                 <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="Btn:CopyFromSpecification()">@L["Btn:CopyFromSpecification"]</abp-button>
-                                <textarea name="InvoiceDto.Memorandum" id="Memorandum" class="form-control"></textarea>
+                                <textarea asp-for="InvoiceDto.Memorandum" name="InvoiceDto.Memorandum" id="Memorandum" class="form-control"></textarea>
                             </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceDto.IsAmountConfirmed" />
@@ -949,7 +1058,6 @@
                             </abp-column>
                         </abp-row>
                     }
-
                     @if (Model.InvoiceType == 3)
                     {
                         <abp-row>
@@ -999,7 +1107,7 @@
                             <abp-column size-md="_6">
                                 <label for="Memorandum" class="form-label">@L["Memorandum"]</label>
                                 <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="Btn:CopyFromSpecification()">@L["Btn:CopyFromSpecification"]</abp-button>
-                                <textarea name="InvoiceDto.Memorandum" id="Memorandum" class="form-control"></textarea>
+                                <textarea asp-for="InvoiceDto.Memorandum" name="InvoiceDto.Memorandum" id="Memorandum" class="form-control"></textarea>
                             </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceDto.IsAmountConfirmed" />
@@ -1069,7 +1177,7 @@
                             <abp-column size-md="_6">
                                 <label for="Memorandum" class="form-label">@L["Memorandum"]</label>
                                 <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="Btn:CopyFromSpecification()">@L["Btn:CopyFromSpecification"]</abp-button>
-                                <textarea name="InvoiceDto.Memorandum" id="Memorandum" class="form-control"></textarea>
+                                <textarea asp-for="InvoiceDto.Memorandum" name="InvoiceDto.Memorandum" id="Memorandum" class="form-control"></textarea>
                             </abp-column>
                             <abp-column size-md="_3">
                                 <abp-input asp-for="InvoiceDto.IsAmountConfirmed" />
@@ -1080,28 +1188,32 @@
                             </abp-column>
                         </abp-row>
                     }
+
                     <abp-row><abp-column>&nbsp;</abp-column></abp-row>
                     <abp-row>
                         <abp-column>
                             <abp-button class="btn btn-success me-md-2" type="button" id="addBtn">+</abp-button>
                             <abp-button class="btn btn-outline-success me-md-2" type="button" id="add5Btn">+5</abp-button>
-                            <abp-button class="btn btn-outline-warning me-md-2" type="button" id="copyBtn">@L["Btn:Copy"]</abp-button>
-                            <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn">@L["Btn:Delete"]</abp-button>
+                            <abp-button class="btn btn-outline-warning me-md-2" type="button" id="copyBtn"><i class="fa fa-files-o"></i></abp-button>
+                            <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn"><i class="fa fa-trash"></i></abp-button>
                         </abp-column>
                     </abp-row>
                     <abp-row>
                         <abp-column style="overflow-x:scroll">
-                            <abp-table border="1" id="table" style="width:2600px;border-block-color:#333333;padding-left:10px;margin:4px;  table-layout: fixed; ">
-                                <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                            <abp-table class="nowrap" border="1" id="table" style="width:2600px;border-block-color:#333333;padding-left:10px;margin:4px;  table-layout: fixed; ">
+                                <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px; background-color:#888; color:#fff;">
+
                                     <th width="6%" style="text-align:center"><input type="checkbox" id="checkAll" /></th>
-                                    <th width="8%">@L["Display:BillCode"]</th>
-                                    <th width="8%">@L["Display:BillDescription"]</th>
-                                    <th width="8%">@L["Display:PPOrCC"]</th>
-                                    <th width="8%">@L["Display:BillType"]</th>
-                                    <th width="8%">@L["Display:BillUnit"]</th>
+                                    <th width="11%">@L["Display:BillCode"]</th>
+                                    <th width="9%">@L["Display:BillDescription"]</th>
+                                    @if (Model.InvoiceType != 2) { <th width="8%">@L["Display:PPOrCC"]</th> }
+                                    <th width="6%">@L["Display:BillType"]</th>
+                                    <th width="6%">@L["Display:BillUnit"]</th>
                                     <th width="8%">@L["Display:BillCurrency"]</th>
                                     <th width="8%">@L["Display:BillQuantity"]</th>
                                     <th width="8%">@L["Display:BillRate"]</th>
+                                    <th width="8%">@L["Display:Price"]</th>
+                                    <th width="6%">@L["Display:Tax"]</th>
                                     <th width="8%">@L["Display:BillAmount"]</th>
                                     <th width="8%">@L["Display:AmountToAgent"]</th>
                                     <th width="6%" style="text-align:center">N</th>
@@ -1111,27 +1223,56 @@
                                 </tbody>
                                 <tfoot>
                                     <tr border="1">
-                                        <th colspan="5" style="text-align:right;border-block-color:#333333;" border="1">小計</th>
+                                        <th colspan="@(Model.InvoiceType != 2 ? 7 : 6)" style="text-align:right;border-block-color:#333333;" border="1">小計</th>
                                         <th>TWD</th>
-                                        <th id="convertedTWD">0</th>
+                                        <th id="convertedTWD" class="text-danger">0</th>
                                         <th>USD</th>
-                                        <th id="convertedUSD">0</th>
+                                        <th id="convertedUSD" class="text-danger">0</th>
                                         <th>RMB</th>
-                                        <th id="convertedRMB">0</th>
+                                        <th id="convertedRMB" class="text-danger">0</th>
                                         <th>HKD</th>
-                                        <th id="convertedHKD">0</th>
+                                        <th id="convertedHKD" class="text-danger">0</th>
                                     </tr>
                                     <tr border="1">
-                                        <th colspan="12" style="text-align:right;border-block-color:#333333;" border="1">總計</th>
-                                        <th id="totalAmount">0</th>
+                                        <th colspan="@(Model.InvoiceType != 2 ? 14 : 13)" style="text-align:right;border-block-color:#333333;" border="1">@L["TotalBeforeTax"]</th>
+                                        <th style="border-block-color:#333333;" name="InvoiceDto.TotalBeforeTax" id="totalBeforeTax" class="text-danger">0</th>
+                                    </tr>
+                                    <tr border="1">
+                                        <th colspan="@(Model.InvoiceType != 2 ? 14 : 13)" style="text-align:right;border-block-color:#333333;" border="1">@L["TotalTax"]</th>
+                                        <th style="border-block-color:#333333;" name="InvoiceDto.TotalTax" id="totalTax" class="text-danger">0</th>
+                                    </tr>
+                                    <tr border="1">
+                                        <th colspan="@(Model.InvoiceType != 2 ? 14 : 13)" style="text-align:right;border-block-color:#333333;" border="1">@L["Display:TotalAmount"]</th>
+                                        <th style="border-block-color:#333333;" name="InvoiceDto.TotalAmount" id="totalAmount" class="text-danger">0</th>
                                         @*<th id="totalAmount">0 <input type="hidden" name="" /></th>*@
                                     </tr>
                                 </tfoot>
                             </abp-table>
                         </abp-column>
                     </abp-row>
+
+                    <abp-row>
+                        <br />
+                    </abp-row>
+
+                    @if (Model.InvoiceType == 0)
+                    {
+                        <partial name="Memos/_Memo" model="new _MemoModel(Model.InvoiceDto.Id, Dolphin.Freight.Common.FreightPageType.AR)" />
+                    }
+                    @if (Model.InvoiceType == 1)
+                    {
+                        <partial name="Memos/_Memo" model="new _MemoModel(Model.InvoiceDto.Id, Dolphin.Freight.Common.FreightPageType.DC)" />
+                    }
+                    @if (Model.InvoiceType == 2)
+                    {
+                        <partial name="Memos/_Memo" model="new _MemoModel(Model.InvoiceDto.Id, Dolphin.Freight.Common.FreightPageType.AP)" />
+                    }
+
                 </abp-card-body>
             </abp-card>
+
+            <br />
+
             <abp-row>
                 <abp-column>
                     <abp-button class="btn btn-primary me-md-2" type="button" id="saveDraftBtn">@L["Btn:SaveDraft"].Value</abp-button>

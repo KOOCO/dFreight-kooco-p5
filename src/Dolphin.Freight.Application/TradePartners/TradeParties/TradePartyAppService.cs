@@ -6,12 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 
 namespace Dolphin.Freight.TradePartners.TradeParties
 {
-    public class TradePartyAppService : ApplicationService, ITradePartyAppService
+    public class TradePartyAppService : CrudAppService<TradeParty, TradePartyDto, Guid,  PagedAndSortedResultRequestDto, CreateUpdateTradePartyDto>, ITradePartyAppService
     {
         private IRepository<TradeParty, Guid> _repository;
         private IRepository<TradePartner, Guid> _tradePartnerRepository;
@@ -25,7 +26,7 @@ namespace Dolphin.Freight.TradePartners.TradeParties
             IRepository<TradePartner, Guid> tradePartnerRepository, 
             IRepository<Country, Guid> countryRepository, 
             IRepository<ContactPerson, Guid> contactPersonRepository
-        )
+        ): base(repository)
         {
             _repository = repository;
             _tradePartnerRepository = tradePartnerRepository;
@@ -34,14 +35,6 @@ namespace Dolphin.Freight.TradePartners.TradeParties
 
             Logger = NullLogger<TradePartyAppService>.Instance;
         }
-
-        public async Task<TradePartyDto> GetAsync(Guid id)
-        {
-            TradeParty entity = await _repository.GetAsync(id);
-
-            return ObjectMapper.Map<TradeParty, TradePartyDto>(entity);
-        }
-
         public async Task<List<TradePartyListDto>> GetListByPartnerIdAndTypeAsync(Guid id, TradePartyType type)
         {
             IQueryable<TradeParty> query = await _repository.GetQueryableAsync();
@@ -79,40 +72,52 @@ namespace Dolphin.Freight.TradePartners.TradeParties
 
         public async Task SaveAsync(CreateUpdateTradePartyDto dto)
         {
-            TradeParty entity = dto.Id == null ? new() : await _repository.GetAsync(dto.Id.Value);
-
-            if (dto.Id == dto.TargetTradePartnerId)
+            try
             {
-                return;
+                TradeParty entity = dto.Id==Guid.Empty ? new() : await _repository.GetAsync(dto.Id);
+
+                if (dto.Id == dto.TargetTradePartnerId)
+                {
+                    return;
+                }
+
+                //entity.TradePartnerId = dto.TradePartnerId;
+                //entity.TargetTradePartnerId = dto.TargetTradePartnerId;
+                //entity.TradePartyDescription = dto.TradePartyDescription;
+                //entity.TradePartyType = dto.TradePartyType;
+                //entity.IsDefault = dto.IsDefault.GetValueOrDefault();
+                //entity.ExtraProperties = dto.ExtraProperties;
+
+                entity =  ObjectMapper.Map<CreateUpdateTradePartyDto, TradeParty>(dto);
+
+
+                //if (entity.IsDefault)
+                //{
+                //    await _repository.UpdateManyAsync(
+                //        (await _repository.GetListAsync())
+                //        .Where(row => row.TradePartyType == entity.TradePartyType)
+                //        .ToList()
+                //        .Select(row => {
+                //            row.IsDefault = false;
+                //            return row;
+                //        })
+                //        .ToList()
+                //    );
+                //}
+
+                if (dto.Id == Guid.Empty)
+                {
+                    await _repository.InsertAsync(entity,true);
+                }
+                else
+                {
+                    await _repository.UpdateAsync(entity,true);
+                }
             }
-
-            entity.TradePartnerId = dto.TradePartnerId;
-            entity.TargetTradePartnerId = dto.TargetTradePartnerId;
-            entity.TradePartyDescription = dto.TradePartyDescription;
-            entity.TradePartyType = dto.TradePartyType;
-            entity.IsDefault = dto.IsDefault;
-
-            if (entity.IsDefault)
+            catch (Exception ex)
             {
-                await _repository.UpdateManyAsync(
-                    (await _repository.GetListAsync())
-                    .Where(row => row.TradePartyType == entity.TradePartyType)
-                    .ToList()
-                    .Select(row => {
-                        row.IsDefault = false;
-                        return row;
-                    })
-                    .ToList()
-                );
-            }
 
-            if (dto.Id == null)
-            {
-                await _repository.InsertAsync(entity);
-            }
-            else
-            {
-                await _repository.UpdateAsync(entity);
+                throw;
             }
         }
 
@@ -138,9 +143,14 @@ namespace Dolphin.Freight.TradePartners.TradeParties
             );
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<List<CreateUpdateTradePartyDto>> GetListByTradePartnerId(Guid id)
         {
-            await _repository.DeleteAsync(id);
+            var list = await _repository.GetListAsync();
+            var filtered = list.Where(w => w.TradePartnerId == id).ToList();
+
+            var retVal = ObjectMapper.Map<List<TradeParty>, List<CreateUpdateTradePartyDto>>(filtered);
+
+            return retVal;
         }
     }
 }

@@ -15,13 +15,15 @@ using Dolphin.Freight.Settinngs.SysCodes;
 using NUglify.JavaScript.Visitors;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Settinngs.Ports;
+using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
 {
     public class CreateModel : FreightPageModel
     {
      
-
+       public Guid Id { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> AirportLookupList { get; set; }
@@ -38,10 +40,16 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
         public List<SelectListItem> PortLookupList { get; set; }
         public List<SelectListItem> ShipModeLookupList { get; set; }
         public List<SelectListItem> FreightTermLookupList { get; set; }
-
-
+        [BindProperty]
+        public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
+        [BindProperty]
+        public CreateUpdateExportBookingDto ExportBookingDto { get; set; } = null;
+        [BindProperty]
+        public CreateUpdateContainerDto CreateUpdateContainerBooking { get; set; }
         [BindProperty]
         public CreateUpdateVesselScheduleDto VesselSchedule { get; set; }
+        [BindProperty]
+        public List<ManifestCommodity> Commodities { get; set; }
         private readonly IVesselScheduleAppService _vesselScheduleAppService;
         private readonly ITradePartnerAppService _tradePartnerAppService;
         private readonly ISubstationAppService _substationAppService;
@@ -50,8 +58,11 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
         private readonly ISysCodeAppService _sysCodeAppService;
         private readonly IPortAppService _portAppService;
         private readonly IAjaxDropdownAppService _ajaxDropdownAppService;
+        private readonly IContainerAppService _containerAppService;
+        private readonly IExportBookingAppService _exportBookingAppService;
         public CreateModel(VesselScheduleAppService vesselScheduleAppService, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService,
-            IAirportAppService airportAppService, IPackageUnitAppService packageUnitAppService, ISysCodeAppService sysCodeAppService, IPortAppService portAppService, IAjaxDropdownAppService ajaxDropdownAppService) 
+            IAirportAppService airportAppService, IPackageUnitAppService packageUnitAppService, ISysCodeAppService sysCodeAppService, IPortAppService portAppService, IAjaxDropdownAppService ajaxDropdownAppService,
+            IContainerAppService containerAppService, IExportBookingAppService exportBookingAppService) 
         {
             _vesselScheduleAppService = vesselScheduleAppService;
             _tradePartnerAppService = tradePartnerAppService;
@@ -61,6 +72,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
             _sysCodeAppService = sysCodeAppService;
             _portAppService = portAppService;
             _ajaxDropdownAppService = ajaxDropdownAppService;
+            _containerAppService= containerAppService;
+            _exportBookingAppService = exportBookingAppService;
         }
         public async Task OnGetAsync()
         {
@@ -83,6 +96,46 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
         public async Task<IActionResult> OnPostAsync()
         {
             var vesselSchedule = await _vesselScheduleAppService.CreateAsync(VesselSchedule);
+            foreach (var dto in CreateUpdateContainerDtos)
+            {
+                var a = dto.IsDeleted;
+                dto.VesselId = vesselSchedule.Id;
+                if (dto.Status == 0) await _containerAppService.CreateAsync(dto);
+            }
+
+            if (ExportBookingDto is not null && !string.IsNullOrEmpty(ExportBookingDto.SoNo) || ExportBookingDto.IsCreateBySystem)
+            {
+                if (ExportBookingDto.IsCreateBySystem)
+                {
+                    ExportBookingDto.SoNo = await _sysCodeAppService.GetSystemBookingNoAsync(new() { QueryType = "ExportBooking_SoNo" });
+                }
+
+                ExportBookingDto.Id = Guid.Empty;
+                if (ExportBookingDto.ExtraProperties == null)
+                {
+                    ExportBookingDto.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                }
+
+                if (Commodities != null && Commodities.Any())
+                {
+                    ExportBookingDto.ExtraProperties.Remove("Commodities");
+                    ExportBookingDto.ExtraProperties.Add("Commodities", Commodities);
+                }
+
+                var addBooking = ObjectMapper.Map<CreateUpdateExportBookingDto, CreateUpdateExportBookingDto>(ExportBookingDto);
+                addBooking.VesselScheduleId = vesselSchedule.Id;
+
+                var updatedBooking = await _exportBookingAppService.CreateAsync(addBooking);
+
+                if (CreateUpdateContainerBooking is not null)
+                {
+                    QueryContainerDto queryContainerDto = new QueryContainerDto() { QueryId = updatedBooking.Id };
+                    await _containerAppService.DeleteByBookingIdAsync(queryContainerDto);
+                    CreateUpdateContainerBooking.BookingId = updatedBooking.Id;
+                    await _containerAppService.CreateAsync(CreateUpdateContainerBooking);
+                }
+            }
+
             Dictionary<string, Guid> rs = new Dictionary<string, Guid>
             {
                 { "id", vesselSchedule.Id }
@@ -214,7 +267,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselScheduleas
         #region FillPortAsync()
         private async Task FillPortAsync()
         {
-            var portLookup = await _portAppService.GetListAsync(new Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto());
+            var portLookup = await _portAppService.GetListAsync(new QueryDto());
             PortLookupList = portLookup.Items
                                             .Select(x => new SelectListItem(x.PortName, x.Id.ToString(), false))
                                             .ToList();

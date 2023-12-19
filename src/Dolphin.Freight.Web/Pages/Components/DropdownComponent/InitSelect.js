@@ -1,6 +1,5 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
-
 });
 
 function getFormat() {
@@ -30,9 +29,23 @@ function getFormat() {
 function initializeDropdownSearch(id, selectType) {
 
     var l = abp.localization.getResource('Freight');
-    $('#' + id).select2({
-        placeholder: l("Dropdown:Select"),
-        allowClear: true
+
+    if ($('#' + id).closest('.modal').length) {
+        $('#' + id).select2({
+            placeholder: l("Dropdown:Select"),
+            allowClear: true,
+            dropdownParent: $('#' + id).closest('.modal')
+        });
+    }
+    else {
+        $('#' + id).select2({
+            placeholder: l("Dropdown:Select"),
+            allowClear: true,
+        });
+    }
+
+    $(id).on('select2:open', () => {
+        document.querySelector('.select2-search__field').focus();
     });
 
     setWidth(id, selectType);
@@ -40,6 +53,6 @@ function initializeDropdownSearch(id, selectType) {
 
 function setWidth(id, selectType) {
     if (selectType == 1) {
-        $('#' + id).parent().find('.select2-container').attr('style', 'width:calc(100% - 50px) !important');
+        $('#' + id).parent().find('.select2-container').attr('style', 'max-width:calc(100%-40px) !important');
     }
 }

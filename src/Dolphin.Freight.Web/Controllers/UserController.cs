@@ -1,6 +1,6 @@
 ﻿using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.AirImports;
-using Dolphin.Freight.Migrations;
+//using Dolphin.Freight.Migrations;
 using Dolphin.Freight.Web.ViewModels.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;

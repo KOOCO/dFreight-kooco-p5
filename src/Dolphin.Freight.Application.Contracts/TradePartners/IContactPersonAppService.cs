@@ -19,6 +19,7 @@ namespace Dolphin.Freight.TradePartners
         Task DeleteContactPersonAsync(Guid id);
         Task UpdateContactPersonAsync(Guid id, CreateUpdateContactPersonDto input);
         Task SwitchRepAsync(SwitchRepContactPersonDto dto);
+        Task<List<CreateUpdateContactPersonDto>> GetListByTradePartnerId(Guid id);
 
     }
 }

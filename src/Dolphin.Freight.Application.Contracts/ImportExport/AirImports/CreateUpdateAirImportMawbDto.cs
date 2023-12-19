@@ -3,6 +3,7 @@ using Dolphin.Freight.AirImports;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.AirImports
 {
@@ -158,5 +159,19 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public bool IsECom { get; set; }
 
         public DisplayUnitType DisplayUnit { get; set; }
+        public string Mark { get; set; }
+        public string NatureAndQuantityOfGoods { get; set; }
+        public string ManifestNatureAndQuantityOfGoods { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public string HandlingInformation { get; set; }
+
+        public String RouteDepartureId { get; set; }
+        public DateTime? RouteDepartureArrivalDate { get; set; }
+        public DateTime? RouteDepatureDate { get; set; }
+        public string RouteDepartureFlightNo { get; set; }
+        public String RouteDepartureCarrierId { get; set; }
+
+        public String RouteDestinationId { get; set; }
+        public DateTime? RouteDestinationArrivalDate { get; set; }
     }
 }

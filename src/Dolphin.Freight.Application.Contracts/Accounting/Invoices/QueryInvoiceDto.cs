@@ -7,6 +7,7 @@ namespace Dolphin.Freight.Accounting.Invoices
 {
     public class QueryInvoiceDto : PagedAndSortedResultRequestDto
     {
+          public int? TypeId { get; set; }
         /// <summary>
         /// ParentId的類別，0：Mbl，1：Hbl
         /// </summary>
@@ -25,6 +26,15 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// 新對應的ExportBookingId
         /// </summary>
         public Guid? NewParentId { get; set; }
-
+        public string Search { get; set; }
+        public Guid? OfficeId { get; set; }
+      
+        public string InvoiceNo { get; set; }
+        public DateTime? InvoiceDate { get; set; }
+        public DateTime? PostDate { get; set; }
+        public DateTime? DueDate { get; set; }
+        public DateTime? EtaDate { get; set; }
+        public DateTime? EtdDate { get; set; }
+        public DateTime? LastDate { get; set; }
     }
 }

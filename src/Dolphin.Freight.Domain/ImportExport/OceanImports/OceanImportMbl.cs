@@ -1,4 +1,5 @@
 ﻿using Dolphin.Freight.Settings.Ports;
+using Dolphin.Freight.Settings.PortsManagement;
 using Dolphin.Freight.Settings.Substations;
 using Dolphin.Freight.Settings.SysCodes;
 using System;
@@ -637,6 +638,8 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// ETB
         /// </summary>
         public DateTime? Etb { get; set; }
+        public DateTime? ATA { get; set; }
+        public DateTime? ATD { get; set; }
         /// <summary>
         /// OB/L已接收
         /// </summary>
@@ -678,7 +681,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 返還地點
         /// </summary>
         [ForeignKey("ReturnLocationId")]
-        public virtual Dolphin.Freight.TradePartners.TradePartner ReturnLocation { get; set; }
+        public virtual PortsManagement ReturnLocation { get; set; }
 
         /// <summary>
         /// 託運人ID

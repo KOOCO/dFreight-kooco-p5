@@ -29,6 +29,8 @@ namespace Dolphin.Freight.Settings.AwbNoRanges
         /// 當前分配的號碼
         /// </summary>
         public string CurrentNo { get; set; }
+        public string Carrier { get; set; }
+
         public Guid CompanyId { get; set; } 
     }
 }

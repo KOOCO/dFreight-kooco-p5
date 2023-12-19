@@ -1,0 +1,729 @@
+﻿@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.PackagingListAirExportHawb.PackagingListAirExportHawb
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+
+    .w-10, .w-20, .w-100, .text-right, .text-center, .auto-font-size, textarea {
+        font-size:10px;
+    }
+</style>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        //document.getElementById("reportLink").onclick = function() {
+        //    var url = new URL(window.location.href);
+        //    var guid = url.searchParams.get('Id');
+        //    document.getElementById("guidInput").value = guid;
+        //    document.getElementById("myForm").submit();
+        //}
+    });
+</script>
+<form id="myForm" name="myForm" method="POST">
+    <input type="hidden" id="guidInput" name="guid" value="">
+<div style="background-color:black;display: flex;justify-content:center;">
+    <div style="width:900px;background-color:white;" id="form" name = "form" class="edit">
+        <div class="container" style="background-color:black">    
+            <div style="display:flex;justify-content: center;" class="item-left">
+                @*<button class="btn"><i class="fa fa-file-pdf-o"></i></button>
+                <button class="btn"><i class="fa fa-print"></i></button>*@
+                @*<a class="btn" href="../OceanExports/print?handler=Download"><i class="fa fa-print">儲存PDF或列印</i></a>*@
+                <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+            </div>
+            @*<div style="float:right;" class="item-right">
+                <button class="btn zoom" id="zout" name="zout"><i class="fa fa-search-minus"></i></button>
+                <button class="btn zoom-out" id="zin" name="zin"><i class="fa fa-search-plus"></i></button>
+            </div>*@
+        </div>
+        <div class="wrap">
+        <div class="item-edit topbar">
+            
+
+    
+
+    <div class="topbar-block">
+        Data Source :
+        <select class="select w-160px" onchange="loadDataSource(this)">
+            <option selected="selected" value="loadInitial">Shipment</option>
+            <option value="loadDraft">Last Modified</option>
+            <option value="loadEmptyFromDraft">Load empty fields from last modified</option>
+            
+        </select>
+
+        <script>
+            function loadDataSource(sel) {
+                function genUrl(url, params) {
+                  const pString = Array.from(Object.entries(params)).map(([k, v]) => `${k}=${v}`).join('&');
+                  return `${url}?${pString}`;
+                }
+
+                const basicParam = {};
+
+                Array.from(new URL(window.location.href).searchParams.entries()).forEach(params => {
+                  if (params[0] !== 'action' && params[0] !== 'form_source') {
+                    basicParam[params[0]] = params[1]
+                  }
+                });
+
+                const last_modified_form_layout = '';
+
+                if (sel.value === 'loadInitial') {
+                    window.location.href = genUrl('/reports/air/hbl/packing-list/47123/', basicParam);
+                }
+                else if (sel.value === 'loadDraft') {
+
+                  const params = {
+                    ...basicParam,
+                    action: 'edit',
+                    form_source: 'draft',
+                  };
+
+                  if (last_modified_form_layout) {
+                    params['form_layout'] = last_modified_form_layout
+                  }
+
+                  window.location.href = genUrl('/reports/air/hbl/packing-list/47123/', params);
+                }
+                else if (sel.value === 'loadEmptyFromDraft') {
+
+                  const params = {
+                    ...basicParam,
+                    action: 'edit',
+                    form_source: 'empty-from-draft',
+                  };
+
+                  if (last_modified_form_layout) {
+                    params['form_layout'] = last_modified_form_layout
+                  }
+
+                  window.location.href = genUrl('/reports/air/hbl/packing-list/47123/', params);
+                }
+                
+                else {
+                  throw Error('unknown dataSource value')
+                }
+            }
+        </script>
+    </div>
+
+
+        </div>
+
+        <div class="header margin-b-md">
+            <table>
+                <!-- from USA Bank request, can't put office name & LOGO -->
+                <tbody><tr>
+                    <td class="w-25">&nbsp;</td>
+                    <td class="w-50 title">
+                        <div class="item-edit text-center border-deep-blue col-padding-sm hover-toggle-icon-text-template"><input type="text" name="form_title" value="PACKING LIST" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.form_title" id="id_form_title" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 13px; left: 339px;"></span><!---->
+
+                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="af80da2da983" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                        </hc-input-template></div>
+                        <div class="item-pdf text-center border-deep-blue"><h2 class="blue-lg">PACKING LIST</h2></div>
+                    </td>
+                    <td class="w-25">&nbsp;</td>
+                </tr>
+            </tbody></table>
+        </div>
+        <div class="con packing-list">
+            <table>
+                <tbody><tr>
+                    <td class="w-48">
+                        <table class="data-height-md">
+                            <tbody><tr>
+                                <td class="td highlight-block">
+                                    <div class="title">SHIPPER / EXPORTER (SELLER)</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="shipper_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.shipper_area" id="id_shipper_area">@Model.Shipper_name</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 5px; left: 315px;"></span><!---->
+
+                                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ae39b1295a91" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                        </hc-input-template></div>
+                                        @*<div class="item-pdf auto-font-size __width-lg"><span>ABBOTT-CRAIG<br>
+                                        0433 PENA MOUNTAINS SUITE 145<br>
+                                        MIRANDAVIEW, HI 32157-3162<br>
+                                        UNITED STATES<br>
+                                        ATTN: PAUL BARTLETT TEL: 431.432.4057 FAX: +66(5)1874450909</span></div>*@
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="td highlight-block">
+                                    <div class="title">FOR ACCOUNT OF (CONSIGNEE)</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="consignee_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.consignee_area" id="id_consignee_area">@Model.Consignee_address</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 5px; left: 315px;"></span><!---->
+                                        
+                                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a5e76f014e88" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                        </hc-input-template></div>
+                                        @*<div class="item-pdf auto-font-size __width-lg"><span>123<br>
+                                        3 FL., NO. 215, SEC. 1, FU XING S. RD., TAIPEI, TAIWAN<br>
+                                        TEL : 02-87721111<br>
+                                        FAX : 02-87732222<br>
+                                        TAIWAN</span></div>*@
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="td highlight-block">
+                                    <div class="title">NOTIFY PARTY</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="notify_area" cols="40" rows="5" class="text-scroll no-adjustment ng-isolate-scope" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.notify_area" id="id_notify_area">@Model.Notify_party</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 5px; left: 315px;"></span><!---->
+                                        
+                                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a03f501304e2" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                        </hc-input-template></div>
+                                        @*<div class="item-pdf auto-font-size __width-lg"><span>1231231<br>
+                                        ATTN: SDSDSD</span></div>*@
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td class="w-4">&nbsp;</td>
+                    <td class="w-48 border-t td data-lg">
+                        <table class="border-l border-r">
+                            <tbody><tr>
+                                <td class="td border-b">
+                                    <div class="title">INVOICE NO. &amp; DATE</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="invoice_no_and_date" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.invoice_no_and_date" id="id_invoice_no_and_date" class="ng-isolate-scope" value="@Model.Inv_no"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+                                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ab9193c1b974" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                        </hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>&nbsp;</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td border-b">
+                                    <div class="title">L/C NO.</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="LC_NO" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.LC_NO" id="id_LC_NO" class="ng-isolate-scope" value="@Model.LC_no"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+                                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a188af610f43" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                        </hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>&nbsp;</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td border-b">
+                                    <div class="title">L/C ISSUE BANK</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="LC_issue_bank" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.LC_issue_bank" id="id_LC_issue_bank" class="ng-isolate-scope" value="@Model.Issue_bank"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+                                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a9be81334a92" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                        </hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>&nbsp;</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td border-b">
+                                    <div class="title">DEPARTURE DATE</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ETD_date" value="@Model.Departure_date" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.ETD_date" id="id_ETD_date" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+                                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a24626a601e7" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                        </hc-input-template></div>
+                                        <div class="item-pdf">@Model.Departure_date</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td border-b">
+                                    <div class="title">PORT OF LOADING</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="APOL_code_name" value="@Model.POL_location" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.APOL_code_name" id="id_APOL_code_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+                                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a73ab689a23b" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                        </hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>@Model.POL_location</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td border-b">
+                                    <div class="title">FINAL DESTINATION</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="APOD_code_name" value="@Model.POD_location" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.APOD_code_name" id="id_APOD_code_name" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+                                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="afa1350c9077" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                        </hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>@Model.POD_location</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td border-b">
+                                    <div class="title">FLIGHT NO. / VSL &amp; VOY NO.</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="flight_no" value="@Model.Flight_no" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.flight_no" id="id_flight_no" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+                                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a483637a6849" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                        </hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>@Model.Flight_no</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td border-b">
+                                    <div class="title">TERM</div>
+                                    <div class="data">
+                                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="freight_term" value="@Model.Term" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.freight_term" id="id_freight_term" class="ng-isolate-scope"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 313px;"></span><!---->
+
+                                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a7d69de98663" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                                        </hc-input-template></div>
+                                        <div class="item-pdf auto-font-size __width-lg"><span>@Model.Term</span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+            </tbody></table>
+            <div class="item-edit">
+                
+                    <label class="text-10 _margin-r-sm" for="id_show_weight_choice_0">
+                        <input type="radio" id="id_show_weight_choice_0" name="show_weight_choice" value="net_and_gross" ng-model="vm.show_weight_choice" hc-user-preference="ae_packing_list_show_weights_choice" class="ng-untouched ng-valid ng-dirty ng-not-empty">  Show NET WEIGHT and GROSS WEIGHT
+                    </label>
+                    
+                        <br>
+                    
+                
+                    <label class="text-10 _margin-r-sm" for="id_show_weight_choice_1">
+                        <input type="radio" id="id_show_weight_choice_1" name="show_weight_choice" value="gross_only" ng-model="vm.show_weight_choice" hc-user-preference="ae_packing_list_show_weights_choice" class="ng-untouched ng-valid ng-dirty ng-not-empty">  Show GROSS WEIGHT only
+                    </label>
+                    
+                
+            </div>
+            <table class="border-b margin-t-sm">
+                <colgroup class="item-edit" ng-hide="vm.show_weight_choice != 'net_and_gross'">
+                    <col class="w-20">
+                    <col class="w-15">
+                    <col class="w-20">
+                    <col class="w-15">
+                    <col class="w-15">
+                    <col class="w-15">
+                </colgroup>
+                <colgroup class="item-edit ng-hide" ng-hide="vm.show_weight_choice != 'gross_only'" style="width: 100%; display: block;">
+                    <col class="w-20">
+                    <col class="w-15">
+                    <col class="w-35">
+                    <col class="w-15">
+                    <col class="w-15">
+                </colgroup>
+                <colgroup class="item-pdf">
+                    <col class="w-20">
+                    <col class="w-15">
+                    
+                    <col class="w-15">
+                    <col class="w-15">
+                </colgroup>
+                <tbody><tr class="border-b border-t bg-light text-8">
+                    <th class="border-r text-left col-padding-double">
+                        SHIPPING MARKS
+                    </th>
+                    <th class="border-r text-right col-padding-double">
+                        QTY
+                    </th>
+                    <th class="border-r text-left col-padding-double">
+                        DESCRIPTION OF GOODS
+                    </th>
+                    
+                    <th class="border-r text-right col-padding-double" ng-hide="vm.show_weight_choice == 'gross_only'">
+                        NET WEIGHT
+                    </th>
+                    
+                    <th class="border-r text-right col-padding-double">
+                        GROSS WEIGHT
+                    </th>
+                    <th class="text-right col-padding-double">
+                        VOLUME
+                    </th>
+                </tr>
+                <tr>
+                    <td class="td td-item border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="mark" cols="40" rows="43" class="text-scroll ng-isolate-scope" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.mark" id="id_mark"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 120px;"></span><!---->
+
+                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a46345793fc5" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                        </hc-input-template></div>
+                        <div class="item-pdf"><br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;</div>
+                    </td>
+                    <td class="td td-item text-right border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="packages" cols="40" rows="43" class="text-scroll ng-isolate-scope" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.packages" id="id_packages">@Model.ContainerList[0].Quantity</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 89px;"></span><!---->
+
+                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ac6545d83eee" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                        </hc-input-template></div>
+                        <div class="item-pdf">@Model.ContainerList[0].Quantity<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;</div>
+                    </td>
+                    <td class="td td-item border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="good_items" cols="40" rows="43" class="text-scroll ng-isolate-scope" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.good_items" id="id_good_items"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 120px;"></span><!---->
+
+                        <ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="aaaf11ed37c3" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+                        </hc-input-template></div>
+                        <div class="item-pdf"><br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;</div>
+                    </td>
+                    
+                        <td class="td td-item text-right border-r" ng-hide="vm.show_weight_choice == 'gross_only'">
+                            <div class="item-edit hover-toggle-icon-text-template"><textarea name="chargeable_weight" cols="40" rows="43" class="text-scroll ng-isolate-scope" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.chargeable_weight" id="id_chargeable_weight">@(Model.ContainerList[0].Net_weight_kg + " KG")
+
+                            @(Model.ContainerList[0].Net_weight_lb + " LBS")</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 89px;"></span><!---->
+                            
+                            @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="aa7366b54c15" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                            </hc-input-template></div>
+                            <div class="item-pdf text-right">@(Model.ContainerList[0].Net_weight_kg + " KGS")<br>
+<br>
+@(Model.ContainerList[0].Net_weight_lb + " LBS")<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;</div>
+                        </td>
+                    
+                    <td class="td td-item text-right border-r">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="gross_weight" cols="40" rows="43" class="text-scroll ng-isolate-scope" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.gross_weight" id="id_gross_weight"></textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 89px;"></span><!---->
+
+                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="af94bdac2641" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                        </hc-input-template></div>
+                        <div class="item-pdf text-right"><br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;</div>
+                    </td>
+                    <td class="td td-item text-right">
+                        <div class="item-edit hover-toggle-icon-text-template"><textarea name="measure" cols="40" rows="43" class="text-scroll ng-isolate-scope" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.measure" id="id_measure">@(Model.ContainerList[0].Volumns + " CBM") 
+
+                        @((Model.ContainerList[0].Amount) + " CFT")</textarea><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 90px;"></span><!---->
+                        
+                        @*<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="a02e8c9ef66f" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>*@
+                        </hc-input-template></div>
+                        <div class="item-pdf text-right">@(Model.ContainerList[0].Volumns) CBM<br>
+<br>
+0.71 CFT<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;<br>
+ &nbsp;</div>
+                    </td>
+                </tr>
+            </tbody></table>
+            <div class="space_area">
+                <p>&nbsp;</p>
+            </div>
+            <table>
+                <tbody><tr>
+                    <td class="w-30">&nbsp;</td>
+                    <td class="w-30">&nbsp;</td>
+                    <td class="w-10">SIGNED BY</td>
+                    <td class="w-30 border-b"></td>
+                </tr>
+            </tbody></table>
+            <div class="text-right margin-t">
+                <div class="item-pdf text-bold padding-t-xs">ABBOTT-CRAIG</div>
+                <div class="item-edit">
+                    <table>
+                        <tbody><tr>
+                            <td class="w-57">&nbsp;</td>
+                            <td class="w-3 text-center"><input type="checkbox" name="show_shipper_name" id="id_show_shipper_name" checked=""></td>
+                            <td class="w-40 text-left hover-toggle-icon-text-template"><input type="text" name="shipper_name" value="ABBOTT-CRAIG" template-id="39b42b59d23208976614dc36056b31bf1ce485cf33f6d9cff88c90bdab9183b0:PackingListForm.shipper_name" class="w-100 ng-isolate-scope" id="id_shipper_name"><hc-input-template [template-id]="templateId" [anchor]="anchor" [char-limit]="charLimit" [upper-case]="upperCase" [button-offset]="buttonOffset" [drop-down-panel-class]="dropDownPanelClass" append-to="body" [hc-disabled]="disabled" (change)="change($event)" class="ng-scope" _nghost-oms-c260="" ng-version="12.2.17" tabindex="0"><span _ngcontent-oms-c260="" class="icon-text-template" style="top: 3px; left: 284px;"></span><!---->
+
+<ng-select _ngcontent-oms-c260="" role="listbox" bindlabel="name" class="ng-select ng-select-single ng-select-clearable ng-select-typeahead ng-untouched ng-pristine ng-valid"><div class="ng-select-container"><div class="ng-value-container"><div class="ng-placeholder">選擇...</div><!----><!----><div class="ng-input"><input role="combobox" type="text" autocorrect="off" autocapitalize="off" autocomplete="ae3ff9b8942a" readonly="" aria-expanded="false"></div></div><!----><!----><span class="ng-arrow-wrapper"><span class="ng-arrow"></span></span></div><!----></ng-select>
+</hc-input-template></td>
+                        </tr>
+                    </tbody></table>
+                </div>
+            </div>
+
+            
+
+        </div>
+    </div>
+    </div>
+</div>
+</form>

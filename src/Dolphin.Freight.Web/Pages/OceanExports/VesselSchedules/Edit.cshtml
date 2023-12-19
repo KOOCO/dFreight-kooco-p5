@@ -1,20 +1,66 @@
 ﻿@page
 @using Dolphin.Freight.Web.CommonService
+@using Volo.Abp.Users
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Web.Pages.Components
 @using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Microsoft.Extensions.Localization
 @model Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules.EditModel
 @inject IStringLocalizer<FreightResource> L
+@inject ICurrentUser CurrentUser
 @inject IDropdownService _dropdown;
+@section styles {
+    <style type="text/css">
+ #ejo .btn-primary {
+    color: #fff;
+    background-color: rgb(25 28 32 / 52%);
+    border-color: #00000000;
+}
+
+        .fas {
+            margin-right: 10px;
+        }
+
+        #shipmentbody {
+            border-collapse: collapse;
+        }
+
+        #shipmentbody tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+        #shipmentbody td {
+            border: 1px solid #ddd; 
+            padding: 8px; 
+        }
+    </style>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
+}
 @section scripts
     {
+    <abp-script src="/Pages/OceanExports/VesselSchedules/EditVessel.js" />
     <script type="text/javascript">
-
+          var trindex = 0;
+         var containerSizes = [];
         $(document).ready(function () {
             var l = abp.localization.getResource('Freight');
             var showMsg = '@Model.ShowMsg';
-            if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
+            if (showMsg == 'True') {
+                var EmptyGuid = '00000000-0000-0000-0000-000000000000';
+                dolphin.freight.common.memos.memo.getListByQuery({sourceId:EmptyGuid, fType:10 }).done(function (result) {
+                    var item = result;
+                    if (item.length>0) {
+                        dolphin.freight.common.memos.memo.updateSourceId('@Model.Id', 10).done(function (response) {
+                            memoDataTable.ajax.reload();
+                            abp.message.success(l("Message:SuccessAdd"));
+
+                        })
+                    } else {
+                       abp.message.success(l("Message:SuccessAdd"));
+                    }
+                })
+            }
 
             initializeDropdownSearch("VesselSchedule_OfficeId");
             initializeDropdownSearch("VesselSchedule_BlTypeId");
@@ -38,6 +84,40 @@
             initializeDropdownSearch("VesselSchedule_SvcTermToId");
             initializeDropdownSearch("VesselSchedule_OblTypeId");
             initializeDropdownSearch("VesselSchedule_TransPort1Id");
+
+            $(document).ready(function () {
+                const ids = [
+                    "VesselSchedule_PolEtd",
+                    "VesselSchedule_PorEtd",
+                    "VesselSchedule_PodEta",
+                    "VesselSchedule_DelEta",
+                    "VesselSchedule_FdestEta",
+                    "VesselSchedule_RailCutOffTime",
+                    "VesselSchedule_PortCutOffTime",
+                    "VesselSchedule_VgmCutOffTime",
+                    "VesselSchedule_OnBoardDate",
+                    "VesselSchedule_Trans1Eta"
+                ];
+
+                ids.forEach(function (id) {
+                    let dateElem = $('#' + id);
+
+                    if (dateElem.length === 0) {
+                        return;
+                    }
+
+                    dateElem.removeAttr('type').datetimepicker({
+                        format: 'Y-m-d H:i',
+                        step: 15,
+                        allowInput: false
+                    });
+
+                    let currentVal = dateElem.val();
+                    if (currentVal.includes('T')) {
+                        dateElem.val(currentVal.replace('T', ' '));
+                    }
+                });
+            });
 
             //系統參數
             //dolphin.freight.common.ajaxDropdown.getSysCodeDtosByType({ queryType: 'BlTypeId' }).done(function (result) {
@@ -138,19 +218,424 @@
                 addTr()
             })
         });
+        dolphin.freight.settings.containerSizes.containerSize.queryAllList({}).done(function (result) {
+            if (result != null && result.length > 0) {
+                containerSizes = result;
+                dolphin.freight.importExport.containers.container.queryListVessel( '@Model.Id' ).done(function (result) {
+                    if (result != null && result.length > 0) {                          
+                        for (var i = 0; i < result.length; i++) {
+                            if (result[i].mblId == '00000000-0000-0000-0000-000000000000') {
+                                var value0 = result[i].id
+                                var value1 = result[i].containerNo;
+                                var value2 = result[i].containerSizeId;
+                                var value3 = result[i].sealNo;
+                                var value4 = result[i].packageNum;
+                                var value5 = result[i].packageWeight;
+                                var value6 = result[i].packageMeasure;
+                                if (value3 == null) value3 = '';
+                                addTrTag(value0, value1, value2, value3, value4, value5, value6);
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        var url = new URL(window.location.href);
+        var vesselId = url.searchParams.get('Id');
+        getMblContainersByVesselId(vesselId);
+
         var cardIndex = 0;
-        function addHBtn() {
-            if (cardIndex == 0) {
-                var divHtml = addCardRight('new_' + cardIndex, 'new HB/L', '', '#f3c200');
-                $("#hblCard").show();
-                $("#hblCardDiv").append(divHtml)
-                cardIndex++;
-            } else {
-                var l = abp.localization.getResource('Freight');
-                abp.message.info(l("Message:AddHBLErr"));
+        //function addHBtn() {
+        //    if (cardIndex == 0) {
+        //        var divHtml = addCardRight('new_' + cardIndex, 'new HB/L', '', '#f3c200');
+        //        $("#hblCard").show();
+        //        $("#hblCardDiv").append(divHtml)
+        //        cardIndex++;
+        //    } else {
+        //        var l = abp.localization.getResource('Freight');
+        //        abp.message.info(l("Message:AddHBLErr"));
+        //    }
+
+        //}
+
+        $('#addHBtn').on('click', function () {
+            if ($('#vesselDiv')[0].classList.contains('show')) {
+                $('#btnVesselCollapse').click();
             }
 
+            if ($('#btnBookingCardCollapse_0').length) {
+                showAlert(alertConfirmation2, 'Store');
+            }
+            else {
+
+                let bookingcard = createBookingCard();
+
+                let index = $('.booking_sm_area').find('.card').length;
+                bookingcard = setBookingCardValues(bookingcard, '00000000-0000-0000-0000-000000000000', '0', index);
+
+                $('#bookingCards').append(bookingcard);
+
+                setTimeout(() => {
+                    $('.bookingCardTitle')[index].click();
+                }, 500);
+            }
+        })
+
+        function onSetCommodity() {
+            dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.getBookingCardById($('#ExportBookingDto_Id').val()).done(function(res) 
+            { 
+                var commodities = res.extraProperties.Commodities;
+
+                if (commodities && commodities.length) {
+                    var commodityIndex = 0;
+                    commodities.forEach(function (commodity) {
+                        commodity.chkIndex = commodityIndex;
+
+                        var newRow = $('#commodityTemplate').tmpl(commodity);
+                        $('#commodityBody').append(newRow);
+
+                        commodityIndex += 1;
+                    });
+
+                    $('#btnCommodity').removeAttr('disabled');
+                    $('#btnCommodityHTS').removeAttr('disabled');
+                }
+            });
         }
+
+        function setPoValue() {
+            var tagOptions = {};
+            var poNos = '';
+            tagOptions.onDel = function () {
+                setTimeout(() => {
+                    var tags = $('#PoNoTag').tagsStr();
+                    $('#ExportBooking_PoNo').val(tags);
+                    if (!tags) {
+                        $('#btnPO').attr('disabled', 'disabled');
+                    }
+                }, 100)
+            }
+
+            $("#PoNoTag").tagsInit(tagOptions);
+
+            dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.getBookingCardById($('#ExportBookingDto_Id').val()).done(function (res) {
+                poNos = res.poNo;
+            });
+
+            if (poNos) {
+                poNos.split(',').forEach((poNo) => $("#PoNoTag").tagsAdd(poNo, poNo));
+                $('#btnPO').removeAttr('disabled');
+            }
+
+            $('#PoNoTag_tag_input').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    $('#ExportBooking_PoNo').val($('#PoNoTag').tagsStr());
+                    $('#btnPO').removeAttr('disabled');
+                }
+            });
+        }
+
+        function initHideBtn() {
+            var isHide = $("#isHide").val();
+            if (isHide == 1) {
+                $(".hideArea").hide();
+                $("#hideLi").hide();
+                $("#showLi").show();
+                $("#isHide").val(0);
+            } else {
+                $(".hideArea").show();
+                $("#hideLi").show();
+                $("#showLi").hide();
+                $("#isHide").val(1);
+            }
+        }
+
+        function initReasonStatus() {
+            var locked = !$("#ExportBooking_IsCanceled").is(":checked");
+            $("#ExportBooking_CanceledDate").attr('readonly', locked);
+
+            $("#drop_CancelReason").attr('readonly', locked);
+            if (!locked) {
+                $("#ExportBookingDto_CancelName").val(abp.currentUser.userName);
+                $("#ExportBookingDto_CancelById").val(abp.currentUser.id);
+            } else {
+                $("#ExportBookingDto_CancelName").val("");
+                $("#ExportBookingDto_CancelById").val("");
+            }
+        }
+
+        function initRemark(remarkIndex) {
+            $(".remarkArea").hide();
+            switch (remarkIndex) {
+                default:
+                    $("#ExportBooking_BookingRemark").show();
+                    break;
+                case 1:
+                    $("#ExportBooking_ShippingRemark").show();
+                    break;
+                case 2:
+                    $("#ExportBooking_CargoRemark").show();
+                    break;
+
+            }
+        }
+
+        function onBookingCardClick(e, bookingId) {
+            var element = e.currentTarget || e.target || e.srcElement;
+            var bookingNo = element.id.split('_')[1];
+
+            if ($('#btnBookingCardCollapse_0').length && bookingNo != 0) {
+                BOOKINGNO = bookingNo;
+                showAlert(alertConfirmation, 'Continue');
+            }
+            else {
+                var color = getComputedStyle(element.parentElement.parentElement).backgroundColor;
+
+                if (!$('#btnBookingCardCollapse_' + bookingNo).attr('class').includes('collapsed')) {
+                    $('.bookingCardBookingNo').addClass('d-none');
+                    $('#bookCard_' + bookingNo).removeClass('d-none');
+                }
+                else {
+
+                    var ajaxParams = undefined;
+
+                    Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
+
+                    abp.ajax($.extend(true, {
+                        url: abp.appPath + 'api/ImportExport/ExportBookingBasic?Id=' + bookingId,
+                        type: 'GET',
+                        dataType: "html",
+                    }, ajaxParams)).done(function (partial) {
+                        $('#partialContainer').html('');
+                        $('#partialContainer').html(partial);
+                        $('#bookCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
+                        Swal.clickCancel();
+                        //if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
+                        setTimeout(() => {
+                            var l = abp.localization.getResource('Freight');
+
+                            $('#ExportBooking_SoNoDate').datetimepicker({
+                                format: 'Y-m-d H:i',
+                                step: 15,
+                                allowInput: false,
+                                value: new Date()
+                            });
+
+                            const ids = [
+                                'ExportBookingDto_SoNoDate',
+                                'ExportBookingDto_PorEtd',
+                                'ExportBookingDto_PodEta',
+                                'ExportBookingDto_DelEta',
+                                'ExportBookingDto_FdestEta',
+                                'ExportBookingDto_WhCutOffTime',
+                                'ExportBookingDto_DocCutOffTime',
+                                'ExportBookingDto_PortCutOffTime',
+                                'ExportBookingDto_VgmCutOffTime',
+                                'ExportBookingDto_RailCutOffTime',
+                                'ExportBookingDto_EarlyReturnDatetime',
+                                'ExportBookingDto_Trans1Eta'
+                            ];
+
+                            ids.forEach(function (id) {
+                                let dateElem = $('#' + id);
+
+                                if (dateElem.length === 0) {
+                                    return;
+                                }
+
+                                dateElem.removeAttr('type').datetimepicker({
+                                    format: 'Y-m-d H:i',
+                                    step: 15,
+                                    allowInput: false
+                                });
+
+                                let currentVal = dateElem.val();
+                                if (currentVal.includes('T')) {
+                                    dateElem.val(currentVal.replace('T', ' '));
+                                }
+                            });
+
+                            initializeDropdownSearch("ExportBookingDto_CancelReason");
+                            initializeDropdownSearch("ExportBookingDto_ReferenceId");
+                            initializeDropdownSearch("ExportBookingDto_CarrierId");
+                            initializeDropdownSearch("ExportBookingDto_ShipModeId");
+                            initializeDropdownSearch("ExportBookingDto_FreightTermForBuyerId");
+                            initializeDropdownSearch("ExportBookingDto_FreightTermForSalerId");
+                            initializeDropdownSearch("ExportBookingDto_SvcTermFromId");
+                            initializeDropdownSearch("ExportBookingDto_SvcTermToId");
+                            initializeDropdownSearch("ExportBookingDto_IncotermsId");
+                            initializeDropdownSearch("ExportBookingDto_CargoTypeId");
+                            initializeDropdownSearch("ExportBookingDto_ShipperId");
+                            initializeDropdownSearch("ExportBookingDto_CustomerId");
+                            initializeDropdownSearch("ExportBookingDto_BillToId");
+                            initializeDropdownSearch("ExportBookingDto_ConsigneeId");
+                            initializeDropdownSearch("ExportBookingDto_NotifyId");
+                            initializeDropdownSearch("ExportBookingDto_ShippingAgentId");
+                            initializeDropdownSearch("ExportBookingDto_HblAgentId");
+                            initializeDropdownSearch("ExportBookingDto_CoLoaderId");
+                            initializeDropdownSearch("ExportBookingDto_FbaId");
+                            initializeDropdownSearch("ExportBookingDto_CargoPickupId");
+                            initializeDropdownSearch("ExportBookingDto_TruckerId");
+                            initializeDropdownSearch("ExportBookingDto_DeliveryToId");
+                            initializeDropdownSearch("ExportBookingDto_DelId");
+                            initializeDropdownSearch("ExportBookingDto_SalespersonId");
+                            initializeDropdownSearch("ExportBookingDto_PorId");
+                            initializeDropdownSearch("ExportBookingDto_PolId");
+                            initializeDropdownSearch("ExportBookingDto_PodId");
+                            initializeDropdownSearch("ExportBookingDto_FdestId");
+                            initializeDropdownSearch("ExportBookingDto_TransPort1Id");
+                            initializeDropdownSearch("ExportBookingDto_OfficeId");
+                            initializeDropdownSearch("ExportBookingDto_ReferralById");
+                            initializeDropdownSearch("ExportBookingDto_EmptyPickupId");
+
+                            $("#checkHideBtn").click(function () {
+                                initHideBtn();
+                            });
+                            $("#ExportBooking_IsCanceled").change(function () {
+                                initReasonStatus()
+                            });
+                            $('#ExportBooking_IsCreateBySystem').on('click', function (res) {
+                                var l = abp.localization.getResource('Freight');
+                                if (res.currentTarget.checked) {
+                                    abp.message.confirm(l('SystemBookingNoConfirm')).then(function (confirmed) {
+                                        if (confirmed) {
+                                            dolphin.freight.settings.sysCodes.sysCode.getSystemBookingNo({ queryType: 'ExportBooking_SoNo' }).done(function (rs) {
+                                                $('#ExportBooking_SoNo').val(rs);
+                                            });
+                                        }
+                                    });
+                                }
+                            })
+
+                            onSetCommodity();
+                            setPoValue();
+                            initHideBtn();
+                            initRemark(0);
+                            initReasonStatus();
+
+                            dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.getBookingCardById($('#ExportBookingDto_Id').val()).done(function (res) {
+                                var sono = res.soNo;
+                                $('#ExportBooking_SoNo').val(sono);
+                            });
+                        }, 500);
+                    })
+
+                    $('.btnBookingCardCollapse').each(function (i, e) {
+                        let tempBookingNo = e.id.split('_')[1];
+                        if (tempBookingNo == bookingNo) {
+                            $('#btnBookingCardCollapse_' + bookingNo).click();
+                        }
+                        else {
+                            $('#btnBookingCardCollapse_' + tempBookingNo).addClass('collapsed');
+                            $('#btnBookingCardCollapse_' + tempBookingNo).attr('aria-expanded', 'false');
+                            $('#bookingCard_' + i).removeClass('show');
+                        }
+                    })
+                }
+            }
+        }
+
+        function createBookingCard() {
+            let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title bookingCardTitle" id="title_{{bookingNo}}"' +
+                ' onclick="onBookingCardClick(event,{{bookingCardId}})">{{bookingNo}}</h5>' +
+                ' <button type="button" class="btn d-none btn-collapse collapsed btnBookingCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnBookingCardCollapse_{{bookingNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+            return abpCard;
+        }
+
+        function setBookingCardValues(abpcard, cardId, bookingNo, index) {
+            let apbCardClass = 'card board-item mb-3 booking-sm-' + index;
+            let cardBodyId = 'bookingCard_' + index;
+            cardId = "'" + cardId + "'";
+
+            abpcard = abpcard.replaceAll("{{divClass}}", apbCardClass);
+            abpcard = abpcard.replaceAll("{{bookingNo}}", bookingNo);
+            abpcard = abpcard.replaceAll("{{bookingCardId}}", cardId);
+            abpcard = abpcard.replaceAll("{{index}}", index);
+            abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
+
+            return abpcard;
+        }
+
+        function showAlert(funName, buttonName) {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, are you sure you want to ' + buttonName.toLowerCase() + '?',
+                showCancelButton: true,
+                confirmButtonText: buttonName,
+            }).then(funName)
+        }
+
+        function alertConfirmation(result) {
+            if (result.isConfirmed) {
+                let indx = $('.booking_sm_area').find('.card').length;
+                $('#btnBookingCardCollapse_0').parent().parent().remove();
+                if (BOOKINGNO) {
+                    $('#title_' + BOOKINGNO).click()
+                }
+                else {
+                    $('#bookingCard_' + (indx - 2)).parent().find('.card-title').click();
+                }
+            }
+        }
+
+        function alertConfirmation2() {
+            $('#saveBtn').click();
+        }
+
+        function resetIndexes() {
+            var newIndex = 0;
+            $("#trtbody tr:visible").each(function () {
+                if ($(this).attr("id").startsWith("tr_")) {
+                    $(this).attr("id", "tr_" + newIndex);
+
+                    $(this).find("input, div.input-group").each(function () {
+                        if (this.name) {
+                            this.name = this.name.replace(/\[.*?\]/, "[" + newIndex + "]");
+                        }
+                        if (this.id) {
+                            var parts = this.id.split("_");
+                            this.id = parts[0] + "_" + newIndex;
+                        }
+                    });
+
+                    $(this).find("td:eq(1)").text(newIndex + 1);
+                    newIndex++;
+                }
+            });
+
+            trindex = newIndex;
+        }
+
+        function addTrTag(value0, value1, value2, value3, value4, value5, value6, value7, value8) {
+            var serialNo = trindex+1;
+            var trhtml = "<tr id='tr_" + trindex + "'><td style='text-align: center;'><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Status' value='0' id='did_" + trindex + "' />  <input type='checkbox' data-id='" + value0 + "' onclick='checkDataId(\"" + value0 + "\", event)' name='f0' id='f0_" + trindex + "'  value='" + trindex + "' /></td>"
+            trhtml = trhtml + "<td style='text-align: center;'>" + serialNo + "</td>"
+            trhtml = trhtml + "<td><div class='input-group'><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].ContainerNo' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> </div></td>"
+            trhtml = trhtml + "<td> <input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].Id' value='" + value0 + "' /><input type='hidden' name='CreateUpdateContainerDtos[" + trindex + "].MblType' value='4' />";
+            trhtml = trhtml + getcontainerSizeSelect(value2) + "</td>";
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
+            trhtml = trhtml + "<td></td>"
+            //trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].SealNo' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
+            trhtml = trhtml + "<td><input type='text' name='CreateUpdateContainerDtos[" + trindex + "].PackageNum' id='f4_" + trindex + "' class='form-control' value='0' disabled /></td>"
+            trhtml = trhtml + "<td><input type='text' placeholder='KGS' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeightKGS' id='f5_kgs_" + trindex + "' class='form-control' value='0' disabled /></td>"
+            trhtml = trhtml + "<td><input type='text' placeholder='LBS' name='CreateUpdateContainerDtos[" + trindex + "].PackageWeightLBS' id='f5_lbs_" + trindex + "' class='form-control' value='0' disabled /></td>"
+            trhtml = trhtml + "<td><input type='text' placeholder='CBM' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasureCBM' id='f6_cbm_" + trindex + "' class='form-control' value='0' disabled /></td>"
+            trhtml = trhtml + "<td><input type='text' placeholder='CFT' name='CreateUpdateContainerDtos[" + trindex + "].PackageMeasureCFT' id='f6_cft_" + trindex + "' class='form-control' value='0' disabled /></td>"
+            trhtml = trhtml + "</tr>"
+            trhtml = trhtml + "<tr id='tr2_" + trindex + "' style='display:none;'><td colspan='6'><div></div></td>"
+            trhtml = trhtml + "</tr>"
+            $("#trtbody").append(trhtml);
+             trindex++;
+        }
+           
         function addCardRight(hblId, hblNo, soNo, bgColor) {
             var cardHtml = "<div id='card_" + hblId + "' class='card mt-3' onclick=''>"
             cardHtml = cardHtml + "<div class='card-body'  style='background:" + bgColor + ";color:#FFFFFF;'>"
@@ -160,27 +645,51 @@
             return cardHtml;
         }
         function addTr() {
-            addTrTag("", "", "", "", "", "");
+            addTrTag("", "", "", "", "", "","","");
         }
-        function addTrTag(value1, value2, value3, value4, value5, value6) {
-            trindex++;
-            var trhtml = "<tr id='tr_" + trindex + "'><td><input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f1' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> </td>"
-            trhtml = trhtml + "<td><input type='text' name='f2' id='f2_" + trindex + "' class='form-control' value='" + value2 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f3' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f4' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f5' id='f5_" + trindex + "' class='form-control' value='" + value5 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' name='f6' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
-            trhtml = trhtml + "</tr>"
-            $("#trtbody").append(trhtml);
+        function getcontainerSizeSelect(selectedId) {
+            var selectHtml = "<select name='CreateUpdateContainerDtos[" + trindex + "].ContainerSizeId' class='form-select' >";
+            for (var i = 0; i < containerSizes.length; i++) {
+                selectHtml = selectHtml + "<option value='" + containerSizes[i].id + "' ";
+                if (containerSizes[i].id == selectedId) selectHtml = selectHtml + " selected ";
+                selectHtml = selectHtml + ">" + containerSizes[i].containerCode + "</option>"
+            }
+            selectHtml = selectHtml + "</select>";
+            return selectHtml;
         }
+       
+        function exportDiv(trindex) {
+            $("#tr2_" + trindex).show();
+        }
+
+        $("#deleteBtn").click(function () {
+            $("input[name='f0']:checked").each(function () {
+                var tid = $(this).val();
+                $("#did_" + tid).val("1");
+                $("#tr_" + $(this).val()).hide();
+            });
+            resetIndexes();
+        })
+        // function addTrTag(value1, value2, value3, value4, value5, value6) {
+        //     trindex++;
+        //     var trhtml = "<tr id='tr_" + trindex + "'><td><input type='checkbox' name='f0' id='f0_" + trindex + "'  value='" + trindex + "'    /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f1' id='f1_" + trindex + "' class='form-control' value='" + value1 + "'/> </td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f2' id='f2_" + trindex + "' class='form-control' value='" + value2 + "' /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f3' id='f3_" + trindex + "' class='form-control' value='" + value3 + "' /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f4' id='f4_" + trindex + "' class='form-control' value='" + value4 + "' /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f5' id='f5_" + trindex + "' class='form-control' value='" + value5 + "' /></td>"
+        //     trhtml = trhtml + "<td><input type='text' name='f6' id='f6_" + trindex + "' class='form-control' value='" + value6 + "' /></td>"
+        //     trhtml = trhtml + "</tr>"
+        //     $("#trtbody").append(trhtml);
+        // }
     </script>
 }
 <div class="page-header">
     <div class="breadcrumb-wrapper">
         <abp-breadcrumb>
+            <abp-breadcrumb-item href="#" title=@L["Menu:Home"] />
             <abp-breadcrumb-item title=@L["Menu:OceanExports"] />
-            <abp-breadcrumb-item title=@L["Menu:VesselSchedules.Create"] href="#" />
+            <abp-breadcrumb-item title="@Model.VesselSchedule.ReferenceNo"  />
         </abp-breadcrumb>
     </div>
     <nav class="submenu">
@@ -236,10 +745,10 @@
                             </div>
                             -->
                            
-                            <button class="btn btn-collapse " type="button" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
+                            <button class="btn btn-collapse " id="btnVesselCollapse" type="button" data-bs-toggle="collapse" data-bs-target="#vesselDiv" aria-expanded="true" aria-controls="vesselDiv">
                             </button>
                         </abp-card-header>
-                        <abp-card-body class="collapse show customForm" id="mblDiv">
+                        <abp-card-body class="collapse show customForm" id="vesselDiv">
                             <abp-row>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.ReferenceNo" />
@@ -289,13 +798,13 @@
 
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.CoLoaderId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "CoLoaderId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.CoLoaderId.ToString() })
-
                                 </abp-column>
                                 <abp-column size-md="_3">
-
+                                    <label class="form-label">@L["OP"]</label>
+                                    <input class="form-control" type="text" value="@(CurrentUser.Name + " " + CurrentUser.SurName)" disabled />
                                 </abp-column>
                                 <abp-column size-md="_6">
-
+                                    
                                 </abp-column>
                             </abp-row>
 
@@ -312,105 +821,86 @@
                                     <abp-input asp-for="VesselSchedule.Voyage" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DeliveryToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "CoLoaderId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.DeliveryToId.ToString() })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DeliveryToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "DeliveryToId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.DeliveryToId.ToString() })
 
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.EmptyPickupId", AspItems = Model.TradePartnerLookupList, IsShowLabel = true, FieldName = "EmptyPickupId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.EmptyPickupId.ToString() })
 
                                 </abp-column>
-
-
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolId", SelectType = 0, ShowFiledContentValue = Model.VesselSchedule.PolId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PolEtd" />
+                                    <abp-input asp-for="VesselSchedule.PolEtd" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PorId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PorEtd" />
+                                    <abp-input asp-for="VesselSchedule.PorEtd" abp-data-datepicker="false" />
                                 </abp-column>
-
-
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.PodId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PodEta" />
+                                    <abp-input asp-for="VesselSchedule.PodEta" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.DelId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.DelEta" />
+                                    <abp-input asp-for="VesselSchedule.DelEta" abp-data-datepicker="false" />
                                 </abp-column>
-
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FdestId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.FdestEta" />
+                                    <abp-input asp-for="VesselSchedule.FdestEta" abp-data-datepicker="false" />
                                 </abp-column>
-                                <abp-column size-md="_6">
-                                    &nbsp;
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-column>
-                                    &nbsp;
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FreightTermId", AspItems = Model.FreightTermLookupList, IsShowLabel = true, FieldName = "FreightTermId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.FreightTermId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ShipModeId", AspItems = Model.ShipModeLookupList, IsShowLabel = true, FieldName = "ShipModeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.ShipModeId.ToString() })
                                 </abp-column>
+
+                            </abp-row>
+                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.SvcTermFromId", AspItems = Model.SvgTermLookupList, IsShowLabel = true, FieldName = "SvcTermFromId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.SvcTermFromId.ToString() })
-
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.SvcTermToId", AspItems = Model.SvgTermLookupList, IsShowLabel = true, FieldName = "SvcTermToId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.SvcTermToId.ToString() })
                                 </abp-column>
-
-                            </abp-row>
-                            <abp-row>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OblTypeId", AspItems = Model.OblTypeList, IsShowLabel = true, FieldName = "OblTypeId", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.OblTypeId.ToString() })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.RailCutOffTime" />
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.PortCutOffTime" />
-                                </abp-column>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.VgmCutOffTime " />
+                                    <abp-input asp-for="VesselSchedule.RailCutOffTime" abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.OnBoardDate" />
+                                    <abp-input asp-for="VesselSchedule.PortCutOffTime" abp-data-datepicker="false" />
                                 </abp-column>
-                                <abp-column size-md="_9">
-
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="VesselSchedule.VgmCutOffTime " abp-data-datepicker="false" />
                                 </abp-column>
-                            </abp-row>
-                            <abp-row>
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="VesselSchedule.OnBoardDate" abp-data-datepicker="false" />
+                                </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.SubBlNo" />
                                 </abp-column>
+                            </abp-row>
+                            <abp-row>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="VesselSchedule.ServiceContactNo" />
                                 </abp-column>
@@ -420,15 +910,9 @@
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.TransPort1Id", AspItems = Model.TransPortList, IsShowLabel = true, FieldName = "TransPort1Id", SelectType = 2, ShowFiledContentValue = Model.VesselSchedule.TransPort1Id.ToString() })
                                 </abp-column>
-                            </abp-row>
-                            <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="VesselSchedule.Trans1Eta" />
+                                    <abp-input asp-for="VesselSchedule.Trans1Eta" abp-data-datepicker="false" />
                                 </abp-column>
-                                <abp-column size-md="_9">
-
-                                </abp-column>
-
                             </abp-row>
                             <abp-row>
 
@@ -440,29 +924,82 @@
                                         集裝箱清單
                                         <abp-button class="btn btn-success me-md-2" type="button" id="addBtn">+</abp-button>
                                         <abp-button class="btn btn-outline-danger me-md-2" type="button" id="deleteBtn">-</abp-button>
+                                        <abp-dropdown>
+                                            <abp-dropdown-button text="Create MB/L" button-type="Outline_Dark" id="createMblBtn" disabled="true" />
+                                            <abp-dropdown-menu>
+                                                <abp-dropdown-item href="javascript:void(0)" onclick="createOneMbl()"><i class="fas fa-compress-alt"></i>Create 1 MB/L</abp-dropdown-item>
+                                                <abp-dropdown-item id="btnExcelConfiguration" href="javascript:void(0)" onclick="createOneMblforEachBooking()"><i class="fas fa-expand-alt"></i>Create 1 MB/L for each booking</abp-dropdown-item>
+                                            </abp-dropdown-menu>
+                                        </abp-dropdown>
                                     </div>
                                     <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
                                         <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
-                                            <th width="5%"><input type="checkbox" id="checkAll" /></th>
-                                            <th width="12%">@L["Display:PackageNo"]</th>
-                                            <th width="12%">@L["Display:PackageSize"]</th>
-                                            <th width="12%">@L["Display:Seal"]</th>
-                                            <th width="12%">@L["Display:SoNo"]</th>
-                                            <th width="8%">@L["Display:PackageType"]</th>
-                                            <th width="16%">@L["Display:Weight"]</th>
-                                            <th width="16%">@L["Display:Volume"]</th>
-                                            <th width="7%">@L["Display:Package"]</th>
+                                            <th width="5%" rowspan="2" style="background-color: #f4f4f4; text-align: center;" style="color: #333333;"><input type="checkbox" id="checkAll" /></th>
+                                            <th width="5%" rowspan="2" class="text-center" style="background-color: #f4f4f4;"><b>#</b></th>
+                                            <th width="12%" rowspan="2" style="background-color: #f4f4f4;">@L["Display:ContainerNo"]</th>
+                                            <th width="12%" rowspan="2" style="background-color: #f4f4f4;">@L["Display:TP/SZ"]</th>
+                                            <th width="12%" rowspan="2" style="background-color: #f4f4f4;">@L["Display:Seal No"]</th>
+                                            <th width="12%" rowspan="2" style="background-color: #f4f4f4;">@L["Display:BookingNo"]</th>
+                                            <th width="8%" rowspan="2" style="background-color: #f4f4f4;">@L["PKG"]</th>
+                                            <th width="16%" colspan="2" style="background-color: #f4f4f4; text-align: center;">@L["Display:Weight"]</th>
+                                            <th width="16%" colspan="2" style="background-color: #f4f4f4; text-align: center;">@L["Display:Volume"]</th>
+                                        </tr>
+                                        <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                            <th style="background-color: #f4f4f4;">KGS</th>
+                                            <th style="background-color: #f4f4f4;">LBS</th>
+                                            <th style="background-color: #f4f4f4;">CBM</th>
+                                            <th style="background-color: #f4f4f4;">CFT</th>
                                         </tr>
                                         <tbody id="trtbody">
                                         </tbody>
-
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="6" align="right"><strong>Total:</strong></td>
+                                                <td id="totalPackageType">0</td>
+                                                <td id="totalWeightKGS">0</td>
+                                                <td id="totalWeightLBS">0</td>
+                                                <td id="totalVolumeCBM">0</td>
+                                                <td id="totalVolumeCFT">0</td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
-
+                                    <br />
+                                    <abp-row>
+                                        <abp-column>
+                                            <div>
+                                                Shipment Status
+                                            </div>
+                                        </abp-column>
+                                        <abp-column class="shipmentStatus text-right">
+                                            <input type="radio" class="btn-check" name="ViewStatus" id="ViewStatus" value="0" checked>
+                                            <label class="btn btn-outline-secondary btn-sm checkLabel" for="ViewStatus" onclick="checkStatus(0)">@L["Btn:ViewStatus"]</label>
+                                            <input type="radio" class="btn-check" name="EditStatus" id="EditStatus" value="1">
+                                            <label class="btn btn-outline-secondary btn-sm checkLabel" for="EditStatus" onclick="checkStatus(1)">@L["Btn:EditStatus"]</label>
+                                        </abp-column>
+                                    </abp-row>
+                                    <table width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                                        <tr style="border:1;border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                            <th width="5%" style="background-color: #f4f4f4; text-align: center;" style="color: #333333;"><i class="fa fa-lock"></i></th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["FileNo"]</th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["Manifest:MBLNo"]</th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["Display:ContainerNo"]</th>
+                                            <th width="16%" style="background-color: #f4f4f4;"><button type="button" onclick="displayHblBookingBtn(event)">@L["HblNo"]</button></th>
+                                            <th width="16%" style="background-color: #f4f4f4; display: none;"><button type="button" onclick="displayHblBookingBtn(event)">@L["SoCode"]</button></th>
+                                            <th width="8%" style="background-color: #f4f4f4;">@L["Display:TP/SZ"]</th>
+                                            <th width="12%" style="background-color: #f4f4f4;">@L["Display:Seal No"]</th>
+                                            <th width="16%" style="background-color: #f4f4f4;">@L["CreateDate"]</th>
+                                        </tr>
+                                        <tbody id="shipmentbody">
+                                        </tbody>
+                                    </table>
+                                    <br />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-column>
-                                    @L["Title:Memo"]
+                                    <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                                        @L["Title:Memo"]
+                                    </abp-card-header>
                                     <abp-card>
                                         <abp-card-body>
                                             <partial name="Memos/_Memo" model="new _MemoModel(Model.Id, Dolphin.Freight.Common.FreightPageType.VS)" />
@@ -473,6 +1010,10 @@
                         </abp-card-body>
                     </abp-card>
                     <br />
+
+                    <!-- ExportBooking Card-->
+                    <div id="partialContainer">
+                    </div>
                 </div>
             </abp-column>
             <abp-column size-md="_3">
@@ -480,54 +1021,10 @@
 
                 <div class="card-wrap">
 
-                    <button class="btn btn-block btn-add">
+                    <button class="btn btn-block btn-add" type="button" id="addHBtn">
                         <i class="fa-solid fa-plus"></i>@L["Btn:AddSO"].Value
                     </button>
-
-                    <div class="function-wrap">
-
-                        <div class="form">
-                            <div class="form-group">
-                                <label for="cardOrderSet">卡片排序</label>
-                                <select class="form-control selectpicker" id="cardOrderSet">
-                                    <option selected>請選擇</option>
-                                    <option value="建立日期">建立日期</option>
-                                    <option value="HB/L 號碼">HB/L 號碼</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="sr-only" for="cardOrder">Preference</label>
-                                <select class="form-control selectpicker" id="cardOrder">
-                                    <option selected>請選擇</option>
-                                    <option value="遞增">遞增</option>
-                                    <option value="遞減">遞減</option>
-                                </select>
-                            </div>
-                            <fieldset class="form-group">
-                                <legend class="col-form-label">卡片顯示</legend>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1"
-                                           value="option1">
-                                    <label class="form-check-label"
-                                           for="inlineCheckbox1">託運人與收貨人</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2"
-                                           value="option2">
-                                    <label class="form-check-label" for="inlineCheckbox2">名稱標籤</label>
-                                </div>
-                            </fieldset>
-
-                            <button type="submit" class="btn btn-dark btn-block btn-update">
-                                <i class="fa-solid fa-arrows-rotate"></i>更新
-                            </button>
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="cardAnchor" id="hblCardDiv">
+                    <div class="booking_sm_area" id="bookingCards">
                     </div>
 
                 </div>
@@ -535,7 +1032,7 @@
 
             </abp-column>
         </abp-row>
-        <abp-row class="mt-3">
+        <abp-row class="mt-3" id="ejo">
             <abp-column>
                 <input type="hidden" name="VesselSchedule.OfficeId" id="mOfficeId" value="@Model.VesselSchedule.OfficeId" />
                 <input type="hidden" name="VesselSchedule.SvcTermFromId" id="mSvcTermFromId" value="@Model.VesselSchedule.SvcTermFromId" />
@@ -561,7 +1058,14 @@
                 <input type="hidden" name="VesselSchedule.FdestId" id="mFdestId" value="@Model.VesselSchedule.FdestId" />
                 <input type="hidden" name="VesselSchedule.TransPort1Id" id="mTransPort1Id" value="@Model.VesselSchedule.TransPort1Id" />
 
-                <abp-button class="btn btn-primary me-md-2" type="button" id="saveEditBtn">@L["Save"].Value</abp-button>
+                <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
+                    @* <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Save"].Value</abp-button> *@
+                                      <button class="btn btn-primary me-md-2 rounded-circle" type="submit" id="saveBtn" style="width: 50px; height: 50px;">
+  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-save fa-w-14 fa-2x">
+    <path fill="currentColor" d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM224 416c-35.346 0-64-28.654-64-64 0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64zm96-304.52V212c0 6.627-5.373 12-12 12H76c-6.627 0-12-5.373-12-12V108c0-6.627 5.373-12 12-12h228.52c3.183 0 6.235 1.264 8.485 3.515l3.48 3.48A11.996 11.996 0 0 1 320 111.48z"></path>
+  </svg>
+  </button>
+                </div>
             </abp-column>
         </abp-row>
         <abp-row>

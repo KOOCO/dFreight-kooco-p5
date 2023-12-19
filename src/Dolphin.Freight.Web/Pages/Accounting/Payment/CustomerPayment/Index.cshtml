@@ -1,10 +1,13 @@
 ﻿@page
 @using Dolphin.Freight.Localization
+@using Dolphin.Freight.Web.CommonService;
 @using Dolphin.Freight.Permissions
 @using Dolphin.Freight.Web.Pages.Components
+@using Dolphin.Freight.Web.Pages.Shared.Memos;
 @using Microsoft.Extensions.Localization
 @model Dolphin.Freight.Web.Pages.CustomerPayment.IndexModel
 @inject IStringLocalizer<FreightResource> L
+@inject IDropdownService _dropdown 
 @section scripts
     {
     <abp-script src="/Pages/Accounting/Payment/CustomerPayment/Index.js"></abp-script>
@@ -12,19 +15,116 @@
     <script type="text/javascript">
         $(document).ready(function () {
                     var l = abp.localization.getResource('Freight');
-                    //$('#Accounting_InvoiceList_PaymentId').val('@Model.CustomerPayment.PaymentId');
-                    document.getElementById("CustomerPayment_Deposit").disabled = true;
-                    document.getElementById("CustomerPayment_Invalid").disabled = true;
-                });
 
+                          const ids = [
+            "CustomerPayment_Deposit",
+            "CustomerPayment_Invalid",
+            "CustomerPayment_ReleaseDate"
+        ];
+
+        ids.forEach(function (id) {
+            let dateElem = $('#' + id);
+
+            if (dateElem.length === 0) {
+                return;
+            }
+
+            dateElem.removeAttr('type').datetimepicker({
+                format: 'Y-m-d H:i',
+                step: 15,
+                allowInput: false
+            });
+
+            let currentVal = dateElem.val();
+            if (currentVal.includes('T')) {
+                dateElem.val(currentVal.replace('T', ' '));
+            }
+        });
+    
+
+    $(".cdatetime").change(function () {
+        checkDateTime($(this).attr("id"), $(this).val())
+    })
+
+
+
+                    //$('#Accounting_InvoiceList_PaymentId').val('@Model.CustomerPayment.PaymentId');
+            debugger;
+            if ('@Model.CustomerPayment.Deposit' != null&&'@Model.CustomerPayment.Deposit' != '') { 
+            
+             document.getElementById("CustomerPayment_Deposit").disabled = false;
+             document.getElementById("CPDck").checked = true;
+
+            }else{
+            document.getElementById("CustomerPayment_Deposit").disabled = true;
+            }
+            if ('@Model.CustomerPayment.Invalid' != null&&'@Model.CustomerPayment.Invalid' != '') {
+
+                document.getElementById("CustomerPayment_Invalid").disabled = false;
+                document.getElementById("CPIck").checked = true;
+                document.getElementById("CPDck").disabled = true;
+            } else {
+            document.getElementById("CustomerPayment_Invalid").disabled = true;
+            }  
+                    
+                });
+function checkDateTime(id,checkdate )
+{
+    var startdate = '2023-02-01';
+    var enddate = '2023-04-01';
+    var d = checkdate.toString().split(" ");
+    var checkIndex = 0;
+    if (d.length == 2) {
+        var d2 = d[0].split("-");
+        if (d2.length == 3) {
+            if (d2[0].length == 4 ) {
+                var date1 = new Date(d2[0], d2[1], d2[3]);
+                var date2 = new Date(startdate);
+                var date3 = new Date(enddate);
+                var dateCheck1 = date2 > date1;
+                var dateCheck2 = date1 > date3;
+                var dateCheck3 = date2.getTime() - date3.getTime();
+                if (dateCheck1) checkIndex = 1;
+                if (dateCheck2) checkIndex = 1;
+
+            } else {
+                checkIndex = 1;
+            }
+            
+           
+        } else {
+            console.log("2");
+            checkIndex = 1;
+        }
+    } else {
+        console.log("1");
+        checkIndex = 1;
+    }
+    if (checkIndex > 0) {
+        var date = new Date(startdate);
+        $("#" + id).val(startdate+" 00:00");
+    }
+}
         function CPD_disable() {
             if(document.getElementById("CustomerPayment_Deposit").disabled)
             {
+                var now = new Date();
+var year = now.getFullYear();
+var month = String(now.getMonth() + 1).padStart(2, '0');
+var day = String(now.getDate()).padStart(2, '0');
+var hours = String(now.getHours()).padStart(2, '0');
+var minutes = String(now.getMinutes()).padStart(2, '0');
+
+var formattedDate = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
+
                 document.getElementById("CustomerPayment_Deposit").disabled = false;
+              document.getElementById("CustomerPayment_Deposit").value =formattedDate;
+
             }
             else
             {
                 document.getElementById("CustomerPayment_Deposit").disabled = true;
+                document.getElementById("CustomerPayment_Deposit").value = null;
             }
         }
 
@@ -32,16 +132,30 @@
             if(document.getElementById("CustomerPayment_Invalid").disabled)
             {
                 document.getElementById("CustomerPayment_Invalid").disabled = false;
-                document.getElementById("CustomerPayment_Deposit").disabled = true;
+              
                 document.getElementById("CPDck").disabled = true;
+                 var now = new Date();
+                 var year = now.getFullYear();
+                 var month = String(now.getMonth() + 1).padStart(2, '0');
+                 var day = String(now.getDate()).padStart(2, '0');
+                 var hours = String(now.getHours()).padStart(2, '0');
+                 var minutes = String(now.getMinutes()).padStart(2, '0');
+
+                 var formattedDate = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
+ document.getElementById("CustomerPayment_Invalid").value = formattedDate;
             }
             else
             {
                 document.getElementById("CustomerPayment_Invalid").disabled = true;
-                document.getElementById("CustomerPayment_Deposit").disabled = false;
+                document.getElementById("CustomerPayment_Invalid").value = null;
                 document.getElementById("CPDck").disabled = false;
             }
         }
+            $('#createForm').on('abp-ajax-success', function (result, rs) {
+                event.preventDefault();
+                location.href = '/Accounting/Payment/CustomerPayment?Id=' + rs.responseText.id+'&edit=Y'
+            });
+
     </script>
     <style type="text/css">
         .container{
@@ -51,6 +165,11 @@
         .item-right, .item-center, .item-left{
          flex:1;
         }
+                 #ejo .btn-primary {
+    color: #fff;
+    background-color: rgb(25 28 32 / 52%);
+    border-color: #000000;
+}
     </style>
 }
 
@@ -64,126 +183,188 @@
     </div>
     <nav class="submenu">
         <ol>
+            @*<li class="menu-item" style="display: flex!important; align-items: flex-start!important;flex-direction: column">*@
             <li class="menu-item">
-                <a class="nav-link active" href="CustomerPayment">@L["Tab:Basic"]</a>
+                <a class="nav-link active" href="javascript:void(0)">@L["Tab:Basic"]</a>
             </li>
-            <li class="menu-item">
-                <a class="nav-link disabled" href="EditModal2">@L["Tab:Doc"]</a>
-            </li>
+            @{
+                if(Model.Id != Guid.Empty){
+                    <li class="menu-item">
+                        <a class="nav-link" href="/Accounting/Payment/CustomerPayment/DocCenter?Id=@Model.Id">@L["Tab:Doc"]</a>
+                    </li>
+                } else
+                {
+                    <li class="menu-item">
+                        <a class="nav-link disabled" href="DocCenter">@L["Tab:Doc"]</a>
+                    </li>
+                }
+            }
+            
         </ol>
     </nav>
 </div>
 <form submit-button="true" data-ajaxForm="true" id="createForm">
         <abp-row>
-            <abp-column>
+            <abp-column size="_12">
                 <abp-card border="Dark">
                     <abp-card-header style="background:#555555;color:#FFFFFF;">
                         <abp-row>
-                            <abp-column size-md="_9">
+                            <abp-column size-md="_12">
                                 <abp-card-title>
-                                    新增收款<span id="title0"></span>
+                                   @L["Menu:CustomerPayment"]<span id="title0"></span>
                                 </abp-card-title>
                             </abp-column>
                         </abp-row>                        
                     </abp-card-header>
-                    <abp-row>
-                        <abp-column size-md="_3">
-                            @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "PaymentLevel", FieldName = "PaymentLevel",DefaultValue="1" , IsShowLabel = true , IsRequired = false })*@
-                            <abp-select asp-for="CustomerPayment.PaymentLevel" asp-items="@Model.PLList" style="width:200px;" />
-                        </abp-column>
+                    <abp-card-body>
+                        <abp-row>
+                             <abp-column size="_4">
+                       <div class="form-group row mt-2">
+    <label class="col-4 col-form-label ml-3">@L["PaymentLevel"]</label>
+    <div class="col-4">
+        <abp-select suppress-label asp-for="CustomerPayment.PaymentLevel" asp-items="@Model.PLList" style="width:200px;" />
+    </div>
+</div>
+</abp-column>
                     </abp-row>
-                    <div class="container">                        
-                        <abp-card  class="item-left" style="max-width:33%;min-width:30%;background-color:lightgray;margin:0px 10px 10px 0px;">
+                            <abp-row>  
+                                <abp-column size="_4">
+                        <abp-card  >
+                             <abp-card-body style="background:#eeeeee;">
                             <abp-row>
-                                <abp-column size-md="_8">
+                                <abp-column size-md="_12">
+                             <div class="form-group row ">
+                             <label class="col-5 col-form-label "><span class="text-danger">*</span>@L["ReceivablesSources"]</label>
+                             <div class="col-7">
                                     @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "ReceivablesSources", FieldName = "ReceivablesSources",DefaultValue="" , IsShowLabel = true , IsRequired = false  })*@
-                                    <abp-select asp-for="CustomerPayment.ReceivablesSources" asp-items="@Model.RSList" style="width:300px" />
+                                    @* <abp-select suppress-label asp-for="CustomerPayment.ReceivablesSources" asp-items="@Model.RSList"  /> *@
+                                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "CustomerPayment.ReceivablesSources", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = false, FieldName = "ReceivablesSources",IsRequired=true, /*SelectType = 1,*/ ShowFiledContentValue = Convert.ToString(Model.CustomerPayment.ReceivablesSources) })
+                                </div>
+                               </div>
                                 </abp-column>
                             </abp-row>
                             <abp-row>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="CustomerPayment.ReleaseDate"  style="width:230px" />
+                                <abp-column size-md="_12">
+                                      <div class="form-group row ">
+                             <label class="col-5 col-form-label "><span class="text-danger">*</span>@L["ReleaseDate"]</label>
+                             <div class="col-7">
+                                    <abp-input  suppress-label required asp-for="CustomerPayment.ReleaseDate"  />
+                                    </div>
+                                    </div>
                                 </abp-column>
                             </abp-row>
                             <abp-row>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="CustomerPayment.CheckNo"  style="width:230px" />
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-column size-md="_8">
+                                <abp-column size-md="_12">
+                                              <div class="form-group row ">
+                             <label class="col-5 col-form-label ">@L["Category"]</label>
+                             <div class="col-7">
                                     @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "Category", FieldName = "Category",DefaultValue="0" , IsShowLabel = true , IsRequired = true })*@
-                                    <abp-select asp-for="CustomerPayment.Category" asp-items="@Model.CategoryList" style="width:230px" />
+                                    <abp-select suppress-label asp-for="CustomerPayment.Category" asp-items="@Model.CategoryList"  />
+                               </div>
+                               </div>
                                 </abp-column>
                             </abp-row>
+                            <abp-row>
+                                <abp-column size-md="_12">
+                                                  <div class="form-group row ">
+                             <label class="col-5 col-form-label ">@L["CheckNo"]</label>
+                             <div class="col-7">
+                                    <abp-input suppress-label asp-for="CustomerPayment.CheckNo"   />
+                                    </div>
+                                    </div>
+                                </abp-column>
+                            </abp-row>
+                            
                             <br/>
-                            <abp-row class="row g-0">                               
+                            <abp-row class="row g-0">  
+                                 <abp-column size-md="_12">
                                 @*<abp-column size-md="_3">*@
-                                    <div style="display:inline" class="col-md-2 align-self-center">
-                                        @L["Deposit"]<input type="checkbox" name="CPDck" id="CPDck" onclick="CPD_disable()"/>
+                                                         <div class="form-group row ">
+                             <label class="col-5 col-form-label ">@L["Deposit"] <input class="form-checkbox" type="checkbox" name="CPDck" id="CPDck" onclick="CPD_disable()"/></label>
+                             <div class="col-7">
+                                    
+                                        <input  asp-for="CustomerPayment.Deposit"  class="form-control"/>
                                     </div>
-                                    <div style="display:inline" class="col-md-1">  
-                                        <input asp-for="CustomerPayment.Deposit" style="width:230px" class="form-control"/>
                                     </div>
+                                    </abp-column>
                                 @*</abp-column>*@
                             </abp-row>
                             <br/>
                             <br/>
                             <abp-row class="row g-0">                              
-                                @*<abp-column size-md="_3">*@
-                                    <div style="display:inline" class="col-md-2 align-self-center">
-                                        @L["Invalid"]<input type="checkbox" name="CPIck" id="CPIck" onclick="CPI_disable()"/>
+                               
+                                         <abp-column size-md="_12">
+                                
+                                                         <div class="form-group row ">
+                             <label class="col-5 col-form-label ">@L["Invalid"] <input class="form-checkbox" type="checkbox" name="CPIck" id="CPIck" onclick="CPI_disable()"/></label>
+                             <div class="col-7">
+                                    
+                                        <input asp-for="CustomerPayment.Invalid" class="form-control"/>
                                     </div>
-                                    <div style="display:inline" class="col-md-1"> 
-                                        <input asp-for="CustomerPayment.Invalid" style="width:230px" class="form-control"/>
                                     </div>
-                                @*</abp-column>*@
+                                </abp-column>
                             </abp-row>
+                            </abp-card-body>
                         </abp-card>
-                        <abp-card class="item-center" style="max-width:33%;min-width:30%;background-color:lightgray;margin:0px 10px 10px 0px;">
+                       </abp-column>
+                         <abp-column size="_4">
+                        <abp-card>
+                            <abp-card-body style="background:#eeeeee;">
                             <abp-row>
-                                <abp-column size-md="_3">
-                                    @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "OfficeId", FieldName = "OfficeId",DefaultValue="" , IsShowLabel = true , IsRequired = true })*@
-                                <abp-select asp-for="CustomerPayment.OfficeId" asp-items="@Model.SubstationList" style="width:230px" />
-                                </abp-column>
+                                <abp-column size-md="_12">
+                                   
+                             <div class="form-group row ">
+                             <label class="col-5 col-form-label "><span class="text-danger">*</span>@L["OfficeId"]</label>
+                             <div class="col-7">  
+                                 <abp-select required suppress-label asp-for="CustomerPayment.OfficeId" asp-items="@Model.SubstationList" />
+                             </div>
+                             </div>
+                             </abp-column>
                             </abp-row>
                             <abp-row>
-                                <abp-column size-md="_3">
-                                    @*@await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "Bank", FieldName = "Bank",DefaultValue="" , IsShowLabel = true , IsRequired = false  })*@
-                                    <abp-select asp-for="CustomerPayment.Bank" asp-items="@Model.BankList" style="width:230px" />
-                                </abp-column>
+                                <abp-column size-md="_12">
+                                         
+                             <div class="form-group row ">
+                             <label class="col-5 col-form-label ">@L["Bank"]</label>
+                             <div class="col-7"> 
+                                 <abp-select suppress-label asp-for="CustomerPayment.Bank" asp-items="@Model.BankList"  />
+                             </div>
+                             </div>
+                             </abp-column>
                             </abp-row>
                             <abp-row>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="CustomerPayment.BankCurrency"  style="width:230px" readonly="true" value="TWD"/>
+                                <abp-column size-md="_12">
+                                     <div class="form-group row ">
+                             <label class="col-5 col-form-label ">@L["BankCurrency"]</label>
+                             <div class="col-7"> 
+                                    <abp-input suppress-label asp-for="CustomerPayment.BankCurrency"   readonly="true" value="TWD"/>
+                               </div>
+                               </div>
                                 </abp-column>
                             </abp-row>
-                            <abp-row>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="CustomerPayment.U2T"  style="width:230px"/>
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="CustomerPayment.R2T"  style="width:230px"/>
-                                </abp-column>
-                            </abp-row>
-                            <abp-row>
-                                <abp-column size-md="_3">
-                                    <abp-input asp-for="CustomerPayment.H2T"  style="width:230px"/>
-                                </abp-column>
-                            </abp-row>
+                          
+                            </abp-card-body>
                         </abp-card>
-                        <abp-card class="item-right" style="max-width:33%;min-width:30%;background-color:lightgray;margin:0px 0px 10px 0px;">
+                       </abp-column>
+                         <abp-column size="_4">
+                        <abp-card >
+                              <abp-card-body style="background:#eeeeee;">
                         <abp-row>
-                                <abp-column size-md="_3">
-                                    <label for="Memo" class="form-label">MEMO
-                                        <textarea asp-for="CustomerPayment.Memo" style="max-width:100%;width:300px;height:230px"></textarea>
-                                    </label>
+                                <abp-column size-md="_12">
+                                         <div class="form-group row ">
+                             <label class="col-3 col-form-label ">@L["Remark"]</label>
+                             <div class="col-9"> 
+                                    
+                                        <textarea asp-for="CustomerPayment.Memo" style="width:100%;height:100%" ></textarea>
+                                 </div>
+                                 </div>
                                 </abp-column>
                         </abp-row>
+                        </abp-card-body>
                         </abp-card>
-                    </div>
+       </abp-column>
+                    </abp-row>
+                    </abp-card-body>
                 </abp-card>
                 <br />
             </abp-column>
@@ -194,9 +375,29 @@
         @*<input type="hidden" name="GU" id="GU" value="@Model.CustomerPayment.GU" />*@
         <input type="hidden" name="datatablelist" id="datatablelist" value="" />
         @await Html.PartialAsync("~/Pages/Accounting/Inv/_InvoiceList.cshtml", "")
-        <abp-row class="mt-3">
+        <abp-row>
             <abp-column>
-                <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
+                <abp-card-header style="background:#cccccc;color:#FFFFFF;">
+                    @L["Title:Memo"]
+                </abp-card-header>
+                <abp-card>
+                    <abp-card-body>
+                        <partial name="Memos/_Memo" model="new _MemoModel(Model.Id, Dolphin.Freight.Common.FreightPageType.RP)" />
+                    </abp-card-body>
+                </abp-card>
+            </abp-column>
+        </abp-row>
+        <abp-row class="mt-3" id="ejo">
+            <abp-column>
+                @* <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button> *@
+            <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
+                  @*   <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Display:Button:New"].Value</abp-button> *@
+                 <button class="btn btn-primary me-md-2 rounded-circle" type="button" id="saveBtn" style="width: 60px; height: 60px;">
+  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-save fa-w-14 fa-2x">
+    <path fill="currentColor" d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM224 416c-35.346 0-64-28.654-64-64 0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64zm96-304.52V212c0 6.627-5.373 12-12 12H76c-6.627 0-12-5.373-12-12V108c0-6.627 5.373-12 12-12h228.52c3.183 0 6.235 1.264 8.485 3.515l3.48 3.48A11.996 11.996 0 0 1 320 111.48z"></path>
+  </svg>
+</button>
+                </div>
             </abp-column>
         </abp-row>        
     </form>

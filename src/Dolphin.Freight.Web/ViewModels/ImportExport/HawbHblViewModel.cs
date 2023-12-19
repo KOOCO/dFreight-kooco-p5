@@ -11,21 +11,40 @@ using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Web.Pages.AirImports;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
+using Dolphin.Freight.ImportExport.Containers;
 
 namespace Dolphin.Freight.Web.ViewModels.ImportExport
 {
     public class HawbHblViewModel
     {
+        public bool IsHblHaveInvoice { get; set; } = false;
+        private OceanImportHblDto _oceanImportHbl;
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public string ShowMsg { get; set; }
+        public string CabinateSize { get; set; }
+        public int Quantity { get; set; }
+        public int Index { get; set; }
         [BindProperty]
         public AirImportHawbDto HawbModel { get; set; }
         public OceanExportHblDto OceanExportHbl { get; set; }
-        public OceanImportHblDto OceanImportHbl { get; set; }
+        public List<SelectListItem> RateUnitTypeLookupList { get; set; }
+        public List<SelectListItem> UnitTypeLookupList { get; set; }
+        [BindProperty]
+        public CreateUpdateExportBookingDto ExportBookingDto { get; set; }
+        [BindProperty]
+        public CreateUpdateContainerDto CreateUpdateContainerBooking { get; set; }
+        public OceanImportHblDto OceanImportHbl { get { return _oceanImportHbl; } set
+            {
+                _oceanImportHbl = value;
+                _oceanImportHbl.ShipTypeId = AirImports.ShipType.Normal;   } }
+        public CreateUpdateOceanImportHblDto OceanImportHblDto { get; set; }
+        
         public AirExportHawbDto AirExportHawbDto { get; set; }
+        [BindProperty(SupportsGet = true)]
         public Guid Hid { get; set; }
         [BindProperty(SupportsGet = true)]
         public List<AttachmentDto> FileList { get; set; }
@@ -54,6 +73,8 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
         public List<SelectListItem> CountryName { get; set; }
         public List<SelectListItem> PackageUnitLookupList { get; set; }
         public List<SelectListItem> WtValOtherList { get; set; }
+        public List<SelectListItem> OtherList { get; set; }
+
         public virtual string GetFileSize(string filename)
         {
             string uploadsFolder = Path.Combine("mediaUpload", "AirImports", "DocCenter", Id.ToString());
@@ -70,5 +91,7 @@ namespace Dolphin.Freight.Web.ViewModels.ImportExport
             }
         }
         public string Title { get; set; }
+        public string CurrentHawbNo { get; set; }
+
     }
 }

@@ -30,5 +30,6 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// 負責操作人員
         /// </summary>
         public string MblOperatorName { get; set; } = "";
+        public string PackageUnitName { get; set; } = "";
     }
 }

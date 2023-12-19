@@ -11,19 +11,82 @@
     <abp-script src="/Pages/OceanExports/EditModel3.js" />
     @*<abp-script src="/Pages/OceanExports/CreateMbl.js" />*@
     <script type="text/javascript">
+        Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
+        var l = abp.localization.getResource('Freight');
+        var isLocked;
         $(document).ready(function () {
-            var isLocked = '@Model.OceanExportMbl.IsLocked';
-            if (isLocked == 'True') abp.message.warn("此項已經被鎖定，若需修改請小心！\n您作的變更可能導致會計報表不一致！");
-            //var IsShowHbl = '@Model.IsShowHbl';
-            //if (IsShowHbl == 'True') $("#hblCard").show();
-            //else $("#hblCard").hide();
-            //$("#addHBtn").click(function () {
-            //    var url = "/OceanExports/EditModal?Id=@Model.Id&NewHbl=1";
-            //    location.href = url;
-            //})
+             $('#cardSettingArea').hide();
+            isLocked = '@Model.OceanExportMbl.IsLocked';
+            if (isLocked != 'True') {
+                $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+            }
+            else {
+                $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+            }
+         Swal.clickCancel();
         });
+        function lockUnlockMbl(id) {
+            var isLock = $('#lockButtonMbl').find('i').hasClass('fa-lock');
+            abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+                if (confirmed) {
+                    Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
+                    dolphin.freight.importExport.oceanExports.oceanExportMbl.lockedOrUnLockedOceanExportMbl({ MbId: id })
+                        .done(function () {
+                            Swal.clickCancel();
+                            if (isLock) {
+                                $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+                                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                                abp.message.success(l('Message:SuccessUnlock'));
+                            } else {
+                                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                                 $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                            abp.message.success(l('Message:SuccessLock'));
+                            }
+                        });
+                }
+            });
+        }
+
+        function lockUnlockHbl(id) {
+            var isLock = $('#lockButtonHbl').find('i').hasClass('fa-lock');
+            abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+                if (confirmed) {
+                    Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
+                    dolphin.freight.importExport.oceanExports.oceanExportHbl.lockedOrUnLockedOceanExportHbl({ HblId: id })
+                        .done(function () {
+                            Swal.clickCancel();
+                            if (!isLock) {
+                                $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                                $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+                                abp.message.success(l('Message:SuccessLock'));
+                            } else {
+                                $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                                $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                                abp.message.success(l('Message:SuccessUnlock'));
+                            }
+                        });
+                }
+            });
+        }
+
         function gotoInvoice(Mid, Hid, InvoiceType) {
-            debugger;
             if (Hid != '00000000-0000-0000-0000-000000000000') {
                 location.href = '/Accounting/Invoice?MethodType=1&Mid=' + Mid + "&Hid=" + Hid + "&InvoiceType=" + InvoiceType;
             }
@@ -77,7 +140,6 @@
         $('#hblMainCard').append('#mawbCard');
 
         function onHawbCardClick(e, hawbId) {
-            debugger;
             var element = e.currentTarget || e.target || e.srcElement;
             var hblNo = element.id.split('_')[1];
 
@@ -111,8 +173,9 @@
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
-                        //$('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
+                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
+                        if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
                     })
 
                     $('.btnHawbCardCollapse').each(function (i, e) {
@@ -138,28 +201,65 @@
                 }
             }
         }
+    function createHawbCard() {
+             $('#cardSettingArea').show();
+            var check='False';
+           
+            debugger;
+            if ($('#cardCheck').prop('checked')) {
+                check = 'True';
+            
+            }
+           let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h6 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
+    ' onclick="onHawbCardClick(event,{{hblCardId}})">';
 
-        function createHawbCard() {
-            let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
-                ' onclick="onHawbCardClick(event,{{hawbId}})">{{hblNo}}</h5>' +
-                ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
-                ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
-            return abpCard;
+  // Check the condition and add the <i> tag if check is true
+            if (check=="False") {
+                abpCard += '<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="{{hblCosigneeName}} {{hblShipperName}}"></i>';
+                abpCard += '{{hblNo}}</h6>' +
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+
+            }
+            else {
+                // Add the rest of the card content
+                abpCard += '{{hblNo}}<br>{{hblCosigneeName}}<br>{{hblShipperName}}</h6>' +
+                
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+            }
+            abpCard += '<div class="card-footer"><div class="row"><div class="col-6 hblCardTitle1" style="border-bottom: solid;border-top: solid;border-right: solid;border-width: thin;">PKG: {{hblPackage}}</div><div class="col-6 hblCardTitle1" style="border-bottom: solid;border-top: solid;border-width: thin;">Weight: {{hblWeight}}</div><div class="col-12 hblCardTitle1">Measurement: {{hblMeasurement}}</div></div></div>';
+  return abpCard;
         }
 
-        function setHawbCardValues(abpcard, cardId, hblNo, index) {
+        function setHawbCardValues(abpcard, cardId, hblNo, index,hblCosigneeName,hblShipperName,weight,measurement,packagetype) {
             let apbCardClass = 'card board-item hbl-sm-' + index;
             let cardBodyId = 'hawbCard_' + index;
             cardId = "'" + cardId + "'";
 
             abpcard = abpcard.replaceAll("{{divClass}}", apbCardClass);
             abpcard = abpcard.replaceAll("{{hblNo}}", hblNo);
-            abpcard = abpcard.replaceAll("{{hawbId}}", cardId);
+            abpcard = abpcard.replaceAll("{{hblCardId}}", cardId);
             abpcard = abpcard.replaceAll("{{index}}", index);
             abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
+            abpcard = abpcard.replaceAll("{{hblPackage}}", packagetype);
+            abpcard = abpcard.replaceAll("{{hblWeight}}", weight);
+            abpcard = abpcard.replaceAll("{{hblMeasurement}}", measurement);
+             if (hblCosigneeName !== null) {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", hblCosigneeName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", "");
+  }
+
+  if (hblShipperName !== null) {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", hblShipperName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", "");
+  }
 
             return abpcard;
         }
+
 
         function showAlert(funName, buttonName) {
             Swal.fire({
@@ -195,34 +295,167 @@
                 myWindow.focus();
             });
         }
+            function getPickupDeliveryOrder() {
+            var idNo = $('#OceanExportMbl_Id').val();
+            myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")" + "?id=" + idNo, 'PickupDeliveryOrder', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
+            myWindow.focus()
+        }
+             function getReportTelexrelease() {
+                 var idNo = $('#OceanExportMbl_Id').val();
+            myWindow = window.open("@Url.Action("Telexrelease", "Docs")" + "?id=" + idNo, 'Telexrelease', 'width=1200,height=800');
+            myWindow.focus()
+        }
+
+        function getManifestPopUp() {
+            var url = new URL(window.location.href);
+            var mblId = url.searchParams.get('Id');
+
+            $.ajax({
+                url: abp.appPath + 'Docs/ManifestOceanExportMBLPartial?mblId=' + mblId,
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('#ManifestModal').html(res);
+                    $('.modal.mymodal').modal('show');
+                    $('#frmManifest').find('.modal.fade').removeClass('modal fade');
+                }
+            });
+        }
+
+         function getReportHblClauses() {
+            myWindow = window.open("@Url.Action("HblClauses", "Docs")", 'HblClauses', 'width=1500,height=800');
+            myWindow.focus()
+        }
+
+        function getMBLDocPackagePopUp() {
+            $.ajax({
+                url: '/Docs/DocumentPackageMBLPopupPartial?id=@Model.OceanExportMbl.Id',
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('#MBLDocumentPackageModal').html(res);
+                    $('#MBLDocumentPackageModal').modal('show');
+                }
+            });
+        }
+        function closeModal() {
+            $("#checkModal").modal("hide");
+        }
+        function cardSettingClick() {
+           
+            $("#checkModal").modal("show");  
+        }
+        const toggleLink = document.getElementById("toggleLink");
+
+        // Set an initial state
+        let isAsc = true;
+        let selectedValue = 1;
+        
+        // Add a click event listener to the anchor
+        toggleLink.addEventListener("click", function (e) {
+            e.preventDefault(); // Prevent the default link behavior
+
+            // Toggle between "Asc" and "Desc"
+            if (isAsc) {
+                toggleLink.innerHTML = '<i class="fa fa-sort-down"></i> Desc';
+            } else {
+                toggleLink.innerHTML = '<i class="fa fa-sort-up"></i> Asc';
+            }
+
+            // Invert the state
+            isAsc = !isAsc;
+            SortHblCard();
+        });
+        function changeSetting() { 
+        $("#checkModal").modal("hide");
+           
+            if ($('#cardCheck').prop('checked')) {
+                dolphin.freight.importExport.oceanImports.oceanImportMbl.setCardSetting(true).done(function (response) {
+                    SortHblCard();
+                });
+
+            }
+            else {
+                dolphin.freight.importExport.oceanImports.oceanImportMbl.setCardSetting(false).done(function (response) {
+                    SortHblCard();
+                })
+            }
+        
+        }
+        function SortHblCard(){
+        selectedValue = $('#sortType').val();
+
+            var url = new URL(window.location.href);
+            var selectedHblNo;
+
+            dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(url.searchParams.get('Id'), isAsc,selectedValue)
+                .done(function (hblCards) {
+                    if (hblCards && hblCards.length) {
+                        $('#hblCards').empty();
+                        hblCards.forEach(function (hblCard, index) {
+
+                            let abpcard = createHawbCard();
+
+                            abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index,hblCard.hblConsigneeName,hblCard.hblShipperName,hblCard.weight, hblCard.measurement, hblCard.packageType);
+
+                            $('#hblCards').append(abpcard);
+
+                            if (hblCard.id == url.searchParams.get('Hid')) {
+                                selectedHblNo = hblCard.hblNo;
+                            }
+
+                        })
+                        setTimeout(() => {
+                            if (selectedHblNo) {
+                                $('#title_' + selectedHblNo).click();
+                            }
+                            else { $('.hblCardTitle')[0].click(); }
+
+                        }, 500);
+                    }
+                })
+        
+        
+        
+        
+        
+        
+        
+        
+        }
+
     </script>
 }
 <div class="page-header">
     <div class="breadcrumb-wrapper">
-        <abp-breadcrumb>
-            <abp-breadcrumb-item title=@L["Menu:OceanExports"] />
-            <abp-breadcrumb-item title=@L["Menu:OceanExports.CreateMbl"] href="#" />
-        </abp-breadcrumb>
+          <abp-breadcrumb>
+        <abp-breadcrumb-item href="#" title=@L["Menu:Home"] />
+        <abp-breadcrumb-item title=@L["Menu:OceanExports"] />
+        <abp-breadcrumb-item title="@Model.OceanExportMbl.FilingNo" />
+    </abp-breadcrumb>
     </div>
     <nav class="submenu">
         <ol>
             <li class="menu-item ">
-                <a class="nav-link " href="EditModal?Id=@Model.Id">@L["Tab:Basic"]</a>
+                <a class="nav-link " href="EditModal?Id=@Model.Id&Hid=@Model.Hid">@L["Tab:Basic"]</a>
             </li>
             <li class="menu-item ">
-                <a class="nav-link  " href="EditModal2?Id=@Model.Id">@L["Tab:Container"]</a>
+                <a class="nav-link  " href="EditModal2?Id=@Model.Id&Hid=@Model.Hid">@L["Tab:Container"]</a>
             </li>
-            <li class="menu-item active">
+            <li class="menu-item active">  
                 <a class="nav-link" href="javascript:void(0)">@L["Tab:Accounting"]</a>
             </li>
             <li class="menu-item ">
-                <a class="nav-link  " href="EditModal4?Id=@Model.Id">@L["Tab:Doc"]</a>
+                <a class="nav-link  " href="EditModal4?Id=@Model.Id&Hid=@Model.OceanExportHblDto?.Id">@L["Tab:Doc"]</a>
             </li>
         </ol>
     </nav>
 </div>
 <div class="page-content-area">
     <div class="board-wrap">
+        <input type="hidden" name="OceanExportHbl.Id" id="OceanExportHbl_Id" value="@Model.OceanExportHbl?.Id" />
+         <input type="hidden" name="OceanExportMbl.Id" id="OceanExportMbl_Id" value="@Model.OceanExportMbl?.Id" />
         <form submit-button="true" data-ajaxForm="true" id="editForm">
             <abp-row>
                 <abp-column size-md="_9" id="parentCard">
@@ -263,43 +496,43 @@
                         </abp-card-title>
 
                         <div class="btn-group dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                                @L["Display:Function"]
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDropMbl" data-bs-toggle="dropdown">
+                                                
                             </button>
                                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                    <a class='dropdown-item' id="lockButtonMbl" href='javascript:void(0)' onclick="lockUnlockMbl('@Model.OceanExportMbl.Id')">
+                                        
                                     </a>
                                     <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
+                            <a class='dropdown-item' href='javascript:void(0)' onclick="getMBLDocPackagePopUp()">
                                         <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PrintMBLInstruction", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Print MB/L | B/L Instruction"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrder()">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
+                            <a class='dropdown-item' href='javascript:void(0)' onclick="getManifestPopUp()">
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
+                            </a>
+                            <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PackagingListOceanExportMBL", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
+                            </a>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getReportTelexrelease()">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:Telex Release"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                            <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("MBLPackageLabelOceanExportMBL", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:MBL Package Label"]
                                     </a>
-                            <a class='dropdown-item' href='#'>
+                            <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AllHblPackageLabelOceanExportMBL", "Docs", new { mblId = Model.OceanExportMbl.Id })')">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:All HBL Package Labels"]
                             </a>
                                     <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
+                            <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("MblProfitReportSummary", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - summary"]
                                     </a>
-                            <a class='dropdown-item' href='#'>
+                            <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("MblProfitReportDetailed", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                             </a>
                                     <li class="dropdown-divider"></li>
@@ -314,7 +547,7 @@
                             
                     </abp-card-header>
                     <abp-card-body class="collapse show" id="mawbDiv">
-
+                           <abp-input type="hidden" asp-for="OceanExportHbl.Id" />
                         <abp-row>
 
                             <abp-column size-md="_12">
@@ -323,8 +556,8 @@
                                     <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id','',1)">@L["Btn:AddDC"]</abp-button>
                                     <abp-button class="btn btn-info me-md-2" style="color:#FFFFFF;" type="button" onclick="gotoInvoice('@Model.Id','',2)">@L["Btn:AddAP"]</abp-button>
                                 </div>
-                                <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:0.5em;">
-                                    <tr border="1">
+                                <table width="100%" class="table table-bordered" style="border-color:#333333;padding-left:2px;margin:2px;font-size:10px;">
+                                    <tr border="1" style="font-size: 10px;">
                                         <th width="15%"></th>
                                         <th width=" 10%">@L["Display:InvoiceNo"]</th>
                                         <th width=" 15%">@L["Display:To"]</th>
@@ -344,56 +577,30 @@
                                             if (i == 0)
                                             {
                                                 i++;
-                                                <tr>
+                                                <tr style="font-size: 10px;">
                                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m0invoiceDtos.Count">@L["Menu:AccountingAR"]</td>
                                                     <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                     <td>@dto.InvoiceCompanyName</td>
-                                                    @{
-                                                        double j = 0;
-                                                    }
-                                                    @foreach(var invBill in dto.InvoiceBillDtos){
-                                                        j = j + @invBill.Quantity;
-                                                    }
-                                                    <td>@j</td>
-                                                    <td>0.00</td>
-                                                    @{
-                                                        double r = 0;
-                                                    }
-                                                    @foreach(var invRate in dto.InvoiceBillDtos)
-                                                    {
-                                                        r += @invRate.Quantity * @invRate.Rate;
-                                                    }
-                                                    <td>@r.ToString("0.00")</td>
-                                                    <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
+                                                    <td style="text-align: right;">@dto.TotalBeforeTax</td>
+                                                    <td style="text-align: right;">0.00</td>
+                                                    <td style="text-align: right;">@dto.TotalAmount</td>
+                                                    <td style="text-align: right;"></td>
+                                                    <td style="text-align: right;">@dto.PostDate</td>
+                                                    <td style="text-align: right;">@dto.InvoiceDate</td>
                                                     <td></td>
                                                 </tr>
                                             }
                                             else
                                             {
-                                                <tr>
+                                                <tr style="font-size: 10px;">
                                                     <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
-                                                    <td>@dto.InvoiceCompanyName</td>
-                                                    @{
-                                                        double j = 0;
-                                                    }
-                                                    @foreach(var invBill in dto.InvoiceBillDtos){
-                                                        j = j + @invBill.Quantity;
-                                                    }
-                                                    <td>@j</td>
-                                                    <td>0.00</td>
-                                                    @{
-                                                        double r = 0;
-                                                    }
-                                                    @foreach(var invRate in dto.InvoiceBillDtos)
-                                                    {
-                                                        r += @invRate.Quantity * @invRate.Rate;
-                                                    }
-                                                    <td>@r.ToString("0.00")</td>
-                                                    <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
+                                                    <td >@dto.InvoiceCompanyName</td>
+                                                    <td style="text-align: right;">@dto.TotalBeforeTax</td>
+                                                    <td style="text-align: right;">0.00</td>
+                                                    <td style="text-align: right;">@dto.TotalAmount</td>
+                                                    <td style="text-align: right;"></td>
+                                                    <td style="text-align: right;">@dto.PostDate</td>
+                                                    <td style="text-align: right;">@dto.InvoiceDate</td>
                                                     <td></td>
                                                 </tr>
                                             }
@@ -408,58 +615,30 @@
                                             if (i == 0)
                                             {
                                                 i++;
-                                                <tr>
+                                                <tr style="font-size: 10px;">
                                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m1invoiceDtos.Count">@L["Menu:AccountingDC"]</td>
                                                     <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                     <td>@dto.InvoiceCompanyName</td>
-                                                    @{
-                                                        double j = 0;
-                                                    }
-                                                    @foreach (var invBill in dto.InvoiceBillDtos)
-                                                    {
-                                                        j = j + @invBill.Quantity;
-                                                    }
-                                                    <td>@j</td>
-                                                    <td>0.00</td>
-                                                    @{
-                                                        double r = 0;
-                                                    }
-                                                    @foreach (var invRate in dto.InvoiceBillDtos)
-                                                    {
-                                                        r += invRate.Quantity * invRate.Rate;
-                                                    }
-                                                    <td>@r.ToString("0.00")</td>
-                                                    <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
+                                                    <td style="text-align: right;">@dto.TotalBeforeTax</td>
+                                                    <td style="text-align: right;">0.00</td>
+                                                    <td style="text-align: right;">@dto.TotalAmount</td>
+                                                    <td style="text-align: right;"></td>
+                                                    <td style="text-align: right;">@dto.PostDate</td>
+                                                    <td style="text-align: right;">@dto.InvoiceDate</td>
                                                     <td></td>
                                                 </tr>
                                             }
                                             else
                                             {
-                                                <tr>
+                                                <tr style="font-size: 10px;">
                                                     <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                     <td>@dto.InvoiceCompanyName</td>
-                                                    @{
-                                                        double j = 0;
-                                                    }
-                                                    @foreach (var invBill in dto.InvoiceBillDtos)
-                                                    {
-                                                        j = j + @invBill.Quantity;
-                                                    }
-                                                    <td>@j</td>
-                                                    <td>0.00</td>
-                                                    @{
-                                                        double r = 0;
-                                                    }
-                                                    @foreach (var invRate in dto.InvoiceBillDtos)
-                                                    {
-                                                        r += invRate.Quantity * invRate.Rate;
-                                                    }
-                                                    <td>@r.ToString("0.00")</td>
-                                                    <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
+                                                    <td style="text-align: right;">@dto.TotalBeforeTax</td>
+                                                    <td style="text-align: right;">0.00</td>
+                                                    <td style="text-align: right;">@dto.TotalAmount</td>
+                                                    <td style="text-align: right;"></td>
+                                                    <td style="text-align: right;">@dto.PostDate</td>
+                                                    <td style="text-align: right;">@dto.InvoiceDate</td>
                                                     <td></td>
                                                 </tr>
                                             }
@@ -474,52 +653,27 @@
                                             if (i == 0)
                                             {
                                                 i++;
-                                                <tr>
+                                                <tr style="font-size: 10px;">
                                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.m2invoiceDtos.Count">@L["Menu:AccountingAP"]</td>
                                                     <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                     <td>@dto.ShipTo</td>
-                                                    @{
-                                                        double j = 0;
-                                                    }
-                                                    @foreach(var invBill in dto.InvoiceBillDtos)
-                                                    {
-                                                        j = j + @invBill.Quantity;
-                                                    }
-                                                    <td>@j</td>
-                                                    <td>0.00</td>
-                                                    @{
-                                                        double r = 0;
-                                                    }
-                                                    @foreach(var invRate in dto.InvoiceBillDtos){
-                                                        r += invRate.Quantity * invRate.Rate;
-                                                    }
-                                                    <td>@r.ToString("0.00")</td>
-                                                    <td></td>
-                                                    <td>@dto.PostDate</td>
-                                                    <td>@dto.InvoiceDate</td>
+                                                    <td style="text-align: right;">@dto.TotalBeforeTax</td>
+                                                    <td style="text-align: right;">0.00</td>
+                                                    <td style="text-align: right;">@dto.TotalAmount</td>
+                                                    <td style="text-align: right;"></td>
+                                                    <td style="text-align: right;">@dto.PostDate</td>
+                                                    <td style="text-align: right;">@dto.InvoiceDate</td>
                                                     <td></td>
                                                 </tr>
                                             }
                                             else
                                             {
-                                                <tr>
+                                                <tr style="font-size: 10px;">
                                                     <td><a href="/Accounting/Invoice?MethodType=1&Mid=@Model.Id&Hid=&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                                     <td>@dto.ShipTo</td>
-                                                    @{
-                                                        double j = 0;
-                                                    }
-                                                    @foreach(var invBill in dto.InvoiceBillDtos){
-                                                        j = j + @invBill.Quantity;
-                                                    }
-                                                    <td>@j</td>
+                                                    <td>@dto.TotalBeforeTax</td>
                                                     <td>0.00</td>
-                                                    @{
-                                                        double r = 0;
-                                                    }
-                                                    @foreach(var invRate in dto.InvoiceBillDtos){
-                                                        r += invRate.Quantity * invRate.Rate;
-                                                    }
-                                                    <td>@r.ToString("0.00")</td>
+                                                    <td>@dto.TotalAmount</td>
                                                     <td></td>
                                                     <td>@dto.PostDate</td>
                                                     <td>@dto.InvoiceDate</td>
@@ -529,7 +683,97 @@
 
                                         }
                                     }
+                                    <tr style="font-size: 10px;">
+                                        <td colspan="3" style="text-align: right;font-weight: 700;">Total</td>
+                                        <td style="text-align: right;font-weight: 700;">@(Math.Round(Model.m0invoiceDtos.Sum(x => x.TotalBeforeTax ?? 0.00) + Model.m1invoiceDtos.Sum(x => x.TotalBeforeTax ?? 0.00) + Model.m2invoiceDtos.Sum(x => x.TotalBeforeTax ?? 0.00), 2))</td>
+                                        <td style="text-align: right;font-weight: 700;">0.00</td>
+                                        <td style="text-align: right;font-weight: 700;">@(Math.Round(Model.m0invoiceDtos.Sum(x => x.TotalAmount ?? 0.00) + Model.m1invoiceDtos.Sum(x => x.TotalAmount ?? 0.00) + Model.m2invoiceDtos.Sum(x => x.TotalAmount ?? 0.00), 2))</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr style="font-size: 10px;">
+                                        <td colspan="3" style="text-align: right;font-weight: 700;">Total Before Tax</td>
+                                        <td colspan="2" style="text-align: right;font-weight: 700;">@(Math.Round(Model.m0invoiceDtos.Sum(x=>x.TotalBeforeTax ?? 0.00) + Model.m1invoiceDtos.Sum(x=>x.TotalBeforeTax ?? 0.00) + Model.m2invoiceDtos.Sum(x=>x.TotalBeforeTax ?? 0.00), 2))</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr> 
+                                    <tr style="font-size: 10px;">
+                                        <td colspan="3" style="text-align: right;font-weight: 700;">Total Tax</td>
+                                        <td colspan="2" style="text-align: right;font-weight: 700;">@(Math.Round(Model.m0invoiceDtos.Sum(x => x.TotalTax ?? 0.00) + Model.m1invoiceDtos.Sum(x => x.TotalTax ?? 0.00) + Model.m2invoiceDtos.Sum(x => x.TotalTax ?? 0.00), 2))</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr> 
+                                    <tr style="font-size: 10px;">
+                                        <td colspan="3" style="text-align: right;font-weight: 700;">Total Amount</td>
+                                        <td colspan="2" style="text-align: right;font-weight: 700;">@(Math.Round(Model.m0invoiceDtos.Sum(x => x.TotalAmount ?? 0.00) + Model.m1invoiceDtos.Sum(x => x.TotalAmount ?? 0.00) + Model.m2invoiceDtos.Sum(x => x.TotalAmount ?? 0.00), 2))</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="10"></td>
+                                    </tr>
+                                     <tr style="font-size: 10px;">
+                                        <td colspan="4" style="text-align: right;font-weight: 700;"></td>
+                                        <td colspan="2" style="text-align: right;font-weight: 700;">Amount</td>
+                                        <td colspan="2" style="text-align: right;font-weight: 700;">Profit Percentage</td>
+                                        <td colspan="2" style="text-align: right;font-weight: 700;">Profit Margin</td>
+                                       
+                                    </tr>
+                                      <tr style="font-size: 10px;">
+                                        <td colspan="4" style="text-align: right;font-weight: 700;">Total Profit</td>
+                                        <td colspan="2" style="text-align: right;font-weight: 700;">@((Model.m0invoiceDtos.Sum(x=>x.InvoiceBillDtos.Sum(x=>x.Quantity*x.Rate))+Model.m2invoiceDtos.Sum(x=>x.InvoiceBillDtos.Sum(x=>x.Quantity*x.Rate))-Model.m1invoiceDtos.Sum(x=>x.InvoiceBillDtos.Sum(x=>x.Quantity*x.Rate))).ToString("N2"))</td>
+                                          @if (Model.m1invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate)) != 0)
+                                            {
 
+
+                                                <td colspan="2" style="text-align: right;font-weight: 700;">@(((Model.m0invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate)) / Model.m1invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate))) * 100).ToString())</td>
+                                            }
+                                            else if (Model.m2invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate)) != 0)
+                                        {
+                                                <td colspan="2" style="text-align: right;font-weight: 700;">@(((Model.m0invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate)) / Model.m2invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate))) * 100).ToString())</td>
+
+
+                                            }
+                                            else
+                                            {
+                                                
+                                             <td colspan="2" style="text-align: right;font-weight: 700;">0.00</td>
+
+                                            
+                                            }
+                                            @if (Model.m0invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate)) != 0 && Model.m1invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate)) != 0)
+                                            {
+                                                <td colspan="2" style="text-align: right;font-weight: 700;">@(((Model.m0invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate)) - Model.m1invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate))) / Model.m0invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate))).ToString("N2"))</td>
+                                            }
+                                            else if (Model.m0invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate)) != 0 && Model.m2invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate)) != 0)
+                                            {
+                                                <td colspan="2" style="text-align: right;font-weight: 700;">@(((Model.m0invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate)) - Model.m2invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate))) / Model.m0invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate))).ToString("N2"))</td>
+
+
+                                            }
+                                            else if(Model.m0invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate)) != 0)
+                                           {
+                                                <td colspan="2" style="text-align: right;font-weight: 700;">@((Model.m0invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate))/ Model.m0invoiceDtos.Sum(x => x.InvoiceBillDtos.Sum(x => x.Quantity * x.Rate))).ToString("N2"))</td>
+
+
+                                            }
+                                            else
+                                            {
+                                                                                            
+                                                 <td colspan="2" style="text-align: right;font-weight: 700;">0.00</td>
+ 
+                                                
+                                                
+                                                }
+                                    </tr>
                                 </table>
 
                             </abp-column>
@@ -557,22 +801,74 @@
 
                     </div>
         </abp-column>
-        <abp-column size-md="_3">
-            <div class="card-wrap">
-
-                <button class="btn btn-block btn-add" type="button" id="addHBtn">
-                            <i class="fa-solid fa-plus"></i>Add HAWB
-                </button>
-
-                        <div id="hblCards" class="hbl_sm_area">
-
+        <abp-column class="col-xl-3 col-lg-12 col-md-12 col-sm-12">
+                    <div class="card-wrap">
+                        <button class="btn btn-block btn-add" type="button" id="addHBtn">
+                            <i class="fa-solid fa-plus"></i>@L["Btn:AddHbl"]
+                        </button>
+                        <div id="cardSettingArea">     
+                            <div class="d-flex flex-row">
+                        <div class="p-2"><label>Sort By</label>
+                        <select id="sortType">
+                            <option selected value="1">HB/L No</option>
+                             <option value="2">Created Date</option>
+                        </select>    
                         </div>
-                
-            </div>
-            <div>
-            </div>
-        </abp-column>
+                        <div class="p-2">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+                        <div class="p-2">
+                            <a href="#" id="toggleLink"><i class="fa fa-sort-up"></i> Asc</a>
+                        </div>
+                            </div>
+                            <div class="d-flex flex-row">
+                        <div class="p-2" ><a href='javascript:void(0)' class="text-muted" onclick="cardSettingClick()"><i class="fa fa-cogs"></i> Card Setting</a>
+                            </div>
+                            </div>
+                            </div>
+                        <div id="hblCards" class="hbl_sm_area">
+                        </div>
+                    </div>
+                </abp-column>
     </abp-row>
+       <div id="checkModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Card Setting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+        <div class="pull-left w-80per _pd-sm">
+            <div class="_text-blue-steel _font-15 bold _mg-bottom-10">Collapsed Card View</div>
+            <div class="_font-13 _mg-bottom-xs">Show Shipper and Consignee</div>
+            <div class="_font-11 text-muted">Show Shipper and Consignee name without hovering on the <i class="fa fa-info-circle _font-11"></i> icon when the cards are collapsed</div>
+        </div>
+        <div class="pull-left w-20per _mg-top-50">
+    <abp-input asp-for="@Model.ISToolTipShow" id="cardCheck" suppress-label />
+        </div><!---->
+    </div>
+                    
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="changeSetting()">@L["Btn:Ok"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
         </form>
+
+<div class="modal mymodal" id="ManifestModal" tabindex="-1" role="dialog">
+</div>
+
+<div class="modal" id="MBLDocumentPackageModal">
+</div>
+
     </div>
 </div>

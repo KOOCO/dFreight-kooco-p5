@@ -29,6 +29,7 @@ namespace Dolphin.Freight.TradePartner
         Terminal,
         Trucker,
         Vendor,
-        Warehouse
+        Warehouse,
+        FBAWarehouse
     }
 }

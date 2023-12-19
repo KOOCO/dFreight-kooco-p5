@@ -1,4 +1,5 @@
-﻿using Dolphin.Freight.TradePartners.Credits;
+﻿using Dolphin.Freight.Common;
+using Dolphin.Freight.TradePartners.Credits;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace Dolphin.Freight.TradePartners
         ICrudAppService<
             TradePartnerDto, // show
             Guid, // primary key
-            PagedAndSortedResultRequestDto, // for paging & sorting
+            QueryDto, // for paging & sorting
             CreateUpdateTradePartnerDto>, 
         IApplicationService
     {

@@ -40,15 +40,49 @@ namespace Dolphin.Freight.ReportLog
 
         public async Task<PagedResultDto<MawbReportDto>> GetMawbReport(MawbReportDto filter)
         {
-            var report = await _ReportLogRepository.GetMawbReport();
+            var report = await _ReportLogRepository.GetMawbReport(filter);
 
             report = ApplyFilter(report, filter);
+            if (filter.MinProfit != null && filter.MaxProfit != null)
+            {
+                report = report.Where(x => x.ProfitAmt >= (double)filter.MinProfit && x.ProfitAmt <= (double)filter.MaxProfit).ToList();
+            
+            }
+            //report = ApplyColumnFilter(report, filter);
 
-            report = ApplyColumnFilter(report, filter);
+            try
+            {
+                return new PagedResultDto<MawbReportDto>(report.Count, ObjectMapper.Map<List<MawbReport>, List<MawbReportDto>>(report));
+            }
+            catch (Exception e)
+            {
 
-            return new PagedResultDto<MawbReportDto>(report.Count, ObjectMapper.Map<List<MawbReport>, List<MawbReportDto>>(report));
+                throw;
+            }
         }
+        public async Task<ReportPdfLogDto> GetMawbPdfReport(MawbReportDto filter)
+        {
+            ReportPdfLogDto result = new ReportPdfLogDto();
+            var report = await _ReportLogRepository.GetMawbPdfReport(filter);
 
+            
+           
+            //report = ApplyColumnFilter(report, filter);
+
+            try
+            {
+                result.AirExports = ObjectMapper.Map<List<MawbReport>, List<MawbReportDto>>(report.AirExports);
+                result.AirImports = ObjectMapper.Map<List<MawbReport>, List<MawbReportDto>>(report.AirImports);
+                result.OceanExports = ObjectMapper.Map<List<MawbReport>, List<MawbReportDto>>(report.OceanExports);
+                result.OceanImports = ObjectMapper.Map<List<MawbReport>, List<MawbReportDto>>(report.OceanImports);
+                return result;
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
         private List<MawbReport> ApplyFilter(List<MawbReport> report, MawbReportDto filter)
         {
             var predictBuilder = PredicateBuilder.New<MawbReport>();
@@ -59,6 +93,7 @@ namespace Dolphin.Freight.ReportLog
                 {
                     predictBuilder.And(w => (w.IsEcommerce != null) && w.IsEcommerce.ToLower().Equals(filter.IsEcommerce));
                 }
+            
                 if (!string.IsNullOrEmpty(filter.OfficeId))
                 {
                     predictBuilder.And(w => (w.OfficeId != null) && w.Office.ToLower().Equals(filter.Office));
@@ -83,7 +118,7 @@ namespace Dolphin.Freight.ReportLog
             {
                 if (filter.IsOverseaAgent)
                 {
-                    predictBuilderOr.Or(w => w.OverseaAgentId == null);
+                    predictBuilderOr.Or(w => w.OverseaAgentId != null);
                 }
                 else
                 {
@@ -92,7 +127,7 @@ namespace Dolphin.Freight.ReportLog
 
                 if (filter.IsShipper)
                 {
-                    predictBuilderOr.Or(w => string.IsNullOrEmpty(w.ShipperId));
+                    predictBuilderOr.Or(w => !string.IsNullOrEmpty(w.ShipperId));
                 }
                 else
                 {
@@ -101,7 +136,7 @@ namespace Dolphin.Freight.ReportLog
 
                 if (filter.IsCarrier)
                 {
-                    predictBuilderOr.Or(w => string.IsNullOrEmpty(w.CarrierId));
+                    predictBuilderOr.Or(w => !string.IsNullOrEmpty(w.CarrierId));
                 }
                 else
                 {
@@ -128,7 +163,7 @@ namespace Dolphin.Freight.ReportLog
 
                 if (filter.IsMBLOP)
                 {
-                    predictBuilderOr.Or(w => w.OpId == null);
+                    predictBuilderOr.Or(w => w.OpId != null);
                 }
                 else
                 {
@@ -137,16 +172,16 @@ namespace Dolphin.Freight.ReportLog
 
                 if (filter.IsPOL)
                 {
-                    predictBuilderOr.Or(w => w.PODId == null);
+                    predictBuilderOr.Or(w => w.POLId != null);
                 }
                 else
                 {
-                    predictBuilderAnd.And(w => w.PODId == null);
+                    predictBuilderAnd.And(w => w.POLId == null);
                 }
 
                 if (filter.IsPOD)
                 {
-                    predictBuilderOr.Or(w => w.PODId == null);
+                    predictBuilderOr.Or(w => w.PODId != null);
                 }
                 else
                 {

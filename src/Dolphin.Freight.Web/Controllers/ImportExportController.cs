@@ -23,6 +23,10 @@ using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.ImportExport.OceanExports.ExportBookings;
 using Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas;
 using Org.BouncyCastle.Asn1.Mozilla;
+using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.Accounting.InvoiceBills;
+using Dolphin.Freight.Settinngs.SysCodes;
+using static Volo.Abp.Http.MimeTypes;
 
 namespace Dolphin.Freight.Web.Controllers
 {
@@ -37,11 +41,16 @@ namespace Dolphin.Freight.Web.Controllers
         private readonly IAirImportHawbAppService _airImportHawbAppService;
         private readonly IAirExportHawbAppService _airExportHawbAppService;
         private readonly IOceanExportHblAppService _oceanExportHblAppService;
+        private readonly IOceanExportMblAppService _oceanExportMblAppService;
         private readonly IOceanImportHblAppService _oceanImportHblAppService;
         private readonly IAttachmentAppService _attachmentAppService;
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly IPortsManagementAppService _portsManagementAppService;
         private readonly IVesselScheduleAppService _vesselScheduleAppService;
+        private readonly IExportBookingAppService _exportBookingAppService;
+        private readonly IContainerAppService _containerAppService;
+        private readonly IInvoiceBillAppService _invoiceBillAppService;
+        private readonly ISysCodeAppService _sysCodeAppService;
 
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
@@ -49,6 +58,7 @@ namespace Dolphin.Freight.Web.Controllers
         public List<SelectListItem> PackageUnitLookupList { get; set; }
         public List<SelectListItem> CountryName { get; set; }
         public List<SelectListItem> WtValOtherList { get; set; }
+        public List<SelectListItem> OtherList { get; set; }
         public List<SelectListItem> PortsManagementLookupList { get; set; }
 
         private readonly int fileType = 10;
@@ -59,11 +69,16 @@ namespace Dolphin.Freight.Web.Controllers
             IAirImportHawbAppService airImportHawbAppService,
             IAirExportHawbAppService airExportHawbAppService,
             IOceanExportHblAppService oceanExportHblAppService,
+            IOceanExportMblAppService oceanExportMblAppService,
             IOceanImportHblAppService oceanImportHblAppService,
             IAttachmentAppService attachmentAppService,
             IInvoiceAppService invoiceAppService,
             IPortsManagementAppService portsManagementAppService,
-            IVesselScheduleAppService vesselScheduleAppService
+            IVesselScheduleAppService vesselScheduleAppService,
+            IExportBookingAppService exportBookingAppService,
+            IContainerAppService containerAppService,
+            IInvoiceBillAppService invoiceBillAppService,
+            ISysCodeAppService sysCodeAppService
             )
         {
             _tradePartnerAppService = tradePartnerAppService;
@@ -73,12 +88,16 @@ namespace Dolphin.Freight.Web.Controllers
             _airImportHawbAppService = airImportHawbAppService;
             _airExportHawbAppService = airExportHawbAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
+            _oceanExportMblAppService = oceanExportMblAppService;
             _oceanImportHblAppService = oceanImportHblAppService;
             _attachmentAppService = attachmentAppService;
             _invoiceAppService = invoiceAppService;
             _portsManagementAppService = portsManagementAppService;
             _vesselScheduleAppService = vesselScheduleAppService;
-
+            _exportBookingAppService = exportBookingAppService;
+            _containerAppService = containerAppService;
+            _invoiceBillAppService = invoiceBillAppService;
+            _sysCodeAppService = sysCodeAppService;
 
             FillCountryNameAsync().Wait();
             FillTradePartnerAsync().Wait();
@@ -177,9 +196,10 @@ namespace Dolphin.Freight.Web.Controllers
 
         [HttpGet]
         [Route("AirExportBasicHawb")]
-        public async Task<PartialViewResult> GetAirExportBasicHawb(Guid Id)
+        public async Task<PartialViewResult> GetAirExportBasicHawb(Guid Id, string hawbNo)
         {
             FillWtValOther();
+            FillOther();
 
             HawbHblViewModel model = new();
 
@@ -188,9 +208,11 @@ namespace Dolphin.Freight.Web.Controllers
             model.TradePartnerLookupList = TradePartnerLookupList;
             model.PackageUnitLookupList = PackageUnitLookupList;
             model.WtValOtherList = WtValOtherList;
+            model.OtherList = OtherList;
             model.CountryName = CountryName;
 
             model.AirExportHawbDto = await _airExportHawbAppService.GetHawbCardById(Id);
+            model.AirExportHawbDto.CurrentHawbNo = hawbNo;
 
             if( Id == Guid.Empty)
             {
@@ -198,6 +220,47 @@ namespace Dolphin.Freight.Web.Controllers
             }
            
             return PartialView("~/Pages/AirExports/_AirExportBasicHawb.cshtml", model);
+        }
+
+        [HttpGet]
+        [Route("AirExportAccountingHawb")]
+        public async Task<PartialViewResult> GetAirExportAccountHawb(Guid Id)
+        {
+            HawbHblViewModel model = new();
+
+            model.SubstationLookupList = SubstationLookupList;
+            model.AirportLookupList = AirportLookupList;
+            model.TradePartnerLookupList = TradePartnerLookupList;
+            model.PackageUnitLookupList = PackageUnitLookupList;
+
+            model.AirExportHawbDto = await _airExportHawbAppService.GetHawbCardById(Id);
+
+            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 4, ParentId = Id };
+            var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
+            model.h0invoiceDtos = new List<InvoiceDto>();
+            model.h1invoiceDtos = new List<InvoiceDto>();
+            model.h2invoiceDtos = new List<InvoiceDto>();
+            if (invoiceDtos != null && invoiceDtos.Count > 0)
+            {
+                foreach (var dto in invoiceDtos)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            model.h0invoiceDtos.Add(dto);
+                            break;
+                        case 1:
+                            model.h1invoiceDtos.Add(dto);
+                            break;
+                        case 2:
+                            model.h2invoiceDtos.Add(dto);
+                            break;
+                    }
+                }
+            }
+            qidto.ParentId = Id;
+
+            return PartialView("~/Pages/AirExports/_AirExportAccountHawb.cshtml", model);
         }
 
         [HttpGet]
@@ -245,6 +308,46 @@ namespace Dolphin.Freight.Web.Controllers
             return PartialView("~/Pages/OceanImports/_OceanImportBasicHbl.cshtml", model);
         }
 
+        [Route("OceanImportAccountingHbl")]
+        public async Task<PartialViewResult> GetOceanImportAccountHbl(Guid Id)
+        {
+            HawbHblViewModel model = new();
+
+            model.SubstationLookupList = SubstationLookupList;
+            model.AirportLookupList = AirportLookupList;
+            model.TradePartnerLookupList = TradePartnerLookupList;
+            model.PackageUnitLookupList = PackageUnitLookupList;
+
+            model.OceanImportHbl = await _oceanImportHblAppService.GetHblCardById(Id);
+
+            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 1, ParentId = Id };
+            var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
+            model.h0invoiceDtos = new List<InvoiceDto>();
+            model.h1invoiceDtos = new List<InvoiceDto>();
+            model.h2invoiceDtos = new List<InvoiceDto>();
+            if (invoiceDtos != null && invoiceDtos.Count > 0)
+            {
+                foreach (var dto in invoiceDtos)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            model.h0invoiceDtos.Add(dto);
+                        break;
+                        case 1:
+                            model.h1invoiceDtos.Add(dto);
+                        break;
+                        case 2:
+                            model.h2invoiceDtos.Add(dto);
+                        break;
+                    }
+                }
+            }
+            qidto.ParentId = Id;
+
+            return PartialView("~/Pages/OceanImports/_OceanImportAccountingHbl.cshtml", model);
+        }
+
         #endregion
 
         #region Ocean Exports
@@ -262,6 +365,15 @@ namespace Dolphin.Freight.Web.Controllers
             model.PortsManagementLookupList = PortsManagementLookupList;
 
             model.OceanExportHbl = await _oceanExportHblAppService.GetHblCardById(Id);
+
+            QueryInvoiceDto QueryInvoiceDto = new() { QueryType = 1, ParentId = Id };
+
+            var InvoiceDtos = await _invoiceAppService.QueryInvoicesAsync(QueryInvoiceDto);
+
+            if (InvoiceDtos is not null && InvoiceDtos.Count > 0)
+            {
+                model.IsHblHaveInvoice = true;
+            }
 
             return PartialView("~/Pages/OceanExports/_OceanExportBasicHbl.cshtml", model);
         }
@@ -291,12 +403,14 @@ namespace Dolphin.Freight.Web.Controllers
                      switch (dto.InvoiceType)
                     {
                         default:
+                            break;
+                        case 0:
                             model.h0invoiceDtos.Add(dto);
                             break;
-                        case 4:
+                        case 1:
                             model.h1invoiceDtos.Add(dto);
                             break;
-                        case 3:
+                        case 2:
                             model.h2invoiceDtos.Add(dto);
                             break;
                     }
@@ -309,6 +423,76 @@ namespace Dolphin.Freight.Web.Controllers
 
         #endregion
 
+
+        #region Export Bookings
+        [HttpGet]
+        [Route("ExportBookingBasic")]
+        public async Task<PartialViewResult> GetExportBookingBasic(Guid Id)
+        {
+            HawbHblViewModel model = new();
+
+            model.SubstationLookupList = SubstationLookupList;
+            model.AirportLookupList = AirportLookupList;
+            model.TradePartnerLookupList = TradePartnerLookupList;
+            model.PackageUnitLookupList = PackageUnitLookupList;
+            model.PortsManagementLookupList = PortsManagementLookupList;
+            model.RateUnitTypeLookupList = new List<SelectListItem>
+            {
+                new SelectListItem() { Text = "KG", Value = "KG" },
+                new SelectListItem() { Text = "LG", Value = "LG" }
+            };
+            model.UnitTypeLookupList = new List<SelectListItem>
+            {
+                new SelectListItem() { Text = "CBM", Value = "CBM" },
+                new SelectListItem() { Text = "CFT", Value = "CFT" }
+            };
+
+            model.ExportBookingDto = await _exportBookingAppService.GetBookingCardById(Id);
+
+            return PartialView("~/Pages/OceanExports/VesselSchedules/_ExportBookingBasic.cshtml", model);
+        }
+
+        [HttpGet]
+        [Route("ExportBookingAccounting")]
+        public async Task<PartialViewResult> GetExportBookingAccounting(Guid Id)
+        {
+            HawbHblViewModel model = new();
+
+            model.SubstationLookupList = SubstationLookupList;
+            model.AirportLookupList = AirportLookupList;
+            model.TradePartnerLookupList = TradePartnerLookupList;
+            model.PackageUnitLookupList = PackageUnitLookupList;
+
+            model.ExportBookingDto = await _exportBookingAppService.GetBookingCardById(Id);
+            
+            QueryInvoiceDto qiDto = new QueryInvoiceDto() { QueryType = 2, ParentId = Id };
+            var invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qiDto);
+            model.h0invoiceDtos = new List<InvoiceDto>();
+            model.h1invoiceDtos = new List<InvoiceDto>();
+            model.h2invoiceDtos = new List<InvoiceDto>();
+            if (invoiceDtos != null && invoiceDtos.Count > 0)
+            {
+                foreach (var dto in invoiceDtos)
+                {
+                    switch (dto.InvoiceType)
+                    {
+                        default:
+                            model.h0invoiceDtos.Add(dto);
+                            break;
+                        case 1:
+                            model.h1invoiceDtos.Add(dto);
+                            break;
+                        case 2:
+                            model.h2invoiceDtos.Add(dto);
+                            break;
+                    }
+                }
+            }
+            qiDto.ParentId = Id;
+
+            return PartialView("~/Pages/OceanExports/VesselSchedules/_ExportBookingAccounting.cshtml", model);
+        }
+        #endregion
 
 
         [HttpGet]
@@ -406,8 +590,17 @@ namespace Dolphin.Freight.Web.Controllers
         {
             WtValOtherList = new List<SelectListItem>
             {
-                new SelectListItem { Value = "PPD", Text = L["PPD"]},
-                new SelectListItem { Value = "COLL", Text = L["COLL"]}
+                new SelectListItem { Value = L["PPD"], Text = L["PPD"] },
+                new SelectListItem { Value = L["COLL"], Text = L["COLL"] }
+            };
+        }
+
+        private void FillOther()
+        {
+            OtherList = new List<SelectListItem>
+            {
+                new SelectListItem { Value = L["PPD"], Text = L["PPD"] },
+                new SelectListItem { Value = L["COLL"], Text = L["COLL"] }
             };
         }
         #endregion
@@ -474,5 +667,201 @@ namespace Dolphin.Freight.Web.Controllers
 
             return Json(new JsonResult(info));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CopyMblDetails(Guid id, bool allHbl, string containerOption, string invoiceOption)
+        {
+            var newMblId = await CopyMbl(id);
+
+            if (containerOption == "container")
+            {
+                await CopyContainers(id, newMblId);
+            }
+
+            if (invoiceOption == "invoices")
+            {
+                await CopyInvoices(id, newMblId);
+            }
+
+            if (allHbl)
+            {
+                await CopyAllHbl(id, newMblId, containerOption, invoiceOption);
+            }
+            else
+            {
+                await CopySingleHbl(id, newMblId, containerOption, invoiceOption);
+            }
+
+            return Json(new { NewMblId = newMblId });
+        }
+
+        [HttpPost]
+        [Route("VesselSchedulesCopy")]
+        public async Task<IActionResult> VesselSchedulesCopy(Guid id, string copyType)
+        {
+            if (copyType == "vesselOnly")
+            {
+                var vesselData = await _vesselScheduleAppService.GetAsync(id);
+                var updatedVessel = ObjectMapper.Map<VesselScheduleDto, CreateUpdateVesselScheduleDto>(vesselData);
+                updatedVessel.Id = Guid.Empty;
+
+                var newVessel = await _vesselScheduleAppService.CreateAsync(updatedVessel);
+                newVessel.isNewVessel = true;
+
+                return Json(new { NewVesselId = newVessel.Id, status = newVessel.isNewVessel });
+            } 
+            else if (copyType == "vesselAndBookings")
+            {
+                var vesselData = await _vesselScheduleAppService.GetAsync(id);
+                var updatedVessel = ObjectMapper.Map<VesselScheduleDto, CreateUpdateVesselScheduleDto>(vesselData);
+                updatedVessel.Id = Guid.Empty;
+
+                var newVessel = await _vesselScheduleAppService.CreateAsync(updatedVessel);
+                newVessel.isNewVessel = true;
+
+                var bookingData = await _exportBookingAppService.GetBookingCardsById(id);
+
+                foreach (var item in bookingData)
+                {
+                    var updatedBooking = ObjectMapper.Map<ExportBookingDto, CreateUpdateExportBookingDto>(item);
+
+                    var containerData = await _containerAppService.GetContainersListByBookingId(updatedBooking.Id);
+
+                    updatedBooking.VesselScheduleId = newVessel.Id;
+
+                    Common.QueryDto queryDto = new() { QueryType = "ExportBooking_SoNo" };
+                    updatedBooking.SoNo = await _sysCodeAppService.GetSystemBookingNoAsync(queryDto);
+
+                    updatedBooking.Id = Guid.Empty;
+
+                    var newBooking = await _exportBookingAppService.CreateAsync(updatedBooking);
+
+                    foreach (var container in containerData)
+                    {
+                        container.BookingId = newBooking.Id;
+
+                        container.Id = Guid.Empty;
+
+                        await _containerAppService.CreateAsync(container);
+                    }
+                }
+
+                return Json(new { NewVesselId = newVessel.Id, status = newVessel.isNewVessel });
+            }
+
+            return Ok();
+        }
+
+        #region Private Functions
+
+        private async Task<Guid> CopyMbl(Guid id)
+        {
+            var mbldata = await _oceanExportMblAppService.GetAsync(id);
+            var updatedMbl = ObjectMapper.Map<OceanExportMblDto, CreateUpdateOceanExportMblDto>(mbldata);
+            updatedMbl.Id = Guid.Empty;
+
+            var newMbl = await _oceanExportMblAppService.CreateAsync(updatedMbl);
+            return newMbl.Id;
+        }
+
+        private async Task CopyContainers(Guid parentId, Guid newParentId, bool isHbl = false)
+        {
+            var containerdata = isHbl
+                ? await _containerAppService.GetContainerListByHblId(parentId)
+                : await _containerAppService.GetContainerByMblId(parentId);
+
+            foreach (var container in containerdata)
+            {
+                if (isHbl)
+                    container.HblId = newParentId;
+                else
+                    container.MblId = newParentId;
+
+                container.Id = Guid.Empty;
+                await _containerAppService.CreateAsync(container);
+            }
+        }
+
+        private async Task CopyInvoices(Guid parentId, Guid newParentId, int queryType = 3)
+        {
+            QueryInvoiceDto queryInvoiceDto = new QueryInvoiceDto() { ParentId = parentId, QueryType = queryType };
+            var invoicedata = await _invoiceAppService.QueryInvoicesAsync(queryInvoiceDto);
+
+            foreach (var invoice in invoicedata)
+            {
+                var updatedInvoices = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+                updatedInvoices.Id = Guid.Empty;
+
+                if (queryType == 3)
+                    updatedInvoices.MblId = newParentId;
+                else if (queryType == 1)
+                    updatedInvoices.HblId = newParentId;
+
+                var newInvoice = await _invoiceAppService.CreateAsync(updatedInvoices);
+                var newInvoiceId = newInvoice.Id;
+
+                foreach (var invoicebilldto in invoice.InvoiceBillDtos)
+                {
+                    invoicebilldto.InvoiceId = newInvoiceId;
+                    invoicebilldto.Id = Guid.Empty;
+
+                    await _invoiceBillAppService.CreateAsync(invoicebilldto);
+                }
+            }
+        }
+
+        private async Task CopyAllHbl(Guid parentId, Guid newMblId, string containerOption, string invoiceOption)
+        {
+            var hbldata = await _oceanExportHblAppService.GetHblCardsById(parentId);
+
+            foreach (var hbl in hbldata)
+            {
+                var updatedHbls = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl);
+                updatedHbls.MblId = newMblId;
+                updatedHbls.Id = Guid.Empty;
+
+                var newHbl = await _oceanExportHblAppService.CreateAsync(updatedHbls);
+                var newHblId = newHbl.Id;
+
+                if (containerOption == "container")
+                {
+                    await CopyContainers(hbl.Id, newHblId, true);
+                }
+
+                if (invoiceOption == "invoices")
+                {
+                    await CopyInvoices(hbl.Id, newHblId, 1);
+                }
+            }
+        }
+
+        private async Task CopySingleHbl(Guid parentId, Guid newMblId, string containerOption, string invoiceOption)
+        {
+            var hbldata = await _oceanExportHblAppService.GetHblCardsById(parentId);
+            
+            if (hbldata.Any())
+            {
+                var hbl = hbldata[0];
+
+                var updatedHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl);
+                updatedHbl.MblId = newMblId;
+                updatedHbl.Id = Guid.Empty;
+
+                var newHbl = await _oceanExportHblAppService.CreateAsync(updatedHbl);
+                var newHblId = newHbl.Id;
+
+                if (containerOption == "container")
+                {
+                    await CopyContainers(hbl.Id, newHblId, true);
+                }
+
+                if (invoiceOption == "invoices")
+                {
+                    await CopyInvoices(hbl.Id, newHblId, 1);
+                }
+            }
+        }
+
+        #endregion
     }
 }

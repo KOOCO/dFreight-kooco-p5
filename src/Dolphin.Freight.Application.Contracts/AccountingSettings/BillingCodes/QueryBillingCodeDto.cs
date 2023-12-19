@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using Volo.Abp.Application.Dtos;
 
@@ -24,5 +25,8 @@ namespace Dolphin.Freight.AccountingSettings.BillingCodes
         /// </summary>
         public int? MethodType { get; set; }
         public bool? IsUsed { get; set; }
+        public string Name { get; set; }
+        public string GlCode { get; set; }
+        public string GlDescription { get; set; }
     }
 }

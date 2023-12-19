@@ -1,15 +1,19 @@
 ﻿using Dolphin.Freight.AirExports;
 using Dolphin.Freight.AirImports;
+using Dolphin.Freight.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.AirImports
 {
     public class AirImportMawbDto : AuditedEntityDto<Guid>
     {
+        public string HawbJson { get; set; }
+        public bool IsPDF { get; set; }
         /// <summary>
         /// 文件編號
         /// </summary>
@@ -22,6 +26,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 分站ID
         /// </summary>
         public Guid? OfficeId { get; set; }
+        public string OfficeName { get; set; }
         /// <summary>
         /// 提單類別
         /// </summary> 
@@ -80,6 +85,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 操作員Id
         /// </summary>
         public Guid? SalesId { get; set; }
+        public string SalesName { get; set; }
         /// <summary>
         ///  出發地Id
         /// </summary>
@@ -263,7 +269,37 @@ namespace Dolphin.Freight.ImportExport.AirImports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public string DepartureName { get; set; }
+        public string DestinationName { get; set; }
+        public string CarrierName { get; set; }
+        public FreightPageType PageType { get; set; }
+        public bool IsLocked { get; set; }
+        public List<AllHawbListAirImport> AllHawbListAirImports { get; set; }
+        public string ARBalance { get; set; }
+        public string APBalance { get; set; }
+        public string DCBalance { get; set; }
+        public string Mark { get; set; }
+        public string NatureAndQuantityOfGoods { get; set; }
+        public string ManifestNatureAndQuantityOfGoods { get; set; }
+        public string HandlingInformation { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public string OpName { get; set; }
+        public Guid? RouteDepartureId { get; set; }
+        public DateTime? RouteDepartureArrivalDate { get; set; }
+        public DateTime? RouteDepatureDate { get; set; }
+        public string RouteDepartureFlightNo { get; set; }
+        public Guid? RouteDepartureCarrierId { get; set; }
 
-        
+        public Guid? RouteDestinationId { get; set; }
+        public DateTime? RouteDestinationArrivalDate { get; set; }
+    }
+    public class AllHawbListAirImport
+    {
+        public string HawbNo { get; set; }
+        public string Customer { get; set; }
+        public string Shipper { get; set; }
+        public string Packages { get; set; }
+        public string Chargeable_Weight { get; set; }
+        public string Freight_Weight { get; set; }
     }
 }

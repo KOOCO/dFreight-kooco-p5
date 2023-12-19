@@ -1,10 +1,8 @@
 using Dolphin.Freight.AccountingSettings.BillingCodes;
 using Dolphin.Freight.AccountingSettings.GlCodes;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Threading.Tasks;
-using Volo.Abp.ObjectMapping;
 
 namespace Dolphin.Freight.Web.Pages.AccountingSettings.BillingCodes
 {
@@ -20,7 +18,6 @@ namespace Dolphin.Freight.Web.Pages.AccountingSettings.BillingCodes
         public EditModalModel(IBillingCodeAppService billingCodeAppService)
         {
             _billingCodeAppService = billingCodeAppService;
-
         }
         public async Task OnGetAsync()
         {

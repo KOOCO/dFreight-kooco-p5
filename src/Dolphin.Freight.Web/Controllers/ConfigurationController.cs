@@ -1,5 +1,6 @@
 ﻿using Dolphin.Freight.ImportExport.Configuration;
 using Dolphin.Freight.Web.ViewModels.Configuration;
+using Dolphin.Freight.Web.ViewModels.ExcelExportConfiguration;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -46,10 +47,13 @@ namespace Dolphin.Freight.Web.Controllers
                     UserId = data.UserId
                 };
             }
-
-            return PartialView("Pages/Shared/_Configuration.cshtml", viewModel);
+           
+            
+                return PartialView("Pages/Shared/_Configuration.cshtml", viewModel);
+            
         }
 
+    
         [Route("PostConfig")]
         [HttpPost]
         public async Task PostConfig(Dictionary<string, object> jsonObject)

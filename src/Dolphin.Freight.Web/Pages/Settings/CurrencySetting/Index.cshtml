@@ -21,11 +21,11 @@
 <div class="page-content-area">
     <abp-card>
         <abp-card-header>
-            <abp-row>
-                <abp-column size-md="_6">
+            <div class="d-flex w-100">
+                <div class="mr-2">
                     <abp-card-title>@L["Menu:CurrencySetting"]</abp-card-title>
-                </abp-column>
-                <abp-column size-md="_6" class="text-end">
+                </div>
+                <abp-column class="text-end">
                     @if (await AuthorizationService.IsGrantedAsync(SettingsPermissions.CurrencySetting.Create))
                     {
                         <abp-button id="NewCurrencySettingButton"
@@ -34,10 +34,22 @@
                                 button-type="Primary" />
                     }
                 </abp-column>
-            </abp-row>
+            </div>
         </abp-card-header>
         <abp-card-body>
-            <abp-table striped-rows="true" id="CurrencySetting"></abp-table>
+            <div class="row col-12" style="text-align: center; margin:0!important">
+                <abp-column size="_9"></abp-column>
+                <abp-column size="_3" class="filterDiv text-nowrap">
+                    <abp-input asp-for="Search" class="ml-4" />
+                </abp-column>
+            </div>
+            <abp-table class="nowrap" striped-rows="true" id="CurrencySetting"></abp-table>
         </abp-card-body>
     </abp-card>
 </div>
+<style>
+    .filterDiv div {
+        display: flex;
+        padding: 0 !important;
+    }
+</style>

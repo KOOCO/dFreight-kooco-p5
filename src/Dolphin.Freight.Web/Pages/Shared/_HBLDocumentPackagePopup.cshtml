@@ -1,0 +1,118 @@
+﻿@model Dolphin.Freight.ImportExport.OceanExports.OceanExportDetails
+<script>
+
+    function Cancel(){
+        $('#documentPackageModal').modal('hide');
+    }
+
+    $('#selectAll').click(function () {
+        $('#documentPackageModal input[type="checkbox"]:not(:disabled)').prop('checked', true);
+    });
+
+    $('#clearAll').click(function () {
+        $('#documentPackageModal input[type="checkbox"]:not(:disabled)').prop('checked', false);
+    });
+
+    $("#HBLPrintCB, #CommercialCB, #PackingCB, #CertificateCB, #BankDraftCB, #selectAll, #clearAll").on('click', function () {
+        if ($("#HBLPrintCB").prop('checked') || $("#CommercialCB").prop('checked') || $("#PackingCB").prop('checked') || $("#CertificateCB").prop('checked') || $("#BankDraftCB").prop('checked'))
+        {
+            $("#HBLDocPKGBtn").prop('disabled', false);
+        } else {
+            $("#HBLDocPKGBtn").prop('disabled', true);
+        }
+    });
+
+    $('#HBLDocPKGBtn').on('click', function(){HBLDocPKGBtn
+        var param = "";
+        if ($("#HBLPrintCB").prop('checked')){
+            param += "HBLPrint,";
+        }
+        if ($("#CommercialCB").prop('checked')) {
+            param += "CommercialInvoice,";
+        }
+        if ($("#PackingCB").prop('checked')) {
+            param += "PackingList,";
+        }
+        if ($("#CertificateCB").prop('checked')) {
+            param += "CertificateOfOrigin,";
+        }
+        if ($("#BankDraftCB").prop('checked')) {
+            param += "BankDraft,";
+        }
+        param = param.replace(/^,|,$/g, '');
+
+        OpenWindow('/Docs/HBLDocumentPackageOceanExport?id=@Model.HblId&pageType=@Dolphin.Freight.Common.FreightPageType.OEHBL&reportType=' + param);
+        
+        $('#documentPackageModal').modal('hide');
+    })
+
+</script>
+<style>
+    .checker{
+        display:inline-block
+    }
+</style>
+
+<form>
+    <div class="modal-dialog" ng-class="size ? 'modal-' + size : ''">
+        <div class="modal-content" uib-modal-transclude="">
+            <!-- Modal DocumentPackage -->
+            <div class="modal-header ng-scope">
+                <h4 class="modal-title ng-binding">Report Type</h4>
+                <button aria-hidden="true" ng-click="cancel()" class="close" type="button"></button>
+            </div>
+
+            <div class="modal-body ng-scope" bind-all-uniform="">
+                <!--
+                        <h4 class="modal-title" ng-bind-html="msg"></h4>
+                    -->
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-body-tool">
+                            <div class="btn-group">
+                                <button class="btn btn-primary btn-sm green ng-binding" id="selectAll" type="button">
+                                    All
+                                </button>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-success ng-binding" id="clearAll" type="button">Clear</button>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group form-sm ng-scope" ng-repeat="report_list in report_group">
+                            <label class="checkbox-inline ng-binding ng-scope" ng-repeat="report in report_list">
+                                <div class="checker"><span><input type="checkbox" id="HBLPrintCB"></span></div>
+                                1. HB/L Print
+                            </label><label class="checkbox-inline ng-binding ng-scope" ng-repeat="report in report_list">
+                                <div class="checker disabled"><span><input type="checkbox" disabled="disabled"></span></div>
+                                2. Local Invoice
+                            </label><label class="checkbox-inline ng-binding ng-scope" ng-repeat="report in report_list">
+                                <div class="checker"><span><input type="checkbox" id="CommercialCB"</span></div>
+                                3. Commercial Invoice
+                            </label>
+                        </div><div class="form-group form-sm ng-scope" ng-repeat="report_list in report_group">
+                            <label class="checkbox-inline ng-binding ng-scope" ng-repeat="report in report_list">
+                                <div class="checker"><span><input type="checkbox" id="PackingCB"></span></div>
+                                4. Packing List
+                            </label><label class="checkbox-inline ng-binding ng-scope" ng-repeat="report in report_list">
+                                <div class="checker"><span><input type="checkbox" id="CertificateCB"></span></div>
+                                5. Certificate of Origin
+                            </label><label class="checkbox-inline ng-binding ng-scope" ng-repeat="report in report_list">
+                                <div class="checker"><span><input type="checkbox" id="BankDraftCB"></span></div>
+                                6. Bank Draft
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+               
+            </div>
+            <div class="modal-footer ng-scope">
+                <button type="button" id="docPkgCancleBtn" onclick="Cancel()" class="btn default">Cancel</button>
+                <button class="btn blue btn-primary ng-binding" id="HBLDocPKGBtn" type="button" focus-if="any_selected()" disabled="disabled">
+                    View
+                </button>
+            </div>
+        </div>
+    </div>
+</form> 

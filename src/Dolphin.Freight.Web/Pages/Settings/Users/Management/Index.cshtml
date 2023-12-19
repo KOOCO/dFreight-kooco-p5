@@ -40,17 +40,17 @@
     }
     <abp-card id="IdentityUsersWrapper">
         <abp-card-header>
-            <abp-row>
+            <abp-row class="w-100">
                 <abp-column size-md="_6">
-                    <abp-card-title>Users</abp-card-title>
+                    <abp-card-title>@L["Users"]</abp-card-title>
                 </abp-column>
-                <abp-column size-md="_6">
-                    <abp-card-title><button name="CreateUser" class="mx-1 btn btn-primary btn-sm" type="button" data-busy-text="Processing..."><i class="fa fa-plus"></i> <span>New user</span></button></abp-card-title>
+                <abp-column size-md="_6" class="text-end p-0">
+                    <abp-card-title><button class=" btn btn-primary " id="newUserCreate" type="button" data-busy-text="Processing..."><i class="fa fa-plus"></i> <span>@L["Newuser"]</span></button></abp-card-title>
                 </abp-column>
             </abp-row>
         </abp-card-header>
         <abp-card-body>
-            <abp-table striped-rows="true"></abp-table>
+            <abp-table striped-rows="true" class="nowrap"></abp-table>
         </abp-card-body>
     </abp-card>
 </div>

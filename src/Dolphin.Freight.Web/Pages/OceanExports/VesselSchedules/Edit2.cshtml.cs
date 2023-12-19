@@ -26,6 +26,9 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         public IList<InvoiceDto> m0invoiceDtos { get; set; }
 
         [BindProperty(SupportsGet = true)]
+        public bool ISToolTipShow { get; set; }
+
+        [BindProperty(SupportsGet = true)]
         public IList<InvoiceDto> m1invoiceDtos { get; set; }
 
         [BindProperty(SupportsGet = true)]
@@ -50,7 +53,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports.VesselSchedules
         {
             VesselScheduleDto = await _vesselScheduleAppService.GetAsync(Id);
 
-            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 3, ParentId = Id };
+            QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 5, ParentId = Id };
             IList<InvoiceDto> invoiceDtos = await _invoiceAppService.QueryInvoicesAsync(qidto);
             m0invoiceDtos = new List<InvoiceDto>();
             m1invoiceDtos = new List<InvoiceDto>();

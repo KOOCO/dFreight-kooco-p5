@@ -4,33 +4,197 @@
 @using Dolphin.Freight.Web.Pages.AwbNoRanges
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
+@using Dolphin.Freight.Web.Pages.Components
+@using Dolphin.Freight.Web.CommonService
 @model Dolphin.Freight.Web.Pages.OceanExports.ExportBookings.IndexModel
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
+@inject IDropdownService _dropdown;
+
 @section scripts{
+   
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.3/xlsx.full.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.2.0/js/tableexport.min.js"></script>
+      
     <script type="text/javascript">
+        var l = abp.localization.getResource('Freight');
+        var _changeInterval = null;
+        var dataTable;
+        var BookingId;
+            var queryListFilter = function () {
+                debugger
+                return {
+                    
+                     search: $("#Keyword").val(),
+       
+        fbaFcId: $("#VesselSchedule_FbaFcId").val() == '' ? null : $("#VesselSchedule_FbaFcId").val(),
+        carrierId: $("#VesselSchedule_CarrierId").val() == '' ? null : $("#VesselSchedule_CarrierId").val(),
+         shipperId: $("#VesselSchedule_ShipperId").val() == '' ? null : $("#VesselSchedule_ShipperId").val(),
+        notifyId: $("#VesselSchedule_NotifyId").val() == '' ? null : $("#VesselSchedule_NotifyId").val(),
+        consigneeId: $("#VesselSchedule_ConsigneeId").val() == '' ? null : $("#VesselSchedule_ConsigneeId").val(),
+        customerId: $("#VesselSchedule_CustomerId").val() == '' ? null : $("#VesselSchedule_CustomerId").val(),
+        pod: $("#VesselSchedule_PodId").val() == '' ? null : $("#VesselSchedule_PodId").val(),
+       officeId: $("#VesselSchedule_OfficeId").val() == '' ? null : $("#VesselSchedule_OfficeId").val(),
+        del: $("#VesselSchedule_DelId").val() == '' ? null : $("#VesselSchedule_DelId").val(),
+        deliverTo: $("#VesselSchedule_DeliverToId").val() == '' ? null : $("#VesselSchedule_DeliverToId").val(),
+        shipModeId: $("#VesselSchedule_ShipModeId").val() == '' ? null : $("#VesselSchedule_ShipModeId").val(),
+        blCancelled: $("#BlCancelled").val() == '' ? null : $("#BlCancelled").val(),
+        postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
+        
+        eta: $("#ETA").val() == '' || $("#ETA").val() == null? null : new Date($("#ETA").val()),
+        etd: $("#ETD").val() == '' || $("#ETD").val() == null ? null : new Date($("#ETD").val()),
+        creationDate: $("#CreationDate").val() == '' || $("#CreationDate").val() == null ? null : new Date($("#CreationDate").val()),
+       cargoReadyDate: $("#CargoReadyDate").val() == '' || $("#ETD").val() == null ? null : new Date($("#CargoReadyDate").val()),
+                };
+            };
         $(document).ready(function () {
+    
+            $("#postMblButton").click(function () { 
+
+                   abp.message.confirm(l('New MB/L and HB/L will be created. Do you want to continue?')).then(function (confirmed) {
+                if (confirmed) {
+                    var selectedCheckboxes = $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+                    var id = selectedCheckboxes[0].attributes[2].value;
+                     var url = "Index?handler=CreateBookingMbl";
+                       formData = new FormData();
+                     formData.append("id", id);
+                    // Replace with the actual ID you want to send
+            jQuery.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("XSRF-TOKEN",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    success: function (repo) {
+                      window.location.href = '/OceanExports/EditModal?Id='+repo.id;
+
+                    },
+                    error: function (rs) {
+                        console.log(rs)
+                        alert("Error occurs");
+                    }
+                });
+
+                       
+                }
+            })
+        });
+         $("#assignMblButton").click(function () { 
+
+                   
+               
+                   
+                     var url = "Index?handler=AssignMbl";
+                       formData = new FormData();
+                     formData.append("id", BookingId);
+                      formData.append("mblId", $("#MblId").val());
+                       formData.append("isShipMode", $("#checkboxShip").prop('checked')==true?true:false);
+                        formData.append("isSvcFrom", $("#checkboxFrom").prop('checked')==true?true:false);
+                         formData.append("isSvcTo", $("#checkboxTo").prop('checked')==true?true:false);
+                    // Replace with the actual ID you want to send
+            jQuery.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("XSRF-TOKEN",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    success: function (repo) {
+                        $("#assignMblModal").modal("hide");
+                         abp.message.success(l('Successfully Assign MB/L'));
+                        location.reload();
+                         dataTable.ajax.reload();
+                           
+
+                    },
+                    error: function (rs) {
+                        console.log(rs)
+                         $("#assignMblModal").modal("hide");
+                        abp.message.error("Error occurs");
+                    }
+                });
+
+                       
+                
+            
+        });
+$('#checkAll').change(function() {
+    if ($(this).prop('checked')) {
+        $('#checkboxShip').prop('checked', true);
+        $('#checkboxFrom').prop('checked', true);
+        $('#checkboxTo').prop('checked', true);
+    } else {
+        $('#checkboxShip').prop('checked', false);
+        $('#checkboxFrom').prop('checked', false);
+        $('#checkboxTo').prop('checked', false);
+    }
+});
+
+        $('#ExportBooking_ReferenceId').change(function() {
+    // Get the selected value
+    const selectedValue = $(this).val();
+       $('#mblValue').empty();
+            debugger;
+            if (selectedValue) {
+                dolphin.freight.importExport.oceanExports.oceanExportMbl.getCreateUpdateOceanExportMblDtoById(selectedValue).done(function (data) {
+
+                    debugger;
+                    $('#heading').show(true);
+
+                    $('#mblTable').show(true);
+                    var htmlTable = '<tr><td><input type="checkbox" onclick="selectMblCheckBox(this)" id="checkboxShip"/><input type="hidden" id="MblId" value="{{MblId}}"/><td>Ship Mode</td><td>{{shipMode}}</td></tr>';
+                    htmlTable = htmlTable + '<tr><td><input type="checkbox" onclick="selectMblCheckBox(this)" id="checkboxFrom"/><td>Service Term From</td><td>{{termFrom}}</td></tr>';
+                    htmlTable = htmlTable + '<tr><td><input type="checkbox" onclick="selectMblCheckBox(this)" id="checkboxTo"/><td>Service Term To</td><td>{{termTo}}</td></tr>';
+                     htmlTable = htmlTable.replaceAll("{{MblId}}", data.id);
+                    if (data.shipModeName !== null) {
+                        htmlTable = htmlTable.replaceAll("{{shipMode}}", data.shipModeName);
+                    } else {
+                        htmlTable = htmlTable.replaceAll("{{shipMode}}", "");
+                    }
+
+                    if (data.svcTermFromName !== null) {
+                        htmlTable = htmlTable.replaceAll("{{termFrom}}", data.svcTermFromName);
+                    } else {
+                        abpcard = abpcard.replaceAll("{{termFrom}}", "");
+                    }
+                    if (data.svcTermToName !== null) {
+                        htmlTable = htmlTable.replaceAll("{{termTo}}", data.svcTermToName);
+                    } else {
+                        htmlTable = htmlTable.replaceAll("{{termTo}}", "");
+                    }
+                    $('#mblValue').append(htmlTable);
+                    // Do something with the selected value
+                    console.log('Selected Value: ' + selectedValue);
+                });
+            }
+  });
+             var dataTable;
             var l = abp.localization.getResource('Freight');
-            var dataTable = $('#ExportBookingListTable').DataTable(
-                abp.libs.datatables.normalizeConfiguration({
-                    serverSide: true,
-                    paging: true,
-                    order: [[2, "asc"]],
-                    searching: true,
-                    scrollX: true,
-                    responsive: {
-                        details: {
-                            type: 'column'
+             var columns = [
+                    {
+                        title: '<input type="checkbox" id="selectAllCheckbox" disable="true" onclick="selectAllCheckbox(this)" style=" cursor: pointer;">',
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            debugger;
+                            var id = row.id;
+                            $('#selectAllCheckbox').prop('checked', false);
+                            return '<input type="checkbox" class="selectCheckbox" data-id="' + id + '" onclick="selectCheckbox(this)" style=" cursor: pointer;">';
                         }
                     },
-                    ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.queryList),
-                    columnDefs: [
-                        //{
-                        //    className: 'dtr-control',
-                        //    orderable: false,
-                        //    "defaultContent": ""
-                        //},
-                        {
+   
+               {
                             title: l('Actions'),
                             rowAction: {
                                 items:
@@ -46,15 +210,15 @@
 
                                             }
                                         },
-                                        {
-                                            text: l('Btn:Copy'),
+                                        // {
+                                        //     text: l('Btn:Copy'),
 
-                                            action: function (data) {
-                                                $("#CopyId").val(data.record.id);
-                                                $("#checkModal").modal("show");
+                                        //     action: function (data) {
+                                        //         $("#CopyId").val(data.record.id);
+                                        //         $("#checkModal").modal("show");
 
-                                            }
-                                        },
+                                        //     }
+                                        // },
                                         {
                                             text: l('Delete'),
                                             visible: function (data) {
@@ -75,158 +239,220 @@
                                                                 });
                                                         }
                                                     });
-
-
-
-                                                /*
-                                                if (!data.record.isLocked) {
-                                                    dolphin.freight.importExport.oceanExports.oceanExportMbl
-                                                        .delete(data.record.id)
-                                                        .then(function () {
-                                                            abp.message.success(l('SuccessfullyDeleted'));
-                                                            dataTable.ajax.reload();
-                                                        });
-                                                } else {
-                                                    abp.message.warn("鎖定不能刪除")
-                                                }*/
-
                                             }
                                         }
                                     ]
                             }
-                        },
-                        {
-                            //SO號碼
-                            title: l('SoNo'),
-                            data: "soNo"
-                        },
-                        {
-                            //HB/L號碼
-                            title: l('HblNo'),
-                            data: "hblNo"
-                        },
-                        {
-                            //實際託運人
-                            title: l('ShipperName'),
-                            data: "shipperName"
-                        },
-                        {
-                            //船期編號
-                            title: l('ReferenceNo'),
-                            data: "referenceNo"
-                        },
-                        {
-                            //分站
-                            title: l('OfficeId'),
-                            data: "officeName"
-                        },
-                        {
-                            //船公司
-                            title: l('CarrierName'),
-                            data: "carrierName"
-                        },
-                        {
-                            //船公司S/O
-                            title: l('CarrierBkgNo'),
-                            data: "carrierBkgNo"
-                        },
-                        {
-                            //代理
-                            title: l('ShippingAgentName'),
-                            data: "shippingAgentName"
-                        },
-                        {
-                            //船名
-                            title: l('VesselName'),
-                            data: "vesselName"
-                        },
-                        {
-                            //航次
-                            title: l('Voyage'),
-                            data: "voyage"
-                        },
-                        {
-                            //貨物就緒日期
-                            title: l('CargoArrivalDate'),
-                            data: "cargoArrivalDate"
-                        },
-                        {
-                            //ETD
-                            title: l('PolEtd'),
-                            data: "polEtd"
-                        },
-                        {
-                            //ETA
-                            title: l('PodEta'),
-                            data: "podEta"
-                        },
-                        {
-                            //收貨地(POR)
-                            title: l('PorName'),
-                            data: "porName"
-                        },
-                        {
-                            //裝貨地(POl)
-                            title: l('PolName'),
-                            data: "polName"
-                        },
-                        {
-                            //卸貨港(POD)
-                            title: l('PodName'),
-                            data: "podName"
-                        },
-                        {
-                            //交貨地(DEL)
-                            title: l('DelName'),
-                            data: "delName"
-                        },
-                        {
-                            //運輸條款
-                            title: l('SvcName'),
-                            data: "svcName"
-                        },
-                        {
-                            //文件結關日
-                            title: l('DocCutOffTime'),
-                            data: "docCutOffTime"
-                        },
-                        {
-                            //港口截關日
-                            title: l('PortCutOffTime'),
-                            data: "portCutOffTime"
-                        },
-                        {
-                            //VGM截關日期
-                            title: l('VgmCutOffTime'),
-                            data: "vgmCutOffTime"
-                        },
+                    
+       
 
-                        {
-                            //鐵路截關日
-                            title: l('RailCutOffTime'),
-                            data: "railCutOffTime"
-                        },
-                        {
-                            //最終目的地
-                            title: l('FdestName'),
-                            data: "fdestName"
-                        }
+    },
+ 
+]
+    dolphin.freight.web.controllers.configuration.getJsonConfig('OceanExportBookingList').done(function (data) {
+                data.forEach(function (item) {
+                                if (!item.lock && item.checkable) {
+                    
+                        var column;
 
-                    ]
-                })
-            );
+                        column = {
+                            title: l(item.text),
+                            data: item.name,
+                            defaultContent: ''
+                        };
+                 
+                    columns.push(column);
+                                }
 
-            $('[type=search]').on('keyup', function () {
-                dataTable.search(this.value).draw();
+                });
+
+                var col = (columns.length > 2) ? [[2, 'asc']] : [[0, 'asc']];
+              
+
+             dataTable = $('#ExportBookingListTable').DataTable(
+                    abp.libs.datatables.normalizeConfiguration({
+                        serverSide: true,
+                        paging: true,
+                         pagingType: 'full_numbers',
+                        
+ 
+                order: col,
+                searching: false,
+                scrollX: true,
+                processing: true,
+                  
+                responsive: {
+                    details: {
+                        type: 'column'
+                    }
+                },
+                          ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.queryList, queryListFilter),
+                        columnDefs: columns
+                    })
+                );
             });
+
 
             $('#NewExportBookingButton').click(function (e) {
                 location.href = 'Create';
             });
 
+            $('#Search').keyup(function () {
+                clearInterval(_changeInterval)
+                _changeInterval = setInterval(function () {
+                    dataTable.ajax.reload();
+                    clearInterval(_changeInterval)
+                }, 1000);
+            });
+                      $('#Search').click(function (e) {
+        dataTable.ajax.reload();
+    });
+      $('#CancelFilter').click(function (e) {
+        $("#Keyword").val(null);
+       
+        // $("#VesselSchedule_OfficeId").val(null);
+        $("#VesselSchedule_OfficeId").val(null).trigger("change");
+        $("#VesselSchedule_CarrierId").val(null).trigger("change");
+         $("#VesselSchedule_CustomerId").val(null).trigger("change");
+        $("#VesselSchedule_ShipperId").val(null).trigger("change");
+        $("#VesselSchedule_NotifyId").val(null).trigger("change");
+        $("#VesselSchedule_FbaFcId").val(null).trigger("change");
+        $("#VesselSchedule_ConsigneeId").val(null).trigger("change");
+        $("#VesselSchedule_PodId").val(null).trigger("change");
+        $("#VesselSchedule_DelId").val(null).trigger("change");
+        $("#VesselSchedule_DeliverToId").val(null).trigger("change");
+        $("#VesselSchedule_ShipModeId").val(null).trigger("change");
+        $("#BlCancelled").val(null).trigger("change");
+        $("#PostDate").val(null);
+        $("#ETA").val(null);
+        $("#ETD").val(null);
+        $("#CreationDate").val(null);
+        $("#CargoReadyDate").val(null);
+        dataTable.ajax.reload();
+    });
+   
+            $('#btnConfiguration').click(function (e) {
+                var _configurationModal = new abp.ModalManager({
+                    viewUrl: abp.appPath + 'Configuration',
+                    modalClass: 'ConfigurationViewModel'
+                });
+                    _configurationModal.open({
+                        src: 'OceanExportBookingList'
+                    });
+
         });
+           
+                 $('#btnExcelConfiguration').click(function (e) {
+                var _excelExportConfigurationModal = new abp.ModalManager({
+                    viewUrl: abp.appPath + 'ExportExcelConfiguration',
+                    modalClass: 'ExcelExportConfigurationViewModel'
+                });
+                    _excelExportConfigurationModal.open({
+                        src: 'OceanExportBookingListExcel'
+                       
+                    });
+
+        });
+            });
+        function selectAllCheckbox(element) {
+            var isChecked = $(element).prop('checked');
+            $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]').prop('checked', isChecked);
+        }
+        function selectMblCheckBox(checkbox) { 
+            debugger;
+        
+         if ($('#checkboxShip').prop('checked') && $('#checkboxFrom').prop('checked') && $('#checkboxTo').prop('checked')) {
+            $('#checkAll').prop('checked', true);
+        } else { 
+            $('#checkAll').prop('checked', false);
+        }
+        }
+        function selectCheckbox(checkbox) {
+            var checkedCheckboxes = $('.selectCheckbox:checked');
+            if (checkbox.checked) {
+                checkedCheckboxes.each(function (index, checkbox1) {
+                    $('#deleteBtn').prop('disabled', false);
+                });
+                 if (checkedCheckboxes.length == 1) {
+                $('#copyBtn').prop('disabled', false);
+               var id= checkedCheckboxes[0].attributes[2].value;
+                     dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.get(id).done(function (data) { 
+                     
+                         if (!data.referenceId) { 
+                          $('#addMbl').prop('disabled', false);
+                         
+                         }
+                     
+                     
+                     });
+                       
+                 
+            } else {
+                $('#copyBtn').prop('disabled', true);
+                 $('#addMbl').prop('disabled', true);
+
+            }
+            } else {
+              
+              if (checkedCheckboxes && checkedCheckboxes.length == 0) {
+            $('#deleteBtn').prop('disabled', true);
+            $('#copyBtn').prop('disabled', true);
+            $('#addMbl').prop('disabled', true);
+        }
+        else if (checkedCheckboxes.length == 1) {
+            $('#copyBtn').prop('disabled', false);
+             var id= checkedCheckboxes[0].attributes[2].value;
+                     dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.get(id).done(function (data) { 
+                     
+                         if (!data.referenceId) { 
+                          $('#addMbl').prop('disabled', false);
+                         
+                         }
+                     
+                     
+                     });
+                       
+        }
+               
+            }
+            if (!$(checkbox).prop('checked')) {
+                $('#selectAllCheckbox').prop('checked', false);
+            } else {
+                var allChecked = true;
+                $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]').each(function () {
+                    if (!$(this).prop('checked')) {
+                        allChecked = false;
+                        return false;
+                    }
+                });
+                $('#selectAllCheckbox').prop('checked', allChecked);
+            }
+        }
+        function copyButtonClick() {
+            var selectedCheckboxes = $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+            var id = selectedCheckboxes[0].attributes[2].value;
+             $("#CopyId").val(id);
+            $("#checkModal").modal("show");  
+        }
+          
+     function chooseMblClick() {
+         debugger;
+            var selectedCheckboxes = $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+            var id = selectedCheckboxes[0].attributes[2].value;
+         BookingId = id;
+         $('#heading').hide(true);
+         
+         $('#mblTable').hide(true);
+            $("#assignMblModal").modal("show");  
+        }
+       
+       
+
         function closeModal() {
             $("#checkModal").modal("hide");
+        }
+         function closeMblModal() {
+            $("#assignMblModal").modal("hide");
         }
         function doCopy() {
             var WithInvoice = 0;
@@ -241,8 +467,97 @@
             var url = 'Edit?WithInvoice=' + WithInvoice + "&IsAR=" + IsAR + "&IsAP=" + IsAP + "&IsDC=" + IsDC + '&CopyId=' + CopyId;
             location.href = url
         }
+          document.addEventListener("DOMContentLoaded", function () {
+            // Initialize Bootstrap tooltips
+            var tooltipTrigger = document.getElementById('dropdownContainer');
+            var button = document.getElementById('addMbl');
+
+            if (button && button.hasAttribute('disabled')) {
+                // Button is disabled, show tooltip
+                var tooltip = new bootstrap.Tooltip(tooltipTrigger);
+                tooltip.show();
+            }
+        });
+        function createNew() {
+            window.location.href = "/OceanExports/ExportBookings/Create";
+        }
+        function exportToExcel(){
+        
+       
+      var table = document.getElementById("ExportBookingListTable");
+  var columnsToExclude = [0, 1];
+
+// Create a new worksheet
+var ws = XLSX.utils.aoa_to_sheet([]);
+
+// Create a style object for the header row
+var headerStyle = {
+    font: { bold: true },
+    fill: { bgColor: { indexed: 23 }, fgColor: { indexed: 23 } }, // Blue color
+    alignment: { horizontal: "center" }, // Center-align text
+};
+
+// Iterate through table rows and build the new worksheet
+for (var rowIndex = 0; rowIndex < table.rows.length; rowIndex++) {
+    var row = table.rows[rowIndex];
+    var newRow = [];
+    for (var colIndex = 0; colIndex < row.cells.length; colIndex++) {
+        if (!columnsToExclude.includes(colIndex)) {
+            newRow.push(row.cells[colIndex].innerText);
+        }
+    }
+    XLSX.utils.sheet_add_aoa(ws, [newRow], { origin: -1 });
+}
+
+// Apply the header style to the first row
+XLSX.utils.format_cell(ws['A1'], headerStyle);
+XLSX.utils.format_cell(ws['B1'], headerStyle);
+XLSX.utils.format_cell(ws['C1'], headerStyle);
+// Add more cells as needed for additional columns
+
+// Create a new workbook and add the worksheet
+var wb = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    // Save the workbook as an Excel file
+    XLSX.writeFile(wb, "OceanExportBookingList.xlsx");
+        }
+     
+
+
+        function deleteHbl() {
+            var ids = [];
+            var selectedCheckboxes = $('#ExportBookingListTable tbody input.selectCheckbox[type="checkbox"]:checked');
+            for (var i = 0; i < selectedCheckboxes.length; i++) {
+                var id = selectedCheckboxes[i].attributes[2].value;
+                ids.push(id);
+
+                abp.message.confirm(l('DeleteConfirmationMessage')).then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.oceanExports.exportBookings.exportBooking.deleteMultipleBookingsByIds(ids).done(function () 
+                        {
+                            abp.message.success(l('Message:SuccessDelete')).then(function () {
+                                dataTable.ajax.reload();
+                            });
+                        });
+                    }
+                });
+            }
+        }
+
     </script>
 }
+<style>
+    .filterDiv div {
+        display: flex;
+        padding: 0 !important;
+    }
+       
+        
+     
+
+</style>
+
 <div class="page-header">
     <div class="breadcrumb-wrapper">
         <abp-breadcrumb>
@@ -254,16 +569,196 @@
 <div class="page-content-area">
     <abp-card>
         <abp-card-header>
+            <abp-row class="w-100">
+                <abp-column size-md="_6">
             <div class="title">
                 @L["Menu:ExportBookings.Index"]
             </div>
-            <abp-button id="NewExportBookingButton"
-                        text="@L["Create"].Value"
-                        icon="plus"
-                        class="btn btn-add" />
+            </abp-column>
+             <abp-column size-md="_6" class="text-end p-0">
+                 <abp-button id="FilterGlCodeButton"
+                            text="@L["Filter"].Value"
+                            icon="filter"
+                             button-type="Primary" 
+                            data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
+              <abp-button id="btnConfiguration"
+                                text="@L["Configuration"].Value"
+                                icon="gear"
+                                button-type="Primary" />
+                                <abp-dropdown>
+    <abp-dropdown-button icon="file-excel-o" text="Excel" button-type="Outline_Dark"   />
+    <abp-dropdown-menu>
+        <abp-dropdown-item href="javascript:void(0)" onclick="exportToExcel()"><i class="fa fa-cloud-download"></i>Download</abp-dropdown-item>
+        <abp-dropdown-item id="btnExcelConfiguration"  href="javascript:void(0)"><i class="fa fa-cogs"></i>Config</abp-dropdown-item>
+      
+    </abp-dropdown-menu>
+</abp-dropdown>
+                        </abp-column>
+                        </abp-row>
         </abp-card-header>
+              <abp-card-body class="collapse hide" id="mblDiv">
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["Keyword"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="Keyword" />
+                </abp-column>
+                  <abp-column size-md="_1">
+                    <label>@L["Office"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                  @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.OfficeId", AspItems =  _dropdown.SubstationLookupList, IsShowLabel = false, FieldName = "OfficeId", SelectType = 0,  })
+            </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Carrier"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.CarrierId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "CarrierId", SelectType = 2,ShowFiledContentValue=null})
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Shipper"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ShipperId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "ShipperId", SelectType = 2,ShowFiledContentValue=null })
+                </abp-column>
+
+            </abp-row>
+         <abp-row class="mb-3">
+                  <abp-column size-md="_1">
+                    <label>@L["Customer"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.CustomerId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "CustomerId", SelectType = 2,ShowFiledContentValue=null})
+                </abp-column>
+               <abp-column size-md="_1">
+                    <label>@L["Consignee"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ConsigneeId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "ConsigneeId", SelectType = 2,ShowFiledContentValue=null})
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Notify"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                  @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.NotifyId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "NotifyId", SelectType = 0,  })
+            </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["FBA FC"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FbaFcId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "FbaFcId", SelectType = 2,ShowFiledContentValue=null })
+                </abp-column>
+
+            </abp-row>
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["POL/POD"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.PodId",Selected=null, AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = false, FieldName = "PodId", SelectType = 2,ShowFiledContentValue=null })
+                </abp-column>
+             
+                <abp-column size-md="_1">
+                    <label>@L["DEL"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = false, FieldName = "DelId"}) </abp-column>
+                          <abp-column size-md="_1">
+                    <label>@L["DeliverTo"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.DeliverToId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "DeliverToId"}) </abp-column>
+                  <abp-column size-md="_1">
+                    <label>@L["CargoReadyDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="CargoReadyDate" />
+                </abp-column>
+
+            </abp-row>
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["PostDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" type="date" id="PostDate" />
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["ShipMode"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ShipModeId",Selected=null, AspItems = Model.ShipModeLookupList, IsShowLabel = false, FieldName = "ShipModeId",ShowFiledContentValue=null })
+                </abp-column>
+               
+               
+                <abp-column size-md="_1">
+                    <label>@L["ETD"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="ETD" />
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["ETA"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" class="form-control" id="ETA" />
+                </abp-column>
+            </abp-row>
+            <abp-row class="mb-3">
+                
+          
+                   <abp-column size-md="_1">
+                    <label>@L["B/LCancelled"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+               <select id="BlCancelled" class="form-control" />
+                <option value=""></option>
+                   <option value="true">Yes</option>
+                    <option value="false">No</option>
+               </select>
+               </abp-column>
+                
+             
+                  <abp-column size-md="_1">
+                    <label>@L["CreationDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+              <input type="date" id="CreationDate" class="form-control" />
+                
+                </abp-column>
+            </abp-row>
+               
+            <abp-row>
+                <abp-abp-column class="text-center">
+               
+                    <abp-button type="button" id="CancelFilter" text="@L["Cancel"]" button-type="Danger" />
+
+                    <abp-button type="button" id="Search" text="@L["Search"]" button-type="Primary" />
+               
+                </abp-abp-column>
+            </abp-row>
+            </abp-card-body>
         <abp-card-body>
-            <abp-table striped-rows="true" id="ExportBookingListTable"></abp-table>
+           
+        
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                    <button type="button" class="btn btn-outline-secondary fa fa-plus" onclick="createNew()" id="newBtn"></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-trash" onclick="deleteHbl()" id="deleteBtn" disabled></button>
+                    <button type="button" class="btn btn-outline-secondary fa fa-files-o me-0" onclick="copyButtonClick()" id="copyBtn" disabled></button>
+                    @* <button type="button" class="btn btn-outline-secondary" id="copyBtn" disabled><i class="fa fa-plus"></i>Convert To Shipment</button> *@
+                 <div id="dropdownContainer" class="tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="This dropdown is disabled.">
+                    <abp-dropdown-button id="addMbl" icon="plus" text="@L["ConvertToShipment"]" button-type="Outline_Secondary"  disabled   />
+    <abp-dropdown-menu>
+        <abp-dropdown-item href="javascript:void(0)" id="postMblButton" ><i class="fa fa-plus"></i>@L["CreateNewMB/L&HB/L"]</abp-dropdown-item>
+        <abp-dropdown-item onclick="chooseMblClick()"  href="javascript:void(0)"><i class="fa fa-clipboard"></i>@L["AttachtoanexistingMB/L"]</abp-dropdown-item>
+      
+    </abp-dropdown-menu>
+  
+     
+                </div>
+            </div>
+            <abp-table class="nowrap" striped-rows="true" id="ExportBookingListTable"></abp-table>
         </abp-card-body>
     </abp-card>
     <div id="checkModal" class="modal" tabindex="-1" role="dialog">
@@ -301,6 +796,47 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" onclick="doCopy()">@L["Btn:Ok"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+      <div id="assignMblModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Choose MB/L No.</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeMblModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+               <div class="modal-body">
+    <div class="form-group">
+        <label class="control-label name-sm font-md w-auto _font-12">MB/L No.</label>
+          @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ExportBooking.ReferenceId", AspItems = Model.ReferenceLookupList, IsShowLabel = false, FieldName = @L["ReferenceId"], SelectType = 0})
+                                               
+    </div>
+
+    
+    
+        <h5 style="font-size:12px;" class="text-muted" id="heading">Do you want to apply the item(s) below from the MB/L to this booking?</h5>
+        <table id="mblTable" class="table table-bordered ">
+          <thead  class="th-bg">
+            <tr>
+                <th >
+                    <div class="checker"><span><input type="checkbox" id="checkAll"  ></span></div>
+                </th>
+                <th>Field</th>
+                <th>Data</th>
+            </tr>
+            </thead>
+            <tbody id="mblValue">
+                </tbody>
+        </table>
+    <!----><!---->
+</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="assignMblButton">@L["Btn:Ok"]</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
                 </div>
             </div>

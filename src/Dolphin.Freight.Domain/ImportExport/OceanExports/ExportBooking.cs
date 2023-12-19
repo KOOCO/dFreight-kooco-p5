@@ -23,6 +23,11 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 對應的ID，可能是船期也可能是MBL
         /// </summary>
+        public Guid? VesselScheduleId { get; set; }
+
+        [ForeignKey("VesselScheduleId")]
+        public virtual VesselSchedule VesselSchedule { get; set; }
+
         public Guid? ReferenceId { get; set; }
         /// <summary>
         /// 0：船期，1：MBL
@@ -274,7 +279,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 收貨地(POR) ETD
         /// </summary>
-        public DateTime PorEtd { get; set; }
+        public DateTime? PorEtd { get; set; }
         /// <summary>
         /// 裝貨港(POL)ID
         /// </summary>
@@ -300,7 +305,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 卸貨港(POD) ETA
         /// </summary>
-        public DateTime PodEta { get; set; }
+        public DateTime? PodEta { get; set; }
         /// <summary>
         /// 交貨地(DEL)ID
         /// </summary>
@@ -313,7 +318,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 交貨地(DEL) ETA
         /// </summary>
-        public DateTime DelEta { get; set; }
+        public DateTime? DelEta { get; set; }
+        public DateTime? CargoReadyDate { get; set; }
         /// <summary>
         /// 最終目的地ID
         /// </summary>
@@ -326,7 +332,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 最終目的地ETA
         /// </summary>
-        public DateTime FdestEta { get; set; }
+        public DateTime? FdestEta { get; set; }
         /// <summary>
         /// FBA倉儲ID
         /// </summary>
@@ -348,7 +354,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 中轉港ETA
         /// </summary>
-        public DateTime Trans1Eta { get; set; }
+        public DateTime? Trans1Eta { get; set; }
         /// <summary>
         /// ECTN號碼 
         /// </summary>

@@ -11,25 +11,133 @@
 @inject IDropdownService _dropdown
 @section styles {
     <style type="text/css">
-
+#ejo .btn-primary {
+    color: #fff;
+    background-color: rgb(25 28 32 / 52%);
+    border-color: #00000000;
+}
+.grossWeightTable {
+    flex: -1 0 55.333333% !important;
+    max-width: 55.333333% !important;
+}
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
 }
 @section scripts
     {
+       @*  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> *@
     <script src="https://cdn.jsdelivr.net/npm/jquery-templates@1.0.0/jquery.tmpl.min.js"></script>
     <abp-script src="/Pages/OceanImports/CreateMbl.js" />
     <abp-script src="/Pages/OceanImports/EditModel.js" />
     <script type="text/javascript">
         var cardIndex = 0;
         var l = abp.localization.getResource('Freight');
+        function getCurrentDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+          
+
+            const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}`;
+            return formattedDateTime;
+        }
+
         $(document).ready(function () {
-            var l = abp.localization.getResource('Freight');
+            $('#cardSettingArea').hide();
+            if("@Model.OceanImportMbl.IsOblReceived"=="True")
+            {
+                $('#OceanImportMbl_OblReceivedDate').prop('disabled', false);
+                $('#OceanImportMbl_IsOblReceived').prop('checked', true);
+            }
+            if("@Model.OceanImportMbl.IsReleased"=="True")
+            {
+                $('#OceanImportMbl_MblReleaseDate').prop('disabled', false);
+                $('#OceanImportMbl_IsReleased').prop('checked', true);
+            }
+
+            const ids = [
+                "OceanImportMbl_PostDate",
+                "OceanImportMbl_PolEtd",
+                "OceanImportMbl_PodEta",
+                "OceanImportMbl_DelEta",
+                "OceanImportMbl_FdestEta",
+                "OceanImportMbl_Etb",
+                "OceanImportMbl_ATD",
+                "OceanImportMbl_ATA",
+                "OceanImportMbl_OblReceivedDate",
+                "OceanImportMbl_MblReleaseDate",
+                "OceanImportMbl_LatestContainerEntryDate",
+                "OceanImportMbl_PorEtd",
+                "OceanImportMbl_ItDate"
+            ];
+
+            var MbldateTimePicker = new CustomDateTimePicker();
+            MbldateTimePicker.dateTimePicker(ids);
+
+           
+            $('#OceanImportMbl_IsOblReceived').on('change', function (e, val) { 
+                if (this.checked) {
+                    $('#OceanImportMbl_OblReceivedDate').prop('disabled', false);
+                    var currentDate = new Date();
+                    $("#OceanImportMbl_OblReceivedDate").val(getCurrentDateTime());
+                
+                } 
+                else{
+                $('#OceanImportMbl_OblReceivedDate').prop('disabled', true);
+                    $("#OceanImportMbl_OblReceivedDate").val( null);
+                   
+                 
+                }
+            })
+            $('#OceanImportMbl_IsReleased').on('change', function (e, val) { 
+                if (this.checked) { 
+                    $('#OceanImportMbl_MblReleaseDate').prop('disabled',false);
+                  var currentDate = new Date();
+
+                    $("#OceanImportMbl_MblReleaseDate").val(getCurrentDateTime());
+                
+                } 
+                else{
+                    $('#OceanImportMbl_MblReleaseDate').prop('disabled', true);
+                    $("#OceanImportMbl_MblReleaseDate").val(null);
+                   
+                 
+                }
+            })
+        });
+     
+        $(document).ready(function () {
+          
+
             var showMsg = '@Model.ShowMsg';
-            if (showMsg == 'True') abp.message.success(l("Message:SuccessAdd"));
+             var showMsg = '@Model.ShowMsg';
+            if (showMsg == 'True') {
+              
+                            abp.message.success(l("Message:SuccessAdd"));
+
+               
+            }
+           
             var isLocked = '@Model.OceanImportMbl.IsLocked';
-            if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
+            if (isLocked == 'True') {
+                abp.message.warn(l("Message:LockMessage"));
+
+                $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:Lock"));
+            } else {
+                $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:UnLock"));
+            }
+
+
             //$("#addHBtn").click(function () {
             //    addHBtn();
             //});
@@ -98,7 +206,6 @@
         //}
 
         $('#addHBtn').on('click', function () {
-            debugger;
             if ($('#mblDiv')[0].classList.contains('show')) {
                 $('#btnMawbCollapse').click();
             }
@@ -107,7 +214,6 @@
                 showAlert(alertConfirmation2, 'Store');
             }
             else {
-
                 let hawbcard = createHawbCard();
 
                 let index = $('.hbl_sm_area').find('.card').length;
@@ -125,7 +231,8 @@
             console.log("enter here");
             event.preventDefault();
             abp.message.success('Successfully Saved').then(function () {
-                location.href = "/OceanImports/Index";
+                // location.href = "/OceanImports/Index";
+                location.reload();
             });
             //location.href = '/AirImports/EditMawb/' + rs.responseText.id + '/show';
         });
@@ -141,7 +248,6 @@
                 showAlert(alertConfirmation, 'Continue');
             }
             else {
-
                 var color = getComputedStyle(element.parentElement.parentElement).backgroundColor;
 
                 if (!$('#btnHawbCardCollapse_' + hblNo).attr('class').includes('collapsed')) {
@@ -166,7 +272,135 @@
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
                         $('#partialContainer').html(partial);
-                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
+                        setFilteredDropdown();
+                        setDateTimeforCards('OIHBL');
+                        const ids = ["OceanImportHbl_PorEtd",
+                            "OceanImportHbl_PodEta",
+                            "OceanImportHbl_DelEta",
+                            "OceanImportHbl_FdestEta",
+                            "OceanImportHbl_CargoArrivalDate",
+                            "OceanImportHbl_HblWhCutOffTime",
+                            "OceanImportHbl_EarlyReturnDateTime",
+                            "OceanImportHbl_LcIssueDate",
+                            "OceanImportHbl_OnBoardDate",
+                            "OceanImportHbl_HblReleaseDate",
+                            "OceanImportHbl_CanceledDate",
+                            "OceanImportMbl_OblReceivedDate",
+                            "OceanImportMbl_MblReleaseDate",
+                            "OceanImportHbl_Available",
+                            "OceanImportHbl_IsfMatchDate",
+                            "OceanImportHbl_Lfd",
+                            "OceanImportHbl_ItDate",
+                            "OceanImportHbl_GoDate",
+                            "OceanImportHbl_ExpiryDate",
+                            "OceanImportHbl_CReleasedDate",
+                            "OceanImportHbl_EntryDocSent",
+                            "OceanImportHbl_DoorDeliveryATA"];
+
+                        var dateTimePickerHbl = new CustomDateTimePicker();
+                        dateTimePickerHbl.dateTimePicker(ids);
+                        updateRequiredAttribute();
+                        $('#OceanImportHbl_AmsNo').change(function () {
+                         if ($('#OceanImportHbl_AmsNo').val() == '') {
+            $("#OceanImportHbl_AmsNo-error").text("AMS No. is mandatory for creating ISF");
+        }else{
+        
+        $("#OceanImportHbl_AmsNo-error").text("");
+        }
+                        
+                        });
+                         $('#OceanImportHbl_IsfByThirdParty').change(function () {
+                              debugger;
+                        updateRequiredAttribute();
+                         });
+                              $('#OceanImportHbl_IsfNo').change(function () {
+                     updateRequiredAttribute();
+                        });
+
+
+                         $('#OceanImportHbl_IsRailwayCode').change(function() {
+                        if (this.checked) {
+                            $('#OceanImportHbl_RailwayCodeId').prop('disabled', false);
+                        }
+                        else {
+                        $('#OceanImportHbl_RailwayCodeId').prop('disabled', true);
+            
+            }
+        
+        })
+        
+            $('#OceanImportHbl_IsOblReceived').change(function () {
+                if (this.checked) {
+                    // Checkbox is checked, set OblReceivedDate to current date time
+                    var currentDate = new Date();
+                    $('#OceanImportHbl_OblReceivedDate').val(currentDate.toISOString().slice(0, 19).replace("T", " "));
+                    $('#OceanImportHbl_IsReleased').removeAttr('disabled');
+                     $('#OceanImportHbl_OblReceivedDate').prop('disabled', false);
+                } else {
+                    // Checkbox is unchecked, clear OblReceivedDate
+                    $('#OceanImportHbl_OblReceivedDate').val('');
+                    $('#OceanImportHbl_IsReleased').attr('disabled', 'disabled');
+                     $('#OceanImportHbl_OblReceivedDate').prop('disabled', true);
+                }
+            });
+                 $('#OceanImportHbl_IsReleased').on('change', function (e, val) { 
+                if (this.checked) { 
+                    $('#OceanImportHbl_HblReleaseDate').removeAttr('disabled');
+                    $('#OceanImportHbl_ReleaseById').removeAttr('disabled');
+                    $("#OceanImportHbl_HblReleaseDate").datepicker("setDate", new Date());
+                    $('#releasedBy').val('@(CurrentUser.Name + " " + CurrentUser.SurName)');
+                } 
+                else{
+                    $('#OceanImportHbl_HblReleaseDate').attr('disabled', 'disabled');
+                    $("#OceanImportHbl_HblReleaseDate").datepicker("setDate", null);
+                    $('#OceanImportHbl_ReleaseById').val(null);
+                    $('#releasedBy').val(null);
+                }
+            })
+            $('#OceanImportHbl_IsHold').on('change', function () {
+                if (this.checked) {
+
+
+                    $('#OceanImportHbl_HoldReason').removeAttr('disabled');
+
+                }
+                else { 
+                
+                $('#OceanImportHbl_HoldReason').attr('disabled','disabled');
+                }
+
+                // Call your other functions or perform desired actions here
+            });   
+        $('#OceanImportMbl_IsReleased').change(function() {
+            if(this.checked) {
+                // Checkbox is checked, set MblReleaseDate to current date time
+                var currentDate = new Date();
+                $('#OceanImportMbl_MblReleaseDate').val(currentDate.toISOString().slice(0, 19).replace("T", " "));
+            } else {
+                // Checkbox is unchecked, clear MblReleaseDate
+                $('#OceanImportMbl_MblReleaseDate').val('');
+            }
+        });
+        
+      initHideHblBtn();
+    $("#checkHideHblBtn").click(function () {
+        initHideHblBtn();
+    });
+
+                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white');
+                        var backGroundColor = $('#hblCardHeader').css('background-color');
+                        var hexColor = EditModelScript.RextoHexColorCode(backGroundColor);
+                        $('#hCardColorValue').val(hexColor);
+                        if (hawbId != '00000000-0000-0000-0000-000000000000'){
+                            dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardById(hawbId).then(function (res) {
+                                var cardColorId = res.cardColorId;
+                                $('#hCardColorId').val(cardColorId);
+                            });
+                        } else if (hawbId == '00000000-0000-0000-0000-000000000000'){
+                            $('#hCardColorId').val('');
+                        } else {
+                            $('#hCardColorId').val('');
+                        }
                         Swal.clickCancel();
                     })
 
@@ -194,15 +428,37 @@
             }
         }
 
-        function createHawbCard() {
-            let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
-                ' onclick="onHawbCardClick(event,{{hblCardId}})">{{hblNo}}</h5>' +
-                ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
-                ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse customForm" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
-            return abpCard;
+       function createHawbCard() {
+             $('#cardSettingArea').show();
+            var check='False';
+            if ($('#cardCheck').prop('checked')) {
+                check = 'True';
+            
+            }
+           let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h6 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
+    ' onclick="onHawbCardClick(event,{{hblCardId}})">';
+
+  // Check the condition and add the <i> tag if check is true
+            debugger;
+            if (check=="False") {
+                abpCard += '<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="{{hblCosigneeName}} {{hblShipperName}}"></i>';
+                abpCard += '{{hblNo}}</h6>' +
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+
+            }
+            else {
+                // Add the rest of the card content
+                abpCard += '{{hblNo}}<br>{{hblCosigneeName}}<br>{{hblShipperName}}</h6>' +
+                
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+            }
+             abpCard += '<div class="card-footer"><div class="row"><div class="col-12 hblCardTitle1">{{invoiceInfo}}</div></div></div>';
+  return abpCard;
         }
 
-        function setHawbCardValues(abpcard, cardId, hblNo, index) {
+        function setHawbCardValues(abpcard, cardId, hblNo, index,hblCosigneeName,hblShipperName,arBalance,apBalance) {
             let apbCardClass = 'card board-item hbl-sm-' + index;
             let cardBodyId = 'hawbCard_' + index;
             cardId = "'" + cardId + "'";
@@ -212,6 +468,21 @@
             abpcard = abpcard.replaceAll("{{hblCardId}}", cardId);
             abpcard = abpcard.replaceAll("{{index}}", index);
             abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
+           
+            abpcard = abpcard.replaceAll("{{invoiceInfo}}", "AP/AR Balance "+apBalance+" / "+arBalance);
+            
+
+             if (hblCosigneeName !== null) {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", hblCosigneeName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", "");
+  }
+
+  if (hblShipperName !== null) {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", hblShipperName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", "");
+  }
 
             return abpcard;
         }
@@ -224,6 +495,7 @@
                 confirmButtonText: buttonName,
             }).then(funName)
         }
+
 
         function alertConfirmation(result) {
             if (result.isConfirmed) {
@@ -239,7 +511,7 @@
         }
 
         function alertConfirmation2() {
-            $('#saveBtn').click();
+            $('#editForm').submit();
         }
 
         function deleteHbl() {
@@ -273,13 +545,185 @@
                     }
                 })
         }
-
+          function getOrderDelivery() {
+            var idNo = $('#OceanImportMbl_Id').val();
+            myWindow = window.open("@Url.Action("DeliveryOrderOceanImportMawb", "Docs")" + "?id=" + idNo, 'DeliveryOrderOceanImportMawb', 'width=1200,height=800');
+            myWindow.focus()
+        }
+           function getDEVSEG() {
+            var idNo = $('#OceanImportMbl_Id').val();
+            myWindow = window.open("@Url.Action("DEVSEGOceanImportMbl", "Docs")" + "?id=" + idNo, 'DEVSEGOceanImportMbl', 'width=1200,height=800');
+            myWindow.focus()
+        }
         function OpenInTrackTrace() {
             var MblNo = $('#OceanImportMbl_MblNo').val();
             myWindow = window.open('https://www.track-trace.com/bol#' + MblNo, '_blank', 'width=1200,height=1000');
             myWindow.focus();
         }
+         function getPreliminaryClaim() {
+            var idNo = $('#OceanImportHBL').val();
+            myWindow = window.open("@Url.Action("PreliminaryClaimOceanImport", "Docs")" + "?id=" + idNo+"&pageType=2", 'PreliminaryClaimOceanExport', 'width=1200,height=800');
+            myWindow.focus()
+        }
 
+        function ConslidateByConsignee() {
+            var url = new URL(window.location.href);
+            var mblId = url.searchParams.get('Id');
+
+            if (mblId == null) {
+                url = window.location.href;
+                mblId = url.split('/')[url.split('/').length - 1];
+            }
+            
+            dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(mblId).done(function (res) 
+            {
+                var consignee = [];
+                var duplicates = new Set();
+                var seen = new Set();
+                res.forEach(item => {
+                    if (item.hblConsigneeId !== null && seen.has(item.hblConsigneeId)) {
+                        duplicates.add(item.hblConsigneeId);
+                    }
+                    seen.add(item.hblConsigneeId);
+                });
+
+                var duplicateArray = Array.from(duplicates).join();
+
+                $.ajax({
+                    url: abp.appPath + 'Docs/ConsolidatedByConsignee?mblId=' + mblId + '&conId=' + duplicateArray,
+                    type: 'GET',
+                    dataType: "html",
+                    success: function (res) {
+                        $('#consolidatedModal').html(res);
+                        $('.modal.mymodal').modal('show');
+                        $('#frmConsolidateArrival').find('.modal.fade').removeClass('modal fade');
+                    }
+                });
+
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+
+            if (mawbId == null) {
+                var url = window.location.href;
+                var mawbId = url.split('/')[url.split('/').length - 1];
+            }
+
+            dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(mawbId).done(function (res)
+            {
+                var consignee = [];
+                for (let i = 0; i < res.length; i++) {
+                    if (res[i].hblConsigneeId != null){
+                        consignee.push(res[i].hblConsigneeId);
+                    }
+                }
+                checkForDuplicates(consignee);
+            });
+        });
+
+        function checkForDuplicates(array) {
+            let counts = {};
+
+            for (let i = 0; i < array.length; i++) {
+                if (counts[array[i]]) {
+                    counts[array[i]] += 1;
+                } else {
+                    counts[array[i]] = 1;
+                }
+            }
+
+            for (let prop in counts) {
+                if (counts[prop] > 1) {
+                    $(".consolidateConsignee").removeClass("disabled");
+                }
+            }
+        }
+          function cardSettingClick() {
+           
+            $("#checkModal").modal("show");  
+        }
+        const toggleLink = document.getElementById("toggleLink");
+
+        // Set an initial state
+        let isAsc = true;
+        let selectedValue = 1;
+        
+        // Add a click event listener to the anchor
+        toggleLink.addEventListener("click", function (e) {
+            e.preventDefault(); // Prevent the default link behavior
+
+            // Toggle between "Asc" and "Desc"
+            if (isAsc) {
+                toggleLink.innerHTML = '<i class="fa fa-sort-down"></i> Desc';
+            } else {
+                toggleLink.innerHTML = '<i class="fa fa-sort-up"></i> Asc';
+            }
+
+            // Invert the state
+            isAsc = !isAsc;
+            SortHblCard();
+        });
+        function changeSetting() { 
+        $("#checkModal").modal("hide");
+            if ($('#cardCheck').prop('checked')) {
+                dolphin.freight.importExport.oceanImports.oceanImportMbl.setCardSetting(true).done(function (response) {
+                    SortHblCard();
+                });
+
+            }
+            else {
+                dolphin.freight.importExport.oceanImports.oceanImportMbl.setCardSetting(false).done(function (response) {
+                    SortHblCard();
+                })
+            }
+        
+        
+        }
+        function SortHblCard(){
+            debugger;
+        selectedValue = $('#sortType').val();
+
+            var url = new URL(window.location.href);
+            var selectedHblNo;
+
+            dolphin.freight.importExport.oceanImports.oceanImportHbl.getHblCardsById(url.searchParams.get('Id'), isAsc,selectedValue)
+                .done(function (hblCards) {
+                    if (hblCards && hblCards.length) {
+                        $('#hblCards').empty();
+                        hblCards.forEach(function (hblCard, index) {
+
+                            let abpcard = createHawbCard();
+
+                            abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index,hblCard.hblConsigneeName,hblCard.hblShipperName,hblCard.arBalance, hblCard.apBalance);
+
+                            $('#hblCards').append(abpcard);
+
+                            if (hblCard.id == url.searchParams.get('Hid')) {
+                                selectedHblNo = hblCard.hblNo;
+                            }
+
+                        })
+                        setTimeout(() => {
+                            if (selectedHblNo) {
+                                $('#title_' + selectedHblNo).click();
+                            }
+                            else { $('.hblCardTitle')[0].click(); }
+
+                        }, 500);
+                    }
+                })
+        
+        
+        
+        
+        
+        
+        
+        
+        }
     </script>
 }
 <div class="page-header">
@@ -348,14 +792,12 @@
                             </abp-card-title>
 
                             <div class="btn-group dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDropMbl" data-bs-toggle="dropdown">
                                     @L["Display:Function"]
                                 </button>
-                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                                    </a>
-                                    <a class='dropdown-item' href='#'>
+                                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDropMbl">
+                                    <a class='dropdown-item' id="lockButtonMbl" href='javascript:void(0)' onclick="EditModelScript.lockUnlockMblOrHbl('@Model.OceanImportMbl.Id', 'Mbl')"></a>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="EditModelScript.OceanImportCopy('@Model.OceanImportMbl.Id')">
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="deleteMbl()">
@@ -364,18 +806,25 @@
                                     <a class='dropdown-item' href='#'>
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Batch Printing"]
                                     </a>
+                                     
                                     <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ManifestOceanImportMBL", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL })')">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
+                                      <a class='dropdown-item' href='javascript:void(0)' onclick="getDEVSEG()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:DEV/SEG"]
+                                    </a>
+                                     <a class='dropdown-item' href='javascript:void(0)' onclick="getOrderDelivery()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
+                                    </a>
+                                    <a class='dropdown-item consolidateConsignee disabled' href='javascript:void(0)' onclick="if(!$(this).hasClass('disabled')) { ConslidateByConsignee() }" title="This function is only available when two or more hbl have same consignee">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Arrival Notice"]
                                     </a>
                                      <li class="dropdown-divider"></li>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanImportProfitReportDetailOrSummry", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL, reportType = "Summary" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanImportProfitReportDetailOrSummry", "Docs", new { id = Model.OceanImportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OIMBL, reportType = "Detail" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                                     </a>
                                     <li class="dropdown-divider"></li>
@@ -407,7 +856,7 @@
                             </div>
                             </div>*@
 
-                            <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
+                            <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" id="btnMawbCollapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv">
                             </button>
 
                         </abp-card-header>
@@ -431,32 +880,32 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.PostDate" type="text" abp-data-datepicker="false" readonly="true" />
+                                    <abp-input asp-for="OceanImportMbl.PostDate" abp-data-datepicker="false" readonly="true" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblOverseaAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblOverseaAgentId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblOverseaAgentContent) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblOverseaAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblOverseaAgentId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblOverseaAgentId) })
                                     <input type="hidden" name="OceanImportMbl.MblOverseaAgentId" id="mMblOverseaAgentId" value="@Model.OceanImportMbl.MblOverseaAgentId" />
                                     <input type="hidden" name="OceanImportMbl.MblOverseaAgentContent" id="mMblOverseaAgentContent" value="@Model.OceanImportMbl.MblOverseaAgentContent" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblCarrierId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblCarrierId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblCarrierContent) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblCarrierId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblCarrierId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblCarrierId) })
                                     <input type="hidden" name="OceanImportMbl.MblCarrierId" id="mMblCarrierId" value="@Model.OceanImportMbl.MblCarrierId" />
                                     <input type="hidden" name="OceanImportMbl.MblCarrierContent" id="mMblCarrierContent" value="@Model.OceanImportMbl.MblCarrierContent" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.BlAcctCarrierId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "BlAcctCarrierId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.BlAcctCarrierContent) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.BlAcctCarrierId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "BlAcctCarrierId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.BlAcctCarrierId) })
                                     <input type="hidden" name="OceanImportMbl.BlAcctCarrierId" id="mBlAcctCarrierId" value="@Model.OceanImportMbl.BlAcctCarrierId" />
                                     <input type="hidden" name="OceanImportMbl.BlAcctCarrierContent" id="mBlAcctCarrierContent" value="@Model.OceanImportMbl.BlAcctCarrierContent" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.ForwardingAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "ForwardingAgentId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.ForwardingAgentContent) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.ForwardingAgentId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "ForwardingAgentId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.ForwardingAgentId) })
                                     <input type="hidden" name="OceanImportMbl.ForwardingAgentId" id="mForwardingAgentId" value="@Model.OceanImportMbl.ForwardingAgentId" />
                                     <input type="hidden" name="OceanImportMbl.ForwardingAgentContent" id="mForwardingAgentContent" value="@Model.OceanImportMbl.ForwardingAgentContent" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.CoLoaderId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "CoLoaderId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.CoLoaderContent) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.CoLoaderId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "CoLoaderId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.CoLoaderId) })
                                     <input type="hidden" name="OceanImportMbl.CoLoaderId" id="mCoLoaderId" value="@Model.OceanImportMbl.CoLoaderId" />
                                     <input type="hidden" name="OceanImportMbl.CoLoaderContent" id="mCoLoaderContent" value="@Model.OceanImportMbl.CoLoaderContent" />
                                 </abp-column>
@@ -478,7 +927,7 @@
                                     <abp-input asp-for="OceanImportMbl.CarrierContractNo" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsDirect" class="form-label">@L["IsDirect"]<input type="checkbox" name="OceanImportMbl.IsDirect" id="OceanImportMbl_IsDirect" value="true" checked="@Model.OceanImportMbl.IsDirect" /></label>
+                                    <label for="OceanImportMbl_IsDirect" class="form-label customCheck">@L["IsDirect"]<input type="checkbox" name="OceanImportMbl.IsDirect" id="OceanImportMbl_IsDirect" value="true" checked="@Model.OceanImportMbl.IsDirect" /></label>
                                 </abp-column>
                                 <abp-column size-md="_3">
 
@@ -508,7 +957,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblBillToId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = true, FieldName = "MblBillToId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblBillToId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblSalesTypeId", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "MblBillToId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblSalesTypeId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblSalesTypeId", AspItems = _dropdown.SalesTypeLookupList, IsShowLabel = true, FieldName = "MblSalesTypeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.MblSalesTypeId) })
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.MblCargoTypeId", AspItems = _dropdown.CargoTypeLookupList, IsShowLabel = true, FieldName = "MblCargoTypeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.CargoTypeId) })
@@ -546,13 +995,13 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.PolId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PolId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.PolId) })
         </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.PolEtd" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportMbl.PolEtd" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.PodId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PodId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.PodId) })
         </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.PodEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportMbl.PodEta" abp-data-datepicker="false" required />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -560,20 +1009,26 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.DelId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "DelId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.DelId) })
         </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.DelEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportMbl.DelEta" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.FdestId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.FdestId) })
         </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.FdestEta" type="text" abp-data-datepicker="false" class="checkdate" />
+                            <abp-input asp-for="OceanImportMbl.FdestEta" abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
-                                <abp-column size-md="_9">
+                                <abp-column size-md="_3">
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.Etb" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportMbl.ATD" abp-data-datepicker="false" />
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="OceanImportMbl.ATA" abp-data-datepicker="false" />
+                                </abp-column>
+                                <abp-column size-md="_3">
+                                    <abp-input asp-for="OceanImportMbl.Etb" abp-data-datepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -586,7 +1041,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.FreightTermId", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = "FreightTermId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.FreightTermId) })
         </abp-column>
                                 <abp-column size-md="_3">
-                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.FdestId", AspItems = _dropdown.FreightTermLookupList, IsShowLabel = true, FieldName = "FdestId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.FdestId) })
+                                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.ShipModeId", AspItems = _dropdown.ShipModeLookupList, IsShowLabel = true, FieldName = "ShipModeId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.ShipModeId) })
         </abp-column>
 
 
@@ -607,12 +1062,12 @@
             <input type="hidden" name="OceanImportMbl.OblTypeId" id="mOblTypeId" value="@Model.OceanImportMbl.OblTypeId" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsOblReceived" class="form-label">@L["IsOblReceived"]<input type="checkbox" name="OceanImportMbl.IsOblReceived" id="OceanImportMbl_IsOblReceived" value="true" /></label>
-                                    <abp-input asp-for="OceanImportMbl.OblReceivedDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <label for="OceanImportMbl_IsOblReceived" class="form-label">@L["IsOblReceived"]<input type="checkbox"  name="OceanImportMbl.IsOblReceived" id="OceanImportMbl_IsOblReceived" value="true" /></label>
+                                    <abp-input asp-for="OceanImportMbl.OblReceivedDate" type="text"  abp-data-datetimepicker="false"  suppress-label disabled />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsReleased" class="form-label">@L["IsReleased"]<input type="checkbox" name="OceanImportMbl.IsReleased" id="OceanImportMbl_IsReleased" value="true" /></label>
-                                    <abp-input asp-for="OceanImportMbl.MblReleaseDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+            <label for="OceanImportMbl_IsReleased" class="form-label">@L["IsReleased"]<input type="checkbox"  name="OceanImportMbl.IsReleased" id="OceanImportMbl_IsReleased" value="true" /></label>
+                                    <abp-input asp-for="OceanImportMbl.MblReleaseDate" type="text" abp-data-datetimepicker="false"  suppress-label disabled />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -621,7 +1076,7 @@
             <input type="hidden" name="OceanImportMbl.BusinessReferrerId" id="mBusinessReferrerId" value="@Model.OceanImportMbl.BusinessReferrerId" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input label="" asp-for="OceanImportMbl.LatestContainerEntryDate" class="cdatetime" type="text" abp-data-datetimepicker="false" />
+                                    <abp-input label="" asp-for="OceanImportMbl.LatestContainerEntryDate" type="text" abp-data-datetimepicker="false" />
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -644,7 +1099,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.PorId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "PorId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.PorId) })
         </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.PorEtd" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportMbl.PorEtd" type="text" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.ReturnLocationId", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "ReturnLocationId", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.ReturnLocationId) })
@@ -656,13 +1111,13 @@
                             </abp-row>
                             <abp-row class="hideArea">
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="OceanImportMbl.ItDate" type="text" abp-data-datepicker="false" class="checkdate" />
+                                    <abp-input asp-for="OceanImportMbl.ItDate" type="text" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "OceanImportMbl.ItLocation", AspItems = _dropdown.PortsManagementLookupList, IsShowLabel = true, FieldName = "ItLocation", SelectType = 1, ShowFiledContentValue = Convert.ToString(Model.OceanImportMbl.ItLocation) })
         </abp-column>
                                 <abp-column size-md="_3">
-                                    <label for="OceanImportMbl_IsEcommerce" class="form-label">@L["IsEcommerce"]<input type="checkbox" name="OceanImportMbl.IsEcommerce" id="OceanImportMbl_IsEcommerce" value="true" checked="@Model.OceanImportMbl.IsEcommerce" /></label>
+                                    <label for="OceanImportMbl_IsEcommerce" class="form-label customCheck">@L["IsEcommerce"]<input type="checkbox" name="OceanImportMbl.IsEcommerce" id="OceanImportMbl_IsEcommerce" value="true" checked="@Model.OceanImportMbl.IsEcommerce" /></label>
                                 </abp-column>
                             </abp-row>
                             <abp-row>
@@ -688,14 +1143,66 @@
 
                 <div class="card-wrap">
                     <button class="btn btn-block btn-add" type="button" id="addHBtn">
-                        <i class="fa-solid fa-plus"></i>Add HAWB
+                        <i class="fa-solid fa-plus"></i>@L["AddHBL"]
                     </button>
+                    <div id="cardSettingArea">     
+                            <div class="d-flex flex-row">
+                        <div class="p-2"><label>Sort By</label>
+                        <select id="sortType">
+                            <option selected value="1">HB/L No</option>
+                             <option value="2">Created Date</option>
+                        </select>    
+                        </div>
+                        <div class="p-2">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+                        <div class="p-2">
+                            <a href="#" id="toggleLink"><i class="fa fa-sort-up"></i> Asc</a>
+                        </div>
+                            </div>
+                            <div class="d-flex flex-row">
+                        <div class="p-2" ><a href='javascript:void(0)' class="text-muted" onclick="cardSettingClick()"><i class="fa fa-cogs"></i> Card Setting</a>
+                            </div>
+                            </div>
+                            </div>
                     <div id="hblCards" class="hbl_sm_area">
 
                     </div>
                 </div>
             </abp-column>
         </abp-row>
+         <div id="checkModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Card Setting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+        <div class="pull-left w-80per _pd-sm">
+            <div class="_text-blue-steel _font-15 bold _mg-bottom-10">Collapsed Card View</div>
+            <div class="_font-13 _mg-bottom-xs">Show Shipper and Consignee</div>
+            <div class="_font-11 text-muted">Show Shipper and Consignee name without hovering on the <i class="fa fa-info-circle _font-11"></i> icon when the cards are collapsed</div>
+        </div>
+        <div class="pull-left w-20per _mg-top-50">
+    <abp-input asp-for="@Model.ISToolTipShow" id="cardCheck" suppress-label />
+        </div><!---->
+    </div>
+                    
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="changeSetting()">@L["Btn:Ok"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="modal mymodal" id="consolidatedModal" tabindex="-1" role="dialog">
+        </div>
 
         <input type="hidden" name="Id" id="Id" value="@Model.Id" />
         <input type="hidden" name="Hid" id="Hid" value="@Model.OceanImportHbl.Id" />
@@ -747,8 +1254,19 @@
         <input type="hidden" name="OceanImportHbl.PodId" id="hHPodId" value="@Model.OceanImportHbl.PodId" />
         <input type="hidden" name="OceanImportHbl.HDelId" id="hHDelId" value="@Model.OceanImportHbl.DelId" />
         <input type="hidden" name="OceanImportHbl.FdestId" id="hHFdestId" value="@Model.OceanImportHbl.FdestId" />
+        <input type="hidden" name="OceanImportHbl.ExtraPropJSON" id="hHExtraPropId" value="@Model.OceanImportHbl.ExtraPropJSON" />
+        <input type="hidden" name="OceanImportHbl.Mark" id="hHMark" value="@Model.OceanImportHbl.Mark" />
+        <input type="hidden" name="OceanImportHbl.Description" id="hHDescription" value="@Model.OceanImportHbl.Description" />
         <input type="hidden" name="OceanImportHbl.CardColorId" id="hCardColorId" value="@Model.OceanImportHbl.CardColorId" />
-        <abp-button class="btn btn-primary me-md-2" type="button" id="saveEditBtn">@L["Save"].Value</abp-button>
+        <input type="hidden" name="OceanImportHbl.CardColorValue" id="hCardColorValue" />
+        <div  id="ejo" style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
+
+    <button class="btn btn-primary me-md-2 rounded-circle" type="submit" id="saveEditBtn" style="width: 50px; height: 50px;">
+  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-save fa-w-14 fa-2x">
+    <path fill="currentColor" d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM224 416c-35.346 0-64-28.654-64-64 0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64zm96-304.52V212c0 6.627-5.373 12-12 12H76c-6.627 0-12-5.373-12-12V108c0-6.627 5.373-12 12-12h228.52c3.183 0 6.235 1.264 8.485 3.515l3.48 3.48A11.996 11.996 0 0 1 320 111.48z"></path>
+  </svg>
+</button>
+        </div>
     </form>
     </div>
 </div>

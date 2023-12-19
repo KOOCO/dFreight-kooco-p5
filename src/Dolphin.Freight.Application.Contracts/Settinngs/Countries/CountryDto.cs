@@ -9,5 +9,6 @@ namespace Dolphin.Freight.Settings.Countries
         /// 國家名稱
         /// </summary>
         public string CountryName { get; set; }
+        public string Code { get; set; }
     }
 }

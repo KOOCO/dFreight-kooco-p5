@@ -30,6 +30,10 @@ using Dolphin.Freight.Settings.CurrencySetting;
 using Volo.Abp.AutoMapper;
 using static Dolphin.Freight.Web.Pages.ReportScreen.VolumeProfileReportModel;
 using Dolphin.Freight.ReportLog;
+using static Dolphin.Freight.Web.Pages.AirImports.CreateMawbModel;
+using Dolphin.Freight.Settinngs.SysCodes;
+using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.Common;
 
 namespace Dolphin.Freight.Web;
 
@@ -38,7 +42,11 @@ public class FreightWebAutoMapperProfile : Profile
     public FreightWebAutoMapperProfile()
     {
         //Define your AutoMapper configuration here for the Web project.
-
+        CreateMap<AirExportHawbDto, InvoiceMblDto>();
+        CreateMap<AirImportHawbDto, InvoiceMblDto>();
+        CreateMap<OceanExportHblDto, InvoiceMblDto>();
+        CreateMap<OceanImportHblDto, InvoiceMblDto>();
+        CreateMap<AirImportMawbDto, InvoiceMblDto>();
         CreateMap<ItNoRangeDto, CreateUpdateItNoRangeDto>();
         CreateMap<AirOtherChargeDTO, CreateUpdateAirOtherChargeDTO>();
         CreateMap<PortsManagementDTO, CreateUpdatePortsManagementDto>();
@@ -50,7 +58,10 @@ public class FreightWebAutoMapperProfile : Profile
         CreateMap<GlCodeDto, CreateUpdateGlCodeDto>();
         CreateMap<VesselScheduleDto,CreateUpdateVesselScheduleDto>();
         CreateMap<ExportBookingDto,CreateUpdateExportBookingDto>();
-
+        CreateMap<ExportBooking, ExportBookingDto>();
+        CreateMap<ExportBooking, CreateUpdateExportBookingDto>();
+        CreateMap<OceanExportHblDto, OceanExportHbl>();
+        CreateMap<AirExportMawbDto, InvoiceMblDto>();
         // TradePartner
         CreateMap<CreateEditCreditLimitGroupViewModel, CreateUpdateCreditLimitGroupDto>();
         CreateMap<CreditLimitGroupDto, CreateEditCreditLimitGroupViewModel>();
@@ -64,6 +75,10 @@ public class FreightWebAutoMapperProfile : Profile
         // TradePartner Attachment
         CreateMap<Pages.Sales.TradePartner.DocumentModel.DocumentUploadViewModel, CreateUpdateTradePartnerAttachmentDto>();
 
+        // SysCode
+        CreateMap<Settings.SysCodes.SysCode, CreateUpdateSysCodeDto>();
+        CreateMap<SysCodeDto, CreateUpdateSysCodeDto>();
+        CreateMap<CreateUpdateSysCodeDto, Settings.SysCodes.SysCode>();
 
         // ContactPerson
         CreateMap<Pages.Sales.TradePartner.ModalWithCreateContactPersonModel.CreateContactPersonViewModel, CreateUpdateContactPersonDto>();
@@ -75,9 +90,13 @@ public class FreightWebAutoMapperProfile : Profile
         CreateMap<OceanExportHblDto, CreateUpdateOceanExportHblDto>();
         CreateMap<InvoiceDto, CreateUpdateInvoiceDto>();
         CreateMap<Invoice, CreateUpdateInvoiceDto>();
+        CreateMap<Invoice, InvoiceDto>();
+        CreateMap<InvoiceDto, Invoice>();
+        CreateMap<InvoiceBill, InvoiceBillDto>();
+        CreateMap<InvoiceBillDto, InvoiceBill>();
         CreateMap<InvoiceBillDto, CreateUpdateInvoiceBillDto>();
         CreateMap<VesselScheduleDto, CreateUpdateVesselScheduleDto>();
-
+        CreateMap<OceanExportHblDto, CreateUpdateOceanExportHblDto>();
 		//Accounting
         CreateMap<CustomerPayment, CustomerPaymentDto>();
         CreateMap<CreateUpdateCustomerPaymentDto, CustomerPayment>();        
@@ -86,23 +105,29 @@ public class FreightWebAutoMapperProfile : Profile
 
         // AirExportMawb
         CreateMap<Pages.AirExports.CreateMawbModel.CreateMawbViewModel, CreateUpdateAirExportMawbDto>();
-
+        CreateMap<AirExportMawbDto, Pages.AirExports.CreateMawbModel.CreateMawbViewModel>();
+        //AirExportBooking
+        CreateMap<Dolphin.Freight.ImportExport.AirExports.Bookings.ExportBookingDto, Dolphin.Freight.ImportExport.AirExports.Bookings.CreateUpdateExportBookingDto>();
         // AirImportMawb
         CreateMap<Pages.AirImports.CreateMawbModel.CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>();
         CreateMap<AirImportMawbDto, Pages.AirImports.EditMawbModel.CreateAIMMawbViewModel>();
         CreateMap<Pages.AirImports.EditMawbModel.CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>();
+        CreateMap<AirImportMawbDto, CreateAIMMawbViewModel>();
 
         // 發票
         CreateMap<CreateUpdateOceanExportMblDto, InvoiceMblDto>();
         CreateMap<CreateUpdateOceanImportMblDto, InvoiceMblDto>();
-
+        CreateMap<CreateUpdateOceanExportHblDto, InvoiceMblDto>();
+        CreateMap<CreateUpdateOceanImportHblDto, InvoiceMblDto>();
+        CreateMap<ExportBookingDto, InvoiceMblDto>();
         CreateMap<OceanExportMblDto, InvoiceMblDto>();
-
+        CreateMap<CreateUpdateContainerDto, Container>();
         // 國家管理
         //CreateMap<CountryDisplayName, CreateUpdateCountryDisplayNameDto>();
 		//DisplaySetting
         CreateMap<CreateUpdateDisplaySettingDTO, DisplaySettingDTO>();
         //貨幣表
         CreateMap<CurrencySettingDTO, CreateUpdateCurrencySettingDTO>();
+
     }
 }

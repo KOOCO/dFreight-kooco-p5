@@ -1,16 +1,23 @@
 
+using Dolphin.Freight.Accounting.InvoiceBills;
+using Dolphin.Freight.Accounting.Invoices;
 using Dolphin.Freight.Common;
+using Dolphin.Freight.ImportExport.Containers;
 using Dolphin.Freight.ImportExport.OceanExports;
+//using Dolphin.Freight.Migrations;
 using Dolphin.Freight.Settings.PortsManagement;
+using Dolphin.Freight.Settings.SysCodes;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.TradePartners;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -18,11 +25,30 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
 {
     public class CreateMblModel : FreightPageModel
     {
+        public Guid MblId { get; set; }
+        public Guid HblId { get; set; }
         [HiddenInput]
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool IsCopyVesselInfoAndShippingSchedule { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool CopyAccountingInformation {  get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool IsCopyContainerInfo {  get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool IsAP {  get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool IsAR {  get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool IsDC {  get; set; }
+        [HiddenInput]
+        [BindProperty(SupportsGet = true)]
+        public Guid? Hid { get; set; }
+     
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
+        public List<SelectListItem> BlTypeLookupList { get; set; }
         public List<SelectListItem> PortsManagementLookupList { get; set; }
         [BindProperty]
         public CreateUpdateOceanExportMblDto OceanExportMbl { get; set; }
@@ -38,10 +64,16 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         private readonly ISubstationAppService _substationAppService;
         private readonly ITradePartnerAppService _tradePartnerAppService;
         private readonly IPortsManagementAppService _portsManagementAppService;
+        private readonly IInvoiceAppService _invoiceAppService;
+        private readonly IInvoiceBillAppService _invoiceBillAppService;
+        private readonly IContainerAppService _containerAppService;
         private readonly ICurrentUser _currentUser;
         private Guid? releasedBy;
-        public CreateMblModel( IOceanExportMblAppService oceanExportMblAppService, IPortsManagementAppService portsManagementAppService, ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService,
-            ICurrentUser currentUser)
+        public CreateMblModel(IOceanExportMblAppService oceanExportMblAppService, IPortsManagementAppService portsManagementAppService, 
+                            ITradePartnerAppService tradePartnerAppService, ISubstationAppService substationAppService, 
+                            IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService,
+                            ICurrentUser currentUser, IInvoiceAppService invoiceAppService, IInvoiceBillAppService invoiceBillAppService,
+                            IContainerAppService containerAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
@@ -49,50 +81,133 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             _substationAppService = substationAppService;
             _tradePartnerAppService = tradePartnerAppService;
             _portsManagementAppService = portsManagementAppService;
+            _invoiceAppService = invoiceAppService;
+            _invoiceBillAppService = invoiceBillAppService;
+            _containerAppService = containerAppService;
             _currentUser = currentUser;
         }
         public async Task OnGetAsync()
         {
-            OceanExportHbl = new CreateUpdateOceanExportHblDto();
-            OceanExportMbl = new CreateUpdateOceanExportMblDto();
+            if (Id != Guid.Empty)
+            {
+                OceanExportMblDto = await _oceanExportMblAppService.GetAsync(Id);
 
-            releasedBy = _currentUser.Id;
+                OceanExportMbl = ObjectMapper.Map<OceanExportMblDto, CreateUpdateOceanExportMblDto>(OceanExportMblDto);
+                OceanExportMbl.MblNo = null;
+                OceanExportMbl.FilingNo = null;
 
+                if (!IsCopyVesselInfoAndShippingSchedule)
+                {
+                    OceanExportMbl.VesselName = null;
+                    OceanExportMbl.Voyage = null;
+                    OceanExportMbl.PolEtd = null;
+                    OceanExportMbl.PodEta = null;
+                    OceanExportMbl.PorEtd = null;
+                    OceanExportMbl.DelEta = null;
+                    OceanExportMbl.FdestEta = null;
+                }
+            }
+            else
+            {
+                OceanExportHbl = new CreateUpdateOceanExportHblDto();
+                OceanExportMbl = new CreateUpdateOceanExportMblDto();
+
+                releasedBy = _currentUser.Id;
+            }
+
+            await FillBlType();
             await FillSubstationAsync();
             await FillTradePartnerAsync();
             await FillPortAsync();
         }
         public async Task<JsonResult> OnPostAsync()
         {
-            if (OceanExportMbl.PolEtd == null) OceanExportMbl.PostDate = DateTime.Now;
-            else OceanExportMbl.PostDate = OceanExportMbl.PolEtd;
-            OceanExportMbl.FilingNo = await _sysCodeAppService.GetSystemNoAsync(new (){ QueryType= "OceanExportMbl_FilingNo" });
-            var mbl = await _oceanExportMblAppService.CreateAsync(OceanExportMbl);
-            OceanExportHbl.MblId = mbl.Id;
-            Id = mbl.Id;
-            if (AddHbl == 1)
+            if (Id != Guid.Empty)
             {
-                //if (OceanExportHbl.IsCreateBySystem)
-                //{
-                //    OceanExportHbl.HblNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "OceanExportHbl_HblNo" });
-                //}
-                QueryDto query  = new QueryDto();
-                query.QueryType = "CardColorId";
-                var syscodes = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(query);
-                if (syscodes != null && syscodes.Count >0) 
+                Dictionary<Guid, Guid> hblIds = new();
+
+                var oldMblId = Id;
+
+                OceanExportMbl.Id = Guid.Empty;
+
+                var inputDto = await _oceanExportMblAppService.CreateAsync(OceanExportMbl);
+
+                var hblList = await _oceanExportHblAppService.GetHblCardsById(oldMblId);
+
+                foreach (var item in hblList)
                 {
-                    var syscode = syscodes[0];
-                    OceanExportHbl.CardColorId = syscode.Id;
+                    var oldHblId = item.Id;
+
+                    item.Id = Guid.Empty;
+
+                    item.MblId = inputDto.Id;
+
+                    var inputHblDto = await _oceanExportHblAppService.CreateAsync(ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(item));
+
+                    await _invoiceAppService.CreateReplicaAccounting(oldHblId, inputHblDto.Id, 1, IsAP, IsAR, IsDC);
+
+                    hblIds.Add(oldHblId, inputHblDto.Id);
                 }
-                await _oceanExportHblAppService.CreateAsync(OceanExportHbl);
 
+                if (CopyAccountingInformation)
+                {
+                    await _invoiceAppService.CreateReplicaAccounting(oldMblId, inputDto.Id, 3, IsAP, IsAR, IsDC);
+                }
+
+                if (IsCopyContainerInfo)
+                {
+                    await _containerAppService.CreateMblHblContainerForCopiedOE_OI(oldMblId, inputDto.Id, hblIds);
+                }
+
+                Dictionary<string, object> rs = new()
+                {
+                    { "id", inputDto.Id }
+                };
+                rs.Add("HId", Hid);
+
+                return new JsonResult(rs);
             }
-
-            Dictionary<string, Guid> rs = new()
+            else
             {
-                { "id", Id }
-            };
-            return new JsonResult(rs);
+                if (OceanExportMbl.PolEtd == null) OceanExportMbl.PostDate = DateTime.Now;
+                else OceanExportMbl.PostDate = OceanExportMbl.PolEtd;
+                OceanExportMbl.FilingNo = await _sysCodeAppService.GetSystemNoAsync(new() { QueryType = "OceanExportMbl_FilingNo" });
+                var mbl = await _oceanExportMblAppService.CreateAsync(OceanExportMbl);
+                Id = mbl.Id;
+                if (OceanExportHbl is not null && !string.IsNullOrEmpty(OceanExportHbl.HblNo))
+                {
+                    if (OceanExportHbl.CardColorId is null)
+                    {
+                        SysCode sysCode = new SysCode();
+                        sysCode.CodeType = "CardColorId";
+                        sysCode.CodeValue = OceanExportHbl.CardColorValue;
+                        sysCode.ShowName = OceanExportHbl.HblNo;
+
+                        var newSysCode = await _sysCodeAppService.CreateAsync(ObjectMapper.Map<SysCode, CreateUpdateSysCodeDto>(sysCode));
+
+                        OceanExportHbl.CardColorId = newSysCode.Id;
+                    }
+
+                    if (OceanExportHbl.ExtraProperties == null)
+                    {
+                        OceanExportHbl.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                    }
+
+                    OceanExportHbl.MblId = Id;
+
+                    await _oceanExportHblAppService.CreateAsync(OceanExportHbl);
+                }
+
+                Dictionary<string, object> rs = new()
+                {
+                    { "id", Id
+
+                    }
+                };
+                rs.Add("HId", Hid);
+
+                return new JsonResult(rs);
+            }
         }
 
         #region FillSubstationAsync()
@@ -124,5 +239,14 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                                    .ToList();
         }
         #endregion
+
+        public async Task FillBlType()
+        {
+            var blTypeLookup = await _sysCodeAppService.GetSysCodeDtosByTypeAsync(new Common.QueryDto() { QueryType = "BlTypeId" });
+
+            BlTypeLookupList = blTypeLookup.Select(x => new SelectListItem(x.ShowName, x.Id.ToString(), false))
+                                     .ToList();
+
+        }
     }
 }

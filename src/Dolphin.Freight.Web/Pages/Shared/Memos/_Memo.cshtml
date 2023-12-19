@@ -3,22 +3,22 @@
 @using Dolphin.Freight.TradePartners.TradeParties;
 @using Microsoft.Extensions.Localization
 @inject IStringLocalizer<FreightResource> L
-<abp-row>
-    <abp-column>
-        <abp-button id="@Model.AddButtonId"
-                    text=@L["Display:Button:New"]
-                    icon="plus"
-                    button-type="Outline_Secondary" />
-    </abp-column>
-</abp-row>
-<abp-row>
-    <abp-column>
-        <abp-table border-style="Bordered" id="@Model.MemoTableId" class="@Model.MemoTableClass"></abp-table>
-    </abp-column>
-    <abp-column size="_4">
+
+<div class="d-flex flex-row">
+   
+ <div class="p-2">
+        <button type="button" style="padding-top: 8px;padding-right: 8px;padding-left: 11px;padding-bottom: 8px;padding-bottom: 8pxx;background-color: #26a69a;" id="@Model.AddButtonId"
+                        class="btn btn-sm btn-secondary"><i class="fa fa-plus"></i> </button>
+                     </div>
+                     <div class="p-2" style="margin-top:0px !important;">
+                    <abp-table border-style="Bordered" id="@Model.MemoTableId" class="@Model.MemoTableClass" style="margin-top:0px !important;"></abp-table>
+   </div>
+   <div class="p-2">
+    
         <textarea rows="7" class="form-control" readonly id="@Model.MemoContentId"></textarea>
-    </abp-column>
-</abp-row>
+    </div>
+</div>
+
 <style>
     .memo-focus {
         background-color: #fff9e5;
@@ -94,7 +94,8 @@
 </style>
 <script>
     {
-
+        
+             var memoDataTable;
         let oldOnload = window.onload;
         let initTable = function () {
             const addButtonId = '@Model.AddButtonId';
@@ -102,75 +103,52 @@
             const memoContentId = '@Model.MemoContentId';
             const fType = '@Model.FType';
             const sourceId = '@Model.SourceId';
-            const l = abp.localization.getResource('Freight');
 
-            let memoDataTable;
+            let l = abp.localization.getResource('Freight');
+
 
             const createMemoModal = new abp.ModalManager({
                 viewUrl: '/Shared/Memos/_CreateUpdateMemo',
             });
 
             createMemoModal.onResult(function () {
-                memoDataTable.ajax.reload();
+                location.reload();
             });
-
+            $(`#${memoTableId} thead th`).css({
+                
+        'background-color': '#959595',
+        'color': '#FFFFFF'
+    });
             function showMemoDataTable() {
+               
                 console.log(fType);
                 console.log(sourceId);
                 memoDataTable = $(`#${memoTableId}`).DataTable({
+       
                     order: [[3, 'desc']],
                     paging: false,
                     info: false,
                     searching: false,
                     ajax: function (d, cb) {
                         dolphin.freight.common.memos.memo.getListByQuery({ sourceId, fType }).then(data => cb({ data }));
+                               const headerRow = document.querySelector(`[id="${memoTableId}"] thead tr`);
+
+// Apply styles to the header row
+if (headerRow) {
+    headerRow.style.backgroundColor = "#959595";
+    headerRow.style.color = "#FFFFFF";
+   
+}
                     },
                     columnDefs: [
-                        {
-                            title: l('Actions'),
-                            rowAction: {
-                                items: [
-                                    {
-                                        text: l('Edit'),
-                                        action: function (data) {
-                                            createMemoModal.open({
-                                                id: data.record.id,
-                                                sourceId,
-                                                fType,
-                                            });
-                                        }
-                                    },
-                                    {
-                                        text: l('Delete'),
-                                        confirmMessage: function (data) {
-                                            return l(
-                                                'AreYouSureToDelete',
-                                                data.record.title
-                                            );
-                                        },
-                                        action: function (data) {
-                                            dolphin.freight.common.memos.memo.delete(data.record.id)
-                                                .then(function () {
-                                                    abp.notify.info(l('SuccessfullyDeleted'));
-                                                    memoDataTable.ajax.reload();
-                                                });
-                                        }
-                                    },
-                                ]
-                            },
-                            targets: 0,
-                            render: function (data, type, row) {
-                                return '';
-                            },
-                            orderable: false,
-                        },
+                        
                         {
                             title: '<i class="fa fa-bell"></i>',
                             render: function (data, type, row) {
                                 return `<input type="checkbox" class="memo-highlight-checkbox" data-id="${row.id}" ${row.highlight === true ? 'checked' : ''} />`;
                             },
                             className: 'text-center',
-                            targets: 1,
+                            targets: 0,
                             orderable: false,
                         },
                         {
@@ -178,11 +156,11 @@
                             render: function (data, type, row) {
                                 return `${row.highlight === true ? '<i class="fa fa-bell memo-highlight"></i>' : ''}${row.subject}`;
                             },
-                            targets: 2,
+                            targets: 1,
                             orderable: false,
                         },
                         {
-                            title: l('Display:Memo:THead:LastModified'),
+                            title: l('Modified'),
                             render: function (data, type, row) {
                                 if (row.lastModificationTime == null) {
                                     return '';
@@ -190,7 +168,7 @@
                                 const time = row.lastModificationTime.replaceAll('T', ' ').split('.')[0];
                                 return `${row.lastUpdatedUserName}(${time})`;
                             },
-                            targets: 3,
+                            targets: 2,
                         },
                         {
                             title: l('Display:Memo:THead:CreateTime'),
@@ -198,11 +176,47 @@
                                 const time = row.creationTime.replaceAll('T', ' ').split('.')[0];
                                 return `${row.createdUserName}(${time})`;
                             },
-                            targets: 4,
+                            targets: 3,
                         },
+                        {
+            title: l('Actions'),
+            rowAction: {
+                items: [
+                    {
+                        text: l('Edit'),
+                        action: function (data) {
+                            createMemoModal.open({
+                                id: data.record.id,
+                                sourceId,
+                                fType,
+                            });
+                        }
+                    },
+                    {
+                        text: l('Delete'),
+                        confirmMessage: function (data) {
+                            return l('AreYouSureToDelete', data.record.title);
+                        },
+                        action: function (data) {
+                            dolphin.freight.common.memos.memo.delete(data.record.id)
+                                .then(function () {
+                                    abp.notify.info(l('SuccessfullyDeleted'));
+                                    location.reload();
+                                });
+                        }
+                    },
+                ]
+            },
+            targets: 4, // -1 places the column at the end
+            render: function (data, type, row) {
+                return '';
+            },
+            orderable: false,
+        }
                     ],
                 });
             }
+   
 
             $(document).on('click', `#${memoTableId} .memo-highlight-checkbox`, function (e) {
                 const self = $(this);
@@ -234,10 +248,12 @@
         };
 
         window.onload = function () {
-            if (typeof oldOnload == 'function') {
+            if (!typeof oldOnload == 'function') {
                 oldOnload();
             }
-            initTable();
+            initTable();    
         }
+        initTable();
+
     };
 </script>

@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Dolphin.Freight.ImportExport.Containers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 using Volo.Abp.Users;
 
 namespace Dolphin.Freight.ImportExport.OceanExports
@@ -14,6 +16,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// MB/LID
         /// </summary>
         public Guid MblId { get; set; }
+        public string HblContainers { get; set; }
+        public string HblVerticalContainers { get; set; }
         /// <summary>
         /// MBL的文件號碼
         /// </summary>
@@ -34,6 +38,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 
         /// </summary>
         public string MblCarrierName { get; set; }
+        public string[] ContainerIds { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -141,6 +146,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 收貨地(POR) ETD
         /// </summary>
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime PorEtd { get; set; }
         /// <summary>
         /// 裝貨港(POL)ID
@@ -150,6 +157,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 裝貨港(POL) ETD
         /// </summary>
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? PolEtd { get; set; }
         /// <summary>
         /// 卸貨港(POD)ID
@@ -159,6 +168,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 卸貨港(POD) ETA
         /// </summary>
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime PodEta { get; set; }
         /// <summary>
         /// 交貨地(DEL)ID
@@ -168,6 +179,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 交貨地(DEL) ETA
         /// </summary>
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime DelEta { get; set; }
         /// <summary>
         /// 最終目的地ID
@@ -177,6 +190,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 最終目的地ETA
         /// </summary>
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime FdestEta { get; set; }
         /// <summary>
         /// FBA倉庫ID
@@ -194,6 +209,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 貨物就緒日期
         /// </summary>
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime CargoArrivalDate { get; set; }
         /// <summary>
         /// 卡車收貨地ID
@@ -254,10 +271,14 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 信用狀開立日期
         /// </summary>
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime LcIssueDate { get; set; }
         /// <summary>
         /// 裝船日期
         /// </summary>
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime OnBoardDate { get; set; }
         /// <summary>
         /// 是否可堆積
@@ -282,6 +303,8 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// <summary>
         /// 放貨日期
         /// </summary>
+        //[DataType(DataType.DateTime)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime HblReleaseDate { get; set; }
         /// <summary>
         /// 放貨人ID
@@ -403,5 +426,12 @@ namespace Dolphin.Freight.ImportExport.OceanExports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public CreateUpdateContainerDto CreateUpdateHBLContainerDto { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public Dictionary<string, string> HblContainerIdContains { get; set; }
+
+        public string Weight { get; set; }
+        public string Measurement { get; set; }
+        public string PackageType { get; set; }
     }
 }

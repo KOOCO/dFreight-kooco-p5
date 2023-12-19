@@ -207,6 +207,9 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("PPOrCC")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Price")
+                        .HasColumnType("int");
+
                     b.Property<double>("Quantity")
                         .HasColumnType("float");
 
@@ -215,6 +218,9 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("TaxId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Unit")
                         .HasColumnType("nvarchar(max)");
@@ -406,6 +412,15 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("SystemNo")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<double?>("TotalAmount")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("TotalBeforeTax")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("TotalTax")
+                        .HasColumnType("float");
 
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
@@ -688,6 +703,11 @@ namespace Dolphin.Freight.Migrations
                     b.Property<bool>("IsOceanImportMbl")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsPayroll")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<bool>("IsTkm")
                         .HasColumnType("bit");
 
@@ -927,6 +947,328 @@ namespace Dolphin.Freight.Migrations
                     b.ToTable("AppMemos", (string)null);
                 });
 
+            modelBuilder.Entity("Dolphin.Freight.ImportExport.AirExports.AirExportBooking", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ActualShipperId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AgentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ArrivalDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("AwbChargeableWeightAmount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AwbChargeableWeightKg")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AwbChargeableWeightLb")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AwbGrossWeightAmount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AwbGrossWeightKg")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AwbGrossWeightLb")
+                        .HasColumnType("float");
+
+                    b.Property<Guid?>("BillToId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BookingRemark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("BuyingRate")
+                        .HasColumnType("float");
+
+                    b.Property<int>("BuyingRateUnitType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CargoArrivalDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CargoPickupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CargoRemark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("CargoTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CarrierBkgNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("CarrierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("ChargeableWeightAmount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("ChargeableWeightKg")
+                        .HasColumnType("float");
+
+                    b.Property<double>("ChargeableWeightLb")
+                        .HasColumnType("float");
+
+                    b.Property<Guid?>("CoLoaderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<Guid?>("ConsigneeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CustomerRefNo")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("DVCarriage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DVCustomer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeliveryInstruction")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("DeliveryToId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DepatureDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DepatureId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("DestinationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("DisplayUnit")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DocNo")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<string>("ExtraProperties")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<DateTime>("FinalEta")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FlightNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ForwardingAgentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("GrossWeightAmount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("GrossWeightKg")
+                        .HasColumnType("float");
+
+                    b.Property<double>("GrossWeightLb")
+                        .HasColumnType("float");
+
+                    b.Property<string>("HandlingInformation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HblNo")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<string>("HoldReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("HolderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("IncotermsType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Insurance")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<bool>("IsHold")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsStackable")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ItnNo")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<string>("Mark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("MawbPackageUnitId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("NatureAndQuantity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("NotifyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("OfficeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Other")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Package")
+                        .HasColumnType("float");
+
+                    b.Property<Guid?>("PackageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PoNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ReferenceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ReferenceNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ReferenceType")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("SaleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("SalesPersonId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("SalesType")
+                        .HasColumnType("int");
+
+                    b.Property<double>("SellingRate")
+                        .HasColumnType("float");
+
+                    b.Property<int>("SellingRateUnitType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShipType")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("ShipperId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SoNo")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<DateTime>("SoNoDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("SubAgentAwb")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SvcTermTypeFrom")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SvcTermTypeTo")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("TruckerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("VolumeWeightCbm")
+                        .HasColumnType("float");
+
+                    b.Property<double>("VolumeWeightKg")
+                        .HasColumnType("float");
+
+                    b.Property<string>("WtVal")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActualShipperId");
+
+                    b.HasIndex("AgentId");
+
+                    b.HasIndex("BillToId");
+
+                    b.HasIndex("CargoPickupId");
+
+                    b.HasIndex("CargoTypeId");
+
+                    b.HasIndex("CarrierId");
+
+                    b.HasIndex("CoLoaderId");
+
+                    b.HasIndex("ConsigneeId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("DeliveryToId");
+
+                    b.HasIndex("DepatureId");
+
+                    b.HasIndex("DestinationId");
+
+                    b.HasIndex("ForwardingAgentId");
+
+                    b.HasIndex("HolderId");
+
+                    b.HasIndex("NotifyId");
+
+                    b.HasIndex("OfficeId");
+
+                    b.HasIndex("PackageId");
+
+                    b.HasIndex("SaleId");
+
+                    b.HasIndex("ShipperId");
+
+                    b.HasIndex("TruckerId");
+
+                    b.ToTable("AppAirExportBookings", (string)null);
+                });
+
             modelBuilder.Entity("Dolphin.Freight.ImportExport.AirExports.AirExportHawb", b =>
                 {
                     b.Property<Guid>("Id")
@@ -947,8 +1289,8 @@ namespace Dolphin.Freight.Migrations
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("BookingNo")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("BookingNo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BookingRemarks")
                         .HasColumnType("nvarchar(max)");
@@ -1031,7 +1373,13 @@ namespace Dolphin.Freight.Migrations
                     b.Property<DateTime>("FinalEta")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("GrossWeightCneeAmount")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("GrossWeightCneeKG")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GrossWeightCneeLB")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GrossWeightShprAmount")
@@ -1060,6 +1408,9 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
+
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
 
                     b.Property<string>("IssuingCarrier")
                         .HasColumnType("nvarchar(max)");
@@ -1166,7 +1517,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ArrivalDate")
+                    b.Property<DateTime?>("ArrivalDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("AwbAcctCarrierId")
@@ -1287,6 +1638,9 @@ namespace Dolphin.Freight.Migrations
                     b.Property<double>("GrossWeightLb")
                         .HasColumnType("float");
 
+                    b.Property<string>("HandlingInformation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("IncotermsType")
                         .HasColumnType("int");
 
@@ -1309,6 +1663,9 @@ namespace Dolphin.Freight.Migrations
                     b.Property<bool>("IsECom")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
                     b.Property<Guid?>("IssuingCarrierId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1324,6 +1681,12 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("LastModifierId");
 
+                    b.Property<string>("ManifestNatureAndQuantityOfGoods")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Mark")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("MawbCarrierId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1336,6 +1699,9 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("MawbPackageUnitId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("NatureAndQuantityOfGoods")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("NotifyId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1344,6 +1710,9 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Other")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PONo")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Package")
@@ -1357,6 +1726,27 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<int>("ReasonForCancel")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("RouteDepartureArrivalDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("RouteDepartureCarrierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RouteDepartureFlightNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("RouteDepartureId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("RouteDepatureDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RouteDestinationArrivalDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("RouteDestinationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("RouteTrans1ArrivalDate")
                         .HasColumnType("datetime2");
@@ -1472,6 +1862,12 @@ namespace Dolphin.Freight.Migrations
 
                     b.HasIndex("PackageId");
 
+                    b.HasIndex("RouteDepartureCarrierId");
+
+                    b.HasIndex("RouteDepartureId");
+
+                    b.HasIndex("RouteDestinationId");
+
                     b.HasIndex("RouteTrans1CarrierId");
 
                     b.HasIndex("RouteTrans1Id");
@@ -1521,7 +1917,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("BillToId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CReleasedDate")
+                    b.Property<DateTime?>("CReleasedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CargoReleasedto")
@@ -1565,7 +1961,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DoorDelivered")
+                    b.Property<DateTime?>("DoorDelivered")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ExtraProperties")
@@ -1575,7 +1971,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("FinalDestination")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("FinalETA")
+                    b.Property<DateTime?>("FinalETA")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Freight")
@@ -1584,7 +1980,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("FreightLocation")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("FrtRelease")
+                    b.Property<DateTime?>("FrtRelease")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("GrossWeightKG")
@@ -1599,7 +1995,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("Hsn")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ITDate")
+                    b.Property<DateTime?>("ITDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ITIssuedLocation")
@@ -1617,7 +2013,10 @@ namespace Dolphin.Freight.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
-                    b.Property<DateTime>("LastFreeDay")
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastFreeDay")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("LastModificationTime")
@@ -1676,7 +2075,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("ShipperId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("StorageStartDate")
+                    b.Property<DateTime?>("StorageStartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Trucker")
@@ -1818,6 +2217,9 @@ namespace Dolphin.Freight.Migrations
                     b.Property<bool>("IsECom")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime2")
                         .HasColumnName("LastModificationTime");
@@ -1854,6 +2256,27 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<DateTime>("PostDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RouteDepartureArrivalDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("RouteDepartureCarrierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RouteDepartureFlightNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("RouteDepartureId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("RouteDepatureDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RouteDestinationArrivalDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("RouteDestinationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("RouteTrans1ArrivalDate")
                         .HasColumnType("datetime2");
@@ -1955,6 +2378,12 @@ namespace Dolphin.Freight.Migrations
                     b.HasIndex("OfficeId");
 
                     b.HasIndex("OverseaAgentId");
+
+                    b.HasIndex("RouteDepartureCarrierId");
+
+                    b.HasIndex("RouteDepartureId");
+
+                    b.HasIndex("RouteDestinationId");
 
                     b.HasIndex("RouteTrans1CarrierId");
 
@@ -2279,6 +2708,9 @@ namespace Dolphin.Freight.Migrations
                     b.Property<DateTime>("ApptDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("BookingId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasMaxLength(40)
@@ -2324,6 +2756,9 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<DateTime>("GateOutDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("HblId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsAvailableForPickup")
                         .HasColumnType("bit");
@@ -2375,11 +2810,20 @@ namespace Dolphin.Freight.Migrations
                     b.Property<double>("PackageMeasure")
                         .HasColumnType("float");
 
+                    b.Property<string>("PackageMeasureUnit")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("PackageNum")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("PackageUnitId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<double>("PackageWeight")
                         .HasColumnType("float");
+
+                    b.Property<string>("PackageWeightUnit")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PicupNo")
                         .HasMaxLength(50)
@@ -2414,6 +2858,9 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("VentilationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("VesselId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("YardLocation")
@@ -2452,6 +2899,9 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<Guid?>("CargoPickupId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CargoReadyDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CargoRemark")
                         .HasColumnType("nvarchar(max)");
@@ -2498,7 +2948,7 @@ namespace Dolphin.Freight.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<DateTime>("DelEta")
+                    b.Property<DateTime?>("DelEta")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("DelId")
@@ -2533,7 +2983,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("FbaId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("FdestEta")
+                    b.Property<DateTime?>("FdestEta")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("FdestId")
@@ -2612,7 +3062,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("PoNo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PodEta")
+                    b.Property<DateTime?>("PodEta")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("PodId")
@@ -2624,7 +3074,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("PolId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("PorEtd")
+                    b.Property<DateTime?>("PorEtd")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("PorId")
@@ -2683,7 +3133,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("SvcTermToId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Trans1Eta")
+                    b.Property<DateTime?>("Trans1Eta")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("TransPort1Id")
@@ -2694,6 +3144,9 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<string>("VesselName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("VesselScheduleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("VgmCutOffTime")
                         .HasColumnType("datetime2");
@@ -2774,6 +3227,8 @@ namespace Dolphin.Freight.Migrations
                     b.HasIndex("TransPort1Id");
 
                     b.HasIndex("TruckerId");
+
+                    b.HasIndex("VesselScheduleId");
 
                     b.ToTable("AppExportBookings", (string)null);
                 });
@@ -3629,7 +4084,7 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("CreatorId");
 
-                    b.Property<DateTime>("DelEta")
+                    b.Property<DateTime?>("DelEta")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("DelId")
@@ -3638,7 +4093,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("DeliveryToId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DocCutOffTime")
+                    b.Property<DateTime?>("DocCutOffTime")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("EmptyPickupId")
@@ -3648,7 +4103,7 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("ExtraProperties");
 
-                    b.Property<DateTime>("FdestEta")
+                    b.Property<DateTime?>("FdestEta")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("FdestId")
@@ -3696,7 +4151,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("OfficeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("OnBoardDate")
+                    b.Property<DateTime?>("OnBoardDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("PodEta")
@@ -3711,19 +4166,19 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("PolId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("PorEtd")
+                    b.Property<DateTime?>("PorEtd")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("PorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("PortCutOffTime")
+                    b.Property<DateTime?>("PortCutOffTime")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("PostDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("RailCutOffTime")
+                    b.Property<DateTime?>("RailCutOffTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ReferenceNo")
@@ -3753,7 +4208,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("SvcTermToId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Trans1Eta")
+                    b.Property<DateTime?>("Trans1Eta")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("TransPort1Id")
@@ -3762,7 +4217,7 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("VesselName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("VgmCutOffTime")
+                    b.Property<DateTime?>("VgmCutOffTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Voyage")
@@ -3839,12 +4294,24 @@ namespace Dolphin.Freight.Migrations
                     b.Property<DateTime?>("AnDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("Available")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("B2bNo")
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
                     b.Property<Guid?>("BusinessReferrerId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("CClearance")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CHold")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("CReleasedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("CancelById")
                         .HasColumnType("uniqueidentifier");
@@ -3889,6 +4356,9 @@ namespace Dolphin.Freight.Migrations
 
                     b.Property<DateTime?>("CustomDeclaration")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("CustomDoc")
+                        .HasColumnType("bit");
 
                     b.Property<string>("CustomerRefNo")
                         .HasMaxLength(128)
@@ -3940,17 +4410,29 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("DomesticInstructions")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DomesticInstructionsDelOrder")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("DoorDeliveryATA")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DoorDeliveryETA")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("DoorMove")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("EarlyReturnDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("EmptyPickupId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("EntryDocSent")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EntryNo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ExitDate")
                         .HasColumnType("datetime2");
@@ -3974,11 +4456,17 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("ForwardingAgentId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int?>("Freight")
+                        .HasColumnType("int");
+
                     b.Property<Guid?>("FreightTermForBuyerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("FreightTermForSalerId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("GoDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("GroupComm")
                         .HasMaxLength(128)
@@ -4080,12 +4568,18 @@ namespace Dolphin.Freight.Migrations
                     b.Property<DateTime?>("IsfDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("IsfMatchDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("IsfNo")
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("ItDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("ItIssuedLocation")
+                        .HasColumnType("int");
 
                     b.Property<string>("ItLocation")
                         .HasMaxLength(128)
@@ -4113,6 +4607,9 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("LcNo")
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
+
+                    b.Property<DateTime?>("Lfd")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("LineCode")
                         .HasMaxLength(128)
@@ -4166,8 +4663,8 @@ namespace Dolphin.Freight.Migrations
                     b.Property<string>("QuotationNo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("RailwayCodeId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("RailwayCodeId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("RaiseDate")
                         .HasColumnType("datetime2");
@@ -4178,6 +4675,9 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("ReleaseById")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Ror")
+                        .HasColumnType("bit");
+
                     b.Property<string>("ScNo")
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
@@ -4185,8 +4685,8 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("ShipModeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ShipTypeId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("ShipTypeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("SoNo")
                         .HasMaxLength(32)
@@ -4277,15 +4777,11 @@ namespace Dolphin.Freight.Migrations
 
                     b.HasIndex("PorId");
 
-                    b.HasIndex("RailwayCodeId");
-
                     b.HasIndex("ReceivingAgentId");
 
                     b.HasIndex("ReleaseById");
 
                     b.HasIndex("ShipModeId");
-
-                    b.HasIndex("ShipTypeId");
 
                     b.HasIndex("SvcTermFromId");
 
@@ -4300,6 +4796,12 @@ namespace Dolphin.Freight.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ATA")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ATD")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("AgentRefNo")
                         .HasMaxLength(128)
@@ -4969,6 +5471,9 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("AmsTypeCodeId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasMaxLength(40)
@@ -5020,6 +5525,8 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AmsTypeCodeId");
 
                     b.HasIndex("ContainerGroupId");
 
@@ -5693,6 +6200,10 @@ namespace Dolphin.Freight.Migrations
                     b.Property<Guid?>("LastModifierId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("LastModifierId");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("ParentId");
 
                     b.Property<string>("ShowName")
                         .IsRequired()
@@ -6671,7 +7182,6 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnName("LastModifierId");
 
                     b.Property<string>("Memo")
-                        .IsRequired()
                         .HasMaxLength(2048)
                         .HasColumnType("nvarchar(2048)");
 
@@ -7298,6 +7808,10 @@ namespace Dolphin.Freight.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("DeletionTime");
 
+                    b.Property<string>("Department")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -7362,6 +7876,10 @@ namespace Dolphin.Freight.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)")
                         .HasColumnName("NormalizedUserName");
+
+                    b.Property<string>("Office")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<string>("PasswordHash")
                         .HasMaxLength(256)
@@ -8803,6 +9321,129 @@ namespace Dolphin.Freight.Migrations
                     b.Navigation("GlType");
                 });
 
+            modelBuilder.Entity("Dolphin.Freight.ImportExport.AirExports.AirExportBooking", b =>
+                {
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "ActualShipper")
+                        .WithMany()
+                        .HasForeignKey("ActualShipperId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Agent")
+                        .WithMany()
+                        .HasForeignKey("AgentId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "BillTo")
+                        .WithMany()
+                        .HasForeignKey("BillToId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "CargoPickup")
+                        .WithMany()
+                        .HasForeignKey("CargoPickupId");
+
+                    b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "CargoType")
+                        .WithMany()
+                        .HasForeignKey("CargoTypeId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Carrier")
+                        .WithMany()
+                        .HasForeignKey("CarrierId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "CoLoader")
+                        .WithMany()
+                        .HasForeignKey("CoLoaderId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Consignee")
+                        .WithMany()
+                        .HasForeignKey("ConsigneeId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "DeliveryTo")
+                        .WithMany()
+                        .HasForeignKey("DeliveryToId");
+
+                    b.HasOne("Dolphin.Freight.ImportExport.AirExports.Airport", "Depature")
+                        .WithMany()
+                        .HasForeignKey("DepatureId");
+
+                    b.HasOne("Dolphin.Freight.ImportExport.AirExports.Airport", "Destination")
+                        .WithMany()
+                        .HasForeignKey("DestinationId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "ForwardingAgent")
+                        .WithMany()
+                        .HasForeignKey("ForwardingAgentId");
+
+                    b.HasOne("Volo.Abp.Users.UserData", "Holder")
+                        .WithMany()
+                        .HasForeignKey("HolderId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Notify")
+                        .WithMany()
+                        .HasForeignKey("NotifyId");
+
+                    b.HasOne("Dolphin.Freight.Settings.Substations.Substation", "Office")
+                        .WithMany()
+                        .HasForeignKey("OfficeId");
+
+                    b.HasOne("Dolphin.Freight.Settings.PackageUnits.PackageUnit", "MawbPackageUnit")
+                        .WithMany()
+                        .HasForeignKey("PackageId");
+
+                    b.HasOne("Volo.Abp.Users.UserData", "SalesPerson")
+                        .WithMany()
+                        .HasForeignKey("SaleId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Shipper")
+                        .WithMany()
+                        .HasForeignKey("ShipperId");
+
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "Truckerr")
+                        .WithMany()
+                        .HasForeignKey("TruckerId");
+
+                    b.Navigation("ActualShipper");
+
+                    b.Navigation("Agent");
+
+                    b.Navigation("BillTo");
+
+                    b.Navigation("CargoPickup");
+
+                    b.Navigation("CargoType");
+
+                    b.Navigation("Carrier");
+
+                    b.Navigation("CoLoader");
+
+                    b.Navigation("Consignee");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("DeliveryTo");
+
+                    b.Navigation("Depature");
+
+                    b.Navigation("Destination");
+
+                    b.Navigation("ForwardingAgent");
+
+                    b.Navigation("Holder");
+
+                    b.Navigation("MawbPackageUnit");
+
+                    b.Navigation("Notify");
+
+                    b.Navigation("Office");
+
+                    b.Navigation("SalesPerson");
+
+                    b.Navigation("Shipper");
+
+                    b.Navigation("Truckerr");
+                });
+
             modelBuilder.Entity("Dolphin.Freight.ImportExport.AirExports.AirExportHawb", b =>
                 {
                     b.HasOne("Dolphin.Freight.ImportExport.AirExports.AirExportMawb", "Mawb")
@@ -8884,6 +9525,18 @@ namespace Dolphin.Freight.Migrations
                         .WithMany()
                         .HasForeignKey("PackageId");
 
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "RouteDepartureCarrier")
+                        .WithMany()
+                        .HasForeignKey("RouteDepartureCarrierId");
+
+                    b.HasOne("Dolphin.Freight.ImportExport.AirExports.Airport", "RouteDeparture")
+                        .WithMany()
+                        .HasForeignKey("RouteDepartureId");
+
+                    b.HasOne("Dolphin.Freight.ImportExport.AirExports.Airport", "RouteDestination")
+                        .WithMany()
+                        .HasForeignKey("RouteDestinationId");
+
                     b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "RouteTrans1Carrier")
                         .WithMany()
                         .HasForeignKey("RouteTrans1CarrierId");
@@ -8939,6 +9592,12 @@ namespace Dolphin.Freight.Migrations
                     b.Navigation("Notify");
 
                     b.Navigation("Office");
+
+                    b.Navigation("RouteDeparture");
+
+                    b.Navigation("RouteDepartureCarrier");
+
+                    b.Navigation("RouteDestination");
 
                     b.Navigation("RouteTrans1");
 
@@ -9046,6 +9705,18 @@ namespace Dolphin.Freight.Migrations
                         .WithMany()
                         .HasForeignKey("OverseaAgentId");
 
+                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "RouteDepartureCarrier")
+                        .WithMany()
+                        .HasForeignKey("RouteDepartureCarrierId");
+
+                    b.HasOne("Dolphin.Freight.ImportExport.AirExports.Airport", "RouteDeparture")
+                        .WithMany()
+                        .HasForeignKey("RouteDepartureId");
+
+                    b.HasOne("Dolphin.Freight.ImportExport.AirExports.Airport", "RouteDestination")
+                        .WithMany()
+                        .HasForeignKey("RouteDestinationId");
+
                     b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "RouteTrans1Carrier")
                         .WithMany()
                         .HasForeignKey("RouteTrans1CarrierId");
@@ -9107,6 +9778,12 @@ namespace Dolphin.Freight.Migrations
                     b.Navigation("Office");
 
                     b.Navigation("OverseaAgent");
+
+                    b.Navigation("RouteDeparture");
+
+                    b.Navigation("RouteDepartureCarrier");
+
+                    b.Navigation("RouteDestination");
 
                     b.Navigation("RouteTrans1");
 
@@ -9296,6 +9973,10 @@ namespace Dolphin.Freight.Migrations
                         .WithMany()
                         .HasForeignKey("TruckerId");
 
+                    b.HasOne("Dolphin.Freight.ImportExport.OceanExports.VesselSchedule", "VesselSchedule")
+                        .WithMany()
+                        .HasForeignKey("VesselScheduleId");
+
                     b.Navigation("BillTo");
 
                     b.Navigation("CancelBy");
@@ -9363,6 +10044,8 @@ namespace Dolphin.Freight.Migrations
                     b.Navigation("TransPort1");
 
                     b.Navigation("Truckerr");
+
+                    b.Navigation("VesselSchedule");
                 });
 
             modelBuilder.Entity("Dolphin.Freight.ImportExport.OceanExports.OceanExportHbl", b =>
@@ -10104,10 +10787,6 @@ namespace Dolphin.Freight.Migrations
                         .WithMany()
                         .HasForeignKey("PorId");
 
-                    b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "RailwayCode")
-                        .WithMany()
-                        .HasForeignKey("RailwayCodeId");
-
                     b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "ReceivingAgent")
                         .WithMany()
                         .HasForeignKey("ReceivingAgentId");
@@ -10119,10 +10798,6 @@ namespace Dolphin.Freight.Migrations
                     b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "ShipMode")
                         .WithMany()
                         .HasForeignKey("ShipModeId");
-
-                    b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "ShipType")
-                        .WithMany()
-                        .HasForeignKey("ShipTypeId");
 
                     b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "SvcTermFrom")
                         .WithMany()
@@ -10200,15 +10875,11 @@ namespace Dolphin.Freight.Migrations
 
                     b.Navigation("Por");
 
-                    b.Navigation("RailwayCode");
-
                     b.Navigation("ReceivingAgent");
 
                     b.Navigation("ReleaseBy");
 
                     b.Navigation("ShipMode");
-
-                    b.Navigation("ShipType");
 
                     b.Navigation("SvcTermFrom");
 
@@ -10369,7 +11040,7 @@ namespace Dolphin.Freight.Migrations
                         .WithMany()
                         .HasForeignKey("ReleaseById");
 
-                    b.HasOne("Dolphin.Freight.TradePartners.TradePartner", "ReturnLocation")
+                    b.HasOne("Dolphin.Freight.Settings.PortsManagement.PortsManagement", "ReturnLocation")
                         .WithMany()
                         .HasForeignKey("ReturnLocationId");
 
@@ -10491,9 +11162,15 @@ namespace Dolphin.Freight.Migrations
 
             modelBuilder.Entity("Dolphin.Freight.Settings.ContainerSizes.ContainerSize", b =>
                 {
+                    b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "AmsTypeCode")
+                        .WithMany()
+                        .HasForeignKey("AmsTypeCodeId");
+
                     b.HasOne("Dolphin.Freight.Settings.SysCodes.SysCode", "ContainerGroup")
                         .WithMany()
                         .HasForeignKey("ContainerGroupId");
+
+                    b.Navigation("AmsTypeCode");
 
                     b.Navigation("ContainerGroup");
                 });

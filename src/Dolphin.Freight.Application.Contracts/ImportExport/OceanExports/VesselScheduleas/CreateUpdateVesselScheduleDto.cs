@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Volo.Abp.Application.Dtos;
 
 namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
 {
-    public class CreateUpdateVesselScheduleDto
+    public class CreateUpdateVesselScheduleDto : AuditedEntityDto<Guid>
     {
+      
+        public bool isNewVessel { get; set; }
         /// <summary>
         /// 船期編號 
         /// </summary>
@@ -85,8 +88,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         /// <summary>
         /// 裝貨港(POL) ETD
         /// </summary>
-        [Required]
-        [DataType(DataType.Date)]
         public DateTime? PolEtd { get; set; }
         /// <summary>
         /// 收貨地(POR)ID
@@ -95,7 +96,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         /// <summary>
         /// 收貨地(POR) ETD
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? PorEtd { get; set; }
         /// <summary>
         /// 卸貨港(POD)ID
@@ -104,7 +104,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         /// <summary>
         /// 卸貨港(POD) ETA
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? PodEta { get; set; }
         /// <summary>
         /// 交貨地(DEL)ID
@@ -113,7 +112,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         /// <summary>
         /// 交貨地(DEL) ETA
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? DelEta { get; set; }
         /// <summary>
         /// 最終目的地ID
@@ -122,8 +120,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         /// <summary>
         /// 最終目的地ETA
         /// </summary>
-        [DataType(DataType.Date)]
-        public DateTime FdestEta { get; set; }
+        public DateTime? FdestEta { get; set; }
         /// <summary>
         /// 運費ID
         /// </summary>
@@ -163,7 +160,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         /// <summary>
         /// 裝船日期
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? OnBoardDate { get; set; }
         /// <summary>
         /// 子提單號碼
@@ -184,7 +180,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.VesselScheduleas
         /// <summary>
         /// 中轉港ETA
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? Trans1Eta { get; set; }
         /// <summary>
         /// 是否刪除

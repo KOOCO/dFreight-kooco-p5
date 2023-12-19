@@ -9,7 +9,6 @@
 
 <script>
     function gotoInvoiceHawb(MawbId, HawbId, InvoiceType) {
-        debugger;
         if (HawbId != '00000000-0000-0000-0000-000000000000') {
             location.href = '/Accounting/Invoice?MethodType=6&MawbId=' + MawbId + "&HawbId=" + HawbId + "&InvoiceType=" + InvoiceType;
         }
@@ -27,10 +26,40 @@
         var url = new URL(window.location.href);
         var mawbId = url.searchParams.get('Id');
         dolphin.freight.importExport.airImports.airImportMawb.get(mawbId).done(function (res) {
-            myWindow = window.open('https://www.track-trace.com/bol#' + res.mawbNo, '_blank', 'width=1200,height=1000');
+            myWindow = window.open('https://www.track-trace.com/aircargo#' + res.mawbNo, '_blank', 'width=1200,height=1000');
             myWindow.focus();
         });
     }
+      function setHawbLockUnlock(isLockedCheck) {
+            var id = '@Model.AirImportHawbDto.Id';
+            isLockedCheck = isLockedCheck === "True";
+            if(isLockedCheck){
+                
+            abp.message.confirm(l('UnlockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airImports.airImportHawb
+                            .lockedOrUnLockedAirImportHawb(id)
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyUnlocked'));
+                                window.location.reload();
+                            });
+                    }
+                });
+            } else{
+                abp.message.confirm(l('LockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                      dolphin.freight.importExport.airImports.airImportHawb
+                            .lockedOrUnLockedAirImportHawb(id)
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyLocked'));
+                                window.location.reload();
+                            });
+                    }
+                });
+            }
+        }
 </script>
  
 <abp-card class="card board-item" id="hblCard">
@@ -39,40 +68,57 @@
         <abp-card-title>
             HAWB
             <span id="title0">@Model.AirImportHawbDto.HawbNo </span>
+            <input type="hidden" asp-for="@Model.AirImportHawbDto.Id" />
         </abp-card-title>
 
         <div class="btn-group dropdown">
             <button class="btn btn-secondary dropdown-toggle" style="position: relative;" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                   @if(@Model.AirImportHawbDto.IsLocked)
+                         {
+                           <i class="fa fa-lock"></i>
+                                        }
+                           else
+                       {
+                           <i class="fa fa-lock-open"></i>
+                                        }
                 @L["Display:Function"]
             </button>
+            
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                <a class='dropdown-item' href='javascript:void(0)' onclick="setHawbLockUnlock('@Model.AirImportHawbDto.IsLocked')">
+                    @if(@Model.AirImportHawbDto.IsLocked)
+                    {
+                        <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
+                    }
+                    else
+                    {
+                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                    }
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ArrivalNoticeAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HawbAuthority", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL, reportType = "Summary" })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Authority (ATME)"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("DeliveryOrderAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Delivery Order"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ITTE", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL})')">
                     <i class="fa fa-file-text-o"></i> @L["I.T/T.E"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ReleaseOrderAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Release Order"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PreliminaryClaimAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
                 </a>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void()' onclick="OpenWindow('@Url.Action("CarrierCertificateAirImportHawb", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Carrier Certificate"]
                 </a>
                 <p class="dropdown-divider"></p>
-                <a class='dropdown-item' href='#'>
+                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AirImportProfitReport", "Docs", new { id = Model.AirImportHawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIHBL, reportType = "Summary" })')">
                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                 </a>
                 <p class="dropdown-divider"></p>
@@ -121,23 +167,9 @@
                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h0invoiceDtos.Count">@L["Menu:AccountingAR"]</td>
                                     <td><a href="/Accounting/Invoice?MethodType=6&MawbId=&HawbId=@Model.AirImportHawbDto.Id&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
-                                    @{
-                                        double j = 0;
-                                    }
-                                    @foreach (var invBill in dto.InvoiceBillDtos)
-                                    {
-                                        j = j + @invBill.Quantity;
-                                    }
-                                    <td>@j</td>
+                                    <td>@dto.TotalBeforeTax</td>
                                     <td>0.00</td>
-                                    @{
-                                        double r = 0;
-                                    }
-                                    @foreach (var invRate in dto.InvoiceBillDtos)
-                                    {
-                                        r += invRate.Quantity * invRate.Rate;
-                                    }
-                                    <td>@r.ToString("0.00")</td>
+                                    <td>@dto.TotalAmount</td>
                                     <td></td>
                                     <td>@dto.PostDate</td>
                                     <td>@dto.InvoiceDate</td>
@@ -149,23 +181,9 @@
                                 <tr>
                                     <td><a href="/Accounting/Invoice?MethodType=6&MawbId=&HawbId=@Model.AirImportHawbDto.Id&InvoiceType=0&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
-                                    @{
-                                        double j = 0;
-                                    }
-                                    @foreach (var invBill in dto.InvoiceBillDtos)
-                                    {
-                                        j = j + @invBill.Quantity;
-                                    }
-                                    <td>@j</td>
+                                    <td>@dto.TotalBeforeTax</td>
                                     <td>0.00</td>
-                                    @{
-                                        double r = 0;
-                                    }
-                                    @foreach (var invRate in dto.InvoiceBillDtos)
-                                    {
-                                        r += invRate.Quantity * invRate.Rate;
-                                    }
-                                    <td>@r.ToString("0.00")</td>
+                                    <td>@dto.TotalAmount</td>
                                     <td></td>
                                     <td>@dto.PostDate</td>
                                     <td>@dto.InvoiceDate</td>
@@ -187,23 +205,9 @@
                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h1invoiceDtos.Count">@L["Menu:AccountingDC"]</td>
                                     <td><a href="/Accounting/Invoice?MethodType=6&MawbId=&HawbId=@Model.AirImportHawbDto.Id&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
-                                    @{
-                                        double j = 0;
-                                    }
-                                    @foreach (var invBill in dto.InvoiceBillDtos)
-                                    {
-                                        j = j + @invBill.Quantity;
-                                    }
-                                    <td>@j</td>
+                                    <td>@dto.TotalBeforeTax</td>
                                     <td>0.00</td>
-                                    @{
-                                        double r = 0;
-                                    }
-                                    @foreach (var invRate in dto.InvoiceBillDtos)
-                                    {
-                                        r += invRate.Quantity * invRate.Rate;
-                                    }
-                                    <td>@r.ToString("0.00")</td>
+                                    <td>@dto.TotalAmount</td>
                                     <td></td>
                                     <td>@dto.PostDate</td>
                                     <td>@dto.InvoiceDate</td>
@@ -215,23 +219,9 @@
                                 <tr>
                                     <td><a href="/Accounting/Invoice?MethodType=6&MawbId=&HawbId=@Model.AirImportHawbDto.Id&InvoiceType=1&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.InvoiceCompanyName</td>
-                                    @{
-                                        double j = 0;
-                                    }
-                                    @foreach (var invBill in dto.InvoiceBillDtos)
-                                    {
-                                        j = j + @invBill.Quantity;
-                                    }
-                                    <td>@j</td>
+                                    <td>@dto.TotalBeforeTax</td>
                                     <td>0.00</td>
-                                    @{
-                                        double r = 0;
-                                    }
-                                    @foreach (var invRate in dto.InvoiceBillDtos)
-                                    {
-                                        r += invRate.Quantity * invRate.Rate;
-                                    }
-                                    <td>@r.ToString("0.00")</td>
+                                    <td>@dto.TotalAmount</td>
                                     <td></td>
                                     <td>@dto.PostDate</td>
                                     <td>@dto.InvoiceDate</td>
@@ -253,23 +243,9 @@
                                     <td style="background-color:#555555;color:#ffffff;text-align:center;" rowspan="@Model.h2invoiceDtos.Count">@L["Menu:AccountingAP"]</td>
                                     <td><a href="/Accounting/Invoice?MethodType=6&MawbId=&HawbId=@Model.AirImportHawbDto.Id&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.ShipTo</td>
-                                    @{
-                                        double j = 0;
-                                    }
-                                    @foreach (var invBill in dto.InvoiceBillDtos)
-                                    {
-                                        j = j + @invBill.Quantity;
-                                    }
-                                    <td>@j</td>
+                                    <td>@dto.TotalBeforeTax</td>
                                     <td>0.00</td>
-                                    @{
-                                        double r = 0;
-                                    }
-                                    @foreach (var invRate in dto.InvoiceBillDtos)
-                                    {
-                                        r += invRate.Quantity * invRate.Rate;
-                                    }
-                                    <td>@r.ToString("0.00")</td>
+                                    <td>@dto.TotalAmount</td>
                                     <td></td>
                                     <td>@dto.PostDate</td>
                                     <td>@dto.InvoiceDate</td>
@@ -281,23 +257,9 @@
                                 <tr>
                                     <td><a href="/Accounting/Invoice?MethodType=6&MawbId=&HawbId=@Model.AirImportHawbDto.Id&InvoiceType=2&InvoiceId=@dto.Id">@dto.InvoiceNo</a></td>
                                     <td>@dto.ShipTo</td>
-                                    @{
-                                        double j = 0;
-                                    }
-                                    @foreach (var invBill in dto.InvoiceBillDtos)
-                                    {
-                                        j = j + @invBill.Quantity;
-                                    }
-                                    <td>@j</td>
+                                    <td>@dto.TotalBeforeTax</td>
                                     <td>0.00</td>
-                                    @{
-                                        double r = 0;
-                                    }
-                                    @foreach (var invRate in dto.InvoiceBillDtos)
-                                    {
-                                        r += invRate.Quantity * invRate.Rate;
-                                    }
-                                    <td>@r.ToString("0.00")</td>
+                                    <td>@dto.TotalAmount</td>
                                     <td></td>
                                     <td>@dto.PostDate</td>
                                     <td>@dto.InvoiceDate</td>
@@ -308,6 +270,44 @@
                         }
                     }
 
+                    <tr style="font-size: 10px;">
+                        <td colspan="3" style="text-align: right;font-weight: 700;">Total</td>
+                        <td style="text-align: right;font-weight: 700;">@(Math.Round(Model.h0invoiceDtos.Sum(x => x.TotalBeforeTax ?? 0.00) + Model.h1invoiceDtos.Sum(x => x.TotalBeforeTax ?? 0.00) + Model.h2invoiceDtos.Sum(x => x.TotalBeforeTax ?? 0.00), 2))</td>
+                        <td style="text-align: right;font-weight: 700;">0.00</td>
+                        <td style="text-align: right;font-weight: 700;">@(Math.Round(Model.h0invoiceDtos.Sum(x => x.TotalAmount ?? 0.00) + Model.h1invoiceDtos.Sum(x => x.TotalAmount ?? 0.00) + Model.h2invoiceDtos.Sum(x => x.TotalAmount ?? 0.00), 2))</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr style="font-size: 10px;">
+                        <td colspan="3" style="text-align: right;font-weight: 700;">Total Before Tax</td>
+
+                        <td colspan="2" style="text-align: right;font-weight: 700;">@(Math.Round(Model.h0invoiceDtos.Sum(x => x.TotalBeforeTax ?? 0.00) + Model.h1invoiceDtos.Sum(x => x.TotalBeforeTax ?? 0.00) + Model.h2invoiceDtos.Sum(x => x.TotalBeforeTax ?? 0.00), 2))</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr style="font-size: 10px;">
+                        <td colspan="3" style="text-align: right;font-weight: 700;">Total Tax</td>
+
+                        <td colspan="2" style="text-align: right;font-weight: 700;">@(Math.Round(Model.h0invoiceDtos.Sum(x => x.TotalTax ?? 0.00) + Model.h1invoiceDtos.Sum(x => x.TotalTax ?? 0.00) + Model.h2invoiceDtos.Sum(x => x.TotalTax ?? 0.00), 2))</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr style="font-size: 10px;">
+                        <td colspan="3" style="text-align: right;font-weight: 700;">Total Amount</td>
+
+                        <td colspan="2" style="text-align: right;font-weight: 700;">@(Math.Round(Model.h0invoiceDtos.Sum(x => x.TotalAmount ?? 0.00) + Model.h1invoiceDtos.Sum(x => x.TotalAmount ?? 0.00) + Model.h2invoiceDtos.Sum(x => x.TotalAmount ?? 0.00), 2))</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
                 </table>
 
             </abp-column>

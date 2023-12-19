@@ -95,6 +95,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string GrossWeightShprLB { get; set; }
         public string GrossWeightShprAmount { get; set; }
         public string GrossWeightCneeKG { get; set; }
+        public string GrossWeightCneeLB { get; set; }
+        public string GrossWeightCneeAmount { get; set; }
         public string ChargeableWeightShprKG { get; set; }
         public string ChargeableWeightShprLB { get; set; }
         public string ChargeableWeightShprAmount { get; set; }
@@ -118,11 +120,10 @@ namespace Dolphin.Freight.ImportExport.AirExports
         public string BookingRemarks { get; set; }
         public string PickupInstruction { get; set; }
 
-
-
-
-
-
+        /// <summary>
+        /// 是否鎖定
+        /// </summary>
+        public bool IsLocked { get; set; }
 
         /// <summary>
         /// 是否刪除

@@ -9,6 +9,14 @@ using System.Collections.Generic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Dolphin.Freight.Common;
 using Dolphin.Freight.Settinngs.SysCodes;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Dolphin.Freight.ImportExport.OceanImports;
+using static Dolphin.Freight.Permissions.OceanImportPermissions;
+using Volo.Abp.ObjectMapping;
+using Newtonsoft.Json;
+using Dolphin.Freight.Settinngs.PackageUnits;
+using System.Text.Json.Nodes;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
 {
@@ -19,12 +27,27 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public Guid Hid { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool ISToolTipShow { get; set; }
         [BindProperty]
         public CreateUpdateOceanExportMblDto OceanExportMbl { get; set; }
         [BindProperty]
         public CreateUpdateOceanExportHblDto OceanExportHbl { get; set; }
         [BindProperty]
+        public List<CreateUpdateOceanExportHblDto> OceanExportHblContainer { get; set; }
+        [BindProperty]
         public List<CreateUpdateContainerDto> CreateUpdateContainerDtos { get; set; }
+
+        [BindProperty]
+        public CreateUpdateContainerDto CreateUpdateContainerHawb { get; set; }
+
+        [BindProperty]
+        public List<ManifestCommodity> Commodities { get; set; }
+
+        public List<SelectListItem> RateUnitTypeLookupList { get; set; }
+        public List<SelectListItem> UnitTypeLookupList { get; set; }
+
+
         [BindProperty(SupportsGet = true)]
         public int NewHbl { get; set; } = 0;
         public string CardClass { get; set; }
@@ -34,19 +57,37 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         private readonly IOceanExportMblAppService _oceanExportMblAppService;
         private readonly IContainerAppService _containerAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
-        public EditModal2Model(IContainerAppService containerAppService,IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, ISysCodeAppService sysCodeAppService)
+        private readonly IOceanImportMblAppService _oceanImportMblAppService;
+        public EditModal2Model(IContainerAppService containerAppService,
+            IOceanExportMblAppService oceanExportMblAppService, 
+            IOceanExportHblAppService oceanExportHblAppService, 
+            ISysCodeAppService sysCodeAppService,
+            IOceanImportMblAppService oceanImportMblAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
             _containerAppService = containerAppService;
             _sysCodeAppService = sysCodeAppService;
+            _oceanImportMblAppService=oceanImportMblAppService;
         }
         public async Task OnGetAsync()
         {
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
-            QueryHblDto query = new QueryHblDto() { MblId = Id };
+            ImportExport.OceanExports.QueryHblDto query = new ImportExport.OceanExports.QueryHblDto() { MblId = Id };
             OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
-            QueryHblDto queryHbl = new QueryHblDto();
+            ImportExport.OceanExports.QueryHblDto queryHbl = new ImportExport.OceanExports.QueryHblDto();
+            RateUnitTypeLookupList = new List<SelectListItem>
+            {
+                new SelectListItem() { Text = "KG", Value = "KG" },
+                new SelectListItem() { Text = "LG", Value = "LG" }
+            };
+            UnitTypeLookupList = new List<SelectListItem>
+            {
+                new SelectListItem() { Text = "CBM", Value = "CBM" },
+                new SelectListItem() { Text = "CFT", Value = "CFT" }
+            };
+            Commodities = new List<ManifestCommodity>();
+            ISToolTipShow = await _oceanImportMblAppService.GetCardSettings();
             if (Hid == Guid.Empty)
             {
                 if (NewHbl == 1)
@@ -76,6 +117,10 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                     if (OceanExportHbls != null && OceanExportHbls.Count > 0)
                     {
                         OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(OceanExportHbls[0]);
+                        OceanExportHbl.PackageNo = OceanExportHbls[0].CreateUpdateHBLContainerDto?.PackageNum ?? 0;
+                        OceanExportHbl.PackageWeight = OceanExportHbls[0].CreateUpdateHBLContainerDto?.PackageWeight ?? 0;
+                        OceanExportHbl.PackageMeasurement = OceanExportHbls[0].CreateUpdateHBLContainerDto?.PackageMeasure ?? 0;
+                        OceanExportHbl.ContainerId = OceanExportHbls[0].CreateUpdateHBLContainerDto?.Id;
                         Hid = OceanExportHbl.Id;
                         IsShowHbl = true;
                     }
@@ -85,28 +130,148 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             else
             {
                 queryHbl.Id = Hid;
-                OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
+
+                var hbl = await _oceanExportHblAppService.GetAsync(Hid);
+
+                var container = await _containerAppService.GetContainerByHblId(Hid);
+
+                OceanExportHbl = new CreateUpdateOceanExportHblDto();
+
+                OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(hbl);
+                if (container is not null)
+                {
+                    OceanExportHbl.PackageNo = container.PackageNum;
+                    OceanExportHbl.PackageWeight = container.PackageWeight;
+                    OceanExportHbl.PackageMeasurement = container.PackageMeasure;
+                    OceanExportHbl.ContainerId = container.Id;
+                }
                 IsShowHbl = true;
-
-
             }
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            var OceanExportMb2 = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
+            if (OceanExportHbl.Id != Guid.Empty)
+            {
+                ImportExport.OceanExports.QueryHblDto queryHbl = new ImportExport.OceanExports.QueryHblDto();
+
+                List<CreateUpdateContainerDto> Containers = new();
+
+                queryHbl.Id = OceanExportHbl.Id;
+                var OceanExportHb2 = await _oceanExportHblAppService.GetHblById(queryHbl);
+                
+                if (OceanExportHb2.Id != Guid.Empty)
+                {
+                    foreach (var item in OceanExportHblContainer)
+                    {
+                        var containerData = new ContainerDto();
+
+                        CreateUpdateContainerDto containerDto = new()
+                        {
+                            PackageWeight = item.PackageWeight,
+                            PackageMeasure = item.PackageMeasurement,
+                            PackageNum = item.PackageNo,
+                            HblId = OceanExportHb2.Id,
+                            Id = (Guid)item.ContainerId
+                        };
+
+                        Containers.Add(containerDto);
+
+                        if (containerDto.Id != Guid.Empty)
+                        {
+                            containerData = await _containerAppService.GetAsync(containerDto.Id);
+
+                            if (containerData.ExtraProperties.ContainsKey("HblIds"))
+                            {
+                                containerData.ExtraProperties.Remove("ContainerDataForHbls");
+                                containerData.ExtraProperties.Add("ContainerDataForHbls", Containers);
+
+                                await _containerAppService.UpdateAsync(containerData.Id, ObjectMapper.Map<ContainerDto, CreateUpdateContainerDto>(containerData));
+                            }
+                        }
+                    }
+                }
+
+                OceanExportHb2.Mark = OceanExportHbl.Mark;
+                OceanExportHb2.Description = OceanExportHbl.Description;
+                OceanExportHb2.DomesticInstructions = OceanExportHbl.DomesticInstructions;
+                OceanExportHb2.PoNo = OceanExportHbl.PoNo;
+
+                if (OceanExportHb2.ExtraProperties == null)
+                {
+                    OceanExportHb2.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                }
+
+                if (Commodities != null && Commodities.Any())
+                {
+                    OceanExportHb2.ExtraProperties.Remove("Commodities");
+                    OceanExportHb2.ExtraProperties.Add("Commodities", Commodities);
+                }
+
+                await _oceanExportHblAppService.UpdateAsync(OceanExportHb2.Id, OceanExportHb2);
+            }
+
+            var OceanExportMb2 = ObjectMapper.Map<OceanExportMblDto, CreateUpdateOceanExportMblDto>(await _oceanExportMblAppService.GetAsync(Id));
             OceanExportMb2.Mark = OceanExportMbl.Mark;
             OceanExportMb2.Description = OceanExportMbl.Description;
             OceanExportMb2.DomesticInstructions = OceanExportMbl.DomesticInstructions;
-            await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMb2) ;
-            //await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMbl);
-            //await _oceanExportHblAppService.UpdateAsync(Hid, OceanExportHbl);
-            QueryContainerDto query = new QueryContainerDto() { QueryId=Id };
-            var rs = await _containerAppService.DeleteByMblIdAsync(query); 
+            await _oceanExportMblAppService.UpdateAsync(Id, OceanExportMb2);
+
             foreach (var dto in CreateUpdateContainerDtos) 
             {
-                var a = dto.IsDeleted;
-                if (dto.Status == 0)await _containerAppService.CreateAsync(dto);
+                if (dto.Id != Guid.Empty)
+                {
+                    if (dto.Status == 0)
+                    {
+                        var container = await _containerAppService.GetAsync(dto.Id);
+
+                        if (container.ExtraProperties.GetValueOrDefault("HblIds") is not null)
+                        {
+                            var hblIds = container.ExtraProperties.GetValueOrDefault("HblIds").ToString();
+
+                            var hblIdsList = JsonConvert.DeserializeObject<List<Guid>>(hblIds);
+
+                            if (dto.ExtraProperties is null)
+                            {
+                                dto.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                            }
+
+                            dto.ExtraProperties.Remove("HblIds");
+                            dto.ExtraProperties.Add("HblIds", hblIdsList);
+                        }
+
+                        if (container.ExtraProperties.GetValueOrDefault("ContainerDataForHbls") is not null)
+                        {
+                            var containerDataForHbls = container.ExtraProperties.GetValueOrDefault("ContainerDataForHbls");
+
+                            if (dto.ExtraProperties is null)
+                            {
+                                dto.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                            }
+
+                            dto.ExtraProperties.Remove("ContainerDataForHbls");
+                            dto.ExtraProperties.Add("ContainerDataForHbls", containerDataForHbls);
+                        }
+
+                        if (container.ExtraProperties.GetValueOrDefault("Dimensions") != null && container.ExtraProperties.Count > 0)
+                        {
+                            var dimensions = container.ExtraProperties.GetValueOrDefault("Dimensions").ToString();
+
+                            var dimensionList = JsonConvert.DeserializeObject<List<Dimension>>(dimensions);
+
+                            dto.ExtraProperties = container.ExtraProperties;
+
+                            dto.ExtraProperties.Remove("Dimensions");
+                            dto.ExtraProperties.Add("Dimensions", dimensionList);
+                        }
+
+                        await _containerAppService.UpdateAsync(dto.Id, dto);
+                    }
+                } else
+                {
+                    await _containerAppService.CreateAsync(dto);
+                }
             }
+
             return NoContent();
         }
     }

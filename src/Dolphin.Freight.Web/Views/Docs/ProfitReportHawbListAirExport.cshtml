@@ -1,0 +1,77 @@
+﻿@model Dolphin.Freight.Common.AirExportDetails
+
+@{
+    Layout = null;
+}
+
+<abp-style src="/Pages/Reports/Reports.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        setReportType($('#ddlReportType option:selected').val());
+        $("#ddlReportType").on('change', function () {
+
+            var id = $('#ddlReportType').val();
+
+            setReportType(id);
+        })
+    })
+    function setReportType(id) {
+        $.ajax({
+            url: '/Docs/ProfitReport?id=' + id + '&pageType=@Dolphin.Freight.Common.FreightPageType.AEHBL&isPartialView=true',
+            type: 'GET',
+            dataType: "html",
+            success: function (reportyBody) {
+                $('#airExportHawbBody').html('');
+                $('#airExportHawbBody').html(reportyBody);
+            }
+        });
+    }
+
+    function printReport() {
+        document.getElementById("myForm").submit();
+    }
+</script>
+
+<div id="docPkgHBLHeader">
+    @if (!Model.IsPDF)
+    {
+        <div class="nav">
+            <ul>
+                <li>
+                    <button type="button" style="width:120px; color:white" onclick="printReport()"><i class="fa fa-print">儲存PDF或列印</i></button>
+                </li>
+                <li>
+                    <select id="ddlReportType">
+                        @for (int i = 0; i < Model.DDLItems.Count; i++)
+                        {
+                            if (i == 0)
+                            {
+                                <option value="@Model.DDLItems[i].Split('/')[0]" selected>@Model.DDLItems[i].Split('/')[1]</option>
+                            }
+                            else
+                            {
+                                <option value="@Model.DDLItems[i].Split('/')[0]">@Model.DDLItems[i].Split('/')[1]</option>
+                            }
+                        }
+                    </select>
+                </li>
+            </ul>
+            <div class="view-setting">
+                <div class="btn-group">
+                    <button class="button btn-sm" title="Zoom Out" id="zout" disabled="disabled">
+                        <i class="fa fa-search-minus"></i>
+                    </button>
+                    <button class="button btn-sm" title="Zoom In" id="zin">
+                        <i class="fa fa-search-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div>
+    <div id="airExportHawbBody">
+    </div>
+</div>

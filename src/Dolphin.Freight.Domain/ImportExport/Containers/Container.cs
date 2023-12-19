@@ -4,6 +4,7 @@ using Volo.Abp;
 using Dolphin.Freight.Settings.SysCodes;
 using System.ComponentModel.DataAnnotations.Schema;
 using Dolphin.Freight.Settings.ContainerSizes;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.Containers
 {
@@ -156,5 +157,11 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public Guid? HblId { get; set; }
+        public Guid? BookingId { get; set; }
+        public Guid? PackageUnitId { get; set; }
+        public string PackageWeightUnit { get; set; }
+        public string PackageMeasureUnit { get; set; }
+        public Guid? VesselId { get; set; }
     }
 }

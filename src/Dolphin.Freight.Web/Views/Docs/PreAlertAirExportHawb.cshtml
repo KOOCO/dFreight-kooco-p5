@@ -1,0 +1,257 @@
+﻿
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.ViewModels.PreAlert.PreAlertAirExportHawbIndexViewModel
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }
+</style>
+<script>
+    $(document).ready(function () {
+      $('#id_show_container_info').change(function () {
+
+     if($("#id_show_container_info").prop("checked"))
+     {         
+         $('#container-table').show();
+         $('.show_container').attr('rows', 19)
+     }
+     else
+     {
+         $('#container-table').hide();
+         $('.show_container').attr('rows', 28)
+     }
+ });
+    });
+    
+</script>
+<abp-style src="/Pages/Reports/Reports.css" />
+<script>
+    var zoom = 1;
+    $(document).ready(function(){
+		$('#zin').on('click', function(){
+			zoom += 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+		$('#zout').on('click', function(){
+			zoom -= 0.1;
+			$('#form').css('transform', 'scale(' + zoom + ')');
+		});
+
+        document.getElementById("reportLink").onclick = function() {
+            document.getElementById("myForm").submit();
+        }
+    });
+</script>
+<form id="myForm" name="myForm" method="POST">
+   <div style="background-color:black;display: flex;justify-content:center;">
+      <div @(Model.IsPDF? "style=width:100%;background-color:white;height:100%;" : "style=width:900px;background-color:white;height:100%;") id="form" name = "form" class="edit">
+            @if (!Model.IsPDF)
+            {
+                <div class="container" style="background-color:black">
+                   <div style="display:flex;justify-content: center;" class="item-left">
+                      <a class="btn" href="#" id="reportLink" name="reportLink" ><i class="fa fa-print">儲存PDF或列印</i></a>
+                   </div>
+                </div>
+            }
+
+         @*Start of template*@
+         <div class="wrap">
+         <div class="header header-normal">
+            <table>
+                <tbody><tr>
+                    <td class="w-15 logo">
+                        <img src="/img/hardcore-tech-logo.png">
+                    </td>
+                    <td class="w-48">
+                        <h1 class="auto-font-size office-name">
+                            <span>HARD CORE TECHNOLOGY(GST/VAT)</span>
+                        </h1>
+                        <div class="auto-font-size office-des">
+                            <span>
+                                77792 COBB CAPE<br>
+                                TRISTANCHESTER, NE 47478<br>
+                                TEL: 08417606080 FAX: 08417606080<br>
+                                EMAIL: hanjun.lin@dolphin-gp.com
+                                
+                                    <br><strong>Prepared by Hanjun Lin 07-14-2023 11:18 (CST)</strong>
+                                
+                            </span>
+                        </div>
+                    </td>
+                    <td class="w-2">&nbsp;</td>
+                    <td class="w-35 title border-deep-blue text-center">
+                        <h2 class="blue-lg">PRE-ALERT</h2>
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+        <div class="header header-horizontal-logo">
+            <table>
+                <tbody><tr>
+                    <td class="w-75">
+                        <h1 class="text-blue-deep">PRE-ALERT</h1>
+                        <h2 class="auto-font-size office-name">
+                            <span>HARD CORE TECHNOLOGY(GST/VAT)</span>
+                        </h2>
+                        <div class="auto-font-size office-des">
+                            <span>
+                                77792 COBB CAPE TRISTANCHESTER, NE 47478<br>
+                                TEL: 08417606080 FAX: 08417606080 EMAIL: hanjun.lin@dolphin-gp.com
+                                
+                                    <br><strong>Prepared by Hanjun Lin 07-14-2023 11:18 (CST)</strong>
+                                
+                            </span>
+                        </div>
+                    </td>
+                    <td class="w-2">&nbsp;</td>
+                    <td class="w-22 logo">
+                        <img src="/img/hardcore-tech-logo.png">
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+        <div class="con">
+            <table class="table-padding-double border text-12">
+                <colgroup>
+                    <col class="w-10 border-r">
+                    <col class="w-40 border-r">
+                    <col class="w-12 border-r">
+                    <col class="w-38">
+                </colgroup>
+                <tbody><tr class="border-b">
+                    <td class="text-bold">Attn</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="attn" id="id_attn" class="ng-isolate-scope"></div>
+                    </td>
+                    <td colspan="2"></td>
+                </tr>
+                <tr class="border-b">
+                    <td class="text-10" colspan="2" rowspan="2">
+                        <div class="item-edit hover-toggle-icon-text-template">
+                            <textarea name="Oversea_Agent" cols="40" rows="5" class="text-scroll ng-isolate-scope" id="id_attn_addr">@Model.Oversea_Agent</textarea>
+                            <input type="hidden" name="Oversea_Agent" value="@Model.Oversea_Agent" id="Oversea_Agent" />
+                        </div>
+                    </td>
+                    <td class="text-bold">HAWB No.</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Hawb_No" value="@Model.Hawb_No" id="id_HBL_NO" class="ng-isolate-scope"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-bold">MAWB No.</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Mawb_No" value="@Model.Mawb_No" id="id_MBL_NO" class="ng-isolate-scope"></div>
+                    </td>
+                </tr>
+            </tbody></table>
+            <table class="table-padding-double border text-12 margin-t-md">
+                <colgroup>
+                    <col class="w-12 border-r">
+                    <col class="w-38 border-r">
+                    <col class="w-12 border-r">
+                    <col class="w-38">
+                </colgroup>
+                <tbody><tr class="border-b">
+                    <td class="text-bold">Consignee</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="consignee_name" value="@Model.Consignee" id="id_consignee_name" class="ng-isolate-scope"></div>
+                    </td>
+                    <td class="text-bold">Shipper Ref</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Shipper_Ref" value="@Model.Shipper_Ref" id="id_shipper_name" class="ng-isolate-scope"></div>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="text-bold">Carrier</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Carrier" value="@Model.Carrier" id="id_carrier_name" class="ng-isolate-scope"></div>
+                    </td>
+                    <td class="text-bold">Flight No.</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Flight_No" value="@Model.Flight_No" id="id_flight_no" class="ng-isolate-scope"></div>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="text-bold">Origin</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Origin" value="@Model.Origin" id="id_APOL" class="ng-isolate-scope"></div>
+                    </td>
+                    <td class="text-bold">Flight No.</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Flight_No" id="id_flight_no_2" value="@Model.Flight_No" class="ng-isolate-scope"></div>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="text-bold">Destination</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Destination" value="@Model.Destination" id="id_APOD" class="ng-isolate-scope"></div>
+                    </td>
+                    <td class="text-bold">Flight Date</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Flight_Date" value="@Model.Flight_Date" id="id_flight_date" class="ng-isolate-scope"></div>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="text-bold">Filing No.</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Filing_No" value="@Model.Filing_No" id="id_filing_no" class="ng-isolate-scope"></div>
+                    </td>
+                    <td class="text-bold">ETA</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="ETA" value="@Model.ETA" id="id_ETA_datetime" class="ng-isolate-scope"></div>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="text-bold">Gross Weight</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Gross_Weight" id="id_gross_weight" value="@Model.Gross_Weight" class="ng-isolate-scope"></div>
+                    </td>
+                    <td class="text-bold">Total Package</td>
+                    <td>
+                        <div class="item-edit hover-toggle-icon-text-template"><input type="text" name="Total_Package" value="@Model.Total_Package" id="id_packages" class="ng-isolate-scope"></div>
+                    </td>
+                </tr>
+            </tbody></table>
+            <div class="text-12 margin-t-md border col-padding-double">
+                <div class="text-bold margin-b-xs">Cargo Description</div>
+                <div class="item-edit hover-toggle-icon-text-template">
+                    <textarea name="Description" cols="40" rows="5" class="text-scroll ng-isolate-scope" id="id_cargo_description">@Model.Description</textarea>
+                    <input type="hidden" name="Description" value="@Model.Description" id="Description" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+      </div>
+   </div>
+</form>

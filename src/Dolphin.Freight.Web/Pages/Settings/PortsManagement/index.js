@@ -1,19 +1,26 @@
 ﻿$(function () {
     var l = abp.localization.getResource('Freight');
+    var _changeInterval = null;
+    var queryListFilter = function () {
+        return {
+            search: $("input[name='Search'").val()
+        };
+    };
 
     var dataTable = $('#PortsManagementTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
             paging: true,
             order: [[1, "asc"]],
-            searching: true,
+            searching: false,
             scrollX: true,
+            processing: true,
             responsive: {
                 details: {
                     type: 'column'
                 }
             },
-            ajax: abp.libs.datatables.createAjax(dolphin.freight.settings.portsManagement.portsManagement.getList),
+            ajax: abp.libs.datatables.createAjax(dolphin.freight.settings.portsManagement.portsManagement.getList, queryListFilter),
             columnDefs: [
                 {
                     title: l('Actions'),
@@ -49,7 +56,7 @@
                     //是否顯示	
                     title: l('IsActive'),
                     data: "isActive",
-                    width: "500px", // Set the width of the third column
+                     // Set the width of the third column
                     render: function (data, type, row, meta) {
                         if (row.isActive == true) {
                             return '<input class="form-check-input" type="checkbox" id="showOnMAWBCheckBox" value="" checked disabled>'
@@ -91,9 +98,15 @@
         })
     );
 
-    $('[type=search]').on('keyup', function () {
-        dataTable.search(this.value).draw();
+    $('#Search').keyup(function () {
+        clearInterval(_changeInterval)
+        _changeInterval = setInterval(function () {
+            debugger
+            $('#PortsManagementTable').DataTable().ajax.reload();
+            clearInterval(_changeInterval)
+        }, 1000);
     });
+
 
     var createModal = new abp.ModalManager(abp.appPath + 'Settings/PortsManagement/CreateModal');
     var editModal = new abp.ModalManager(abp.appPath + 'Settings/PortsManagement/EditModal');

@@ -4,17 +4,136 @@
 @using Microsoft.Extensions.Localization
 @model Dolphin.Freight.Web.Pages.OceanExports.EditModal4Model
 @inject IStringLocalizer<FreightResource> L
+@{
+    string dynamicValue = L["OrDragItHere"]; // Replace with your actual dynamic value
+}
+@section styles
+{
+     <style type="text/css">
+.files input {
+    outline: 2px dashed #92b0b3;
+    outline-offset: -10px;
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    padding: 100px 0px 85px 10%;
+    text-align: center !important;
+    margin: 0;
+    width: 100% !important;
+    
+        color: black;
+}
+.files input:focus{     outline: 2px dashed #92b0b3;  outline-offset: -10px;
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    transition: outline-offset .15s ease-in-out, background-color .15s linear; border:1px solid #92b0b3;
+ }
+.files{ position:relative}
+.files::before {
+    pointer-events: none;
+    position: absolute;
+    
+    left: 0;
+    width: 50px;
+    right: 0;
+    height: 56px;
+    content: '';
+    /* background-image: url(https://image.flaticon.com/icons/png/128/109/109612.png); */
+    display: block;
+    margin: 0 auto;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+/* For the #uploadFile and #uploadhFile IDs */
+/* #uploadFile, #uploadHFile {
+    color: transparent;
+} */
+
+/* For the .color class */
+.color input {
+    background-color: #f1f1f1;
+}
+
+/* For the .files:before pseudo-element */
+.files:before {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    pointer-events: none;
+    width: 100%;
+    right: 0;
+    height: 57px;
+    content: '@Html.Raw(L["OrDragItHere."])';
+    display: block;
+    margin: 0 auto;
+    color: #2ea591;
+    font-weight: 600;
+    text-transform: capitalize;
+    text-align: center;
+}
+ </style>
+}
 @section scripts
     {
+        <abp-script src="/Pages/OceanExports/EditModal4.js" />
     @*<abp-script src="/Pages/OceanExports/CreateMbl.js" />*@
     <script>
-        function changeHid(id, hid) {
-            location.href = '/OceanExports/EditModal4?Id=' + id + "&Hid=" + hid
+        Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
+        // function changeHid(id, hid) {
+        //     location.href = '/OceanExports/EditModal4?Id=' + id + "&Hid=" + hid
+        // }
+          function onHawbCardClick(e, hid) {
+            debugger
+            var element = e.currentTarget || e.target || e.srcElement;
+            var hblNo = element.id.split('_')[1];
+             var color = getComputedStyle(element.parentElement.parentElement).backgroundColor;
+
+            if (!$('#btnHawbCardCollapse_' + hblNo).attr('class').includes('collapsed')) {
+                $('.hblCardHawbNo').addClass('d-none');
+                $('#hblCard_' + hblNo).removeClass('d-none');
+            }
+            else {
+             $('.btnHawbCardCollapse').each(function (i, e) {
+                        let tempHawbNo = e.id.split('_')[1];
+                        if (tempHawbNo == hblNo) {
+                            $('#btnHawbCardCollapse_' + hblNo).click();
+                        }
+                        else {
+                            $('#btnHawbCardCollapse_' + tempHawbNo).addClass('collapsed');
+                            $('#btnHawbCardCollapse_' + tempHawbNo).attr('aria-expanded', 'false');
+                            $('#hawbCard_' + i).removeClass('show');
+                        }
+                    })
+            
+            }
+             var url = new URL(window.location.href);
+          var chekid=  url.searchParams.get('Hid')
+            if (chekid == hid) { 
+                return;
+            
+            }
+            debugger;
+            var id='@Model.Id'
+            
+           location.href = '/OceanExports/EditModal4?Id=' + id + "&Hid=" + hid
         }
-        
+        var l = abp.localization.getResource('Freight');
+        var isLocked;
         $(document).ready(function () {
-            var isLocked = '@Model.OceanExportMbl.IsLocked';
-            if (isLocked == 'True') abp.message.warn("此項已經被鎖定，若需修改請小心！\n您作的變更可能導致會計報表不一致！");
+             $('#cardSettingArea').hide();
+             $('input[type="file"]').change(function () {
+          if ($(this).val() != "") {
+                 $(this).css('color', '#333');
+          }else{
+                 $(this).css('color', 'transparent');
+          }
+     });
+            isLocked = '@Model.OceanExportMbl.IsLocked';
+            if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
             var IsShowHbl = '@Model.IsShowHbl';
             if (IsShowHbl == 'True') $("#hblCard").show();
             else $("#hblCard").hide();
@@ -29,7 +148,10 @@
                 var files = $('#uploadFile').prop("files");
                 var url = "EditModal4?handler=MyUploader";
                 formData = new FormData();
-                formData.append("MyUploader", files[0]);
+                         
+                          for (var i = 0; i < files.length; i++) {
+        formData.append("MyUploader", files[i]);
+    }
                 formData.append("fid", fid);
                 formData.append("ftype", 2);
                 jQuery.ajax({
@@ -58,7 +180,9 @@
                 var files = $('#uploadHFile').prop("files");
                 var url = "EditModal4?handler=MyUploader";
                 formData = new FormData();
-                formData.append("MyUploader", files[0]);
+               for (var i = 0; i < files.length; i++) {
+        formData.append("MyUploader", files[i]);
+    }
                 formData.append("fid", fid);
                 formData.append("ftype", 2);
                 jQuery.ajax({
@@ -92,7 +216,82 @@
                     }
                 });
             }
-        })
+            if (isLocked != 'True') {
+                $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+            }
+            else {
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+            }
+            var isLockedHbl = '@Model.OceanExportHbl.IsLocked';
+            if (isLockedHbl != 'True') {
+                $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+            }
+            else {
+                $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+            }
+            Swal.clickCancel();
+        });
+
+        function lockUnlockMbl(id) {
+            var isLock = $('#lockButtonMbl').find('i').hasClass('fa-lock');
+            abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+                if (confirmed) {
+                    Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
+                    dolphin.freight.importExport.oceanExports.oceanExportMbl.lockedOrUnLockedOceanExportMbl({ MbId: id })
+                        .done(function () {
+                            Swal.clickCancel();
+                            if (!isLock) {
+                                $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+                                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                                abp.message.success(l('Message:SuccessLock'));
+                            } else {
+                                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                                $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                                abp.message.success(l('Message:SuccessUnlock'));
+                            }
+                            
+                        });
+                }
+            });
+        }
+
+        function lockUnlockHbl(id) {
+            var isLock = $('#lockButtonHbl').find('i').hasClass('fa-lock');
+            abp.message.confirm(l(isLock ? 'UnlockConfirmationMessage' : 'LockConfirmationMessage')).then(function (confirmed) {
+                if (confirmed) {
+                    Swal.fire({
+                        title: 'Loading...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
+                    dolphin.freight.importExport.oceanExports.oceanExportHbl.lockedOrUnLockedOceanExportHbl({ HblId: id })
+                        .done(function () {
+                            Swal.clickCancel();
+                            if (!isLock) {
+                                $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i>' + l("Display:Function"));
+                                $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i>' + l("Btn:UnLock"));
+                            abp.message.success(l('Message:SuccessLock'));
+                            } else {
+                                $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i>' + l("Display:Function"));
+                                $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i>' + l("Btn:Lock"));
+                            abp.message.success(l('Message:SuccessUnlock'));
+                            }
+                            
+                            
+                        });
+                }
+            });
+        }
         function initAttments(tindex, qid) {
             dolphin.freight.importExport.attachments.attachment.queryList({ queryType: 2, queryId: qid }).done(function (result) {
                 if (result != null && result.length > 0) {
@@ -102,15 +301,19 @@
                         if (tindex == 0) trhtml = trhtml + "<tr id='tr_";
                         else trhtml = trhtml + "<tr id='trh_";
                         trhtml = trhtml + index + "'><td>" + result[index].fileName + "</td><td>" + result[index].creationTime.substring(0, 10) + "</td> <td>" + result[index].size + "KB </td><td>";
-                        trhtml = trhtml + "<div class='btn-group dropdown'><button class='btn btn-secondary dropdown-toggle'  type='button' id='ActionDrop_" + index + "' data-bs-toggle='dropdown'>";
-                        trhtml = trhtml + l('Display:Function');
-                        trhtml = trhtml + "</button><div class='dropdown-menu ' aria-labelledby='dropdownMenuButton1' id='ActionDrop_div_" + index + "'>";
-                        trhtml = trhtml + "<a class='dropdown-item' href = 'EditModal4?handler=Download&filename=" + result[index].fileName + "'  ><li class='fa fa-file'></li>";
-                        trhtml = trhtml + l('Btn:Download');
-                        trhtml = trhtml + "</a><a class='dropdown-item' href='javascript:void(0)' onclick='deleteFile(" + index + ",\"" + result[index].id + "\"," + tindex + ")' ><i class='fa fa-trash'></i> "
-                        trhtml = trhtml + l('Btn:Delete');
-                        trhtml = trhtml + "</a></div></div></td></tr > ";
-
+                        trhtml = trhtml + "<select ><option value='Other' >" + l("Other") + "</option><option value='AWB' >" + l("AWB") + "</option><option value='POD' >" + l("POD") + "</option>";
+                        trhtml=trhtml+"<option value='INV-C' >"+l("INV-C")+"</option><option value='INV-P' >"+l("INV-P")+"</option>";
+                        trhtml = trhtml + "<option value='PAK-C' >" + l("PAK-C") + "</option><option value='PAK-P' >" + l("PAK-P") + "</option";
+                        trhtml = trhtml + "><option value='TRUCKER_A' >" + l("TRUCKER_A") + "</option><option value='EXCEPTION' >" + l("EXCEPTION") + "</option><option value='SHIPPER' >" + l("SHIPPER") + "</option></select> </td><td>";
+                        // trhtml = trhtml + "<div class='btn-group dropdown'><button class='btn btn-secondary dropdown-toggle'  type='button' id='ActionDrop_" + index + "' data-bs-toggle='dropdown'>";
+                        // trhtml = trhtml + l('Display:Function');
+                        // trhtml = trhtml + "</button><div class='dropdown-menu ' aria-labelledby='dropdownMenuButton1' id='ActionDrop_div_" + index + "'>";
+                        trhtml = trhtml + "<a   href = 'EditModal4?handler=Download&filename=" + result[index].fileName + "'  ><li style='padding: 3px;' class='fa fa-cloud-download' data - toggle='tooltip' data - placement='top' title = 'Download File' > </li>";
+                        // trhtml = trhtml + l('Btn:Download');
+                        trhtml = trhtml + "</a><a  href='javascript:void(0)' data-toggle='tooltip' data-placement='top' title='Delete File' onclick='deleteFile(" + index + ",\"" + result[index].id + "\"," + tindex + ")' ><i style='padding: 3px;' class='fa fa-trash'></i>"
+                        // trhtml = trhtml + l('Btn:Delete');"
+                        trhtml = trhtml + "</a><a href='javascript:void(0)' onclick='openImagePreview(\"" + result[index].fileName + "\")'><i style='padding: 3px;' class='fa fa-eye' data-toggle='tooltip' data-placement='top' title='Preview Image'></i> </a></td><td>" + result[index].creatorName;
+                         trhtml = trhtml + "</td></tr >" ;
                     }
                     if (tindex == 0) {
                         $("#ftbody").html(trhtml);
@@ -128,7 +331,7 @@
 
             dolphin.freight.importExport.attachments.attachment.delete(fid)
                 .then(function () {
-                    var l = abp.localization.getResource('Freight');
+                    
                     abp.message.success(l('SuccessfullyDeleted'));
                     if (tindex == 0) {
                         $("#tr_" + index).remove();
@@ -139,10 +342,19 @@
 
                 });
         }
-        
+        function openImagePreview(imageUrl) {
+
+
+            window.open("/mediaUpload/" + imageUrl, '_blank');
+
+
+          
+   
+}
 
         function getReportTelexrelease() {
-            myWindow = window.open("@Url.Action("Telexrelease", "Docs")", 'Telexrelease', 'width=1200,height=800');
+                   var idNo = $('#OceanExportMbl_Id').val();
+            myWindow = window.open("@Url.Action("Telexrelease", "Docs")" + "?id=" + idNo, 'Telexrelease', 'width=1200,height=800');
             myWindow.focus()
         }
         function gotoReport(rindex) {
@@ -206,6 +418,7 @@
         }
 
         function getReportBankDraft() {
+            debugger;
             var idNo = $('#OceanExportHbl_Id').val();
             myWindow = window.open("@Url.Action("BankDraft", "Docs")" + "?id=" + idNo, 'BankDraft', 'width=1500,height=800');
             myWindow.focus()
@@ -247,26 +460,35 @@
             myWindow.focus()
         }
         function getCommercialInvoice() {
-            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")", 'CommercialInvoice', 'width=1200,height=800');
+             var idNo = $('#OceanExportHbl_Id').val();
+             debugger
+               if (idNo != '00000000-0000-0000-0000-000000000000') {
+          
+            myWindow = window.open("@Url.Action("CommercialInvoice", "Docs")" + "?id=" + idNo, 'CommercialInvoice', 'width=1200,height=800');
+            myWindow.focus()
+               }
+                          else {
+            Swal.fire({
+                icon: 'error',
+                text: 'The data has not been saved, Please save the data!',
+                showCancelButton: true,
+                confirmButtonText: "Continue",
+            });
+        }
+        }
+               function getPickupDeliveryOrder() {
+            var idNo = $('#OceanExportMbl_Id').val();
+            myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")" + "?id=" + idNo, 'PickupDeliveryOrder', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
-        function getPickupDeliveryOrder() {
-            //var idNo = $('#OceanExportHbl_Id').val();
-            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")" + "?id=" + idNo, 'PickupDeliveryOrder', 'width=1200,height=800');
-            myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
-            myWindow.focus()
-        }
-        function getBookingPackingList() {
-            //var idNo = $('#OceanExportHbl_Id').val();
-            //myWindow = window.open("@Url.Action("BookingPackingList", "Docs")" + "?id=" + idNo, 'BookingPackingList', 'width=1200,height=800');
-            myWindow = window.open("@Url.Action("BookingPackingList", "Docs")", 'BookingPackingList', 'width=1200,height=800');
+              function getPreliminaryClaim() {
+            var idNo = $('#OceanExportHbl_Id').val();
+            myWindow = window.open("@Url.Action("PreliminaryClaimOceanExport", "Docs")" + "?id=" + idNo+"&pageType=4", 'PreliminaryClaimOceanExport', 'width=1200,height=800');
+            //myWindow = window.open("@Url.Action("PickupDeliveryOrder", "Docs")", 'PickupDeliveryOrder', 'width=1200,height=800');
             myWindow.focus()
         }
         function getManifest() {
-            //var idNo = $('#OceanExportHbl_Id').val();
-            //var report = $('input[name=report]:checked').val()
-            //var reportType = $('input[name=report-type]:checked').val()
-            //myWindow = window.open("@Url.Action("Manifest", "Docs")" + "?id=" + idNo + "&report=" + report + "&reportType=" + reportType, 'Manifest', 'width=1200,height=800');
             myWindow = window.open("@Url.Action("Manifest", "Docs")", 'Manifest', 'width=1200,height=800');
             myWindow.focus()
         }
@@ -278,14 +500,198 @@
                 myWindow.focus();
             });
         }
+
+        function getManifestPopUp() {
+            var url = new URL(window.location.href);
+            var mblId = url.searchParams.get('Id');
+
+            $.ajax({
+                url: abp.appPath + 'Docs/ManifestOceanExportMBLPartial?mblId=' + mblId,
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('#ManifestModal').html(res);
+                    $('.modal.mymodal').modal('show');
+                    $('#frmManifest').find('.modal.fade').removeClass('modal fade');
+                }
+            });
+        }
+        function getDocPackagePopUp() {
+
+            $.ajax({
+                url: abp.appPath + 'Docs/DocumentPackageHBLPopupPartial?id=@Model.OceanExportHbl.Id',
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('#documentPackageModal').html(res);
+                    $('#documentPackageModal').modal('show');
+                }
+            });
+        }
+        function getMBLDocPackagePopUp() {
+            $.ajax({
+                url: '/Docs/DocumentPackageMBLPopupPartial?id=@Model.OceanExportMbl.Id',
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('#MBLDocumentPackageModal').html(res);
+                    $('#MBLDocumentPackageModal').modal('show');
+                }
+            });
+        }
+
+         function createHawbCard() {
+           $('#cardSettingArea').show();
+            var check='False';
+           
+            debugger;
+            if ($('#cardCheck').prop('checked')) {
+                check = 'True';
+            
+            }
+           let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h6 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
+    'onclick="onHawbCardClick(event,{{hblCardId}})">';
+
+  // Check the condition and add the <i> tag if check is true
+            if (check=="False") {
+                abpCard += '<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="{{hblCosigneeName}} {{hblShipperName}}"></i>';
+                abpCard += '{{hblNo}}</h6>' +
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+
+            }
+            else {
+                // Add the rest of the card content
+                abpCard += '{{hblNo}}<br>{{hblCosigneeName}}<br>{{hblShipperName}}</h6>' +
+                
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+            }
+            abpCard += '<div class="card-footer"><div class="row"><div class="col-6 hblCardTitle1" style="border-bottom: solid;border-top: solid;border-right: solid;border-width: thin;">PKG: {{hblPackage}}</div><div class="col-6 hblCardTitle1" style="border-bottom: solid;border-top: solid;border-width: thin;">Weight: {{hblWeight}}</div><div class="col-12 hblCardTitle1">Measurement: {{hblMeasurement}}</div></div></div>';
+  return abpCard;
+        }
+
+        function setHawbCardValues(abpcard, cardId, hblNo, index,hblCosigneeName,hblShipperName,weight,measurement,packagetype) {
+            let apbCardClass = 'card board-item hbl-sm-' + index;
+            let cardBodyId = 'hawbCard_' + index;
+            cardId = "'" + cardId + "'";
+
+            abpcard = abpcard.replaceAll("{{divClass}}", apbCardClass);
+            abpcard = abpcard.replaceAll("{{hblNo}}", hblNo);
+            abpcard = abpcard.replaceAll("{{hblCardId}}", cardId);
+            abpcard = abpcard.replaceAll("{{index}}", index);
+            abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
+            abpcard = abpcard.replaceAll("{{hblPackage}}", packagetype);
+            abpcard = abpcard.replaceAll("{{hblWeight}}", weight);
+            abpcard = abpcard.replaceAll("{{hblMeasurement}}", measurement);
+             if (hblCosigneeName !== null) {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", hblCosigneeName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", "");
+  }
+
+  if (hblShipperName !== null) {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", hblShipperName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", "");
+  }
+
+            return abpcard;
+        }
+         function closeModal() {
+            $("#checkModal").modal("hide");
+        }
+        function cardSettingClick() {
+           
+            $("#checkModal").modal("show");  
+        }
+        const toggleLink = document.getElementById("toggleLink");
+
+        // Set an initial state
+        let isAsc = true;
+        let selectedValue = 1;
+        
+        // Add a click event listener to the anchor
+        toggleLink.addEventListener("click", function (e) {
+            e.preventDefault(); // Prevent the default link behavior
+
+            // Toggle between "Asc" and "Desc"
+            if (isAsc) {
+                toggleLink.innerHTML = '<i class="fa fa-sort-down"></i> Desc';
+            } else {
+                toggleLink.innerHTML = '<i class="fa fa-sort-up"></i> Asc';
+            }
+
+            // Invert the state
+            isAsc = !isAsc;
+            SortHblCard();
+        });
+        function changeSetting() { 
+        $("#checkModal").modal("hide");
+           
+            if ($('#cardCheck').prop('checked')) {
+                dolphin.freight.importExport.oceanImports.oceanImportMbl.setCardSetting(true).done(function (response) {
+                    SortHblCard();
+                });
+
+            }
+            else {
+                dolphin.freight.importExport.oceanImports.oceanImportMbl.setCardSetting(false).done(function (response) {
+                    SortHblCard();
+                })
+            }
+        
+        }
+        function SortHblCard(){
+        selectedValue = $('#sortType').val();
+
+            var url = new URL(window.location.href);
+            var selectedHblNo;
+
+            dolphin.freight.importExport.oceanExports.oceanExportHbl.getHblCardsById(url.searchParams.get('Id'), isAsc,selectedValue)
+                .done(function (hblCards) {
+                    if (hblCards && hblCards.length) {
+                        $('#hblCards').empty();
+                        hblCards.forEach(function (hblCard, index) {
+
+                            let abpcard = createHawbCard();
+
+                            abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hblNo, index,hblCard.hblConsigneeName,hblCard.hblShipperName,hblCard.weight, hblCard.measurement, hblCard.packageType);
+
+                            $('#hblCards').append(abpcard);
+
+                            if (hblCard.id == url.searchParams.get('Hid')) {
+                                selectedHblNo = hblCard.hblNo;
+                            }
+
+                        })
+                        setTimeout(() => {
+                            if (selectedHblNo) {
+                                $('#title_' + selectedHblNo).click();
+                            }
+                            else { $('.hblCardTitle')[0].click(); }
+
+                        }, 500);
+                    }
+                })
+        
+        
+        
+        
+        
+        
+        
+        
+        }
     </script>
 }
 <div class="page-header">
     <div class="breadcrumb-wrapper">
-        <abp-breadcrumb>
-            <abp-breadcrumb-item title=@L["Menu:OceanExports"] />
-            <abp-breadcrumb-item title=@L["Menu:OceanExports.CreateMbl"] href="#" />
-        </abp-breadcrumb>
+          <abp-breadcrumb>
+        <abp-breadcrumb-item href="#" title=@L["Menu:Home"] />
+        <abp-breadcrumb-item title=@L["Menu:OceanExports"] />
+        <abp-breadcrumb-item title="@Model.OceanExportMbl.FilingNo" />
+    </abp-breadcrumb>
     </div>
     <nav class="submenu">
         <ol>
@@ -307,11 +713,12 @@
 <div class="page-content-area">
     <div class="board-wrap">
     <abp-row>
+       
         <abp-column size-md="_9">
            
                 <abp-card class="card board-item">
                     <abp-card-header style="background:#555555;color:#FFFFFF;">
-
+                          <input type="hidden" name="OceanExportMbl.Id" id="OceanExportMbl_Id" value="@Model.OceanExportMbl?.Id" />
                         <abp-card-title>
                             MB/L
                             <span id="title0">@Model.OceanExportMbl.MblNo </span>
@@ -346,43 +753,43 @@
                         </abp-card-title>
 
                         <div class="btn-group dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                                @L["Display:Function"]
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDropMbl" data-bs-toggle="dropdown">
+                                               
                             </button>
-                            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDropMbl">
+                                <a class='dropdown-item' id="lockButtonMbl" href='javascript:void(0)' onclick="lockUnlockMbl('@Model.OceanExportMbl.Id')">
+                                    <i class=""></i> @L["Btn:Lock"]
                                 </a>
                                 <li class="dropdown-divider"></li>
-                                <a class='dropdown-item' href='#'>
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="getMBLDocPackagePopUp()">
                                     <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PrintMBLInstruction", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Print MB/L | B/L Instruction"]
                                 </a>
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getPickupDeliveryOrder()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Pickup / Delivery Order"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="getManifest()">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getManifestPopUp()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="getBookingPackingList(3)">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PackagingListOceanExportMBL", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
                                 </a>
-                        <a class='dropdown-item' href='javascript:void(0)' onclick="getReportTelexrelease()">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getReportTelexrelease()">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:Telex Release"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="getReportPackageLabel()">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("MBLPackageLabelOceanExportMBL", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:MBL Package Label"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="getReportPackage()">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AllHblPackageLabelOceanExportMBL", "Docs", new { mblId = Model.OceanExportMbl.Id })')">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:All HBL Package Labels"]
                                 </a>
                                 <li class="dropdown-divider"></li>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(4)">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("MblProfitReportSummary", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - summary"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(5)">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("MblProfitReportDetailed", "Docs", new { id = Model.OceanExportMbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEMBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                                 </a>
                                 <li class="dropdown-divider"></li>
@@ -397,49 +804,79 @@
                     <abp-card-body class="collapse show" id="mblDiv">
 
                         <abp-row>
-                            <abp-column size-md="_4"><input type="file" id="uploadFile" /></abp-column>
+                          <abp-column size-md="_4">
+              <abp-card class="card board-item">
+                  <abp-card-header>
+                  <abp-card-title>@L["SelectFiles"] <br /></abp-card-title>
+                  </abp-card-header>
+                  <abp-card-body>
+             <abp-row>
+                            <abp-column size-md="_12">
+                                
+                             <div class="form-group files">
+               
+                                <input class="from-control" type="file" id="uploadFile" multiple>
+                              </div>
+                            </abp-column>
+                           
+                        </abp-row>
+                        </abp-card-body>
+                        </abp-card>
+            </abp-column>
                             <abp-column size-md="_8">
-                                <table>
+                                 <abp-card class="card board-item">
+                  <abp-card-header>
+                  <abp-card-title>@L["DocumentList"] <br /></abp-card-title>
+                  </abp-card-header>
+                  <abp-card-body>
+             
+                                <table class="table">
+                                       <thead>
                                     <tr>
-                                        <th width="55%">@L["Display:Name"]</th>
-                                        <th width="30%">@L["Display:Date"]</th>
-                                        <th width="15%">@L["Display:FileSize"]</th>
+                                        <th width="32%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Name"]</th>
+                                        <th width="14%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Date"]</th>
+                                        <th width="7%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:FileSize"]</th>
+                                        <th width="7%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Type"]</th>
+                                        <th width="16%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Action"]</th>
+                                        <th width="7%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Creator"]</th>
                                     </tr>
+                                    </thead>
                                     <tbody id="ftbody">
                                     </tbody>
 
                                 </table>
-
+                               </abp-card-body>
+                               </abp-card>
                             </abp-column>
                         </abp-row>
                     </abp-card-body>
                 </abp-card>
                 <br />
                 <abp-card class="card board-item" id="hblCard">
-                    <abp-card-header id="hblCardHeader" class="@Model.OceanExportHbl.CardColorValue">
+                    <abp-card-header id="hblCardHeader" class="hbl-sm-@Model.OceanExportHbl.CardColorValue">
                         <abp-card-title>
                             HB/L @Model.OceanExportHbl.HblNo
                         </abp-card-title>
 
                         <div class="btn-group dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
-                                                @L["Display:Function"]
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDropHbl" data-bs-toggle="dropdown">
+                                               
                             </button>
-                            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop" style="max-height:300px;overflow:auto">
-                                <a class='dropdown-item' href='#'>
-                    <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDropHbl" style="max-height:300px;overflow:auto">
+                <a class='dropdown-item' id="lockButtonHbl" href='javascript:void(0)' onclick="lockUnlockHbl('@Model.OceanExportHbl.Id')">
+                    <i class=""></i> @L["Btn:Lock"]
                                 </a>
                                 <li class="dropdown-divider"></li>
-                                <a class='dropdown-item' href='#'>
+        <a class='dropdown-item' href='javascript:void(0)' onclick="getDocPackagePopUp()">
                                     <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport()">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(6)">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Print Automobile Documents"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="getHbl()">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HBLPrintOceanExport", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Print HB/L"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(7)">
+        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HBLPrintOceanExportOBL", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                <i class="fa fa-file-text-o"></i> @L["Btn:Print OB/L"]
                                 </a>
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getReportHblClauses()">
@@ -448,7 +885,7 @@
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getCommercialInvoice()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Commercial Invoice"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="getBookingPackingList()">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HBLPackingListOceanExport", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Packing List"]
                                 </a>
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getCertificateOfOrigin()">
@@ -463,7 +900,7 @@
                                  <a class='dropdown-item' href='javascript:void(0)' onclick="getReportBookingConfirmation()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
                                 </a>
-                                 <a class='dropdown-item' href='javascript:void(0)' onclck="getReportBankDraft()">
+                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getReportBankDraft()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Bank Draft"]
                                 </a>
                                  <a class='dropdown-item' href='javascript:void(0)' onclick="getReportPackageLabel()">
@@ -475,23 +912,23 @@
                                 <a class='dropdown-item' href='javascript:void(0)' onclick="getUsdaHeatTreatment()">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:USDA Heat Treatment"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="getForwarderCargoReceipt()">
-                                    <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder cargo receipt"]
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ForwarderCargoReceiptOceanExportHBL", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Forwarder Cargo Receipt"]
                                 </a>
-                                <a class='dropdown-item' href='javascript:void(0)'>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("DangerousGoodsOceanExportHBL", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Dangerous Goods"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
-                                    <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
-                                </a>
-                                <a class='dropdown-item' href='#'>
+                                   <a class='dropdown-item' href='javascript:void(0)' onclick="getPreliminaryClaim()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Preliminary Claim"]
+                                    </a>
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ExamHoldNoticeOceanExportHBL", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:EXAM HOLD NOTICE"]
                                 </a>
-                                <a class='dropdown-item' href='#'>
+        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("HblShippingAdvice", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Shipping Advice"]
                                 </a>
                                 <li class="dropdown-divider"></li>
-                                <a class='dropdown-item' href='javascript:void(0)' onclick="gotoReport(5)">
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OceanExportProfitReport", "Docs", new { id = Model.OceanExportHbl.Id, pageType = Dolphin.Freight.Common.FreightPageType.OEHBL })')">
                                     <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report"]
                                 </a>
 
@@ -505,109 +942,125 @@
                     </button>
                     </abp-card-header>
                     <abp-card-body class="collapse show" id="hblDiv">
+        <abp-row>
+            <abp-column size-md="_4">
+                <abp-card class="card board-item">
+                    <abp-card-header>
+                        <abp-card-title>@L["SelectFiles"] <br /></abp-card-title>
+                    </abp-card-header>
+                    <abp-card-body>
                         <abp-row>
-                            <abp-column size-md="_4"><input type="file" id="uploadHFile" /></abp-column>
-                            <abp-column size-md="_8">
-                                <table>
-                                    <tr>
-                                        <th width="55%">@L["Display:Name"]</th>
-                                        <th width="30%">@L["Display:Date"]</th>
-                                        <th width="15%">@L["Display:FileSize"]</th>
-                                    </tr>
-                                    <tbody id="htbody">
-                                    </tbody>
+                            <abp-column size-md="_12">
 
-                                </table>
-                                <input type="hidden" id="OceanExportHbl_Id" value="@Model.Hid"/>
+                                <div class="form-group files">
+
+                                    <input type="file" id="uploadHFile" multiple>
+                                </div>
                             </abp-column>
+
                         </abp-row>
                     </abp-card-body>
                 </abp-card>
+            </abp-column>
+            <abp-column size-md="_8">
+                <abp-card class="card board-item">
+                    <abp-card-header>
+                        <abp-card-title>@L["DocumentList"] <br /></abp-card-title>
+                    </abp-card-header>
+                    <abp-card-body>
+
+                        <table class="table">
+                                       <thead>
+                                    <tr>
+                                        <th width="32%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Name"]</th>
+                                        <th width="14%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Date"]</th>
+                                        <th width="7%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:FileSize"]</th>
+                                        <th width="7%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Type"]</th>
+                                        <th width="16%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Action"]</th>
+                                        <th width="7%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Creator"]</th>
+                                    </tr>
+                                    </thead>
+                            <tbody id="htbody">
+                            </tbody>
+
+                        </table>
+                         <input type="hidden" id="OceanExportHbl_Id" value="@Model.Hid"/>
+                    </abp-card-body>
+                </abp-card>
+            </abp-column>
+        </abp-row>
+
+                    </abp-card-body>
+                </abp-card>
         </abp-column>
-        <abp-column size-md="_3">
-            <div class="card-wrap">
-
-                <button class="btn btn-block btn-add" type="button" id="addHBtn">
-                    <i class="fa-solid fa-plus"></i>@L["Btn:AddHbl"].Value
-                </button>
-
-                <div class="function-wrap">
-
-                    <div class="form">
-                        <div class="form-group">
-                            <label for="cardOrderSet">卡片排序</label>
-                            <select class="form-control  " id="cardOrderSet">
-                                <option selected>請選擇</option>
-                                <option value="建立日期">建立日期</option>
-                                <option value="HB/L 號碼">HB/L 號碼</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="sr-only" for="cardOrder">Preference</label>
-                            <select class="form-control " id="cardOrder">
-                                <option selected>請選擇</option>
-                                <option value="遞增">遞增</option>
-                                <option value="遞減">遞減</option>
-                            </select>
-                        </div>
-                        <fieldset class="form-group">
-                            <legend class="col-form-label">卡片顯示</legend>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox"
-                                       id="inlineCheckbox1" value="option1">
-                                <label class="form-check-label"
-                                       for="inlineCheckbox1">託運人與收貨人</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox"
-                                       id="inlineCheckbox2" value="option2">
-                                <label class="form-check-label"
-                                       for="inlineCheckbox2">名稱標籤</label>
-                            </div>
-                        </fieldset>
-
-                        <button type="submit" class="btn btn-dark btn-block btn-update">
-                            <i class="fa-solid fa-arrows-rotate"></i>更新
+      <abp-column class="col-xl-3 col-lg-12 col-md-12 col-sm-12">
+                    <div class="card-wrap">
+                        <button class="btn btn-block btn-add" type="button" id="addHBtn">
+                            <i class="fa-solid fa-plus"></i>@L["Btn:AddHbl"]
                         </button>
-                    </div>
-
-                </div>
-
-                <!--  <div class="anchor-wrap">-->
-
-                <div id="hblCardDiv" class="cardAnchor">
-                    @if (Model.OceanExportHbls != null)
-                    {
-                        foreach (var hbl in Model.OceanExportHbls)
-                        {
-                            var focusString = "";
-                            if (Model.Hid == hbl.Id)
-                            {
-                                focusString = " focus ";
-                            }
-                            <div class="borad-anchor @focusString @hbl.CardColorValue">
-                                <div class="borad-cont" id="Card_@Model.Id" onclick="changeHid('@Model.Id','@hbl.Id')">
-                                    <a class="link" href="#cardA"></a>
-                                    <span class="label label-HBL">HB/L</span>
-                                    <span class="MBLnumber">@hbl.HblNo</span>
-                                    @hbl.SoNo
-                                    <a class="outlink" href="#" target="_blank">
-                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                    </a>
-                                </div>
+                        <div id="cardSettingArea">     
+                            <div class="d-flex flex-row">
+                        <div class="p-2"><label>Sort By</label>
+                        <select id="sortType">
+                            <option selected value="1">HB/L No</option>
+                             <option value="2">Created Date</option>
+                        </select>    
+                        </div>
+                        <div class="p-2">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+                        <div class="p-2">
+                            <a href="#" id="toggleLink"><i class="fa fa-sort-up"></i> Asc</a>
+                        </div>
                             </div>
-                        }
-
-                    }
-
-
-
-
+                            <div class="d-flex flex-row">
+                        <div class="p-2" ><a href='javascript:void(0)' class="text-muted" onclick="cardSettingClick()"><i class="fa fa-cogs"></i> Card Setting</a>
+                            </div>
+                            </div>
+                            </div>
+                        <div id="hblCards" class="hbl_sm_area">
+                        </div>
+                    </div>
+                </abp-column>
+    </abp-row>
+    <div id="checkModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Card Setting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+        <div class="pull-left w-80per _pd-sm">
+            <div class="_text-blue-steel _font-15 bold _mg-bottom-10">Collapsed Card View</div>
+            <div class="_font-13 _mg-bottom-xs">Show Shipper and Consignee</div>
+            <div class="_font-11 text-muted">Show Shipper and Consignee name without hovering on the <i class="fa fa-info-circle _font-11"></i> icon when the cards are collapsed</div>
+        </div>
+        <div class="pull-left w-20per _mg-top-50">
+    <abp-input asp-for="@Model.ISToolTipShow" id="cardCheck" suppress-label />
+        </div><!---->
+    </div>
+                    
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="changeSetting()">@L["Btn:Ok"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
                 </div>
             </div>
-            <div>
-            </div>
-        </abp-column>
-    </abp-row>
+        </div>
     </div>
+<div class="modal mymodal" id="ManifestModal" tabindex="-1" role="dialog">
+</div>
+
+    </div>
+</div>
+
+<div class="modal" id="documentPackageModal">
+</div>
+
+<div class="modal" id="MBLDocumentPackageModal">
 </div>

@@ -1,0 +1,31 @@
+﻿@page
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Web.CommonService;
+@using Dolphin.Freight.Web.Pages.Components;
+@using Microsoft.Extensions.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@model Dolphin.Freight.Web.Pages.AirExports.ModalPopups.MoveToAirExportHawbModel
+@inject IDropdownService _dropdownService
+@inject IStringLocalizer<FreightResource> L
+@{
+    Layout = null;
+}
+<abp-script src="/Pages/AirExports/ModalPopups/MoveToAirExportHawb.js" />
+<form abp-model="MoveModel" id="moveForm" method="post" action="@Url.Page("/AirExports/ModalPopups/MoveToAirExportHawb")">
+    <abp-modal size="Large">
+        <abp-modal-header title="@L["Title:HawbToMawbMove"]"></abp-modal-header>
+        <abp-modal-body>
+            <abp-input type="hidden" asp-for="@Model.HawbId" />
+            <abp-column size="_12">
+                <p>@L["Title:MoveHawbToMawb"]</p>
+            </abp-column>
+            <abp-column size="_12">
+                @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { 
+                    Name = "AirExportDetails.MawbId", AspItems = _dropdownService.AirExportMawbList, Selected = Model.AirExportDetails.MawbId.ToString(), IsRequired = true, 
+                    IsShowLabel = false, FieldName = "", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportDetails.MawbId), NotShowFiledContentValue = Convert.ToString(Model.PrevMawbId)
+                })
+            </abp-column>
+        </abp-modal-body>
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)"></abp-modal-footer>
+    </abp-modal>
+</form>

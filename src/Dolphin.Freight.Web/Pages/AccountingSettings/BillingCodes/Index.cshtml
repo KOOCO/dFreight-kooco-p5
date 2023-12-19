@@ -1,12 +1,15 @@
 ﻿@page
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.CommonService;
+@using Dolphin.Freight.Web.Pages.Components;
 @using Dolphin.Freight.Web.Pages.Settings.PackageUnits
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
 @model Dolphin.Freight.Web.Pages.AccountingSetting.BillingCodes.IndexModel
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
+@inject IDropdownService _dropdown
 @section scripts{
     <abp-script src="/Pages/AccountingSettings/BillingCodes/Index.js" />
 }
@@ -34,9 +37,36 @@
                         icon="plus"
                         class="btn btn-add" />
         </abp-card-header>
+        <div>
+            <button class="btn-success" data-bs-toggle="collapse" data-bs-target="#hidden" style="float: right;margin-top: -20px; margin-right: 20px; margin-bottom: 10px;">
+                <i class="fa fa-filter" aria-hidden="true"></i>
+                Filters
+            </button>
+        </div>
+        <div id='hidden' class='collapse'>
+            <div class="row col-12">
+                <abp-column size="_3">
+                    <abp-input asp-for="Code" />
+                </abp-column>
+                <abp-column size="_3">
+                    <abp-input asp-for="Name" />
+                </abp-column>
+                <abp-column size="_3">
+                    <abp-input asp-for="GlCode" />
+                </abp-column>
+                <abp-column size="_3">
+                    <abp-input asp-for="GlDescription" />
+                </abp-column>
+            </div>
+            <div class="col-12" style="text-align: center">
+                <abp-button id="SearchButton"
+                            text="@L["Search"].Value"
+                            icon="search"
+                            class="btn-primary" />
+            </div>
+        </div>
         <abp-card-body style="overflow-x:scroll">
-            <abp-table striped-rows="true" id="BillingCodesTable" style="table-layout:auto;width:4096px;overflow:scroll"></abp-table>
+            <abp-table class="nowrap" striped-rows="true" id="BillingCodesTable" style="table-layout:auto;width:4096px;overflow:scroll"></abp-table>
         </abp-card-body>
     </abp-card>
 </div>
-

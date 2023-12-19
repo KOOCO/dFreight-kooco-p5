@@ -25,7 +25,8 @@
     <abp-script src="/Pages/AirImports/DocCenter/DocCenter.js" />
     <script type="text/javascript">
         const l = abp.localization.getResource('Freight');
-
+          var isLocked;
+           $('#cardSettingArea').hide();
         $(function () {
             $(document).on('click', '.button-download', function () {
                 const filename = $(this).data('filename');
@@ -45,33 +46,37 @@
             $(document).on('change', '#form-uploader [type="file"]', function () {
                 $('#form-uploader').submit();
             });
+               isLocked = '@Model.AirImportMawbDto.IsLocked';
         });
 
         var cardIndex = 0;
+          $("#addHBtn").click(function () {
+                var url = "/AirImports/EditMawb?Id=@Model.Id&from=NewHawb";
+                location.href = url;
+            })
+        //$('#addHBtn').on('click', function () {
+        //    debugger;
+        //    if ($('#mawbDiv')[0].classList.contains('show')) {
+        //        $('#btnMawbCollapse').click();
+        //    }
 
-        $('#addHBtn').on('click', function () {
-            debugger;
-            if ($('#mawbDiv')[0].classList.contains('show')) {
-                $('#btnMawbCollapse').click();
-            }
+        //    if ($('#btnHawbCardCollapse_0').length) {
+        //        showAlert(alertConfirmation2, 'Store');
+        //    }
+        //    else {
 
-            if ($('#btnHawbCardCollapse_0').length) {
-                showAlert(alertConfirmation2, 'Store');
-            }
-            else {
+        //        let hawbcard = createHawbCard();
 
-                let hawbcard = createHawbCard();
+        //        let index = $('.hbl_sm_area').find('.card').length;
+        //        hawbcard = setHawbCardValues(hawbcard, '00000000-0000-0000-0000-000000000000', '0', index);
 
-                let index = $('.hbl_sm_area').find('.card').length;
-                hawbcard = setHawbCardValues(hawbcard, '00000000-0000-0000-0000-000000000000', '0', index);
+        //        $('#hblCards').append(hawbcard);
 
-                $('#hblCards').append(hawbcard);
-
-                setTimeout(() => {
-                    $('.hblCardTitle')[index].click();
-                }, 500);
-            }
-        })
+        //        setTimeout(() => {
+        //            $('.hblCardTitle')[index].click();
+        //        }, 500);
+        //    }
+        //})
 
         $('#editForm').on('abp-ajax-success', function (result, rs) {
             console.log("enter here");
@@ -120,6 +125,7 @@
                         $('#partialContainer').html(partial);
                         $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
                         Swal.clickCancel();
+                         if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
                     })
 
                     $('.btnHawbCardCollapse').each(function (i, e) {
@@ -146,28 +152,7 @@
             }
         }
 
-        function createHawbCard() {
-
-            let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
-                ' onclick="onHawbCardClick(event,{{hblCardId}})">{{hblNo}}</h5>' +
-                ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
-                ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
-            return abpCard;
-        }
-
-        function setHawbCardValues(abpcard, cardId, hblNo, index) {
-            let apbCardClass = 'card board-item hbl-sm-' + index;
-            let cardBodyId = 'hawbCard_' + index;
-            cardId = "'" + cardId + "'";
-
-            abpcard = abpcard.replaceAll("{{divClass}}", apbCardClass);
-            abpcard = abpcard.replaceAll("{{hblNo}}", hblNo);
-            abpcard = abpcard.replaceAll("{{hblCardId}}", cardId);
-            abpcard = abpcard.replaceAll("{{index}}", index);
-            abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
-
-            return abpcard;
-        }
+      
 
         function showAlert(funName, buttonName) {
             Swal.fire({
@@ -204,9 +189,299 @@
             var urlPath = url.split('/');
             var mawbId = urlPath[urlPath.length - 1];
             dolphin.freight.importExport.airImports.airImportMawb.get(mawbId).done(function (res) {
-                myWindow = window.open('https://www.track-trace.com/bol#' + res.mawbNo, '_blank', 'width=1200,height=1000');
+                myWindow = window.open('https://www.track-trace.com/aircargo#' + res.mawbNo, '_blank', 'width=1200,height=1000');
                 myWindow.focus();
             });
+        }
+
+        function getConsolidatedArrivalNotice() {
+
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+
+            if (mawbId == null) {
+                var url = window.location.href;
+                var mawbId = url.split('/')[url.split('/').length - 1];
+            }
+
+            dolphin.freight.importExport.airImports.airImportHawb.getHawbCardsByMawbId(mawbId)
+                .done(function (res) {
+                    var consignee = [];
+                    var duplicates = new Set();
+                    var seen = new Set();
+                    for (let i = 0; i < res.length; i++) {
+                        let id = res[i].consigneeId;
+                        consignee.push(id);
+                        if (seen.has(id)) {
+                            duplicates.add(id);
+                        }
+                        seen.add(id);
+                    }
+                    var duplicateArray = Array.from(duplicates);
+                    var duplicateString = duplicateArray.join(', ');
+
+                    $.ajax({
+                        url: abp.appPath + 'Docs/ConsolidatedArrivalNoticePartialView?mawbId=' + '@Model.AirImportMawbDto.Id' + '&conId=' + duplicateString,
+                        type: 'GET',
+                        dataType: "html",
+                        success: function (res) {
+                            $('.modal-content').html(res);
+                            $('.modal').modal('show');
+                        }
+                    });
+
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+
+            if (mawbId == null) {
+                var url = window.location.href;
+                var mawbId = url.split('/')[url.split('/').length - 1];
+            }
+
+            dolphin.freight.importExport.airImports.airImportHawb.getHawbCardsByMawbId(mawbId)
+                .done(function (res) {
+                    var consignee = [];
+                    for (let i = 0; i < res.length; i++) {
+                        consignee.push(res[i].consigneeId);
+                    }
+                    checkForDuplicates(consignee);
+                });
+        });
+
+        function checkForDuplicates(array) {
+            let counts = {};
+
+            for (let i = 0; i < array.length; i++) {
+                if (counts[array[i]]) {
+                    counts[array[i]] += 1;
+                } else {
+                    counts[array[i]] = 1;
+                }
+            }
+
+            for (let prop in counts) {
+                if (counts[prop] > 1) {
+                    $(".dropdown-item").removeClass("disabled");
+                }
+            }
+        }
+
+        function getBatchPrintingPopup() {
+            debugger;
+            var url = new URL(window.location.href);
+            var mawbId = url.searchParams.get('Id');
+
+            if (mawbId == null) {
+                var url = window.location.href;
+                var mawbId = url.split('/')[url.split('/').length - 1];
+            }
+
+            dolphin.freight.importExport.airImports.airImportHawb.getHawbCardById($('#AirImportHawbDto_Id').val())
+                .then(function (res) {
+                    var hawbId = res.id;
+
+                    $.ajax({
+                        url: abp.appPath + 'Docs/BatchPrintingPartialView?hawbId=' + hawbId + '&mawbId=' + mawbId,
+                        type: 'GET',
+                        dataType: "html",
+                        success: function (res) {
+                            $('.modal-content').html(res);
+                            $('.modal').modal('show');
+                            $(document).on('show.bs.modal', '#batchPrintingModel', function () {
+                                $('.modal-dialog').addClass('modal-lg');
+
+                                $('#checkAll').on('click', function () {
+                                    $('.childCheckbox').prop('checked', $(this).prop('checked'));
+                                });
+
+                                $('.childCheckbox').on('click', function () {
+                                    if ($('.childCheckbox:not(:checked)').length === 0) {
+                                        $('#checkAll').prop('checked', true);
+                                    } else {
+                                        $('#checkAll').prop('checked', false);
+                                    }
+                                });
+                            })
+                        }
+                    });
+                });
+        }
+          function setMawbLockUnlock(isLockedCheck) {
+            var id ='@Model.AirImportMawbDto.Id';
+          
+            isLockedCheck = isLockedCheck === "True";
+            if(isLockedCheck){
+                
+            abp.message.confirm(l('UnlockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airImports.airImportMawb
+                            .lockedOrUnLockedAirImportMawb(id)
+                            .then(function () {
+                                   abp.message.success(l('SuccessfullyUnlocked'));
+                                window.location.reload();
+                            });
+                    }
+                });
+            } else{
+                abp.message.confirm(l('LockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                      dolphin.freight.importExport.airImports.airImportMawb
+                            .lockedOrUnLockedAirImportMawb(id)
+                            .then(function () {
+                           
+                                abp.message.success(l('SuccessfullyLocked'));
+                                window.location.reload();
+                          
+                            });
+                    }
+                });
+            }
+        }
+         function createHawbCard() {
+             $('#cardSettingArea').show();
+            var check='False';
+           
+            debugger;
+            if ($('#cardCheck').prop('checked')) {
+                check = 'True';
+            
+            }
+           let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h6 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
+    ' onclick="onHawbCardClick(event,{{hblCardId}})">';
+
+  // Check the condition and add the <i> tag if check is true
+            if (check=="False") {
+                abpCard += '<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="{{hblCosigneeName}} {{hblShipperName}}"></i>';
+                abpCard += '{{hblNo}}</h6>' +
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+
+            }
+            else {
+                // Add the rest of the card content
+                abpCard += '{{hblNo}}<br>{{hblCosigneeName}}<br>{{hblShipperName}}</h6>' +
+                
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+            }
+            abpCard += '<div class="card-footer"><div class="row"><div class="col-6 hblCardTitle" style="border-bottom: solid;border-top: solid;border-right: solid;border-width: thin;">PKG: {{hblPackage}}</div><div class="col-6 hblCardTitle" style="border-bottom: solid;border-top: solid;border-width: thin;">Weight: {{hblWeight}}</div><div class="col-12 hblCardTitle">Measurement: {{hblMeasurement}}</div></div></div>';
+  return abpCard;
+        }
+
+        function setHawbCardValues(abpcard, cardId, hblNo, index,hblCosigneeName,hblShipperName,weight,measurement,packagetype) {
+            debugger
+            let apbCardClass = 'card board-item hbl-sm-' + index;
+            let cardBodyId = 'hawbCard_' + index;
+            cardId = "'" + cardId + "'";
+
+            abpcard = abpcard.replaceAll("{{divClass}}", apbCardClass);
+            abpcard = abpcard.replaceAll("{{hblNo}}", hblNo);
+            abpcard = abpcard.replaceAll("{{hblCardId}}", cardId);
+            abpcard = abpcard.replaceAll("{{index}}", index);
+            abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
+            abpcard = abpcard.replaceAll("{{hblPackage}}", packagetype);
+            abpcard = abpcard.replaceAll("{{hblWeight}}", weight);
+            abpcard = abpcard.replaceAll("{{hblMeasurement}}", measurement);
+             if (hblCosigneeName !== null) {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", hblCosigneeName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", "");
+  }
+
+  if (hblShipperName !== null) {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", hblShipperName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", "");
+  }
+
+            return abpcard;
+        }
+          function cardSettingClick() {
+           
+            $("#checkModal").modal("show");  
+        }
+        const toggleLink = document.getElementById("toggleLink");
+
+        // Set an initial state
+        let isAsc = true;
+        let selectedValue = 1;
+        
+        // Add a click event listener to the anchor
+        toggleLink.addEventListener("click", function (e) {
+            e.preventDefault(); // Prevent the default link behavior
+
+            // Toggle between "Asc" and "Desc"
+            if (isAsc) {
+                toggleLink.innerHTML = '<i class="fa fa-sort-down"></i> Desc';
+            } else {
+                toggleLink.innerHTML = '<i class="fa fa-sort-up"></i> Asc';
+            }
+
+            // Invert the state
+            isAsc = !isAsc;
+            SortHblCard();
+        });
+        function changeSetting() { 
+        $("#checkModal").modal("hide");
+           
+            if ($('#cardCheck').prop('checked')) {
+                dolphin.freight.importExport.airImports.airImportMawb.setCardSetting(true).done(function (response) {
+                    SortHblCard();
+                });
+
+            }
+            else {
+                dolphin.freight.importExport.airImports.airImportMawb.setCardSetting(false).done(function (response) {
+                    SortHblCard();
+                })
+            }
+        
+        }
+        function SortHblCard(){
+        selectedValue = $('#sortType').val();
+
+           var urlPath = window.location.href;
+    var id = urlPath.substring(urlPath.lastIndexOf("/") + 1, urlPath.length);
+            var selectedHblNo;
+
+           dolphin.freight.importExport.airImports.airImportHawb.getDocCenterCardsById(id, isAsc,selectedValue)
+                .done(function (hblCards) {
+                    if (hblCards && hblCards.length) {
+                        $('#hblCards').empty();
+                        hblCards.forEach(function (hblCard, index) {
+
+                            let abpcard = createHawbCard();
+                            
+                            abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hawbNo, index,hblCard.consigneeName,hblCard.shipperName,hblCard.grossWeightKG, hblCard.volumeWeightCBM, hblCard.package);
+
+                            $('#hblCards').append(abpcard);
+
+                          
+
+                        })
+                        setTimeout(() => {
+                            if (selectedHblNo) {
+                                $('#title_' + selectedHblNo).click();
+                            }
+                            else { $('.hblCardTitle')[0].click(); }
+
+                        }, 500);
+                    }
+                })
+        
+        
+        
+        
+        
+        
+        
+        
         }
     </script>
 }
@@ -244,27 +519,52 @@
                                 <span id="title0">@Model.AirImportMawbDto.MawbNo </span>
                             </abp-card-title>
 
+                            <div id="myModal" class="modal" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="btn-group dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                              
+                                     <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                                         @if(@Model.AirImportMawbDto.IsLocked)
+                                        {
+                                            <i class="fa fa-lock"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock-open"></i>
+                                        }
                                     @L["Display:Function"]
                                 </button>
 
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
-                                    </a>
+                                     <a class='dropdown-item' href='javascript:void(0)' onclick="setMawbLockUnlock('@Model.AirImportMawbDto.IsLocked')">
+                                        @if(@Model.AirImportMawbDto.IsLocked)
+                                        {
+                                            <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                        }
+                                <a class='dropdown-item' href='javascript:void(0)' onclick="getBatchPrintingPopup()">
+                                    <i class="fa fa-file-text-o"></i> @L["Btn:Batch Printing"]
+                                </a>
                             <li class="dropdown-divider"></li>
-                            <a class='dropdown-item' href='#'>
-                                <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest"]
+                            <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ManifestAirImport", "Docs", new { id = Model.AirImportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIMBL })')">
+                                <i class="fa fa-file-text-o"></i> @L["Btn:Manifest"]
                             </a>
-                            <a class='dropdown-item' href='#'>
-                                <i class="fa fa-file-text-o"></i> @L["Btn:Arrival Notice (Consolidated by consignee)"]
-                            </a>
+                        <a class='dropdown-item disabled' href='javascript:void(0)' onclick="if(!$(this).hasClass('disabled')) { getConsolidatedArrivalNotice() }" title="This function is only available when two or more hawb have same consignee">
+                            <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Arrival Notice"]
+                        </a>
                             <li class="dropdown-divider"></li>
-                            <a class='dropdown-item' href='#'>
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AirImportProfitReport", "Docs", new { id = Model.AirImportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIMBL, reportType = "Summary" })')">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
                             </a>
-                            <a class='dropdown-item' href='#'>
+                        <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("AirImportProfitReport", "Docs", new { id = Model.AirImportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AIMBL, reportType = "Detailed" })')">
                                 <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                             </a>
                             <li class="dropdown-divider"></li>
@@ -346,11 +646,61 @@
                         <i class="fa-solid fa-plus"></i>Add HAWB
                     </button>
 
-                    <div id="hblCards" class="hbl_sm_area">
-                    </div>
+                    <div id="cardSettingArea">     
+                            <div class="d-flex flex-row">
+                        <div class="p-2"><label>Sort By</label>
+                        <select id="sortType">
+                            <option selected value="1">HB/L No</option>
+                             <option value="2">Created Date</option>
+                        </select>    
+                        </div>
+                        <div class="p-2">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+                        <div class="p-2">
+                            <a href="#" id="toggleLink"><i class="fa fa-sort-up"></i> Asc</a>
+                        </div>
+                            </div>
+                            <div class="d-flex flex-row">
+                        <div class="p-2" ><a href='javascript:void(0)' class="text-muted" onclick="cardSettingClick()"><i class="fa fa-cogs"></i> Card Setting</a>
+                            </div>
+                            </div>
+                            </div>
+                        <div id="hblCards" class="hbl_sm_area">
+                        </div>
                 </div>
             </abp-column>
         </abp-row>
+        <div id="checkModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Card Setting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+        <div class="pull-left w-80per _pd-sm">
+            <div class="_text-blue-steel _font-15 bold _mg-bottom-10">Collapsed Card View</div>
+            <div class="_font-13 _mg-bottom-xs">Show Shipper and Consignee</div>
+            <div class="_font-11 text-muted">Show Shipper and Consignee name without hovering on the <i class="fa fa-info-circle _font-11"></i> icon when the cards are collapsed</div>
+        </div>
+        <div class="pull-left w-20per _mg-top-50">
+    <abp-input asp-for="@Model.ISToolTipShow" id="cardCheck" suppress-label />
+        </div><!---->
+    </div>
+                    
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="changeSetting()">@L["Btn:Ok"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 </div>
 

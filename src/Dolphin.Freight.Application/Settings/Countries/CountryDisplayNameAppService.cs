@@ -166,6 +166,10 @@ namespace Dolphin.Freight.Settings.Countries
             {
                 rows = rows.Where(row => row.AirportId != null && row.AirportId.Equals(queryDto.ShipLine)).ToList();
             }
+            else
+            {
+                rows = rows.Where(row => row.AirportId == null).ToList();
+            }
 
             int totel = rows.ToList().Count;
 

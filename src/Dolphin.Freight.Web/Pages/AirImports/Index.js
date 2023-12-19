@@ -3,6 +3,33 @@
 
     var dataTable;
 
+    var _changeInterval = null;
+    var queryListFilter = function () {
+        return {
+            search: $("#Keyword").val(),
+
+
+            freightLocationId: $("#VesselSchedule_FreightLocationId").val() == '' ? null : $("#VesselSchedule_FreightLocationId").val(),
+
+            consigneeId: $("#VesselSchedule_ConsigneeId").val() == '' ? null : $("#VesselSchedule_ConsigneeId").val(),
+            carrierId: $("#VesselSchedule_CarrierId").val() == '' ? null : $("#VesselSchedule_CarrierId").val(),
+            depatureId: $("#VesselSchedule_DepatureId").val() == '' ? null : $("#VesselSchedule_DepatureId").val(),
+            destinationId: $("#VesselSchedule_DestinationId").val() == '' ? null : $("#VesselSchedule_DestinationId").val(),
+
+            directMaster: $("#DirectMaster").val() == '' ? null : $("#DirectMaster").val(),
+            flightNo: $("#FlightNo").val(),
+            officeId: $("#VesselSchedule_OfficeId").val() == '' ? null : $("#VesselSchedule_OfficeId").val(),
+            awbType: $("#AwbType").val() == '' ? null : $("#AwbType").val(),
+
+
+            depatureDate: $("#DepatureDate").val() == '' || $("#DepatureDate").val() == null ? null : new Date($("#DepatureDate").val()),
+            arrivalDate: $("#ArrivalDate").val() == '' || $("#ArrivalDate").val() == null ? null : new Date($("#ArrivalDate").val()),
+            postDate: $("#PostDate").val() == '' || $("#PostDate").val() == null ? null : new Date($("#PostDate").val()),
+            creationDate: $("#CreationDate").val() == '' || $("#CreationDate").val() == null ? null : new Date($("#CreationDate").val()),
+
+        };
+    };
+
     var columns = [{
         title: l('Actions'),
         rowAction: {
@@ -72,27 +99,28 @@
             }
         });
 
-                var col = (columns.length > 1) ? [[1, 'asc']] : [[0, 'asc']];
-
+        var col = (columns.length > 1) ? [[1, 'asc']] : [[0, 'asc']];
 
         dataTable = $('#MblListTable').DataTable(
             abp.libs.datatables.normalizeConfiguration({
                 serverSide: true,
                 paging: true,
+                pagingType: 'full_numbers',
                 order: col,
-                searching: true,
+                searching: false,
                 scrollX: true,
                 processing: true,
-                ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.airImports.airImportMawb.getList),
+                ajax: abp.libs.datatables.createAjax(dolphin.freight.importExport.airImports.airImportMawb.getList, queryListFilter),
                 columnDefs: columns
             })
         );
 
     })
 
-    $('[type=search]').on('keyup', function () {
-        dataTable.search(this.value).draw();
+    $('#Search').click(function (e) {
+        dataTable.ajax.reload();
     });
+
 
     $('#NewMblButton').click(function (e) {
         location.href = 'CreateMawb';

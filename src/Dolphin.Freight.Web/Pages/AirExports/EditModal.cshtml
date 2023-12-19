@@ -13,6 +13,11 @@
 @section styles
     {
     <style>
+         #ejo .btn-primary {
+    color: #fff;
+    background-color: rgb(25 28 32 / 52%);
+    border-color: #00000000;
+}
         .redStar::before {
             content: "* ";
             color: red;
@@ -24,6 +29,48 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-templates@1.0.0/jquery.tmpl.min.js"></script>
     <abp-script src="/Pages/AirExports/CreateMawb.js" />
     <abp-script src="/Pages/AirExports/EditModel.js" />
+     
+    <script>
+        var Code = "";
+        var CarrierAgent="";
+        var CollectPaid="";
+        var ChargeItem = "";
+
+        var enumValues = @Html.Raw(Json.Serialize(Model.EnumList));
+        var chargeItems=@Html.Raw(Json.Serialize(Model.ChargeItemList));
+    </script>
+    <script id="accountingTemplate" type="text/x-jQuery-tmpl">
+      
+      
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_Accounting" id="chk_Accounting_${chkIndex}" />
+          </td>
+               <td>
+      <select id="f1_${chkIndex}" name="AccountingInformation[${chkIndex}].Code"   class="filteredDropdown form-select form-control cursor-pointer ">
+        <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
+      {{each enumValues}}
+          <option value="${$value.value}" {{if $value.value === Code}}selected{{/if}}>${$value.text}</option>
+        {{/each}}
+      </select>
+    </td>
+          <td><input type="text" name="AccountingInformation[${chkIndex}].Information" value="${Information}" id="information_${chkIndex}" class="form-control" /></td>
+         
+     
+        
+          <td class="d-none"><input type="hidden" name="AccountingInformation[${chkIndex}].Id" value="accountingInformation_${chkIndex}" id="hidden_AccountingInformation_${chkIndex}" /></td>
+        </tr>
+    </script>
+    <script id="mawbCommodityTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_commodity" id="Id" />
+          </td>
+          <td><input type="text" name="AirExportMawbDto.Commodities[${chkIndex}].Description" value="${Description}" /></td>
+          <td><input type="text" name="AirExportMawbDto.Commodities[${chkIndex}].HTSCode" value="${HTSCode}" /></td>
+          <td><input type="text" name="AirExportMawbDto.Commodities[${chkIndex}].PONumber" value="${PONumber}"   /></td>
+        </tr>
+    </script>
     <script id="commodityTemplate" type="text/x-jQuery-tmpl">
         <tr>
           <td>
@@ -31,7 +78,7 @@
           </td>
           <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].Description" value="${Description}" /></td>
           <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].HTSCode" value="${HTSCode}" /></td>
-          <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].PONumber" value="${PoNumber}"  disabled /></td>
+          <td><input type="text" name="AirExportHawbDto.Commodities[${chkIndex}].PONumber" value="${PONumber}"  disabled /></td>
         </tr>
     </script>
     <script id="otherChargesTemplate" type="text/x-jQuery-tmpl">
@@ -46,14 +93,114 @@
           <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].ChargeAmount" value="${ChargeAmount}"  /></td>
         </tr>
     </script>
+    <script id="mawbOtherChargesTemplate" type="text/x-jQuery-tmpl">
+        <tr>
+          <td>
+              <input type="checkbox" name="chk_mawbOtherCharges" id="chk_mawbOtherCharges_${chkIndex}" />
+          </td>
+          
+           <td> <select style="font-size: 0.8rem!important;"  name="AirExportMawbDto.OtherCharges[${chkIndex}].CarrierAgent" id="desc_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
+        <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
+        <option value="Carrier" {{if "Carrier" === CarrierAgent}}selected{{/if}}  > Carrier</option>
+         <option value="Agent" {{if "Agent" === CarrierAgent}}selected{{/if}} > Agent</option>
+        </select></td>
+          <td> <select  style="font-size: 0.8rem!important;" name="AirExportMawbDto.OtherCharges[${chkIndex}].CollectPaid" id="htscode_${chkIndex}" class="filteredDropdown form-select form-control cursor-pointer ">
+        <option value="" > @L["Display:Dropdownlist:Option:Select"]</option>
+        <option value="Collect" {{if "Collect" === CollectPaid}}selected{{/if}} > Collect</option>
+         <option value="Prepaid" {{if "Prepaid" === CollectPaid}}selected{{/if}} >Prepaid</option>
+        </select></td>
+         <td> <select style="font-size: 0.8rem!important;" name="AirExportMawbDto.OtherCharges[${chkIndex}].ChargeItem"  class="filteredDropdown form-select form-control cursor-pointer ">
+        <option value="" selected> @L["Display:Dropdownlist:Option:Select"]</option>
+      {{each chargeItems}}
+         <option value="${$value.value}" {{if $value.value === ChargeItem}}selected{{/if}}>${$value.text}</option>
+        {{/each}}
+      </select></td>
+         @*  <td><input type="text" name="AirExportHawbDto.OtherCharges[${chkIndex}].ChargeItem" /></td> *@
+          <td><input type="text" name="AirExportMawbDto.OtherCharges[${chkIndex}].Description" value="${Description}" class="form-control"  /></td>
+          <td><input type="text" name="AirExportMawbDto.OtherCharges[${chkIndex}].ChargeAmount" value="${ChargeAmount}" class="form-control" /></td>
+        </tr>
+    </script>
     <script type="text/javascript">
         var l = abp.localization.getResource('Freight');
-        $(document).ready(function () {
+        var createMemoModal = new abp.ModalManager({
+            viewUrl: '/AirExports/CopyMawbModal',
+        });
 
+        var createHawbResultModal = new abp.ModalManager({
+            viewUrl: '/AirExports/ModalPopups/CopyToAirExportHawbResult',
+        });
+
+        var movedHawbResultModal = new abp.ModalManager({
+            viewUrl: '/AirExports/ModalPopups/MoveToAirExportHawbResult',
+        })
+
+        var url = new URL(window.location.href);
+
+        var movedHawbResult = url.searchParams.get('MovedHawbMessage');
+
+        if (movedHawbResult == 'True') {
+            var id = '@Model.ResultedMawbId';
+
+            movedHawbResultModal.open({
+                id,
+            });
+        }
+
+        var result = url.searchParams.get('copyHawbMessage');
+
+        if (result == 'True') {
+            var id = '@Model.ResultedMawbId';
+            
+            createHawbResultModal.open({
+                id,
+            });
+        }
+
+          var isLocked;
+          var showMsg = '@Model.ShowMsg';
+            if (showMsg == 'True') {
+                var EmptyGuid = '00000000-0000-0000-0000-000000000000';
+                dolphin.freight.common.memos.memo.getListByQuery({sourceId:EmptyGuid, fType:7 }).done(function (result) {
+                    debugger;
+                    var item = result;
+                    debugger;
+                    if (item.length>0) {
+                        dolphin.freight.common.memos.memo.updateSourceId('@Model.Id', 7).done(function (response) {
+                            memoDataTable.ajax.reload();
+                            abp.message.success(l("Message:SuccessAdd"));
+
+                        })
+                    } else {
+                       abp.message.success(l("Message:SuccessAdd"));
+                    }
+
+
+
+                })
+            }
+
+        $(document).ready(function () {
+            
+
+            //HB/l dropdown
+            $('#cardSettingArea').hide();
+       
             // Awb Cancel Area
             $("#checkboxAwbCancelled").change(function () {
                 if (this.checked) {
-                    $("#AwbCancelledDate").removeAttr("disabled").val(getDate());
+                    $("#AwbCancelledDate").removeAttr('type').datetimepicker({
+                        format: 'Y-m-d H:i',
+                        step: 15,
+                        allowInput: false,
+                        value: new Date()
+                    });
+
+                    let currentVal = $("#AwbCancelledDate").val();
+                    if (currentVal.includes('T')) {
+                        $("#AwbCancelledDate").val(currentVal.replace('T', ' '));
+                    }
+
+                    $("#AwbCancelledDate").removeAttr("disabled").val($("#AwbCancelledDate").val());
                     $("#AwbCancelledOpId").attr("disabled", "disabled").val('@(CurrentUser.Name + " " + CurrentUser.SurName)');
                     $("#ReasonForCancel").removeAttr("disabled");
                 } else {
@@ -63,8 +210,13 @@
                     $("#ReasonForCancel").attr("disabled", "disabled");
                 }
             });
-
-
+           isLocked = '@Model.AirExportMawbDto.IsLocked';
+         
+           
+            onSetMawbCommodity();
+            onSetMoreInformation();
+            onSetAccountingInformation();
+            onSetMawbOtherCharges();
             // Calculate Weight Kg to Lb
             $("#GrossWeightKg").on('keyup', function () {
                 $("#GrossWeightLb").val(Math.round($("#GrossWeightKg").val() * 2.2046226218 * 100) / 100);
@@ -74,9 +226,27 @@
             });
             $("#ChargeableWeightKg").on('keyup', function () {
                 $("#ChargeableWeightLb").val(Math.round($("#ChargeableWeightKg").val() * 2.2046226218 * 100) / 100);
+
+                if ($('#AirExportMawbDto_SellingRateUnitType').val() == 2) {
+                    $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat((($("#ChargeableWeightKg").val() * 2.2046226218 * 100) / 100).toFixed(2) * $('#AirExportMawbDto_SellingRate').val()));
+                }
+                else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) {
+                    $('#AirExportMawbDto_ChargeableWeightAmount').val(Math.round($('#ChargeableWeightKg').val() * $('#AirExportMawbDto_SellingRate').val()));
+                } else {
+                    $('#AirExportMawbDto_ChargeableWeightAmount').val(0);
+                }
             });
             $("#AwbChargeableWeightKg").on('keyup', function () {
                 $("#AwbChargeableWeightLb").val(Math.round($("#AwbChargeableWeightKg").val() * 2.2046226218 * 100) / 100);
+
+                if ($('#AirExportMawbDto_SellingRateUnitType').val() == 2) {
+                    $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat((($("#AwbChargeableWeightKg").val() * 2.2046226218 * 100) / 100).toFixed(2) * $('#AirExportMawbDto_SellingRate').val()));
+                }
+                else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) {
+                    $('#AirExportMawbDto_AwbChargeableWeightAmount').val(Math.round($('#AwbChargeableWeightKg').val() * $('#AirExportMawbDto_SellingRate').val()));
+                } else {
+                    $('#AirExportMawbDto_AwbChargeableWeightAmount').val(0);
+                }
             });
             // Calculate Weight Lb to Kg
             $("#GrossWeightLb").on('keyup', function () {
@@ -87,14 +257,31 @@
             });
             $("#ChargeableWeightLb").on('keyup', function () {
                 $("#ChargeableWeightKg").val(Math.round($("#ChargeableWeightLb").val() * 0.45359237 * 100) / 100);
+
+                if ($('#AirExportMawbDto_SellingRateUnitType').val() == 2) {
+                    $('#AirExportMawbDto_ChargeableWeightAmount').val(Math.round($('#ChargeableWeightLb').val() * $('#AirExportMawbDto_SellingRate').val()));
+                }
+                else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) {
+                    $('#AirExportMawbDto_ChargeableWeightAmount').val(parseFloat((($("#ChargeableWeightLb").val() * 0.45359237 * 100) / 100).toFixed(2) * $('#AirExportMawbDto_SellingRate').val()));
+                } else {
+                    $('#AirExportMawbDto_ChargeableWeightAmount').val(0);
+                }
             });
             $("#AwbChargeableWeightLb").on('keyup', function () {
                 $("#AwbChargeableWeightKg").val(Math.round($("#AwbChargeableWeightLb").val() * 0.45359237 * 100) / 100);
+
+                if ($('#AirExportMawbDto_SellingRateUnitType').val() == 2) {
+                    $('#AirExportMawbDto_AwbChargeableWeightAmount').val(Math.round($('#AwbChargeableWeightLb').val() * $('#AirExportMawbDto_SellingRate').val()));
+                } 
+                else if ($('#AirExportMawbDto_SellingRateUnitType').val() == 1) { 
+                    $('#AirExportMawbDto_AwbChargeableWeightAmount').val(parseFloat((($("#AwbChargeableWeightLb").val() * 0.45359237 * 100) / 100).toFixed(2) * $('#AirExportMawbDto_SellingRate').val()));
+                } else {
+                    $('#AirExportMawbDto_AwbChargeableWeightAmount').val(0);
+                }
             });
         });
 
         $('#addHBtn').on('click', function () {
-            debugger;
             if ($('#mawbDiv')[0].classList.contains('show')) {
                 $('#btnMawbCollapse').click();
             }
@@ -117,6 +304,82 @@
             //$('#hblCard').removeClass('d-none');
             //$(this).addClass('disabled');
         })
+        
+
+            //mawbOtherCharges Functions
+             function onSetMawbOtherCharges() {
+
+            var extraProperties ='@Html.Raw(Json.Serialize(Model.AirExportMawbDto.ExtraProperties))';
+
+            if (extraProperties && extraProperties != 'null') {
+                var otherCharges = JSON.parse(extraProperties).OtherCharges;
+
+                if(otherCharges && otherCharges.length){
+                    var Index = 0;
+                    otherCharges.forEach(function (otherCharge) {
+                        otherCharge.chkIndex = Index;
+
+                        var newRow = $('#mawbOtherChargesTemplate').tmpl(otherCharge);
+                        $('#mawbOtherChargesBody').append(newRow);
+
+                        Index += 1;
+                    })
+                }
+            }
+        }
+
+         var chkMawbOtherChargesIndex = 0;
+        function onAddMawbOtherCharges() {
+
+            var newRowData = {
+                chkIndex: chkMawbOtherChargesIndex
+            };
+
+            var newRow = $('#mawbOtherChargesTemplate').tmpl(newRowData);
+
+            $('#mawbOtherChargesBody').append(newRow);
+
+            chkMawbOtherChargesIndex += 1;
+
+            resetMawbOtherChargesIndex();
+        }
+           function onRemoveMawbOtherCharges() {
+            $('[name="chk_mawbOtherCharges"]:checked').each(function (i, elem) {
+                $(elem).closest('tr').remove();
+            });
+
+            resetMawbOtherChargesIndex();
+        }
+      function resetMawbOtherChargesIndex() {
+    $('#mawbOtherChargesBody > tr').each(function (e, elem) {
+         $(elem).find('td').each(function (a, aelem) {
+            var inputElement = $(aelem).find('input, select');
+            var attrName = inputElement.attr('name');
+            
+            if (attrName) {
+                var newAttrName = attrName.replace(/[0-9]/, e);
+                inputElement.attr('name', newAttrName);
+            }
+            
+            if ($(aelem).hasClass('d-none')) {
+                var aelemVal = inputElement.val();
+                if (aelemVal) {
+                    var newAelemVal = aelemVal.replace(/[0-9]/, e);
+                    inputElement.val(newAelemVal);
+                }
+            }
+        });
+    });
+}
+          $('#addMawbOtherChargesBodyBtn').on('click', function () {
+            onAddMawbOtherCharges();
+        });
+          $('#deleteMawbOtherChargesBtn').on('click', function () {
+            onRemoveMawbOtherCharges();
+        })
+
+        //
+
 
         function resetCommodityIndex() {
             $('#commodityBody > tr').each(function (e, elem) {
@@ -131,7 +394,37 @@
                 })
             })
         }
+          function resetMawbCommodityIndex() {
+            $('#MawbcommodityBody > tr').each(function (e, elem) {
+                $(elem).find('td').each(function (a, aelem) {
+                    var attrName = $(aelem).find('input').attr('name').replace(/[0-9]/, e);
 
+                    $(aelem).find('input').attr('name', attrName);
+                    if ($(aelem).hasClass('d-none')) {
+                        var aelemVal = $(aelem).find('input').val();
+                        $(aelem).find('input').val(aelemVal.replace(/[0-9]/, e));
+                    }
+                })
+            })
+        }
+         function onSetMawbCommodity() {
+            var extraProperties = '@Html.Raw(Json.Serialize(Model.AirExportMawbDto.ExtraProperties))';
+            if (extraProperties && extraProperties != 'null' && extraProperties != '{}') {
+                var commodities = JSON.parse(extraProperties).Commodities;
+
+                if (commodities && commodities.length) {
+                    var commodityIndex = 0;
+                    commodities.forEach(function (commodity) {
+                        commodity.chkIndex = commodityIndex;
+
+                        var newRow = $('#mawbCommodityTemplate').tmpl(commodity);
+                        $('#MawbcommodityBody').append(newRow);
+
+                        commodityIndex += 1;
+                    });
+                }
+            }
+        }
         function resetOtherChargesIndex() {
             $('#otherChargesBody > tr').each(function (e, elem) {
                 $(elem).find('td').each(function (a, aelem) {
@@ -145,6 +438,62 @@
                 })
             })
         }
+        function resetAccountingIndex() {
+            $('#accountingBody > tr').each(function (e, elem) {
+                $(elem).find('td').each(function (a, aelem) {
+                    var inputElement = $(aelem).find('input, select');
+                    var attrName = inputElement.attr('name');
+
+                    if (attrName) {
+                        var newAttrName = attrName.replace(/[0-9]/, e);
+                        inputElement.attr('name', newAttrName);
+                    }
+
+                    if ($(aelem).hasClass('d-none')) {
+                        var aelemVal = inputElement.val();
+                        if (aelemVal) {
+                            var newAelemVal = aelemVal.replace(/[0-9]/, e);
+                            inputElement.val(newAelemVal);
+                        }
+                    }
+                });
+            });
+        
+}
+             function onSetMoreInformation() {
+            var extraProperties = '@Html.Raw(Json.Serialize(Model.AirExportMawbDto.ExtraProperties))';
+
+            if (extraProperties && extraProperties != 'null' && extraProperties != '{}') {
+                var moreInformation=JSON.parse(extraProperties).MoreInformation;
+             
+
+                if (moreInformation && moreInformation.length) {
+                  
+                    $('#MoreInformationPrepaid_Valuation').val(moreInformation[0].Valuation);
+                    $('#MoreInformationPrepaid_Tax').val(moreInformation[0].Tax);
+                    $('#MoreInformationPrepaid_CurrencyConversionRate').val(moreInformation[0].CurrencyConversionRate);
+                    $('#MoreInformationPrepaid_CCChargesinDestCurrency').val(moreInformation[0].CCChargesinDestCurrency);
+                      $('#MoreInformationPrepaid_ChargesatDestination').val(moreInformation[0].ChargesatDestination);
+
+                        $('#MoreInformationCollect_Valuation').val(moreInformation[1].Valuation);
+                    $('#MoreInformationCollect_Tax').val(moreInformation[1].Tax);
+                    $('#MoreInformationCollect_CurrencyConversionRate').val(moreInformation[1].CurrencyConversionRate);
+                    $('#MoreInformationCollect_CCChargesinDestCurrency').val(moreInformation[1].CCChargesinDestCurrency);
+                      $('#MoreInformationCollect_ChargesatDestination').val(moreInformation[1].ChargesatDestination);
+                    moreInformation.forEach(function (information) {
+                    
+
+                        
+                    });
+
+                
+                }
+            }
+        }
+
+
+
+
 
         function onSetCommodity(){
 
@@ -187,9 +536,44 @@
                 }
             }
         }
+        function onSetAccountingInformation() {
+            debugger;
+            var extraProperties ='@Html.Raw(Json.Serialize(Model.AirExportMawbDto.ExtraProperties))';
 
+            if (extraProperties && extraProperties != 'null') {
+                var accountingInformations = JSON.parse(extraProperties).AccountingInformation;
+
+                if(accountingInformations && accountingInformations.length){
+                    var Index = 0;
+                    accountingInformations.forEach(function (accountingInformation) {
+                        accountingInformation.chkIndex = Index;
+
+                        var newRow = $('#accountingTemplate').tmpl(accountingInformation);
+                        $('#accountingBody').append(newRow);
+
+                        Index += 1;
+                    })
+                }
+            }
+        }
         var chkIndex = 0;
+        function onAddMawbCommodity() {
+            debugger;
+            var newRowData = {
+                chkIndex: chkIndex
+            };
+
+            var newRow = $('#mawbCommodityTemplate').tmpl(newRowData);
+
+            $('#MawbcommodityBody').append(newRow);
+
+            chkIndex += 1;
+
+            resetCommodityIndex();
+        }
+         var chkIndex = 0;
         function onAddCommodity() {
+            debugger;
             var newRowData = {
                 chkIndex: chkIndex
             };
@@ -218,13 +602,35 @@
 
             resetOtherChargesIndex();
         }
+            var chkAccountingIndex = 0;
+        function onAddAccounting()
+        {
+            var newRowData = {
+                chkIndex: chkAccountingIndex,
+                
+            };
 
+            var newRow = $('#accountingTemplate').tmpl(newRowData);
+
+            $('#accountingBody').append(newRow);
+
+            chkAccountingIndex += 1;
+
+            resetAccountingIndex();
+        }
         function onRemoveCommodity() {
             $('[name="chk_commodity"]:checked').each(function (i, elem) {
                 $(elem).closest('tr').remove();
             });
 
             resetCommodityIndex();
+        }
+         function onRemoveMawbCommodity() {
+            $('[name="chk_commodity"]:checked').each(function (i, elem) {
+                $(elem).closest('tr').remove();
+            });
+
+            resetMawbCommodityIndex();
         }
 
         function onRemoveOtherCharges() {
@@ -241,7 +647,8 @@
         })
 
         $('#addMawbCommodityBtn').on('click', function () {
-            addMawbCommodityTr();
+            // addMawbCommodityTr();
+            onAddMawbCommodity();
         })
 
         function addMawbCommodityTr() {
@@ -258,52 +665,49 @@
         }
 
         $("#MawbdeleteBtn").click(function () {
-            $("input[name='f0']:checked").each(function () {
-                var tid = $(this).val();
-                $("#did_" + tid).val("1");
-                var val = $(this).attr('id').split('_')[1];
-                $("#Mawbtr_" + val).hide();
-            })
+            onRemoveMawbCommodity();
+            // $("input[name='f0']:checked").each(function () {
+            //     var tid = $(this).val();
+            //     $("#did_" + tid).val("1");
+            //     var val = $(this).attr('id').split('_')[1];
+            //     $("#Mawbtr_" + val).hide();
+            // })
         })
 
-        $('#addMawbOtherChargesBodyBtn').on('click', function () {
-            addMawbOtherChargesTr();
-        })
+       
 
         $('#addAccountingBodyBtn').on('click', function () {
-            addAccountingTr();
+            onAddAccounting();
         })
 
         $('#addOtherChargesBodyBtn').on('click', function () {
             addOtherChargesTr();
         })
 
-        function addMawbOtherChargesTr() {
-            addMawbOtherChargesTrTag("", "", "", "", "");
-        }
-        var trMawbOtherChargesindex = 0;
-        function addMawbOtherChargesTrTag(value1, value2, value3, value4, value5) {
-            var trhtml = "<tr id='trMawbOtherCharges_" + trMawbOtherChargesindex + "'><td> <input type='checkbox' name='f1' id='did_" + trMawbOtherChargesindex + "'  value='" + trMawbOtherChargesindex + "'    /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trMawbOtherChargesindex + " id='f1_" + trMawbOtherChargesindex + "' class='form-control' value='" + value1 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trMawbOtherChargesindex + " id='f1_" + trMawbOtherChargesindex + "' ' class='form-control' value='" + value2 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trMawbOtherChargesindex + " id='f1_" + trMawbOtherChargesindex + "' ' class='form-control' value='" + value3 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trMawbOtherChargesindex + " id='f1_" + trMawbOtherChargesindex + "' ' class='form-control' value='" + value4 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trMawbOtherChargesindex + " id='f1_" + trMawbOtherChargesindex + "' ' class='form-control' value='" + value5 + "' /></td>"
-            $("#MawbotherChargesBody").append(trhtml);
-            trMawbOtherChargesindex++;
-        }
+        
+        
 
         function addAccountingTr() {
-            addAccountingTrTag("", "", "", "", "");
+            addAccountingTrTag("", "");
         }
         var trAccountingindex = 0;
         function addAccountingTrTag(value1, value2, value3, value4, value5) {
+            var enumValues = '@Html.Raw(Json.Serialize(Model.EnumList))';
+            var enumvalues = JSON.parse(enumValues);
             var trhtml = "<tr id='trAccounting_" + trAccountingindex + "'><td> <input type='checkbox' name='f1' id='did_" + trAccountingindex + "'  value='" + trAccountingindex + "'    /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trAccountingindex + " id='f1_" + trAccountingindex + "' class='form-control' value='" + value1 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trAccountingindex + " id='f1_" + trAccountingindex + "' ' class='form-control' value='" + value2 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trAccountingindex + " id='f1_" + trAccountingindex + "' ' class='form-control' value='" + value3 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trAccountingindex + " id='f1_" + trAccountingindex + "' ' class='form-control' value='" + value4 + "' /></td>"
-            trhtml = trhtml + "<td><input type='text' " + trAccountingindex + " id='f1_" + trAccountingindex + "' ' class='form-control' value='" + value5 + "' /></td>"
+            trhtml = trhtml + "<td><select  id='f1_" + trAccountingindex + "' asp-items='Html.GetEnumSelectList(typeof(IncotermsType))' class='form-select-sm form-control'>" +
+                "<option value='' selected> @L["Display:Dropdownlist:Option:Select"]</option>";
+                enumvalues.forEach(function (enumvalue) {
+                
+                  trhtml += '<option value="' + enumvalue.value + '">' + enumvalue.text + '</option>';
+                
+                
+                
+                
+            });
+
+               trhtml += "</select></td>";
+                trhtml = trhtml + "<td><input type='text' " + trAccountingindex + " id='f1_" + trAccountingindex + "' ' class='form-control' value='" + value2 + "' /></td>"
             $("#accountingBody").append(trhtml);
             trAccountingindex++;
         }
@@ -331,14 +735,15 @@
                 $("#trMawbOtherCharges_" + val).hide();
             })
         })
+            function onRemoveAccounting(){
+            $('[name="chk_Accounting"]:checked').each(function (i, elem) { 
+                $(elem).closest('tr').remove();
+            });
 
+            resetAccountingIndex();
+        }
         $("#deleteAccountingBtn").click(function () {
-            $("input[name='f1']:checked").each(function () {
-                var tid = $(this).val();
-                $("#did_" + tid).val("1");
-                var val = $(this).attr('id').split('_')[1];
-                $("#trAccounting_" + val).hide();
-            })
+            onRemoveAccounting();
         })
 
         $("#deleteOtherChargesBtn").click(function () {
@@ -370,7 +775,7 @@
 
         $('#hblMainCard').append('#mblCard');
 
-        function onHawbCardClick(e, hawbId) {
+        function onHawbCardClick(e, hawbId, hawbNo) {
             var element = e.currentTarget || e.target || e.srcElement;
             var hawbNo = element.id.split('_')[1];
 
@@ -382,7 +787,7 @@
 
                 var color = getComputedStyle(element.parentElement.parentElement).backgroundColor;
 
-                if (!$('#btnHawbCardCollapse_' + hawbNo).attr('class').includes('collapsed')) {
+              if (!$('#btnHawbCardCollapse_' + hawbNo).attr('class').includes('collapsed')) {
                     $('.hblCardHawbNo').addClass('d-none');
                     $('#hblCard_' + hawbNo).removeClass('d-none');
                 }
@@ -398,12 +803,15 @@
                     })
 
                     abp.ajax($.extend(true, {
-                        url: abp.appPath + 'api/ImportExport/AirExportBasicHawb?Id=' + hawbId,
+                        url: abp.appPath + 'api/ImportExport/AirExportBasicHawb?Id=' + hawbId +'&hawbNo=' + hawbNo,
                         type: 'GET',
                         dataType: "html",
                     }, ajaxParams)).done(function (partial) {
                         $('#partialContainer').html('');
+                        debugger;
                         $('#partialContainer').html(partial);
+                        
+                         
                         setTimeout(function () {
                             initializeDropdownSearch('AirExportHawbDto_ActualShippedr');
                             initializeDropdownSearch('AirExportHawbDto_BillTo');
@@ -420,7 +828,7 @@
                             initializeDropdownSearch('AirExportHawbDto_CargoType');
                             initializeDropdownSearch('AirExportHawbDto_SalesType');
                             initializeDropdownSearch('AirExportHawbDto_ShipType');
-                            initializeDropdownSearch('AirExportHawbDto_PackageUnitLookupList');
+                            initializeDropdownSearch('AirExportHawbDto_PackageUnit');
                             initializeDropdownSearch('AirExportHawbDto_Incoterms');
                             initializeDropdownSearch('AirExportHawbDto_ServiceTermStart');
                             initializeDropdownSearch('AirExportHawbDto_ServiceTermEnd');
@@ -434,8 +842,13 @@
                             onSetOtherCharges();
 
                         }, 500);
-                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white')
+                        $('#hblCard').find('.card-header').attr('style', 'background:' + color + ';color:white');
+                        if(hawbNo == '0'){
+                            $('#AirExportHawbDto_HawbNo').val('');
+                        }
+
                         Swal.clickCancel();
+                         if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
                     })
 
                     $('.btnHawbCardCollapse').each(function (i, e) {
@@ -454,26 +867,64 @@
             }
         }
 
-        function createHawbCard() {
-            let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h5 class="card-title hblCardTitle" id="title_{{hawbNo}}"' +
-                ' onclick="onHawbCardClick(event,{{hblCardId}})">{{hawbNo}}</h5>' +
-                ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hawbNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
-                ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse customForm" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
-            return abpCard;
+       
+
+          function createHawbCard() {
+             $('#cardSettingArea').show();
+            var check='False';
+           
+            debugger;
+            if ($('#cardCheck').prop('checked')) {
+                check = 'True';
+            
+            }
+           let abpCard = '<div class="{{divClass}}"><div class="card-header pointer"><h6 class="card-title hblCardTitle" id="title_{{hblNo}}"' +
+    ' onclick="onHawbCardClick(event,{{hblCardId}}, \'{{hblNo}}\')">';
+
+  // Check the condition and add the <i> tag if check is true
+            if (check=="False") {
+                abpCard += '<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="{{hblCosigneeName}} {{hblShipperName}}"></i>';
+                abpCard += '{{hblNo}}</h6>' +
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+
+            }
+            else {
+                // Add the rest of the card content
+                abpCard += '{{hblNo}}<br>{{hblCosigneeName}}<br>{{hblShipperName}}</h6>' +
+                
+                    ' <button type="button" class="btn d-none btn-collapse collapsed btnHawbCardCollapse" data-val="{{index}}" data-bs-toggle="collapse" id="btnHawbCardCollapse_{{hblNo}}" data-bs-target="#{{cardBodyId}}" aria-expanded="false" aria-controls="mawbDiv">' +
+                    ' <i class="fa fa-caret-down" style="color:#FFFFFF;"></i></button > </div><div class="card-body collapse" id="{{cardBodyId}}" style="min-height:150px !important"></div>';
+            }
+            abpCard += '<div class="card-footer"><div class="row"><div class="col-6 hblCardTitle" style="border-bottom: solid;border-top: solid;border-right: solid;border-width: thin;">PKG: {{hblPackage}}</div><div class="col-6 hblCardTitle" style="border-bottom: solid;border-top: solid;border-width: thin;">Weight: {{hblWeight}}</div><div class="col-12 hblCardTitle">Measurement: {{hblMeasurement}}</div></div></div>';
+  return abpCard;
         }
 
-        function setHawbCardValues(abpcard, cardId, hawbNo, index) {
+        function setHawbCardValues(abpcard, cardId, hblNo, index,hblCosigneeName,hblShipperName,weight,measurement,packagetype) {
+            debugger
             let apbCardClass = 'card board-item hbl-sm-' + index;
             let cardBodyId = 'hawbCard_' + index;
             cardId = "'" + cardId + "'";
 
-            hawbNo = hawbNo || index;
-
             abpcard = abpcard.replaceAll("{{divClass}}", apbCardClass);
-            abpcard = abpcard.replaceAll("{{hawbNo}}", hawbNo);
+            abpcard = abpcard.replaceAll("{{hblNo}}", hblNo);
             abpcard = abpcard.replaceAll("{{hblCardId}}", cardId);
             abpcard = abpcard.replaceAll("{{index}}", index);
             abpcard = abpcard.replaceAll("{{cardBodyId}}", cardBodyId);
+            abpcard = abpcard.replaceAll("{{hblPackage}}", packagetype);
+            abpcard = abpcard.replaceAll("{{hblWeight}}", weight);
+            abpcard = abpcard.replaceAll("{{hblMeasurement}}", measurement);
+             if (hblCosigneeName !== null) {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", hblCosigneeName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblCosigneeName}}", "");
+  }
+
+  if (hblShipperName !== null) {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", hblShipperName);
+  } else {
+    abpcard = abpcard.replaceAll("{{hblShipperName}}", "");
+  }
 
             return abpcard;
         }
@@ -505,43 +956,209 @@
         }
 
         function deleteHawb() {
-            abp.message.confirm(l('DeletionConfirmationMessage'))
-                .then(function (confirmed) {
-                    if (confirmed) {
-                        dolphin.freight.importExport.airExports.airExportHawb
-                            .delete($('#AirExportHawbDto_Id').val())
-                            .then(function () {
-                                abp.message.success(l('SuccessfullyDeleted'));
-                                $('#hblCard').remove();
-                                $('#hblCards').find('.card-body.show').closest('.card.board-item').remove()
-                            });
-                    }
-                });
+              islockedCheck = $('#AirExportHawbDto_IsLocked').val();
+               islockedCheck = islockedCheck === "True";
+            if (islockedCheck) {
+                abp.message.error(l('Delete Error Data Is Locked'))
+            }
+            else
+            {
+                abp.message.confirm(l('DeletionConfirmationMessage'))
+                    .then(function (confirmed) {
+                        if (confirmed) {
+                            dolphin.freight.importExport.airExports.airExportHawb
+                                .delete($('#AirExportHawbDto_Id').val())
+                                .then(function () {
+                                    abp.message.success(l('SuccessfullyDeleted'));
+                                    $('#hblCard').remove();
+                                    $('#hblCards').find('.card-body.show').closest('.card.board-item').remove()
+                                });
+                        }
+                    });
+            }
         }
 
         function deleteMawb() {
-            var url = new URL(window.location.href);
-            var mawbId = url.searchParams.get('Id');
-            abp.message.confirm(l('DeletionConfirmationMessage'))
-                .then(function (confirmed) {
-                    if (confirmed) {
-                        dolphin.freight.importExport.airExports.airExportMawb
-                            .delete(mawbId)
-                            .then(function () {
-                                abp.message.success(l('SuccessfullyDeleted')).done(function () {
-                                    location.href = '/AirExports/Index';
+            if (isLocked == 'True') {
+                abp.message.error(l('Delete Error Data Is Locked'))
+            }
+            else {
+                var url = new URL(window.location.href);
+                var mawbId = url.searchParams.get('Id');
+                abp.message.confirm(l('DeletionConfirmationMessage'))
+                    .then(function (confirmed) {
+                        if (confirmed) {
+                            dolphin.freight.importExport.airExports.airExportMawb
+                                .delete(mawbId)
+                                .then(function () {
+                                    abp.message.success(l('SuccessfullyDeleted')).done(function () {
+                                        location.href = '/AirExports/Index';
+                                    });
                                 });
-                            });
-                    }
-                })
+                        }
+                    })
+            }
         }
 
         function OpenInTrackTrace() {
             var MawbNo = $('#AirExportMawbDto_MawbNo').val();
-            myWindow = window.open('https://www.track-trace.com/bol#' + MawbNo, '_blank', 'width=1200,height=1000');
+            myWindow = window.open('https://www.track-trace.com/aircargo#' + MawbNo, '_blank', 'width=1200,height=1000');
             myWindow.focus();
         }
+
+        function getManifestByAgentAirExportMawb() {
+            $.ajax({
+                url: abp.appPath + 'Docs/ManifestByAgentAirExportMawbPartial?mawbId=' + '@Model.AirExportMawbDto.Id',
+                type: 'GET',
+                dataType: "html",
+                success: function(res){
+                    $('.modal-content').html(res);
+                    $('.modal').modal('show');
+                }
+            });
+        }
+
+        function getConsolidatedManifestByAgentAirExportMawb() {
+            $.ajax({
+                url: abp.appPath + 'Docs/ConsolidatedManifestByAgentAirExportMawbPartial?mawbId=' + '@Model.AirExportMawbDto.Id',
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('.modal-content').html(res);
+                    $('.modal').modal('show');
+                }
+            });
+        }
+
+        function setMawbLockUnlock(isLockedCheck) {
+            var id = $('#AirExportMawbDto_Id').val();
+             var hawbId = $('#AirExportHawbDto_Id').val();
+            isLockedCheck = isLockedCheck === "True";
+            if(isLockedCheck){
+                
+            abp.message.confirm(l('UnlockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airExports.airExportMawb
+                            .lockedOrUnLockedAirExportMawb(id)
+                            .then(function () {
+                                abp.message.success(l('SuccessfullyUnlocked'));
+                                window.location.reload();
+                            });
+                    }
+                });
+            } else{
+                abp.message.confirm(l('LockConfirmationMessage'))
+                .then(function (confirmed) {
+                    if (confirmed) {
+                        dolphin.freight.importExport.airExports.airExportMawb
+                            .lockedOrUnLockedAirExportMawb(id)
+                            .then(function () {
+                       
+                                abp.message.success(l('SuccessfullyLocked'));
+                                window.location.reload();
+                     
+                            });
+                    }
+                });
+            }
+        }
+
+        function onCopyMawbClick(){
+            var id = '@Model.AirExportMawbDto.Id';
+                createMemoModal.open({
+                    id,
+                   
+                });
+          
+        
+        
+        }
+
+         function cardSettingClick() {
+           
+            $("#checkModal").modal("show");  
+        }
+        const toggleLink = document.getElementById("toggleLink");
+
+        // Set an initial state
+        let isAsc = true;
+        let selectedValue = 1;
+        
+        // Add a click event listener to the anchor
+        toggleLink.addEventListener("click", function (e) {
+            e.preventDefault(); // Prevent the default link behavior
+
+            // Toggle between "Asc" and "Desc"
+            if (isAsc) {
+                toggleLink.innerHTML = '<i class="fa fa-sort-down"></i> Desc';
+            } else {
+                toggleLink.innerHTML = '<i class="fa fa-sort-up"></i> Asc';
+            }
+
+            // Invert the state
+            isAsc = !isAsc;
+            SortHblCard();
+        });
+        function changeSetting() { 
+        $("#checkModal").modal("hide");
+           
+            if ($('#cardCheck').prop('checked')) {
+                dolphin.freight.importExport.airImports.airImportMawb.setCardSetting(true).done(function (response) {
+                    SortHblCard();
+                });
+
+            }
+            else {
+                dolphin.freight.importExport.airImports.airImportMawb.setCardSetting(false).done(function (response) {
+                    SortHblCard();
+                })
+            }
+        
+        }
+        function SortHblCard(){
+        selectedValue = $('#sortType').val();
+
+            var url = new URL(window.location.href);
+            var selectedHblNo;
+
+            dolphin.freight.importExport.airExports.airExportHawb.getHblCardsById(url.searchParams.get('Id'), isAsc,selectedValue)
+                .done(function (hblCards) {
+                    if (hblCards && hblCards.length) {
+                        $('#hblCards').empty();
+                        hblCards.forEach(function (hblCard, index) {
+
+                            let abpcard = createHawbCard();
+                            
+                            abpcard = setHawbCardValues(abpcard, hblCard.id, hblCard.hawbNo, index,hblCard.consigneeName,hblCard.shippperName,hblCard.grossWeightCneeKG, hblCard.volumeWeightCBM, hblCard.package);
+
+                            $('#hblCards').append(abpcard);
+                            debugger
+                            if (hblCard.id == url.searchParams.get('Hid')) {
+                                selectedHblNo = hblCard.hblNo;
+                            }
+
+                        })
+                        setTimeout(() => {
+                            if (selectedHblNo) {
+                                $('#title_' + selectedHblNo).click();
+                            }
+                            else { $('.hblCardTitle')[0].click(); }
+
+                        }, 500);
+                    }
+                })
+        
+        
+        
+        
+        
+        
+        
+        
+        }
     </script>
+
 }
 
 <div class="page-header">
@@ -568,24 +1185,82 @@
 <div class="page-content-area">
     <div class="board-wrap">
         <form abp-model="@Model.AirExportMawbDto" submit-button="true" data-ajaxForm="true" id="createForm">
+            <abp-input type="hidden" asp-for="@Model.DimensionsJSON" id="dimensionsJSON" value="@Convert.ToString(@Model.AirExportMawbDto?.ExtraProperties?.GetValueOrDefault("Dimensions"))" />
             <abp-row>
                 <abp-column size-md="_9" id="parentCard">
                     <!-- MBL Card-->
                     <abp-card border="Dark" id="mblCard" style="margin-bottom: 1.2rem;">
                         <!-- 標題區域 -->
                         <abp-card-header style="background:#555555;color:#FFFFFF;">
-                            <abp-card-title>
-                                @L["MAWBInformation"] @Model.AirExportMawbDto.MawbNo  @*MAWB Information*@
-                            </abp-card-title>
+                            <abp-card-title class="col-9">
+                             
+                                @L["MAWB"] @Model.AirExportMawbDto.MawbNo  @*MAWB Information*@ 
+                                &nbsp;&nbsp;
+                                @if(Model.AirExportMawbDto.DepatureId!=null)
+                                {
+                            @_dropdown.PortsManagementLookupList.Where(x=>x.Value==Model.AirExportMawbDto.DepatureId?.ToString()).Select(x=>x.Text).FirstOrDefault()
+                                }
+                               &nbsp;&nbsp;
+                             (@Model.AirExportMawbDto.DepatureDate.ToShortDateString())
+                              &nbsp;&nbsp;
+                               @if(Model.AirExportMawbDto.DestinationId!=null)
+                                {
+                                    <span>
+                                    <i class="fa fa-caret-right"></i>
+                               @_dropdown.PortsManagementLookupList.Where(x=>x.Value==Model.AirExportMawbDto.DestinationId?.ToString()).Select(x=>x.Text).FirstOrDefault()
+                                    </span>
+                                }
+                                 
+                                 @(Model.AirExportMawbDto.ArrivalDate != null?"("+Model.AirExportMawbDto.ArrivalDate?.ToShortDateString()+")":"")
+                              @*   @if (Model.AirExportMawbDto.ArrivalDate != null)
+                                {
+                                  @Model.AirExportMawbDto.ArrivalDate?.ToShortDateString()
+                                } *@
+                                &nbsp;&nbsp;
+                                    @if(Model.AirExportMawbDto.MawbCarrierId!=null)
+                                {
+                                    <span>
+                                        <i class="fa fa-plane"></i>
+                                        @{
+                                            var carrier = _dropdown.TradePartnerLookupList.Where(x => x.Value == Model.AirExportMawbDto.MawbCarrierId?.ToString()).Select(x => x.Text).FirstOrDefault();
+                                            var partBeforeSlash = carrier?.Split('/').FirstOrDefault()?.Trim();
+                                            @partBeforeSlash;
+                        }
+                            </span>
+                                }                 
+                           </abp-card-title>
+
+                            <div id="myModal" class="modal" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="btn-group dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="ActionDrop" data-bs-toggle="dropdown">
+                                       @if(@Model.AirExportMawbDto.IsLocked)
+                                        {
+                                            <i class="fa fa-lock"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock-open"></i>
+                                        }
                                     @L["Display:Function"]
                                 </button>
                                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton1" id="ActionDrop">
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="setMawbLockUnlock('@Model.AirExportMawbDto.IsLocked')">
+                                        @if(@Model.AirExportMawbDto.IsLocked)
+                                        {
+                                            <i class="fa fa-lock-open"></i> @L["Btn:UnLock"]
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-lock"></i> @L["Btn:Lock"]
+                                        }
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="onCopyMawbClick()">
                                         <i class="fa fa-files-o"></i> @L["Btn:Copy"]
                                     </a>
                                     <a class='dropdown-item' href='javascript:void(0)' onclick="deleteMawb()">
@@ -595,44 +1270,44 @@
                                         <i class="fa fa-file-text-o"></i> @L["GoFreight EDI"]
                                     </a>
                                     <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-files-o"></i> @L["Btn:File Package"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="DocumentPackage('@Url.Action("DocumentPackage", "Docs", new { id = Model.AirExportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEMBL })')">
+                                        <i class="fa fa-files-o"></i> @L["Btn:Document Package"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PrintMawb", "Docs", new { id = Model.AirExportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Print MAWB"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest (Comprehensive)"]
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getConsolidatedManifestByAgentAirExportMawb()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Consolidated Manifest"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:Cargo Manifest (by agent)"]
+                                    <a class='dropdown-item' href="javascript:void(0)" onclick="getManifestByAgentAirExportMawb()">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Manifest by Agent"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
-                                        <i class="fa fa-file-text-o"></i> @L["Btn:S/O Confirmation"]
+                                    <a class='dropdown-item' href="javascript:void(0)" onclick="getBookingConfirmationAirExportMawb('@Url.Action("BookingConfirmationAirExportMawb", "Docs", new { mawbId = Model.AirExportMawbDto.Id })')">
+                                        <i class="fa fa-file-text-o"></i> @L["Btn:Booking Confirmation"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='#' onclick="getPackageLabelAirExportMawb('@Url.Action("PackageLabelAirExportMawb", "Docs", new { mawbId = Model.AirExportMawbDto.Id })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:MAWB Packaging Label"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="getAllHawbPackageLabelAirExportMawb('@Url.Action("AllHawbPackageLabelAirExportMawb", "Docs", new { mawbId = Model.AirExportMawbDto.Id })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:All HAWB Packaging Labels"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PackageLabelListAirExportHawb", "Docs", new { id = Model.AirExportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEMBL })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Package Label List"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("PickupDeliveryOrderAirExportMawb", "Docs", new { mawbId = Model.AirExportMawbDto.Id })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Dispatch List"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("SecurityEndorsement", "Docs", new { id = Model.AirExportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEMBL, reportType = "Summary" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Security Endorsement"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("OnHandReportAirExportMawb", "Docs", new { mawbId = Model.AirExportMawbDto.Id })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:On Hand Report"]
                                     </a>
                                     <p class="dropdown-divider"></p>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ProfitReport", "Docs", new { id = Model.AirExportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEMBL, reportType = "Summary" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Summary"]
                                     </a>
-                                    <a class='dropdown-item' href='#'>
+                                    <a class='dropdown-item' href='javascript:void(0)' onclick="OpenWindow('@Url.Action("ProfitReport", "Docs", new { id = Model.AirExportMawbDto.Id, pageType = Dolphin.Freight.Common.FreightPageType.AEMBL, reportType = "Detailed" })')">
                                         <i class="fa fa-file-text-o"></i> @L["Btn:Profit Report - Detailed"]
                                     </a>
                                     <p class="dropdown-divider"></p>
@@ -668,10 +1343,11 @@
                                     <abp-input asp-for="@Model.AirExportMawbDto.MawbNo" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="@Model.AirExportMawbDto.AwbDate" size="Small" />
+                                    <abp-input asp-for="@Model.AirExportMawbDto.AwbDate" abp-data-datepicker="false" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="@Model.AirExportMawbDto.ItnNo" size="Small" />
+                                    <input type="checkbox" asp-for="@Model.AirExportMawbDto.IsLocked" hidden />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.ShipperId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.ShipperId.ToString(), IsShowLabel = true, FieldName = "ActualShipper" })
@@ -686,7 +1362,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.NotifyId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.NotifyId.ToString(), IsShowLabel = true, FieldName = "Notify" })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="@Model.AirExportMawbDto.PostDate" size="Small" type="text" abp-data-datepicker="false" />
+                                    <abp-input asp-for="@Model.AirExportMawbDto.PostDate" size="Small" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.OfficeId", AspItems = Model.SubstationLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.OfficeId.ToString(), IsShowLabel = true, FieldName = "Office" })
@@ -727,15 +1403,15 @@
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <label asp-for="AirExportMawbDto.DepatureDate" class="redStar form-label">@L["DepatureDate"]</label>
-                                    <abp-input asp-for="AirExportMawbDto.DepatureDate" suppress-label="true" size="Small" />
+                                    <abp-input asp-for="AirExportMawbDto.DepatureDate" suppress-label="true" size="Small" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="@Model.AirExportMawbDto.FlightNo" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapseRoute" role="button" aria-expanded="false" aria-controls="collapseRoute">
+                                    <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapseRoute" role="button" aria-expanded="false" aria-controls="collapseRoute" style="margin-top:2em;">
                                         <i class="fa fa-plane" aria-hidden="true"></i>
-                                        Add Connecting Flight
+                                        @L["AddConnectingFlight"]
                                     </a>
                                 </abp-column>
                             </abp-row>
@@ -745,7 +1421,7 @@
                                     @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.DestinationId", AspItems = _dropdown.PortsManagementLookupList, ShowFiledContentValue = @Model.AirExportMawbDto.DestinationId.ToString(), IsShowLabel = true, FieldName = @L["Destination"] })
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-input asp-for="AirExportMawbDto.ArrivalDate" size="Small" />
+                                    <abp-input asp-for="AirExportMawbDto.ArrivalDate" size="Small" abp-data-datepicker="false" />
                                 </abp-column>
                                 <abp-column size-md="_3">
                                     <abp-input asp-for="@Model.AirExportMawbDto.DVCarriage" size="Small" />
@@ -763,24 +1439,20 @@
                                     <abp-input asp-for="@Model.AirExportMawbDto.CarrierSpotNo" size="Small" />
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-row>
-                                        <abp-column size-md="_3">
-                                            WT/VAL
-                                        </abp-column>
+
                                         <abp-column>
+                                            @L["WT/VAL"]
                                             <abp-radio asp-for="@Model.AirExportMawbDto.WtVal" asp-items="@Model.WtValOtherList" inline="true" />
                                         </abp-column>
-                                    </abp-row>
                                 </abp-column>
                                 <abp-column size-md="_3">
-                                    <abp-row>
-                                        <abp-column size-md="_3">
-                                            Other
-                                        </abp-column>
-                                        <abp-column>
-                                            <abp-radio asp-for="@Model.AirExportMawbDto.Other" asp-items="@Model.WtValOtherList" inline="true" />
-                                        </abp-column>
-                                    </abp-row>
+                              
+
+                                    <abp-column>
+                                        @L["Other"]
+                                        <abp-radio asp-for="@Model.AirExportMawbDto.Other" asp-items="@Model.OtherList" inline="true" />
+                                    </abp-column>
+    
                                 </abp-column>
                             </abp-row>
                             <!--第八列-->
@@ -801,9 +1473,9 @@
                             <!--Route區塊-->
                             <abp-row>
                                 <div class="collapse" id="collapseRoute">
-                                    <div class="card card-body customForm">
+                                    <div class="card card-body table-responsive">
                                         <h3>Route</h3>
-                                        <abp-table class="table table-bordered table-responsive">
+                                        <abp-table class="nowrap" class="table table-bordered">
                                             <thead>
                                                 <tr>
                                                     <th></th>
@@ -815,25 +1487,37 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                   <tr>
+                                                    <th>Departure</th>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteDepartureId", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteDepartureId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteDepartureId) })
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteDepartureArrivalDate" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteDepatureDate" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteDepartureFlightNo" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteDepartureCarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteDepartureCarrierId.ToString() })
+                                                    </td>
+                                                </tr>
                                                 <tr>
                                                     <th>Trans1</th>
-                                                    <td>
-                                                        <select asp-for="@Model.AirExportMawbDto.RouteTrans1Id" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans1Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans1Id) })
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans1ArrivalDate" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans1ArrivalDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans1DepatureDate" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans1DepatureDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans1FlightNo" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans1FlightNo" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans1CarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteTrans1CarrierId.ToString() })
@@ -841,23 +1525,17 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Trans2</th>
-                                                    <td>
-                                                        <select asp-for="@Model.AirExportMawbDto.RouteTrans2Id" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans2Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans2Id) })
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans2ArrivalDate" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans2ArrivalDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans2DepatureDate" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans2DepatureDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans2FlightNo" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans2FlightNo" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans2CarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteTrans2CarrierId.ToString() })
@@ -865,26 +1543,38 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Trans3</th>
-                                                    <td>
-                                                        <select asp-for="@Model.AirExportMawbDto.RouteTrans3Id" class="form-select-sm">
-                                                            <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            @foreach (var airport in Model.AirportLookupList)
-                                                            {
-                                                                <option value=@airport.Value>@airport.Text</option>
-                                                            }
-                                                        </select>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans3Id", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteTrans1Id", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteTrans3Id) })
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans3ArrivalDate" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans3ArrivalDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans3DepatureDate" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans3DepatureDate" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
-                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans3FlightNo" size="Small" />
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteTrans3FlightNo" abp-data-datepicker="false" size="Small" />
                                                     </td>
                                                     <td>
                                                         @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteTrans3CarrierId", AspItems = Model.TradePartnerLookupList, ShowFiledContentValue = Model.AirExportMawbDto.RouteTrans3CarrierId.ToString() })
+                                                    </td>
+                                                </tr>
+                                                  <tr>
+                                                    <th>Final Destination</th>
+                                                   <td>
+                                                        @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "AirExportMawbDto.RouteDestinationId", AspItems = _dropdown.AirportLookupList, IsShowLabel = false, FieldName = "RouteDestinationId", SelectType = 0, ShowFiledContentValue = Convert.ToString(Model.AirExportMawbDto.RouteDestinationId) })
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="@Model.AirExportMawbDto.RouteDestinationArrivalDate" abp-data-datepicker="false" size="Small" />
+                                                    </td>
+                                                    <td>
+                                                       
+                                                    </td>
+                                                    <td>
+                                                       
+                                                    </td>
+                                                    <td>
+                                                        
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -893,11 +1583,10 @@
                                 </div>
                             </abp-row>
                             <!--第九列 Package, Weight Settings Area-->
-                            <abp-row>
-                                <div class="container">
-                                    <div class="row">
+                 
+                                    <abp-row>
                                         <div class="col">
-                                            <abp-table class="table table-borderless">
+                                            <abp-table class="nowrap" class="table table-borderless">
                                                 <thead>
                                                     <tr>
                                                         <th></th>
@@ -908,7 +1597,7 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <th>@L["Package"]</th>
+                                                        <th class="packageTable">@L["Package"]</th>
                                                         <td><input asp-for="@Model.AirExportMawbDto.Package" class="form-control" /></td>
                                                         <td colspan="3">
                                                             <select asp-for="@Model.AirExportMawbDto.MawbPackageUnitId" class="form-select">
@@ -921,7 +1610,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["BuyingRate"]</th>
+                                                        <th class="packageTable">@L["BuyingRate"]</th>
                                                         <td><input asp-for="@Model.AirExportMawbDto.BuyingRate" class="form-control" /></td>
                                                         <td>@L["per"]</td>
                                                         <td>
@@ -932,28 +1621,28 @@
                                                         <td></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["SellingRate"]</th>
-                                                        <td><input asp-for="@Model.AirExportMawbDto.SellingRate" class="form-control" /></td>
+                                                        <th class="packageTable">@L["SellingRate"]</th>
+                                                        <td><input asp-for="@Model.AirExportMawbDto.SellingRate" class="form-control" onchange="AirExportMawb.onChangeSellingRate(event)" /></td>
                                                         <td>@L["per"]</td>
                                                         <td>
-                                                            <select asp-for="@Model.AirExportMawbDto.SellingRateUnitType" asp-items="Html.GetEnumSelectList(typeof(RateUnitType))" class="form-select form-control">
+                                                        <select asp-for="@Model.AirExportMawbDto.SellingRateUnitType" asp-items="Html.GetEnumSelectList(typeof(RateUnitType))" class="form-select form-control" onchange="AirExportMawb.onChangeUnit(event)">
                                                                 <option value='' selected> @L["Display:Dropdownlist:Option:Select"] </option>
-                                                            </select>
+                                                        </select>
                                                         </td>
                                                         <td></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["VolumeWeight"]</th>
-                                                        <td><input asp-for="@Model.AirExportMawbDto.VolumeWeightKg" class="form-control" /></td>
+                                                        <th class="packageTable">@L["VolumeWeight"]</th>
+                                                <td><input asp-for="@Model.AirExportMawbDto.VolumeWeightKg" class="form-control" onkeyup="AirExportMawb.KgToCbmConversion(event, 'KG')" /></td>
                                                         <td>@L["KG"]</td>
                                                         <td>
-                                                            <input asp-for="@Model.AirExportMawbDto.VolumeWeightCbm" class="form-control" />
+                                                            <input asp-for="@Model.AirExportMawbDto.VolumeWeightCbm" class="form-control" onkeyup="AirExportMawb.KgToCbmConversion(event, 'CBM')" />
                                                         </td>
                                                         <td>@L["CBM"]</td>
                                                     </tr>
                                                     <tr>
                                                         <th></th>
-                                                        <td colspan="4"><abp-button size="Small" button-type="Primary" text="@L["SetDimensions"]" disabled="true" icon="pencil-square" /></td>
+                                                        <td colspan="4"><abp-button size="Small" button-type="Primary" text="@L["SetDimensions"]" onclick="AirExportMawb.openPopUp('withId')" icon="pencil-square" /></td>
                                                     </tr>
                                                 </tbody>
                                             </abp-table>
@@ -970,25 +1659,25 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <th>@L["GrossWeightKG"]</th>
-                                                        <td><input asp-for="@Model.AirExportMawbDto.GrossWeightKg" class="form-control" id="GrossWeightKg" /></td>
-                                                        <td><input asp-for="@Model.AirExportMawbDto.GrossWeightLb" class="form-control" id="GrossWeightLb" /></td>
+                                                        <th class="packageTable">@L["GrossWeightKG"]</th>
+                                                        <td><input asp-for="@Model.AirExportMawbDto.GrossWeightKg" class="form-control" onkeyup="AirExportMawb.GrossWeightConversion(event, 'KG')" id="GrossWeightKg" /></td>
+                                                        <td><input asp-for="@Model.AirExportMawbDto.GrossWeightLb" class="form-control" onkeyup="AirExportMawb.GrossWeightConversion(event, 'LB')" id="GrossWeightLb" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.GrossWeightAmount" class="form-control" /></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["AwbGrossWeight"]</th>
+                                                        <th class="packageTable">@L["AwbGrossWeight"]</th>
                                                         <td><input asp-for="@Model.AirExportMawbDto.AwbGrossWeightKg" class="form-control" id="AwbGrossWeightKg" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.AwbGrossWeightLb" class="form-control" id="AwbGrossWeightLb" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.AwbGrossWeightAmount" class="form-control" /></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["ChargeableWeight"]</th>
+                                                        <th class="packageTable">@L["ChargeableWeight"]</th>
                                                         <td><input asp-for="@Model.AirExportMawbDto.ChargeableWeightKg" class="form-control" id="ChargeableWeightKg" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.ChargeableWeightLb" class="form-control" id="ChargeableWeightLb" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.ChargeableWeightAmount" class="form-control" /></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>@L["AwbChargeableWeight"]</th>
+                                                        <th class="packageTable">@L["AwbChargeableWeight"]</th>
                                                         <td><input asp-for="@Model.AirExportMawbDto.AwbChargeableWeightKg" class="form-control" id="AwbChargeableWeightKg" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.AwbChargeableWeightLb" class="form-control" id="AwbChargeableWeightLb" /></td>
                                                         <td><input asp-for="@Model.AirExportMawbDto.AwbChargeableWeightAmount" class="form-control" /></td>
@@ -996,9 +1685,8 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                    </div>
-                                </div>
-                            </abp-row>
+                                    </abp-row>
+           
                             <!--第10列-->
                             <abp-row>
                                 <abp-column size-md="_3">
@@ -1036,7 +1724,7 @@
                                 @if (Model.AirExportMawbDto.IsAwbCancelled == true)
                                 {
                                     <abp-column size-md="_3">
-                                        <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledDate" class="form-select-sm form-control" id="AwbCancelledDate" />
+                                        <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledDate" abp-data-datepicker="false" class="form-select-sm form-control" id="AwbCancelledDate" />
                                     </abp-column>
                                     <abp-column size-md="_3">
                                         <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledOpId" value="@(CurrentUser.Name + " " + CurrentUser.SurName)" disabled id="AwbCancelledOpId" />
@@ -1050,7 +1738,7 @@
                                 else
                                 {
                                     <abp-column size-md="_3">
-                                        <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledDate" class="form-select-sm form-control" disabled id="AwbCancelledDate" />
+                                        <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledDate" class="form-select-sm form-control" abp-data-datepicker="false" disabled id="AwbCancelledDate" />
                                     </abp-column>
                                     <abp-column size-md="_3">
                                         <abp-input asp-for="@Model.AirExportMawbDto.AwbCancelledOpId" disabled id="AwbCancelledOpId" />
@@ -1081,16 +1769,16 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_12">
-                                    <abp-table border="1" class="w-100">
+                                    <abp-table class="nowrap" border="1" class="w-100">
                                         <thead border="1">
                                         <th><input type="checkbox" /></th>
-                                        <th>@L["CarrierAgent"]</th>
+                                        <th style="min-width: 120px!important;">@L["CarrierAgent"]</th>
                                         <th>@L["CollectPrepaid"]</th>
                                         <th>@L["ChargeItem"]</th>
                                         <th>@L["Description"]</th>
                                         <th>@L["Charge Amount"]</th>
                                         </thead>
-                                        <tbody id="MawbotherChargesBody">
+                                        <tbody id="mawbOtherChargesBody">
                                         </tbody>
                                     </abp-table>
                                 </abp-column>
@@ -1108,14 +1796,12 @@
                             </abp-row>
                             <abp-row>
                                 <abp-column size-md="_12">
-                                    <abp-table border="1" class="w-100">
+                                    <abp-table class="nowrap" border="1" class="w-100">
                                         <thead border="1">
                                         <th><input type="checkbox" /></th>
                                         <th>@L["Code"]</th>
                                         <th>@L["Information"]</th>
-                                        <th>@L["ChargeItem"]</th>
-                                        <th>@L["Description"]</th>
-                                        <th>@L["ChargeAmount"]</th>
+                                        
                                         </thead>
                                         <tbody id="accountingBody">
                                         </tbody>
@@ -1126,11 +1812,13 @@
                                 <abp-column>
                                     <abp-card-header style="background:#cccccc;color:#FFFFFF;">
                                         @L["More"]
+                                                 <button type="button" id="btnMoreInfoCollapse" class="btn btn-collapse" data-bs-toggle="collapse" data-bs-target="#moreInfoDiv" aria-expanded="true" aria-controls="moreInfoDiv">
+                            </button>
                                     </abp-card-header>
-                                    <abp-card>
+                                    <abp-card class="collapse show customForm" id="moreInfoDiv">
                                         <abp-card-body>
                                             <div class="table-responsive">
-                                                <abp-table>
+                                                <abp-table class="nowrap">
                                                     <thead>
                                                     <th></th>
                                                     <th>@L["Valuation"]</th>
@@ -1142,26 +1830,26 @@
                                                     <tbody>
                                                         <tr>
                                                             <td>@L["Prepaid"]</td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationPrepaid.Valuation" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationPrepaid.Tax" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationPrepaid.CurrencyConversionRate" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationPrepaid.CCChargesinDestCurrency" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationPrepaid.ChargesatDestination" type="text" /></td>
                                                         </tr>
                                                         <tr>
                                                             <td>@L["Collect"]</td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
-                                                            <td><input type="text" /></td>
+                                                        <td><input asp-for="@Model.MoreInformationCollect.Valuation" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationCollect.Tax" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationCollect.CurrencyConversionRate" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationCollect.CCChargesinDestCurrency" type="text" /></td>
+                                                            <td><input asp-for="@Model.MoreInformationCollect.ChargesatDestination" type="text" /></td>
                                                         </tr>
                                                     </tbody>
                                                 </abp-table>
                                             </div>
                                             <abp-row>
                                                 <abp-column size-md="_12">
-                                                    <abp-input asp-for="@Model.AirExportHawbDto.PONo" id="AwbCancelledOpId" />
+                                                    <abp-input asp-for="@Model.AirExportMawbDto.PONo" id="AwbCancelledOpId" />
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row class="mt-4">
@@ -1178,7 +1866,7 @@
                                             <abp-row>
                                                 <abp-column size-md="_12">
                                                     <div class="table-responsive">
-                                                        <abp-table border="1" class="w-100">
+                                                        <abp-table class="nowrap" border="1" class="w-100">
                                                             <thead border="1">
                                                             <th></th>
                                                             <th>@L["CommodityDescription"]</th>
@@ -1199,7 +1887,7 @@
                                             <abp-row>
                                                 <abp-column size-md="_12">
                                                     <div class="table-responsive">
-                                                        <abp-table border="1" class="w-100">
+                                                        <abp-table class="nowrap" border="1" class="w-100">
                                                             <thead border="1">
                                                             <th><input type="checkbox" /></th>
                                                             <th>@L["ReceiptNo"]</th>
@@ -1230,17 +1918,20 @@
                                             <abp-row class="mt-4">
                                                 <abp-column size-md="_6">
                                                     <h3>@L["Mark"]</h3>
-                                                    <abp-input asp-for="@Model.AirExportHawbDto.Mark" />
+                                                     <textarea  id="AirExportMawbDto_Mark" name="AirExportMawbDto.Mark" class="form-control">@Model.AirExportMawbDto.Mark</textarea>
+                                                  @*   <abp-input asp-for="@Model.AirExportHawbDto.Mark" /> *@
                                                 </abp-column>
                                                 <abp-column size-md="_6">
                                                     <h3>@L["NatureAndQuantityOfGoods"]</h3>
-                                                    <abp-input asp-for="@Model.AirExportHawbDto.NatureAndQuantityOfGoods" />
+                                                      <textarea  id="AirExportMawbDto_NatureAndQuantityOfGoods" name="AirExportMawbDto.NatureAndQuantityOfGoods" class="form-control">@Model.AirExportMawbDto.NatureAndQuantityOfGoods</textarea>
+                                                   @*  <abp-input asp-for="@Model.AirExportHawbDto.NatureAndQuantityOfGoods" /> *@
                                                 </abp-column>
                                             </abp-row>
                                             <abp-row>
                                                 <abp-column size-md="_12">
                                                     <h3>@L["HandlingInformation"]</h3>
-                                                    <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation" />
+                                                      <textarea  id="AirExportMawbDto_HandlingInformation" name="AirExportMawbDto.HandlingInformation" class="form-control">@Model.AirExportMawbDto.HandlingInformation</textarea>
+                                                    @* <abp-input asp-for="@Model.AirExportHawbDto.HandlingInformation" /> *@
                                                 </abp-column>
                                             </abp-row>
                                         </abp-card-body>
@@ -1272,6 +1963,26 @@
                         <button class="btn btn-block btn-add" type="button" id="addHBtn">
                             <i class="fa-solid fa-plus"></i>Add HAWB
                         </button>
+                       <div id="cardSettingArea">     
+                            <div class="d-flex flex-row">
+                        <div class="p-2"><label>Sort By</label>
+                        <select id="sortType">
+                            <option selected value="1">HB/L No</option>
+                             <option value="2">Created Date</option>
+                        </select>    
+                        </div>
+                        <div class="p-2">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+                        <div class="p-2">
+                            <a href="#" id="toggleLink"><i class="fa fa-sort-up"></i> Asc</a>
+                        </div>
+                            </div>
+                            <div class="d-flex flex-row">
+                        <div class="p-2" ><a href='javascript:void(0)' class="text-muted" onclick="cardSettingClick()"><i class="fa fa-cogs"></i> Card Setting</a>
+                            </div>
+                            </div>
+                            </div>
                         <div id="hblCards" class="hbl_sm_area">
                         </div>
                     </div>
@@ -1279,9 +1990,16 @@
             </abp-row>
 
             <!-- 下方Save按鈕 -->
-            <abp-row class="mt-3">
+            <abp-row class="mt-3" id="ejo">
                 <abp-column>
-                    <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Display:Button:Submit"]</abp-button>
+                    <div style="position: fixed; bottom: 55px; left: 0; right: 0; text-align:center;">
+                        @*  <abp-button class="btn btn-primary me-md-2" type="submit" id="saveBtn">@L["Save"]</abp-button> *@
+                           <button class="btn btn-primary me-md-2 rounded-circle" type="submit" id="saveBtn" style="width: 50px; height: 50px;">
+  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-save fa-w-14 fa-2x">
+    <path fill="currentColor" d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM224 416c-35.346 0-64-28.654-64-64 0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64zm96-304.52V212c0 6.627-5.373 12-12 12H76c-6.627 0-12-5.373-12-12V108c0-6.627 5.373-12 12-12h228.52c3.183 0 6.235 1.264 8.485 3.515l3.48 3.48A11.996 11.996 0 0 1 320 111.48z"></path>
+  </svg>
+</button>
+                    </div>
                 </abp-column>
             </abp-row>
             <abp-row>
@@ -1289,7 +2007,98 @@
                     &nbsp;
                 </abp-column>
             </abp-row>
+              <div id="checkModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Card Setting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+        <div class="pull-left w-80per _pd-sm">
+            <div class="_text-blue-steel _font-15 bold _mg-bottom-10">Collapsed Card View</div>
+            <div class="_font-13 _mg-bottom-xs">Show Shipper and Consignee</div>
+            <div class="_font-11 text-muted">Show Shipper and Consignee name without hovering on the <i class="fa fa-info-circle _font-11"></i> icon when the cards are collapsed</div>
+        </div>
+        <div class="pull-left w-20per _mg-top-50">
+    <abp-input asp-for="@Model.ISToolTipShow" id="cardCheck" suppress-label />
+        </div><!---->
+    </div>
+                    
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="changeSetting()">@L["Btn:Ok"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">@L["Btn:Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
         </form>
+
+        <div class="modal fade" id="CreateModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create New Item</h5>
+                        <button type="button" class="close" onclick="$('#CreateModal').modal('hide')" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="portlet-tool">
+                            <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                                <button type="button" class="btn btn-outline-success fa fa-plus" onclick="AirExportMawb.createNewDimension()" id="newDimensionBtn"></button>
+                                <button type="button" class="btn btn-outline-danger fa fa-trash" onclick="AirExportMawb.deleteDimension()" id="deleteDimensionBtn" disabled></button>
+                            </div>
+                        </div>
+
+                        <table class="table-responsive" width="100%" border="1" style="border-block-color:#333333;padding-left:10px;margin:4px;">
+                            <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                <th width="5%" style="background: #888888; color: #fff"><input type="checkbox" name="dimensionCheckbox" /></th>
+                                <th width="20%" style="background: #888888; color: #fff">@L["Length"]</th>
+                                <th width="15%" style="background: #888888; color: #fff">@L["Width"]</th>
+                                <th width="15%" style="background: #888888; color: #fff">@L["Height"]</th>
+                                <th width="15%" style="background: #888888; color: #fff">@L["PCS"]</th>
+                                <th colspan="2" width="20%" style="text-align: center; background: #888888; color: #fff">@L["Volume"]</th>
+                                <th colspan="2" width="20%" style="text-align: center; background: #888888; color: #fff">@L["Measurement"]</th>
+                            </tr>
+                            <tr border="1" style="border-block-color:#333333;padding-left:10px;margin-left:4px;">
+                                <th rowspan="2"></th>
+                                <th rowspan="2"></th>
+                                <th rowspan="2"></th>
+                                <th rowspan="2"></th>
+                                <th rowspan="2"></th>
+                                <th width="10%">@L["KG"]</th>
+                                <th width="10%">@L["LB"]</th>
+                                <th width="10%">@L["CBM"]</th>
+                                <th width="10%">@L["CFT"]</th>
+                            </tr>
+                            <tbody id="popuptrtbody">
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" align="right"><strong>Total:</strong></td>
+                                    <td id="totalPCS">0</td>
+                                    <td id="totalKG">0.00</td>
+                                    <td id="totalLB">0.00</td>
+                                    <td id="totalCBM">0.00</td>
+                                    <td id="totalCFT">0.00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="$('#CreateModal').modal('hide')" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="applyDimensions">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 

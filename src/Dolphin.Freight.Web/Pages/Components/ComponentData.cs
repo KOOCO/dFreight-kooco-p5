@@ -12,6 +12,7 @@ namespace Dolphin.Freight.Web.Pages.Components
         /// <summary>
         /// 元件名稱
         /// </summary>
+        public string ChangeEvent { get; set; }
         public string TagName { get; set; }
         /// <summary>
         /// 輸入的參數
@@ -23,6 +24,7 @@ namespace Dolphin.Freight.Web.Pages.Components
         /// 貿易夥伴用FiledContent輸入的參數
         /// </summary>
         public string ShowFiledContentValue { get; set; }
+        public string NotShowFiledContentValue { get; set; }
         public string GetShowFiledContent() { return string.IsNullOrEmpty(ShowFiledContentValue) ? " " : ShowFiledContentValue; }
         /// <summary>
         /// 欄位名稱
@@ -31,6 +33,8 @@ namespace Dolphin.Freight.Web.Pages.Components
         public string GetFiledContentName() { 
             return FieldName.Replace("Id","")+ "Content";
         }
+
+        public string CssClass { get; set; }
         /// <summary>
         /// 是否必填
         /// </summary>
@@ -48,6 +52,8 @@ namespace Dolphin.Freight.Web.Pages.Components
         public string Name { get; set; }
         public string Id { get { if (Name != null) return Name.Replace(".", "_"); return ""; } }
         public List<SelectListItem> AspItems { get; set; }
+
+        public bool IsMultipleSelection { get; set; }
 
     }
 }

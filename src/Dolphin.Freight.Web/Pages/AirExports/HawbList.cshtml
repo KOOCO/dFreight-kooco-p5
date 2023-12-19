@@ -13,8 +13,10 @@
 <div class="page-header">
     <div class="breadcrumb-wrapper">
         <abp-breadcrumb>
-            <abp-breadcrumb-item title=@L["Menu:AirExports"] />
-            <abp-breadcrumb-item title=@L["Menu:AirExports.HawbList"] href="#" />
+            @*<abp-breadcrumb-item title=@L["Menu:AirExports"] />*@
+            <abp-breadcrumb-item title=@L["Menu:AirExport"] />
+            @*<abp-breadcrumb-item title=@L["Menu:AirExports.HawbList"] href="#" />*@
+            <abp-breadcrumb-item title=@L["Menu:AirExport.HawbList"] href="#" />
         </abp-breadcrumb>
     </div>
 </div>
@@ -22,14 +24,54 @@
     <abp-card>
         <abp-card-header>
             <div class="title">
-                @L["Menu:AirExports.HawbList"]
+                @*@L["Menu:AirExports.HawbList"]*@
+                @L["Menu:AirExport.HawbList"]
             </div>
         </abp-card-header>
         <abp-card-body>
-            <abp-table striped-rows="true" id="HawbListTable"></abp-table>
+            <div class="row col-12" style="text-align: center; margin:0!important">
+                <abp-column size-md="_12">
+                    <abp-button id="btnConfiguration"
+                                class="btn-sm"
+                                style="float: right;margin-top: -60px;"
+                                text="@L["Configuration"].Value"
+                                icon="gear"
+                                button-type="Primary" />
+                </abp-column>
+            </div>
+            <div class="row col-12" style="text-align: center; margin:0!important">
+                <abp-column size="_9"></abp-column>
+                <abp-column size="_3" class="filterDiv">
+                    <abp-input asp-for="Search" class="ml-4" />
+                </abp-column>
+            </div>
+            <div class="portlet-tool">
+                <div class="btn-group" role="group" aria-label="Basic outlined example" style="cursor: no-drop;">
+                    <button type="button" class="btn btn-outline-secondary" onclick="selectedLock()" id="lockId" disabled>Lock</button>
+                    <button type="button" class="btn btn-outline-secondary" id="unlockId" onclick="selectedUnLock()" disabled>Unlock</button>
+                </div>
+
+                <abp-button type="button" id="btnAirExportHawbListProfit" onclick="getHwabProfitReport()" class="btn btn-outline-secondary" disabled="true">
+                    <span uib-tooltip="">
+                        <i class="fa fa-file-text-o"></i><font style="vertical-align: inherit;">
+                            <font style="">
+                                profit report
+                            </font>
+                        </font>
+                    </span>
+                </abp-button>
+            </div>
+            <abp-table class="nowrap" striped-rows="true" id="HawbListTable"></abp-table>
         </abp-card-body>
     </abp-card>
 </div>
+
+<style>
+    .filterDiv div {
+        display: flex;
+        padding: 0 !important;
+    }
+</style>
 
 
 

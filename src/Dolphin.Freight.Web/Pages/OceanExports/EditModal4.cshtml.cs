@@ -12,17 +12,22 @@ using Dolphin.Freight.ImportExport.Attachments;
 using System.Collections.Generic;
 using Dolphin.Freight.Settinngs.SysCodes;
 using Dolphin.Freight.Common;
+using System.Linq;
+using Dolphin.Freight.ImportExport.OceanImports;
+using QueryHblDto = Dolphin.Freight.ImportExport.OceanExports.QueryHblDto;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
 {
     public class EditModal4Model :  FreightPageModel
     {
-        [HiddenInput]
+    [HiddenInput]
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
     [BindProperty(SupportsGet = true)]
     public Guid Hid { get; set; }
-    [BindProperty]
+        [BindProperty(SupportsGet = true)]
+        public bool ISToolTipShow { get; set; }
+        [BindProperty]
     public CreateUpdateOceanExportMblDto OceanExportMbl { get; set; }
     [BindProperty]
     public CreateUpdateOceanExportHblDto OceanExportHbl { get; set; }
@@ -36,20 +41,30 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
     private readonly IWebHostEnvironment _webHostEnvironment;
     public readonly IAttachmentAppService _attachmentAppService;
     private readonly ISysCodeAppService _sysCodeAppService;
+        private readonly IOceanImportMblAppService _oceanImportMblAppService;
 
-    public EditModal4Model(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, IWebHostEnvironment webHostEnvironment, IAttachmentAppService attachmentAppService, ISysCodeAppService sysCodeAppService)
+        public EditModal4Model(IOceanExportMblAppService oceanExportMblAppService, 
+            IOceanExportHblAppService oceanExportHblAppService,
+            IWebHostEnvironment webHostEnvironment,
+            IAttachmentAppService attachmentAppService, 
+            ISysCodeAppService sysCodeAppService,
+            IOceanImportMblAppService oceanImportMblAppService)
     {
         _oceanExportMblAppService = oceanExportMblAppService;
         _oceanExportHblAppService = oceanExportHblAppService;
         _webHostEnvironment = webHostEnvironment;
         _attachmentAppService = attachmentAppService;
         _sysCodeAppService = sysCodeAppService;
+            _oceanImportMblAppService=oceanImportMblAppService;
     }
     public async Task OnGetAsync()
     {
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
             QueryHblDto query = new QueryHblDto() { MblId = Id };
             OceanExportHbls = await _oceanExportHblAppService.QueryListByMidAsync(query);
+            OceanExportHbls = OceanExportHbls.Reverse().ToList();
+            ISToolTipShow = await _oceanImportMblAppService.GetCardSettings();
+
             QueryHblDto queryHbl = new QueryHblDto();
             if (Hid == Guid.Empty)
             {
@@ -80,6 +95,7 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
                     if (OceanExportHbls != null && OceanExportHbls.Count > 0)
                     {
                         OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(OceanExportHbls[0]);
+                        OceanExportHbl.CardColorValue = "0";
                         Hid = OceanExportHbl.Id;
                         IsShowHbl = true;
                     }
@@ -89,7 +105,10 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             else
             {
                 queryHbl.Id = Hid;
-                OceanExportHbl = await _oceanExportHblAppService.GetHblById(queryHbl);
+
+                int index = OceanExportHbls.IndexOf(OceanExportHbls.FirstOrDefault(x => x.Id == Hid));
+                OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(OceanExportHbls.Where(x => x.Id == Hid).FirstOrDefault());
+                OceanExportHbl.CardColorValue = index.ToString();
                 IsShowHbl = true;
 
 
@@ -101,26 +120,29 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         await _oceanExportHblAppService.UpdateAsync(Hid, OceanExportHbl);
         return NoContent();
     }
-        public async Task<IActionResult> OnPostMyUploader(IFormFile MyUploader,Guid fid,int ftype)
+        public async Task<IActionResult> OnPostMyUploader(List<IFormFile> MyUploader,Guid fid,int ftype)
         {
             string fname = "";
             if (MyUploader != null)
             {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload");
-                if (!Directory.Exists(uploadsFolder))
+                foreach (var file in MyUploader)
                 {
-                    DirectoryInfo folder = Directory.CreateDirectory(uploadsFolder);
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "mediaUpload");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        DirectoryInfo folder = Directory.CreateDirectory(uploadsFolder);
+                    }
+                    string filePath = Path.Combine(uploadsFolder, file.FileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                    fname = file.FileName;
+                    CreateUpdateAttachmentDto dto = new CreateUpdateAttachmentDto() { FileName = fname, ShowName = fname, Ftype = ftype, Fid = fid, Size = file.Length / 1024 };
+                    await _attachmentAppService.CreateAsync(dto);
                 }
-                string filePath = Path.Combine(uploadsFolder, MyUploader.FileName);
-                
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    MyUploader.CopyTo(fileStream);
-                }
-                fname = MyUploader.FileName;
-                CreateUpdateAttachmentDto dto = new CreateUpdateAttachmentDto() { FileName = fname, ShowName = fname, Ftype = ftype, Fid = fid, Size = MyUploader.Length / 1024 };
-                await _attachmentAppService.CreateAsync(dto);
-                return new ObjectResult(new { status = "success",fname = fname ,udate=DateTime.Now.ToString("yyyy-MM-dd"),size= MyUploader.Length/1024 });
+                    return new ObjectResult(new { status = "success",fname = fname ,udate=DateTime.Now.ToString("yyyy-MM-dd"),size=1024 });
             }
             return new ObjectResult(new { status = "fail" });
 

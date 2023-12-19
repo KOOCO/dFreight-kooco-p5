@@ -147,6 +147,8 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// </summary>
         public Guid? OfficeId { get; set; }
         public string OfficeName { get; set; }
+        public string ShipToName { get; set; }
+        public string IssuedBy { get; set; }
 
         /// <summary>
         /// 客戶ID
@@ -170,12 +172,12 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// <summary>
         /// 發票金額
         /// </summary>
-        public string InvoiceAmount { get; set; }
+        public decimal? InvoiceAmount { get; set; }
 
         /// <summary>
         /// 餘額金額
         /// </summary>
-        public string BalanceAmount { get; set; }
+        public decimal? BalanceAmount { get; set; }
 
         /// <summary>
         /// 收付款
@@ -248,6 +250,28 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// </summary>
         public bool IsDeleted { get; set; }
         public List<CreateUpdateInvoiceBillDto> InvoiceBillDtos { get; set; }
+        public string PartyLocalName { get; set; }
+        
+     
+        
+        public decimal? AmountBeforeTax { get; set; }
+        public decimal? TaxAmount { get; set; }
+        public decimal? TaxAmountAc { get; set; }
+        public decimal? Amount { get; set; }
+        public decimal? AmountAc { get; set; }
+        public int? MethodType { get; set; }
+        public decimal? PaidAmountAc { get; set; }
+        public decimal? BalanceAc { get; set; }
+        public DateTime LastPaidDate { get; set; }
+        public int OverDue { get; set; }
+        public DateTime IssueDate { get; set; }
+        public string LastModifiedBy { get; set; }
+        public DateTime LastModifiedDate { get; set; }
+        public string Status { get; set; }
+        public string OpName { get; set; }
+        public double? TotalBeforeTax { get; set; }
+        public double? TotalTax { get; set; }
+        public double? TotalAmount { get; set; }
     }
 }
 

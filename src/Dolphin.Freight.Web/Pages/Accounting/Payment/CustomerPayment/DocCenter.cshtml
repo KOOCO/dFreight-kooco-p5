@@ -1,0 +1,359 @@
+﻿@page
+@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Web.Pages.Components
+@using Microsoft.Extensions.Localization
+@model Dolphin.Freight.Web.Pages.Accounting.Payment.CustomerPayment.DocCenterModel
+@inject IStringLocalizer<FreightResource> L
+@{
+    string dynamicValue = L["OrDragItHere"]; // Replace with your actual dynamic value
+}
+@section styles
+    {
+    <style type="text/css">
+        .files input {
+            outline: 2px dashed #92b0b3;
+            outline-offset: -10px;
+            -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+            transition: outline-offset .15s ease-in-out, background-color .15s linear;
+            padding: 100px 0px 85px 10%;
+            text-align: center !important;
+            margin: 0;
+            width: 100% !important;
+            color: black;
+        }
+
+            .files input:focus {
+                outline: 2px dashed #92b0b3;
+                outline-offset: -10px;
+                -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+                transition: outline-offset .15s ease-in-out, background-color .15s linear;
+                border: 1px solid #92b0b3;
+            }
+
+        .files {
+            position: relative
+        }
+
+            .files::before {
+                pointer-events: none;
+                position: absolute;
+                left: 0;
+                width: 50px;
+                right: 0;
+                height: 56px;
+                content: '';
+                /* background-image: url(https://image.flaticon.com/icons/png/128/109/109612.png); */
+                display: block;
+                margin: 0 auto;
+                background-size: 100%;
+                background-repeat: no-repeat;
+            }
+
+        /* For the #uploadFile and #uploadhFile IDs */
+        /* #uploadFile, #uploadHFile {
+                    color: transparent;
+                } */
+
+        /* For the .color class */
+        .color input {
+            background-color: #f1f1f1;
+        }
+
+        /* For the .files:before pseudo-element */
+        .files:before {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            pointer-events: none;
+            width: 100%;
+            right: 0;
+            height: 57px;
+            content: '@Html.Raw(L["OrDragItHere."])';
+            display: block;
+            margin: 0 auto;
+            color: #2ea591;
+            font-weight: 600;
+            text-transform: capitalize;
+            text-align: center;
+        }
+    </style>
+}
+@section scripts
+    {
+    @*<abp-script src="/Pages/OceanExports/CreateMbl.js" />*@
+    <script>
+        Swal.fire({
+            title: 'Loading...',
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        })
+        function changeHid(id, hid) {
+            location.href = '/OceanExports/EditModal4?Id=' + id + "&Hid=" + hid
+        }
+        var l = abp.localization.getResource('Freight');
+        var isLocked;
+        $(document).ready(function () {
+            $('input[type="file"]').change(function () {
+                if ($(this).val() != "") {
+                    $(this).css('color', '#333');
+                } else {
+                    $(this).css('color', 'transparent');
+                }
+            });
+            isLocked = '';
+            if (isLocked == 'True') abp.message.warn(l("Message:LockMessage"));
+            var IsShowHbl = '';
+            if (IsShowHbl == 'True') $("#hblCard").show();
+            else $("#hblCard").hide();
+            $("#addHBtn").click(function () {
+                var url = "/OceanExports/EditModal?Id=@Model.Id&NewHbl=1";
+                location.href = url;
+            })
+            initAttments(0, '@Model.Id');
+            $("#uploadFile").change(function () {
+                var fid = '@Model.Id';
+                var files = $('#uploadFile').prop("files");
+                var url = "DocCenter?handler=MyUploader";
+                formData = new FormData();
+
+                for (var i = 0; i < files.length; i++) {
+                    formData.append("MyUploader", files[i]);
+                }
+                formData.append("fid", fid);
+                formData.append("ftype", 2);
+                jQuery.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("XSRF-TOKEN",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    success: function (repo) {
+
+                        initAttments(0, fid);
+                    },
+                    error: function (rs) {
+                        console.log(rs)
+                        alert("Error occurs");
+                    }
+                });
+            });
+            
+
+            var url = new URL(window.location.href);
+
+            if (!url.searchParams.get('Hid')) {
+                $('.borad-cont').each(function (i, e) {
+                    if ($(e).parent().hasClass('focus')) {
+                        $(e).click();
+                    }
+                });
+            }
+            if (isLocked != 'True') {
+                $('#lockButtonMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+            }
+            else {
+                $('#ActionDropMbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                $('#lockButtonMbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+            }
+            var isLockedHbl = '';
+            if (isLockedHbl != 'True') {
+                $('#ActionDropHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Display:Function"));
+                $('#lockButtonHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Btn:Lock"));
+            }
+            else {
+                $('#ActionDropHbl').empty().html('<i class="fa fa-lock"></i> ' + l("Display:Function"));
+                $('#lockButtonHbl').empty().html('<i class="fa fa-lock-open"></i> ' + l("Btn:UnLock"));
+            }
+            Swal.clickCancel();
+        });
+
+        function initAttments(tindex, qid) {
+            dolphin.freight.importExport.attachments.attachment.queryList({ queryType: 2, queryId: qid }).done(function (result) {
+                if (result != null && result.length > 0) {
+                    var l = abp.localization.getResource('Freight');
+                    var trhtml = "";
+                    for (var index = 0; index < result.length; index++) {
+                        if (tindex == 0) trhtml = trhtml + "<tr id='tr_";
+                        else trhtml = trhtml + "<tr id='trh_";
+                        trhtml = trhtml + index + "'><td>" + result[index].fileName + "</td><td>" + result[index].creationTime.substring(0, 10) + "</td> <td>" + result[index].size + "KB </td><td>";
+                        trhtml = trhtml + "<select ><option value='Other' >" + l("Other") + "</option><option value='AWB' >" + l("AWB") + "</option><option value='POD' >" + l("POD") + "</option>";
+                        trhtml = trhtml + "<option value='INV-C' >" + l("INV-C") + "</option><option value='INV-P' >" + l("INV-P") + "</option>";
+                        trhtml = trhtml + "<option value='PAK-C' >" + l("PAK-C") + "</option><option value='PAK-P' >" + l("PAK-P") + "</option";
+                        trhtml = trhtml + "><option value='TRUCKER_A' >" + l("TRUCKER_A") + "</option><option value='EXCEPTION' >" + l("EXCEPTION") + "</option><option value='SHIPPER' >" + l("SHIPPER") + "</option></select> </td><td>";
+                        // trhtml = trhtml + "<div class='btn-group dropdown'><button class='btn btn-secondary dropdown-toggle'  type='button' id='ActionDrop_" + index + "' data-bs-toggle='dropdown'>";
+                        // trhtml = trhtml + l('Display:Function');
+                        // trhtml = trhtml + "</button><div class='dropdown-menu ' aria-labelledby='dropdownMenuButton1' id='ActionDrop_div_" + index + "'>";
+                        trhtml = trhtml + "<a   href = 'DocCenter?handler=Download&filename=" + result[index].fileName + "'  ><li style='padding: 3px;' class='fa fa-cloud-download' data - toggle='tooltip' data - placement='top' title = 'Download File' > </li>";
+                        // trhtml = trhtml + l('Btn:Download');
+                        trhtml = trhtml + "</a><a  href='javascript:void(0)' data-toggle='tooltip' data-placement='top' title='Delete File' onclick='deleteFile(" + index + ",\"" + result[index].id + "\"," + tindex + ")' ><i style='padding: 3px;' class='fa fa-trash'></i>"
+                        // trhtml = trhtml + l('Btn:Delete');"
+                        trhtml = trhtml + "</a><a href='javascript:void(0)' onclick='openImagePreview(\"" + result[index].fileName + "\")'><i style='padding: 3px;' class='fa fa-eye' data-toggle='tooltip' data-placement='top' title='Preview Image'></i> </a></td><td>" + result[index].creatorName;
+                        trhtml = trhtml + "</td></tr >";
+                    }
+                    if (tindex == 0) {
+                        $("#ftbody").html(trhtml);
+                        $("#uploadFile").val("");
+                    } else {
+                        $("#htbody").html(trhtml);
+                        $("#uploadHFile").val("");
+                    }
+
+                }
+            });
+        }
+
+        function deleteFile(index, fid, tindex) {
+
+            dolphin.freight.importExport.attachments.attachment.delete(fid)
+                .then(function () {
+
+                    abp.message.success(l('SuccessfullyDeleted'));
+                    if (tindex == 0) {
+                        $("#tr_" + index).remove();
+                    }
+                    else {
+                        $("#trh_" + index).remove();
+                    }
+
+                });
+        }
+        function openImagePreview(imageUrl) {
+
+
+            window.open("/mediaUpload/" + imageUrl, '_blank');
+
+
+
+
+        }
+
+        
+        function getManifest() {
+            myWindow = window.open("@Url.Action("Manifest", "Docs")", 'Manifest', 'width=1200,height=800');
+            myWindow.focus()
+        }
+
+        function getManifestPopUp() {
+            var url = new URL(window.location.href);
+            var mblId = url.searchParams.get('Id');
+
+            $.ajax({
+                url: abp.appPath + 'Docs/ManifestOceanExportMBLPartial?mblId=' + mblId,
+                type: 'GET',
+                dataType: "html",
+                success: function (res) {
+                    $('#ManifestModal').html(res);
+                    $('.modal.mymodal').modal('show');
+                    $('#frmManifest').find('.modal.fade').removeClass('modal fade');
+                }
+            });
+        }
+    </script>
+}
+<div class="page-header">
+    <div class="breadcrumb-wrapper">
+        <abp-breadcrumb>
+            <abp-breadcrumb-item title=@L["Menu:Accounting"] />
+            <abp-breadcrumb-item title=@L["Menu:Payment"] />
+            <abp-breadcrumb-item title=@L["Menu:Doc"] href="#" />
+        </abp-breadcrumb>
+    </div>
+    <nav class="submenu">
+        <ol>
+            <li class="menu-item ">
+                <a class="nav-link " href="Index?Id=@Model.Id">@L["Tab:Basic"]</a>
+            </li>
+            <li class="menu-item active">
+                <a class="nav-link" href="javascript:void(0)">@L["Tab:Doc"]</a>
+            </li>
+        </ol>
+    </nav>
+</div>
+<div class="page-content-area">
+    <div class="board-wrap">
+        <abp-row>
+
+            <abp-column size-md="_12">
+
+                <abp-card class="card board-item">
+                    <abp-card-header style="background:#555555;color:#FFFFFF;">
+                        <input type="hidden" name="CustomerPayment.Id" id="CustomerPayment_Id" value="@Model.CustomerPayment?.Id" />
+                        <abp-card-title>
+                            @L["Menu:CustomerPayment"]
+                        </abp-card-title>
+
+            
+                    </abp-card-header>
+<abp-card-body class="collapse show" id="mblDiv">
+
+    <abp-row>
+        <abp-column size-md="_4">
+            <abp-card class="card board-item">
+                <abp-card-header>
+                    <abp-card-title>@L["SelectFiles"] <br /></abp-card-title>
+                </abp-card-header>
+                <abp-card-body>
+                    <abp-row>
+                        <abp-column size-md="_12">
+
+                            <div class="form-group files">
+
+                                <input class="from-control" type="file" id="uploadFile" multiple>
+                            </div>
+                        </abp-column>
+
+                    </abp-row>
+                </abp-card-body>
+            </abp-card>
+        </abp-column>
+        <abp-column size-md="_8">
+            <abp-card class="card board-item">
+                <abp-card-header>
+                    <abp-card-title>@L["DocumentList"] <br /></abp-card-title>
+                </abp-card-header>
+                <abp-card-body>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th width="32%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Name"]</th>
+                                <th width="14%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Date"]</th>
+                                <th width="7%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:FileSize"]</th>
+                                <th width="7%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Type"]</th>
+                                <th width="16%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Action"]</th>
+                                <th width="7%" style="border-left: 0px solid!important;border-right: 0px solid!important;">@L["Display:Creator"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ftbody">
+                        </tbody>
+
+                    </table>
+                </abp-card-body>
+            </abp-card>
+        </abp-column>
+    </abp-row>
+</abp-card-body>
+                </abp-card>
+
+        </abp-column>
+
+    </abp-row>
+
+<div class="modal mymodal" id="ManifestModal" tabindex="-1" role="dialog">
+</div>
+
+    </div>
+</div>
+
+<div class="modal" id="documentPackageModal">
+</div>
+
+<div class="modal" id="MBLDocumentPackageModal">
+</div>

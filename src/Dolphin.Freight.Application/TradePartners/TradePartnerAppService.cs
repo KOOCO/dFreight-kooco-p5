@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Internal.Mappers;
+using Dolphin.Freight.Common;
 using Dolphin.Freight.Settings.Countries;
 using Dolphin.Freight.Settings.Currencies;
 using Dolphin.Freight.TradePartner;
@@ -22,7 +23,7 @@ namespace Dolphin.Freight.TradePartners
             TradePartner,
             TradePartnerDto, // show
             Guid, // primary key
-            PagedAndSortedResultRequestDto, // for paging & sorting
+            QueryDto, // for paging & sorting
             CreateUpdateTradePartnerDto>,
         ITradePartnerAppService
     {
@@ -215,6 +216,7 @@ namespace Dolphin.Freight.TradePartners
         {
             var tradePartnersQueryable = await _tradePartnerRepository.GetQueryableAsync();
             var query = from tradePartner in tradePartnersQueryable
+                        where tradePartner.IsActive==true
                         orderby tradePartner.TPName
                         select tradePartner;
             var tradePartners = await AsyncExecuter.ToListAsync(query);
@@ -250,7 +252,7 @@ namespace Dolphin.Freight.TradePartners
             );
         }
 
-        public override async Task<PagedResultDto<TradePartnerDto>> GetListAsync(PagedAndSortedResultRequestDto input) 
+        public override async Task<PagedResultDto<TradePartnerDto>> GetListAsync(QueryDto input)
         {
             var queryable = await Repository.GetQueryableAsync();
 
@@ -258,6 +260,31 @@ namespace Dolphin.Freight.TradePartners
             var query = from tradePartner in queryable
                         join country in await _countryRepository.GetQueryableAsync() on tradePartner.CountryCode equals country.Id.ToString()
                         select new { tradePartner, country };
+
+            query = query.WhereIf(!string.IsNullOrWhiteSpace(input.Search), x => x.country.CountryName
+                                        .Contains(input.Search) || x.tradePartner.TPCode
+                                .Contains(input.Search) || x.tradePartner.TPName
+                                .Contains(input.Search) || x.tradePartner.TPAliasName
+                                .Contains(input.Search) || x.tradePartner.TPNameLocal
+                                .Contains(input.Search) || x.tradePartner.ScacCode
+                                .Contains(input.Search) || x.tradePartner.IataCode
+                                .Contains(input.Search) || x.tradePartner.TPPrintAddress
+                                .Contains(input.Search))
+                                .WhereIf(input.TpType.HasValue, e => e.tradePartner.TPType == input.TpType)
+                                   .WhereIf(input.TpAccountGroupName.HasValue, e => e.tradePartner.AccountGroupId == input.TpAccountGroupName)
+                                   .WhereIf(input.TpCountryCode.HasValue, e => e.tradePartner.CountryCode == input.TpCountryCode.ToString())
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.Name), x => x.tradePartner.TPName == input.Name)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.Address), x => x.tradePartner.TPLocalAddress == input.Address)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.City), x => x.tradePartner.CityCode == input.Address)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.State), x => x.tradePartner.StateCode == input.State)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.SaleOffice), x => x.tradePartner.SalesOfficeCode == input.SaleOffice)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.SalePerson), x => x.tradePartner.SalesCode == input.SalePerson)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.TaxId), x => x.tradePartner.TaxId == input.TaxId)
+                                   .WhereIf(!string.IsNullOrWhiteSpace(input.Zip), x => x.tradePartner.PostCode == input.Zip)
+                                   .WhereIf(input.Status.HasValue, e => e.tradePartner.IsActive == input.Status)
+                                  
+                                   .WhereIf(input.CreatedDate.HasValue, e => e.tradePartner.CreationTime.Date == input.CreatedDate.Value.Date.AddDays(1));
+
 
             // paging
             query = query

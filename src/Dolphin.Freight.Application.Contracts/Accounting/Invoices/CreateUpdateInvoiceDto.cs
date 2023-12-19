@@ -17,6 +17,10 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// </summary>
         public Guid? HblId { get; set; }
         /// <summary>
+        /// 對應的VesselSchedule
+        /// </summary>
+        public Guid? VesselScheduleId { get; set; }
+        /// <summary>
         /// 對應的ExportBooking
         /// </summary>
         public Guid? BookingId { get; set; }
@@ -43,14 +47,10 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// <summary>
         /// 發布日期
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? PostDate { get; set; }
         /// <summary>
         /// 發票日期
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? InvoiceDate { get; set; }
         /// <summary>
         /// 最後應付日期
@@ -61,8 +61,6 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// <summary>
         /// 到期日期
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? DueDate { get; set; }
         /// <summary>
         /// 發票公司ID
@@ -157,6 +155,10 @@ namespace Dolphin.Freight.Accounting.Invoices
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+
+        public double? TotalBeforeTax { get; set; }
+        public double? TotalTax { get; set; }
+        public double? TotalAmount { get; set; }
     }
 }
 

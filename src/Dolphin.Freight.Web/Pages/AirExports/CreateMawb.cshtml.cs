@@ -17,14 +17,43 @@ using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
 using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
+using Dolphin.Freight.Accounting;
+using Volo.Abp.Data;
+using Dolphin.Freight.Accounting.Invoices;
+using Dolphin.Freight.ImportExport.OceanExports;
+using Dolphin.Freight.Accounting.InvoiceBills;
+using static Dolphin.Freight.Permissions.AccountingPermissions;
+using Dolphin.Freight.ImportExport.Containers;
+using Newtonsoft.Json;
 
 namespace Dolphin.Freight.Web.Pages.AirExports
 {
     public class CreateMawbModel : AbpPageModel
     {
+        [BindProperty(SupportsGet = true)]
+        public Guid Id { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool IsCopyFlightInfo { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string CopyHawb { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool CopyCommodity { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool MawbCopyCommodity { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool AccountingInfo { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool MawbAccountingInfo { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool IsAPCopy { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool IsARCopy { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool IsDCCopy { get; set; }
 
-        public Guid? MawbId { get; set; }
+        public Guid MawbId { get; set; }
         public ILogger<CreateMawbModel> Logger { get; set; }
+       
         private readonly ITradePartnerAppService _tradePartnerAppService;
         private readonly ISubstationAppService _substationAppService;
         private readonly IAirportAppService _airportAppService;
@@ -32,18 +61,42 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         private readonly IAirExportMawbAppService _airExportMawbAppService;
         private readonly IAjaxDropdownAppService ajaxDropdownAppService;
         private readonly IAirExportHawbAppService _airExportHawbAppService;
+        private readonly IInvoiceAppService _invoiceAppService;
+        private readonly IInvoiceBillAppService _invoiceBillAppService;
 
         [BindProperty]
         public CreateMawbViewModel MawbModel { get; set; }
-
+        [BindProperty]
+        public string DimensionsJSON { get; set; }
+        [BindProperty]
+        public List<Commodity> Commodities { get; set; }
+        [BindProperty]
+        public List<Dimension> Dimensions { get; set; }
+        [BindProperty]
+        public List<AccountingInformation> AccountingInformation { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> AirportLookupList { get; set; }
         public List<SelectListItem> WtValOtherList { get; set; }
         public List<SelectListItem> PackageUnitLookupList { get; set; }
+        [BindProperty]
+        public List<MoreInformation> MoreInformations { get; set; }
+        [BindProperty]
+        public MoreInformation MoreInformationPrepaid { get; set; }
+        [BindProperty]
+        public MoreInformation MoreInformationCollect { get; set; }
 
         [BindProperty]
         public AirExportHawbDto AirExportHawbDto { get; set; }
+        [BindProperty]
+        public AirExportMawbDto AirExportMawbDto { get; set; }
+        public IList<InvoiceDto> h0invoiceDtos { get; set; }
+
+       
+        public IList<InvoiceDto> h1invoiceDtos { get; set; }
+
+        
+        public IList<InvoiceDto> h2invoiceDtos { get; set; }
 
 
         public CreateMawbModel(ITradePartnerAppService tradePartnerAppService,
@@ -51,7 +104,9 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             IAirportAppService airportAppService,
             IPackageUnitAppService packageUnitAppService,
             IAirExportMawbAppService airExportMawbAppService,
-            IAirExportHawbAppService airExportHawbAppService
+            IAirExportHawbAppService airExportHawbAppService,
+             IInvoiceAppService invoiceAppService,
+             IInvoiceBillAppService invoiceBillAppService
             )
         {
             Logger = NullLogger<CreateMawbModel>.Instance;
@@ -61,31 +116,76 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             _packageUnitAppService = packageUnitAppService;
             _airExportMawbAppService = airExportMawbAppService;
             _airExportHawbAppService = airExportHawbAppService;
+            _invoiceAppService= invoiceAppService;
+            _invoiceBillAppService= invoiceBillAppService;
         }
-
+        [BindProperty]
+        public List<SelectListItem> EnumList { get; set; }
+        public List<SelectListItem> ChargeItemList { get; set; }
+        Guid CopyId = Guid.Empty;
         public async Task OnGetAsync()
         {
-            MawbModel = new CreateMawbViewModel
+            if (Id != Guid.Empty)
             {
-                // set default value
-                AwbDate = Clock.Now.ClearTime(),
-                ItnNo = "NO EEI 30.37(a)",
-                AwbType = AWBType.Normal,
-                DVCarriage = "NVD",
-                DVCustomer = "NCV",
-                Insurance = "XXX",
-                WtVal = "PPD",
-                Other = "PPD"
-            };
+                AirExportMawbDto = await _airExportMawbAppService.GetAsync(Id);
+                MawbModel =ObjectMapper.Map<AirExportMawbDto,CreateMawbViewModel >(AirExportMawbDto);
+                MawbModel.MawbNo = null;
+                MawbModel.FilingNo = null;
+                if (!IsCopyFlightInfo)
+                {
+                    MawbModel.RouteTrans1Id = null;
+                    MawbModel.RouteTrans1ArrivalDate = null;
+                    MawbModel.RouteTrans1DepatureDate = null;
+                    MawbModel.RouteTrans1FlightNo = null;
+                    MawbModel.RouteTrans1CarrierId = null;
 
-            AirExportHawbDto = new AirExportHawbDto();
+                    MawbModel.RouteTrans2Id = null;
+                    MawbModel.RouteTrans2ArrivalDate = null;
+                    MawbModel.RouteTrans2DepatureDate = null;
+                    MawbModel.RouteTrans2FlightNo = null;
+                    MawbModel.RouteTrans2CarrierId = null;
 
-            await FillTradePartnerAsync();
-            await FillSubstationAsync();
-            await FillAirportAsync();
-            FillWtValOther();                                                                                                                                                                                                                                    
-            await FillPackageUnitAsync();
+                    MawbModel.RouteTrans3Id = null;
+                    MawbModel.RouteTrans3ArrivalDate = null;
+                    MawbModel.RouteTrans3DepatureDate = null;
+                    MawbModel.RouteTrans3FlightNo = null;
+                    MawbModel.RouteTrans3CarrierId = null;
 
+
+                  
+                }
+                if (!MawbCopyCommodity)
+                {
+                    MawbModel.ExtraProperties.Remove("Commodities");
+
+
+                }
+            }
+            else
+            {
+                MawbModel = new CreateMawbViewModel
+                {
+                    // set default value
+                    AwbDate = Clock.Now.ClearTime(),
+                    ItnNo = "NO EEI 30.37(a)",
+                    AwbType = AWBType.Normal,
+                    DVCarriage = "NVD",
+                    DVCustomer = "NCV",
+                    Insurance = "XXX",
+                    WtVal = "PPD",
+                    Other = "PPD"
+                };
+            }
+
+               
+
+                await FillTradePartnerAsync();
+                await FillSubstationAsync();
+                await FillAirportAsync();
+                FillWtValOther();
+                await FillPackageUnitAsync();
+            EnumList = GetIncotermsSelectList();
+            ChargeItemList = GetChargeItemSelectList();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -96,40 +196,471 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             {
                 return Page();
             }
-            
-            MawbModel.FilingNo = SetAirExportFileNo();
-            MawbModel.PostDate = Clock.Now.ClearTime();
-            var inputDto = await _airExportMawbAppService.CreateAsync(
-                   ObjectMapper.Map<CreateMawbViewModel, CreateUpdateAirExportMawbDto>(MawbModel)
-                );
-            MawbId = inputDto.Id;
-
-            if (AirExportHawbDto is not null && !string.IsNullOrEmpty(AirExportHawbDto.HawbNo))
+            if (Id != Guid.Empty)
             {
-                if(AirExportHawbDto.ExtraProperties == null)
+                MawbModel.FilingNo = SetAirExportFileNo();
+                MawbModel.PostDate = Clock.Now.ClearTime();
+                var NewMawab = ObjectMapper.Map<CreateMawbViewModel, CreateUpdateAirExportMawbDto>(MawbModel);
+
+                if (NewMawab.ExtraProperties == null)
                 {
-                    AirExportHawbDto.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                    NewMawab.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                }
+                if (MoreInformationPrepaid != null || MoreInformationCollect != null)
+                {
+                    MoreInformations.Add(MoreInformationPrepaid);
+                    MoreInformations.Add(MoreInformationCollect);
+
+
+                    NewMawab.ExtraProperties.Add("MoreInformation", MoreInformations);
+
+                }
+                if (NewMawab.OtherCharges != null)
+                {
+
+                    NewMawab.ExtraProperties.Add("OtherCharges", NewMawab.OtherCharges);
+
+                }
+                if (Commodities != null)
+                {
+                    NewMawab.ExtraProperties.Add("Commodities", Commodities);
+                }
+                if (AccountingInformation != null)
+                {
+                    NewMawab.ExtraProperties.Add("AccountingInformation", AccountingInformation);
                 }
 
-                if(AirExportHawbDto.Commodities != null)
+                var inputDto = await _airExportMawbAppService.CreateAsync(NewMawab);
+                if (MawbAccountingInfo)
                 {
-                    AirExportHawbDto.ExtraProperties.Add("Commodities", AirExportHawbDto.Commodities);
+                    QueryInvoiceDto q1idto = new QueryInvoiceDto() { QueryType = 0, ParentId = AirExportMawbDto.Id };
+                    var invoiceDtos1 = await _invoiceAppService.QueryInvoicesAsync(q1idto);
+
+                    if (invoiceDtos1 != null && invoiceDtos1.Count > 0)
+                    {
+                        if (IsAPCopy)
+                        {
+                            var invoiceAp = invoiceDtos1.Where(x => x.InvoiceType == 0).ToList();
+                            foreach (var invoice in invoiceAp)
+                            {
+
+                                var newInvoiceAp = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+                                newInvoiceAp.MawbId = inputDto.Id;
+                                newInvoiceAp.Id = Guid.Empty;
+                                var createInvoice = await _invoiceAppService.CreateAsync(newInvoiceAp);
+                                QueryInvoiceBillDto query = new QueryInvoiceBillDto();
+                                query.InvoiceNo = invoice.Id.ToString();
+                                var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(query);
+                                foreach (var bill in invoiceBills)
+                                {
+                                    var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
+                                    newbill.InvoiceId = createInvoice.Id;
+                                    newbill.Id = Guid.Empty;
+                                    await _invoiceBillAppService.CreateAsync(newbill);
+
+
+
+                                }
+
+
+                            }
+
+
+                        }
+                        if (IsDCCopy)
+                        {
+                            var invoiceDc = invoiceDtos1.Where(x => x.InvoiceType == 1).ToList();
+                            foreach (var invoice in invoiceDc)
+                            {
+
+                                var newInvoiceDc = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+                                newInvoiceDc.MawbId = inputDto.Id;
+                                newInvoiceDc.Id = Guid.Empty;
+                                var createInvoice = await _invoiceAppService.CreateAsync(newInvoiceDc);
+                                QueryInvoiceBillDto query = new QueryInvoiceBillDto();
+                                query.InvoiceNo = invoice.Id.ToString();
+                                var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(query);
+                                foreach (var bill in invoiceBills)
+                                {
+                                    var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
+                                    newbill.InvoiceId = createInvoice.Id;
+                                    newbill.Id = Guid.Empty;
+                                    await _invoiceBillAppService.CreateAsync(newbill);
+
+
+
+                                }
+
+                            }
+
+
+                        }
+                        if (IsARCopy)
+                        {
+                            var invoiceAr = invoiceDtos1.Where(x => x.InvoiceType == 2).ToList();
+                            foreach (var invoice in invoiceAr)
+                            {
+
+                                var newInvoiceAr = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+                                newInvoiceAr.MawbId = inputDto.Id;
+                                newInvoiceAr.Id = Guid.Empty;
+                                var createInvoice = await _invoiceAppService.CreateAsync(newInvoiceAr);
+                                QueryInvoiceBillDto query = new QueryInvoiceBillDto();
+                                query.InvoiceNo = invoice.Id.ToString();
+                                var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(query);
+                                foreach (var bill in invoiceBills)
+                                {
+                                    var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
+                                    newbill.InvoiceId = createInvoice.Id;
+                                    newbill.Id = Guid.Empty;
+                                    await _invoiceBillAppService.CreateAsync(newbill);
+
+
+
+                                }
+
+
+                            }
+
+
+                        }
+                    }
+
                 }
 
-                if (AirExportHawbDto.OtherCharges != null)
+
+                MawbId = inputDto.Id;
+                 if (AirExportHawbDto is not null && !string.IsNullOrEmpty(AirExportHawbDto.HawbNo))
+                        {
+
+                            if (AirExportHawbDto.ExtraProperties == null)
+                            {
+                                AirExportHawbDto.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                            }
+                            if (CopyCommodity)
+                            {
+                                if (AirExportHawbDto.Commodities != null)
+                                {
+                                    AirExportHawbDto.ExtraProperties.Add("Commodities", AirExportHawbDto.Commodities);
+                                }
+                            }
+                            if (AirExportHawbDto.OtherCharges != null)
+                            {
+                                AirExportHawbDto.ExtraProperties.Add("OtherCharges", AirExportHawbDto.OtherCharges);
+                            }
+
+
+                            var addHawb = ObjectMapper.Map<AirExportHawbDto, CreateUpdateAirExportHawbDto>(AirExportHawbDto);
+                            addHawb.MawbId = MawbId;
+
+                           var newHbl= await _airExportHawbAppService.CreateAsync(addHawb);
+
+                        if (AccountingInfo)
+                        {
+                            QueryInvoiceDto q1idto = new QueryInvoiceDto() { QueryType = 4, ParentId = AirExportHawbDto.Id };
+                            var invoiceDtos1 = await _invoiceAppService.QueryInvoicesAsync(q1idto);
+                          
+                            if (invoiceDtos1 != null && invoiceDtos1.Count > 0)
+                            {
+                                if (IsAPCopy)
+                                {
+                                    var invoiceAp = invoiceDtos1.Where(x => x.InvoiceType == 0).ToList();
+                                    foreach (var invoice in invoiceAp)
+                                    {
+
+                                        var newInvoiceAp = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+                                        newInvoiceAp.HawbId = newHbl.Id;
+                                        newInvoiceAp.Id = Guid.Empty;
+                                      var createInvoice=  await _invoiceAppService.CreateAsync(newInvoiceAp);
+                                        QueryInvoiceBillDto query = new QueryInvoiceBillDto();
+                                        query.InvoiceNo = invoice.Id.ToString();
+                                       var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(query);
+                                        foreach (var bill in invoiceBills)
+                                        {
+                                            var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
+                                            newbill.InvoiceId = createInvoice.Id;
+                                            newbill.Id = Guid.Empty;
+                                            await _invoiceBillAppService.CreateAsync(newbill);
+
+
+
+                                        }
+
+
+                                    }
+
+
+                                }
+                                if (IsDCCopy)
+                                {
+                                    var invoiceDc = invoiceDtos1.Where(x => x.InvoiceType == 1).ToList();
+                                foreach (var invoice in invoiceDc)
+                                    {
+
+                                        var newInvoiceDc = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+                                        newInvoiceDc.HawbId = newHbl.Id;
+                                        newInvoiceDc.Id = Guid.Empty;
+                                      var createInvoice=  await _invoiceAppService.CreateAsync(newInvoiceDc);
+                                        QueryInvoiceBillDto query = new QueryInvoiceBillDto();
+                                        query.InvoiceNo = invoice.Id.ToString();
+                                        var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(query);
+                                        foreach (var bill in invoiceBills)
+                                        {
+                                            var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
+                                            newbill.InvoiceId = createInvoice.Id;
+                                            newbill.Id = Guid.Empty;
+                                            await _invoiceBillAppService.CreateAsync(newbill);
+
+
+
+                                        }
+
+                                    }
+
+
+                                }
+                                if (IsARCopy)
+                                {
+                                    var invoiceAr = invoiceDtos1.Where(x => x.InvoiceType == 2).ToList();
+                                    foreach (var invoice in invoiceAr)
+                                    {
+
+                                        var newInvoiceAr = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+                                        newInvoiceAr.HawbId = newHbl.Id;
+                                        newInvoiceAr.Id = Guid.Empty;
+                                       var createInvoice= await _invoiceAppService.CreateAsync(newInvoiceAr);
+                                        QueryInvoiceBillDto query = new QueryInvoiceBillDto();
+                                        query.InvoiceNo = invoice.Id.ToString();
+                                        var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(query);
+                                        foreach (var bill in invoiceBills)
+                                        {
+                                            var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
+                                            newbill.InvoiceId = createInvoice.Id;
+                                            newbill.Id = Guid.Empty;
+                                            await _invoiceBillAppService.CreateAsync(newbill);
+
+
+
+                                        }
+
+
+                                    }
+
+
+                                }
+                            }
+
+                        }
+
+                    }
+
+                if (CopyHawb == "AllHAWB")
                 {
-                    AirExportHawbDto.ExtraProperties.Add("OtherCharges", AirExportHawbDto.OtherCharges);
-                }
+                        var hbls = await _airExportHawbAppService.GetHblCardsById(AirExportMawbDto.Id);
+                        var newHbls = hbls.Where(x => x.Id != AirExportHawbDto.Id).ToList();
+                        foreach (var hbl in newHbls)
+                        {
+                            if (hbl is not null && !string.IsNullOrEmpty(hbl.HawbNo))
+                            {
 
-                var addHawb = ObjectMapper.Map<AirExportHawbDto, CreateUpdateAirExportHawbDto>(AirExportHawbDto);
-                addHawb.MawbId = MawbId;
+                                if (hbl.ExtraProperties == null)
+                                {
+                                    hbl.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                                }
+                                if (!CopyCommodity)
+                                {
 
-                await _airExportHawbAppService.CreateAsync(addHawb);
+                                    hbl.ExtraProperties.Remove("Commodities");
+
+                                }
+
+
+
+                                var addHawb = ObjectMapper.Map<AirExportHawbDto, CreateUpdateAirExportHawbDto>(AirExportHawbDto);
+                                addHawb.MawbId = MawbId;
+
+                             var  newHbl= await _airExportHawbAppService.CreateAsync(addHawb);
+                            if (AccountingInfo)
+                            {
+                                QueryInvoiceDto q1idto = new QueryInvoiceDto() { QueryType = 4, ParentId = hbl.Id };
+                                var invoiceDtos1 = await _invoiceAppService.QueryInvoicesAsync(q1idto);
+                               
+                                if (invoiceDtos1 != null && invoiceDtos1.Count > 0)
+                                {
+                                    if (IsAPCopy)
+                                    {
+                                        var invoiceAp = invoiceDtos1.Where(x => x.InvoiceType == 0).ToList();
+                                        foreach (var invoice in invoiceAp)
+                                        {
+
+                                            var newInvoiceAp = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+                                            newInvoiceAp.HawbId = newHbl.Id;
+                                            newInvoiceAp.Id = Guid.Empty;
+                                            var createInvoice = await _invoiceAppService.CreateAsync(newInvoiceAp);
+                                            QueryInvoiceBillDto query = new QueryInvoiceBillDto();
+                                            query.InvoiceNo = invoice.Id.ToString();
+                                            var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(query);
+                                            foreach (var bill in invoiceBills)
+                                            {
+                                                var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
+                                                newbill.InvoiceId = createInvoice.Id;
+                                                newbill.Id = Guid.Empty;
+                                                await _invoiceBillAppService.CreateAsync(newbill);
+
+
+
+                                            }
+
+                                        }
+
+
+                                    }
+                                    if (IsDCCopy)
+                                    {
+                                        var invoiceDc = invoiceDtos1.Where(x => x.InvoiceType == 1).ToList();
+                                        foreach (var invoice in invoiceDc)
+                                        {
+
+                                            var newInvoiceDc = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+                                            newInvoiceDc.HawbId = newHbl.Id;
+                                            newInvoiceDc.Id = Guid.Empty;
+                                            var createInvoice = await _invoiceAppService.CreateAsync(newInvoiceDc);
+                                            QueryInvoiceBillDto query = new QueryInvoiceBillDto();
+                                            query.InvoiceNo = invoice.Id.ToString();
+                                            var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(query);
+                                            foreach (var bill in invoiceBills)
+                                            {
+                                                var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
+                                                newbill.InvoiceId = createInvoice.Id;
+                                                newbill.Id = Guid.Empty;
+                                                await _invoiceBillAppService.CreateAsync(newbill);
+
+
+
+                                            }
+                                        }
+
+
+                                    }
+                                    if (IsARCopy)
+                                    {
+                                        var invoiceAr = invoiceDtos1.Where(x => x.InvoiceType == 2).ToList();
+                                        foreach (var invoice in invoiceAr)
+                                        {
+
+                                            var newInvoiceAr = ObjectMapper.Map<InvoiceDto, CreateUpdateInvoiceDto>(invoice);
+                                            newInvoiceAr.HawbId = newHbl.Id;
+                                            newInvoiceAr.Id = Guid.Empty;
+                                          var createInvoice=  await _invoiceAppService.CreateAsync(newInvoiceAr);
+                                            QueryInvoiceBillDto query = new QueryInvoiceBillDto();
+                                            query.InvoiceNo = invoice.Id.ToString();
+                                            var invoiceBills = await _invoiceBillAppService.QueryInvoiceBillsAsync(query);
+                                            foreach (var bill in invoiceBills)
+                                            {
+                                                var newbill = ObjectMapper.Map<InvoiceBillDto, CreateUpdateInvoiceBillDto>(bill);
+                                                newbill.InvoiceId = createInvoice.Id;
+                                                newbill.Id = Guid.Empty;
+                                                await _invoiceBillAppService.CreateAsync(newbill);
+
+
+
+                                            }
+
+                                        }
+
+
+                                    }
+                                }
+
+                            }
+                        }
+
+                        }
+                    }
+                
             }
+            else
+            {
+                MawbModel.FilingNo = SetAirExportFileNo();
+                MawbModel.PostDate = Clock.Now.ClearTime();
+                var NewMawab = ObjectMapper.Map<CreateMawbViewModel, CreateUpdateAirExportMawbDto>(MawbModel);
 
+                if (NewMawab.ExtraProperties == null)
+                {
+                    NewMawab.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                }
+                if (MoreInformationPrepaid != null || MoreInformationCollect != null)
+                {
+                    MoreInformations.Add(MoreInformationPrepaid);
+                    MoreInformations.Add(MoreInformationCollect);
+
+
+                    NewMawab.ExtraProperties.Add("MoreInformation", MoreInformations);
+
+                }
+                if (NewMawab.OtherCharges != null)
+                {
+
+                    NewMawab.ExtraProperties.Add("OtherCharges", NewMawab.OtherCharges);
+
+                }
+                if (Commodities != null)
+                {
+                    NewMawab.ExtraProperties.Add("Commodities", Commodities);
+                }
+                if (AccountingInformation != null)
+                {
+                    NewMawab.ExtraProperties.Add("AccountingInformation", AccountingInformation);
+                }
+                if (DimensionsJSON is not null)
+                {
+                    Dimensions = JsonConvert.DeserializeObject<List<Dimension>>(DimensionsJSON);
+                    NewMawab.ExtraProperties.Add("Dimensions", Dimensions);
+                }
+
+                try
+                {
+                    var inputDto = await _airExportMawbAppService.CreateAsync(NewMawab);
+                    MawbId = inputDto.Id;
+                }
+                catch (Exception e)
+                {
+
+                    throw;
+                }
+
+                if (AirExportHawbDto is not null && !string.IsNullOrEmpty(AirExportHawbDto.HawbNo))
+                {
+                    if (AirExportHawbDto.ExtraProperties == null)
+                    {
+                        AirExportHawbDto.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                    }
+
+                    if (AirExportHawbDto.Commodities != null)
+                    {
+                        AirExportHawbDto.ExtraProperties.Add("Commodities", AirExportHawbDto.Commodities);
+                    }
+
+                    if (AirExportHawbDto.OtherCharges != null)
+                    {
+                        AirExportHawbDto.ExtraProperties.Add("OtherCharges", AirExportHawbDto.OtherCharges);
+                    }
+
+                    if (AirExportHawbDto.HawbDimensionsJSON is not null)
+                    {
+                        Dimensions = JsonConvert.DeserializeObject<List<Dimension>>(AirExportHawbDto.HawbDimensionsJSON);
+                        AirExportHawbDto.ExtraProperties.Add("Dimensions", Dimensions);
+                    }
+
+                    var addHawb = ObjectMapper.Map<AirExportHawbDto, CreateUpdateAirExportHawbDto>(AirExportHawbDto);
+                    addHawb.MawbId = MawbId;
+
+                    await _airExportHawbAppService.CreateAsync(addHawb);
+                }
+            }
             Dictionary<string, Guid> rs = new()
             {
-                { "id", MawbId.Value }
+                { "id", MawbId}
             };
             return new JsonResult(rs);
 
@@ -201,20 +732,18 @@ namespace Dolphin.Freight.Web.Pages.AirExports
         #region CreateMawbViewModel
         public class CreateMawbViewModel
         {
-            public Guid Id { get; set; }
+            //public Guid Id { get; set; }
             public string FilingNo { get; set; }
             public String MawbCarrierId { get; set; }
             public String IssuingCarrierId { get; set; }
             public AWBType AwbType { get; set; }
 
             public string MawbNo { get; set; }
-            [DataType(DataType.Date)]
             public DateTime AwbDate { get; set; }
             public string ItnNo { get; set; }
             public String ShipperId { get; set; }
             public String ConsigneeId { get; set; }
             public String NotifyId { get; set; }
-            [DataType(DataType.DateTime)]
             public DateTime? PostDate { get; set; }
             [Required]
             public String OfficeId { get; set; }
@@ -226,7 +755,6 @@ namespace Dolphin.Freight.Web.Pages.AirExports
 
             public String DepatureId { get; set; }
             [Required]
-            [DataType(DataType.DateTime)]
             public DateTime? DepatureDate { get; set; }
             public string FlightNo { get; set; }
 
@@ -246,26 +774,30 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             public string ShipperLoad { get; set; }
             public string Sci { get; set; }
 
+
+            public String RouteDepartureId { get; set; }
+            public DateTime? RouteDepartureArrivalDate { get; set; }
+            public DateTime? RouteDepatureDate { get; set; }
+            public string RouteDepartureFlightNo { get; set; }
+            public String RouteDepartureCarrierId { get; set; }
+
+            public String RouteDestinationId { get; set; }
+            public DateTime? RouteDestinationArrivalDate { get; set; }
+
             public String RouteTrans1Id { get; set; }
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans1ArrivalDate { get; set; }
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans1DepatureDate { get; set; }
             public string RouteTrans1FlightNo { get; set; }
             public String RouteTrans1CarrierId { get; set; }
 
             public String RouteTrans2Id { get; set; }
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans2ArrivalDate { get; set; }
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans2DepatureDate { get; set; }
             public string RouteTrans2FlightNo { get; set; }
             public String RouteTrans2CarrierId { get; set; }
 
             public String RouteTrans3Id { get; set; }
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans3ArrivalDate { get; set; }
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans3DepatureDate { get; set; }
             public string RouteTrans3FlightNo { get; set; }
             public String RouteTrans3CarrierId { get; set; }
@@ -295,15 +827,14 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             public double AwbChargeableWeightLb { get; set; }
             public double AwbChargeableWeightAmount { get; set; }
 
-            public IncotermsType IncotermsType { get; set; }
-            public ServiceTermType ServiceTermTypeFrom { get; set; }
+            public IncotermsType? IncotermsType { get; set; }
+            public ServiceTermType? ServiceTermTypeFrom { get; set; }
             [DisplayName("~")]
-            public ServiceTermType ServiceTermTypeTo { get; set; }
-            public DisplayUnitType DisplayUnit { get; set; }
+            public ServiceTermType? ServiceTermTypeTo { get; set; }
+            public DisplayUnitType? DisplayUnit { get; set; }
 
             public bool IsAwbCancelled { get; set; }
            
-            [DataType(DataType.Date)]
             public DateTime? AwbCancelledDate { get; set; }
             [SelectItems(nameof(TradePartnerLookupList))]
             public String AwbCancelledOpId { get; set; }
@@ -311,8 +842,42 @@ namespace Dolphin.Freight.Web.Pages.AirExports
             [SelectItems(nameof(TradePartnerLookupList))]
             public String BusinessReferredId { get; set; }
             public bool IsECom { get; set; }
+            public string PONo { get; set; }
+            public List<OtherCharges> OtherCharges { get; set; }
+            public ExtraPropertyDictionary ExtraProperties { get; set; }
+            public string Mark { get; set; }
+            public string NatureAndQuantityOfGoods { get; set; }
+            public string ManifestNatureAndQuantityOfGoods { get; set; }
+            public string HandlingInformation { get; set; }
         }
         #endregion
+        private List<SelectListItem> GetIncotermsSelectList()
+        {
+            var enumValues = Enum.GetValues(typeof(AccountingInformationCode))
+                                  .Cast<AccountingInformationCode>()
+                                  .Select(e => new SelectListItem
+                                  {
+                                      Text = L["Enum:" + e.ToString()],
+                                      Value = e.ToString(),
 
+                                  })
+                                  .ToList();
+
+            return enumValues;
+        }
+        private List<SelectListItem> GetChargeItemSelectList()
+        {
+            var enumValues = Enum.GetValues(typeof(ChargeItems))
+                                  .Cast<ChargeItems>()
+                                  .Select(e => new SelectListItem
+                                  {
+                                      Text = L["Enum:ItemCharge." + e.ToString()],
+                                      Value = e.ToString(),
+
+                                  })
+                                  .ToList();
+
+            return enumValues;
+        }
     }
 }

@@ -19,6 +19,7 @@ namespace Dolphin.Freight.Settinngs.PackageUnits
     {
         Task<PagedResultDto<PackageUnitDto>> QueryListAsync(QueryDto query);
         Task<ListResultDto<PackageUnitLookupDto>> GetPackageUnitsLookupAsync();
+        Task<bool> IsPackageUnitAlreadyExist(string packageCode, Guid? packageUnitId = null);
 
     }
 }

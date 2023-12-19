@@ -2,12 +2,15 @@ using Dolphin.Freight.AirExports;
 using Dolphin.Freight.AirImports;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.AirImports;
+using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.Settings.Countries;
 using Dolphin.Freight.Settinngs.PackageUnits;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.TradePartners;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +20,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
 using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.Web.Pages.AirImports
 {
@@ -28,6 +32,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         private readonly IPackageUnitAppService _packageUnitAppService;
         private readonly IAirImportMawbAppService _airImportMawbAppService;
         private readonly IAirImportHawbAppService _airImportHawbAppService;
+        private readonly ICountryAppService _countryAppService;
 
         // �Ψӱ���CreateMawb redirect�L�Ӫ���T
         [HiddenInput]
@@ -35,13 +40,19 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public string ShowMsg { get; set; }
-
+        [BindProperty(SupportsGet = true)]
+        public Guid ResultedMawbId { get; set; }
         [BindProperty]
         public CreateAIMMawbViewModel MawbModel { get; set; }
+        [BindProperty]
+        public bool ISToolTipShow { get; set; }
 
         [BindProperty]
-        public AirImportHawbDto HawbModel { get; set; }
-
+        public CreateUpdateAirImportHawbDto HawbModel { get; set; }
+        [BindProperty]
+        public string DimensionsJSON { get; set; }
+        [BindProperty]
+        public List<Dimension> Dimensions { get; set; }
         public List<SelectListItem> TradePartnerLookupList { get; set; }
         public List<SelectListItem> SubstationLookupList { get; set; }
         public List<SelectListItem> AirportLookupList { get; set; }
@@ -52,7 +63,8 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             IAirportAppService airportAppService,
             IPackageUnitAppService packageUnitAppService,
             IAirImportMawbAppService airImportMawbAppService,
-            IAirImportHawbAppService airImportHawbAppService
+            IAirImportHawbAppService airImportHawbAppService,
+             ICountryAppService countryAppService
             )
         {
             _tradePartnerAppService = tradePartnerAppService;
@@ -61,6 +73,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             _packageUnitAppService = packageUnitAppService;
             _airImportMawbAppService = airImportMawbAppService;
             _airImportHawbAppService = airImportHawbAppService;
+            _countryAppService= countryAppService;
         }
 
         #region OnGetAsync()
@@ -71,9 +84,10 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             {
                 return NotFound();
             }
+            ISToolTipShow = await _airImportMawbAppService.GetCardSettings();
             AirImportMawbDto airImportDto = await _airImportMawbAppService.GetAsync(Id);
 
-            HawbModel = new AirImportHawbDto();
+            //HawbModel = new AirImportHawbDto();
 
             //HawbModel = await _airImportHawbAppService.GetHblById(Id);
 
@@ -105,47 +119,56 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         #region OnPostAsync()
         public async Task<IActionResult> OnPostAsync()
         {
-            if (ModelState.IsValid)
+            var updateItem = ObjectMapper.Map<CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>(MawbModel);
+
+            if (DimensionsJSON is not null)
             {
-                await _airImportMawbAppService.UpdateAsync(MawbModel.Id,
-                ObjectMapper.Map<CreateAIMMawbViewModel, CreateUpdateAirImportMawbDto>(MawbModel)
-                );
+                Dimensions = JsonConvert.DeserializeObject<List<Dimension>>(DimensionsJSON);
 
-                if (HawbModel is not null)
+                updateItem.ExtraProperties.Remove("Dimensions");
+                updateItem.ExtraProperties.Add("Dimensions", Dimensions);
+            }
+
+            await _airImportMawbAppService.UpdateAsync(updateItem.Id, updateItem);
+
+            if (HawbModel is not null && HawbModel.Id != MawbModel.Id)
+            {
+                var updateHawb = HawbModel;
+                //var updateHawb1 = ObjectMapper.Map<AirImportHawbDto, CreateUpdateAirImportHawbDto>(HawbModel);
+                if (updateHawb.ExtraProperties == null)
                 {
+                    updateHawb.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
+                }
 
-                    if (HawbModel.ExtraProperties == null)
-                    {
-                        HawbModel.ExtraProperties = new Volo.Abp.Data.ExtraPropertyDictionary();
-                    }
+                if (updateHawb.Commodities != null)
+                {
+                    updateHawb.ExtraProperties.Add("Commodities", updateHawb.Commodities);
+                }
 
-                    if (HawbModel.Commodities != null)
-                    {
-                        HawbModel.ExtraProperties.Add("Commodities", HawbModel.Commodities);
-                    }
+                if (updateHawb.SubHawbs != null)
+                {
+                    updateHawb.ExtraProperties.Add("SubHawbs", updateHawb.SubHawbs);
+                }
 
-                    if (HawbModel.SubHawbs != null)
-                    {
-                        HawbModel.ExtraProperties.Add("SubHawbs", HawbModel.SubHawbs);
-                    }
+                if (updateHawb.HawbDimensionsJSON is not null)
+                {
+                    Dimensions = JsonConvert.DeserializeObject<List<Dimension>>(updateHawb.HawbDimensionsJSON);
 
-                    HawbModel.MawbId = MawbModel.Id;
-                    if (HawbModel.Id != Guid.Empty)
-                    {
-                        await _airImportHawbAppService.UpdateAsync(HawbModel.Id,
-                            ObjectMapper.Map<AirImportHawbDto, CreateUpdateAirImportHawbDto>(HawbModel)
-                            );
-                    }
-                    else
-                    {
-                        await _airImportHawbAppService.CreateAsync(
-                            ObjectMapper.Map<AirImportHawbDto, CreateUpdateAirImportHawbDto>(HawbModel)
-                            );
-                    }
+                    updateHawb.ExtraProperties.Remove("Dimensios");
+                    updateHawb.ExtraProperties.Add("Dimensions", Dimensions);
+                }
+
+                updateHawb.MawbId = updateItem.Id;
+                if (updateHawb.Id != Guid.Empty)
+                {
+                    await _airImportHawbAppService.UpdateAsync(updateHawb.Id, updateHawb);
+                }
+                else
+                {
+                    await _airImportHawbAppService.CreateAsync(updateHawb);
                 }
             }
             return new ObjectResult(new { id = MawbModel.Id });
-
         }
         #endregion
 
@@ -174,9 +197,9 @@ namespace Dolphin.Freight.Web.Pages.AirImports
         #region FillAirportAsync()
         private async Task FillAirportAsync()
         {
-            var airportLookup = await _airportAppService.GetAirportLookupAsync();
+            var airportLookup = await _countryAppService.GetCountryLookupAsync();
             AirportLookupList = airportLookup.Items
-                                                .Select(x => new SelectListItem(x.AirportIataCode + " " + x.AirportName, x.Id.ToString(), false))
+                                                .Select(x => new SelectListItem(x.Code + " " + x.CountryName, x.Id.ToString(), false))
                                                 .ToList();
         }
         #endregion
@@ -219,8 +242,6 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             public String OfficeId { get; set; }
             
             public AWBType AwbType { get; set; }
-            
-            [DataType(DataType.Date)]
             public DateTime? PostDate { get; set; }
             
             [SelectItems(nameof(TradePartnerLookupList))]
@@ -260,19 +281,13 @@ namespace Dolphin.Freight.Web.Pages.AirImports
 
             [SelectItems(nameof(AirportLookupList))]
             public String DepatureId { get; set; }
-
-            [DataType(DataType.DateTime)]
             public DateTime? DepatureDate { get; set; }
             
             public string FlightNo { get; set; }
 
             [SelectItems(nameof(AirportLookupList))]
             public String RouteTrans1Id { get; set; }
-            
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans1ArrivalDate { get; set; }
-            
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans1DepatureDate { get; set; }
             
             public string RouteTrans1FlightNo { get; set; }
@@ -282,11 +297,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
 
             [SelectItems(nameof(AirportLookupList))]
             public String RouteTrans2Id { get; set; }
-            
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans2ArrivalDate { get; set; }
-            
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans2DepatureDate { get; set; }
             
             public string RouteTrans2FlightNo { get; set; }
@@ -296,11 +307,7 @@ namespace Dolphin.Freight.Web.Pages.AirImports
 
             [SelectItems(nameof(AirportLookupList))]
             public String RouteTrans3Id { get; set; }
-
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans3ArrivalDate { get; set; }
-
-            [DataType(DataType.DateTime)]
             public DateTime? RouteTrans3DepatureDate { get; set; }
 
             public string RouteTrans3FlightNo { get; set; }
@@ -322,13 +329,10 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             public String DestinationId { get; set; }
 
             [Required]
-            [DataType(DataType.DateTime)]
             public DateTime? ArrivalDate { get; set; }
 
             [SelectItems(nameof(TradePartnerLookupList))]
             public String FreightLocationId { get; set; }
-            
-            [DataType(DataType.Date)]
             public DateTime? StorageStartDate { get; set; }
             
             public double Package { get; set; }
@@ -351,16 +355,26 @@ namespace Dolphin.Freight.Web.Pages.AirImports
             
             public IncotermsType? IncotermsType { get; set; }
             
-            public ServiceTermType ServiceTermTypeFrom { get; set; }
+            public ServiceTermType? ServiceTermTypeFrom { get; set; }
             
-            public ServiceTermType ServiceTermTypeTo { get; set; }
+            public ServiceTermType? ServiceTermTypeTo { get; set; }
 
             [SelectItems(nameof(TradePartnerLookupList))]
             public String BusinessReferredId { get; set; }
             
             public bool IsECom { get; set; }
-            
-            public DisplayUnitType DisplayUnit { get; set; }
+            public bool IsLocked { get; set; }
+            public ExtraPropertyDictionary ExtraProperties { get; set; }
+            public DisplayUnitType? DisplayUnit { get; set; }
+
+            public Guid? RouteDepartureId { get; set; }
+            public DateTime? RouteDepartureArrivalDate { get; set; }
+            public DateTime? RouteDepatureDate { get; set; }
+            public string RouteDepartureFlightNo { get; set; }
+            public Guid? RouteDepartureCarrierId { get; set; }
+
+            public Guid? RouteDestinationId { get; set; }
+            public DateTime? RouteDestinationArrivalDate { get; set; }
         }
         #endregion
     }

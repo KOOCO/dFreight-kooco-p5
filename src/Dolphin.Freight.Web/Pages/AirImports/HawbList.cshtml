@@ -4,9 +4,14 @@
 @using Dolphin.Freight.Web.Pages.AwbNoRanges
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
+@using Dolphin.Freight.AirExports
+@using Dolphin.Freight.Web.Pages.Components
+
+@using Dolphin.Freight.Web.CommonService
 @model Dolphin.Freight.Web.Pages.AirImports.HawbListModel
 @inject IStringLocalizer<FreightResource> L
 @inject IAuthorizationService AuthorizationService
+@inject IDropdownService _dropdown;
 @section scripts{
     <abp-script src="/Pages/AirImports/HawbList.js" />
 }
@@ -21,15 +26,144 @@
 <div class="page-content-area">
     <abp-card>
         <abp-card-header>
-            <div class="title">
+           <abp-row class="w-100">
+                <abp-column size-md="_6">
                 @L["Menu:AirImports.HawbList"]
-            </div>
+            </abp-column>
+               <abp-column size-md="_6" class="text-end p-0">
+                     <abp-button id="FilterGlCodeButton"
+                            text="@L["Filter"].Value"
+                            icon="filter"
+                            button-type="Primary"
+                            data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
+                    <abp-button id="btnConfiguration"
+                                text="@L["Configuration"].Value"
+                                icon="gear"
+                                button-type="Primary" />
+                
+                </abp-column>
+                </abp-row>
         </abp-card-header>
+         <abp-card-body class="collapse hide" id="mblDiv">
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["Keyword"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" id="Keyword" />
+                </abp-column>
+                
+                 <abp-column size-md="_1">
+                    <label>@L["Consignee"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ConsigneeId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "ConsigneeId", SelectType = 2,ShowFiledContentValue=null})
+                </abp-column>
+               
+                  <abp-column size-md="_1">
+                    <label>@L["Carrier"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                  @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.CarrierId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "CarrierId", SelectType = 0,  })
+            </abp-column>
+                 <abp-column size-md="_1">
+                    <label>@L["FlightNo"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="text" class="form-control" id="FlightNo" />
+                </abp-column>
+            </abp-row>
+         <abp-row class="mb-3">
+                  <abp-column size-md="_1">
+                    <label>@L["Shipper"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.ShipperId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "ShipperId", SelectType = 2,ShowFiledContentValue=null })
+                </abp-column>
+               <abp-column size-md="_1">
+                    <label>@L["Customer"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.CustomerId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "CustomerId", SelectType = 2,ShowFiledContentValue=null})
+                </abp-column>
+                   <abp-column size-md="_1">
+                    <label>@L["Notify"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                  @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.NotifyId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "NotifyId", SelectType = 0,  })
+            </abp-column>
+                   <abp-column size-md="_1">
+                    <label>@L["Sales"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                  @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.SaleId", AspItems = Model.TradePartnerLookupList, IsShowLabel = false, FieldName = "SaleId", })
+           </abp-column>
+               
+            </abp-row>
+           
+          
+               
+              
+            
+          
+                  <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["PostDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" type="date" id="PostDate" />
+                </abp-column>
+               
+           <abp-column size-md="_1">
+                    <label>@L["CreationDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+              <input type="date" id="CreationDate" class="form-control" />
+                
+                </abp-column>
+             <abp-column size-md="_1">
+                    <label>@L["FreightLocationId"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                 @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "VesselSchedule.FreightLocationId", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = false, FieldName = "FreightLocationId", SelectType = 0, ShowFiledContentValue = null })
+                     </abp-column>  
+              
+            </abp-row>
+
+             
+              
+         
+            <abp-row>
+                <abp-abp-column class="text-center">
+               
+                    <abp-button type="button" id="CancelFilter" text="@L["Cancel"]" button-type="Danger" />
+
+                    <abp-button type="button" id="Search" text="@L["Search"]" button-type="Primary" />
+               
+                </abp-abp-column>
+            </abp-row>
+            </abp-card-body>
         <abp-card-body>
-            <abp-table striped-rows="true" id="HawbListTable"></abp-table>
+         
+              <abp-button type="button" id="btnAirExportHawbListProfit" onclick="getHwabProfitReport()" class="btn btn-outline-secondary" disabled="true">
+                <span uib-tooltip="">
+                    <i class="fa fa-file-text-o"></i><font style="vertical-align: inherit;">
+                        <font style="">
+                            Profit Report
+                        </font>
+                    </font>
+                </span>
+            </abp-button>
+            <abp-table class="nowrap" striped-rows="true" id="HawbListTable"></abp-table>
         </abp-card-body>
     </abp-card>
 </div>
+<style>
+    .filterDiv div {
+        display: flex;
+        padding: 0 !important;
+    }
+</style>
 
 
 

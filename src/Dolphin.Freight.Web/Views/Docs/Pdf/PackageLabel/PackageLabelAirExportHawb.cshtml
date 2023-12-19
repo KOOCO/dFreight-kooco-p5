@@ -1,0 +1,206 @@
+﻿@using Dolphin.Freight.Localization
+@using Dolphin.Freight.Permissions
+@using Dolphin.Freight.Web.Pages.Reports
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@model Dolphin.Freight.Web.ViewModels.PackageLabel.PackageLabelAirExportHawbIndexViewModel
+@inject IStringLocalizer<FreightResource> L
+@inject IAuthorizationService AuthorizationService
+@{
+    Layout = null;
+}
+@if (!string.IsNullOrEmpty(Model.BaseUrl))
+{
+    <base href="@Model.BaseUrl">
+}
+<style>
+    .btn {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 12px 16px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: gray;
+        }
+
+        .container{
+           display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+        }
+        ​
+        .item-right, .item-center, .item-left{
+         flex:1;
+        }  
+
+    .w-10, .w-20, .w-100, .text-right, .text-center, .auto-font-size, textarea {
+        font-size:10px;
+    }
+</style>
+<link href="/Pages/Reports/Reports.css" rel="stylesheet">
+
+   <div style="background-color:black;display: flex;justify-content:center;">
+      <div style="width:900px;background-color:white;" id="form" name = "form" class="edit">
+
+         <div class="wrap label-size _padding-0">
+                <div class="item-edit topbar">
+                    <div class="topbar-block">
+                        Data Source :
+                        <select class="select w-160px" onchange="loadDataSource(this)">
+                            <option selected="selected" value="loadInitial">Shipment</option>
+                            <option value="loadDraft">Last Modified</option>
+                            <option value="loadEmptyFromDraft">Load empty fields from last modified</option>
+                    
+                        </select>
+
+                        <script>
+                    function loadDataSource(sel) {
+                        function genUrl(url, params) {
+                          const pString = Array.from(Object.entries(params)).map(([k, v]) => `${k}=${v}`).join('&');
+                          return `${url}?${pString}`;
+                        }
+
+                        const basicParam = {};
+
+                        Array.from(new URL(window.location.href).searchParams.entries()).forEach(params => {
+                          if (params[0] !== 'action' && params[0] !== 'form_source') {
+                            basicParam[params[0]] = params[1]
+                          }
+                        });
+
+                        const last_modified_form_layout = '';
+
+                        if (sel.value === 'loadInitial') {
+                            window.location.href = genUrl('/reports/air/hbl/package-label/47123/', basicParam);
+                        }
+                        else if (sel.value === 'loadDraft') {
+
+                          const params = {
+                            ...basicParam,
+                            action: 'edit',
+                            form_source: 'draft',
+                          };
+
+                          if (last_modified_form_layout) {
+                            params['form_layout'] = last_modified_form_layout
+                          }
+
+                          window.location.href = genUrl('/reports/air/hbl/package-label/47123/', params);
+                        }
+                        else if (sel.value === 'loadEmptyFromDraft') {
+
+                          const params = {
+                            ...basicParam,
+                            action: 'edit',
+                            form_source: 'empty-from-draft',
+                          };
+
+                          if (last_modified_form_layout) {
+                            params['form_layout'] = last_modified_form_layout
+                          }
+
+                          window.location.href = genUrl('/reports/air/hbl/package-label/47123/', params);
+                        }
+                
+                        else {
+                          throw Error('unknown dataSource value')
+                        }
+                    }
+                </script>
+                    </div>
+                </div>
+                    <div class="header ae-package-label _padding-0 ">
+                        <table>
+                            <tbody><tr class="border-b">
+                                <td class="col-padding text-center padding-t-sm airline-name" colspan="2">
+                                    <div class="auto-font-size __col-airline-name _text-35 text-bold lineheight-nor">
+                                        @Model.Delivery_To 
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="barcode text-center" colspan="2">
+                            
+                                        <div class="item-edit">
+                                            <img src="//fms-static.gofreight.cn/2023-07-11-b4d34b3647/static/freight/img/form/barcode_sample.svg">
+                                            <div class="margin-t-0 text-16">
+                                                <strong ng-bind="vm.getBarcodeText()" class="ng-binding">6953367933200333</strong>
+                                            </div>
+                                        </div>
+                            
+                                </td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="general-height" colspan="2">
+                                    <div class="title">AIR WAYBILL NO</div>
+                                    <div class="data">
+                                        <h1>@Model.Air_way_bill_no</h1>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-b general-height">
+                                <td class="border-r">
+                                    <div class="title">DESTINATION</div>
+                                    <div class="data">
+                                        <h1 class="auto-font-size __width-sm">@Model.Destination</h1>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="title">TOTAL NO OF PIECES</div>
+                                    <div class="data">
+                                        <h1>@Model.Total_no_of_pieces</h1>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+
+                        <table>
+                            <colgroup>
+                                <col class="w-70">
+                                <col class="w-30">
+                            </colgroup>
+                            <tbody><tr class="border-b">
+                                <td class="border-r">
+                                    <div class="title">NAME OF FORWARDER</div>
+                                    <div class="data">
+                                        <h2 class="lineheight-nor auto-font-size __col-forwarder-s">@Model.Number_of_forwarder</h2>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="title">ORIGIN</div>
+                                    <div class="data">
+                                        <h2 class="auto-font-size __width-xs">@Model.Origin</h2>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="border-r">
+                                    <div class="title">HAWB NO.</div>
+                                    <div class="data">
+                                        <h2 class="auto-font-size __col-hbl">@Model.HawbNo</h2>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="title">HAWB PC.</div>
+                                    <div class="data text-center">
+                                        <h2>@Model.Hawb_Pc</h2>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-t">
+                                <td colspan="2">
+                                    <div class="item-pdf __width-lg auto-font-size margin-l-xs">
+                                        <span>&nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </div>
+        
+            </div>
+      </div>
+   </div>

@@ -1,9 +1,13 @@
-﻿using System;
+﻿using Dolphin.Freight.AirImports;
+using Dolphin.Freight.OceanImports;
+using MathNet.Numerics.RootFinding;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 using Volo.Abp.Users;
 
 namespace Dolphin.Freight.ImportExport.OceanImports
@@ -13,8 +17,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// HB/L號碼
         /// </summary>
-
+        public string ExtraPropJSON { get; set; }
         public Guid? MblId { get; set; }
+        public Guid? ContainerId { get; set; }
         /// <summary>
         /// HB/L號碼
         /// </summary>
@@ -92,6 +97,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 是否子代理提單
         /// </summary>
         public bool IsSubAgentBl { get; set; }
+        public string SubBlNo { get; set; }
         /// <summary>
         /// 收穫方代理ID
         /// </summary>
@@ -103,8 +109,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 收貨地(POR) ETD
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? PorEtd { get; set; }
         /// <summary>
         /// 卸貨港(POD)ID
@@ -113,8 +117,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 卸貨港(POD) ETA
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? PodEta { get; set; }
         /// <summary>
         /// 交貨地(DEL)ID
@@ -123,8 +125,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 交貨地(DEL) ETA
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? DelEta { get; set; }
         /// <summary>
         /// 最終目的地ID
@@ -133,14 +133,12 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 最終目的地ETA
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? FdestEta { get; set; }
         /// <summary>
         /// FBA倉庫ID
         /// </summary>
         public Guid? FbaFcId { get; set; }
-
+       
         /// <summary>
         /// 提空櫃地點ID
         /// </summary>
@@ -152,8 +150,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 貨物就緒日期
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? CargoArrivalDate { get; set; }
         /// <summary>
         /// 卡車收貨地ID
@@ -198,17 +194,18 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 倉儲結關日
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime? HblWhCutOffTime { get; set; }
         /// <summary>
         /// 最早收櫃日
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime? EarlyReturnDateTime { get; set; }
         /// <summary>
         /// 信用狀編號
         /// </summary>
         public string LcNo { get; set; }
+        public int? PackageNo { get; set; }
+        public double? PackageWeight { get; set; }
+        public double? PackageMeasurement { get; set; }
         /// <summary>
         /// 信用狀開立銀行
         /// </summary>
@@ -216,12 +213,10 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 信用狀開立日期
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime? LcIssueDate { get; set; }
         /// <summary>
         /// 裝船日期
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime? OnBoardDate { get; set; }
         /// <summary>
         /// 是否可堆積
@@ -246,7 +241,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 放貨日期
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime? HblReleaseDate { get; set; }
         /// <summary>
         /// 放貨人ID
@@ -259,7 +253,6 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 取消日期
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime? CanceledDate { get; set; }
         /// <summary>
         /// 取消者ID
@@ -280,7 +273,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 運輸類別ID
         /// </summary>
-        public Guid? ShipTypeId { get; set; }
+        public ShipType? ShipTypeId { get; set; }
         /// <summary>
         /// 國貿條規ID
         /// </summary>
@@ -304,7 +297,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 目的地鐵路ID
         /// </summary>
-        public Guid? RailwayCodeId { get; set; }
+        public RailCode? RailwayCodeId { get; set; }
         /// <summary>
         /// 預計最終交付時間
         /// </summary>
@@ -346,6 +339,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 國內行程 / 出口指示
         /// </summary>
         public string DomesticInstructions { get; set; }
+        public string DomesticInstructionsDelOrder { get; set; }
         /// <summary>
         /// S/O備註
         /// </summary>
@@ -365,16 +359,59 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 0：集裝箱總數，1：手動輸入總數
         /// </summary>
-        public int SurplusType { get; set; }
+        public int? SurplusType { get; set; }
         public string PoNo { get; set; }
         /// <summary>
         /// 是否鎖定
         /// </summary>
         public bool IsLocked { get; set; }
         public bool IsCreateBySystem { get; set; }
+       
+        public string AmsNo { get; set; }
+        /// <summary>
+        /// ISF號碼
+        /// </summary>
+        public string IsfNo { get; set; }
+        /// <summary>
+        /// 由第三方申報ISF
+        /// </summary>
+        public bool IsfByThirdParty { get; set; }
+        public bool DoorMove { get; set; }
+        public bool CClearance { get; set; }
+        public bool CHold { get; set; }
+        public bool IsOblReceived { get; set; }
+        public bool Ror { get; set; }
+       
+        public DateTime? IsfMatchDate { get; set; }
+        public DateTime? Lfd { get; set; }
+        public DateTime? OblReceivedDate { get; set; }
+        public DateTime? ItDate { get; set; }
+        public DateTime? GoDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
+        public DateTime? CReleasedDate  { get; set; }
+        public DateTime? EntryDocSent  { get; set; }
+        public DateTime? AnDate { get; set; }
+        public DateTime? DoDate { get; set; }
+        public ItIssuedLocation? ItIssuedLocation { get; set; }
+        public FreightType? Freight { get; set; }
+        public string ItNo { get; set; }
+        public string EntryNo { get; set; }
+        public string ScNo { get; set; }
+        public string NameAccount { get; set; }
+        public string GroupComm { get; set; }
+        public string LineCode { get; set; }
+        public bool CustomDoc { get; set; }
+        public DateTime? Available { get; set; }
+        public int GetHideCheck()
+        {
+            return (SubBlNo == null &&  IsEcommerce) ? 1 : 1;
+        }
+
         /// <summary>
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+       
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

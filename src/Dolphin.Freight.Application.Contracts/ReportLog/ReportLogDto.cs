@@ -117,6 +117,89 @@ namespace Dolphin.Freight.ReportLog
         public bool IsCoLoader { get; set; }
         public bool IsBlType { get; set; }
         public bool IsLatestGateIn { get; set; }
+        public string CargoType { get; set; }
+        public string SalesPerson { get; set; } // Sales Person but don't get table 
+        public DateTime BLPostDate { get; set; } //  Mawb post date
+        public bool IsNA { get; set; }
+        public bool IsCOLoad { get; set; }
+        public bool IsFreeCargo { get; set; }
+        public bool IsNomi { get; set; }
+        public bool IsCargoType { get; set; }
+        public bool IsSalesPerson { get; set; }
+        public bool IsBLPostDate { get; set; }
+        public string[] FreightCode { get; set; }
+        public decimal? MinProfit { get; set; }
+        public decimal? MaxProfit { get; set; }
+        public string Profit { get; set; }
+        public Guid? ShipModeId { get; set; }
+        public bool IsOceanImport { get; set; }
+        public bool IsOceanExport { get; set; }
+        public bool IsAirImport { get; set; }
+        public bool IsAirExport { get; set; }
+        public bool IsTruck { get; set; }
+        public bool IsMisc { get; set; }
+        public bool IsWarehouse { get; set; }
+        public bool IsVolumeDetail { get; set; }
+        public bool IsProfitDetail { get; set; }
+        public bool IsContainerDetail { get; set; }
+        public bool IsVolByCntrAndSalesType { get; set; }
+        public int V20 { get; set; }
+        public int V40 { get; set; }
+        public int HC { get; set; }
+        public int V45 { get; set; }
+        public int RF { get; set; }
+        public int SOC { get; set; }
+        public int ETC { get; set; }
+        public double ARTotal { get; set; }
+        public double APTotal { get; set; }
+        public double DCTotal { get; set; }
+        public double ProfitMargin { get; set; }
+        public double ProfitAmt { get; set; }
+        public double Avg_Profit_Per_Cntr { get; set; }
+        public double GrossWeightKG { get; set; }
+        public double GrossWeightLB { get; set; }
+        public double ChargeableWeightKG { get; set; }
+        public double ChargeableWeightLB { get; set; }
+        public double FCL { get; set; }
+        public double LCL { get; set; }
+        public double CoLoaded { get; set; }
+        public double Bulk { get; set; }
+        public double HblFCL { get; set; }
+        public double HblLCL { get; set; }
+        public double HblCoLoaded { get; set; }
+        public double HblBulk { get; set; }
+
+        public double SaleFree { get; set; }
+        public double SaleNomi { get; set; }
+        public double SaleCo { get; set; }
+
+
+        public double SaleETC { get; set; }
+        public double HblFree { get; set; }
+        public double HblNomi { get; set; }
+        public double HblCo { get; set; }
+
+
+        public double HblETC { get; set; }
+
+        public int HblV20 { get; set; }
+        public int HblV40 { get; set; }
+        public int HblHC { get; set; }
+        public int HblV45 { get; set; }
+        public int HblRF { get; set; }
+        public int HblSOC { get; set; }
+
+        public int HblCntETC { get; set; }
+
+        public double NomiProfit { get; set; }
+        public double FreeProfit { get; set; }
+        public double CoProfit { get; set; }
+        public double ETCProfit { get; set; }
+        public double HblNomiProfit { get; set; }
+        public double HblFreeProfit { get; set; }
+        public double HblCoProfit { get; set; }
+        public double HblETCProfit { get; set; }
     }
+
 }
 

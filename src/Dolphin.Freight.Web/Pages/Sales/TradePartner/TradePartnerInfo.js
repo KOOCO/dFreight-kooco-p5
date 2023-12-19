@@ -335,9 +335,6 @@
                         ]
                     },
                     data: 'id',
-                    render: function (data, type, row) {
-                        return '';
-                    },
                     targets: 0,
                     orderable: false,
                 },
@@ -408,6 +405,23 @@
                 },
             ],
         });
+
+        //var editor = new $.fn.dataTable.altEditor({
+        //    table: '#' + tradePartyDataTable[partyType].table().container().id,
+        //    fields: [
+        //        { label: 'Name:', name: 'name' },
+        //        { label: 'Age:', name: 'age' }
+        //    ]
+        //});
+
+        //new $.fn.dataTable.Buttons(tradePartyDataTable[partyType], {
+        //    buttons: [
+        //        { extend: 'edit', editor: editor },
+        //        { extend: 'remove', editor: editor }
+        //    ]
+        //});
+        //tradePartyDataTable[partyType].buttons(1, null).container().prependTo(tradePartyDataTable[partyType].table());
+
     });
 
     $(document).on('click', '.trade-party-default-checkbox', function (e) {
@@ -436,45 +450,57 @@
         return false;
     });
 
-    $(document).on('click', '.add-trade-party', function (e) {
-        const self = $(this);
-        const tradePartyType = self.data('party-type');
-        if (tradePartnerId !== '00000000-0000-0000-0000-000000000000') {
-            createTradePartyModal[tradePartyType].open({
-                tradePartnerId,
-                tradePartyType,
-            });
-            return;
-        }
+    //$(document).on('click', '.add-trade-party', function (e) {
+    //    const self = $(this);
+    //    const tradePartyType = self.data('party-type');
 
-        const tpNameInput = $('#tpNameInput').val();
-        if ((tpNameInput == null) || (tpNameInput === '')) {
-            abp.message.warn(l('Display:TradeParty:WarnMsg'));
-            return;
-        }
+    //    var table = $('table[data-type="' + tradePartyType + '"]').DataTable();
+    //    var testRow = { id: '00000000-0000-0000-0000-000000000000', 'tradePartyDescription': '', 'companyName': '', 'address': '', 'row.contactPersonId': '', 'contact': '', 'tel': '', 'fax': '', 'email': '', isHideAction: true };
+    //    table.row.add(testRow);
+    //    table.draw();
 
-        dolphin.freight.tradePartners.tradePartner.findByTpName(tpNameInput).then((result) => {
-            if (result == null) {
-                abp.message.warn(l('Display:TradeParty:WarnMsg'));
-                return;
-            }
+    //    if (tradePartnerId !== '00000000-0000-0000-0000-000000000000') {
+    //        createTradePartyModal[tradePartyType].open({
+    //            tradePartnerId,
+    //            tradePartyType,
+    //        });
+    //        return;
+    //    }
 
-            tradePartnerId = result.id;
+    //    const tpNameInput = $('#tpNameInput').val();
+    //    if ((tpNameInput == null) || (tpNameInput === '')) {
+    //        abp.message.warn(l('Display:TradeParty:WarnMsg'));
+    //        return;
+    //    }
 
-            createTradePartyModal[tradePartyType].open({
-                tradePartnerId,
-                tradePartyType,
-            });
-        });
-    });
+    //    dolphin.freight.tradePartners.tradePartner.findByTpName(tpNameInput).then((result) => {
+    //        if (result == null) {
+    //            abp.message.warn(l('Display:TradeParty:WarnMsg'));
+    //            return;
+    //        }
+
+    //        tradePartnerId = result.id;
+
+    //        createTradePartyModal[tradePartyType].open({
+    //            tradePartnerId,
+    //            tradePartyType,
+    //        });
+    //    });
+    //});
     /* ==================== TradeParty End ==================== */
 
     $('#TPForm').on('abp-ajax-success', function () {
         event.preventDefault();
+        var tpName = $('#tpNameInput').val();
         $('#nav-accounting-tab').removeClass("disabled");
         $('#nav-doc-tab').removeClass("disabled");
         $('#nav-status-tab').removeClass("disabled");
-        abp.message.success('Successfully saved.');
+        abp.message.success('Successfully saved.').then(function () {
+            dolphin.freight.tradePartners.tradePartner.findByTpName(tpName).then(function (res) {
+                var tpId = res.id;
+                window.location.pathname = '/Sales/TradePartner/EditTradePartnerInfo/' + tpId;
+            });
+        });
     });
 
     var createModal = new abp.ModalManager({
@@ -483,29 +509,6 @@
 
    /* var newTPId;*/
 
-    $('#AddContactPersonButton').click(function (e) {
-        var tpNameInput = $('#tpNameInput').val();
-        console.log("tpNameInput:" + tpNameInput);
-        if ((tpNameInput == null) || (tpNameInput == "")) {
-            abp.message.warn(l('Display:ContactPerson:WarnMsg'));
-        } else {
-            dolphin.freight.tradePartners.tradePartner.findByTpName(tpNameInput)
-                .then(function (result) {
-                    if (result == null) {
-                        abp.message.warn(l('Display:ContactPerson:WarnMsg'));
-                    } else {
-                        console.log("result:" + result.id);
-                        newTPId = result.id;
-                        console.log("newTPId:" + newTPId);
-                        e.preventDefault();
-                        createModal.open({
-                            tradePartnerId: result.id
-                        });
-                    }
-                    
-                });
-        }
-    });
 
     createModal.onResult(function () {
         console.log('open the ModalWithCreateCreditLimitGroup');

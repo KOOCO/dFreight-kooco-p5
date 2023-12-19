@@ -17,6 +17,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
 
         /// </summary>
         public Guid? MawbId { get; set; }
+        public string HawbDimensionsJSON { get; set; }
         /// <summary>
         /// Mawb Entity
         /// </summary>
@@ -62,7 +63,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public virtual UserData OP { get; set; }
 
         public Guid? ConsigneeId { get; set; }
-
+        public string ConsigneeName { get; set; }
         public string FreightLocation { get; set; }
         public string FinalDestination { get; set; }
         public DateTime? FinalETA { get; set; }
@@ -85,6 +86,8 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public DateTime? ITDate { get; set; }
         public string ITIssuedLocation { get; set; }
         public DateTime? FrtRelease { get; set; }
+        public DateTime? DepatureDate { get; set; }
+        public DateTime? ArrivalDate { get; set; }
         public string ReleasedBy { get; set; }
         public string CargoReleasedto { get; set; }
         public DateTime? CReleasedDate { get; set; }
@@ -103,8 +106,21 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string CustomsBroker { get; set; }
         public List<Commodity> Commodities { get; set; }
         public List<SubHawbs> SubHawbs { get; set; }
-
-
+        public bool IsLocked { get; set; }
+        public string SalesName { get; set; }
+        public string DocNo { get; set; }
+        public string DestinationName { get; set; }
+        public string ShipperName { get; set; }
+        public string OfficeName { get; set; }
+        public string MawbNo { get; set; }
+        public string FreightLocationName { get; set; }
+        public string DeliveryLocationName { get; set; }
+        public string DepatureName { get; set; }
+        public string OperatorName { get; set; }
+        public string ARBalance { get; set; }
+        public string APBalance { get; set; }
+        public string DCBalance { get; set; }
+        public string Measurement { get; set; }
         /// <summary>
         /// 是否刪除
         /// </summary>

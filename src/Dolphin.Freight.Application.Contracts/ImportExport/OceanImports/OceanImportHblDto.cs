@@ -1,9 +1,13 @@
-﻿using System;
+﻿using Dolphin.Freight.AirImports;
+using Dolphin.Freight.ImportExport.Containers;
+using Dolphin.Freight.OceanImports;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 using Volo.Abp.Users;
 
 namespace Dolphin.Freight.ImportExport.OceanImports
@@ -18,6 +22,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// MBL的文件號碼
         /// </summary>
         public string FilingNo { get; set; }
+        public string Voyage { get; set; }
+        public string VesselName { get; set; }
+        public string ShippingCompany { get; set; }
         /// <summary>
         /// MBL的MBL 編號
         /// </summary>
@@ -30,6 +37,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// MBL的OB/L類別
         /// </summary>
         public string OblTypeName { get; set; }
+        public string SvcTermFromName { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -68,6 +76,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public Guid? HblShipperId { get; set; }
         public string HblShipperName { get; set; }
+        public bool isMblHblHaveContainer { get; set; }
         /// <summary>
         /// 客戶ID
         /// </summary>
@@ -82,6 +91,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public Guid? HblConsigneeId { get; set; }
         public string HblConsigneeName { get; set; }
+        public string DeliveryLocation { get; set; }
         /// <summary>
         /// 通知方ID
         /// </summary>
@@ -99,6 +109,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// </summary>
         public Guid? AgentId { get; set; }
         public string AgentName { get; set; }
+     
+        public string AmsNo { get; set; }
+        public string TruckerName { get; set; }
+        public string HblNotifyName { get; set; }
+        public string CyCfsLocationName { get; set; }
         /// <summary>
         /// 業務員ID
         /// </summary>
@@ -137,7 +152,9 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 收貨地(POR) ETD
         /// </summary>
-        public DateTime PorEtd { get; set; }
+        public DateTime? PorEtd { get; set; }
+        public DateTime? ATA { get; set; }
+        public DateTime? ATD { get; set; }
         /// <summary>
         /// 裝貨港(POL)ID
         /// </summary>
@@ -155,7 +172,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 卸貨港(POD) ETA
         /// </summary>
-        public DateTime PodEta { get; set; }
+        public DateTime? PodEta { get; set; }
         /// <summary>
         /// 交貨地(DEL)ID
         /// </summary>
@@ -164,7 +181,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 交貨地(DEL) ETA
         /// </summary>
-        public DateTime DelEta { get; set; }
+        public DateTime? DelEta { get; set; }
         /// <summary>
         /// 最終目的地ID
         /// </summary>
@@ -173,7 +190,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 最終目的地ETA
         /// </summary>
-        public DateTime FdestEta { get; set; }
+        public DateTime? FdestEta { get; set; }
         /// <summary>
         /// FBA倉庫ID
         /// </summary>
@@ -190,7 +207,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 貨物就緒日期
         /// </summary>
-        public DateTime CargoArrivalDate { get; set; }
+        public DateTime? CargoArrivalDate { get; set; }
         /// <summary>
         /// 卡車收貨地ID
         /// </summary>
@@ -234,11 +251,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 倉儲結關日
         /// </summary>
-        public DateTime HblWhCutOffTime { get; set; }
+        public DateTime? HblWhCutOffTime { get; set; }
         /// <summary>
         /// 最早收櫃日
         /// </summary>
-        public DateTime EarlyReturnDatetime { get; set; }
+        public DateTime? EarlyReturnDatetime { get; set; }
         /// <summary>
         /// 信用狀編號
         /// </summary>
@@ -250,11 +267,11 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 信用狀開立日期
         /// </summary>
-        public DateTime LcIssueDate { get; set; }
+        public DateTime? LcIssueDate { get; set; }
         /// <summary>
         /// 裝船日期
         /// </summary>
-        public DateTime OnBoardDate { get; set; }
+        public DateTime? OnBoardDate { get; set; }
         /// <summary>
         /// 是否可堆積
         /// </summary>
@@ -278,7 +295,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 放貨日期
         /// </summary>
-        public DateTime HblReleaseDate { get; set; }
+        public DateTime? HblReleaseDate { get; set; }
         /// <summary>
         /// 放貨人ID
         /// </summary>
@@ -290,7 +307,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 取消日期
         /// </summary>
-        public DateTime CanceledDate { get; set; }
+        public DateTime? CanceledDate { get; set; }
         /// <summary>
         /// 取消者ID
         /// </summary>
@@ -310,7 +327,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 運輸類別ID
         /// </summary>
-        public Guid? ShipTypeId { get; set; }
+        public ShipType? ShipTypeId { get; set; }
         /// <summary>
         /// 國貿條規ID
         /// </summary>
@@ -334,23 +351,23 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// <summary>
         /// 目的地鐵路ID
         /// </summary>
-        public Guid? RailwayCodeId { get; set; }
+        public RailCode? RailwayCodeId { get; set; }
         /// <summary>
         /// 預計最終交付時間
         /// </summary>
-        public DateTime DoorDeliveryETA { get; set; }
+        public DateTime? DoorDeliveryETA { get; set; }
         /// <summary>
         /// 實際最終交付時間
         /// </summary>
-        public DateTime DoorDeliveryATA { get; set; }
+        public DateTime? DoorDeliveryATA { get; set; }
         /// <summary>
         /// 出口報關時間
         /// </summary>
-        public DateTime CustomClearance { get; set; }
+        public DateTime? CustomClearance { get; set; }
         /// <summary>
         /// 進口清關時間
         /// </summary>
-        public DateTime CustomDeclaration { get; set; }
+        public DateTime? CustomDeclaration { get; set; }
         /// <summary>
         /// 卡片顏色標記ID
         /// </summary>
@@ -385,6 +402,7 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 國內行程 / 出口指示
         /// </summary>
         public string DomesticInstructions { get; set; }
+        public string DomesticInstructionsDelOrder { get; set; }
         /// <summary>
         /// S/O備註
         /// </summary>
@@ -399,5 +417,66 @@ namespace Dolphin.Freight.ImportExport.OceanImports
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        
+        public CreateUpdateContainerDto CreateUpdateHBLContainerDto { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public string Remark { get; set; }
+        public string CarrierContractNo { get; set; }
+        public DateTime? LastFreeDate { get; set; }
+        public string ContainerNo { get; set; }
+        public string OperatorName { get; set; }
+        public string SalesName { get; set; }
+        public string Package { get; set; }
+        public string Weight { get; set; }
+        public string Measurement { get; set; }
+       
+        public string[] ContainerIds { get; set; }
+
+        /// <summary>
+        /// ISF號碼
+        /// </summary>
+        public string IsfNo { get; set; }
+        /// <summary>
+        /// 由第三方申報ISF
+        /// </summary>
+        public bool IsfByThirdParty { get; set; }
+        public bool DoorMove { get; set; }
+        public bool CClearance { get; set; }
+        public bool CHold { get; set; }
+        public bool IsOblReceived { get; set; }
+        public bool Ror { get; set; }
+
+        public DateTime? IsfMatchDate { get; set; }
+        public DateTime? Lfd { get; set; }
+        public DateTime? OblReceivedDate { get; set; }
+        public DateTime? ItDate { get; set; }
+        public DateTime? GoDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
+        public DateTime? CReleasedDate { get; set; }
+        public DateTime? EntryDocSent { get; set; }
+        public DateTime? AnDate { get; set; }
+        public DateTime? DoDate { get; set; }
+        public ItIssuedLocation? ItIssuedLocation { get; set; }
+        public FreightType? Freight { get; set; }
+        public string ItNo { get; set; }
+        public string EntryNo { get; set; }
+        public string ScNo { get; set; }
+        public string NameAccount { get; set; }
+        public string GroupComm { get; set; }
+        public string LineCode { get; set; }
+        public bool CustomDoc { get; set; }
+        public DateTime? Available { get; set; }
+        public string SubBlNo { get; set; }
+        public int GetHideCheck()
+        {
+            return (SubBlNo == null && IsEcommerce) ? 1 : 1;
+        }
+        public string HblContainers { get; set; }
+        public string HblVerticalContainers { get; set; }
+        public string MblContainers { get; set; }
+
+        public Dictionary<string, string> HblContainerIdContains { get; set; }
+        public string ARBalance { get; set; }
+        public string APBalance { get; set; }
     }
 }

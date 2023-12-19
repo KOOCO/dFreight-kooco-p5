@@ -2,7 +2,10 @@
 @using Dolphin.Freight.Localization
 @using Dolphin.Freight.Permissions
 @using Microsoft.Extensions.Localization
+@using Dolphin.Freight.Web.Pages.Components
+@using Dolphin.Freight.Web.CommonService
 @model Dolphin.Freight.Web.Pages.PaymentMadeList.IndexModel
+@inject IDropdownService _dropdown;
 @inject IStringLocalizer<FreightResource> L
 
 @section scripts{
@@ -21,16 +24,140 @@
 <div class="page-content-area">
     <abp-card>
         <abp-card-header>
-            <div class="title">
-                @L["Menu:PaymentMadeList"]
-            </div>
-            <abp-button id="NewButton"
-                        text="@L["Create"].Value"
-                        icon="plus"
-                        class="btn btn-add" />
+            <abp-row class="w-100">
+                <abp-column size-md="_6">
+                    <abp-card-title>@L["Menu:PaymentMadeList"]</abp-card-title>
+                </abp-column>
+                <abp-column size-md="_6" class="text-end p-0">
+                    <abp-button id="FilterGlCodeButton"
+                                text="@L["Filter"].Value"
+                                icon="filter"
+                                button-type="Primary"
+                                data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
+                    <abp-button id="btnConfiguration"
+                                text="@L["Configuration"].Value"
+                                icon="gear"
+                                button-type="Primary" />
+                    <abp-button id="NewButton"
+                                text="@L["Create"].Value"
+                                icon="plus"
+                                button-type="Primary" />
+                </abp-column>
+            </abp-row>
+            
         </abp-card-header>
+        <abp-card-body class="collapse hide" id="mblDiv">
+            <abp-row class="mb-3">
+               
+
+            </abp-row>
+
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["OfficeId"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "Payment.OfficeId", AspItems = _dropdown.SubstationLookupList, IsShowLabel = false, FieldName = "OfficeId",IsRequired=true, /*SelectType = 1,*/ ShowFiledContentValue =null })
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["PostDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input class="form-control" type="date" id="PostDate" />
+                </abp-column>
+                  <abp-column size-md="_1">
+                <label >@L["Category"]</label>
+                </abp-column>
+                  <abp-column size-md="_2">
+                    <select id="categoryId" class="form-select"  asp-items="@Model.CategoryList" >
+                        </select>
+                     </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["RefNo"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="text" id="refNo" class="form-control" />
+
+                </abp-column>
+                
+
+            </abp-row>
+            <abp-row class="mb-3">
+                <abp-column size-md="_1">
+                    <label>@L["PaidTo"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "Payment.PaidTo", AspItems = _dropdown.TradePartnerLookupList, IsShowLabel = false, FieldName = "PaidTo",IsRequired=true, /*SelectType = 1,*/ ShowFiledContentValue =null })
+                </abp-column>
+                 <abp-column size-md="_1">
+                    <label>@L["ClearDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" id="ClearDate" class="form-control" />
+
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Clear"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <select id="Clear" class="form-select" />
+                    <option value=""></option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                    </select>
+
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Bank"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                <select id="Bank" suppress-label class="form-select"  asp-items="@Model.BankList" >
+                    </select>
+                </abp-column>
+              
+            </abp-row>
+            <abp-row class="mb-3">
+
+                <abp-column size-md="_1">
+                    <label>@L["VoidDate"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <input type="date" id="VoidDate" class="form-control" />
+
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Void"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    <select id="Void" class="form-select" />
+                    <option value=""></option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                    </select>
+
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["IssuedBy"].Value</label>
+                </abp-column>
+                <abp-column size-md="_2">
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "Payment.IssuedBy", AspItems = _dropdown.OperatorLookupList, IsShowLabel = false, FieldName = "IssuedBy",IsRequired=true, /*SelectType = 1,*/ ShowFiledContentValue =null })
+
+
+                </abp-column>
+            </abp-row>
+
+            <abp-row>
+                <abp-abp-column class="text-center">
+
+                    <abp-button type="button" id="CancelFilter" text="@L["Cancel"]" button-type="Danger" />
+
+                    <abp-button type="button" id="Search" text="@L["Search"]" button-type="Primary" />
+
+                </abp-abp-column>
+            </abp-row>
+        </abp-card-body>
         <abp-card-body>
-            <abp-table striped-rows="true" id="PaymentMadeListTable"></abp-table>
+            <abp-table class="nowrap" striped-rows="true" id="PaymentMadeListTable"></abp-table>
         </abp-card-body>
     </abp-card>
 </div>

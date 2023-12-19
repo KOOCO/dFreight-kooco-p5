@@ -12,43 +12,44 @@
 <abp-modal>
     <abp-modal-header title="@L["Edit"].Value"></abp-modal-header>
     <abp-modal-body>
-        <abp-row>
-            <abp-column>
-                <abp-input asp-for="ContainerSize.ContainerCode" required-symbol=true />
-            </abp-column>
-        </abp-row>
-        <abp-row>
-            <abp-column>
-                <abp-input asp-for="ContainerSize.SizeDescription" />
-            </abp-column>
-        </abp-row>
-        <abp-row>
-            <abp-column>
-                @await Component.InvokeAsync(typeof(SelectComponent),new {TagName =  "ContainerGroupId", FieldName = "ContainerGroupId",DefaultValue="", IsShowLabel = true , IsRequired = false  })
-            </abp-column>
-        </abp-row>
-        <abp-row>
-            <abp-column>
-                <abp-input asp-for="ContainerSize.Teu" />
-            </abp-column>
-        </abp-row>
-        <abp-row>
-            <abp-column>
-                <abp-input asp-for="ContainerSize.IsUseed" />
-            </abp-column>
-        </abp-row>
+        <form id="createForm" method="post" action="/Settings/ContainerSizes/EditModal">
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <abp-row>
+                <abp-column>
+                    <abp-input asp-for="ContainerSize.ContainerCode" required-symbol=true />
+                </abp-column>
+            </abp-row>
+            <abp-row>
+                <abp-column>
+                    <abp-input asp-for="ContainerSize.SizeDescription" />
+                </abp-column>
+            </abp-row>
+            <abp-row>
+                <abp-column>
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ContainerSize.AmsTypeCodeId", AspItems = Model.AmsTypeCodeLookup, IsShowLabel = true, FieldName = L["AmsTypeCode"], SelectType = 0, ShowFiledContentValue = Model.ContainerSize.AmsTypeCodeId.ToString() })
+                </abp-column>
+            </abp-row>
+            <abp-row>
+                <abp-column>
+                    @await Component.InvokeAsync(typeof(DropdownComponent), new ComponentData { Name = "ContainerSize.ContainerGroupId", AspItems = Model.ContainerGroupLookup, IsShowLabel = true, FieldName = L["ContainerGroup"], SelectType = 0, ShowFiledContentValue = Model.ContainerSize.ContainerGroupId.ToString() })
+                </abp-column>
+            </abp-row>
+            <abp-row>
+                <abp-column>
+                    <abp-input asp-for="ContainerSize.Teu" />
+                </abp-column>
+            </abp-row>
+            <abp-row>
+                <abp-column>
+                    <abp-input asp-for="ContainerSize.IsUseed" />
+                </abp-column>
+            </abp-row>
+        </form>
+
     </abp-modal-body>
     <abp-modal-footer>
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
             <abp-button class="btn btn-primary me-md-2" type="button" id="saveBtn">@L["Save"].Value</abp-button>
         </div>
-        <form id="createForm" method="post" action="/Settings/ContainerSizes/EditModal">
-            <input type="hidden" name="Id" value="@Model.Id" />
-            <input type="hidden" name="ContainerCode" id="formContainerCode" value="@Model.ContainerSize.GetHashCode"  />
-            <input type="hidden" name="SizeDescription" id="formSizeDescription" value="@Model.ContainerSize.SizeDescription" />
-            <input type="hidden" name="ContainerGroupId" id="formContainerGroupId" value="@Model.ContainerSize.ContainerGroupId" />
-            <input type="hidden" name="Teu" id="formTeu" value="@Model.ContainerSize.Teu" />
-            <input type="hidden" name="IsUseed" id="formIsUseed" value="@Model.ContainerSize.IsUseed" />
-        </form>
     </abp-modal-footer>
 </abp-modal>

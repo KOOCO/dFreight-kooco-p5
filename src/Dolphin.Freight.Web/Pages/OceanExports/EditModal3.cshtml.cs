@@ -19,6 +19,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public Guid Hid { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool ISToolTipShow { get; set; }
         [BindProperty]
         public OceanExportHblDto OceanExportHblDto { get; set; }
         [BindProperty]
@@ -48,15 +50,21 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         private readonly IOceanExportMblAppService _oceanExportMblAppService;
         private readonly IInvoiceAppService _invoiceAppService;
         private readonly ISysCodeAppService _sysCodeAppService;
-        public EditModal3Model(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService, IInvoiceAppService invoiceAppService, ISysCodeAppService sysCodeAppService)
+        private readonly IOceanImportMblAppService _oceanImportMblAppService;
+        public EditModal3Model(IOceanExportMblAppService oceanExportMblAppService,
+            IOceanExportHblAppService oceanExportHblAppService,
+            IInvoiceAppService invoiceAppService,
+            ISysCodeAppService sysCodeAppService, IOceanImportMblAppService oceanImportMblAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
             _invoiceAppService = invoiceAppService;
             _sysCodeAppService = sysCodeAppService;
+            _oceanImportMblAppService=oceanImportMblAppService;
         }
         public async Task OnGetAsync()
         {
+            ViewData["HAVEHBL"] = "N";
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
 
             QueryInvoiceDto qidto = new QueryInvoiceDto() { QueryType = 3, ParentId = Id };
@@ -84,7 +92,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
             }
             ImportExport.OceanExports.QueryHblDto query = new ImportExport.OceanExports.QueryHblDto() { MblId = Id };
             query.Id = Hid;
-            OceanExportHbl = new();
+            ISToolTipShow = await _oceanImportMblAppService.GetCardSettings();
+            //OceanExportHbl = new();
         }
         public async Task<IActionResult> OnPostAsync()
         {

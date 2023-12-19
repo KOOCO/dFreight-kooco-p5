@@ -107,14 +107,28 @@ namespace Dolphin.Freight.AccountingSettings.BillingCodes
                     dictionary.Add(code.Id, code.Code);
                 }
             }
-            var rs = await _repository.GetListAsync();
-            rs = rs.Where(x => x.IsDeleted == false).ToList();
+             
+            List<string> glCodesKeys = new List<string>();
+            string glCode = query.GlCode.ToLower();
+            glCodesKeys = dictionary.Where(x => x.Value.Contains(glCode)).Select(x=>x.Key.ToString()).ToList();
+            var resultQuery = await _repository.GetQueryableAsync();
+            resultQuery = resultQuery.WhereIf(!string.IsNullOrWhiteSpace(query.Code), x => x.Code.ToLower()
+                                     .Contains(query.Code.ToLower()))
+                                     .WhereIf(!string.IsNullOrWhiteSpace(query.Name), x=>x.BillingName.ToLower()
+                                     .Contains(query.Name.ToLower()) || x.LocalName.Contains(query.Name.ToLower()))
+                                     .WhereIf(!string.IsNullOrWhiteSpace(query.Remark), x=>x.Revenue.Remark.ToLower()
+                                     .Contains(query.Remark.ToLower()))
+                                     .WhereIf(!string.IsNullOrEmpty(query.GlCode), x=> glCodesKeys.Contains(x.RevenueId.ToString()) || 
+                                     glCodesKeys.Contains(x.DeitId.ToString()) ||
+                                     glCodesKeys.Contains(x.CostId.ToString()) ||
+                                     glCodesKeys.Contains(x.RevenueId.ToString()));
+            var rs = resultQuery.Where(x => x.IsDeleted == false).ToList();
             
             List<BillingCodeDto> list = new List<BillingCodeDto>();
             if (query != null )
             {
                 if (query.IsUsed != null && query.IsUsed.Value) rs = rs.Where(x => x.IsUsed == true).ToList();
-                if (query.Code != null) rs = rs.Where(x => x.Code.Equals(query.Code)).ToList();
+                //if (!string.IsNullOrWhiteSpace(query.Code)) rs = rs.Where(x => x.Code.Equals(query.Code)).ToList();
                 if (query.BillType != null) {
                     switch (query.BillType.Value) 
                     {
@@ -182,9 +196,52 @@ namespace Dolphin.Freight.AccountingSettings.BillingCodes
                     list.Add(bill);
                 }
             }
+
             PagedResultDto<BillingCodeDto> listDto = new PagedResultDto<BillingCodeDto>();
             listDto.Items = list;
             listDto.TotalCount = list.Count;
+            return listDto;
+        }
+        public async Task<List<BillingCodeDto>> GetLookUpListAsync()
+        {
+            var glCodes = await _glCodeRepository.GetListAsync();
+
+            Dictionary<Guid, string> dictionary = new Dictionary<Guid, string>();
+            if (glCodes != null)
+            {
+                foreach (var code in glCodes)
+                {
+                    dictionary.Add(code.Id, code.Code);
+                }
+            }
+
+            List<string> glCodesKeys = new List<string>();
+       
+            var resultQuery = await _repository.GetQueryableAsync();
+         
+            var rs = resultQuery.Where(x => x.IsDeleted == false).ToList();
+
+            List<BillingCodeDto> list = new List<BillingCodeDto>();
+           
+
+
+            if (rs != null && rs.Count > 0)
+            {
+
+                foreach (var r in rs)
+                {
+                    var bill = ObjectMapper.Map<BillingCode, BillingCodeDto>(r);
+                    if (r.RevenueId != null) bill.RevenueName = dictionary[r.RevenueId.Value];
+                    if (r.CostId != null) bill.CostName = dictionary[r.CostId.Value];
+                    if (r.CreditId != null) bill.CreditName = dictionary[r.CreditId.Value];
+                    if (r.DeitId != null) bill.DeitName = dictionary[r.DeitId.Value];
+                    list.Add(bill);
+                }
+            }
+
+        List<BillingCodeDto> listDto = new List<BillingCodeDto>();
+            listDto= list;
+            
             return listDto;
         }
         public async Task<List<BillingCodeDto>> QueryListForTagAsync(QueryBillingCodeDto query) 

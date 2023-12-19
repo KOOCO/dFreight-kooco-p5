@@ -35,6 +35,7 @@ using System.Linq;
 using Dolphin.Freight.Settinngs.Substations;
 using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.Settings.PortsManagement;
+using Dolphin.Freight.Settings.SysCodes;
 
 namespace Dolphin.Freight.Web.Pages.OceanExports
 {
@@ -53,7 +54,8 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         public Guid Id { get; set; }
         [BindProperty(SupportsGet = true)]
         public bool ShowMsg { get; set; } = false;
-
+        [BindProperty(SupportsGet = true)]
+        public bool ISToolTipShow { get; set; }
         [BindProperty(SupportsGet = true)]
         public Guid? Hid { get; set; }
         public bool IsShowHbl { get; set; } = false;
@@ -74,20 +76,48 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
         public IList<OceanExportHblDto> OceanExportHbls { get; set; }
         private readonly IOceanExportHblAppService _oceanExportHblAppService;
         private readonly IOceanExportMblAppService _oceanExportMblAppService;
-        public EditModalModel(IOceanExportMblAppService oceanExportMblAppService, IOceanExportHblAppService oceanExportHblAppService)
+        private readonly IOceanImportMblAppService _oceanImportMblAppService;
+        private readonly ISysCodeAppService _sysCodeAppService;
+        public EditModalModel(IOceanExportMblAppService oceanExportMblAppService, 
+            IOceanExportHblAppService oceanExportHblAppService, 
+            ISysCodeAppService sysCodeAppService,
+            IOceanImportMblAppService oceanImportMblAppService)
         {
             _oceanExportMblAppService = oceanExportMblAppService;
             _oceanExportHblAppService = oceanExportHblAppService;
+            _sysCodeAppService = sysCodeAppService;
+            _oceanImportMblAppService=oceanImportMblAppService;
         }
 
         public async Task OnGetAsync()
         {
+           
             ViewData["HAVEHBL"] = "N";
             OceanExportMbl = await _oceanExportMblAppService.GetCreateUpdateOceanExportMblDtoById(Id);
             QueryHblDto query = new QueryHblDto() { MblId = Id };
+            query.Id = Hid;
+            if (Hid is not null && Hid != Guid.Empty)
+            {
+                OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(await _oceanExportHblAppService.GetAsync((Guid)Hid));
+            }
+            else
+            {
+                var hbls = await _oceanExportHblAppService.GetHblCardsById(Id, true, 0);
+                if (hbls.Any())
+                {
+                    OceanExportHbl = ObjectMapper.Map<OceanExportHblDto, CreateUpdateOceanExportHblDto>(await _oceanExportHblAppService.GetAsync(hbls[0].Id));
+                }
+                else
+                {
+                OceanExportHbl = new();
+                }
+            }
+            IsShowHbl = true;
+            ISToolTipShow = await _oceanImportMblAppService.GetCardSettings();
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            
             await _oceanExportMblAppService.UpdateAsync(OceanExportMbl.Id, OceanExportMbl);
 
             if (OceanExportHbl is not null && !string.IsNullOrEmpty(OceanExportHbl.HblNo))
@@ -96,10 +126,41 @@ namespace Dolphin.Freight.Web.Pages.OceanExports
 
                 if (OceanExportHbl.Id != Guid.Empty)
                 {
+                    if (OceanExportHbl.CardColorId is not null && OceanExportHbl.CardColorId != Guid.Empty)
+                    {
+                        var sysCode = await _sysCodeAppService.GetAsync((Guid)OceanExportHbl.CardColorId);
+                        sysCode.CodeValue = OceanExportHbl.CardColorValue;
+                        sysCode.ShowName = OceanExportHbl.HblNo;
+
+                        await _sysCodeAppService.UpdateAsync((Guid)OceanExportHbl.CardColorId, ObjectMapper.Map<SysCodeDto, CreateUpdateSysCodeDto>(sysCode));
+                    } else
+                    {
+                        SysCode sysCode = new();
+                        sysCode.CodeType = "CardColorId";
+                        sysCode.CodeValue = OceanExportHbl.CardColorValue;
+                        sysCode.ShowName = OceanExportHbl.HblNo;
+
+                        var newSysCode = await _sysCodeAppService.CreateAsync(ObjectMapper.Map<SysCode, CreateUpdateSysCodeDto>(sysCode));
+
+                        OceanExportHbl.CardColorId = newSysCode.Id;
+                    }
+
                     await _oceanExportHblAppService.UpdateAsync(OceanExportHbl.Id, OceanExportHbl);
                 }
                 else
                 {
+                    if (OceanExportHbl.CardColorId is null)
+                    {
+                        SysCode sysCode = new();
+                        sysCode.CodeType = "CardColorId";
+                        sysCode.CodeValue = OceanExportHbl.CardColorValue;
+                        sysCode.ShowName = OceanExportHbl.HblNo;
+
+                        var newSysCode = await _sysCodeAppService.CreateAsync(ObjectMapper.Map<SysCode, CreateUpdateSysCodeDto>(sysCode));
+                        
+                        OceanExportHbl.CardColorId = newSysCode.Id;
+                    }
+
                     await _oceanExportHblAppService.CreateAsync(OceanExportHbl);
                 }
             }

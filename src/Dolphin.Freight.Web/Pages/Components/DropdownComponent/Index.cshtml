@@ -6,7 +6,6 @@
 
 @if (Model.IsShowLabel) 
 {
-
   <label class="form-label" for="@Model.FieldName">
         @if (Model.IsRequired)
         {
@@ -16,26 +15,48 @@
 </label>
 }
 
-<div class="d-flex mb-5 dropdown form-control form-control-fix">
-    
-<select name="@Model.Name" id="@Model.Id" class="filteredDropdown form-select form-control cursor-pointer" @Model.Disabled @(Model.IsRequired? "required": "")>
-    <option></option>
-    @foreach (SelectListItem item in Model.AspItems)
-    {
-        @if (item.Value == Model.ShowFiledContentValue)
+<div class="d-flex dropdown form-control form-control-fix">
+ @if(Model.IsMultipleSelection){
+    <select name="@Model.Name" multiple="multiple" id="@Model.Id" class="filteredDropdown form-select form-control cursor-pointer" @Model.Disabled @(Model.IsRequired? "required": "")>
+        <option></option>
+        @foreach (SelectListItem item in Model.AspItems)
         {
-            <option value="@item.Value" selected>@item.Text</option>
+            @if (item.Value == Model.ShowFiledContentValue)
+            {
+                <option value="@item.Value" selected>@item.Text</option>
+            }
+            else
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
         }
-        else
-        {
-            <option value="@item.Value">@item.Text</option>
-        }
+        </select>
     }
-</select>
+    else
+    {
+        <select name="@Model.Name" id="@Model.Id" class="filteredDropdown form-select form-control cursor-pointer" onchange="@Model.ChangeEvent" @Model.Disabled @(Model.IsRequired ? "required" : "")>
+            <option></option>
+            @foreach (SelectListItem item in Model.AspItems)
+            {
+                @if (item.Value == Model.ShowFiledContentValue)
+                {
+                    <option value="@item.Value" selected>@item.Text</option>
+                }
+                else if (item.Value == Model.NotShowFiledContentValue)
+                {
+                    continue;
+                }
+                else
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            }
+        </select>
+    }
 
 @if (Model.SelectType == 1)
 {
-    <button title="" class="btn btn-info " style="color:#ffffff; " type="button" id="btn_@Model.GetFiledContentName().Replace(" ", string.Empty)" data-busy-text="Processing..." data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top" data-bs-content="@Model.GetShowFiledContent()" data-bs-original-title="@L["Title:ReportFormTitle"]" onclick="editTitle('@Model.GetFiledContentName().Replace(" ", string.Empty)','@Model.GetShowFiledContent()')" disabled>
+    <button title="" class="btn btn-info btn-sm-custom " style="color:#ffffff; " type="button" id="btn_@Model.GetFiledContentName().Replace(" ", string.Empty)" data-busy-text="Processing..." data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top" data-bs-content="@Model.GetShowFiledContent()" data-bs-original-title="@L["Title:ReportFormTitle"]" onclick="editTitle('@Model.GetFiledContentName().Replace(" ", string.Empty)','@Model.GetShowFiledContent()')" disabled>
         <i class="fas fa-edit"></i>
     </button>
     <div class="modal" tabindex="-1" id="modal_@Model.GetFiledContentName().Replace(" ", string.Empty)">
@@ -68,4 +89,16 @@
     document.addEventListener('DOMContentLoaded', function(){
         initializeDropdownSearch('@Model.Id', @Model.SelectType)
     })
+
+    function UpdateDropdown(Elem, targetDropdownNames) {
+        var selectedValue = Elem.value;
+
+        targetDropdownNames.forEach(function (targetDropdownName) {
+            var targetDropdown = document.querySelector('[name="' + targetDropdownName + '"]');
+            if (targetDropdown) {
+                targetDropdown.value = selectedValue;
+                $(targetDropdown).trigger('change');
+            }
+        });
+    }
 </script>

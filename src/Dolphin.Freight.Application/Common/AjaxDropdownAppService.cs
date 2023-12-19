@@ -1,4 +1,5 @@
 ﻿
+using Dolphin.Freight.ImportExport.AirExports;
 using Dolphin.Freight.ImportExport.OceanExports;
 using Dolphin.Freight.Settings.Ports;
 using Dolphin.Freight.Settings.PortsManagement;
@@ -20,14 +21,20 @@ namespace Dolphin.Freight.Common
         private readonly IRepository<SysCode, Guid> _sysCideRepository;
         private readonly IPortsManagementAppService _portsManagementsRepository;
         private readonly IRepository<OceanExportMbl, Guid> _oceanExportMblRepository;
+        private readonly IRepository<AirExportMawb, Guid> _airExportMawabRepositroy;
         private readonly IRepository<VesselSchedule, Guid> _vesselScheduleRepository;
-        public AjaxDropdownAppService(IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<SysCode, Guid> sysCideRepository, IPortsManagementAppService portsManagementsRepository, IRepository<OceanExportMbl, Guid> oceanExportMblRepository, IRepository<VesselSchedule, Guid> vesselScheduleRepository)
+        public AjaxDropdownAppService(IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, IRepository<SysCode, Guid> sysCideRepository, 
+            IPortsManagementAppService portsManagementsRepository,
+            IRepository<OceanExportMbl, Guid> oceanExportMblRepository,
+            IRepository<VesselSchedule, Guid> vesselScheduleRepository,
+            IRepository<AirExportMawb, Guid> airExportMawabRepositroy)
         {
             _tradePartnerRepository = tradePartnerRepository;
             _sysCideRepository = sysCideRepository;
             _portsManagementsRepository = portsManagementsRepository;
             _oceanExportMblRepository = oceanExportMblRepository;
             _vesselScheduleRepository = vesselScheduleRepository;
+            _airExportMawabRepositroy = airExportMawabRepositroy;
         }
         public async Task<List<TradePartnerDto>> GetAllTradePartners(QueryDto query ) { 
             var tradePartners = await _tradePartnerRepository.GetListAsync();
@@ -37,9 +44,20 @@ namespace Dolphin.Freight.Common
         public async Task<List<SysCodeDto>> GetSysCodeDtosByTypeAsync(QueryDto query) 
         {
             var sysCodes = await _sysCideRepository.GetListAsync();
-            var rs = sysCodes.Where(x => x.CodeType.Contains(query.QueryType)).ToList();
-            var list = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(rs);
-            return list;
+            if (query?.QueryType == "GlGroupId" && query?.ParentId!=null)
+            {
+                var rs = sysCodes.Where(x => x.CodeType==query.QueryType && x.ParentId==query.ParentId).ToList();
+               
+                var list = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(rs);
+                return list;
+            }
+            else
+            {
+                var rs = sysCodes.Where(x => x.CodeType.Equals(query.QueryType)).ToList();
+                var list = ObjectMapper.Map<List<SysCode>, List<SysCodeDto>>(rs);
+                return list.OrderBy(o => o.CreationTime).ToList();
+            }
+           
         }
         public async Task<List<SysCodeDto>> GetSysCodeByTypeAsync()
         {
@@ -166,6 +184,63 @@ namespace Dolphin.Freight.Common
                 if(item.CarrierId != null) item.CarrierName = tdictionary[item.CarrierId.Value];
 
             }
+            return list;
+        }
+        public async Task<List<ReferenceItemDto>> GetReferenceMblAsync(QueryDto query)
+        {
+            List<ReferenceItemDto> list = new();
+            ReferenceItemDto dto;
+            
+           
+                
+                var oceanExportMbls = await _oceanExportMblRepository.GetListAsync();
+               
+                    foreach (var item in oceanExportMbls)
+                    {
+                        dto = new ReferenceItemDto()
+                        {
+                            Id = item.Id,
+                            Pol = item.PolId,
+                            Pod = item.PodId,
+                            Eta = item.PodEta?.ToString("yyyy-MM-dd"),
+                            Etd = item.PolEtd?.ToString("yyyy-MM-dd"),
+                            ReferenceType = 1,
+                            ReferenceNo = item.FilingNo,
+                            MblNo = item.MblNo,
+                            CarrierId = item.MblCarrierId
+                        };
+                        list.Add(dto);
+                    }
+                
+            
+            
+            return list;
+        }
+        public async Task<List<ReferenceItemDto>> GetReferenceMawabAsync(QueryDto query)
+        {
+            List<ReferenceItemDto> list = new();
+            ReferenceItemDto dto;
+
+
+
+            var oceanExportMbls = await _airExportMawabRepositroy.GetListAsync();
+
+            foreach (var item in oceanExportMbls)
+            {
+                dto = new ReferenceItemDto()
+                {
+                    Id = item.Id,
+                  
+                    ReferenceType = 1,
+                    ReferenceNo = item.FilingNo,
+                    MblNo = item.MawbNo,
+                    CarrierId = item.MawbCarrierId
+                };
+                list.Add(dto);
+            }
+
+
+
             return list;
         }
     }

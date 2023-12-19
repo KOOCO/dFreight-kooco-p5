@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dolphin.Freight.Common;
+using Dolphin.Freight.ImportExport.OceanExports;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,10 +13,14 @@ namespace Dolphin.Freight.ImportExport.AirExports
         ICrudAppService<
             AirExportMawbDto,
             Guid,
-            PagedAndSortedResultRequestDto,
+            QueryHblDto,
             CreateUpdateAirExportMawbDto
         >
     {
-        
+        Task<AirExportDetails> GetAirExportDetailsById(Guid Id);
+        Task LockedOrUnLockedAirExportMawbAsync(Guid id);
+        Task SelectedLockedAirExportMawbAsync(Guid[] ids);
+        Task SelectedUnLockedAirExportMawbAsync(Guid[] ids);
+        Task<List<AirExportMawbDto>> GetMawbListAsync();
     }
 }

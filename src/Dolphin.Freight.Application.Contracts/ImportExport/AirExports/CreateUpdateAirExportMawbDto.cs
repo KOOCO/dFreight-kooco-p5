@@ -1,7 +1,9 @@
 ﻿using Dolphin.Freight.AirExports;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.AirExports
 {
@@ -70,10 +72,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
         
         public String RouteTrans1Id { get; set; }
         [DisplayName("")]
-        [DataType(DataType.DateTime)]
         public DateTime? RouteTrans1ArrivalDate { get; set; }
         [DisplayName("")]
-        [DataType(DataType.DateTime)]
         public DateTime? RouteTrans1DepatureDate { get; set; }
         [DisplayName("")]
         public string RouteTrans1FlightNo { get; set; }
@@ -84,10 +84,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
         
         public String RouteTrans2Id { get; set; }
         [DisplayName("")]
-        [DataType(DataType.DateTime)]
         public DateTime? RouteTrans2ArrivalDate { get; set; }
         [DisplayName("")]
-        [DataType(DataType.DateTime)]
         public DateTime? RouteTrans2DepatureDate { get; set; }
         [DisplayName("")]
         public string RouteTrans2FlightNo { get; set; }
@@ -98,10 +96,8 @@ namespace Dolphin.Freight.ImportExport.AirExports
         
         public String RouteTrans3Id { get; set; }
         [DisplayName("")]
-        [DataType(DataType.DateTime)]
         public DateTime? RouteTrans3ArrivalDate { get; set; }
         [DisplayName("")]
-        [DataType(DataType.DateTime)]
         public DateTime? RouteTrans3DepatureDate { get; set; }
         [DisplayName("")]
         public string RouteTrans3FlightNo { get; set; }
@@ -144,7 +140,7 @@ namespace Dolphin.Freight.ImportExport.AirExports
 
         public bool IsAwbCancelled { get; set; }
 
-        [DataType(DataType.Date)]
+        [DataType(DataType.DateTime)]
         public DateTime? AwbCancelledDate { get; set; }
         
         public String AwbCancelledOpId { get; set; }
@@ -152,5 +148,20 @@ namespace Dolphin.Freight.ImportExport.AirExports
         
         public String BusinessReferredId { get; set; }
         public bool IsECom { get; set; }
+        public string PONo { get; set; }
+        public List<OtherCharges> OtherCharges { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
+        public string Mark { get; set; }
+        public string NatureAndQuantityOfGoods { get; set; }
+        public string ManifestNatureAndQuantityOfGoods { get; set; }
+        public string HandlingInformation { get; set; }
+        public String RouteDepartureId { get; set; }
+        public DateTime? RouteDepartureArrivalDate { get; set; }
+        public DateTime? RouteDepatureDate { get; set; }
+        public string RouteDepartureFlightNo { get; set; }
+        public String RouteDepartureCarrierId { get; set; }
+
+        public String RouteDestinationId { get; set; }
+        public DateTime? RouteDestinationArrivalDate { get; set; }
     }
 }

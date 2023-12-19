@@ -14,6 +14,8 @@ namespace Dolphin.Freight.Common
         Task<List<SysCodeDto>> GetSysCodeDtosByTypeAsync(QueryDto query);
         Task<List<SysCodeDto>> GetSysCodeByTypeAsync();
         Task<List<ReferenceItemDto>> GetReferenceItemsByTypeAsync(QueryDto query);
+        Task<List<ReferenceItemDto>> GetReferenceMblAsync(QueryDto query);
+        Task<List<ReferenceItemDto>> GetReferenceMawabAsync(QueryDto query);
 
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.Containers
 {
@@ -23,6 +24,7 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// 櫃型/尺寸ID
         /// </summary>
         public Guid ContainerSizeId { get; set; }
+        public string ContainerSizeName { get; set; }
 
         /// <summary>
         /// 封條號碼
@@ -31,15 +33,19 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// <summary>
         /// 包裝種類數量
         /// </summary>
-        public int PackageNum { get; set; }
+        public int? PackageNum { get; set; }
         /// <summary>
         /// 包裝重量
         /// </summary>
-        public double PackageWeight { get; set; }
+        public double? PackageWeight { get; set; }
+        public string PackageWeightStr { get; set; }
+        public string PackageWeightStrLBS { get; set; }
         /// <summary>
         /// 包裝材積
         /// </summary>
-        public double PackageMeasure { get; set; }
+        public double? PackageMeasure { get; set; }
+        public string PackageMeasureStr { get; set; }
+        public string PackageMeasureStrLBS { get; set; }
         /// <summary>
         /// 封條號碼2
         /// </summary>
@@ -108,7 +114,7 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// <summary>
         /// 場內延滯免費期
         /// </summary>
-        public DateTime LastFreeDate { get; set; }
+        public DateTime? LastFreeDate { get; set; }
         /// <summary>
         /// 櫃場地點
         /// </summary>
@@ -146,5 +152,13 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// </summary>
         public bool IsDeleted { get; set; }
         public int Status { get; set; }
+        public Guid? HblId { get; set; }
+        public Guid? BookingId { get; set; }
+        public Guid? PackageUnitId { get; set; }
+        public string PackageWeightUnit { get; set; }
+        public string PackageMeasureUnit { get; set; }
+        public string PackageUnitName { get; set; }
+        public Guid? VesselId { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

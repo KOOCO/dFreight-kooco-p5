@@ -5,10 +5,12 @@ using System.IO;
 using System.Text;
 using Dolphin.Freight.TradePartner;
 using Dolphin.Freight.TradePartners;
+using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight
 {
-    public class CreateUpdateContactPersonDto
+    public class CreateUpdateContactPersonDto : AuditedEntityDto<Guid>
     {
         public bool IsRep { get; set; }
         public bool IsEmailNotification { get; set; }
@@ -40,5 +42,6 @@ namespace Dolphin.Freight
         public bool IsDeleted { get; set; }
         [Required]
         public Guid TradePartnerId { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

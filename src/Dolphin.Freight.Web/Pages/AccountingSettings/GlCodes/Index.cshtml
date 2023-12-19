@@ -28,8 +28,37 @@
                         icon="plus"
                         class="btn btn-add" />
         </abp-card-header>
+        <abp-card-body class="collapse hide" id="mblDiv">
+            <abp-row>
+                <abp-column size-md="_1">
+                    <label>@L["GlCode"].Value</label>
+                </abp-column>
+                <abp-column size-md="_5">
+                    <input class="form-control" id="GlCode" />
+                </abp-column>
+                <abp-column size-md="_1">
+                    <label>@L["Remarks"].Value</label>
+                </abp-column>
+                <abp-column size-md="_5">
+                    <input class="form-control" id="Remark" />
+                </abp-column>
+            </abp-row>
+            <abp-row>
+              @*  <div class="mt-3 text-center">
+                <input type="button" id="SearchGICode" value="@L["Search"]" class="btn btn-secondary"/>
+                </div>*@
+            </abp-row>
+            </abp-card-body>
         <abp-card-body>
-            <abp-table striped-rows="true" id="GlCodesTable"></abp-table>
+            <div class="text-end">
+            <abp-button id="FilterGlCodeButton"
+                        text="@L["Filter"].Value"
+                        icon="filter"
+                        class="btn btn-sm btn-success"
+                        data-bs-toggle="collapse" data-bs-target="#mblDiv" aria-expanded="true" aria-controls="mblDiv" />
+            </div>
+            <abp-table class="nowrap" striped-rows="true" id="GlCodesTable"></abp-table>
+         
         </abp-card-body>
     </abp-card>
 </div>

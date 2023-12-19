@@ -2,6 +2,7 @@
 @using Dolphin.Freight.Permissions
 @using Microsoft.Extensions.Localization
 @model string
+@using Dolphin.Freight.Web.Pages.Shared.Memos;
 @inject IStringLocalizer<FreightResource> L
 <input type="hidden" id="Accounting_InvoiceList_PaymentId" value="@ViewData["PId"]" />
 <abp-card>
@@ -11,6 +12,25 @@
         </div>
     </abp-card-header>
     <abp-card-body>
-        <abp-table striped-rows="true" id="InvTable"></abp-table>
+        <abp-table striped-rows="true" id="InvTable" class="nowrap"></abp-table>
+        <br />
+        <table class="InvTableTotal" style="border-collapse: collapse; width: 100%;">
+            <thead>
+                <tr>
+                    <th style="background-color: #eee; border: 1px solid black; padding: 5px;">Total</th>
+                    <th style="background-color: #eee; border: 1px solid black; padding: 5px;">Invoice Amount</th>
+                    <th style="background-color: #eee; border: 1px solid black; padding: 5px;">Balance Amount</th>
+                    <th style="background-color: #eee; border: 1px solid black; padding: 5px;">Paid Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border: 1px solid black; padding: 5px;"></td>
+                    <td style="border: 1px solid black; padding: 5px;">0.00</td>
+                    <td style="border: 1px solid black; padding: 5px;">0.00</td>
+                    <td style="border: 1px solid black; padding: 5px;">0.00</td>
+                </tr>
+            </tbody>
+        </table>
     </abp-card-body>
 </abp-card>

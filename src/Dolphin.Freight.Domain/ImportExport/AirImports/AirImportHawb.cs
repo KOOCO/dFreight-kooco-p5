@@ -73,11 +73,11 @@ namespace Dolphin.Freight.ImportExport.AirImports
 
         public string FreightLocation { get; set; }
         public string FinalDestination { get; set; }
-        public DateTime FinalETA { get; set; }
+        public DateTime? FinalETA { get; set; }
         public String DeliveryLocation { get; set; }
         public string Trucker { get; set; }
-        public DateTime LastFreeDay { get; set; }
-        public DateTime StorageStartDate { get; set; }
+        public DateTime? LastFreeDay { get; set; }
+        public DateTime? StorageStartDate { get; set; }
         public String Freight { get; set; }
         public string SalesType { get; set; }
         public string Package { get; set; }
@@ -90,13 +90,13 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string VolumeWeightCBM { get; set; }
         public string ITNo { get; set; }
         public string ClassOfEntry { get; set; }
-        public DateTime ITDate { get; set; }
+        public DateTime? ITDate { get; set; }
         public string ITIssuedLocation { get; set; }
-        public DateTime FrtRelease { get; set; }
+        public DateTime? FrtRelease { get; set; }
         public string ReleasedBy { get; set; }
         public string CargoReleasedto { get; set; }
-        public DateTime CReleasedDate { get; set; }
-        public DateTime DoorDelivered { get; set; }
+        public DateTime? CReleasedDate { get; set; }
+        public DateTime? DoorDelivered { get; set; }
         public string ShipType { get; set; }
         public string Incoterms { get; set; }
         public string ServiceTermStart { get; set; }
@@ -110,7 +110,7 @@ namespace Dolphin.Freight.ImportExport.AirImports
         public string BillToId { get; set; }
         public string CustomsBroker { get; set; }
 
-
+        public bool IsLocked { get; set; }
 
         /// <summary>
         /// 是否刪除

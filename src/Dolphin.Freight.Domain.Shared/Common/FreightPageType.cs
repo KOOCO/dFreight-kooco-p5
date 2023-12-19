@@ -16,6 +16,11 @@ namespace Dolphin.Freight.Common
         AEHBL, // 空運出口HBL
         SO, // S/O
         VS, // 船期
-        TP // 貿易夥伴
+        TP, // 貿易夥伴
+        GA,
+        RP, // Receive Payment
+        AR, // Invoice AR
+        AP, // Invoice AP
+        DC // Invoice DC
     }
 }

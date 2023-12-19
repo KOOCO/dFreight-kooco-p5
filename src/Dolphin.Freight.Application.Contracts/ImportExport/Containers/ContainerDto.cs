@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.Containers
 {
@@ -12,11 +13,12 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// 集裝箱號
         /// </summary>
         public string ContainerNo { get; set; }
+        public Guid? MblId { get; set; }
         /// <summary>
         /// 櫃型/尺寸ID
         /// </summary>
         public Guid ContainerSizeId { get; set; }
-
+        public string ContainerSizeName { get; set; }
         /// <summary>
         /// 封條號碼
         /// </summary>
@@ -140,5 +142,12 @@ namespace Dolphin.Freight.ImportExport.Containers
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public Guid? HblId { get; set; }
+        public Guid? BookingId { get; set; }
+        public Guid? PackageUnitId { get; set; }
+        public string PackageWeightUnit { get; set; }
+        public string PackageMeasureUnit { get; set; }
+        public Guid? VesselId { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }

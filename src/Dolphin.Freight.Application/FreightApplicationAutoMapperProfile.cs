@@ -47,6 +47,7 @@ using Dolphin.Freight.ImportExport.Configuration;
 using Dolphin.Freight.Account.Languages;
 using Volo.Abp.Users;
 using Volo.Abp.Identity;
+using Dolphin.Freight.Common;
 
 namespace Dolphin.Freight;
 
@@ -110,6 +111,7 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<Container, ContainerDto>();
         CreateMap<ContainerDto, Container>();
         CreateMap<CreateUpdateContainerDto, Container>();
+        CreateMap<ContainerDto, CreateUpdateContainerDto>();
         CreateMap<Memo, MemoDto>();
         CreateMap<MemoDto, Memo>();
         CreateMap<CreateUpdateMemoDto, Memo>();
@@ -146,15 +148,21 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<OceanExportHbl, OceanExportHblDto>();
         CreateMap<OceanExportHbl, CreateUpdateOceanExportHblDto>();
         CreateMap<CreateUpdateOceanExportHblDto, OceanExportHbl>();
+        CreateMap<OceanExportHblDto, CreateUpdateOceanExportHblDto> ();
         CreateMap<SysCode, SysCodeDto>();
         CreateMap<PackageUnit, PackageUnitDto>();
         CreateMap<CreateUpdatePackageUnitDto, PackageUnit>();
+        CreateMap<OceanExportMbl, OceanExportDetails>();
+        CreateMap<OceanExportHbl, OceanExportDetails>();
+        CreateMap<Container, CreateUpdateContainerDto>();
 
         // ContactPerson
         CreateMap<ContactPerson, ContactPersonDto>();
         CreateMap<ContactPersonPagedAndSortedResultRequestDto, ContactPersonFilter>();
+        CreateMap<CreateUpdateContactPersonDto, ContactPerson>();
+        CreateMap<ContactPerson, CreateUpdateContactPersonDto>();
 
-		// Country
+        // Country
         CreateMap<Country, CountryLookupDto>();
         // Currency
         CreateMap<Currency, CurrencyLookupDto>();
@@ -165,6 +173,9 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<OceanImportHbl, OceanImportHblDto>();
         CreateMap<OceanImportHbl, CreateUpdateOceanImportHblDto>();
         CreateMap<CreateUpdateOceanImportHblDto, OceanImportHbl>();
+        CreateMap<OceanImportMbl, OceanImportDetails>();
+        CreateMap<OceanImportHbl, OceanImportDetails>();
+        CreateMap<OceanImportHblDto, OceanImportHbl>();
 
         // Substation
         CreateMap<Substation, SubstationLookupDto>();
@@ -179,6 +190,9 @@ public class FreightApplicationAutoMapperProfile : Profile
         CreateMap<AirExportMawb, AirExportMawbDto>();
         CreateMap<CreateUpdateAirExportMawbDto, AirExportMawb>();
         CreateMap<AirExportMawbDto, CreateUpdateAirExportMawbDto>();
+        CreateMap<AirExportMawb, AirExportDetails>();
+        CreateMap<AirExportHawbDto, AirExportDetails>();
+        CreateMap<AirExportDetails, AirExportHawbDto>();
 
         // AirExportHawb
         CreateMap<AirExportHawb, AirExportHawbDto>();
@@ -188,11 +202,16 @@ public class FreightApplicationAutoMapperProfile : Profile
         // AirImportMawb
         CreateMap<AirImportMawb, AirImportMawbDto>();
         CreateMap<CreateUpdateAirImportMawbDto, AirImportMawb>();
+        CreateMap<AirImportMawb, AirImportDetails>();
+        CreateMap<AirImportHawb, AirImportDetails>();
 
         // AirExportHawb
         CreateMap<AirImportHawb, AirImportHawbDto>();
         CreateMap<CreateUpdateAirImportHawbDto, AirImportHawb>();
         CreateMap<AirImportHawbDto, CreateUpdateAirImportHawbDto>();
+        // AirExportBooking
+        CreateMap<AirExportBooking, Dolphin.Freight.ImportExport.AirExports.Bookings.ExportBookingDto>();
+        CreateMap<Dolphin.Freight.ImportExport.AirExports.Bookings.CreateUpdateExportBookingDto, AirExportBooking>();
 
         #region iFreight 的資料表
 
@@ -280,5 +299,7 @@ public class FreightApplicationAutoMapperProfile : Profile
 
         CreateMap<IdentityUserDto, UserData>();
         CreateMap<UserData, IdentityUserDto>();
+        CreateMap<TradeParty, CreateUpdateTradePartyDto>();
+        CreateMap<CreateUpdateTradePartyDto, TradeParty>();
     }
 }

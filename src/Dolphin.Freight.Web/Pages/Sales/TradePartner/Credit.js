@@ -72,7 +72,8 @@
                             "Enum:TPType.Trucker",
                             "Enum:TPType.Vendor",
                             "Enum:TPType.Warehouse",
-                        ][data]);
+                            "Enum:TPType.FBAWarehouse"
+                        ][data - 1]);
                     }
                 },
                 {

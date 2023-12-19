@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
 
 namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
 {
@@ -11,6 +12,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 對應的ID，可能是船期也可能是MBL
         /// </summary>
+        public Guid? VesselScheduleId { get; set; }
         public Guid? ReferenceId { get; set; }
         /// <summary>
         /// 0：船期，1：MBL
@@ -26,8 +28,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// </summary>
         public bool IsCreateBySystem { get; set; }
         [Required]
-        [DataType(DataType.Date)]
-        [DisplayFormat]
         public DateTime? SoNoDate { get; set; }
         /// <summary>
         /// HBL編號
@@ -176,7 +176,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 收貨地(POR) ETD
         /// </summary>
-        [DataType(DataType.Date)]
+        
         public DateTime? PorEtd { get; set; }
         /// <summary>
         /// 裝貨港(POL)ID
@@ -185,7 +185,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 裝貨港(POL) ETD
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? PolEtd { get; set; }
         /// <summary>
         /// 卸貨港(POD)ID
@@ -194,7 +193,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 卸貨港(POD) ETA
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? PodEta { get; set; }
         /// <summary>
         /// 交貨地(DEL)ID
@@ -203,7 +201,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 交貨地(DEL) ETA
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? DelEta { get; set; }
         /// <summary>
         /// 最終目的地ID
@@ -212,7 +209,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 最終目的地ETA
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime?FdestEta { get; set; }
         /// <summary>
         /// FBA倉儲ID
@@ -229,7 +225,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 中轉港ETA
         /// </summary>
-        [DataType(DataType.Date)]
         public DateTime? Trans1Eta { get; set; }
         /// <summary>
         /// ECTN號碼 
@@ -259,6 +254,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// 卡車ID
         /// </summary>
         public Guid? TruckerId { get; set; }
+        public DateTime? CargoReadyDate { get; set; }
         /// <summary>
         /// 卡車交貨地ID
         /// </summary>
@@ -299,6 +295,7 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// <summary>
         /// 分站ID
         /// </summary>
+        [Required(ErrorMessage = "This Field is Required.")]
         public Guid? OfficeId { get; set; }
         /// <summary>
         /// 是否可堆積
@@ -340,5 +337,6 @@ namespace Dolphin.Freight.ImportExport.OceanExports.ExportBookings
         /// 是否刪除
         /// </summary>
         public bool IsDeleted { get; set; }
+        public ExtraPropertyDictionary ExtraProperties { get; set; }
     }
 }
