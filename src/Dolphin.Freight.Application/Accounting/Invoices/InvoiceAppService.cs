@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Components.Forms;
 using Dolphin.Freight.ImportExport.AirImports;
 using Volo.Abp.ObjectMapping;
+using Dolphin.Freight.ImportExport.OceanExports;
+using Volo.Abp.Domain.Entities;
 
 namespace Dolphin.Freight.Accounting.Invoices
 {
@@ -38,12 +40,17 @@ namespace Dolphin.Freight.Accounting.Invoices
         private readonly IInvoiceBillAppService _invoiceBillAppService;
         private readonly IRepository<SysCode, Guid> _sysCideRepository;
         private readonly IRepository<AirImportMawb, Guid> _airImportMawbRepository;
+        private readonly IRepository<OceanExportMbl, Guid> _OceanExportMblRepository;
+        private readonly IRepository<AirImportHawb, Guid> _AirImportHawbRepository;
+        private readonly IRepository<OceanExportHbl, Guid> _OceanExportHblRepository;
+
         public InvoiceAppService(IRepository<Invoice, Guid> repository, IInvoiceBillAppService invoiceBillAppService,
                                  IRepository<SysCode, Guid> sysCideRepository, IRepository<Substation, Guid> substationRepository, 
                                  IRepository<Dolphin.Freight.TradePartners.TradePartner, Guid> tradePartnerRepository, 
                                  IRepository<InvoiceBill, Guid> billRepository, IInvoiceRepository invoiceRepository, 
                                  IIdentityUserRepository identityUserRepository, IRepository<IdentityUser, Guid> userRepository,
-                                 IRepository<AirImportMawb, Guid> airImportMawbRepository) : base(repository)
+                                 IRepository<AirImportMawb, Guid> airImportMawbRepository, IRepository<OceanExportMbl, Guid> OceanExportMblRepository,
+                                 IRepository<AirImportHawb, Guid> AirImportHawbRepository, IRepository<OceanExportHbl, Guid> OceanExportHblRepository) : base(repository)
         {
             _repository = repository;
             _sysCideRepository = sysCideRepository;
@@ -55,12 +62,67 @@ namespace Dolphin.Freight.Accounting.Invoices
             _identityUserRepository = identityUserRepository;
             _invoiceBillAppService = invoiceBillAppService;
             _airImportMawbRepository = airImportMawbRepository;
+            _OceanExportMblRepository = OceanExportMblRepository;
+            _AirImportHawbRepository = AirImportHawbRepository;
+            _OceanExportHblRepository = OceanExportHblRepository;
         }
+
         public async Task<PagedResultDto<InvoiceDto>> QueryListAsync(QueryInvoiceDto query)
         {
+            var AirImportMawbs = await _airImportMawbRepository.GetListAsync();
+
+            Dictionary<Guid, Guid> AirImportMawbDictionary = new();
+
+            if (AirImportMawbs is not null && AirImportMawbs.Count > 0)
+            {
+                foreach (var AirImportMawb in AirImportMawbs)
+                {
+                    AirImportMawbDictionary.Add(AirImportMawb.Id, AirImportMawb.Id);
+                }
+            }
+
+            var AirImportHawbs = await _AirImportHawbRepository.GetListAsync();
+
+            Dictionary<Guid, Guid> AirImportHawbDictionary = new();
+
+            if (AirImportHawbs is not null && AirImportHawbs.Count > 0)
+            {
+                foreach (var AirImportHawb in AirImportHawbs)
+                {
+                    AirImportHawbDictionary.Add(AirImportHawb.Id, AirImportHawb.Id);
+                }
+            }
+
+            var OceanExportMbls = await _OceanExportMblRepository.GetListAsync();
+
+            Dictionary<Guid, Guid> OceanExportMblDictionary = new();
+
+            if (OceanExportMbls is not null && OceanExportMbls.Count > 0)
+            {
+                foreach (var OceanExportMbl in OceanExportMbls)
+                {
+                    OceanExportMblDictionary.Add(OceanExportMbl.Id, OceanExportMbl.Id);
+                }
+            }
+
+            var OceanExportHbls = await _OceanExportHblRepository.GetListAsync();
+
+            Dictionary<Guid, Guid> OceanExportHblDictionary = new();
+
+            if (OceanExportHbls is not null && OceanExportHbls.Count > 0)
+            {
+                foreach (var OceanExportHbl in OceanExportHbls)
+                {
+                    OceanExportMblDictionary.Add(OceanExportHbl.Id, OceanExportHbl.Id);
+                }
+            }
+
             var tradePartners = await _tradePartnerRepository.GetListAsync();
+            
             var Users = await _identityUserRepository.GetListAsync();
+
             Dictionary<Guid, string> tDictionary = new Dictionary<Guid, string>();
+
             Dictionary<Guid, string> UserDictionary = new Dictionary<Guid, string>();
             if (tradePartners != null)
             {
@@ -70,6 +132,7 @@ namespace Dolphin.Freight.Accounting.Invoices
                 }
             }
             var substations = await _substationRepository.GetListAsync();
+
             Dictionary<Guid, string> subDictionary = new Dictionary<Guid, string>();
             if (substations != null)
             {
@@ -79,6 +142,7 @@ namespace Dolphin.Freight.Accounting.Invoices
                 }
             }
             var users = await _userRepository.GetListAsync();
+
             Dictionary<Guid, string> userDictionary = new Dictionary<Guid, string>();
             if (users is not null)
             {
@@ -95,23 +159,20 @@ namespace Dolphin.Freight.Accounting.Invoices
                     UserDictionary.Add(User.Id, User.Name);
                 }
             }
+
             var result= await _repository.GetQueryableAsync();
-            var rs=result.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.InvoiceNo
-                                           .Contains(query.Search) || x.FilingNo
-                                           
-                                           .Contains(query.Search) )
-                                           .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
-                                   .WhereIf(query.TypeId.HasValue, e => e.InvoiceType == query.TypeId)
-                                   
-                                   .WhereIf(!string.IsNullOrWhiteSpace(query.InvoiceNo), x => x.InvoiceNo == query.InvoiceNo)
-                                   
-                                  .WhereIf(query.InvoiceDate.HasValue, e => e.InvoiceDate == query.InvoiceDate.Value.Date.AddDays(1))
-                                   .WhereIf(query.PostDate.HasValue, e => e.PostDate == query.PostDate.Value.Date.AddDays(1))
-                                  .WhereIf(query.DueDate.HasValue, e => e.DueDate == query.DueDate.Value.Date.AddDays(1))
-                                  .WhereIf(query.LastDate.HasValue, e => e.LastDate == query.LastDate.Value.Date.AddDays(1))
-                                  
-                                 
-                                          .OrderByDescending(x => x.CreationTime).ToList();
+
+            var rs = result.WhereIf(!string.IsNullOrWhiteSpace(query.Search), x => x.InvoiceNo
+                           .Contains(query.Search) || x.FilingNo
+                           .Contains(query.Search) )
+                           .WhereIf(query.OfficeId.HasValue, e => e.OfficeId == query.OfficeId)
+                           .WhereIf(query.TypeId.HasValue, e => e.InvoiceType == query.TypeId)        
+                           .WhereIf(!string.IsNullOrWhiteSpace(query.InvoiceNo), x => x.InvoiceNo == query.InvoiceNo)        
+                           .WhereIf(query.InvoiceDate.HasValue, e => e.InvoiceDate == query.InvoiceDate.Value.Date.AddDays(1))
+                           .WhereIf(query.PostDate.HasValue, e => e.PostDate == query.PostDate.Value.Date.AddDays(1))
+                           .WhereIf(query.DueDate.HasValue, e => e.DueDate == query.DueDate.Value.Date.AddDays(1))
+                           .WhereIf(query.LastDate.HasValue, e => e.LastDate == query.LastDate.Value.Date.AddDays(1))
+                           .OrderByDescending(x => x.CreationTime).ToList();
            
             List<InvoiceDto> list = new List<InvoiceDto>();
             if (query != null && query.ParentId != null)
@@ -122,18 +183,21 @@ namespace Dolphin.Freight.Accounting.Invoices
                 if(query.QueryType == 3) rs = rs.Where(x => x.MblId.Equals(query.ParentId.Value)).ToList();
                 if(query.QueryType == 4) rs = rs.Where(x => x.HawbId.Equals(query.ParentId.Value)).ToList();
             }
-            if (query != null && query.QueryInvoiceType == 1) {
+            if (query != null && query.QueryInvoiceType == 1) 
+            {
                 rs = rs.Where(x => x.InvoiceType < 3).ToList();
             }
             if (query != null && query.QueryInvoiceType == 2)
             {
                 rs = rs.Where(x => x.InvoiceType > 2).ToList();
             }
+
             var count = rs.Count();
+
             rs = rs.Skip(query.SkipCount).Take(query.MaxResultCount).ToList();
+
             if (rs != null && rs.Count > 0)
             {
-
                 foreach (var r in rs)
                 {
                     var invoiceBillQueryable = await _billRepository.GetQueryableAsync();
@@ -156,12 +220,60 @@ namespace Dolphin.Freight.Accounting.Invoices
                     bill.TaxAmountAc = (decimal?)r.TotalTax;
                     bill.AmountAc= (decimal?)r.TotalAmount;
                     bill.BalanceAc = (decimal?)r.TotalAmount;
+
+                    if (r.MblId is not null && r.MblId != Guid.Empty)
+                    {
+                        if (OceanExportMblDictionary.ContainsKey(r.MblId.Value))
+                        {
+                            bill.MethodType = 1;
+                        } 
+                        else
+                        {
+                            bill.MethodType = 0;
+                        }
+                    }
+                    if (r.MawbId is not null && r.MawbId != Guid.Empty)
+                    {
+                        if (AirImportMawbDictionary.ContainsKey(r.MawbId.Value))
+                        {
+                            bill.MethodType = 2;
+                        }
+                        else
+                        {
+                            bill.MethodType = 3;
+                        }
+                    }
+                    if (r.HblId is not null && r.HblId != Guid.Empty)
+                    {
+                        if (OceanExportHblDictionary.ContainsKey(r.HblId.Value))
+                        {
+                            bill.MethodType = 1;
+                        }
+                        else
+                        {
+                            bill.MethodType = 0;
+                        }
+                    }
+                    if (r.HawbId is not null && r.HawbId != Guid.Empty)
+                    {
+                        if (AirImportHawbDictionary.ContainsKey(r.HawbId.Value))
+                        {
+                            bill.MethodType = 2;
+                        }
+                        else
+                        {
+                            bill.MethodType = 3;
+                        }
+                    }
+
                     list.Add(bill);
+
                     var invoiceBills = invoiceBillQueryable.Where(w => w.InvoiceId.Value == r.Id).ToList();
+                    
                     bill.InvoiceBillDtos = ObjectMapper.Map<List<InvoiceBill>, List<CreateUpdateInvoiceBillDto>>(invoiceBills);
-              
                 }
             }
+            
             PagedResultDto<InvoiceDto> listDto = new PagedResultDto<InvoiceDto>();
             listDto.Items = list;
             listDto.TotalCount = count;
